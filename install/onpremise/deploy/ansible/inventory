@@ -129,6 +129,11 @@ schedule=Agenda
 #s3url=
 auto_restore=false
 
+#####################################
+# In case of high load > 200 usuers #
+#####################################
+high_load=false
+
 # Do not change the variables below or you will experience
 # bad things
 

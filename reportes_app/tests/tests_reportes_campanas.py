@@ -506,7 +506,8 @@ class ReportesCampanasTests(BaseTestDeReportes):
         estadisticas_service.calcular_estadisticas_totales()
         self.assertEqual(estadisticas_service.reporte_totales_llamadas.llamadas_pendientes, 1)
 
-    def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(self):
+    @patch('redis.Redis.publish')
+    def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(self, publish):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         self.campana_activa.save()
         self.calif_gestion.callid = '000000'
@@ -520,10 +521,11 @@ class ReportesCampanasTests(BaseTestDeReportes):
         # muestra el histórico de contactados (aqui cuenta la linea de header)
         self.assertEqual(len(reporte_contactados_csv.datos), 4)
 
+    @patch('redis.Redis.publish')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
     def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_historica(
-            self, exportar_reportes_csv, crea_reporte_pdf):
+            self, exportar_reportes_csv, crea_reporte_pdf, redis_publish):
         id_llamada = '000000'
         LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk,
                           event='COMPLETEAGENT')

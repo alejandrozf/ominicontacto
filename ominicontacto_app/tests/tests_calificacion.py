@@ -328,7 +328,8 @@ class CalificacionTests(OMLBaseTest):
         nuevo_contacto = self.campana.bd_contacto.contactos.exclude(id__in=contactos_ids)
         self.assertEqual(nuevo_contacto.count(), 1)
         nuevo_contacto = nuevo_contacto[0]
-        self.assertEqual(nuevo_contacto.telefono, telefono)
+        if self.campana.type != Campana.TYPE_ENTRANTE:
+            self.assertEqual(nuevo_contacto.telefono, telefono)
         self.assertIn('Nuevo Contacto', nuevo_contacto.datos)
         self.assertFalse(nuevo_contacto.es_originario)
 

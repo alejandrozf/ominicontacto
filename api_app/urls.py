@@ -34,7 +34,8 @@ from api_app.views.supervisor import (
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
-    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados)
+    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
+    DashboardSupervision)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -148,6 +149,9 @@ urlpatterns = [
     url(r'api/v1/exportar_csv_resultados_base_contactados/$',
         ExportarCSVResultadosBaseContactados.as_view(),
         name='api_exportar_csv_resultados_base_contactados'),
+    url(r'api/v1/dashboard_supervision/$',
+        DashboardSupervision.as_view(),
+        name='api_dashboard_supervision'),
 
 
     # ###########     AGENTE      ############ #

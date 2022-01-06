@@ -61,10 +61,13 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
                                                estado=Campana.ESTADO_ACTIVA)
         self.queue = QueueFactory.create(campana=self.entrante1)
 
+    @patch('redis.Redis.keys')
     @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
-    def test_reporte_vacio(self, obtener_estadisticas_campanas_entrantes):
+    def test_reporte_vacio(self, obtener_estadisticas_campanas_entrantes, keys):
         obtener_estadisticas_campanas_entrantes.return_value = {}
+        keys.return_value = []
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
+        keys.assert_called()
         self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
 

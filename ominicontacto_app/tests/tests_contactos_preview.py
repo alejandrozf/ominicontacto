@@ -60,7 +60,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         resultado = json.loads(response.content)
         self.assertEqual(resultado['contacto_asignado'], False)
 
-    def test_reserva_de_contacto_otorga_uno_libre(self):
+    @patch('redis.Redis.hgetall')
+    def test_reserva_de_contacto_otorga_uno_libre(self, hgetall):
+        hgetall.return_value = {}
         # Pido un contacto.
         url = reverse('campana_preview_dispatcher', args=[self.campana_preview.pk])
         response = self.client.post(url, follow=True)
@@ -84,7 +86,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                         campana_id=self.campana_preview.id,
                         estado=AgenteEnContacto.ESTADO_INICIAL).exists())
 
-    def test_reserva_de_contacto_otorga_uno_asignado_inicialmente_al_agente(self):
+    @patch('redis.Redis.hgetall')
+    def test_reserva_de_contacto_otorga_uno_asignado_inicialmente_al_agente(self, hgetall):
+        hgetall.return_value = {}
         # asignamos los contactos inicialmente uno a cada agente
         for agente, agente_en_contacto in zip([self.agente_1, self.agente_2],
                                               AgenteEnContacto.objects.all()):
@@ -113,7 +117,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                         campana_id=self.campana_preview.id, agente_id=self.agente_2.id,
                         estado=AgenteEnContacto.ESTADO_INICIAL).exists())
 
-    def test_reserva_de_contacto_devuelve_siempre_contacto_asignado_al_agente(self):
+    @patch('redis.Redis.hgetall')
+    def test_reserva_de_contacto_devuelve_siempre_contacto_asignado_al_agente(self, hgetall):
+        hgetall.return_value = {}
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
             agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_ASIGNADO)
         # Pido un contacto.
@@ -303,7 +309,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         agente_en_contacto.refresh_from_db()
         self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))
 
-    def test_se_entregan_contactos_de_acuerdo_al_orden(self):
+    @patch('redis.Redis.hgetall')
+    def test_se_entregan_contactos_de_acuerdo_al_orden(self, hgetall):
+        hgetall.return_value = {}
         # el primero sera el entregado de acuerdo al orden
         # ya que es el orden definido en la campaña
         pk_campana = self.campana_preview.pk
@@ -314,7 +322,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         id_contacto = resultado['contacto_id']
         self.assertEqual(id_contacto, agente_en_contacto.contacto_id)
 
-    def test_se_entregan_contactos_consecutivamente_de_acuerdo_al_orden(self):
+    @patch('redis.Redis.hgetall')
+    def test_se_entregan_contactos_consecutivamente_de_acuerdo_al_orden(self, hgetall):
+        hgetall.return_value = {}
         pk_campana = self.campana_preview.pk
         agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
         agente_en_contacto1 = agentes_en_contactos[0]
@@ -328,7 +338,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         id_contacto = resultado['contacto_id']
         self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
 
-    def test_se_entregan_contactos_circularmente_de_acuerdo_al_orden(self):
+    @patch('redis.Redis.hgetall')
+    def test_se_entregan_contactos_circularmente_de_acuerdo_al_orden(self, hgetall):
+        hgetall.return_value = {}
         pk_campana = self.campana_preview.pk
         agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
         agente_en_contacto2 = agentes_en_contactos[1]
@@ -342,7 +354,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         id_contacto = resultado['contacto_id']
         self.assertEqual(id_contacto, agente_en_contacto1.contacto_id)
 
-    def test_no_se_entregan_contactos_desactivados_con_FALSE(self):
+    @patch('redis.Redis.hgetall')
+    def test_no_se_entregan_contactos_desactivados_con_FALSE(self, hgetall):
+        hgetall.return_value = {}
         pk_campana = self.campana_preview.pk
         self.campana_preview.campo_desactivacion = 'dni'
         self.campana_preview.save()
@@ -361,7 +375,9 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         id_contacto = resultado['contacto_id']
         self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
 
-    def test_no_se_entregan_contactos_desactivados_con_0(self):
+    @patch('redis.Redis.hgetall')
+    def test_no_se_entregan_contactos_desactivados_con_0(self, hgetall):
+        hgetall.return_value = {}
         pk_campana = self.campana_preview.pk
         self.campana_preview.campo_desactivacion = 'dni'
         self.campana_preview.save()

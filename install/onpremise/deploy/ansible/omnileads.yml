@@ -51,8 +51,8 @@
 
   # Install PostgreSQL utilities
   - name: Install PostgreSQL utilities {{ postgresql_version }} (from s3 source)
-    command: yum install -y {{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm	    
-#yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
+    command: yum install -y {{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm
+    #yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
     with_items:
       - -libs.x86_64
       - -odbc.x86_64
@@ -123,10 +123,10 @@
     tags: postinstall
     when: "virtualenv_installed.stdout != virtualenv_version"
 
-  # Restore media_root in case of IaC deploy 
+  # Restore media_root in case of IaC deploy
   - name: Restore backup when use infrasctructure as code - 1/4
     vars:
-      ansible_python_interpreter: /usr/bin/python3 
+      ansible_python_interpreter: /usr/bin/python3
     aws_s3:
         s3_url: "{{ s3url }}"
         aws_secret_key: "{{ s3_secret_key }}"
@@ -137,16 +137,16 @@
         mode: get
     delegate_to: localhost
     register: backup_s3_download
-    when: 
+    when:
       - postgres_host != "localhost"
       - backup_file_name is defined
       - auto_restore == "true"
       - ansible_distribution != "Amazon"
 
-  # Restore media_root in case of IaC deploy 
+  # Restore media_root in case of IaC deploy
   - name: Restore backup when use infrasctructure as code - 1/4
     vars:
-      ansible_python_interpreter: /usr/bin/python3 
+      ansible_python_interpreter: /usr/bin/python3
     aws_s3:
         aws_secret_key: "{{ s3_secret_key }}"
         aws_access_key: "{{ s3_access_key }}"
@@ -156,33 +156,33 @@
         mode: get
     delegate_to: localhost
     register: backup_s3_download
-    when: 
+    when:
       - postgres_host != "localhost"
       - backup_file_name is defined
       - auto_restore == "true"
-      - ansible_distribution == "Amazon"   
+      - ansible_distribution == "Amazon"
 
   - name: Restore backup when use infrasctructure as code - 2/4
     command: tar xzvf /var/tmp/{{ backup_file_name }}.tar.gz -C /var/tmp
-    when: 
+    when:
       - postgres_host != "localhost"
       - backup_file_name is defined
       - auto_restore == "true"
-  
+
   - name: Restore backup when use infrasctructure as code 3/4
     command: tar xzvf /var/tmp/{{ backup_file_name }}/omniapp.tar.gz -C /var/tmp
-    when: 
+    when:
       - postgres_host != "localhost"
       - backup_file_name is defined
       - auto_restore == "true"
 
   - name: Restore backup when use infrasctructure as code 4/4
     command: mv /var/tmp/omniapp/media_root /opt/omnileads/
-    when: 
+    when:
       - postgres_host != "localhost"
       - backup_file_name is defined
       - auto_restore == "true"
-  
+
 
   # Install Virtualenv package {{ virtualenv_version }}
   - name: Install Virtualenv package {{ virtualenv_version }} (from s3 source)
@@ -224,6 +224,55 @@
   - name: Set up permissions for {{ install_prefix }} directory
     file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
     tags: postinstall
+
+  # Some Tweeks for Hight Load over 200 simultaneus users
+  - name: Add high load UWSGI params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - 'reload-on-rss = 1024'
+    - 'reload-on-as = 2048'
+    - 'evil-reload-on-rss = 3096'
+    - 'max-requests = 2000'
+    when: high_load == "true"
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "processes = 30" 
+      line: "processes = 50"
+      state: present
+      backup: yes
+    when: high_load == "true"  
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "harakiri = 600" 
+      line: "harakiri = 3600"
+      state: present
+      backup: yes      
+    when: high_load == "true"
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "socket-timeout = 600" 
+      line: "socket-timeout = 3600"
+      state: present
+      backup: yes      
+    when: high_load == "true"   
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "max-worker-lifetime = 10800" 
+      line: "max-worker-lifetime = 7200"
+      state: present
+      backup: yes      
+    when: high_load == "true"
 
   # OMniLeads restart
   - name: Restart OMniLeads service

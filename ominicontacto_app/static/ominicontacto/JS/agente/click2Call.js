@@ -105,6 +105,7 @@ class Click2CallDispatcher {
         }
     }
 
+    // TODO: Mover estas dos funciones 
     make_disposition(calldata){
         $('#obligarCalificarCall').modal('show');
         $('#obligarCalificarCall_submit').click(function(){
@@ -143,6 +144,11 @@ class Click2CallDispatcher {
                 function(call_data){
                     $('#modalCallOffCamp').modal('hide');
                     self.make_disposition(call_data);
+                    self.verificando_calificacion = false;
+                },
+                function(idcalificacion){
+                    $('#modalCallOffCamp').modal('hide');
+                    self.make_sales_form(idcalificacion);
                     self.verificando_calificacion = false;
                 },
                 function(){
@@ -185,6 +191,11 @@ class Click2CallDispatcher {
                 function(call_data){
                     $('#modalCallOffCamp').modal('hide');
                     self.make_disposition(call_data);
+                    self.verificando_calificacion = false;
+                },
+                function(idcalificacion){
+                    $('#modalCallOffCamp').modal('hide');
+                    self.make_sales_form(idcalificacion);
                     self.verificando_calificacion = false;
                 },
                 function(){

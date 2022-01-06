@@ -147,7 +147,12 @@ $(document).ready(function () {
             serverSide: true,
             processing: true,
             lengthChange: true,
-            ajax: Urls.api_contactos_campana(pk_campana),
+            ajax: {
+                url: Urls.api_contactos_campana(pk_campana),
+                data: function(data) {
+                    delete data.columns;
+                }
+            },
             ordering: false,
             paging: true,
             language: {

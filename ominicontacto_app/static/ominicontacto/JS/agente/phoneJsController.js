@@ -245,7 +245,6 @@ class PhoneJSController {
 
         // TODO: a variables de instancia
         var answerCallButton = document.getElementById('answer');
-        var refuseCallButton = document.getElementById('doNotAnswer');
         answerCallButton.onclick = function() {
             clearTimeout(self.ACW_pause_timeout_handler); // Por las dudas
             self.phone_fsm.acceptCall();
@@ -256,11 +255,12 @@ class PhoneJSController {
             self.view.setCallStatus(message, 'orange');
             self.manageContact(self.phone.session_data);
         };
-
-        refuseCallButton.onclick = function() {
+        
+        // filters doNotAnswer and doNotAnswerX
+        $('[id^=doNotAnswer]').click(function() {
             $('#modalReceiveCalls').modal('hide');
             self.phone.refuseCall();
-        };
+        });
 
         this.view.reload_video_button.click(function() {
             self.reloadVideo();
@@ -445,7 +445,7 @@ class PhoneJSController {
             $('#callerid').html(session_data.from_agent_name);
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
-            this.oml_api.eventRinging();
+            self.oml_api.eventRinging();
         });
 
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
@@ -657,23 +657,11 @@ class PhoneJSController {
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(calldata){
-                    $('#obligarCalificarCall').modal('show');
-                    $('#obligarCalificarCall_submit').click(function(){
-                        var call_data_json = JSON.stringify(calldata);
-                        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
-                        $('#dataView').attr('src', url);
-                        $('#obligarCalificarCall').modal('hide');
-                    });
+                    click2call.make_disposition(calldata);
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(idcalificacion){
-                    $('#obligarGestionForm').modal('show');
-                    $('#obligarGestionForm_submit').click(function(){
-                        var id_calification_json = JSON.stringify(idcalificacion);
-                        var url = Urls.formulario_venta(encodeURIComponent(id_calification_json));
-                        $('#dataView').attr('src', url);
-                        $('#obligarGestionForm').modal('hide');
-                    });
+                    click2call.make_sales_form(idcalificacion);
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(){
