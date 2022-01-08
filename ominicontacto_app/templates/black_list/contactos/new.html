@@ -21,11 +21,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
-{% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/blacklist.js' %}"></script>
-{% endblock %}
-
 {% block content %}
+    <!-- Button back -->
     <nav>
         <ul class="pagination">
             <li class="page-item">
@@ -36,13 +33,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </li>
         </ul>
     </nav>
-    <h1>{% trans 'Nueva blacklist' %}</h1>
-    <form role="form" method="post" enctype="multipart/form-data">
+    <h1>{% trans 'Nuevo contacto' %}</h1>
+    <form role="form" method="post" >
         {% include "base_form_fields.html" with form=form %}
-        <hr>
-        <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
-            {% trans 'Definir Blacklist' %}
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Crear' %}
         </button>
     </form>
-    <a class="btn btn-outline-primary mt-3" href="/static/ominicontacto/ejemplo_blacklist.csv" target="_blank">{% trans 'Baja ejemplo de Blacklist' %}</a>
 {% endblock %}

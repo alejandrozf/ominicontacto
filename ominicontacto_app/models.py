@@ -3027,6 +3027,9 @@ class Blacklist(models.Model):
     fecha_alta = models.DateTimeField(
         auto_now_add=True, verbose_name=_('Fecha alta')
     )
+    fecha_modificacion = models.DateTimeField(
+        auto_now=True, verbose_name=_('Fecha de modificación')
+    )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
@@ -3052,7 +3055,7 @@ class ContactoBlacklist(models.Model):
     Lista de contacto que no quieren que los llamen
     """
 
-    telefono = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128, unique=True)
     black_list = models.ForeignKey(
         Blacklist, related_name='contactosblacklist', blank=True, null=True,
         on_delete=models.CASCADE)

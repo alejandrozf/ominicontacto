@@ -883,8 +883,21 @@ urlpatterns = [
         login_required(views_black_list.BlacklistCreateView.as_view()),
         name="black_list_create"),
     url(r'^blacklist/lista/$',
-        login_required(views_black_list.BlackListView.as_view()),
+        login_required(views_black_list.BlacklistView.as_view()),
         name="black_list_list"),
+    url(r'^blacklist/(?P<pk_blacklist>\d+)/actualizar/$',
+        login_required(views_black_list.BlacklistUpdateView.as_view()),
+        name='update_blacklist',
+        ),
+    url(r'^blacklist/(?P<pk_blacklist>\d+)/eliminar/$',
+        login_required(views_black_list.BlacklistDeleteView.as_view()),
+        name='eliminar_blacklist',
+        ),
+    url(r'^blacklist/(?P<pk_blacklist>\d+)/contacto/nuevo/$',
+        login_required(views_black_list.BlacklistNuevoContactoView.as_view()),
+        name='nuevo_contacto_blacklist',
+        ),
+
     # ==========================================================================
     # Sistema Externo
     # ==========================================================================
