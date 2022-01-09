@@ -49,6 +49,15 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(REDIS_HOSTNAME, 6379)],
+        },
+    },
+}
+
 # Ubicaciones de staticos y media
 STATIC_ROOT = "{0}/static".format(INSTALL_PREFIX)
 MEDIA_ROOT = "{0}/media_root".format(INSTALL_PREFIX)

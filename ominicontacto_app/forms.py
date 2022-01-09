@@ -1981,7 +1981,8 @@ class GrupoForm(forms.ModelForm):
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
                   'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
-                  'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar')
+                  'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
+                  'obligar_despausa')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
@@ -1993,6 +1994,7 @@ class GrupoForm(forms.ModelForm):
             'auto_unpause': _('En segundos'),
             'cantidad_agendas_personales': _('Cantidad máxima de agendas'),
             'tiempo_maximo_para_agendar': _('Cantidad máxima de días para agendar'),
+            'obligar_despausa': _('Forzar Despausa'),
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),
