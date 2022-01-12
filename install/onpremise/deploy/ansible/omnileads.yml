@@ -183,7 +183,6 @@
       - backup_file_name is defined
       - auto_restore == "true"
 
-
   # Install Virtualenv package {{ virtualenv_version }}
   - name: Install Virtualenv package {{ virtualenv_version }} (from s3 source)
     command: yum install -y {{ virtualenv_package }}
@@ -192,6 +191,25 @@
     register: s3_download
     failed_when:
       - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+  - name: Copy backup file to correct dst
+    ansible.builtin.copy:
+      src: /var/tmp/{{ backup_file_name }}.tar.gz 
+      dest: /opt/omnileads/backup
+      owner: omnileads
+      group: omnileads
+      mode: '0644'
+    when:
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"  
+
+  - name: Restore addons when use infrasctructure as code
+    command: bash -x /opt/omnileads/bin/backup-restore.sh --restore={{ backup_file_name }}.tar.gz --omniapp
+    when:
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"  
 
   # Solution to issue OML-214: Re-setting backed up addons after installation
   - name: Re-setting addons after installation
