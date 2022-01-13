@@ -25,7 +25,6 @@ from __future__ import unicode_literals
 import os
 import zipfile
 from django.conf import settings
-from constance import config as config_constance
 import redis
 from math import ceil
 import io
@@ -61,7 +60,7 @@ class GeneracionZipGrabaciones:
         i = 1
         for archivo in self.listado_archivos:
             obs = ''
-            if (config_constance.S3_STORAGE_ENABLED):
+            if (os.getenv('S3_STORAGE_ENABLED') == 'true'):
                 self._save_file_from_s3(archivo, settings.SENDFILE_ROOT)
             archivo_path = os.path.join(settings.SENDFILE_ROOT, archivo['archivo'])
             try:
@@ -101,7 +100,7 @@ class GeneracionZipGrabaciones:
         if not os.path.exists(pathr):
             os.makedirs(pathr, mode=0o755)
         try:
-            s3.Bucket(config_constance.S3_BUCKET_NAME) \
+            s3.Bucket(os.getenv('S3_BUCKET_NAME')) \
                 .download_file(archivo['archivo'],
                                os.path.join(settings.SENDFILE_ROOT, archivo['archivo']))
         except Exception:
