@@ -225,6 +225,15 @@ urlpatterns = [
         name='auditar_calificacion_cliente'),
 
 
+
+    # ==========================================================================
+    # Auditorías a Supervisor
+    # ==========================================================================
+    url(r'^seguridad/auditoria/$',
+        login_required(views_auditorias.SeguridadAuditoriaView.as_view()),
+        name='seguridad_auditoria'),
+
+
     # ==========================================================================
     # Servicios para phoneJS
     # ==========================================================================

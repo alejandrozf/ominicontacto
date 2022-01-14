@@ -19,6 +19,7 @@
 
 import json
 from django.http import HttpResponseRedirect
+from django.views.generic import TemplateView
 from django.contrib import messages
 from django.core import paginator as django_paginator
 from django.urls import reverse_lazy
@@ -217,3 +218,8 @@ class AuditoriaCalificacionFormView(FormView):
         message = _("Auditoría de calificación guardada.")
         messages.success(self.request, message)
         return HttpResponseRedirect(self.success_url)
+
+
+class SeguridadAuditoriaView(TemplateView):
+    template_name = 'auditoria/seguridad_auditoria.html'
+    pass

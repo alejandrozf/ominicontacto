@@ -28,6 +28,7 @@ from rest_framework import serializers
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import AgenteEnContacto, AgenteProfile, ArchivoDeAudio, \
     CalificacionCliente, Campana, Contacto, Grupo, OpcionCalificacion, User
+from auditlog.models import LogEntry
 
 
 class CalificacionClienteSerializerMixin(object):
@@ -281,3 +282,21 @@ class GrupoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grupo
         fields = ('id', 'name')
+
+
+class AuditSupervisorSerializer(serializers.ModelSerializer):
+    actor = serializers.CharField()
+    object = serializers.CharField(source='content_type')
+    name = serializers.CharField(source='object_repr')
+    action = serializers.CharField(source='get_action_display')
+    date = serializers.DateTimeField(source='timestamp', format="%Y-%m-%d %H:%M")
+    changes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LogEntry
+        fields = ('id', 'actor', 'object', 'name', 'action', 'changes', 'date')
+
+    def get_changes(self, obj):
+        if obj.action == 1:
+            return obj.changes_str
+        return '-'

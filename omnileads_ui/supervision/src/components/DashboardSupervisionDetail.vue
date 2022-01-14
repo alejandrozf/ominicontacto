@@ -13,8 +13,6 @@
 </div>
 </template>
 <script>
-import Splitter from 'primevue/splitter';
-import SplitterPanel from 'primevue/splitterpanel';
 import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart'
 import StateAgentsChart from '@/components/DashboardSupervisionCharts/StateAgentsChart'
 import ContactedCallsChart from '@/components/DashboardSupervisionCharts/ContactedCallsChart'
@@ -23,8 +21,6 @@ export default {
         reportData: Object
     },
     components: {
-        Splitter,
-        SplitterPanel,
         CampaingActiveChart,
         StateAgentsChart,
         ContactedCallsChart
