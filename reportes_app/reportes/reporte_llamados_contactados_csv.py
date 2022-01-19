@@ -27,12 +27,13 @@ import csv
 import logging
 import os
 import json
+import time
 
 import redis
 
 from django.conf import settings
 from django.utils.encoding import force_text
-
+from django.core.paginator import Paginator
 
 from django.utils.translation import ugettext as _
 from django.utils.timezone import localtime, timedelta
@@ -102,7 +103,9 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         self.posiciones_opciones = {}
         self._escribir_encabezado()
 
-        logs_llamadas = self._obtener_logs_de_llamadas()
+        logs_llamadas = self._obtener_logs_de_llamadas() \
+                            .filter(event__in=LlamadaLog.EVENTOS_FIN_CONEXION) \
+                            .exclude(agente_id=-1)
 
         numero_logs_llamadas = logs_llamadas.count()
         if numero_logs_llamadas == 0:
@@ -112,26 +115,40 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
 
         callids_analizados = set()
+        i = 0
+        last_percentage = porcentaje_inicial
+        paginator = Paginator(logs_llamadas, 2000)
+        for page_number in paginator.page_range:
+            page = paginator.page(page_number)
+            for log_llamada in page:
+                i += 1
+                percentage = int((i / numero_logs_llamadas) * 100)
+                if (percentage - last_percentage) >= 10:
+                    self.redis_connection.publish(key_task, percentage)
+                    last_percentage = percentage
 
-        for i, log_llamada in enumerate(logs_llamadas, start=1):
-            percentage = int((i / numero_logs_llamadas) * 100)
-            self.redis_connection.publish(key_task, percentage)
-            callid = log_llamada.callid
-            evento = log_llamada.event
-            calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
-            if evento in LlamadaLog.EVENTOS_FIN_CONEXION and \
-                    log_llamada.agente_id != -1 and callid not in callids_analizados:
-                if not calificacion_historica:
-                    datos_calificacion = [_("Llamada Atendida sin calificacion"),
-                                          '',
-                                          self.agentes_dict.get(log_llamada.agente_id, -1)]
-                else:
-                    datos_calificacion = [calificacion_historica.opcion_calificacion.nombre,
-                                          calificacion_historica.observaciones.replace('\r\n', ' '),
-                                          calificacion_historica.agente]
-                self._escribir_linea_log(
-                    log_llamada, datos_calificacion, calificacion_historica)
-                callids_analizados.add(callid)
+                callid = log_llamada.callid
+                try:
+                    if callid not in callids_analizados:
+                        calificacion_historica = self \
+                            .calificaciones_historicas_dict.get(callid, False)
+                        if not calificacion_historica:
+                            datos_calificacion = [_("Llamada Atendida sin calificacion"),
+                                                  '',
+                                                  self.agentes_dict.get(log_llamada.agente_id, -1)]
+                        else:
+                            datos_calificacion = [calificacion_historica.opcion_calificacion.nombre,
+                                                  calificacion_historica.observaciones
+                                                  .replace('\r\n', ' '),
+                                                  calificacion_historica.agente]
+                        self._escribir_linea_log(
+                            log_llamada, datos_calificacion, calificacion_historica)
+                        callids_analizados.add(callid)
+                except Exception as e:
+                    logger.error("Error generando fila csv: " + e.__str__())
+        # Forzar el cierre de la conexión del WS
+        time.sleep(1)
+        self.redis_connection.publish(key_task, 101)
 
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')
