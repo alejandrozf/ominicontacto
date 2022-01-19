@@ -20,6 +20,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% load util_tags %}
 
 {% block content %}
     <form method="post">{% csrf_token %}
@@ -28,6 +29,10 @@
         <button type="submit" class="btn btn-danger">
             {% trans 'Eliminar' %}
         </button>
+        {% if object|get_class == 'ReglaIncidenciaPorCalificacion' %}
         <a class="btn btn-outline-danger" href="{% url 'disposition_incidence_list' pk_campana=object.opcion_calificacion.campana.id %}">{% trans 'Cancelar' %}</a>
+        {% else %}
+        <a class="btn btn-outline-danger" href="{% url 'disposition_incidence_list' pk_campana=object.campana.id %}">{% trans 'Cancelar' %}</a>
+        {% endif %}
     </form>
 {% endblock %}

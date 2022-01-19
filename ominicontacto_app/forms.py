@@ -1627,10 +1627,31 @@ class ReglasIncidenciaForm(forms.ModelForm):
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        self.campana = None
+        if 'campana' in kwargs:
+            self.campana = kwargs.pop('campana')
+        super(ReglasIncidenciaForm, self).__init__(*args, **kwargs)
+
+    def clean_estado(self):
+        """
+        Realiza la  validación de que no existan reglas de incidencia de un mismo tipo repetidas
+        """
+        estado = self.cleaned_data.get('estado')
+        if estado and self.campana and \
+            estado in list(
+                set(self.campana.reglas_incidencia.exclude(id=self.instance.id).
+                    values_list('estado', flat=True))):
+            raise forms.ValidationError(
+                _("Los nombres de los estados de las reglas deben ser distintos"))
+        return estado
+
     def save(self, commit=True):
         regla = super(ReglasIncidenciaForm, self).save(commit=False)
         if regla.estado == ReglasIncidencia.TERMINATED:
             regla.estado_personalizado = ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR
+        else:
+            regla.estado_personalizado = ""
         if commit:
             regla.save()
         return regla

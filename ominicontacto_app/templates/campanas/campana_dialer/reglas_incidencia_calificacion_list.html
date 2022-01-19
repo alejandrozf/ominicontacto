@@ -20,15 +20,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% load util_tags %}
+
 {% block content %}
-    <h1>{% trans 'Reglas de incidencia por calificación para la campaña: ' %}{{ campana.nombre }}</h1>
+    <h1>{% trans 'Reglas de incidencia para la campaña: ' %}{{ campana.nombre }}</h1>
     <div class="row">
         <div class="column-md-6">
             <table class="table">
                 <thead>
                     <tr>
                         <th>{% trans 'ID en wombat' %}</th>
-                        <th colspan="1">{% trans 'Opción Calificación' %}</th>
+                        <th colspan="1">{% trans 'Estado' %}</th>
                         <th colspan="1">{% trans 'Reintentar en (segundos)' %}</th>
                         <th colspan="1">{% trans 'Modo de reintento' %}</th>
                         <th colspan="1">{% trans 'Cantidad de reintentos' %}</th>
@@ -37,29 +39,48 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </thead>
                 <tbody>
                     {% for regla in object_list %}
-                        <tr>
-                            <td>{{ regla.wombat_id }}</td>
-                            <td>{{ regla.opcion_calificacion.nombre }}</td>
-                            <td>{{ regla.reintentar_tarde }}</td>
-                            <td>{{ regla.get_en_modo_wombat }}</td>
-                            <td>{{ regla.intento_max }}</td>
-                            <td>
-                                <a href="{% url 'disposition_incidence_edit' pk=regla.pk %}">
-                                    <span class="icon icon-pencil"></span>{% trans 'Editar' %}
-                                </a>
-                                <a href="{% url 'disposition_incidence_delete' pk=regla.pk %}">
-                                    <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                                </a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6">{% trans 'No hay Reglas de Incidencia por Calificación configuradas' %}</td>
-                        </tr>
+                        {% if regla|get_class == 'ReglaIncidenciaPorCalificacion' %}
+                            <tr>
+                                <td>{{ regla.wombat_id }}</td>
+                                <td>{{ regla.opcion_calificacion.nombre }}</td>
+                                <td>{{ regla.reintentar_tarde }}</td>
+                                <td>{{ regla.get_en_modo_wombat }}</td>
+                                <td>{{ regla.intento_max }}</td>
+                                <td>
+                                    <a href="{% url 'disposition_incidence_edit' pk=regla.pk %}">
+                                        <span class="icon icon-pencil"></span>{% trans 'Editar' %}
+                                    </a>
+                                    <a href="{% url 'disposition_incidence_delete' pk=regla.pk %}">
+                                        <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ regla.wombat_id }}</td>
+                                <td>{{ regla.get_estado_display }}</td>
+                                <td>{{ regla.reintentar_tarde }}</td>
+                                <td>{{ regla.get_en_modo_wombat }}</td>
+                                <td>{{ regla.intento_max }}</td>
+                                <td>
+                                    <a href="{% url 'incidence_edit' pk=regla.pk %}">
+                                        <span class="icon icon-pencil"></span>{% trans 'Editar' %}
+                                    </a>
+                                    <a href="{% url 'incidence_delete' pk=regla.pk %}">
+                                        <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">{% trans 'No hay Reglas de Incidencia por Calificación configuradas' %}</td>
+                            </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
     <a class="btn btn-light btn-sm" href="{% url 'disposition_incidence_create' pk_campana=campana.pk %}" >{% trans 'Agregar Regla de Incidencia por Calificación' %}</a>
+    <a class="btn btn-light btn-sm" href="{% url 'incidence_create' pk_campana=campana.pk %}" >{% trans 'Agregar Regla de Incidencia por estado del sistema' %}</a>
 {% endblock %}
