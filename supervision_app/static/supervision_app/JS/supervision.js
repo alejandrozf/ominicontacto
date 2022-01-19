@@ -303,6 +303,7 @@ function subcribeFilterChange() {
         var selection = $('#filter_campana').find('option:selected');
         $('#filter_campana option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
-        table_agentes.columns(2).search(selection.html()).draw();
+        var regex = '\\b' + selection.html() + '\\b';
+        table_agentes.columns(2).search(regex, true, false).draw();
     });
 }
