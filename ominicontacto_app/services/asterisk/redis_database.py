@@ -252,12 +252,12 @@ class CampanaFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:CAMP"
-    
+
     def set_redis_value_field(self, nombre_family, field, value):
         nombre_family = self._get_nombre_family(nombre_family)
         redis_connection = self.get_redis_connection()
         redis_connection.hset(nombre_family, field, value)
-    
+
     def del_redis_field(self, nombre_family, field):
         nombre_family = self._get_nombre_family(nombre_family)
         redis_connection = self.get_redis_connection()

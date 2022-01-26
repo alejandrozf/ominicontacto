@@ -414,14 +414,34 @@ class PhoneJSController {
         /** User Agent **/
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus('REGISTERED');
-            self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
             self.phone_fsm.registered();
-            var login_ok = function(){self.goToReadyAfterLogin();};
-            var login_error = function(){
-                self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
-                self.phone_fsm.logToAsteriskError();
-            };
-            self.oml_api.asteriskLogin(login_ok, login_error);
+
+            if (self.phone_fsm.state == 'LoggingToAsterisk') {
+                self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
+                var login_ok = function(){self.goToReadyAfterLogin();};
+                var login_error = function(){
+                    self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
+                    self.phone_fsm.logToAsteriskError();
+                };
+                self.oml_api.asteriskLogin(login_ok, login_error);
+            }
+            if (self.phone_fsm.state == 'Ready')
+                self.view.setCallStatus(gettext('Agente conectado.'), 'yellowgreen');
+            if (self.phone_fsm.state == 'Paused') {
+                self.view.setCallStatus(gettext('Agente en pausa.'), 'orange');
+                self.setPause(self.pause_manager.pause_id, self.pause_manager.pause_name);
+            }
+        });
+
+        this.phone.eventsCallbacks.onUserAgentUnregistered.add(function () {
+            self.view.setSipStatus('UNREGISTERED');
+            self.view.setCallStatus(gettext('Agente Desconectado'), 'red');
+            $.growl.error({
+                title: gettext('Atención!'),
+                message: gettext('Ha perdido la conexión!'),
+                duration: 15000,
+            });
+            self.phone_fsm.unregistered();
         });
 
         this.phone.eventsCallbacks.onUserAgentRegisterFail.add(function () {
@@ -432,7 +452,9 @@ class PhoneJSController {
         this.phone.eventsCallbacks.onUserAgentDisconnect.add(function () {
             self.view.setSipStatus('NO_SIP');
             // TODO: Definir acciones a tomar.
+            // Si pierde conexión, en cada intento fallido de reconexión se dispara este evento.
         });
+
         /** Calls **/
         this.phone.eventsCallbacks.onTransferDialed.add(function(transfer_data) {
             phone_logger.log('onTransferDialed');
