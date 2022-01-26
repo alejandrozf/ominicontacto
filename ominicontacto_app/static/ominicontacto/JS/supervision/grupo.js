@@ -23,6 +23,9 @@ $(function () {
     
     $('#id_limitar_agendas_personales').on('change', actualizarEstadoCantidadAgendasPersonales);
     actualizarEstadoCantidadAgendasPersonales();
+
+    $('#id_limitar_agendas_personales_en_dias').on('change', actualizarEstadoDiasAgendasPersonales);
+    actualizarEstadoDiasAgendasPersonales();
 });
 
 function actualizarEstadoAutoUnpause() {
@@ -37,4 +40,11 @@ function actualizarEstadoCantidadAgendasPersonales() {
         $('#id_cantidad_agendas_personales').prop('disabled', false);
     else
         $('#id_cantidad_agendas_personales').prop('disabled', true);
+}
+
+function actualizarEstadoDiasAgendasPersonales() {
+    if ($('#id_limitar_agendas_personales_en_dias').is(':checked'))
+        $('#id_tiempo_maximo_para_agendar').prop('disabled', false);
+    else
+        $('#id_tiempo_maximo_para_agendar').prop('disabled', true);
 }

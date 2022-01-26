@@ -25,6 +25,7 @@ import os
 import random
 import re
 import uuid
+import datetime
 
 
 from ast import literal_eval
@@ -223,6 +224,10 @@ class Grupo(models.Model):
         'Limitar agendas personales'))
     cantidad_agendas_personales = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
         'Cantidad agendas personales'))
+    limitar_agendas_personales_en_dias = models.BooleanField(default=False, verbose_name=_(
+        'Limitar agendas personales en días'))
+    tiempo_maximo_para_agendar = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
+        'Tiempo máximo para agendar'))
 
     def __str__(self):
         return self.nombre
@@ -373,6 +378,11 @@ class AgenteProfile(models.Model):
             if cant_agendas >= cant_permitidas:
                 return False
         return True
+
+    def tiempo_maximo_para_agendar(self):
+        if self.grupo.limitar_agendas_personales_en_dias:
+            return True, self.grupo.tiempo_maximo_para_agendar
+        return False, 0
 
 
 class SupervisorProfile(models.Model):
@@ -2903,8 +2913,16 @@ class AgendaContacto(models.Model):
                 not self.agente.permite_agenda_personal(self.contacto, self.campana):
             raise ValidationError(_('Ud. ya ha alcanzado el número límite de Agendas Personales.'
                                     'Consulte con su Administrador'))
-        else:
-            super(AgendaContacto, self).save(*args, **kwargs)
+        elif self.tipo_agenda == AgendaContacto.TYPE_PERSONAL and \
+                self.agente.tiempo_maximo_para_agendar()[0]:
+            hoy = datetime.datetime.today().date()
+            dias_restantes = (self.fecha - hoy).days
+            if dias_restantes > self.agente.tiempo_maximo_para_agendar()[1]:
+                raise ValidationError(_('La fecha de agenda propuesta supera '
+                                        'la ventana permitida ({} días). '
+                                        'Consulte con el Administrador.'
+                                        .format(self.agente.tiempo_maximo_para_agendar()[1])))
+        super(AgendaContacto, self).save(*args, **kwargs)
 
 
 # ==============================================================================
