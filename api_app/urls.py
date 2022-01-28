@@ -35,7 +35,7 @@ from api_app.views.supervisor import (
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
     ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
-    DashboardSupervision)
+    DashboardSupervision, AuditSupervisor)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -193,5 +193,7 @@ urlpatterns = [
         ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),
     url(r'^api/v1/agent/list',
         ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
+    url(r'^api/v1/audit_supervisor',
+        AuditSupervisor.as_view(), name='api_audit_supervisor'),
 
 ]

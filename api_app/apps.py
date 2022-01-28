@@ -119,6 +119,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_dashboard_supervision',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_audit_supervisor',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -238,5 +240,8 @@ class ApiAppConfig(AppConfig):
              'version': '1.17.0'},
         'api_dashboard_supervision':
             {'descripcion': _('Dashboard de supervision'),
-             'version': '1.18.0'}
+             'version': '1.18.0'},
+        'api_audit_supervisor':
+            {'descripcion': _('Auditoría a supervisores'),
+             'version': '1.20.0'}
     }

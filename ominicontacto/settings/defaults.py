@@ -75,7 +75,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'constance.backends.database',
     'django_sass',
-    'django_sendfile'
+    'django_sendfile',
+    'auditlog',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -87,6 +88,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auditlog.middleware.AuditlogMiddleware',
     'defender.middleware.FailedLoginMiddleware',
     'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware'
 ]

@@ -35,6 +35,7 @@ from django.utils.timezone import now
 from django.http import JsonResponse
 from django.db.models import Count
 from django.conf import settings
+from django.utils import timezone
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -43,9 +44,11 @@ from rest_framework.authentication import SessionAuthentication
 
 from simple_history.utils import update_change_reason
 
+from auditlog.models import LogEntry
+
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import (CampanaSerializer, )
+from api_app.serializers import (CampanaSerializer, AuditSupervisorSerializer)
 
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
@@ -856,3 +859,19 @@ class DashboardSupervision(APIView):
         data['state_agents'] = self._get_agentes_estados()
         data['contacted_calls'] = self._llamadas_contactadas()
         return Response(data)
+
+
+class AuditSupervisor(APIView):
+
+    def post(self, request):
+        data = request.data
+        queryset = LogEntry.objects.filter(
+            timestamp__date__range=[data['date_start'], data['date_end']])
+        serializer = AuditSupervisorSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get(self, request):
+        today = timezone.now().astimezone(timezone.get_current_timezone()).date()
+        queryset = LogEntry.objects.filter(timestamp__date=today)
+        serializer = AuditSupervisorSerializer(queryset, many=True)
+        return Response(serializer.data)
