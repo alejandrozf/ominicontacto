@@ -3220,6 +3220,14 @@ class ReglasIncidencia(models.Model):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
             self.campana.nombre, self.estado)
 
+    @property
+    def wombat_id(self):
+        return str(self.estado_personalizado or "")
+
+    @property
+    def campaign_id_wombat(self):
+        return self.campana.campaign_id_wombat
+
     def get_estado_wombat(self):
         if self.estado is ReglasIncidencia.RS_BUSY:
             return "RS_BUSY"
@@ -3274,6 +3282,10 @@ class ReglaIncidenciaPorCalificacion(models.Model):
     @property
     def wombat_id(self):
         return "DISP{0}".format(self.opcion_calificacion.id)
+
+    @property
+    def campaign_id_wombat(self):
+        return self.opcion_calificacion.campana.campaign_id_wombat
 
     def get_en_modo_wombat(self):
         if self.en_modo is ReglasIncidencia.FIXED:
