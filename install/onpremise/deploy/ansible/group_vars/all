@@ -28,6 +28,7 @@ websockets_package: "{{ packages_url }}/omnileads-websockets/omnileads-websocket
 redisgears_package: "{{ packages_url }}/redis/redisgears-{{ redisgears_version }}.so"
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+oml_utilities_repo: https://gitlab.com/omnileads/omlutilities.git
 #URLS para descargar asterisk
 admin_user: admin
 usuario: omnileads

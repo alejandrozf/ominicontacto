@@ -131,7 +131,7 @@
         s3_url: "{{ s3url }}"
         aws_secret_key: "{{ s3_secret_key }}"
         aws_access_key: "{{ s3_access_key }}"
-        bucket: "{{ backup_bucket_name }}"
+        bucket: "{{ s3_bucket_name }}"
         object: "{{ backup_file_name }}.tar.gz"
         dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
         mode: get
@@ -148,10 +148,8 @@
     vars:
       ansible_python_interpreter: /usr/bin/python3
     aws_s3:
-        aws_secret_key: "{{ s3_secret_key }}"
-        aws_access_key: "{{ s3_access_key }}"
-        bucket: "{{ backup_bucket_name }}"
-        object: "{{ backup_file_name }}.tar.gz"
+        bucket: "{{ s3_bucket_name }}"
+        object: "omlapp-backup/{{ backup_file_name }}.tar.gz"
         dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
         mode: get
     delegate_to: localhost
@@ -237,6 +235,15 @@
     args:
       executable: /bin/bash
     when: reset_admin_password == "true"
+
+  # Download backup-restore script
+  - name: omlutilities repo
+    ansible.builtin.git:
+      repo: '{{ oml_utilities_repo }}'
+      dest: /opt/omnileads/utils
+      version: main
+    when:
+      - asterisk_host != "localhost"
 
   # Set up permissions for {{ install_prefix }} directory
   - name: Set up permissions for {{ install_prefix }} directory

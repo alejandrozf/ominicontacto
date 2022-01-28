@@ -33,7 +33,8 @@ if [ "$1" = "" ]; then
   touch /var/spool/cron/crontabs/omnileads
   cat > /var/spool/cron/crontabs/omnileads << EOF
 SHELL=/bin/bash
-0 1 * * * ${INSTALL_PREFIX}bin/conversor.sh 1 0  >> ${INSTALL_PREFIX}log/conversor.log
+0 1 * * * ${INSTALL_PREFIX}utils/conversor.sh 2 0  >> ${INSTALL_PREFIX}log/conversor.log
+* * * * * ${INSTALL_PREFIX}virtualenv/bin/python3 ${INSTALL_PREFIX}ominicontacto/manage.py actualizar_campanas_preview
 EOF
   fi
   printenv > /etc/profile.d/omnileads_envars.sh
