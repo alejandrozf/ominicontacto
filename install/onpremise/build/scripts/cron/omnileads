@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 #Ansible: Conversion of recordings to mp3 (every day)
 
-0 1 * * * source /etc/profile.d/omnileads_envars.sh; /opt/omnileads/bin/conversor.sh 1 0 >> /opt/omnileads/log/conversor.log
+0 1 * * * source /etc/profile.d/omnileads_envars.sh; /opt/omnileads/utils/conversor.sh 1 0 >> /opt/omnileads/log/conversor.log
 
 * * * * * source /etc/profile.d/omnileads_envars.sh; /opt/omnileads/virtualenv/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview

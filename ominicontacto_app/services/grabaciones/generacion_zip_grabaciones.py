@@ -93,8 +93,8 @@ class GeneracionZipGrabaciones:
 
     def _save_file_from_s3(self, archivo, local_path):
         s3 = boto3.resource("s3",
-                            aws_access_key_id=os.getenv('API_CLOUD_ACCESS_KEY'),
-                            aws_secret_access_key=os.getenv('API_CLOUD_SECRET_KEY'))
+                            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+                            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
 
         pathr = os.path.dirname(os.path.join(settings.SENDFILE_ROOT, archivo['archivo']))
         if not os.path.exists(pathr):

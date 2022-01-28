@@ -57,8 +57,8 @@ class ObtenerArchivoGrabacionView(APIView):
 
     def _get_s3_url(self, filename):
         client = boto3.client("s3",
-                              aws_access_key_id=os.getenv('API_CLOUD_ACCESS_KEY'),
-                              aws_secret_access_key=os.getenv('API_CLOUD_SECRET_KEY'))
+                              aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+                              aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
         url = client.generate_presigned_url('get_object',
                                             Params={'Bucket': os.getenv('S3_BUCKET_NAME'),
                                                     'Key': filename[1:]

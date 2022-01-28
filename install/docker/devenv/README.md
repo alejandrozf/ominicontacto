@@ -23,12 +23,25 @@ This environment can be deployed in any linux distro. Linux distro tested by our
   $ ./get_modules.sh
 ```
 
-**Note:** Check the network assigned to devenv in SUBNET variable. By default the subnet 192.168.99.0/24 is assgined to the environment. Change the subnet if it clashes with your WLAN o LAN subnet
+**Note:** Check the network assigned to devenv in SUBNET variable. By default the subnet 10.22.22.0/24 is assgined to the environment. Change the subnet if it clashes with your WLAN o LAN subnet
+
 3. Raise up the environment
 ```sh
   $ docker-compose up -d
 ```
 This will take some time while it download the docker images. Once finished you can use **docker ps** to see that you have 10 containers up and running.
+
+## Setting minIO user, pass and Bucket for DevEnv
+**http://YOUR_HOSTNAME:9001**
+
+You can access to admin interface with:
+
+*admin*
+*admin123*
+
+You must to create a user with *readwrite* permission and then create a bucket.
+
+the username, password and bucket name must be similar than .env file AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & S3_BUCKET_NAME.
 
 ## Setting default admin user password
 
@@ -116,7 +129,7 @@ From **docker ps** command you can take the container name that is assigned for 
 The docker-compose file links the OML repository into the container so any change you make in the *django code* will be reflected in the devenv inmediately.
 On the other hand after changing asterisk code or configuration file, is necessary to go into the asterisk container and execute *asterisk -rx "module reload"*
 
-# PBX-emulator
+# PSTN-emulator
 
 Adittionally with omnileads container is the pbx-emulator, this an emulation of a PSTN provider, so you can make calls via Omnileads and have different results of the call based on what you dialed.
 
