@@ -66,6 +66,15 @@ class PhoneJSController {
 
         this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
+
+        this.llamada_calificada = null;
+        this.notificationSocket = new WebSocket('wss://' + window.location.host + '/channels/agent-console');
+        var self = this;
+        this.notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.type == 'unpause-call')
+                self.notificationForzarDespausa(data.args);
+        };
         this.phone_fsm.start();
     }
 
@@ -581,7 +590,12 @@ class PhoneJSController {
 
         // Si se fuerza la calificación no se sale automaticamente de Pausa forzada
         if (this.click_2_call_dispatcher.disposition_forced){
-            return;
+            if (this.llamada_calificada){
+                this.autoLeaveACWPause(return_to_pause, pause_id, pause_name);
+                this.llamada_calificada = null;
+            }  
+            else
+                return;
         }
         if (call_auto_unpause != undefined) {
             if (call_auto_unpause > 0) {
@@ -967,6 +981,17 @@ class PhoneJSController {
             PHONE_STATUS_CONFIGS['OnCall'].enabled_buttons = filter_on_call;
             PHONE_STATUS_CONFIGS['OnHold'].enabled_buttons = filter_on_hold;
         }
+    }
+
+    notificationForzarDespausa(args){
+        if (args['calificada'])
+            if (this.phone_fsm.state == 'Paused')
+                this.leavePause();
+            else
+                this.llamada_calificada = true;
+        else
+            this.llamada_calificada = false;
+        
     }
 
 }

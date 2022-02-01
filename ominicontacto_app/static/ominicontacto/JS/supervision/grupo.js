@@ -30,9 +30,14 @@ $(function () {
 
 function actualizarEstadoAutoUnpause() {
     if ($('#id_obligar_calificacion').is(':checked'))
+    {
         $('#id_auto_unpause').prop('disabled', true);
-    else
+        $('#id_obligar_despausa').prop('disabled', false);
+    }else{
         $('#id_auto_unpause').prop('disabled', false);
+        $('#id_obligar_despausa').prop('disabled', true);
+    }
+
 }
 
 function actualizarEstadoCantidadAgendasPersonales() {

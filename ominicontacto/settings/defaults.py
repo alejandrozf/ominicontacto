@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'configuracion_telefonia_app.apps.ConfiguracionTelefoniaAppConfig',
     'crispy_forms',
     'compressor',
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'reciclado_app.apps.RecicladoAppConfig',
     'reportes_app.apps.ReportesAppConfig',
     'supervision_app.apps.SupervisionAppConfig',
+    'notification_app.apps.NotificationAppConfig',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
@@ -124,7 +126,14 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'ominicontacto.asgi.application'
 WSGI_APPLICATION = 'ominicontacto.wsgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Password hashers available
 # https://docs.djangoproject.com/en/1.9/topics/auth/passwords/
