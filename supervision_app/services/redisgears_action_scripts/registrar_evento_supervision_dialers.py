@@ -13,7 +13,7 @@ def process_event(x):
         for stream in streams:
             if execute('exists', stream) == 1 and value is not None:  # noqa: F821
                 value['id'] = campaign_id
-                execute('XADD', stream, 'MAXLEN', '~', 20, '*', 'value', value)  # noqa: F821
+                execute('XADD', stream, '*', 'value', value)  # noqa: F821
 
 
 GearsBuilder(desc='sup_dialers').map(process_event).register('%s', keyTypes=['hash'])  # noqa: F821
