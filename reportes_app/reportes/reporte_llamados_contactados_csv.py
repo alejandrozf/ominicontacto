@@ -148,7 +148,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
                     logger.error("Error generando fila csv: " + e.__str__())
         # Forzar el cierre de la conexión del WS
         time.sleep(1)
-        self.redis_connection.publish(key_task, 101)
+        self.redis_connection.publish(key_task, 100)
 
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')
