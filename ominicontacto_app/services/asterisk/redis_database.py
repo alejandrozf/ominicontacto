@@ -666,11 +666,24 @@ class DestinoPersonalizadoFamily(AbstractRedisFamily):
 class BlacklistFamily(object):
     BLACKLIST_KEY = 'OML:BLACKLIST'
 
+    def __init__(self, redis_connection=None):
+        self.redis_connection = redis_connection
+
+    def get_redis_connection(self):
+        try:
+            if not self.redis_connection:
+                self.redis_connection = redis.Redis(
+                    host=settings.REDIS_HOSTNAME,
+                    port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+                    decode_responses=True)
+        except RedisError as e:
+            raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
+
     def regenerar_families(self, blacklist=None):
-        self.redis_connection = redis.Redis(
-            host=settings.REDIS_HOSTNAME,
-            port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-            decode_responses=True)
+        self.get_redis_connection()
         self.redis_connection.delete(self.BLACKLIST_KEY)
 
         if blacklist is None:
@@ -679,6 +692,10 @@ class BlacklistFamily(object):
                 return
         telefonos = blacklist.contactosblacklist.values_list('telefono', flat=True)
         self.redis_connection.sadd(self.BLACKLIST_KEY, *telefonos)
+
+    def delete_family(self):
+        self.get_redis_connection()
+        self.redis_connection.delete(self.BLACKLIST_KEY)
 
 
 class RegenerarAsteriskFamilysOML(object):

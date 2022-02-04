@@ -39,7 +39,7 @@ from django.contrib.auth.models import Group
 from constance import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, ContactoBlacklist,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
@@ -1542,6 +1542,35 @@ class BlacklistForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+
+class ContactoBlacklistForm(forms.ModelForm):
+    # Campos del formulario
+    telefono = forms.CharField(
+        required=True,
+        max_length=25,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Teléfono de contacto')
+            }
+        )
+    )
+
+    # Fields cleanners
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if not telefono.isdigit():
+            msg = _("Debe ser en formato '99999999' y numérico.")
+            raise forms.ValidationError(msg)
+        if not is_valid_length(telefono, 3, 25):
+            msg = _("Solo se permiten de 3-25 dígitos.")
+            raise forms.ValidationError(msg)
+        return telefono
+
+    class Meta:
+        model = ContactoBlacklist
+        fields = ('telefono',)
 
 
 class SistemaExternoForm(forms.ModelForm):
