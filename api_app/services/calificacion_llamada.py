@@ -21,9 +21,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from notification_app.consumers import AgentConsole
+from notification_app.notification import AgentNotifier
 
 import logging as _logging
 import redis
@@ -75,17 +73,14 @@ class CalificacionLLamada(object):
         }
 
         if agente.forzar_despausa():
-            async_to_sync(get_channel_layer().group_send)(
-                AgentConsole.GROUP_USER_OBJ.format(user_id=agente.user_id), {
-                    "type": "broadcast",
-                    "payload": {
-                        "type": "unpause-call",
-                        "args": {
-                            "id": call_data['call_id'],
-                            "calificada": llamada_calificada == 'TRUE'
-                        }
-                    }
-                })
+            notification = AgentNotifier()
+            message = {
+                "id": call_data['call_id'],
+                "calificada": llamada_calificada == 'TRUE'
+            }
+            notification.send_message(
+                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message, user_id=agente.user_id)
+
         try:
             redis_connection.hset(family, mapping=variables)
             ttl = 3600 * 24 * 4  # En 4 dias expira el hash

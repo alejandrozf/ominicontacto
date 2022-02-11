@@ -12,7 +12,6 @@ class AgentConsole(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.user = self.scope["user"]
-        print('self.user.is_agente', self.user.is_agente)
         if self.user.is_agente:
             for group in self.GROUPS:
                 await self.channel_layer.group_add(

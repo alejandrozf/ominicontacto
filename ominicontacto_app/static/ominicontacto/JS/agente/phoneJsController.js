@@ -36,12 +36,13 @@ var ACW_PAUSE_NAME = 'ACW';
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
         this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
+        this.notification_agent = notification_agent;
         this.agent_config = new AgentConfig();
         this.pause_manager = new PauseManager();
         this.click_2_call_dispatcher = click_2_call_dispatcher;
@@ -56,6 +57,7 @@ class PhoneJSController {
         this.campaign_id = null;
         this.campaign_type = null;
         this.campaign_name = '';
+        this.llamada_calificada = null;
         /*-----------------*/
 
         this.disableOnHold();
@@ -63,18 +65,11 @@ class PhoneJSController {
         this.subscribeToViewEvents();
         this.subscribeToFSMEvents();
         this.subscribeToPhoneEvents();
+        this.subscribeToAgentNotificationEvents();
 
         this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
 
-        this.llamada_calificada = null;
-        this.notificationSocket = new WebSocket('wss://' + window.location.host + '/channels/agent-console');
-        var self = this;
-        this.notificationSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            if (data.type == 'unpause-call')
-                self.notificationForzarDespausa(data.args);
-        };
         this.phone_fsm.start();
     }
 
@@ -567,6 +562,19 @@ class PhoneJSController {
         });
     }
 
+    subscribeToAgentNotificationEvents() {
+        var self = this;
+        this.notification_agent.eventsCallbacks.onNotificationForzarDespausa.add(function(args){
+            if (args['calificada'])
+                if (self.phone_fsm.state == 'Paused')
+                    self.leavePause();
+                else
+                    self.llamada_calificada = true;
+            else
+                self.llamada_calificada = false;
+        });
+    }
+
     goToReadyAfterLogin() {
         // If state is not LoggingToAsterisk I assume agent already went to ready
         if (this.phone_fsm.state == 'LoggingToAsterisk') {
@@ -981,17 +989,6 @@ class PhoneJSController {
             PHONE_STATUS_CONFIGS['OnCall'].enabled_buttons = filter_on_call;
             PHONE_STATUS_CONFIGS['OnHold'].enabled_buttons = filter_on_hold;
         }
-    }
-
-    notificationForzarDespausa(args){
-        if (args['calificada'])
-            if (this.phone_fsm.state == 'Paused')
-                this.leavePause();
-            else
-                this.llamada_calificada = true;
-        else
-            this.llamada_calificada = false;
-        
     }
 
 }
