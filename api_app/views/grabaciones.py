@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import os
 
 from django.conf import settings
+from api_app.services.storage_service import StorageService
 from django_sendfile import sendfile
 from django.utils.translation import ugettext as _
 
@@ -35,7 +36,6 @@ import threading
 from ominicontacto_app.services.grabaciones.generacion_zip_grabaciones \
     import GeneracionZipGrabaciones
 import json
-import boto3
 
 
 class ObtenerArchivoGrabacionView(APIView):
@@ -51,20 +51,10 @@ class ObtenerArchivoGrabacionView(APIView):
         iszip = filename.find("/zip/", 0)
 
         if (os.getenv('S3_STORAGE_ENABLED') and iszip == -1):
-            return self._get_s3_url(filename)
+            s3_handler = StorageService()
+            return HttpResponseRedirect(s3_handler.get_file_url(filename))
 
         return sendfile(request, settings.SENDFILE_ROOT + filename)
-
-    def _get_s3_url(self, filename):
-        client = boto3.client("s3",
-                              aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-                              aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
-        url = client.generate_presigned_url('get_object',
-                                            Params={'Bucket': os.getenv('S3_BUCKET_NAME'),
-                                                    'Key': filename[1:]
-                                                    },
-                                            ExpiresIn=3600)
-        return HttpResponseRedirect(url)
 
 
 class ObtenerArchivosGrabacionView(APIView):
