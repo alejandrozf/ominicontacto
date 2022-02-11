@@ -31,6 +31,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, CreateView, DeleteView
+from api_app.services.storage_service import StorageService
 
 from configuracion_telefonia_app.forms import AudiosAsteriskForm, PlaylistForm, MusicaDeEsperaForm
 from configuracion_telefonia_app.models import AudiosAsteriskConf, MusicaDeEspera, Playlist
@@ -223,9 +224,25 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(MusicaDeEsperaCreateView, self).get_context_data()
-        context['playlist'] = self.playlist
-        context['base_url'] = "%s://%s" % (self.request.scheme,
-                                           self.request.get_host())
+        playlist_tmp = []
+
+        for pl in self.playlist.musicas.all():
+
+            if os.getenv('S3_STORAGE_ENABLED'):
+                s3_handler = StorageService()
+                playlist_tmp.append({'nombre': pl.nombre,
+                                     'pk': pl.pk,
+                                     'url': s3_handler.get_file_url(
+                                         f'/media_root/{pl.audio_asterisk.name}')
+                                     })
+            else:
+                base_url = "%s://%s" % (self.request.scheme,
+                                        self.request.get_host())
+                playlist_tmp.append({'nombre': pl.nombre,
+                                     'pk': pl.pk,
+                                     'url': f'{base_url}{pl.audio_original.url}'})
+
+        context['playlist'] = playlist_tmp
         # TODO: Ver como hacer para que este form tenga info de is_valid.
 
         return context
@@ -262,6 +279,9 @@ class MusicaDeEsperaDeleteView(DeleteView):
         musica = self.get_object()
         audio_file_asterisk = AudioConfigFile(musica)
         audio_file_asterisk.delete_asterisk()
+        if os.getenv('S3_STORAGE_ENABLED'):
+            s3_handler = StorageService()
+            s3_handler.delete_file(musica.audio_asterisk.name, 'media_root')
 
         if musica.audio_original:
             if os.path.isfile(musica.audio_original.path):

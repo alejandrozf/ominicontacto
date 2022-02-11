@@ -34,6 +34,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from api_app.services.storage_service import StorageService
 
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist
 from ominicontacto_app.models import (
@@ -814,6 +815,7 @@ class AudioConfigFile(object):
 
     def __init__(self, audio):
         filename = audio.audio_asterisk.name
+        self.file_name = filename
         self._filename = os.path.join(settings.MEDIA_ROOT, filename)
         self.es_archivo_playlist = False
         if self.PLAYLIST_LOCAL_FOLDER in filename:
@@ -847,6 +849,10 @@ class AudioConfigFile(object):
         self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
 
     def _encode_audio_base64_str(self):
+        if os.getenv('S3_STORAGE_ENABLED'):
+            s3_handler = StorageService()
+            s3_handler.download_file(self.file_name, self.file_name)
+
         data = Path(self._filename).read_bytes()
         res = base64.b64encode(data)
         return res.decode('utf-8')
