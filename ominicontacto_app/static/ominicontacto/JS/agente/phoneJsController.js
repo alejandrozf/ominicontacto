@@ -573,6 +573,17 @@ class PhoneJSController {
             else
                 self.llamada_calificada = false;
         });
+        
+        this.notification_agent.eventsCallbacks.onNotificationPhoneJsLogout.add(function(args){
+            self.phone.logout();
+            self.view.setSipStatus('UNREGISTERED');
+            var message = gettext('Se ha detectado un nuevo inicio de sesión con su usuario.\
+                            La sesión actual será suspendida. Por favor, contacte con su Administrador');
+            self.view.setCallStatus(message, 'red');
+            alert(message);
+            
+        });
+
     }
 
     goToReadyAfterLogin() {

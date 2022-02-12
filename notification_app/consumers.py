@@ -1,4 +1,5 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from channels.layers import get_channel_layer
 
 
 class AgentConsole(AsyncJsonWebsocketConsumer):
@@ -12,6 +13,14 @@ class AgentConsole(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.user = self.scope["user"]
+
+        group_name = AgentConsole.GROUP_USER_OBJ.format(user_id=self.user.id)
+        await get_channel_layer().group_send(group_name, {
+            "type": "broadcast",
+            "payload": {
+                "type": "logout",
+            }})
+
         if self.user.is_agente:
             for group in self.GROUPS:
                 await self.channel_layer.group_add(
