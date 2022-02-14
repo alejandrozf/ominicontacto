@@ -233,14 +233,14 @@ case ${oml_infras_stage} in
     systemctl start amazon-ssm-agent
     ;;
   *)
-    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3
+    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli
     ;;
 esac
 
 echo "******************** Ansible installation ********************"
 
 pip3 install --upgrade pip
-pip3 install boto boto3 botocore 'ansible==2.9.2'
+pip3 install boto3  'ansible==2.9.2'
 export PATH="$HOME/.local/bin/:$PATH"
 
 echo "******************** git clone omnileads repo ********************"
