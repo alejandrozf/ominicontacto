@@ -343,7 +343,7 @@ if [[ "${oml_app_reset_admin_pass}" == "true" ]];then
   sed -i "s/reset_admin_password=false/reset_admin_password=true/g" $PATH_DEPLOY/inventory
 fi
 
-if [[ "${oml_callrec_device}" == "NULL" ]];then
+if [[ "${oml_callrec_device}" != "NULL" ]];then
 sed -i "s/callrec_device=local/callrec_device=${oml_callrec_device}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_backup_filename}" != "NULL" ]];then
