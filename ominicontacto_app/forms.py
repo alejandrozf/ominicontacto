@@ -1244,7 +1244,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         return False
 
     def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono')) if not self.es_campana_entrante else ""
+        telefono = str(self.cleaned_data.get('telefono'))
         if telefono and not telefono.isdigit():
             msg = _('Debe ser en formato "999999999" y solo numérico.')
             raise forms.ValidationError(msg)
