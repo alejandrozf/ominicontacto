@@ -1278,6 +1278,10 @@ class FormularioNuevoContacto(forms.ModelForm):
             self.validate_field(field_phone)
 
     def validate_field(self, field_name):
+        if field_name in self.campos_a_bloquear:
+            return
+        if field_name in self.campos_a_ocultar:
+            return
         field = str(self.cleaned_data.get(field_name))
         if field:
             if not field.isdigit():
