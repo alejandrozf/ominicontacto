@@ -40,7 +40,9 @@ from django.utils.timezone import localtime, timedelta
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
-from ominicontacto_app.models import Campana, OpcionCalificacion, HistoricalCalificacionCliente
+from ominicontacto_app.models import (
+    Campana, OpcionCalificacion, HistoricalCalificacionCliente, RespuestaFormularioGestion,
+    CalificacionCliente)
 from ominicontacto_app.services.estadisticas_campana import EstadisticasBaseCampana
 
 from reportes_app.models import LlamadaLog
@@ -182,64 +184,27 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
 
         # agrego el encabezado para los campos de los formularios
         if self.campana.tipo_interaccion is Campana.FORMULARIO:
-            cant_campos_gestion = 0
-            for opcion in self.opciones_calificacion_campana.values():
-                if opcion.id not in self.posiciones_opciones and \
-                   opcion.tipo == OpcionCalificacion.GESTION:
-                    self.posiciones_opciones[opcion.id] = cant_campos_gestion
+            for opcion in self.campana.opciones_calificacion.filter(
+                    tipo=OpcionCalificacion.GESTION).select_related(
+                        'formulario').prefetch_related('formulario__campos'):
+                if opcion.nombre not in self.posiciones_opciones:
+                    self.posiciones_opciones[opcion.id] = len(encabezado)
                     campos = opcion.formulario.campos.all()
                     self.campos_formulario_opciones[opcion.id] = campos
                     encabezado.append(opcion.nombre)
-                    cant_campos_gestion += 1
                     for campo in campos:
                         nombre = campo.nombre_campo
                         encabezado.append(nombre)
-                        cant_campos_gestion += 1
 
         lista_datos_utf8 = [force_text(item) for item in encabezado]
         self.datos.append(lista_datos_utf8)
 
-    def _escribir_linea_log(self, llamada_log, datos_calificacion, calificacion_historica):
+    def _escribir_linea_log(self, llamada_log, datos_calificacion, calificacion):
         datos_contacto = [''] * len(self.campos_contacto_datos)
-        calificacion = calificacion_historica
+        respuesta_formulario_gestion = None
+
         tel_status, bd_contacto, datos_contacto = self.\
             _obtener_datos_contacto_contactados(llamada_log, calificacion, datos_contacto)
-        datos_gestion = []
-        if calificacion:
-            calificacion_final = calificacion_historica.history_object
-            # TODO: ver la forma de relacionar con respuestas vieja.
-
-            es_ultima_calificacion_historica = self.get_es_ultima_calificacion_historica(
-                calificacion_historica, calificacion_final)
-
-            if hasattr(calificacion, 'es_gestion'):
-                es_gestion = calificacion.es_gestion()
-            else:
-                es_gestion = (calificacion.opcion_calificacion.tipo ==
-                              OpcionCalificacion.GESTION)
-            if es_gestion:
-                respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
-                    calificacion.history_object.pk)
-            else:
-                respuesta_formulario_gestion = None
-            if (es_gestion and es_ultima_calificacion_historica and
-                self.campana.tipo_interaccion is Campana.FORMULARIO and
-                    respuesta_formulario_gestion is not None):
-                # si es la ultima calificacion historica, que coincide con el valor
-                # final de la calificacion y es de gestion, entonces mostramos el valor de
-                # la gestión (si existe) y se muestran Datos de la respuesta del formulario
-                datos = json.loads(respuesta_formulario_gestion.metadata)
-                id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
-                posicion = self.posiciones_opciones[id_opcion]
-                # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
-                posiciones_vacias = posicion - len(datos_gestion)
-                datos_gestion = datos_gestion + [''] * posiciones_vacias
-                # Columna vacia correspondiente al nombre de la Opcion de calificacion
-                datos_gestion.append('')
-                campos = self.campos_formulario_opciones[id_opcion]
-                for campo in campos:
-                    datos_gestion.append(
-                        datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
 
         fecha_local_llamada = localtime(llamada_log.time)
         duracion_llamada = llamada_log.duracion_llamada
@@ -247,7 +212,6 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
             duracion_llamada = timedelta(0, duracion_llamada)
         else:
             duracion_llamada = 'N/A'
-
         registro = []
         registro.append(llamada_log.numero_marcado)
         registro.extend(datos_contacto)
@@ -261,7 +225,39 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         registro.append(str(duracion_llamada))
         registro.append(datos_calificacion[0])
         registro.append(datos_calificacion[1])
-        registro.extend(datos_gestion)
+
+        if calificacion:
+            if hasattr(calificacion, 'es_gestion'):
+                es_gestion = calificacion.es_gestion()
+            else:
+                es_gestion = (calificacion.opcion_calificacion.tipo ==
+                              OpcionCalificacion.GESTION)
+            if es_gestion:
+                try:
+                    respuesta_formulario_gestion = RespuestaFormularioGestion.history.\
+                        get(history_change_reason=calificacion.history_id)
+                except Exception:
+                    pass
+            if respuesta_formulario_gestion:
+                datos = json.loads(respuesta_formulario_gestion.metadata)
+                if respuesta_formulario_gestion.history_change_reason is not None:
+                    calif = CalificacionCliente.history.get(
+                        pk=respuesta_formulario_gestion.history_change_reason)
+                    id_opcion = calif.opcion_calificacion_id
+                else:
+                    id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                try:
+                    posicion = self.posiciones_opciones[id_opcion]
+                except Exception:
+                    return
+                # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                posiciones_vacias = posicion - len(registro)
+                registro = registro + [''] * posiciones_vacias
+                # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                registro.append('')
+                campos = self.campos_formulario_opciones[id_opcion]
+                for campo in campos:
+                    registro.append(datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
 
         lista_datos_utf8 = [force_text(item) for item in registro]
         self.datos.append(lista_datos_utf8)
