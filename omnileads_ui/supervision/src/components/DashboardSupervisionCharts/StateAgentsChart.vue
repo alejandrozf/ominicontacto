@@ -9,62 +9,62 @@
     </Card>
 </template>
 <script>
-import { ref, watch } from 'vue'
-import Chart from 'primevue/chart'
+import { ref, watch } from 'vue';
+import Chart from 'primevue/chart';
 export default {
-    props: { 
-        chartData: Object, 
+    props: {
+        chartData: Object,
         chartName: String
     },
     components: {
-        Chart,
+        Chart
     },
-    setup(props) {
+    setup (props) {
         const chartOptions = ref(
             {
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#495057',
+                            color: '#495057'
                         }
                     }
-                },
+                }
             }
         );
 
         const basicData = ref({
             labels: ['Ready', 'Oncall', 'Pause'],
             datasets: [
-                {    
+                {
                     data: [],
-                    backgroundColor: ["#42A5F5","#66BB6A","#FFA726"]
-                },
+                    backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726']
+                }
             ]
         });
 
         watch(props.chartData, (newValue) => {
             updateBasicData(newValue);
-        })
+        });
 
         const updateBasicData = (newData) => {
-            let labels = []
-            let dataSets = []
-            
-            for (let key in newData) {
-                labels.push(key)
-                dataSets.push(newData[key])
+            const labels = [];
+            const dataSets = [];
+
+            for (const key in newData) {
+                labels.push(key);
+                dataSets.push(newData[key]);
             }
             basicData.value.labels = labels;
             basicData.value.datasets[0].data = dataSets;
             basicData.value.datasets[0].label = labels[0];
-        }
+        };
 
         updateBasicData(props.chartData);
 
         return {
             chartOptions,
             basicData
-        }
-    },
-}
+        };
+    }
+};
 </script>

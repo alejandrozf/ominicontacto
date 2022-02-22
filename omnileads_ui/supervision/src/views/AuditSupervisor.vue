@@ -12,9 +12,9 @@
 <script>
 import { reactive, toRefs, watch, ref } from 'vue';
 import apiUrls from '@/const/api-urls';
-import { apiCall, httpMethods } from '@/hooks/apiCall'
-import DataTableAuditSupervisor from '@/components/DataTableAuditSupervisor'
-import FilterAuditSupervisor from '@/components/FilterAuditSupervisor'
+import { apiCall, httpMethods } from '@/hooks/apiCall';
+import DataTableAuditSupervisor from '@/components/DataTableAuditSupervisor';
+import FilterAuditSupervisor from '@/components/FilterAuditSupervisor';
 import Card from 'primevue/card';
 export default {
     components: {
@@ -22,34 +22,32 @@ export default {
         FilterAuditSupervisor,
         Card
     },
-    setup() {
+    setup () {
         const loadingData = ref(false);
-        const tableData = ref({data:null});
+        const tableData = ref({ data: null });
 
-        const {loading, response} = apiCall(apiUrls.AuditSupervisor)
-                watch(loading, () => {
-                    loadingData.value = loading.value;
-                    tableData.value = response.value;
+        const { loading, response } = apiCall(apiUrls.AuditSupervisor);
+        watch(loading, () => {
+            loadingData.value = loading.value;
+            tableData.value = response.value;
         });
 
-    
         const state = reactive({
             loadData: (data) => {
-                const params = {...data}
-                const {loading, response} = apiCall(apiUrls.AuditSupervisor, httpMethods.POST, params)
+                const params = { ...data };
+                const { loading, response } = apiCall(apiUrls.AuditSupervisor, httpMethods.POST, params);
                 watch(loading, () => {
                     loadingData.value = loading.value;
                     tableData.value = response.value;
-                })
+                });
             }
         });
         return {
-          ...toRefs(state),
-          loadingData,
-          tableData
-        }
-        
-    },
+            ...toRefs(state),
+            loadingData,
+            tableData
+        };
+    }
 
-}
+};
 </script>
