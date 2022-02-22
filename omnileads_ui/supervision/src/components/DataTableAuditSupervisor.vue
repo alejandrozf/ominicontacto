@@ -34,26 +34,26 @@
 <script>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import {FilterMatchMode,FilterOperator} from 'primevue/api';
+import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
 
 export default {
-    props: { 
+    props: {
         tableData: Object,
-        loading: Boolean, 
+        loading: Boolean
     },
     components: {
         DataTable,
         Column,
         InputText
     },
-    setup() {
+    setup () {
         const filters = ref({
-            'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
-            'actor': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-            'action': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-            'date': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            actor: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            action: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] }
         });
 
         const dates = ref();
@@ -64,18 +64,17 @@ export default {
         };
         const initFilters = () => {
             filters.value = {
-                'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
-                'actor': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-                'action': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.EQUALS}]},
-                'date': {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.DATE_IS}]},
-            }
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+                actor: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+                action: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+                date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] }
+            };
         };
         const exportCSV = () => {
             dt.value.exportCSV();
         };
 
-        return {dates, filters, clearFilter, initFilters, dt, exportCSV}
+        return { dates, filters, clearFilter, initFilters, dt, exportCSV };
     }
-}
+};
 </script>
-

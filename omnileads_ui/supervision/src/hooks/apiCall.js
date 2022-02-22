@@ -1,13 +1,13 @@
 import { ref } from 'vue';
 import Cookies from 'universal-cookie';
- 
+
 const cookies = new Cookies();
 
 export const httpMethods = {
-    'POST': 'POST',
-    'GET': 'GET',
-    'PUT': 'PUT',
-    'DELETE': 'DELETE',
+    POST: 'POST',
+    GET: 'GET',
+    PUT: 'PUT',
+    DELETE: 'DELETE'
 };
 
 export const apiCall = (url, method = httpMethods.GET, params = {}) => {
@@ -15,35 +15,31 @@ export const apiCall = (url, method = httpMethods.GET, params = {}) => {
     const error = ref(null);
     let res = null;
     const response = ref({
-        error: null, 
+        error: null,
         data: res
     });
 
-    let formData = new FormData();
+    const formData = new FormData();
 
     for (var key in params) {
         formData.append(key, params[key]);
     }
- 
-    const headers= {
+
+    const headers = {
         'X-CSRFToken': cookies.get('csrftoken')
     };
 
-
-
-    let payload = {
+    const payload = {
         method: method,
         credentials: 'same-origin',
         headers
     };
 
-    if (Object.keys(params).length > 0 && method != httpMethods.GET) {
-        payload['body'] = formData;
+    if (Object.keys(params).length > 0 && method !== httpMethods.GET) {
+        payload.body = formData;
     }
 
-    
-
-    const invoke = async() => {
+    const invoke = async () => {
         loading.value = true;
 
         try {
@@ -52,8 +48,8 @@ export const apiCall = (url, method = httpMethods.GET, params = {}) => {
         } catch (ex) {
             error.value = ex.message;
         } finally {
-            if (res['status'] && res['status'] != 'OK') {
-                error.value = res['message'];
+            if (res.status && res.status !== 'OK') {
+                error.value = res.message;
             }
             const r = {
                 data: res,
@@ -68,5 +64,4 @@ export const apiCall = (url, method = httpMethods.GET, params = {}) => {
     invoke();
 
     return { response, loading };
-
 };

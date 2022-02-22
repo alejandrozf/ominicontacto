@@ -9,19 +9,19 @@
     </Card>
 </template>
 <script>
-import { ref, watch } from 'vue'
-import Chart from 'primevue/chart'
+import { ref, watch } from 'vue';
+import Chart from 'primevue/chart';
 export default {
-    props: { 
-        chartData: Object, 
+    props: {
+        chartData: Object,
         chartName: String
     },
     components: {
-        Chart,
+        Chart
     },
-    setup(props) {
+    setup (props) {
         const chartOptions = ref(
-           {
+            {
                 plugins: {
                     tooltips: {
                         mode: 'index',
@@ -32,7 +32,7 @@ export default {
                             color: '#495057'
                         }
                     }
-                },
+                }
             }
         );
         const basicData = ref({
@@ -41,34 +41,34 @@ export default {
                 {
                     data: [],
                     backgroundColor: [
-                        "#8FC641",
-                        "#196F3D",
-                    ],
-                },
+                        '#8FC641',
+                        '#196F3D'
+                    ]
+                }
             ]
         });
 
         watch(props.chartData, (newValue) => {
             updateBasicData(newValue);
-        })
+        });
 
-         const updateBasicData = (newData) => {
-            let labels = []
-            let dataSets = []
-            
-            for (let key in newData) {
-                labels.push(key)
-                dataSets.push(newData[key])
+        const updateBasicData = (newData) => {
+            const labels = [];
+            const dataSets = [];
+
+            for (const key in newData) {
+                labels.push(key);
+                dataSets.push(newData[key]);
             }
             basicData.value.labels = labels;
             basicData.value.datasets[0].data = dataSets;
-        }
+        };
         updateBasicData(props.chartData);
 
         return {
             chartOptions,
             basicData
-        }
-    },
-}
+        };
+    }
+};
 </script>
