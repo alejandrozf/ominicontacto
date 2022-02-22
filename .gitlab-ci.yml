@@ -24,7 +24,7 @@ stages:
 
 test:
   stage: test
-  image: freetechsolutions/python-flake8:3.6
+  image: freetechsolutions/python-flake8:220221.01
   services:
     - name: freetechsolutions/omlpgsql:develop
       alias: plpython
