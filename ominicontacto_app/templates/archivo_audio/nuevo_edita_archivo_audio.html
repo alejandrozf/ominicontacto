@@ -43,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% if object.audio_original %}
         <div class="col-md-6">
             <h4>{% trans 'Archivo de Audio' %}</h4>
-            <audio id="audio" preload="metadata" src="{{base_url}}{{ object.audio_original.url }}" controls></audio>
+            <audio id="audio" preload="metadata" src="{{audio_url}}" controls></audio>
             <input class="hidden" id="durAudio">
         </div>
         {% endif %}

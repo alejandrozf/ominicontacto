@@ -27,17 +27,23 @@
 #export oml_tenant_name=onpremise
 
 # Device for recordings
-# Values: local | s3-do | s3-aws | nfs | disk
+# Values: local | s3 | s3-minio | s3-aws | nfs | disk
 #export oml_callrec_device=local
 
 # Parameters for S3 when s3 is selected as store for oml_callrec_device
+# s3_access_key | NULL
 #export s3_access_key=
+# s3_access_secret_key | NULL
 #export s3_secret_key=
+# se bucket name | NULL
 #export s3_bucket_name=
-# s3url Only when use non AWS S3 object
-#export s3url=
+# s3 endpoint url Only when use non AWS S3 object | NULL
+#export s3_enpoint_url=NULL
+# s3 bucket region | NULL 
+#export s3_region=NULL
 
 # Parameters for NFS when nfs is selected as store for oml_callrec_device
+# NFS netaddr | NULL
 #export nfs_host=
 
 # ******* persistent data STORE block devices *******
@@ -358,8 +364,11 @@ fi
 if [[ "${s3_bucket_name}" != "NULL" ]];then
 sed -i "s%\#s3_bucket_name=%s3_bucket_name=${s3_bucket_name}%g" $PATH_DEPLOY/inventory
 fi
-if [[ "${s3url}" != "NULL" ]];then
-sed -i "s%\#s3url=%s3url=${s3url}%g" $PATH_DEPLOY/inventory
+if [[ "${s3_endpoint_url}" != "NULL" ]];then
+sed -i "s%\#s3url=%s3url=${s3_endpoint_url}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${s3_region}" != "NULL" ]];then
+sed -i "s%\#s3_region=%s3_region=${s3_region}%g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_auto_restore}" != "NULL" ]];then
 sed -i "s/auto_restore=false/auto_restore=${oml_auto_restore}/g" $PATH_DEPLOY/inventory
