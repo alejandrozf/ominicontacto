@@ -129,6 +129,7 @@ auto_restore=false
 #s3_secret_key=
 #s3_bucket_name=
 #s3url=
+#s3_region=
 
 #################################################
 # In case of high load > 200 simultaneus usuers #
