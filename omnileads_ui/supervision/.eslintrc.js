@@ -9,7 +9,9 @@ module.exports = {
         node: true
     },
     extends: [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:vue/vue3-essential",
+        "@vue/standard"
     ],
     parserOptions: {
         ecmaVersion: 2018,
@@ -49,5 +51,5 @@ module.exports = {
                 jest: true
             }
         }
-    ],  
+    ],
 };

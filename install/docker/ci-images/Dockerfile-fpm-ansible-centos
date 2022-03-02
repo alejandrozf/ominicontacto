@@ -1,87 +1,111 @@
 FROM cdrx/fpm-centos
+
 ENV AWS_CLI_VERSION 1.18.5
 ENV ANSIBLE_VERSION 2.9.2
+ENV POSGRES12_REPO=https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+ENV RAVEN_REPO=https://pkgs.dyn.su/el8/base/x86_64/raven-release-1.0-1.el8.noarch.rpm
+ENV RPMFUSION_FREE=https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+ENV RPMFUSION_NONFREE=https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+ENV SDL2_LIBRARY=http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
-RUN yum install epel-release -y && \
+RUN yum install epel-release centos-release-scl -y && \
     rpm -v --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro && \
-    rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm ||true && \
+    rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm || true && \
     yum update -y && \
-#Essential packages
+    ######################
+    # Essential packages #
+    ######################
     yum install -y tftp-server \
-     crontabs \
-     gcc \
-     gcc-c++ \
-     cronie \
-     openssl-devel \
-     cronie-anacron \
-     make \
-     gdb \
-     net-tools \
-     gnutls-devel \
-     python-devel \
-     texinfo \
-     kernel-headers \
-     acl \
-     bind-utils \
-     which \
-     git \
-#Asterisk packages
-     dh-autoreconf \
-     sqlite-devel \
-     subversion \
-     unixODBC \
-     unzip \
-#Kamailio packages
-     bison \
-     bison-devel \
-     expat \
-     expat-devel \
-     flex \
-     iptables-services \
-     libtool-ltdl-devel \
-     ffmpeg \
-     ffmpeg-devel \
-     libxml2-devel \
-     libunistring-devel.x86_64 \
-     libuuid \
-     libuuid-devel \
-     lynx \
-     redis \
-     hiredis \
-     hiredis-devel \
-     python-devel \
-#Virtualenv packages
-     python3 \
-     python3-devel \
-     python3-pip.noarch \
-     cairo \
-     cairo-devel \
-     libxslt-devel \
-     libxslt \
-     libjpeg-turbo-devel \
-     libffi-devel \
-     libffi \
-     libpqxx \
-     libpqxx-devel \
-     libsass-devel \
-     libsass \
-     pycairo \
-     pycairo-devel \
-     python2-psycogreen.noarch \
-     python-lxml \
-     python-psycopg2.x86_64 \
-#Rtpengine packages
-     iptables-devel \
-     xmlrpc-c-devel \
-     xmlrpc-c \
-     glib2-devel \
-     glib2 \
-     pcre \
-     pcre-devel \
-     libevent-devel \
-     json-glib-devel \
-     libpcap-devel \
-     hiredis \
-     hiredis-devel && \
-    pip3 install "awscli==$AWS_CLI_VERSION" && \
-    pip3 install "ansible==$ANSIBLE_VERSION" --user
+      crontabs \
+      gcc \
+      gcc-c++ \
+      cronie \
+      openssl-devel \
+      cronie-anacron \
+      make \
+      gdb \
+      net-tools \
+      gnutls-devel \
+      python-devel \
+      texinfo \
+      kernel-headers \
+      acl \
+      bind-utils \
+      which \
+      git \
+      devtoolset-11 \
+    #####################
+    # Asterisk packages #
+    #####################
+      dh-autoreconf \
+      sqlite-devel \
+      subversion \
+      unixODBC \
+      unzip \
+    #####################
+    # Kamailio packages #
+    #####################
+      bison \
+      bison-devel \
+      expat \
+      expat-devel \
+      flex \
+      iptables-services \
+      libtool-ltdl-devel \
+      ffmpeg \
+      ffmpeg-devel \
+      libxml2-devel \
+      libunistring-devel.x86_64 \
+      libuuid \
+      libuuid-devel \
+      lynx \
+      redis \
+      hiredis \
+      hiredis-devel \
+      python-devel \
+    #######################
+    # Virtualenv packages #
+    #######################
+      python3 \
+      python3-devel \
+      python3-pip \
+      cairo \
+      cairo-devel \
+      libxslt-devel \
+      libxslt \
+      libjpeg-turbo-devel \
+      libffi-devel \
+      libffi \
+      libpqxx \
+      libpqxx-devel \
+      libsass-devel \
+      libsass \
+      pycairo \
+      pycairo-devel \
+      python2-psycogreen.noarch \
+      python-lxml \
+      python-psycopg2.x86_64 \
+    ######################
+    # RTPEngine packages #
+    ######################
+      iptables-devel \
+      xmlrpc-c-devel \
+      xmlrpc-c \
+      glib2-devel \
+      glib2 \
+      pcre \
+      pcre-devel \
+      libevent-devel \
+      json-glib-devel \
+      libpcap-devel \
+      hiredis \
+      hiredis-devel
+
+RUN pip3 install "awscli==$AWS_CLI_VERSION"
+RUN pip3 install --upgrade pip
+RUN pip3 install "ansible==$ANSIBLE_VERSION" --user
+
+RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
+RUN yum install nodejs -y
