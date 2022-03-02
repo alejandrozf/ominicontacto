@@ -29,6 +29,11 @@ class NotificationSocket
     }
 
     startNotificationSocket() {
+        /** Bloqueo funcionalidad oml-2103 por problemas con django-channels  **/
+        return;
+    }
+
+    startNotificationSocket2() {
         var notificationSocket = new WebSocket('wss://' + window.location.host + '/channels/agent-console');
         var self = this;
         notificationSocket.onmessage = function(e) {
