@@ -24,6 +24,12 @@ cp -a scripts/bin/* ${INSTALL_PREFIX}/bin
 cp -a scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run
 echo "Copying cert of keys server"
 cp -a cert ${INSTALL_PREFIX}
+echo "Building Vue components"
+cd ${INSTALL_PREFIX}/ominicontacto/omnileads_ui/supervision
+npm install
+npm run build
+rm -rf node_modules
+cd -
 echo "Packing the rpm"
 fpm -s dir -d cairo -d crontabs -d cronie -d cronie-anacron -d which -d vim \
     -d texinfo -d kernel-headers -d acl -d bind-utils -d sox -d lame -d unzip \
