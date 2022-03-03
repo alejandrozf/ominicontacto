@@ -389,3 +389,4 @@ TOKEN_EXPIRED_AFTER_SECONDS = None
 ALLOW_FEEDBACK = False
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+

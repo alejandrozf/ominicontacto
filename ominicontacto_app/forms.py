@@ -768,6 +768,9 @@ class CampanaMixinForm(object):
 
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+
     def __init__(self, *args, **kwargs):
         super(CampanaEntranteForm, self).__init__(*args, **kwargs)
         self.fields['outr'].queryset = RutaSaliente.objects.all()
@@ -799,7 +802,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+        fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'outcid', 'outr', 'videocall_habilitada', 'speech')
         labels = {
@@ -809,6 +812,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1466,6 +1470,10 @@ class AgendaContactoForm(forms.ModelForm):
 
 
 class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
+
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
@@ -1498,7 +1506,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sistema_externo', 'id_externo',
+                  'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'outcid', 'outr', 'speech')
         labels = {
@@ -1507,6 +1515,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1880,6 +1889,8 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     detectar_contestadores = forms.BooleanField(required=False)
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
@@ -1894,7 +1905,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+        fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr',
                   'speech')
 
@@ -1916,6 +1927,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
@@ -1931,10 +1944,11 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion', 'outr', 'outcid', 'speech')
+                  'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),

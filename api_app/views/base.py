@@ -35,7 +35,8 @@ from api_app.authentication import token_expire_handler, expires_in, ExpiringTok
 from api_app.serializers import UserSigninSerializer, UserSerializer
 from api_app.views.permissions import TienePermisoOML
 from ominicontacto_app.forms import FormularioNuevoContacto
-from ominicontacto_app.models import SistemaExterno, Campana
+from ominicontacto_app.models import SistemaExterno, Campana, BaseDatosContacto
+import json
 
 
 @api_view(["POST"])
@@ -261,3 +262,13 @@ class CampaignDatabaseMetadataView(APIView):
             return user.get_agente_profile() in campana.obtener_agentes()
         else:
             return user in campana.supervisors.all()
+
+
+class CamposDireccionView(APIView):
+    def get(self, request, pk):
+        try:
+            base_dato = BaseDatosContacto.objects.get(id=pk)
+            data = json.loads(base_dato.metadata).get('nombres_de_columnas', [])
+            return Response([x for x in data if 'telefono' not in x])
+        except Exception as e:
+            print(">>>>>", e)

@@ -121,6 +121,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_audit_supervisor',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_database_metadata_columns_fields',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
         ]
 
     informacion_de_permisos = {
@@ -243,5 +245,8 @@ class ApiAppConfig(AppConfig):
              'version': '1.18.0'},
         'api_audit_supervisor':
             {'descripcion': _('Auditoría a supervisores'),
+             'version': '1.20.0'},
+        'api_database_metadata_columns_fields':
+            {'descripcion': _('Listas de nombres de columnas para Base de datos de Conatactos'),
              'version': '1.20.0'}
     }

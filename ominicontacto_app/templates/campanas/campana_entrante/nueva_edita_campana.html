@@ -31,6 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campoDireccion.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -87,12 +88,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
                 </div>
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
                     {{ form.sitio_externo.errors }}
                     {{ form.sitio_externo }}
                 </div>
             {% endif %}
+            <div class="col-md-5">
+                {{ form.campo_direccion.as_hidden }}
+                <label for="{{ form.campo_direccion_choice.id_for_label }}">{% trans 'Campo para dirección:' %}</label>
+                {{ form.campo_direccion_choice }}
+                {{ form.campo_direccion_choice.errors }}
+            </div>
             <div class="col-md-2">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}

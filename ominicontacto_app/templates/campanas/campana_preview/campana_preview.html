@@ -29,6 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    </script>
    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}">
    </script>
+   <script type="text/javascript" src="{% static 'ominicontacto/JS/campoDireccion.js' %}"></script>
    <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
 {% endblock head_js %}
 
@@ -98,6 +99,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.sitio_externo }}
             </div>
         {% endif %}
+        <div class="col-md-5">
+            {{ form.campo_direccion.as_hidden }}
+            <label for="{{ form.campo_direccion_choice.id_for_label }}">{% trans 'Campo para dirección:' %}</label>
+            {{ form.campo_direccion_choice }}
+            {{ form.campo_direccion_choice.errors }}
+        </div>
         <div class="col-md-3">
             <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
             {{ form.auto_grabacion }}
