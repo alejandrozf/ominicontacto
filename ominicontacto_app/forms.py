@@ -2011,7 +2011,7 @@ class GrupoForm(forms.ModelForm):
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
                   'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
-                  'obligar_despausa')
+                  'obligar_despausa', 'show_console_timers')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
