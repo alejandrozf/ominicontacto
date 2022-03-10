@@ -446,6 +446,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
+            $('#numberAni').html(session_data.from);
             $('#callerid').html(session_data.from_agent_name);
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
