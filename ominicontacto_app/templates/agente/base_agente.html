@@ -698,14 +698,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                 <div id="timeBar">
                     <div id="timers">
-                        <div id="operationTime" class="label label-default">
-                            {% trans 'Operación:' %}
-                            <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
-                        </div>
-                        <div id="pauseTime" class="label label-default">
-                            {% trans 'Pausa:' %}
-                            <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
-                        </div>
+                        {% if agente_profile.grupo.show_console_timers %}
+                            <div id="operationTime" class="label label-default">
+                                {% trans 'Operación:' %}
+                                <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
+                            </div>
+                            <div id="pauseTime" class="label label-default">
+                                {% trans 'Pausa:' %}
+                                <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
+                            </div>
+                        {% endif %}
                         <!-- <div id="sumTime" class="label label-default">
                              Total:
                              <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>

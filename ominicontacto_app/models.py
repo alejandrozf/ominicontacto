@@ -233,6 +233,8 @@ class Grupo(models.Model):
         'Limitar agendas personales en días'))
     tiempo_maximo_para_agendar = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
         'Tiempo máximo para agendar'))
+    show_console_timers = models.BooleanField(default=True, verbose_name=_(
+        'Ver temporizadores en consola'))
 
     def __str__(self):
         return self.nombre
