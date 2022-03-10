@@ -42,8 +42,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
-)
+    ListView, CreateView, UpdateView, DeleteView,
+    FormView, TemplateView, DetailView)
 from django.db.models import Q
 from utiles_globales import obtener_paginas
 
@@ -232,6 +232,14 @@ class GrupoDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('grupo_list')
+
+
+class GrupoDetalleView(DetailView):
+    """
+    Esta vista se encarga de mostrar la info del grupo
+    """
+    model = Grupo
+    template_name = 'usuarios_grupos/grupo_detalle.html'
 
 
 ####################

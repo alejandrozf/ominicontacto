@@ -424,6 +424,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'grupo_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'grupo_detalle',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'pausa_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'pausa_nuevo',
@@ -828,6 +830,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Modificar Grupo'), 'version': '1.7.0'},
         'grupo_delete':
             {'descripcion': _('Borrar Grupo'), 'version': '1.7.0'},
+        'grupo_detalle':
+            {'descripcion': _('Detalle del Grupo'), 'version': '1.7.0'},
         'pausa_list':
             {'descripcion': _('Ver lista de Pausas'), 'version': '1.7.0'},
         'pausa_nuevo':

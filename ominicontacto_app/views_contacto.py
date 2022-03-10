@@ -27,6 +27,7 @@ import json
 
 from django.db import transaction
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -108,8 +109,14 @@ class ContactoListView(FormView):
     """Vista que lista los contactos"""
     model = Contacto
     template_name = 'agente/contacto_list.html'
-
     form_class = EscogerCampanaForm
+
+    def dispatch(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        if not agente_profile.grupo.acceso_contactos_agente:
+            raise PermissionDenied
+        return super(ContactoListView, self).dispatch(
+            request, *args, **kwargs)
 
     def _obtener_campanas(self):
         agente = self.request.user.get_agente_profile()
@@ -435,7 +442,9 @@ class FormularioSeleccionCampanaFormView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         agente = self.request.user.get_agente_profile()
-        if not agente.get_campanas_activas_miembro():
+        if not agente.grupo.acceso_contactos_agente:
+            raise PermissionDenied
+        elif not agente.get_campanas_activas_miembro():
             message = _("Este agente no esta asignado a ninguna campaña activa")
             messages.warning(self.request, message)
         return super(FormularioSeleccionCampanaFormView,

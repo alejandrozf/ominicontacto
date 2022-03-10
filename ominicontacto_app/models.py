@@ -235,6 +235,14 @@ class Grupo(models.Model):
         'Tiempo máximo para agendar'))
     show_console_timers = models.BooleanField(default=True, verbose_name=_(
         'Ver temporizadores en consola'))
+    acceso_contactos_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a los contactos como agente'))
+    acceso_agendas_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a las agendas como agente'))
+    acceso_calificaciones_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a las calificaciones como agente'))
+    acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a las campañas preview como agente'))
 
     def __str__(self):
         return self.nombre

@@ -170,6 +170,9 @@ urlpatterns = [
         login_required(views.GrupoDeleteView.as_view()),
         name='grupo_delete',
         ),
+    url(r'^grupo/(?P<pk>\d+)/detalle/$',
+        login_required(views.GrupoDetalleView.as_view()),
+        name="grupo_detalle"),
 
     # ==========================================================================
     # Pausas
