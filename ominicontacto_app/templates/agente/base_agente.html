@@ -592,6 +592,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
               </li>
             {% endif %}
+            {% if agente_profile.grupo.acceso_contactos_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
                 <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
@@ -605,15 +606,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </li>
                 </ul>
             </li>
+            {% endif %}
+            {% if agente_profile.grupo.acceso_agendas_agente %}
             <li id="btn_agendas" class="main-menu-li">
                 <span class="icon icon-agenda"></span>
                 <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">{% trans 'Agendas' %}<b id="num_agendas"></b></a>
             </li>
+            {% endif %}
+            {% if agente_profile.grupo.acceso_calificaciones_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-ratings"></span>
                 <a class="menu-link" href="{% url 'reporte_agente_calificaciones' %}" target="crm">{% trans 'Calificaciones' %}</a>
             </li>
-            {% if campanas_preview_activas %}
+            {% endif %}
+            {% if campanas_preview_activas and agente_profile.grupo.acceso_campanas_preview_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-agenda"></span>
                 <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">{% trans 'Campañas preview' %}</a>

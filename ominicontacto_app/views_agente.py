@@ -66,7 +66,10 @@ class AgenteReporteCalificaciones(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.agente = request.user.get_agente_profile()
-        return super(AgenteReporteCalificaciones, self).dispatch(request, *args, **kwargs)
+        if not self.agente.grupo.acceso_calificaciones_agente:
+            raise PermissionDenied
+        return super(AgenteReporteCalificaciones, self).dispatch(
+            request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         return self.agente
@@ -308,6 +311,13 @@ class AgenteCampanasPreviewActivasView(TemplateView):
     Campañas previews activas de las cuales es miembro un agente
     """
     template_name = 'agente/campanas_preview.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        if not agente_profile.grupo.acceso_campanas_preview_agente:
+            raise PermissionDenied
+        return super(AgenteCampanasPreviewActivasView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(AgenteCampanasPreviewActivasView, self).get_context_data(*args, **kwargs)

@@ -25,7 +25,10 @@ from mock import patch
 from django.urls import reverse
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
-from ominicontacto_app.tests.factories import GrupoFactory
+from ominicontacto_app.tests.factories import (
+    GrupoFactory, CampanaFactory, QueueFactory)
+from ominicontacto_app.models import (
+    Campana)
 
 
 def request_host_port(request):
@@ -43,6 +46,10 @@ class TestConsolaAgente (OMLBaseTest):
         self.agente.grupo = self.grupo
         self.agente.save()
         self.client.login(username=self.agente.user.username, password=PASSWORD)
+        self.campana_preview = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA,
+                                                     type=Campana.TYPE_PREVIEW)
+        self.queue = QueueFactory.create(campana=self.campana_preview)
+        self._hacer_miembro(self.agente, self.campana_preview)
 
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
@@ -61,3 +68,91 @@ class TestConsolaAgente (OMLBaseTest):
         self.grupo.save()
         response = self.client.get(self.url, follow=True)
         self.assertNotContains(response, '<div id="operationTime" class="label label-default">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_show_contactos_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_contactos_agente = True
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertContains(
+            response,
+            '<ul class="collapse list-unstyled submenu" id="menuContacts"')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_hidden_contactos_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_contactos_agente = False
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertNotContains(
+            response,
+            '<ul class="collapse list-unstyled submenu" id="menuContacts"')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_show_agendas_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_agendas_agente = True
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertContains(
+            response,
+            '<a class="menu-link" href="/agenda_contacto/eventos/" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_hidden_agendas_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_agendas_agente = False
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertNotContains(
+            response,
+            '<a class="menu-link" href="/agenda_contacto/eventos/" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_show_calificaciones_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_calificaciones_agente = True
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertContains(
+            response,
+            '<a class="menu-link" href="/agente/reporte/calificaciones/" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_hidden_calificaciones_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_calificaciones_agente = False
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertNotContains(
+            response,
+            '<a class="menu-link" href="/agente/reporte/calificaciones/" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_show_campanas_preview_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_campanas_preview_agente = True
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertContains(
+            response,
+            '<a class="menu-link" href="/agente/campanas_preview/activas/" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_hidden_campanas_preview_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_campanas_preview_agente = False
+        self.grupo.save()
+        response = self.client.get(self.url, follow=True)
+        self.assertNotContains(
+            response,
+            '<a class="menu-link" href="/agente/campanas_preview/activas/" target="crm">')

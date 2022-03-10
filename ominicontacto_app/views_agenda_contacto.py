@@ -30,7 +30,8 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (
+    PermissionDenied, ValidationError)
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -139,6 +140,13 @@ class AgendaContactoListFormView(FormView):
     model = AgendaContacto
     template_name = 'agenda_contacto/agenda_agente.html'
     form_class = AgendaBusquedaForm
+
+    def dispatch(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        if not agente_profile.grupo.acceso_agendas_agente:
+            raise PermissionDenied
+        return super(AgendaContactoListFormView, self).dispatch(
+            request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         agente = self.request.user.get_agente_profile()
