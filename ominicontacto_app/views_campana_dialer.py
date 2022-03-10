@@ -25,16 +25,20 @@ Observacion se copiaron varias vistas del modulo views_campana
 from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
+from django.utils.timezone import now
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView, DeleteView, FormView, CreateView, UpdateView, View
 
+from constance import config as config_constance
+
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
 from ominicontacto_app.forms import (
     UpdateBaseDatosForm, ReglaIncidenciaPorCalificacionForm, ReglasIncidenciaForm)
+from ominicontacto_app.services.wombat_service import WombatReloader
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 from requests.exceptions import RequestException
 
@@ -80,6 +84,12 @@ class CampanaDialerListView(ListView):
         context['finalizadas'] = campanas.filter(estado=Campana.ESTADO_FINALIZADA)
 
         context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
+        context['wombat_reload_enabled'] = config_constance.WOMBAT_DIALER_ALLOW_REFRESH
+        if config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
+            context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
+            if config_constance.WOMBAT_DIALER_STATE == WombatReloader.STATE_READY:
+                uptime = now() - config_constance.WOMBAT_DIALER_UP_SINCE
+                context['wombat_uptime'] = str(uptime).split('.')[0]
         return context
 
 

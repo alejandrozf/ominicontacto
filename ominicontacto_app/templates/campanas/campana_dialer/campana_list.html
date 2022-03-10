@@ -20,9 +20,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% load oml_permissions %}
 
 {% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/campana_list.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/omlAPI.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -37,12 +41,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
+    </form>
     <h2>{% trans 'Campañas Activas' %} <span style="color:red;">- {% trans 'Canales en uso' %}: {{ canales_en_uso }}</span></h2>
-            <a value="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right action_for_campaign">
+    {% if user|has_oml_permission:'api_restart_wombat' and wombat_reload_enabled %}
+        <input type="hidden" id="wombat_state" name="wombat_state" value="{{ wombat_state }}"/>
+        <h2>{% trans 'Estado  Marcador: ' %} 
+            <span id="wombat_ready" style="color:green;"> {% trans 'Listo' %}
+                <span id="wombat_uptime" style="color:grey;font-size: 0.9rem;">{%if wombat_uptime %} ({{ wombat_uptime }}) {% endif %}</span>
+            </span>
+            <span id="wombat_reloading" style="color:red;"> {% trans 'Refrescando' %}</span>
+        </h2>
+        <input type="button" id="submit_restart_wombat" name="campana_id" class="btn btn-outline-primary btn-sm" value="{% trans 'Refrescar' %}"/>
+    {% endif %}
+    <a value="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right action_for_campaign">
         {% trans 'Finalizar campañas sin contactos por discar' %}
     </a>
-        </br>
-        </br>
+    </br>
+    </br>
     <table class="table">
         <thead>
             <tr>
@@ -456,7 +471,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endfor %}
         </tbody>
     </table>
-    </form>
 </div>
 
  <div class="modal fade" id="myMapModal">

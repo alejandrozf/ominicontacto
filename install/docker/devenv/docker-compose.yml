@@ -73,7 +73,7 @@ services:
     environment:
       - TZ=${TZ}
       - MYSQL_PWD=${MYSQL_ROOT_PASS}
-    image: freetechsolutions/omldialer:latest
+    image: freetechsolutions/omldialer:21.06.2-7
     networks:
       - devenv
     ports:
@@ -238,7 +238,7 @@ services:
     networks:
       - devenv
     volumes:
-      - ../../../omnileads_ui/:/home/app
+      - ../../../omnileads_ui/:/home/app/
 
   minio:
     tty: true

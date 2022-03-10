@@ -125,6 +125,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_database_metadata_columns_fields',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_restart_wombat',
+             'roles': ['Administrador', ]},
+            {'nombre': 'api_wombat_state',
+             'roles': ['Administrador', ]},
         ]
 
     informacion_de_permisos = {
@@ -252,5 +256,11 @@ class ApiAppConfig(AppConfig):
              'version': '1.20.0'},
         'api_database_metadata_columns_fields':
             {'descripcion': _('Listas de nombres de columnas para Base de datos de Conatactos'),
-             'version': '1.20.0'}
+             'version': '1.20.0'},
+        'api_restart_wombat':
+            {'descripcion': _('Reinicia servicio Wombat Dialer'),
+             'version': '1.22.0'},
+        'api_wombat_state':
+            {'descripcion': _('Estado del servicio Wombat Dialer'),
+             'version': '1.22.0'},
     }
