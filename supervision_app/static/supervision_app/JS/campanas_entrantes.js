@@ -121,6 +121,7 @@ function createDataTable() {
             { 'data': 'agentes_online' },
             { 'data': 'agentes_llamada' },
             { 'data': 'agentes_pausa' },
+            { 'data': 'agentes_ready' },
             { 'data': 'llamadas_en_espera' },
             { 'data': 'atendidas' },
             { 'data': 'abandonadas' },
@@ -171,6 +172,7 @@ class InboundStats {
         this.agentes_online = 0;
         this.agentes_llamada = 0;
         this.agentes_pausa = 0;
+        this.agentes_ready = 0;
         this.porcentaje_objetivo = 0;
     }
 
@@ -207,6 +209,7 @@ class InboundStats {
         this.agentes_online = agentStats.agentes_online;
         this.agentes_llamada = agentStats.agentes_llamada;
         this.agentes_pausa = agentStats.agentes_pausa;
+        this.agentes_ready = this.agentes_online - this.agentes_llamada - this.agentes_pausa;
     }
 
 }
