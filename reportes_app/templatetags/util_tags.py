@@ -19,6 +19,8 @@
 from django.template import Library
 from django.utils.timezone import timedelta
 
+from ominicontacto_app.models import Campana
+
 register = Library()
 
 
@@ -35,3 +37,8 @@ def format_seconds(seconds):
 @register.filter(name='get_class')
 def get_class(value):
     return value.__class__.__name__
+
+
+@register.filter(name='interaccion_crm')
+def interaccion_crm(value):
+    return value in [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]

@@ -44,6 +44,7 @@ from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
+from django.utils.http import urlsafe_base64_encode
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -1097,12 +1098,17 @@ class Campana(models.Model):
     SITIO_EXTERNO = 2
     "El tipo de interaccion es por sitio externo"
 
+    FORMULARIO_Y_SITIO_EXTERNO = 3
+    "El tipo de interaccion es por formulario y sitio externo"
+
     TIPO_FORMULARIO_DISPLAY = _('Formulario')
     TIPO_SITIO_EXTERNO_DISPLAY = _('Url externa')
+    TIPO_FORMULARIO_Y_SITIO_EXTERNO = _('Formulario y Url externa')
 
     TIPO_INTERACCION = (
         (FORMULARIO, TIPO_FORMULARIO_DISPLAY),
-        (SITIO_EXTERNO, TIPO_SITIO_EXTERNO_DISPLAY)
+        (SITIO_EXTERNO, TIPO_SITIO_EXTERNO_DISPLAY),
+        (FORMULARIO_Y_SITIO_EXTERNO, TIPO_FORMULARIO_Y_SITIO_EXTERNO)
     )
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
@@ -1432,7 +1438,7 @@ class Campana(models.Model):
 
     @property
     def tiene_interaccion_con_sitio_externo(self):
-        return self.tipo_interaccion == self.SITIO_EXTERNO
+        return self.tipo_interaccion in [self.SITIO_EXTERNO, self.FORMULARIO_Y_SITIO_EXTERNO]
 
     @property
     def es_entrante(self):
@@ -1486,6 +1492,7 @@ class OpcionCalificacion(models.Model):
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
     oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
     positiva = models.BooleanField(default=False, verbose_name=_('Positiva'))
+    interaccion_crm = models.BooleanField(default=False, verbose_name=_('Interacción CRM'))
 
     def __str__(self):
         return str(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
@@ -3081,11 +3088,13 @@ class SitioExterno(models.Model):
     BOTON = 1
     AUTOMATICO = 2
     SERVER = 3
+    CALIFICACION = 4
 
     DISPARADORES = (
         (BOTON, _('Agente')),
         (AUTOMATICO, _('Automático')),
         (SERVER, _('Servidor')),
+        (CALIFICACION, _('Calificación')),
     )
 
     GET = 1
@@ -3538,13 +3547,15 @@ class ParametrosCrm(models.Model):
     DATO_LLAMADA = 3
     CUSTOM = 4
     DIALPLAN = 5
+    DATO_CALIFICACION = 6
 
     TIPOS = (
         (DATO_CAMPANA, _('Dato de Campaña')),
         (DATO_CONTACTO, _('Dato de Contacto')),
         (DATO_LLAMADA, _('Dato de Llamada')),
         (CUSTOM, _('Fijo')),
-        (DIALPLAN, _('Dato de Dialplan'))
+        (DIALPLAN, _('Dato de Dialplan')),
+        (DATO_CALIFICACION, _('Dato de Calificación '))
     )
 
     OPCIONES_CAMPANA = (
@@ -3563,6 +3574,13 @@ class ParametrosCrm(models.Model):
         ('call_wait_duration', _('Tiempo de espera')),
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
+
+    OPCIONES_DATO_CALIFICACION = (
+        ('id', _('ID de Calificación')),
+        ('name', _('Nombre')),
+        ('form', _('Formulario')),
+    )
+    OPCIONES_DATO_CALIFICACION_KEYS = [key for key, value in OPCIONES_DATO_CALIFICACION]
 
     PREFIJO_DIALPLAN = 'Omlcrm'
 
@@ -3585,6 +3603,8 @@ class ParametrosCrm(models.Model):
             return self._obtener_valor_de_contacto(contacto)
         if self.tipo == ParametrosCrm.DATO_LLAMADA:
             return self._obtener_valor_de_llamada(agente, datos_de_llamada)
+        if self.tipo == ParametrosCrm.DATO_CALIFICACION:
+            return self._obtener_valor_de_calificacion(datos_de_llamada)
         if self.tipo == ParametrosCrm.CUSTOM:
             return self.valor
         if self.tipo == ParametrosCrm.DIALPLAN:
@@ -3605,6 +3625,16 @@ class ParametrosCrm(models.Model):
         if self.valor == 'agent_id':
             return agente.id
         return datos_de_llamada[self.valor]
+
+    def _obtener_valor_de_calificacion(self, datos_de_llamada):
+        if self.campana.sitio_externo.disparador == SitioExterno.CALIFICACION:
+            if self.valor == 'id':
+                return datos_de_llamada['id_calificacion']
+            elif self.valor == 'name':
+                return datos_de_llamada['nombre_opcion_calificacion']
+            elif self.valor == 'form':
+                return urlsafe_base64_encode(datos_de_llamada['formulario'].encode())
+        return ""
 
 
 class ConfiguracionDeAgentesDeCampana(models.Model):

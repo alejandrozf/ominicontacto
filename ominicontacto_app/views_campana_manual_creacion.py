@@ -85,7 +85,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
 
     def _save_forms(self, form_list, estado, tipo):
         campana_form = list(form_list)[int(self.INICIAL)]
-        interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
+        interaccion_crm = campana_form.instance.tiene_interaccion_con_sitio_externo
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
@@ -167,7 +167,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         queue.save()
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
-        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+        if campana.tiene_interaccion_con_sitio_externo:
             parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()

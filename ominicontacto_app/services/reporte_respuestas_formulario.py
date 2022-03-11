@@ -83,18 +83,18 @@ class ReporteFormularioGestionCampanaCSV(ReporteCSV):
 
         # Para cada formulario, poner una columna vacia con su nombre seguida de los nombres
         # de las columnas de cada campo
-        if not self.campana.tiene_interaccion_con_sitio_externo:
-            for opcion in self.campana.opciones_calificacion.filter(
-                    tipo=OpcionCalificacion.GESTION).select_related(
-                        'formulario').prefetch_related('formulario__campos'):
-                if opcion.nombre not in self.posicion_opciones:
-                    self.posicion_opciones[opcion.id] = len(encabezado)
-                    campos = opcion.formulario.campos.all()
-                    self.campos_formulario_opciones[opcion.id] = campos
-                    encabezado.append(opcion.nombre)
-                    for campo in campos:
-                        nombre = campo.nombre_campo
-                        encabezado.append(nombre)
+        # if not self.campana.tiene_interaccion_con_sitio_externo:
+        for opcion in self.campana.opciones_calificacion.filter(
+                tipo=OpcionCalificacion.GESTION).select_related(
+                    'formulario').prefetch_related('formulario__campos'):
+            if opcion.nombre not in self.posicion_opciones:
+                self.posicion_opciones[opcion.id] = len(encabezado)
+                campos = opcion.formulario.campos.all()
+                self.campos_formulario_opciones[opcion.id] = campos
+                encabezado.append(opcion.nombre)
+                for campo in campos:
+                    nombre = campo.nombre_campo
+                    encabezado.append(nombre)
 
         lista_datos_utf8 = [force_text(item) for item in encabezado]
         self.datos.append(lista_datos_utf8)

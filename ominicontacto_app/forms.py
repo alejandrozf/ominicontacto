@@ -714,7 +714,8 @@ class CampanaMixinForm(object):
                         "configurar una campana")
             self.add_error('bd_contacto', message)
             raise forms.ValidationError(message, code='invalid')
-        if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
+        if self.cleaned_data.get('tipo_interaccion') in \
+            [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO] and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
             raise forms.ValidationError(message, code='invalid')
@@ -731,6 +732,13 @@ class CampanaMixinForm(object):
         if tipo_interaccion == Campana.FORMULARIO and sitio_externo is not None:
             msg = _('No se puede elegir un URL externo si selecciono un formulario.')
             raise forms.ValidationError(msg)
+        if tipo_interaccion == Campana.FORMULARIO_Y_SITIO_EXTERNO and sitio_externo and \
+                sitio_externo.objetivo == SitioExterno.EMBEBIDO and \
+                sitio_externo.disparador != SitioExterno.CALIFICACION:
+            msg = _('Para este tipo de interacción no puede elegir un sitio \
+                externo con "Objetivo" embebido')
+            raise forms.ValidationError(msg)
+
         return sitio_externo
 
     def clean_id_externo(self):
@@ -815,7 +823,8 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva')
+        fields = (
+            'tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva', 'interaccion_crm')
 
         widgets = {
             'nombre': forms.Select(),
@@ -825,6 +834,8 @@ class OpcionCalificacionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         nombres_calificaciones = kwargs.pop('nombres_calificaciones')
         con_formulario = kwargs.pop('con_formulario')
+        con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
+            if 'con_crm_calificacion' in kwargs else None
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -845,6 +856,9 @@ class OpcionCalificacionForm(forms.ModelForm):
 
         if not con_formulario:
             self.fields.pop('formulario')
+
+        if not con_crm_calificacion:
+            self.fields.pop('interaccion_crm')
 
     def clean_nombre(self):
         instance = getattr(self, 'instance', None)
@@ -2061,9 +2075,15 @@ class GrupoForm(forms.ModelForm):
 class ParametrosCrmForm(forms.ModelForm):
 
     def __init__(self, columnas_bd, *args, **kwargs):
+        self.con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
+            if 'con_crm_calificacion' in kwargs else None
         super(ParametrosCrmForm, self).__init__(*args, **kwargs)
         self.columnas_bd = columnas_bd
         self.columnas_bd_keys = [x[0] for x in columnas_bd]
+        if not self.con_crm_calificacion:
+            tipo_choices = [(choice[0], choice[1]) for choice in self.fields['tipo'].choices
+                            if choice[0] != ParametrosCrm.DATO_CALIFICACION]
+            self.fields['tipo'] = forms.ChoiceField(choices=tipo_choices)
 
     class Meta:
         model = ParametrosCrm
@@ -2076,7 +2096,7 @@ class ParametrosCrmForm(forms.ModelForm):
         }
 
     def clean_valor(self):
-        tipo = self.cleaned_data.get('tipo')
+        tipo = int(self.cleaned_data.get('tipo'))
         valor = self.cleaned_data.get('valor')
         if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
             raise forms.ValidationError(
@@ -2095,6 +2115,10 @@ class ParametrosCrmForm(forms.ModelForm):
                     _('El valor debe tener el prefijo {0}'.format(ParametrosCrm.PREFIJO_DIALPLAN))))
             else:
                 return valor.capitalize()
+        if tipo == ParametrosCrm.DATO_CALIFICACION and \
+                valor not in ParametrosCrm.OPCIONES_DATO_CALIFICACION_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo válido de datos de calificación'))
         return valor
 
     def clean_nombre(self):

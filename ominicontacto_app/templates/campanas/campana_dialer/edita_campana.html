@@ -19,11 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends 'campanas/campana_dialer/nueva_edita_campana.html' %}
 {% load i18n %}
+{% load util_tags %}
 
 {% block tipo_interaccion %}
     {{ form.tipo_interaccion.errors }}
     <div class="hidden">{{ form.tipo_interaccion }}</div>
-    {% if form.instance.tipo_interaccion == 2 %}
+    {% if form.instance.tipo_interaccion|interaccion_crm %}
         <div class="col-md-6">
             <label>{% trans 'Sitio externo:' %}</label>
             {{ form.sitio_externo }}

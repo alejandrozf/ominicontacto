@@ -17,51 +17,56 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% load staticfiles %}
-{% load i18n %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
-    <!-- Fonts -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
-
-</head>
-<body>
-
-{% include 'messages.html' %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-9">
-            <table class="table table-striped">
-                <tr>
-                    <td><strong>{% trans 'Teléfono' %}</strong></td>
-                    <td>{{contacto.telefono}}</td>
-                </tr>
-            {% for datos in mas_datos %}
-                <tr>
-                    <td><strong>{{datos.0|title}}</strong></td>
-                    <td>{{datos.1}}</td>
-                </tr>
-            {% endfor %}
-                <tr>
-                    <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
-                </tr>
-            {% for key, values in metadata.items %}
-                <tr>
-                    <td><strong>{{key|title}}</strong></td>
-                    <td>{{values}}</td>
-                </tr>
-            {% endfor %}
-            </table>
+   {% extends "agente/frame/base_frame.html" %}
+   {% load static %}
+   {% load i18n %}
+   {% block extra_css %}
+       <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+       <link rel="stylesheet" href="{% static 'ominicontacto/CSS/formulario_contacto.css' %}">
+       <link rel="stylesheet" href="{% static 'ominicontacto/CSS/auditoria.css' %}" >
+   {% endblock extra_css%}
+   {% block head_js %}
+       <!-- Scripts -->
+       <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+       <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
+       <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
+       <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
+       <script src="{% static 'ominicontacto/JS/agente/interaccionSitioExterno.js' %}"></script>
+       <script src="{% static 'ominicontacto/JS/agente/revisionAuditoria.js' %}"></script>
+   {% endblock head_js %}
+   
+   {% block content %}
+   <div class="container">
+       <input class="hidden" value='{{ configuracion_sitio_externo|safe }}' id="configuracionSitioExterno">
+   
+       <form id="form_sitio_externo">
+           <input id="submit_interaccion" type="hidden" name="" value="{% trans 'Interacción CRM' %}">
+       </form>
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-striped">
+                    <tr>
+                        <td><strong>{% trans 'Teléfono' %}</strong></td>
+                        <td>{{contacto.telefono}}</td>
+                    </tr>
+                {% for datos in mas_datos %}
+                    <tr>
+                        <td><strong>{{datos.0|title}}</strong></td>
+                        <td>{{datos.1}}</td>
+                    </tr>
+                {% endfor %}
+                    <tr>
+                        <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
+                    </tr>
+                {% for key, values in metadata.items %}
+                    <tr>
+                        <td><strong>{{key|title}}</strong></td>
+                        <td>{{values}}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
         </div>
-    </div>
-</div>
-</body>
-</html>
+   </div>
+   {% endblock content %}
+   

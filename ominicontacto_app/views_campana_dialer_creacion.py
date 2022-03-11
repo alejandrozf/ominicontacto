@@ -160,7 +160,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
 
         # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
         offset = 1
-        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+        if campana.tiene_interaccion_con_sitio_externo:
             offset = 0
             parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
@@ -189,7 +189,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
             with transaction.atomic():
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
                 # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
-                offset = 0 if campana.tipo_interaccion == Campana.SITIO_EXTERNO else 1
+                offset = 0 if campana.tiene_interaccion_con_sitio_externo else 1
                 sincronizar_form = list(form_list)[int(self.SINCRONIZAR) - offset]
                 self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
@@ -254,7 +254,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 queue = self._save_queue(queue_form)
                 opciones_calificacion_formset.save()
 
-                if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+                if campana.tiene_interaccion_con_sitio_externo:
                     parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
                     parametros_crm_formset.save()
 
