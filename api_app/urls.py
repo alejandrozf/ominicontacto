@@ -24,7 +24,8 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
-from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
+from api_app.views.base import (
+    login, ContactoCreateView, CampaignDatabaseMetadataView, CamposDireccionView)
 from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
@@ -81,6 +82,9 @@ urlpatterns = [
         name='api_new_contact'),
     url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
         name='api_campaign_database_metadata'),
+
+    url(r'api/v1/campaign/database_metadata_columns_fields/(?P<pk>\d+)/$',
+        CamposDireccionView.as_view(), name='api_database_metadata_columns_fields'),
 
     # ###########   ADMINISTRADOR    ############ #
     url(r'api/v1/permissions/new_role/$',

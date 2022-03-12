@@ -22,6 +22,7 @@
 {% load i18n %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/googlemap.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/formulario_contacto.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/auditoria.css' %}" >
 {% endblock extra_css%}
@@ -112,6 +113,13 @@
                       <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
                     </div>
                 {% endif %}
+                <div class="mapouter">
+                    <div class="gmap_canvas" id="map"></div>
+                    <div id="infowindow-content">
+                        <span id="place-name" class="title"></span><br />
+                        <span id="place-address"></span>
+                    </div>
+                </div>            
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
                         {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
@@ -120,5 +128,15 @@
             </div>
         </div>
     </form>
+    <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAP_CENTER}}">
 </div>
+</div>
+{% if campana.campo_direccion %}    
+    <script src="{% static 'ominicontacto/JS/agente/googlemap.js' %}">
+    </script>
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&callback=initMap&libraries=places&v=weekly"
+    async
+    ></script>
+{% endif %}
 {% endblock content %}

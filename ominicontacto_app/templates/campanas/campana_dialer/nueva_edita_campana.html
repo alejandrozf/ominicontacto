@@ -27,6 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           src="{% static 'ominicontacto/JS/campanas/formularioNuevaEditaCampana.js' %}">
   </script>
   <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/campoDireccion.js' %}"></script>
   {% get_current_language as LANGUAGE_CODE %}
   <input class="hidden" value="{{ LANGUAGE_CODE }}" id="languageCode">
   <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}">
@@ -94,6 +95,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.fecha_fin.errors }}
                 </div>
             {% endif %}
+
+            <div class="col-md-6">
+                {{ form.campo_direccion.as_hidden }}
+                <label for="{{ form.campo_direccion_choice.id_for_label }}">{% trans 'Campo para dirección:' %}</label>
+                {{ form.campo_direccion_choice }}
+                {{ form.campo_direccion_choice.errors }}
+            </div>
+
             <div class="col-md-3">
                 <label for="{{ form.sistema_externo.id_for_label }}">{% trans 'Sistema externo:' %}</label>
                 {{ form.sistema_externo }}
