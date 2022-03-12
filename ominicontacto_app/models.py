@@ -36,6 +36,7 @@ from django.db import (models,
                        # connection
                        )
 
+from django.apps import apps
 from django.db.models import Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
@@ -3573,6 +3574,7 @@ class ParametrosCrm(models.Model):
         ('id_contacto', _('ID de Cliente')),
         ('rec_filename', _('Archivo de Grabación')),
         ('call_wait_duration', _('Tiempo de espera')),
+        ('datetime', _('Fecha y Hora de la Llamada')),
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
@@ -3623,9 +3625,15 @@ class ParametrosCrm(models.Model):
         return datos_contacto[self.valor]
 
     def _obtener_valor_de_llamada(self, agente, datos_de_llamada):
+        LlamadaLog = apps.get_model('reportes_app.LlamadaLog')
         if self.valor == 'agent_id':
             return agente.id
-        return datos_de_llamada[self.valor]
+        elif self.valor == 'fecha':
+            callid = datos_de_llamada['call_id']
+            llamada_log = LlamadaLog.objects.filter(callid=callid).first()
+            return llamada_log.time.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return datos_de_llamada[self.valor]
 
     def _obtener_valor_de_calificacion(self, datos_de_llamada):
         if self.campana.sitio_externo.disparador == SitioExterno.CALIFICACION:
