@@ -40,14 +40,16 @@ class StorageService(object):
         if self.storage_type == 's3-aws':
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
-                                       aws_secret_access_key=self.secret_access_key)
-        elif self.storage_type == 's3-devenv':
+                                       aws_secret_access_key=self.secret_access_key,
+                                       region_name=self.region_name)
+        elif self.storage_type == 's3-minio':
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
                                        config=Config(signature_version='s3v4'),
                                        endpoint_url=self.url,
-                                       region_name=self.region_name)
+                                       region_name=self.region_name,
+                                       verify=False)
         else:
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
@@ -61,7 +63,7 @@ class StorageService(object):
                                                           'Key': filename[1:]},
                                                   ExpiresIn=3600)
 
-    def download_file(self, file_name, local_destination):
+    def download_file(self, file_name, local_destination, root_s3_folder=None):
         file_dest = os.path.join(local_destination, file_name)
         full_local_path = os.path.dirname(file_dest)
         if not os.path.exists(full_local_path):
@@ -70,7 +72,10 @@ class StorageService(object):
             except Exception:
                 pass
         try:
-            self.client.download_file(self.bucket_name, file_name, file_dest)
+            s3_file_path = file_name
+            if s3_file_path is not None:
+                s3_file_path = f'{root_s3_folder}/{s3_file_path}'
+            self.client.download_file(self.bucket_name, s3_file_path, file_dest)
         except Exception as e:
             logger.error(f'Error descargando archivo desde S3 {e.__str__()}')
             return False

@@ -13,11 +13,11 @@
 </div>
 </template>
 <script>
-import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart'
-import StateAgentsChart from '@/components/DashboardSupervisionCharts/StateAgentsChart'
-import ContactedCallsChart from '@/components/DashboardSupervisionCharts/ContactedCallsChart'
+import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart';
+import StateAgentsChart from '@/components/DashboardSupervisionCharts/StateAgentsChart';
+import ContactedCallsChart from '@/components/DashboardSupervisionCharts/ContactedCallsChart';
 export default {
-    props:{
+    props: {
         reportData: Object
     },
     components: {
@@ -25,8 +25,8 @@ export default {
         StateAgentsChart,
         ContactedCallsChart
     },
-    setup() {
-        
-    },
-}
+    setup () {
+
+    }
+};
 </script>

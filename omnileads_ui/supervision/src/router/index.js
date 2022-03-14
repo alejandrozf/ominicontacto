@@ -6,13 +6,13 @@ const routes = [
     {
         path: '/index.html',
         name: 'dashboard',
-        component: DashboardSupervision,
+        component: DashboardSupervision
     },
     {
         path: '/audit.html',
         name: 'audit_supervisor',
-        component: AuditSupervisor,
-    },  
+        component: AuditSupervisor
+    }
 ];
 const router = createRouter({
     history: createWebHistory('/static/omnileads-ui-supervision/'),

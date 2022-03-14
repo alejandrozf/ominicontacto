@@ -239,12 +239,10 @@ class CampanaFamily(AbstractRedisFamily):
         except ConfiguracionDeAgentesDeCampana.DoesNotExist:
             pass
 
-        if campana.type == Campana.TYPE_ENTRANTE:
-            if hasattr(campana, 'encuestas') and campana.encuestas.filter(activa=True):
-                encuesta_camp = campana.encuestas.get(activa=True)
-                dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
-            else:
-                dict_campana.update({'SURVEY': ''})
+        if hasattr(campana, 'encuestas') and campana.encuestas.filter(activa=True):
+            encuesta_camp = campana.encuestas.get(activa=True)
+            dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
+
         return dict_campana
 
     def _obtener_todos(self):
@@ -257,6 +255,16 @@ class CampanaFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:CAMP"
+
+    def set_redis_value_field(self, nombre_family, field, value):
+        nombre_family = self._get_nombre_family(nombre_family)
+        redis_connection = self.get_redis_connection()
+        redis_connection.hset(nombre_family, field, value)
+
+    def del_redis_field(self, nombre_family, field):
+        nombre_family = self._get_nombre_family(nombre_family)
+        redis_connection = self.get_redis_connection()
+        redis_connection.hdel(nombre_family, field)
 
 
 class AgenteFamily(AbstractRedisFamily):

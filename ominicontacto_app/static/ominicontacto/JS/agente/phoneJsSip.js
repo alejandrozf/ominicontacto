@@ -78,6 +78,7 @@ class PhoneJS {
         /* eventsCallbacks */
         this.eventsCallbacks = {
             onUserAgentRegistered: $.Callbacks(),
+            onUserAgentUnregistered: $.Callbacks(),
             onUserAgentDisconnect: $.Callbacks(),
             onUserAgentRegisterFail: $.Callbacks(),
             onAgentLoginFail: $.Callbacks(),
@@ -154,7 +155,10 @@ class PhoneJS {
             phone_logger.log('User Agent: registrationFailed');
             self.eventsCallbacks.onUserAgentRegisterFail.fire();
         });
-        this.userAgent.on('unregistered', function(e) {phone_logger.log('User Agent: unregistered');});
+        this.userAgent.on('unregistered', function(e) {
+            phone_logger.log('User Agent: unregistered');
+            self.eventsCallbacks.onUserAgentUnregistered.fire();
+        });
 
         /* -- WebSocket connection events -- */
         this.userAgent.on('disconnected', function(e) {

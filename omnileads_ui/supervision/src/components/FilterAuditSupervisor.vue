@@ -2,11 +2,11 @@
     <div>
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-4">
-                <Calendar id="range" 
-                    v-model="dateRange" 
-                    selectionMode="range" 
+                <Calendar id="range"
+                    v-model="dateRange"
+                    selectionMode="range"
                     :manualInput="false"
-                    dateFormat="dd/mm/yy"    
+                    dateFormat="dd/mm/yy"
                 >
                 </Calendar>
             </div>
@@ -22,26 +22,25 @@ import Button from 'primevue/button';
 
 import { ref } from 'vue';
 export default {
-    emits: ["filterChange"],
+    emits: ['filterChange'],
     components: {
         Calendar,
-        Button,
+        Button
     },
 
-    setup(props,{emit}) {
-
-        const dateRange = ref([new Date(), new Date()])
+    setup (props, { emit }) {
+        const dateRange = ref([new Date(), new Date()]);
 
         const applyFilter = () => {
-            emit("filterChange", {
+            emit('filterChange', {
                 date_start: dateRange.value[0].toISOString().slice(0, 10),
-                date_end: dateRange.value[1].toISOString().slice(0, 10),
+                date_end: dateRange.value[1].toISOString().slice(0, 10)
             });
-        }
+        };
         return {
             dateRange,
             applyFilter
-        }
-    },
-}
+        };
+    }
+};
 </script>

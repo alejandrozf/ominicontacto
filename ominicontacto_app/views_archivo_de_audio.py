@@ -132,8 +132,19 @@ class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ArchivoAudioUpdateView, self).get_context_data(
             **kwargs)
-        context['base_url'] = "%s://%s" % (self.request.scheme,
-                                           self.request.get_host())
+
+        if self.object.audio_original:
+            if os.getenv('S3_STORAGE_ENABLED'):
+                s3_handler = StorageService()
+                audio_url = s3_handler \
+                    .get_file_url(f'/media_root/{self.object.audio_asterisk.name}')
+
+            else:
+                audio_url = "%s://%s%s" % (self.request.scheme,
+                                           self.request.get_host(),
+                                           self.object.audio_original.url)
+
+            context['audio_url'] = audio_url
         return context
 
     template_name = 'archivo_audio/nuevo_edita_archivo_audio.html'

@@ -1263,7 +1263,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         return False
 
     def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono')) if not self.es_campana_entrante else ""
+        telefono = str(self.cleaned_data.get('telefono'))
         if telefono and not telefono.isdigit():
             msg = _('Debe ser en formato "999999999" y solo numérico.')
             raise forms.ValidationError(msg)
@@ -1297,6 +1297,10 @@ class FormularioNuevoContacto(forms.ModelForm):
             self.validate_field(field_phone)
 
     def validate_field(self, field_name):
+        if field_name in self.campos_a_bloquear:
+            return
+        if field_name in self.campos_a_ocultar:
+            return
         field = str(self.cleaned_data.get(field_name))
         if field:
             if not field.isdigit():
@@ -2040,9 +2044,10 @@ class GrupoForm(forms.ModelForm):
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
                   'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
-                  'obligar_despausa', 'show_console_timers', 'acceso_contactos_agente',
+                  'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
-                  'acceso_campanas_preview_agente')
+                  'acceso_campanas_preview_agente',
+                  )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

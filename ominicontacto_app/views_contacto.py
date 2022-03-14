@@ -492,6 +492,7 @@ class FormularioNuevoContactoFormView(FormView):
         kwargs = super(FormularioNuevoContactoFormView, self).get_form_kwargs()
         kwargs['initial']['telefono'] = self.kwargs.get('telefono', '')
         kwargs['base_datos'] = self.campana.bd_contacto
+        kwargs['campos_bloqueados'] = self.campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = self.campana.get_campos_ocultos()
 
         return kwargs

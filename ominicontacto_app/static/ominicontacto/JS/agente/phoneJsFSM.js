@@ -40,6 +40,11 @@ var PhoneFSM = new StateMachine.factory({
         { name: 'receiveCall',            from: 'Ready',              to: 'ReceivingCall' },
         { name: 'startPause',             from: 'Ready',              to: 'Pausing' },
         { name: 'logout',                 from: 'Ready',              to: 'End' },
+        { name: 'unregistered',           from: 'Ready',              to: 'ConnLossReady' },
+        { name: 'failedRegistration',     from: 'Ready',              to: 'ConnLossReady' },
+        // ConnLossReady
+        { name: 'unregistered',           from: 'ConnLossReady',      to: 'ConnLossReady' },
+        { name: 'registered',             from: 'ConnLossReady',      to: 'Ready' },
         
         // Pausing
         { name: 'pauseSet',               from: 'Pausing',            to: 'Paused' },
@@ -50,6 +55,12 @@ var PhoneFSM = new StateMachine.factory({
         { name: 'receiveCall',            from: 'Paused',             to: 'ReceivingCall' },
         { name: 'logout',                 from: 'Paused',             to: 'End' },
         { name: 'changePause',            from: 'Paused',             to: 'Pausing' },
+        { name: 'unregistered',           from: 'Paused',             to: 'ConnLossPaused' },
+        { name: 'failedRegistration',     from: 'Paused',             to: 'ConnLossPaused' },
+        // ConnLossPaused
+        { name: 'unregistered',           from: 'ConnLossPaused',     to: 'ConnLossPaused' },
+        { name: 'registered',             from: 'ConnLossPaused',     to: 'Paused' },
+
         // OnCall
         { name: 'endCall',                from: 'OnCall',             to: 'Ready' },
         { name: 'dialTransfer',           from: 'OnCall',             to: 'DialingTransfer' },

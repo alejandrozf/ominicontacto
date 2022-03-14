@@ -11,39 +11,39 @@
     </Card>
 </template>
 <script>
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 import Knob from 'primevue/knob';
 export default {
-    props: { 
-        chartData: Number, 
+    props: {
+        chartData: Number,
         chartName: String
     },
     components: {
-        Knob,
+        Knob
     },
     methods: {
-        titleize(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        titleize (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     },
-    setup(props) {
+    setup (props) {
         const basicData = ref({
-            value: 0,
+            value: 0
         });
 
         watch(props.chartData, (newValue) => {
             updateBasicData(newValue);
-        })
+        });
 
         const updateBasicData = (newData) => {
             basicData.value = newData;
-        }
-        
+        };
+
         updateBasicData(props.chartData);
 
         return {
             basicData
-        }
-    },
-}
+        };
+    }
+};
 </script>

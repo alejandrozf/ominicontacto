@@ -221,7 +221,6 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
-            'SURVEY': '',
             'SHOWCAMPNAME': self.campana_entrante.nombre,
             'SHOWDID': 'False',
             'SHOWINROUTENAME': 'False',
