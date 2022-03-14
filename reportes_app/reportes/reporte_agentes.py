@@ -59,6 +59,7 @@ class ReporteAgentes(object):
         self.genera_tiempos_pausa(agentes, fecha_inicio, fecha_fin)
         self.genera_tiempos_campana_agentes(agentes, fecha_inicio, fecha_fin)
         self.calcula_total_intentos_fallidos(agentes, fecha_inicio, fecha_fin)
+        self.calcula_llamadas_entrantes_no_atendidas(agentes, fecha_inicio, fecha_fin)
         self._genera_tiempos_totales_agentes()
         dict_agentes_llamadas = self._obtener_total_agentes_tipo_llamada(fecha_inicio, fecha_fin)
         return {
@@ -161,6 +162,15 @@ class ReporteAgentes(object):
                     agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].intentos_fallidos += int(log[1])
 
+    def calcula_llamadas_entrantes_no_atendidas(self, agentes, fecha_inferior, fecha_superior):
+        eventos_llamadas = ['RINGNOANSWER', ]
+        agentes_dict = {agente.id: agente for agente in agentes}
+        logs = LlamadaLog.objects.obtener_count_evento_agente(
+            eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()))
+        for log in logs:
+            agente_id = int(log[0])
+            self.datos_agentes[agente_id].entrantes_no_atendidas += int(log[1])
+
     def _genera_tiempos_totales_agentes(self):
         for agente in self.datos_agentes.values():
             agente.calcula_totales()
@@ -168,7 +178,7 @@ class ReporteAgentes(object):
                 agente.agente, agente.tiempo_sesion,
                 agente.tiempo_pausa,
                 agente.tiempo_llamada, agente.llamadas_procesadas, agente.intentos_fallidos, 0, 0,
-                agente.tiempo_hold, agente.transferidas_a_agente))
+                agente.tiempo_hold, agente.transferidas_a_agente, agente.entrantes_no_atendidas))
 
     def _genera_tiempo_total_llamada_campana(self):
         res = []
@@ -289,6 +299,7 @@ class ActividadAgente(object):
         self.llamadas_procesadas = 0
         self.transferidas_a_agente = 0
         self.intentos_fallidos = 0
+        self.entrantes_no_atendidas = 0
 
         self.tiempo_sesion = timedelta()
         self.tiempo_pausa = timedelta()
