@@ -857,6 +857,9 @@ class PhoneJSController {
         } else {
             var from = session_data.from;
             $('#callerid').text(from);
+            $('#omlcampname').text(session_data.remote_call['Omlcampname']);
+            $('#omldid').text(session_data.remote_call['Omldid']);
+            $('#omlinroutename').text(session_data.remote_call['Omlinroutename']);
             $('#modalReceiveCalls').modal('show');
             this.oml_api.eventRinging();
         }
