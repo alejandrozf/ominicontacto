@@ -221,7 +221,6 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
-            'SURVEY': '',
         }
         family = CampanaFamily()
 

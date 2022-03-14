@@ -30,3 +30,8 @@ def get_item(dictionary, key):
 @register.filter
 def format_seconds(seconds):
     return str(timedelta(seconds=seconds))
+
+
+@register.filter(name='get_class')
+def get_class(value):
+    return value.__class__.__name__

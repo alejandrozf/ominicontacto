@@ -21,7 +21,7 @@
 Tests relacionados al Blacklist
 """
 from __future__ import unicode_literals
-
+from mock import patch
 from django.urls import reverse
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -37,20 +37,33 @@ class TestsBlacklist (OMLBaseTest):
         self.agente = self.crear_user_agente()
         self.agente.set_password(self.PWD)
         self.admin.set_password(self.PWD)
-
-        self.back_lists = BlackListFactory()
-        self.nueva_blacklist = BlackListFactory()
-
+        self.blacklist = BlackListFactory()
         self.client.login(username=self.admin.username, password=self.PWD)
+
+    def _post_blacklist_contact(self):
+        return {
+            'telefono': '12341234',
+        }
 
     def test_mostrar_ultima_blacklist_cargada(self):
         url = reverse('black_list_list')
         response = self.client.get(url, follow=True)
-        self.assertContains(response, self.nueva_blacklist.nombre)
+        self.assertContains(response, self.blacklist.nombre)
 
-    def test_mostrar_una_blacklist(self):
+    def test_get_blacklist(self):
         url = reverse('black_list_list')
         response = self.client.get(url, follow=True)
-        data = response.context_data['object_list']
-        n_blacklist = data.count()
-        self.assertEqual(n_blacklist, 1)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('ominicontacto_app.services.asterisk.redis_database.BlacklistFamily.delete_family')
+    def test_delete_blacklist(self, delete_family):
+        url = reverse('eliminar_blacklist', args=[self.blacklist.pk])
+        response = self.client.delete(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('ominicontacto_app.services.asterisk.redis_database.BlacklistFamily.regenerar_families')
+    def test_add_contact_to_blacklist(self, regenerar_families):
+        url = reverse('nuevo_contacto_blacklist', args=[self.blacklist.pk])
+        post_data = self._post_blacklist_contact()
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)

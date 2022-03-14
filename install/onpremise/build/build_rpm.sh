@@ -17,13 +17,19 @@ pip3 install wheel
 pip3 install -r ../../../requirements/requirements.txt --exists-action 'w'
 echo "Creating additional folders"
 mkdir -p $INSTALL_PREFIX/{wombat-json,backup,bin,media_root/reporte_campana,static,log,run,addons,ominicontacto}
-echo "Copying code"
-cp -a ../../../{api_app,configuracion_telefonia_app,manage.py,ominicontacto,ominicontacto_app,reciclado_app,reportes_app,requirements,supervision_app,test,tests,utiles_globales.py} $INSTALL_PREFIX/ominicontacto
+echo "Copying src code"
+cp -a ../../../{api_app,configuracion_telefonia_app,manage.py,ominicontacto,ominicontacto_app,reciclado_app,reportes_app,requirements,supervision_app,test,tests,utiles_globales.py,omnileads_ui,notification_app} $INSTALL_PREFIX/ominicontacto
 echo "Copying scripts used by system"
 cp -a scripts/bin/* ${INSTALL_PREFIX}/bin
 cp -a scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run
 echo "Copying cert of keys server"
 cp -a cert ${INSTALL_PREFIX}
+echo "Building Vue components"
+cd ${INSTALL_PREFIX}/ominicontacto/omnileads_ui/supervision
+npm install
+npm run build
+rm -rf node_modules
+cd -
 echo "Packing the rpm"
 fpm -s dir -d cairo -d crontabs -d cronie -d cronie-anacron -d which -d vim \
     -d texinfo -d kernel-headers -d acl -d bind-utils -d sox -d lame -d unzip \

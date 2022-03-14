@@ -21,22 +21,29 @@
 #export oml_infras_stage=onpremise
 
 # The GitLab branch
-#export oml_app_release=release-1.16.0
+#export oml_app_release=release-1.21.0
 
 # OMniLeads tenant NAME
 #export oml_tenant_name=onpremise
 
 # Device for recordings
-# Values: local | s3-do | s3-aws | nfs | disk
-#export oml_callrec_device=s3
+# Values: local | s3 | s3-minio | s3-aws | nfs | disk
+#export oml_callrec_device=local
 
-# Parameters for S3 when s3-do is selected as store for oml_callrec_device
+# Parameters for S3 when s3 is selected as store for oml_callrec_device
+# s3_access_key | NULL
 #export s3_access_key=
+# s3_access_secret_key | NULL
 #export s3_secret_key=
-#export s3url=
-#export ast_bucket_name=
+# se bucket name | NULL
+#export s3_bucket_name=
+# s3 endpoint url Only when use non AWS S3 object | NULL
+#export s3_enpoint_url=NULL
+# s3 bucket region | NULL 
+#export s3_region=NULL
 
 # Parameters for NFS when nfs is selected as store for oml_callrec_device
+# NFS netaddr | NULL
 #export nfs_host=
 
 # ******* persistent data STORE block devices *******
@@ -47,7 +54,7 @@
 #export pgsql_device=NULL
 
 # Set your network interface
-#export oml_nic=enp0s3
+#export oml_nic=eth0
 
 # ******* Variables for ACD Asterisk *******
 # AMI connection from OMLApp
@@ -232,15 +239,14 @@ case ${oml_infras_stage} in
     systemctl start amazon-ssm-agent
     ;;
   *)
-    #yum update -y
-    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3
+    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli
     ;;
 esac
 
 echo "******************** Ansible installation ********************"
 
 pip3 install --upgrade pip
-pip3 install boto boto3 botocore 'ansible==2.9.2'
+pip3 install boto3  'ansible==2.9.2'
 export PATH="$HOME/.local/bin/:$PATH"
 
 echo "******************** git clone omnileads repo ********************"
@@ -343,6 +349,9 @@ if [[ "${oml_app_reset_admin_pass}" == "true" ]];then
   sed -i "s/reset_admin_password=false/reset_admin_password=true/g" $PATH_DEPLOY/inventory
 fi
 
+if [[ "${oml_callrec_device}" != "NULL" ]];then
+sed -i "s/callrec_device=local/callrec_device=${oml_callrec_device}/g" $PATH_DEPLOY/inventory
+fi
 if [[ "${oml_backup_filename}" != "NULL" ]];then
 sed -i "s%\#backup_file_name=%backup_file_name=${oml_backup_filename}%g" $PATH_DEPLOY/inventory
 fi
@@ -352,11 +361,14 @@ fi
 if [[ "${s3_secret_key}" != "NULL" ]];then
 sed -i "s%\#s3_secret_key=%s3_secret_key=${s3_secret_key}%g" $PATH_DEPLOY/inventory
 fi
-if [[ "${ast_bucket_name}" != "NULL" ]];then
-sed -i "s%\#backup_bucket_name=%backup_bucket_name=${ast_bucket_name}%g" $PATH_DEPLOY/inventory
+if [[ "${s3_bucket_name}" != "NULL" ]];then
+sed -i "s%\#s3_bucket_name=%s3_bucket_name=${s3_bucket_name}%g" $PATH_DEPLOY/inventory
 fi
-if [[ "${s3url}" != "NULL" ]];then
-sed -i "s%\#s3url=%s3url=${s3url}%g" $PATH_DEPLOY/inventory
+if [[ "${s3_endpoint_url}" != "NULL" ]];then
+sed -i "s%\#s3url=%s3url=${s3_endpoint_url}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${s3_region}" != "NULL" ]];then
+sed -i "s%\#s3_region=%s3_region=${s3_region}%g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_auto_restore}" != "NULL" ]];then
 sed -i "s/auto_restore=false/auto_restore=${oml_auto_restore}/g" $PATH_DEPLOY/inventory
@@ -372,7 +384,7 @@ if [ -f $PATH_CERTS/key.pem ] && [ -f $PATH_CERTS/cert.pem ];then
         cp $PATH_CERTS/cert.pem $SRC/ominicontacto/install/onpremise/deploy/ansible/certs
 fi
 
-sleep 4
+sleep 2
 echo "******************** deploy.sh execution ********************"
 
 cd $PATH_DEPLOY
@@ -381,30 +393,6 @@ cd $PATH_DEPLOY
 echo "******************** NET File Systen callrec ********************"
 
 case ${oml_callrec_device} in
-  s3-do)
-    echo "Callrec device: S3-DigitalOcean \n"
-    yum install -y s3fs-fuse
-    echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
-    chmod 600 ~/.passwd-s3fs
-    if [ ! -d $CALLREC_DIR_DST ];then
-      mkdir -p $CALLREC_DIR_DST
-      chown omnileads.omnileads -R $CALLREC_DIR_DST
-    fi
-    echo "${ast_bucket_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=${s3url} 0 0" >> /etc/fstab
-    mount -a
-    ;;
-  s3-aws)
-    echo "Callrec device: S3-DigitalOcean \n"
-    yum install -y s3fs-fuse
-    echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
-    chmod 600 ~/.passwd-s3fs
-    if [ ! -d $CALLREC_DIR_DST ];then
-      mkdir -p $CALLREC_DIR_DST
-      chown omnileads.omnileads -R $CALLREC_DIR_DST
-    fi
-    echo "${ast_bucket_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other 0 0" >> /etc/fstab
-    mount -a
-    ;;
   nfs)
     echo "Callrec device: NFS \n"
     yum install -y nfs-utils nfs-utils-lib
@@ -422,11 +410,11 @@ case ${oml_callrec_device} in
     mount -a
     ;;
   *)
-    echo "callrec on local filesystem \n"
+    echo "other method ... \n"
     ;;
  esac
 
-sleep 10
+sleep 5
 
 echo "******************** Exec task if RTP run AIO ********************"
 

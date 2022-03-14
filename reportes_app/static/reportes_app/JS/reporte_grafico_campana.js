@@ -83,21 +83,6 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgr
             if (data == '100') {
                 $csvDescargaLink.attr('class', 'btn btn-outline-primary btn-sm');
                 $csvDescarga.remove();
-                if (!('Notification' in window)) {
-                    console.log('Web Notification not supported');
-                    return;
-                }
-
-                var notification = new Notification(
-                    gettext('Exportación completa'), {
-                        body: gettext(
-                            'La exportación a .csv del reporte de ' +
-                            sufijoUrl +
-                            ' ha sido completada completada exitosamente.')
-                    });
-                setTimeout(function() {
-                    notification.close();
-                }, 3000);
                 contactadosSocket.close();
             }
         }

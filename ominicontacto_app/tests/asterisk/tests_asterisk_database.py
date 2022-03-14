@@ -55,7 +55,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
 
         keys_asterisk = ['QNAME', 'TYPE', 'REC', 'AMD', 'CALLAGENTACTION',
                          'RINGTIME', 'QUEUETIME', 'MAXQCALLS', 'SL', 'TC',
-                         'IDJSON', 'PERMITOCCULT', 'MAXCALLS', 'FAILOVER', 'SURVEY']
+                         'IDJSON', 'PERMITOCCULT', 'MAXCALLS', 'FAILOVER']
         for key in keys_asterisk:
             self.assertIn(key, dict_campana.keys())
 
@@ -101,7 +101,6 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['MAXCALLS'], "")
         self.assertEqual(dict_campana['FAILOVER'], str(0))
         self.assertNotIn('MOH', dict_campana['FAILOVER'])
-        self.assertEqual(dict_campana['SURVEY'], '')
 
     def test_devuelve_correctamente_value_MOH_campana_entrante_asterisk(self):
         playlist = PlaylistFactory()

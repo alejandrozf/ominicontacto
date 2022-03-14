@@ -1,11 +1,11 @@
 # para usarlo individualmente, 'docker pull alejandrozf/docker-stuff:python-flake8
-FROM python:3.6
+FROM python:3.6.10
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y gettext libgettextpo-dev curl sox
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
+RUN curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh
 RUN bash nodesource_setup.sh
 RUN apt install nodejs
 

@@ -39,7 +39,7 @@ from django.contrib.auth.models import Group
 from constance import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, ContactoBlacklist,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
@@ -1244,7 +1244,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         return False
 
     def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono')) if not self.es_campana_entrante else ""
+        telefono = str(self.cleaned_data.get('telefono'))
         if telefono and not telefono.isdigit():
             msg = _('Debe ser en formato "999999999" y solo numérico.')
             raise forms.ValidationError(msg)
@@ -1278,6 +1278,10 @@ class FormularioNuevoContacto(forms.ModelForm):
             self.validate_field(field_phone)
 
     def validate_field(self, field_name):
+        if field_name in self.campos_a_bloquear:
+            return
+        if field_name in self.campos_a_ocultar:
+            return
         field = str(self.cleaned_data.get(field_name))
         if field:
             if not field.isdigit():
@@ -1544,6 +1548,35 @@ class BlacklistForm(forms.ModelForm):
         }
 
 
+class ContactoBlacklistForm(forms.ModelForm):
+    # Campos del formulario
+    telefono = forms.CharField(
+        required=True,
+        max_length=25,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Teléfono de contacto')
+            }
+        )
+    )
+
+    # Fields cleanners
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if not telefono.isdigit():
+            msg = _("Debe ser en formato '99999999' y numérico.")
+            raise forms.ValidationError(msg)
+        if not is_valid_length(telefono, 3, 25):
+            msg = _("Solo se permiten de 3-25 dígitos.")
+            raise forms.ValidationError(msg)
+        return telefono
+
+    class Meta:
+        model = ContactoBlacklist
+        fields = ('telefono',)
+
+
 class SistemaExternoForm(forms.ModelForm):
 
     class Meta:
@@ -1627,10 +1660,31 @@ class ReglasIncidenciaForm(forms.ModelForm):
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        self.campana = None
+        if 'campana' in kwargs:
+            self.campana = kwargs.pop('campana')
+        super(ReglasIncidenciaForm, self).__init__(*args, **kwargs)
+
+    def clean_estado(self):
+        """
+        Realiza la  validación de que no existan reglas de incidencia de un mismo tipo repetidas
+        """
+        estado = self.cleaned_data.get('estado')
+        if estado and self.campana and \
+            estado in list(
+                set(self.campana.reglas_incidencia.exclude(id=self.instance.id).
+                    values_list('estado', flat=True))):
+            raise forms.ValidationError(
+                _("Los nombres de los estados de las reglas deben ser distintos"))
+        return estado
+
     def save(self, commit=True):
         regla = super(ReglasIncidenciaForm, self).save(commit=False)
         if regla.estado == ReglasIncidencia.TERMINATED:
             regla.estado_personalizado = ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR
+        else:
+            regla.estado_personalizado = ""
         if commit:
             regla.save()
         return regla
@@ -1959,14 +2013,21 @@ class GrupoForm(forms.ModelForm):
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
-                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales')
+                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
+                  'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
+                  )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
+                'class': 'form-control', 'style': 'display:inline; width:8ch'}),
+            'tiempo_maximo_para_agendar': forms.NumberInput(attrs={
                 'class': 'form-control', 'style': 'display:inline; width:8ch'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
+            'cantidad_agendas_personales': _('Cantidad máxima de agendas'),
+            'tiempo_maximo_para_agendar': _('Cantidad máxima de días para agendar'),
+            'obligar_despausa': _('Forzar Despausa'),
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),
@@ -1989,6 +2050,14 @@ class GrupoForm(forms.ModelForm):
         cleaned_data = super(GrupoForm, self).clean()
         if cleaned_data.get('limitar_agendas_personales', None):
             self.validate_required_field(cleaned_data, 'cantidad_agendas_personales')
+        if cleaned_data.get('limitar_agendas_personales_en_dias', None):
+            self.validate_required_field(cleaned_data, 'tiempo_maximo_para_agendar')
+
+    def clean_tiempo_maximo_para_agendar(self):
+        data = self.cleaned_data['tiempo_maximo_para_agendar']
+        if data and data > 30:
+            raise forms.ValidationError(_('Permitir agendar a no más de 30 días'))
+        return data
 
 
 class ParametrosCrmForm(forms.ModelForm):

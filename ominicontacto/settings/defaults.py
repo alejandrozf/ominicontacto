@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'configuracion_telefonia_app.apps.ConfiguracionTelefoniaAppConfig',
     'crispy_forms',
     'compressor',
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'reciclado_app.apps.RecicladoAppConfig',
     'reportes_app.apps.ReportesAppConfig',
     'supervision_app.apps.SupervisionAppConfig',
+    'notification_app.apps.NotificationAppConfig',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
@@ -75,7 +77,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'constance.backends.database',
     'django_sass',
-    'django_sendfile'
+    'django_sendfile',
+    'auditlog',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -87,6 +90,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auditlog.middleware.AuditlogMiddleware',
     'defender.middleware.FailedLoginMiddleware',
     'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware'
 ]
@@ -122,7 +126,14 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'ominicontacto.asgi.application'
 WSGI_APPLICATION = 'ominicontacto.wsgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Password hashers available
 # https://docs.djangoproject.com/en/1.9/topics/auth/passwords/

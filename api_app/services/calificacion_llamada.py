@@ -21,6 +21,8 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 
+from notification_app.notification import AgentNotifier
+
 import logging as _logging
 import redis
 
@@ -69,6 +71,16 @@ class CalificacionLLamada(object):
             'GESTION': formulario_gestion,
             'IDCALIFICACION': id_calificacion,
         }
+
+        if agente.forzar_despausa():
+            notification = AgentNotifier()
+            message = {
+                "id": call_data['call_id'],
+                "calificada": llamada_calificada == 'TRUE'
+            }
+            notification.send_message(
+                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message, user_id=agente.user_id)
+
         try:
             redis_connection.hset(family, mapping=variables)
             ttl = 3600 * 24 * 4  # En 4 dias expira el hash

@@ -26,14 +26,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block content %}
-
-<h1>{% trans 'Nueva blacklist' %}</h1>
-<form role="form" method="post" enctype="multipart/form-data">
-    {% include "base_form_fields.html" with form=form %}
-    <hr>
-    <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
-        {% trans 'Definir Blacklist' %}
-    </button>
-</form>
-
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="{% url 'black_list_list' %}" >
+                    <span aria-hidden="true">&laquo;</span>
+                    {% trans 'Atras' %}
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <h1>{% trans 'Nueva blacklist' %}</h1>
+    <form role="form" method="post" enctype="multipart/form-data">
+        {% include "base_form_fields.html" with form=form %}
+        <hr>
+        <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
+            {% trans 'Definir Blacklist' %}
+        </button>
+    </form>
+    <a class="btn btn-outline-primary mt-3" href="/static/ominicontacto/ejemplo_blacklist.csv" target="_blank">{% trans 'Baja ejemplo de Blacklist' %}</a>
 {% endblock %}

@@ -118,20 +118,22 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
-###########################################################
-# Restore File in case of Infrastructura as a code deploy #
-###########################################################
+callrec_device=local
+
+######################################################
+# S3 BUCKET in case of Infrastructure as Code deploy #
+######################################################
+auto_restore=false
 #backup_file_name=
-#backup_file_path=
 #s3_access_key=
 #s3_secret_key=
-#backup_bucket_name=
+#s3_bucket_name=
 #s3url=
-auto_restore=false
+#s3_region=
 
-#####################################
-# In case of high load > 200 usuers #
-#####################################
+#################################################
+# In case of high load > 200 simultaneus usuers #
+#################################################
 high_load=false
 
 # Do not change the variables below or you will experience

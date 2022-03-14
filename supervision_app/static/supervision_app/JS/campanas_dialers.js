@@ -65,17 +65,21 @@ $(function() {
         let haveAgentsData = false;
         let fistCallStats = {};
         data.forEach(info => {
-            let row = JSON.parse(info
-                .replaceAll('\'', '"')
-                .replaceAll('"[', '[')
-                .replaceAll(']"', ']')
-                .replaceAll('"{', '{')
-                .replaceAll('}"', '}'));
-            if (row['NAME']) {
-                agents.updateAgent(row);
-                haveAgentsData = true;
-            } else if (row['NOMBRE'] && !fistCallStats[row['NOMBRE']]) {
-                fistCallStats[row['NOMBRE']] = row;
+            try {
+                let row = JSON.parse(info
+                    .replaceAll('\'', '"')
+                    .replaceAll('"[', '[')
+                    .replaceAll(']"', ']')
+                    .replaceAll('"{', '{')
+                    .replaceAll('}"', '}'));
+                if (row['NAME']) {
+                    agents.updateAgent(row);
+                    haveAgentsData = true;
+                } else if (row['NOMBRE'] && !fistCallStats[row['NOMBRE']]) {
+                    fistCallStats[row['NOMBRE']] = row;
+                }
+            } catch (err) {
+                console.log(err);
             }
         });
 

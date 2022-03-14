@@ -10,11 +10,11 @@ if [ -z $DOCKER ]; then
   printf "$RED** [OMniLeads] Docker was not found, please install it $NC\n"
 fi
 printf "$GREEN** [OMniLeads] Pulling the latest image of fpm $NC\n"
-docker pull freetechsolutions/fpm-ansible:latest
+docker pull freetechsolutions/fpm-ansible:centos7.220224.01
 
 printf "$GREEN** [OMniLeads] Run and exec the container $NC\n"
 docker run -it --rm --name omnileads-fpm \
   --mount type=bind,source="$(pwd)"/../../../..,target=/builds/omnileads/ominicontacto \
   --env-file .env \
   --network=host --workdir=/builds/omnileads/ominicontacto \
-  freetechsolutions/fpm-ansible:latest bash
+  freetechsolutions/fpm-ansible:centos7.220224.01 scl enable devtoolset-11 bash

@@ -354,6 +354,22 @@ class OminicontactoAppConfig(AppConfig):
                           'label': _('Buscar Auditorías'),
                           'icon': 'icon-search',
                           'url': reverse('buscar_auditorias_gestion', args=(1,))})
+
+        # Auditoria al supervisor
+        auditoria = []
+        if 'seguridad_auditorias' in permissions:
+            auditoria.append({
+                'label': _('Auditoría'),
+                'url': reverse('seguridad_auditoria'),
+            })
+            items.append({
+                'order': 900,
+                'label': _('Seguridad'),
+                'icon': 'icon-contacts',
+                'id': 'menuSeguridad',
+                'children': auditoria
+            })
+
         return items
 
     def configuraciones_de_permisos(self):
@@ -756,6 +772,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'seguridad_auditorias',
+             'roles': ['Administrador', ]}
         ]
 
     informacion_de_permisos = {
@@ -1207,4 +1225,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Elimina un contacto de una lista rapida'), 'version': '1.19.0'},
         'nuevo_contacto_lista_rapida':
             {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
+        'seguridad_auditorias':
+            {'descripcion': _('Ver acciones realizadas por supervisores'), 'version': '1.19.0'},
     }

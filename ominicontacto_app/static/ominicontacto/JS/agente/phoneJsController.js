@@ -36,12 +36,13 @@ var ACW_PAUSE_NAME = 'ACW';
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
         this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
+        this.notification_agent = notification_agent;
         this.agent_config = new AgentConfig();
         this.pause_manager = new PauseManager();
         this.click_2_call_dispatcher = click_2_call_dispatcher;
@@ -56,6 +57,7 @@ class PhoneJSController {
         this.campaign_id = null;
         this.campaign_type = null;
         this.campaign_name = '';
+        this.llamada_calificada = null;
         /*-----------------*/
 
         this.disableOnHold();
@@ -63,9 +65,11 @@ class PhoneJSController {
         this.subscribeToViewEvents();
         this.subscribeToFSMEvents();
         this.subscribeToPhoneEvents();
+        this.subscribeToAgentNotificationEvents();
 
         this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
+
         this.phone_fsm.start();
     }
 
@@ -410,14 +414,34 @@ class PhoneJSController {
         /** User Agent **/
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus('REGISTERED');
-            self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
             self.phone_fsm.registered();
-            var login_ok = function(){self.goToReadyAfterLogin();};
-            var login_error = function(){
-                self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
-                self.phone_fsm.logToAsteriskError();
-            };
-            self.oml_api.asteriskLogin(login_ok, login_error);
+
+            if (self.phone_fsm.state == 'LoggingToAsterisk') {
+                self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
+                var login_ok = function(){self.goToReadyAfterLogin();};
+                var login_error = function(){
+                    self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
+                    self.phone_fsm.logToAsteriskError();
+                };
+                self.oml_api.asteriskLogin(login_ok, login_error);
+            }
+            if (self.phone_fsm.state == 'Ready')
+                self.view.setCallStatus(gettext('Agente conectado.'), 'yellowgreen');
+            if (self.phone_fsm.state == 'Paused') {
+                self.view.setCallStatus(gettext('Agente en pausa.'), 'orange');
+                self.setPause(self.pause_manager.pause_id, self.pause_manager.pause_name);
+            }
+        });
+
+        this.phone.eventsCallbacks.onUserAgentUnregistered.add(function () {
+            self.view.setSipStatus('UNREGISTERED');
+            self.view.setCallStatus(gettext('Agente Desconectado'), 'red');
+            $.growl.error({
+                title: gettext('Atención!'),
+                message: gettext('Ha perdido la conexión!'),
+                duration: 15000,
+            });
+            self.phone_fsm.unregistered();
         });
 
         this.phone.eventsCallbacks.onUserAgentRegisterFail.add(function () {
@@ -428,7 +452,9 @@ class PhoneJSController {
         this.phone.eventsCallbacks.onUserAgentDisconnect.add(function () {
             self.view.setSipStatus('NO_SIP');
             // TODO: Definir acciones a tomar.
+            // Si pierde conexión, en cada intento fallido de reconexión se dispara este evento.
         });
+
         /** Calls **/
         this.phone.eventsCallbacks.onTransferDialed.add(function(transfer_data) {
             phone_logger.log('onTransferDialed');
@@ -558,6 +584,19 @@ class PhoneJSController {
         });
     }
 
+    subscribeToAgentNotificationEvents() {
+        var self = this;
+        this.notification_agent.eventsCallbacks.onNotificationForzarDespausa.add(function(args){
+            if (args['calificada'])
+                if (self.phone_fsm.state == 'Paused')
+                    self.leavePause();
+                else
+                    self.llamada_calificada = true;
+            else
+                self.llamada_calificada = false;
+        });
+    }
+
     goToReadyAfterLogin() {
         // If state is not LoggingToAsterisk I assume agent already went to ready
         if (this.phone_fsm.state == 'LoggingToAsterisk') {
@@ -581,7 +620,12 @@ class PhoneJSController {
 
         // Si se fuerza la calificación no se sale automaticamente de Pausa forzada
         if (this.click_2_call_dispatcher.disposition_forced){
-            return;
+            if (this.llamada_calificada){
+                this.autoLeaveACWPause(return_to_pause, pause_id, pause_name);
+                this.llamada_calificada = null;
+            }  
+            else
+                return;
         }
         if (call_auto_unpause != undefined) {
             if (call_auto_unpause > 0) {

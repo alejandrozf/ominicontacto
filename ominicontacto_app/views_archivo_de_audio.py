@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import os
+
 from django.contrib import messages
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
@@ -26,6 +28,7 @@ from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext_lazy as _
+from api_app.services.storage_service import StorageService
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.forms import ArchivoDeAudioForm
@@ -47,6 +50,11 @@ def convertir_archivo_audio(audio):
     if audio.audio_asterisk.name:
         audio_file_asterisk = AudioConfigFile(audio)
         audio_file_asterisk.copy_asterisk()
+        if os.getenv('S3_STORAGE_ENABLED'):
+            s3_handler = StorageService()
+            s3_handler.upload_file(audio.audio_asterisk.name,
+                                   audio.audio_asterisk.path,
+                                   'media_root')
 
 
 class ArchivoAudioListView(ListView):
@@ -124,8 +132,19 @@ class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ArchivoAudioUpdateView, self).get_context_data(
             **kwargs)
-        context['base_url'] = "%s://%s" % (self.request.scheme,
-                                           self.request.get_host())
+
+        if self.object.audio_original:
+            if os.getenv('S3_STORAGE_ENABLED'):
+                s3_handler = StorageService()
+                audio_url = s3_handler \
+                    .get_file_url(f'/media_root/{self.object.audio_asterisk.name}')
+
+            else:
+                audio_url = "%s://%s%s" % (self.request.scheme,
+                                           self.request.get_host(),
+                                           self.object.audio_original.url)
+
+            context['audio_url'] = audio_url
         return context
 
     template_name = 'archivo_audio/nuevo_edita_archivo_audio.html'
@@ -171,6 +190,9 @@ class ArchivoAudioDeleteView(DeleteView):
         self.object.borrar()
         audio_file_asterisk = AudioConfigFile(self.object)
         audio_file_asterisk.delete_asterisk()
+        if os.getenv('S3_STORAGE_ENABLED'):
+            s3_handler = StorageService()
+            s3_handler.delete_file(self.object.audio_asterisk.name, 'media_root')
         message = _('<strong>Operación Exitosa!</strong> '
                     'Se llevó a cabo con éxito la eliminación del Archivo de Audio.')
 

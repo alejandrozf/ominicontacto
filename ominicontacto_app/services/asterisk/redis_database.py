@@ -236,12 +236,10 @@ class CampanaFamily(AbstractRedisFamily):
         except ConfiguracionDeAgentesDeCampana.DoesNotExist:
             pass
 
-        if campana.type == Campana.TYPE_ENTRANTE:
-            if hasattr(campana, 'encuestas') and campana.encuestas.filter(activa=True):
-                encuesta_camp = campana.encuestas.get(activa=True)
-                dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
-            else:
-                dict_campana.update({'SURVEY': ''})
+        if hasattr(campana, 'encuestas') and campana.encuestas.filter(activa=True):
+            encuesta_camp = campana.encuestas.get(activa=True)
+            dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
+
         return dict_campana
 
     def _obtener_todos(self):
@@ -254,6 +252,16 @@ class CampanaFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:CAMP"
+
+    def set_redis_value_field(self, nombre_family, field, value):
+        nombre_family = self._get_nombre_family(nombre_family)
+        redis_connection = self.get_redis_connection()
+        redis_connection.hset(nombre_family, field, value)
+
+    def del_redis_field(self, nombre_family, field):
+        nombre_family = self._get_nombre_family(nombre_family)
+        redis_connection = self.get_redis_connection()
+        redis_connection.hdel(nombre_family, field)
 
 
 class AgenteFamily(AbstractRedisFamily):
@@ -666,11 +674,24 @@ class DestinoPersonalizadoFamily(AbstractRedisFamily):
 class BlacklistFamily(object):
     BLACKLIST_KEY = 'OML:BLACKLIST'
 
+    def __init__(self, redis_connection=None):
+        self.redis_connection = redis_connection
+
+    def get_redis_connection(self):
+        try:
+            if not self.redis_connection:
+                self.redis_connection = redis.Redis(
+                    host=settings.REDIS_HOSTNAME,
+                    port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+                    decode_responses=True)
+        except RedisError as e:
+            raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
+
     def regenerar_families(self, blacklist=None):
-        self.redis_connection = redis.Redis(
-            host=settings.REDIS_HOSTNAME,
-            port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-            decode_responses=True)
+        self.get_redis_connection()
         self.redis_connection.delete(self.BLACKLIST_KEY)
 
         if blacklist is None:
@@ -679,6 +700,10 @@ class BlacklistFamily(object):
                 return
         telefonos = blacklist.contactosblacklist.values_list('telefono', flat=True)
         self.redis_connection.sadd(self.BLACKLIST_KEY, *telefonos)
+
+    def delete_family(self):
+        self.get_redis_connection()
+        self.redis_connection.delete(self.BLACKLIST_KEY)
 
 
 class RegenerarAsteriskFamilysOML(object):

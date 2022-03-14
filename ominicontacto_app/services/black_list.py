@@ -86,14 +86,18 @@ class CreacionBlacklistService(object):
         try:
             estructura_archivo = parser.get_estructura_archivo(blacklist)
             cantidad_contactos = 0
+            contactos_repetidos = False
             if blacklist.cantidad_contactos:
                 cantidad_contactos = blacklist.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
-                cantidad_contactos += 1
-                ContactoBlacklist.objects.create(
-                    telefono=lista_dato[0],
-                    black_list=blacklist,
-                )
+                if ContactoBlacklist.objects.filter(telefono=lista_dato[0]).count() == 0:
+                    cantidad_contactos += 1
+                    ContactoBlacklist.objects.create(
+                        telefono=lista_dato[0],
+                        black_list=blacklist,
+                    )
+                else:
+                    contactos_repetidos = True
         except OmlParserMaxRowError:
             blacklist.elimina_contactos()
             raise
@@ -104,6 +108,7 @@ class CreacionBlacklistService(object):
 
         blacklist.cantidad_contactos = cantidad_contactos
         blacklist.save()
+        return contactos_repetidos
 
 
 class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):

@@ -24,7 +24,7 @@ stages:
 
 test:
   stage: test
-  image: freetechsolutions/python-flake8:3.6
+  image: freetechsolutions/python-flake8:220221.01
   services:
     - name: freetechsolutions/omlpgsql:develop
       alias: plpython
@@ -76,19 +76,19 @@ build-img:
     - schedules
     - /\[verificacion\]/
 
-build-rpm:
-  stage: build
-  variables:
-  image: freetechsolutions/fpm-ansible:centos7
-  script:
-    - cd install/onpremise/build/ && bash build_rpm.sh
-  only:
-    - /.*release-1.*$/
-    - /.*pre-release.*$/
-    - /.*build-all.*$/
-    - /.*build-aio.*$/
-    - schedules
-    - web
+#build-rpm:
+#  stage: build
+#  variables:
+#  image: freetechsolutions/fpm-ansible:centos7.220224.01
+#  script:
+#    - cd install/onpremise/build/ && bash build_rpm.sh
+#  only:
+#    - /.*release-1.*$/
+#    - /.*pre-release.*$/
+#    - /.*build-all.*$/
+#    - /.*build-aio.*$/
+#    - schedules
+#    - web
 
 # deploy-aio-self-hosted:
 #   stage: deploy

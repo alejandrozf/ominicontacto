@@ -25,6 +25,7 @@ import os
 import random
 import re
 import uuid
+import datetime
 
 
 from ast import literal_eval
@@ -48,6 +49,9 @@ from django_extensions.db.models import TimeStampedModel
 
 from simple_history.models import HistoricalRecords
 from simple_history.utils import update_change_reason
+
+from auditlog.registry import auditlog
+from auditlog.models import AuditlogHistoryField
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
@@ -213,6 +217,8 @@ class Grupo(models.Model):
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
+    obligar_despausa = models.BooleanField(default=False, verbose_name=_(
+        'Forzar Despausa'))
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
     acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso grabaciones agentes'))
@@ -223,6 +229,10 @@ class Grupo(models.Model):
         'Limitar agendas personales'))
     cantidad_agendas_personales = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
         'Cantidad agendas personales'))
+    limitar_agendas_personales_en_dias = models.BooleanField(default=False, verbose_name=_(
+        'Limitar agendas personales en días'))
+    tiempo_maximo_para_agendar = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
+        'Tiempo máximo para agendar'))
 
     def __str__(self):
         return self.nombre
@@ -306,6 +316,7 @@ class AgenteProfile(models.Model):
         (ESTADO_PAUSA, 'PAUSA'),
     )
 
+    history = AuditlogHistoryField()
     objects = AgenteProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
@@ -365,6 +376,11 @@ class AgenteProfile(models.Model):
     def force_logout(self):
         self.user.force_logout()
 
+    def forzar_despausa(self):
+        if self.grupo.obligar_calificacion and self.grupo.obligar_despausa:
+            return True
+        return False
+
     def permite_agenda_personal(self, contacto, campana):
         if self.grupo.limitar_agendas_personales:
             cant_agendas = len(self.agendacontacto.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
@@ -373,6 +389,14 @@ class AgenteProfile(models.Model):
             if cant_agendas >= cant_permitidas:
                 return False
         return True
+
+    def tiempo_maximo_para_agendar(self):
+        if self.grupo.limitar_agendas_personales_en_dias:
+            return True, self.grupo.tiempo_maximo_para_agendar
+        return False, 0
+
+
+auditlog.register(AgenteProfile)
 
 
 class SupervisorProfile(models.Model):
@@ -1073,6 +1097,8 @@ class Campana(models.Model):
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
 
+    history = AuditlogHistoryField()
+
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_INACTIVA,
@@ -1415,6 +1441,9 @@ class Campana(models.Model):
         return self.type == self.TYPE_DIALER
 
 
+auditlog.register(Campana)
+
+
 class OpcionCalificacion(models.Model):
     """
     Especifica el tipo de formulario al cual será redireccionada
@@ -1615,6 +1644,9 @@ class Queue(models.Model):
 
     class Meta:
         db_table = 'queue_table'
+
+
+auditlog.register(Queue)
 
 
 class QueueMemberManager(models.Manager):
@@ -2903,8 +2935,16 @@ class AgendaContacto(models.Model):
                 not self.agente.permite_agenda_personal(self.contacto, self.campana):
             raise ValidationError(_('Ud. ya ha alcanzado el número límite de Agendas Personales.'
                                     'Consulte con su Administrador'))
-        else:
-            super(AgendaContacto, self).save(*args, **kwargs)
+        elif self.tipo_agenda == AgendaContacto.TYPE_PERSONAL and \
+                self.agente.tiempo_maximo_para_agendar()[0]:
+            hoy = datetime.datetime.today().date()
+            dias_restantes = (self.fecha - hoy).days
+            if dias_restantes > self.agente.tiempo_maximo_para_agendar()[1]:
+                raise ValidationError(_('La fecha de agenda propuesta supera '
+                                        'la ventana permitida ({} días). '
+                                        'Consulte con el Administrador.'
+                                        .format(self.agente.tiempo_maximo_para_agendar()[1])))
+        super(AgendaContacto, self).save(*args, **kwargs)
 
 
 # ==============================================================================
@@ -2987,6 +3027,9 @@ class Blacklist(models.Model):
     fecha_alta = models.DateTimeField(
         auto_now_add=True, verbose_name=_('Fecha alta')
     )
+    fecha_modificacion = models.DateTimeField(
+        auto_now=True, verbose_name=_('Fecha de modificación')
+    )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
@@ -3012,7 +3055,7 @@ class ContactoBlacklist(models.Model):
     Lista de contacto que no quieren que los llamen
     """
 
-    telefono = models.CharField(max_length=128)
+    telefono = models.CharField(max_length=128, unique=True)
     black_list = models.ForeignKey(
         Blacklist, related_name='contactosblacklist', blank=True, null=True,
         on_delete=models.CASCADE)
@@ -3202,6 +3245,14 @@ class ReglasIncidencia(models.Model):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
             self.campana.nombre, self.estado)
 
+    @property
+    def wombat_id(self):
+        return str(self.estado_personalizado or "")
+
+    @property
+    def campaign_id_wombat(self):
+        return self.campana.campaign_id_wombat
+
     def get_estado_wombat(self):
         if self.estado is ReglasIncidencia.RS_BUSY:
             return "RS_BUSY"
@@ -3256,6 +3307,10 @@ class ReglaIncidenciaPorCalificacion(models.Model):
     @property
     def wombat_id(self):
         return "DISP{0}".format(self.opcion_calificacion.id)
+
+    @property
+    def campaign_id_wombat(self):
+        return self.opcion_calificacion.campana.campaign_id_wombat
 
     def get_en_modo_wombat(self):
         if self.en_modo is ReglasIncidencia.FIXED:

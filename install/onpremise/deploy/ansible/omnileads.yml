@@ -131,7 +131,7 @@
         s3_url: "{{ s3url }}"
         aws_secret_key: "{{ s3_secret_key }}"
         aws_access_key: "{{ s3_access_key }}"
-        bucket: "{{ backup_bucket_name }}"
+        bucket: "{{ s3_bucket_name }}"
         object: "{{ backup_file_name }}.tar.gz"
         dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
         mode: get
@@ -148,10 +148,8 @@
     vars:
       ansible_python_interpreter: /usr/bin/python3
     aws_s3:
-        aws_secret_key: "{{ s3_secret_key }}"
-        aws_access_key: "{{ s3_access_key }}"
-        bucket: "{{ backup_bucket_name }}"
-        object: "{{ backup_file_name }}.tar.gz"
+        bucket: "{{ s3_bucket_name }}"
+        object: "omlapp-backup/{{ backup_file_name }}.tar.gz"
         dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
         mode: get
     delegate_to: localhost
@@ -183,7 +181,6 @@
       - backup_file_name is defined
       - auto_restore == "true"
 
-
   # Install Virtualenv package {{ virtualenv_version }}
   - name: Install Virtualenv package {{ virtualenv_version }} (from s3 source)
     command: yum install -y {{ virtualenv_package }}
@@ -192,6 +189,25 @@
     register: s3_download
     failed_when:
       - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+  - name: Copy backup file to correct dst
+    ansible.builtin.copy:
+      src: /var/tmp/{{ backup_file_name }}.tar.gz 
+      dest: /opt/omnileads/backup
+      owner: omnileads
+      group: omnileads
+      mode: '0644'
+    when:
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"  
+
+  - name: Restore addons when use infrasctructure as code
+    command: bash -x /opt/omnileads/bin/backup-restore.sh --restore={{ backup_file_name }}.tar.gz --omniapp
+    when:
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"  
 
   # Solution to issue OML-214: Re-setting backed up addons after installation
   - name: Re-setting addons after installation
@@ -219,6 +235,15 @@
     args:
       executable: /bin/bash
     when: reset_admin_password == "true"
+
+  # Download backup-restore script
+  - name: omlutilities repo
+    ansible.builtin.git:
+      repo: '{{ oml_utilities_repo }}'
+      dest: /opt/omnileads/utils
+      version: main
+    when:
+      - asterisk_host != "localhost"
 
   # Set up permissions for {{ install_prefix }} directory
   - name: Set up permissions for {{ install_prefix }} directory

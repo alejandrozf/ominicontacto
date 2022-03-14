@@ -3,7 +3,7 @@ cairocffi==0.8.0
 CairoSVG==1.0.22
 cffi==1.9.1
 coverage==4.4.1
-cryptography==2.4.2
+cryptography==2.8
 cssselect==1.0.1
 decorator==4.0.10
 Django==2.2.7
@@ -26,7 +26,7 @@ factory-boy==2.9.2
 ipython==6.5.0
 ipython-genutils==0.2.0
 libsass==0.20.1
-lxml==4.3.4
+lxml==4.7.1
 olefile==0.44
 paramiko==2.4.2
 pathlib2==2.1.0
@@ -55,6 +55,11 @@ unicodecsv==0.14.1
 wcwidth==0.1.7
 boto3==1.20.12
 websocket-client==0.58.0
+django-auditlog==0.4.7
+channels==3.0.4
+channels-redis==3.3.1
+pyOpenSSL==19.1.0
+rsa==4.8
 
 # local installations requirements e.g, developer debug libs
 django-cors-headers==2.4.0

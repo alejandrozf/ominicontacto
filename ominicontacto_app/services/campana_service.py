@@ -219,40 +219,62 @@ class CampanaService():
             regla.get_en_modo_wombat()]
         self.crear_reschedule_campana_wombat(campana, parametros)
 
-    def eliminar_reschedule_por_calificacion_wombat(self, regla):
-        campaign_id_wombat = regla.opcion_calificacion.campana.campaign_id_wombat
+    def eliminar_reschedule_wombat(self, regla):
+
+        campaign_id_wombat = regla.campaign_id_wombat
+
         list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
         service_wombat = WombatService()
         salida = service_wombat.list_config_wombat(list_url)
-        reschedule_data = self.obtener_reschedule_data_wombat(salida, regla.wombat_id)
+        reschedule_data = self.obtener_reschedule_data_wombat(salida, regla)
         delete_url = "api/edit/campaign/reschedule/?mode=D&parent={0}".format(campaign_id_wombat)
         salida = service_wombat.post_json(delete_url, reschedule_data)
         if 'status' in salida and salida['status'] == 'OK':
             return True
         return False
 
-    def editar_reschedule_por_calificacion_wombat(self, regla, wombat_id):
-        campaign_id_wombat = regla.opcion_calificacion.campana.campaign_id_wombat
+    def editar_reschedule_wombat(
+            self, regla, wombat_custom_status_anterior, wombat_status_anterior=None):
+
+        campaign_id_wombat = regla.campaign_id_wombat
+        wombat_id = regla.wombat_id
+
         list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
         service_wombat = WombatService()
         salida = service_wombat.list_config_wombat(list_url)
-        reschedule_data = self.obtener_reschedule_data_wombat(salida, wombat_id)
+        reschedule_data = self.obtener_reschedule_data_wombat(
+            salida, regla, wombat_custom_status_anterior, wombat_status_anterior)
         edit_url = "api/edit/campaign/reschedule/?mode=E&parent={0}".format(campaign_id_wombat)
-        reschedule_data['statusExt'] = regla.wombat_id
+        reschedule_data['statusExt'] = wombat_id
         reschedule_data['maxAttempts'] = regla.intento_max
         reschedule_data['retryAfterS'] = regla.reintentar_tarde
         reschedule_data['mode'] = regla.get_en_modo_wombat()
+        if regla.__class__.__name__ == "ReglasIncidencia":
+            reschedule_data['status'] = regla.get_estado_wombat()
         salida = service_wombat.post_json(edit_url, reschedule_data)
         if 'status' in salida and salida['status'] == 'OK':
             return True
         return False
 
-    def obtener_reschedule_data_wombat(self, salida, wombat_id):
+    def obtener_reschedule_data_wombat(
+            self, salida, regla, wombat_custom_status=None, wombat_status=None):
         if 'status' not in salida or not salida['status'] == 'OK':
             return
-        for rule_data in salida['results']:
-            if rule_data['statusExt'] == wombat_id:
-                return rule_data
+
+        wombat_custom_status = wombat_custom_status \
+            if wombat_custom_status is not None else regla.wombat_id  # accion de eliminar
+
+        if regla.__class__.__name__ == "ReglasIncidencia":
+            wombat_status = wombat_status if wombat_status is not None \
+                else regla.get_estado_wombat()  # accion de eliminar
+            for rule_data in salida['results']:
+                if rule_data['status'] == wombat_status \
+                        and rule_data['statusExt'] == wombat_custom_status:
+                    return rule_data
+        else:
+            for rule_data in salida['results']:
+                if rule_data['statusExt'] == wombat_custom_status:
+                    return rule_data
 
     def notificar_incidencia_por_calificacion(self, dialer_call_id, regla):
         """

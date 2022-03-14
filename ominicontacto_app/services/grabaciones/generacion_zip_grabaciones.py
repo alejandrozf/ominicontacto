@@ -25,12 +25,15 @@ from __future__ import unicode_literals
 import os
 import zipfile
 from django.conf import settings
-from constance import config as config_constance
 import redis
 from math import ceil
 import io
 import csv
-import boto3
+import logging
+
+from api_app.services.storage_service import StorageService
+
+logger = logging.getLogger(__name__)
 
 
 class GeneracionZipGrabaciones:
@@ -59,14 +62,21 @@ class GeneracionZipGrabaciones:
         cantidad_archivos = len(self.listado_archivos)
         self.redis_connection.publish(self.key_task, progreso)
         i = 1
+
+        s3_handler = None
+        if (os.getenv('S3_STORAGE_ENABLED') == 'true'):
+            s3_handler = StorageService()
+
         for archivo in self.listado_archivos:
             obs = ''
-            if (config_constance.S3_STORAGE_ENABLED):
-                self._save_file_from_s3(archivo, settings.SENDFILE_ROOT)
+            if s3_handler is not None:
+                s3_handler.download_file(archivo['archivo'], settings.SENDFILE_ROOT)
+
             archivo_path = os.path.join(settings.SENDFILE_ROOT, archivo['archivo'])
             try:
                 zf.write(archivo_path, archivo['archivo'], compress_type=compression)
-            except Exception:
+            except Exception as e:
+                logger.error(f'Error guardando en ZIP {e.__str__()}')
                 obs = ' (ERROR EN DESCARGA)'
 
             progreso = ceil(i / cantidad_archivos * 100)
@@ -91,19 +101,3 @@ class GeneracionZipGrabaciones:
     # En un futuro ver si es neesario generar un nombre acorde a un patrón
     def _generar_zip_name(self, username):
         return f'{username}-grabaciones.zip'
-
-    def _save_file_from_s3(self, archivo, local_path):
-        s3 = boto3.resource("s3",
-                            aws_access_key_id=os.getenv('API_CLOUD_ACCESS_KEY'),
-                            aws_secret_access_key=os.getenv('API_CLOUD_SECRET_KEY'))
-
-        pathr = os.path.dirname(os.path.join(settings.SENDFILE_ROOT, archivo['archivo']))
-        if not os.path.exists(pathr):
-            os.makedirs(pathr, mode=0o755)
-        try:
-            s3.Bucket(config_constance.S3_BUCKET_NAME) \
-                .download_file(archivo['archivo'],
-                               os.path.join(settings.SENDFILE_ROOT, archivo['archivo']))
-        except Exception:
-            return False
-        return True
