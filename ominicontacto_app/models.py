@@ -1167,6 +1167,8 @@ class Campana(models.Model):
     mostrar_nombre = models.BooleanField(default=True)
     videocall_habilitada = models.BooleanField(default=False)
     campo_direccion = models.CharField(max_length=128, null=True, blank=True)
+    mostrar_did = models.BooleanField(default=False)
+    mostrar_nombre_ruta_entrante = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre

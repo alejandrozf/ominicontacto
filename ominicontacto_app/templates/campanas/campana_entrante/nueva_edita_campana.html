@@ -100,14 +100,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.campo_direccion_choice }}
                 {{ form.campo_direccion_choice.errors }}
             </div>
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}
                 {{ form.objetivo.errors }}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans 'Mostrar nombre al recibir llamado' %}: </label>
                 {{ form.mostrar_nombre }}
+            </div>
+            <div class="col-md-3">
+                <label for="{{ form.mostrar_did.id_for_label }}">{% trans 'Mostrar Id al recibir llamado' %}: </label>
+                {{ form.mostrar_did }}
+            </div>
+            <div class="col-md-3">
+                <label for="{{ form.mostrar_nombre_ruta_entrante.id_for_label }}">{% trans 'Mostrar nombre ruta entrante' %}: </label>
+                {{ form.mostrar_nombre_ruta_entrante }}
             </div>
             <div class="col-md-4">
                 <label for="{{ form.videocall_habilitada.id_for_label }}">{% trans 'Habilitar video' %}: </label>

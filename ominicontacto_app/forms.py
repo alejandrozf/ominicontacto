@@ -804,7 +804,8 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'videocall_habilitada', 'speech')
+                  'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
+                  'videocall_habilitada', 'speech',)
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
