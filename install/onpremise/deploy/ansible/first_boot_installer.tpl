@@ -39,7 +39,7 @@
 #export s3_bucket_name=
 # s3 endpoint url Only when use non AWS S3 object | NULL
 #export s3_enpoint_url=NULL
-# s3 bucket region | NULL 
+# s3 bucket region | NULL
 #export s3_region=NULL
 
 # Parameters for NFS when nfs is selected as store for oml_callrec_device
@@ -130,6 +130,9 @@
 # Above 200 users enable this
 # Values: true | NULL
 #export oml_high_load=NULL
+
+# Key for Google maps API
+#export oml_google_key=NULL
 
 # ******************** SET ENV VARS ******************** #
 
@@ -232,7 +235,7 @@ echo "******************** yum update and install packages ********************"
 case ${oml_infras_stage} in
   aws)
     yum remove -y python3 python3-pip
-    yum install -y $SSM_AGENT_URL 
+    yum install -y $SSM_AGENT_URL
     yum install -y patch libedit-devel libuuid-devel git
     amazon-linux-extras install -y epel
     amazon-linux-extras install python3 -y
@@ -376,6 +379,9 @@ fi
 if [[ "${oml_high_load}" != "NULL" ]];then
 sed -i "s/high_load=false/high_load=${oml_high_load}/g" $PATH_DEPLOY/inventory
 fi
+if [[ "${oml_google_key}" != "NULL" ]];then
+sed -i "s%\#google_key=%google_key=${oml_google_key}%g" $PATH_DEPLOY/inventory
+fi
 
 # User certs verification *******
 
@@ -447,7 +453,7 @@ fi
 echo "********************* Deactivate cron callrec convert to mp3 *****************"
 if [[ "${oml_acd_host}"  != "NULL" ]];then
 sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads
-fi 
+fi
 
 echo "******************** sngrep SIP sniffer install ********************"
 
@@ -458,4 +464,3 @@ if [[ "${oml_app_install_sngrep}" == "true" ]];then
   cd sngrep && ./bootstrap.sh && ./configure && make && make install
   ln -s /usr/local/bin/sngrep /usr/bin/sngrep
 fi
-
