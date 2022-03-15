@@ -51,7 +51,7 @@ postgres_database=omnileads
 #######################################################################################################
 # Tell to OMniLeads Web App the kamailio and rtpengine host addr in case of cluster deploy            #
 # Variables for Kamailio memory. SHM is the maximum memory ammount. PKG is the minimum memory ammount #
-# Kamailio and rtpengine host addr                                                                    #          
+# Kamailio and rtpengine host addr                                                                    #
 #######################################################################################################
 #rtpengine_host=
 #kamailio_host=
@@ -135,6 +135,11 @@ auto_restore=false
 # In case of high load > 200 simultaneus usuers #
 #################################################
 high_load=false
+
+###########################
+# Key for Google maps API #
+###########################
+#google_key=
 
 # Do not change the variables below or you will experience
 # bad things
