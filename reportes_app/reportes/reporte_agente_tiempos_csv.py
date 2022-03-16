@@ -87,6 +87,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Transferidas a Agente"))
             encabezado.append(_("Tiempo promedio de llamadas"))
             encabezado.append(_("Cantidad de intentos fallidos"))
+            encabezado.append(_("Entrantes No Atendidas"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -132,6 +133,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente.transferidas_a_agente)
                 lista_opciones.append(str(agente.get_promedio_llamadas()) + "s")
                 lista_opciones.append(agente.cantidad_intentos_fallidos)
+                lista_opciones.append(agente.cantidad_entrantes_no_atendidas)
 
                 # --- Finalmente, escribimos la linea
                 lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
