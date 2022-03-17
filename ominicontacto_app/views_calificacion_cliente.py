@@ -112,7 +112,7 @@ class CalificacionClienteFormView(FormView):
         id_contacto = None
         self.call_data = None
         call_data_json = 'false'
-        if 'call_data_json' in kwargs:
+        if 'call_data_json' in kwargs and kwargs['call_data_json']:
             call_data_json = kwargs['call_data_json']
             self.call_data = json.loads(call_data_json)
             self.campana = Campana.objects.get(pk=self.call_data['id_campana'])
@@ -270,9 +270,12 @@ class CalificacionClienteFormView(FormView):
         if calificacion_form.instance and kwargs['from'] == 'recalificacion':
             sitio_externo = self.campana.sitio_externo
             if calificacion_form.instance.opcion_calificacion.interaccion_crm and \
-                    sitio_externo and sitio_externo.disparador == SitioExterno.CALIFICACION:
+                    sitio_externo and sitio_externo.disparador == SitioExterno.CALIFICACION \
+                    and self.call_data:
                 agente = self.request.user.get_agente_profile()
-                call_data = {}
+                call_data = json.loads(self.kwargs['call_data_json']) \
+                    if self.kwargs['call_data_json'] else {}
+                call_data['id_contacto'] = self.contacto.pk
                 call_data['id_calificacion'] = calificacion_form.instance.id
                 call_data['formulario'] = ""
                 call_data['nombre_opcion_calificacion'] = \
@@ -361,8 +364,19 @@ class CalificacionClienteFormView(FormView):
                 not self.campana.tipo_interaccion == Campana.SITIO_EXTERNO:
             if self.agente.grupo.obligar_calificacion:
                 calificacion_llamada = CalificacionLLamada()
-                calificacion_llamada.create_family(self.agente, self.call_data,
-                                                   self.kwargs['call_data_json'], calificado=False,
+                call_data_json = self.kwargs['call_data_json'] \
+                    if 'call_data_json' in self.kwargs else None
+                call_data = self.call_data
+                calificado = False
+                if self.call_data is None:
+                    calificado = True
+                    call_data = {}
+                    call_data['call_id'] = calificacion_form.instance.callid
+                    call_data['id_campana'] = \
+                        calificacion_form.instance.opcion_calificacion.campana_id
+                    call_data['telefono'] = calificacion_form.instance.contacto.telefono
+                calificacion_llamada.create_family(self.agente, call_data,
+                                                   call_data_json, calificado=calificado,
                                                    gestion=True,
                                                    id_calificacion=calificacion_form.instance.pk)
             return redirect(self.get_success_url_venta())
@@ -447,8 +461,10 @@ class CalificacionClienteFormView(FormView):
         )
 
     def get_success_url_venta(self):
-        return reverse('formulario_venta',
-                       kwargs={"pk_calificacion": self.object_calificacion.id})
+        kwargs = {"pk_calificacion": self.object_calificacion.id}
+        if self.call_data:
+            kwargs.update(call_data_json=json.dumps(self.call_data))
+        return reverse('formulario_venta', kwargs=kwargs)
 
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
@@ -463,9 +479,13 @@ class CalificacionClienteFormView(FormView):
         return reverse('reporte_agente_calificaciones')
 
     def get_success_url(self):
+        kwargs = {"pk_campana": self.campana.id,
+                  "pk_contacto": self.contacto.id}
+        if self.call_data:
+            self.call_data['force_disposition'] = False
+            kwargs.update(call_data_json=json.dumps(self.call_data))
         return reverse('recalificacion_formulario_update_or_create',
-                       kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id})
+                       kwargs=kwargs)
 
     def es_auditoria(self):
         return False
@@ -523,6 +543,10 @@ class RespuestaFormularioDetailView(DetailView):
     template_name = 'formulario/respuesta_formulario_detalle.html'
     model = RespuestaFormularioGestion
 
+    def dispatch(self, *args, **kwargs):
+        self.call_data = json.loads(kwargs['call_data_json']) if kwargs['call_data_json'] else None
+        return super(RespuestaFormularioDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(
             RespuestaFormularioDetailView, self).get_context_data(**kwargs)
@@ -545,8 +569,9 @@ class RespuestaFormularioDetailView(DetailView):
                 sitio_externo.disparador == SitioExterno.CALIFICACION:
             campana = respuesta.calificacion.opcion_calificacion.campana
             agente = self.request.user.get_agente_profile()
-            if self.request.method == 'GET':
-                call_data = {}
+            if self.request.method == 'GET' and self.call_data:
+                call_data = self.call_data
+                call_data['id_contacto'] = contacto.pk
                 call_data['formulario'] = respuesta.metadata
                 call_data['id_calificacion'] = respuesta.calificacion.id
                 call_data['nombre_opcion_calificacion'] = \
@@ -570,7 +595,7 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
     def dispatch(self, *args, **kwargs):
         self.calificacion = self._get_calificacion()
-
+        self.call_data = kwargs['call_data_json']
         # Verifico que este asignado a la campaña:
         if not self._usuario_esta_asignado_a_campana():
             messages.warning(
@@ -667,7 +692,10 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
             form=form, contacto_form=contacto_form))
 
     def get_success_url(self):
-        return reverse('formulario_detalle', kwargs={"pk": self.object.pk})
+        kwargs = {"pk": self.object.pk}
+        if self.call_data:
+            kwargs.update(call_data_json=self.call_data)
+        return reverse('formulario_detalle', kwargs=kwargs)
 
 
 class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpdateFormView):
