@@ -51,7 +51,7 @@ class AgenteTiemposReporte(object):
         self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
         self._tiempo_hold = tiempo_hold
         self._transferidas_a_agente = transferidas_a_agente
-        self.entrantes_no_atendidas = entrantes_no_atendidas
+        self._entrantes_no_atendidas = entrantes_no_atendidas
 
     @property
     def agente(self):
@@ -76,6 +76,10 @@ class AgenteTiemposReporte(object):
     @property
     def cantidad_intentos_fallidos(self):
         return self._cantidad_intentos_fallidos
+
+    @property
+    def cantidad_entrantes_no_atendidas(self):
+        return self._entrantes_no_atendidas
 
     def tiempo_promedio_llamadas(self):
         if self._cantidad_llamadas_procesadas:

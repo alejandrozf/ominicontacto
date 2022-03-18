@@ -212,6 +212,28 @@ class TiemposAgente(object):
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
+    def calcula_llamadas_entrantes_no_atendidas(self, agente, fecha_inferior,
+                                                fecha_superior, agente_fecha):
+        eventos_llamadas = ['RINGNOANSWER', ]
+        logs_time = LlamadaLog.objects.obtener_count_evento_agente_agrupado_fecha(
+            eventos_llamadas,
+            fecha_inferior,
+            fecha_superior,
+            agente.id).exclude(campana_id=0)
+        for log in logs_time:
+            date_time_actual = log['fecha']
+            agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
+                                          agente_fecha))
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._entrantes_no_atendidas = int(log['cantidad'])
+            else:
+                agente_nuevo = AgenteTiemposReporte(
+                    date_time_actual, timedelta(0), timedelta(0), timedelta(0),
+                    0, 0, 0, 0, timedelta(0), 0, int(log['cantidad']))
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
     def generar_por_fecha_agente(self, agente, fecha_inferior, fecha_superior):
         """generar las estadisticas de los tiempos del agente"""
         agente_fecha = []
@@ -223,6 +245,9 @@ class TiemposAgente(object):
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
         agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )
+        agente_fecha = self.calcula_llamadas_entrantes_no_atendidas(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
         agente_fecha = self.calcular_tiempo_hold_tipo_fecha(agente, fecha_inferior, fecha_superior,
