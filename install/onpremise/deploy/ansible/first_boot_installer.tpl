@@ -131,8 +131,9 @@
 # Values: true | NULL
 #export oml_high_load=NULL
 
-# Key for Google maps API
-#export oml_google_key=NULL
+# Google maps API
+#export oml_google_maps_api_key=NULL
+#export oml_google_maps_center='{ "lat": -31.416668, "lng": -64.183334 }'
 
 # ******************** SET ENV VARS ******************** #
 
@@ -379,9 +380,12 @@ fi
 if [[ "${oml_high_load}" != "NULL" ]];then
 sed -i "s/high_load=false/high_load=${oml_high_load}/g" $PATH_DEPLOY/inventory
 fi
-if [[ "${oml_google_key}" != "NULL" ]];then
-sed -i "s%\#google_key=%google_key=${oml_google_key}%g" $PATH_DEPLOY/inventory
+
+if [[ "${oml_google_maps_api_key}" != "NULL" ]];then
+sed -i "s%\#google_maps_api_key=%google_maps_api_key=${oml_google_maps_api_key}%g" $PATH_DEPLOY/inventory
 fi
+
+sed -i "s%\#google_maps_center=%google_maps_center='${oml_google_maps_center}'%g" $PATH_DEPLOY/inventory
 
 # User certs verification *******
 

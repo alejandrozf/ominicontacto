@@ -136,10 +136,11 @@ auto_restore=false
 #################################################
 high_load=false
 
-###########################
-# Key for Google maps API #
-###########################
-#google_key=
+###################
+# Google maps API #
+###################
+#google_maps_api_key=
+#google_maps_center=
 
 # Do not change the variables below or you will experience
 # bad things
