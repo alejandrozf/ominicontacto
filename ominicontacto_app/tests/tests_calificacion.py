@@ -617,5 +617,10 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_no_accion.pk
         self.client.post(url, post_data, follow=True)
+        # Se hizo seguimiento de "force_disposition" y se cambia el a valor a False
+        # TODO investigar como realizar el cambio utilizando:
+        # http://docs.python.org/3/library/unittest.mock-examples.html#coping-with-mutable-arguments
+        call_data['force_disposition'] = False
+
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
                                          calificado=True, gestion=False, id_calificacion=None)

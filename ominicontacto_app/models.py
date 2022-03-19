@@ -3630,7 +3630,7 @@ class ParametrosCrm(models.Model):
         LlamadaLog = apps.get_model('reportes_app.LlamadaLog')
         if self.valor == 'agent_id':
             return agente.id
-        elif self.valor == 'fecha':
+        elif self.valor == 'datetime':
             callid = datos_de_llamada['call_id']
             llamada_log = LlamadaLog.objects.filter(callid=callid).first()
             return llamada_log.time.strftime("%Y-%m-%d %H:%M:%S")
