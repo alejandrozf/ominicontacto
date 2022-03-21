@@ -42,7 +42,8 @@ from api_app.views.agente import (
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
-    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk
+    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
+    AgentRejectCallAsterisk
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 from api_app.views.audios import ListadoAudiosView
@@ -176,6 +177,8 @@ urlpatterns = [
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
     url(r'^api/v1/asterisk_ringing/$',
         AgentRingingAsterisk.as_view(), name='api_make_ringing'),
+    url(r'^api/v1/asterisk_reject_call/$',
+        AgentRejectCallAsterisk.as_view(), name='api_make_reject_call'),
     url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
         name='api_credenciales_sip_agente'),
     url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),

@@ -113,6 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <th>{% trans "Tiempo promedio" %}</th>
                         <th>{% trans "Intentos fallidos" %}</th>
                         <th>{% trans "Entrantes No atendidas" %}</th>
+                        <th>{% trans "Entrantes Rechazadas" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -179,6 +180,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}{% trans 's' %}</td>
                         <td>{{agente.cantidad_intentos_fallidos}}</td>
                         <td>{{agente.cantidad_entrantes_no_atendidas}}</td>
+                        <td>{{agente.cantidad_entrantes_rechazadas}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -328,6 +330,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                           <td>{% trans "Tiempo promedio" %}</td>
                           <td>{% trans "Intentos fallidos" %}</td>
                           <td>{% trans "Entrantes No atendidas" %}</td>
+                          <td>{% trans "Entrantes Rechazadas" %}</td>
                       </tr>
                     </thead>
                     <tbody id="output">
