@@ -383,9 +383,8 @@ fi
 
 if [[ "${oml_google_maps_api_key}" != "NULL" ]];then
 sed -i "s%\#google_maps_api_key=%google_maps_api_key=${oml_google_maps_api_key}%g" $PATH_DEPLOY/inventory
-fi
-
 sed -i "s%\#google_maps_center=%google_maps_center='${oml_google_maps_center}'%g" $PATH_DEPLOY/inventory
+fi
 
 # User certs verification *******
 
