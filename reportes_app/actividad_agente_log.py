@@ -39,7 +39,7 @@ class AgenteTiemposReporte(object):
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
                  cantidad_llamadas_procesadas, cantidad_intentos_fallidos,
                  tiempo_llamada_saliente, cantidad_llamadas_saliente, tiempo_hold,
-                 transferidas_a_agente, entrantes_no_atendidas=0):
+                 transferidas_a_agente, entrantes_no_atendidas=0, entrantes_rechazadas=0):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -52,6 +52,7 @@ class AgenteTiemposReporte(object):
         self._tiempo_hold = tiempo_hold
         self._transferidas_a_agente = transferidas_a_agente
         self._entrantes_no_atendidas = entrantes_no_atendidas
+        self._entrantes_rechazadas = entrantes_rechazadas
 
     @property
     def agente(self):
@@ -80,6 +81,10 @@ class AgenteTiemposReporte(object):
     @property
     def cantidad_entrantes_no_atendidas(self):
         return self._entrantes_no_atendidas
+
+    @property
+    def cantidad_entrantes_rechazadas(self):
+        return self._entrantes_rechazadas
 
     def tiempo_promedio_llamadas(self):
         if self._cantidad_llamadas_procesadas:

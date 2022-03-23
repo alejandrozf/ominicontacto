@@ -95,6 +95,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_make_ringing',
              'roles': ['Agente', ]},
+            {'nombre': 'api_make_reject_call',
+             'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
             {'nombre': 'api_set_estado_revision',
@@ -206,6 +208,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
         'api_make_ringing':
             {'descripcion': _('Establece el estado Ringing del Agente'), 'version': '1.7.0'},
+        'api_make_reject_call':
+            {'descripcion': _('Establece el estado Reject del Agente'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':
