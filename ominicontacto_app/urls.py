@@ -580,7 +580,14 @@ urlpatterns = [
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update_recalificacion/(?:/(?P<call_data_json>.+)/)?',
+        '/update_recalificacion/(?P<call_data_json>.+)$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'recalificacion'},
+        name='recalificacion_formulario_update_or_create'
+        ),
+    # Duplico URL por error de parametros opcionales en Python 3.6
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update_recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
         name='recalificacion_formulario_update_or_create'
@@ -608,12 +615,24 @@ urlpatterns = [
         name="calificar_por_telefono"),
 
     # Respuesta de Formulario para Calificación de Gestión
-    url(r'^formulario/venta/(?P<pk>\d+)/detalle/(?:/(?P<call_data_json>.+)/)?',
+    url(r'^formulario/venta/(?P<pk>\d+)/detalle/(?P<call_data_json>.+)$',
         login_required(
             views_calificacion_cliente.RespuestaFormularioDetailView.as_view()),
         name='formulario_detalle'
         ),
-    url(r'^formulario/venta/(?P<pk_calificacion>\d+)/(?:/(?P<call_data_json>.+)/)?',
+    # Duplico URL por error de parametros opcionales en Python 3.6
+    url(r'^formulario/venta/(?P<pk>\d+)/detalle/$',
+        login_required(
+            views_calificacion_cliente.RespuestaFormularioDetailView.as_view()),
+        name='formulario_detalle'
+        ),
+    url(r'^formulario/venta/(?P<pk_calificacion>\d+)/(?P<call_data_json>.+)$',
+        login_required(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
+        name='formulario_venta'
+        ),
+    # Duplico URL por error de parametros opcionales en Python 3.6
+    url(r'^formulario/venta/(?P<pk_calificacion>\d+)/$',
         login_required(
             views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
         name='formulario_venta'
