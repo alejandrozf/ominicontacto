@@ -439,23 +439,16 @@ if [[ "${oml_redis_host}" == "NULL" ]];then
   sed -i "s/bind 127.0.0.1/bind 127.0.0.1 $PRIVATE_IPV4/g" /etc/redis.conf
 fi
 
-echo "******************** WA issue #172 ********************"
-
-chown omnileads.omnileads -R /opt/omnileads/media_root
 
 echo "******************** setting demo environment ********************"
-
-if [[ "${oml_app_init_env}" == "true" ]];then
-  su -c "/opt/omnileads/bin/manage.sh inicializar_entorno" --login omnileads
-fi
 
 if [[ "${oml_auto_restore}" != "NULL" ]];then
 echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
 fi
 
 echo "********************* Deactivate cron callrec convert to mp3 *****************"
-if [[ "${oml_acd_host}"  != "NULL" ]];then
-sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads
+if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  != "nfs" ];then
+sed -i "s/conversor.sh 1 0/conversor.sh 2 0/g" /var/spool/cron/omnileads
 fi
 
 echo "******************** sngrep SIP sniffer install ********************"
