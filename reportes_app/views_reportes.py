@@ -119,8 +119,11 @@ class CampanaReporteCalificacionListView(FormView):
                 res[hc.id]['calif_actual'] = {}
                 res[hc.id]['tiene_historico'] = False
 
+            nombre = hc.opcion_calificacion.nombre
+            if hc.agendado:
+                nombre = "{} {}".format(nombre, hc.get_tipo_agenda_display())
             res[hc.id]['cals'][hc.history_id] = {
-                'nombre': hc.opcion_calificacion.nombre,
+                'nombre': nombre,
                 'observaciones': hc.observaciones,
                 'fecha_hora': timezone.localtime(hc.history_date).strftime("%Y/%m/%d %H:%M:%S"),
                 'history_id': hc.history_id,

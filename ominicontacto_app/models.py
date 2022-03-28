@@ -67,6 +67,17 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_ALFANUMERICO = r'^[\w]+$'
 SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
+TYPE_PERSONAL = 1
+"""Tipo de agenda Personal"""
+
+TYPE_GLOBAL = 2
+"""Tipo de agenda Global"""
+
+TYPE_AGENDA_CHOICES = (
+    (TYPE_PERSONAL, 'PERSONAL'),
+    (TYPE_GLOBAL, 'GLOBAL'),
+)
+
 
 class User(AbstractUser):
 
@@ -2707,6 +2718,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
                                on_delete=models.CASCADE)
     observaciones = models.TextField(blank=True, null=True)
     agendado = models.BooleanField(default=False)
+    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES, null=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
 
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
@@ -2925,16 +2937,13 @@ class AgendaContactoManager(models.Manager):
 class AgendaContacto(models.Model):
     objects = AgendaContactoManager()
 
-    TYPE_PERSONAL = 1
+    TYPE_PERSONAL = TYPE_PERSONAL
     """Tipo de agenda Personal"""
 
-    TYPE_GLOBAL = 2
+    TYPE_GLOBAL = TYPE_GLOBAL
     """Tipo de agenda Global"""
 
-    TYPE_AGENDA_CHOICES = (
-        (TYPE_PERSONAL, 'PERSONAL'),
-        (TYPE_GLOBAL, 'GLOBAL'),
-    )
+    TYPE_AGENDA_CHOICES = TYPE_AGENDA_CHOICES
 
     agente = models.ForeignKey(AgenteProfile, related_name="agendacontacto",
                                on_delete=models.CASCADE)
