@@ -59,7 +59,8 @@ class ReporteAgentes(object):
         self.genera_tiempos_pausa(agentes, fecha_inicio, fecha_fin)
         self.genera_tiempos_campana_agentes(agentes, fecha_inicio, fecha_fin)
         self.calcula_total_intentos_fallidos(agentes, fecha_inicio, fecha_fin)
-        self.calcula_llamadas_entrantes_no_atendidas(agentes, fecha_inicio, fecha_fin)
+        # Por ahora no calculamos la no atendidas
+        # self.calcula_llamadas_entrantes_no_atendidas(agentes, fecha_inicio, fecha_fin)
         self.calcula_llamadas_entrantes_rechazadas(agentes, fecha_inicio, fecha_fin)
         self._genera_tiempos_totales_agentes()
         dict_agentes_llamadas = self._obtener_total_agentes_tipo_llamada(fecha_inicio, fecha_fin)
