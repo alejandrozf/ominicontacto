@@ -40,6 +40,9 @@
 <div class="container">
     <input class="hidden" value='{{ configuracion_sitio_externo|safe }}' id="configuracionSitioExterno">
 
+    {% if call_data and call_data.Omlinroutename and campana.mostrar_nombre_ruta_entrante%}
+        <h1>{{ call_data.Omlinroutename }}</h1>
+    {% endif %}
     {% if campana.mostrar_nombre %}
         <h1>{{ campana.nombre }}</h1>
     {% endif %}
