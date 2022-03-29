@@ -28,7 +28,7 @@ ipython-genutils==0.2.0
 libsass==0.20.1
 lxml==4.7.1
 olefile==0.44
-paramiko==2.4.2
+paramiko==2.10.1
 pathlib2==2.1.0
 pexpect==4.7.0
 pickleshare==0.7.4
