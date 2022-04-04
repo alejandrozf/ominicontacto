@@ -544,7 +544,8 @@ class RespuestaFormularioDetailView(DetailView):
     model = RespuestaFormularioGestion
 
     def dispatch(self, *args, **kwargs):
-        self.call_data = json.loads(kwargs['call_data_json']) if kwargs['call_data_json'] else None
+        self.call_data = json.loads(kwargs['call_data_json']) \
+            if 'call_data_json' in kwargs else None
         return super(RespuestaFormularioDetailView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -595,7 +596,8 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
     def dispatch(self, *args, **kwargs):
         self.calificacion = self._get_calificacion()
-        self.call_data = kwargs['call_data_json']
+        self.call_data = kwargs['call_data_json'] \
+            if 'call_data_json' in kwargs else None
         # Verifico que este asignado a la campaña:
         if not self._usuario_esta_asignado_a_campana():
             messages.warning(
