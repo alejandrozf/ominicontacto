@@ -47,6 +47,7 @@ from api_app.views.agente import (
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 from api_app.views.audios import ListadoAudiosView
+from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 
 router = routers.DefaultRouter()
 
@@ -202,5 +203,10 @@ urlpatterns = [
         ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
     url(r'^api/v1/audit_supervisor',
         AuditSupervisor.as_view(), name='api_audit_supervisor'),
+    # ###########  WOMBAT DIALER    ############ #
+    url(r'^api/v1/womabat_dialer/restart',
+        ReiniciarWombat.as_view(), name='api_restart_wombat'),
+    url(r'^api/v1/womabat_dialer/status',
+        WombatState.as_view(), name='api_wombat_state'),
 
 ]

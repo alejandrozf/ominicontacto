@@ -207,18 +207,8 @@ OML_PLAYLIST_FOLDER = 'moh/'
 
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
-CONSTANCE_CONFIG = {
-    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
-    'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
-    'CLIENT_NAME': ('', 'CLIENT_NAME', str),
-    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
-    'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
-    'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
-    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
-    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
-    'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
-    'WEBPHONE_CLIENT_TTL': (1200, 'WEBPHONE_CLIENT_TTL', int),
-}
+CONSTANCE_CONFIG['KEYS_SERVER_HOST'] = ('https://keys-server.freetech.com.ar:20852',
+                                        'KEYS_SERVER_HOST', str)
 
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
