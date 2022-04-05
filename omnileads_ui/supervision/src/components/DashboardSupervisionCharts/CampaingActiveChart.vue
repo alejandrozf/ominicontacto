@@ -1,7 +1,9 @@
 <template>
     <Card>
         <template #title>
-            <h5 class='p-text-center'>Active {{titleize(chartName)}} Campaigns</h5>
+            <h5 class='p-text-center'>
+                {{$t('pages.dashboard_home_page.active_campaign_by_type', {type: titleize(chartName)})}}
+            </h5>
         </template>
         <template #content>
             <div class="p-d-flex p-jc-center">
@@ -12,14 +14,11 @@
 </template>
 <script>
 import { ref, watch } from 'vue';
-import Knob from 'primevue/knob';
+
 export default {
     props: {
         chartData: Number,
         chartName: String
-    },
-    components: {
-        Knob
     },
     methods: {
         titleize (txt) {

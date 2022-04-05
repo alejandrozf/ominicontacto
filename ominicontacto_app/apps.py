@@ -710,8 +710,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'queue_member_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'queue_member_elimina',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_template_create',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_campana_dialer_template',
@@ -1156,8 +1154,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Agregar un Grupo de Agentes a una Campaña'), 'version': '1.7.0'},
         'queue_member_campana':
             {'descripcion': _('Pantalla de asignacion de Agentes a Campaña'), 'version': '1.7.0'},
-        'queue_member_elimina':
-            {'descripcion': _('Eliminar un Agente de una Campaña'), 'version': '1.7.0'},
         'campana_dialer_template_create':
             {'descripcion': _('Crear un template de una Campaña Dialer'), 'version': '1.7.0'},
         'lista_campana_dialer_template':

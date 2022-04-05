@@ -1,4 +1,5 @@
 <template>
+    <!-- eslint-disable vue/no-v-model-argument -->
     <DataTable :value="tableData" ref="dt"  :paginator="true" class="p-datatable-customers" showGridlines :rows="10"
         dataKey="id" v-model:filters="filters" filterDisplay="menu" :loading="loading" stripedRows responsiveLayout="scroll"
         :globalFilterFields="['actor', 'object', 'name', 'action','date']">
@@ -32,21 +33,13 @@
     </DataTable>
 </template>
 <script>
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
-import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
 
 export default {
     props: {
         tableData: Object,
         loading: Boolean
-    },
-    components: {
-        DataTable,
-        Column,
-        InputText
     },
     setup () {
         const filters = ref({

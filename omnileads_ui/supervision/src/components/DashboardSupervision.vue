@@ -1,13 +1,16 @@
 <template>
-    <DashboardSupervisionDetail v-if="reportData.data!=null"
-        :reportData="reportData.data">
-    </DashboardSupervisionDetail>
+  <DashboardSupervisionDetail
+    v-if="reportData.data != null"
+    :reportData="reportData.data"
+  >
+  </DashboardSupervisionDetail>
 </template>
 <script>
 import { watch, ref } from 'vue';
 import apiUrls from '@/const/api-urls';
+
 import { apiCall } from '@/hooks/apiCall';
-import DashboardSupervisionDetail from '@/components/DashboardSupervisionDetail';
+import DashboardSupervisionDetail from '@/components/DashboardSupervisionDetail.vue';
 
 export default {
     components: {

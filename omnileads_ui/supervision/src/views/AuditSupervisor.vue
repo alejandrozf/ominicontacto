@@ -17,6 +17,7 @@ import DataTableAuditSupervisor from '@/components/DataTableAuditSupervisor';
 import FilterAuditSupervisor from '@/components/FilterAuditSupervisor';
 import Card from 'primevue/card';
 export default {
+    name: 'AuditSupervisor',
     components: {
         DataTableAuditSupervisor,
         FilterAuditSupervisor,

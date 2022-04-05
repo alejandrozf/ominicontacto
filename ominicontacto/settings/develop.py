@@ -31,7 +31,12 @@ MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLAS
 MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DJANGO_CORS_HEADERS = True
 CORS_ORIGIN_ALLOW_ALL = True
-
+CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']
+CORS_REPLACE_HTTPS_REFERER = True
+CORS_ORIGIN_WHITELIST = (
+    '*'
+)
 INTERNAL_IPS = ['127.0.0.1']
 
 TOKEN_EXPIRED_AFTER_SECONDS = 6 * 60  # 6 minutos
