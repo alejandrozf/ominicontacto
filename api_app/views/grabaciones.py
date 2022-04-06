@@ -63,10 +63,11 @@ class ObtenerArchivosGrabacionView(APIView):
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     http_method_names = ['post']
 
-    def _generar_zip(self, listado_archivos, username, key_task):
+    def _generar_zip(self, listado_archivos, username, key_task, mostrar_datos_contacto):
 
         zip_path = os.path.join(settings.SENDFILE_ROOT, 'zip')
-        zip_grabaciones = GeneracionZipGrabaciones(listado_archivos, zip_path, key_task, username)
+        zip_grabaciones = GeneracionZipGrabaciones(listado_archivos, zip_path, key_task,
+                                                   username, mostrar_datos_contacto)
         zip_grabaciones.genera_zip()
 
     def post(self, request):
@@ -74,11 +75,14 @@ class ObtenerArchivosGrabacionView(APIView):
         supervisor_id = request.user.id
         TASK_ID = 'zip'
         listado_archivos = json.loads(params.get('files'))
-
+        mostrar_datos_contacto = params.get('mostrar_datos_contacto') == 'true'
         key_task = 'OML:STATUS_DOWNLOAD:RECORDINGS:{0}:{1}'.format(supervisor_id, TASK_ID)
 
         thread_zip = threading.Thread(
-            target=self._generar_zip, args=[listado_archivos, request.user.username, key_task])
+            target=self._generar_zip, args=[listado_archivos,
+                                            request.user.username,
+                                            key_task,
+                                            mostrar_datos_contacto])
         thread_zip.setDaemon(True)
         thread_zip.start()
 

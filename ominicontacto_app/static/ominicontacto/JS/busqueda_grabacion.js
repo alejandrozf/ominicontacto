@@ -62,7 +62,6 @@ $(function() {
     $('#zipGrabaciones').on('click', function() {
         wsProcess();
     });
-
 });
 
 function cambiaEstadoChecks(estado) {
@@ -77,6 +76,7 @@ function filtrar_pagina(pagina) {
 
 function generarZip() {
     var buttonZip = $('#zipGrabaciones');
+    var check_mostrar_datos_contacto = $('#check-mostrar-datos-contacto').is(':checked');
     buttonZip.val(gettext('Descargar archivo de grabaciones (ZIP)'));
     buttonZip.attr('class', 'btn btn-outline-secondary btn-sm disabled');
     buttonZip.attr('disabled', true);
@@ -86,7 +86,8 @@ function generarZip() {
         url: Urls.api_grabacion_descarga_masiva(),
         dataType: 'json',
         data: {
-            files: JSON.stringify(prepareData())
+            files: JSON.stringify(prepareData()),
+            mostrar_datos_contacto: check_mostrar_datos_contacto
         },
         success: function(msg) {
             console.log(msg);
@@ -167,7 +168,9 @@ function extractRowData(row) {
         agente: row.find('td').eq(5).text(),
         campana: row.find('td').eq(6).text(),
         calificacion: row.find('td').eq(8).text().replace('\n', ' ').trim(),
-        archivo: fileName
+        archivo: fileName,
+        agente_username: row.find('td').eq(10).text(),
+        contacto_id: row.find('td').eq(11).text(),
     };
     return res;
 }

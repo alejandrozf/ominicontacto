@@ -50,6 +50,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <label for="check-mostrar-datos-contacto">{% trans "Agregar username de agente y datos de contacto:" %}</label>
+            <input class=" ml-0 mt-0" type="checkbox" name="check-mostrar-datos-contacto" id="check-mostrar-datos-contacto" title="{% trans '¡Advertencia! Esta acción puede consumir más recursos de los esperados, según el rango de fecha seleccionado.' %}" >
+        </div>
     </div>
     <table class="table table-stripped">
         <thead>
@@ -66,6 +70,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans 'Grabación' %}</th>
                 <th>{% trans 'Calificacion' %}</th>
                 <th>{% trans 'Descripción' %}</th>
+                <th style="display:none;">{% trans 'Username' %}</th>
+                <th style="display:none;">{% trans 'ContactoId' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -116,6 +122,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ grabacion.origen.callid }}">{% trans 'Descripción' %}
                     </button>
                 </td>
+                <td style="display:none;">{{ grabacion.origen.agente.user}}</td>
+                <td style="display:none;">{{ grabacion.origen.contacto_id}}</td>
             </tr>
             {% if grabacion.transfer %}
               {% for transfer in grabacion.transfer %}
