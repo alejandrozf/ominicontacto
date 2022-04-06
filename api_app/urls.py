@@ -30,13 +30,15 @@ from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
-    SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
+    SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
+    StatusCampanasEntrantesView,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
     ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
-    DashboardSupervision, AuditSupervisor)
+    DashboardSupervision, AuditSupervisor,
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -156,6 +158,15 @@ urlpatterns = [
     url(r'api/v1/dashboard_supervision/$',
         DashboardSupervision.as_view(),
         name='api_dashboard_supervision'),
+    url(r'api/v1/campaign/(?P<pk_campana>\d+)/agents/$',
+        AgentesCampana.as_view(),
+        name='api_agents_campaign'),
+    url(r'api/v1/campaign/agents_update/$',
+        ActualizaAgentesCampana.as_view(),
+        name='api_update_agents_campaign'),
+    url(r'api/v1/active_agents/$',
+        AgentesActivos.as_view(),
+        name='api_active_agents'),
 
 
     # ###########     AGENTE      ############ #

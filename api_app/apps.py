@@ -123,6 +123,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_database_metadata_columns_fields',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_agents_campaign',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_update_agents_campaign',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_active_agents',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -248,5 +254,14 @@ class ApiAppConfig(AppConfig):
              'version': '1.20.0'},
         'api_database_metadata_columns_fields':
             {'descripcion': _('Listas de nombres de columnas para Base de datos de Conatactos'),
-             'version': '1.20.0'}
+             'version': '1.20.0'},
+        'api_agents_campaign':
+            {'descripcion': _('Lista de agentes por campaña'),
+             'version': '1.19.0'},
+        'api_update_agents_campaign':
+            {'descripcion': _('Actualiza los agentes de una campaña'),
+             'version': '1.19.0'},
+        'api_active_agents':
+            {'descripcion': _('Obtiene todos los agentes activos'),
+             'version': '1.19.0'},
     }

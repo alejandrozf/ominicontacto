@@ -17,17 +17,9 @@
     </div>
 </template>
 <script>
-import Calendar from 'primevue/calendar';
-import Button from 'primevue/button';
-
 import { ref } from 'vue';
 export default {
     emits: ['filterChange'],
-    components: {
-        Calendar,
-        Button
-    },
-
     setup (props, { emit }) {
         const dateRange = ref([new Date(), new Date()]);
 

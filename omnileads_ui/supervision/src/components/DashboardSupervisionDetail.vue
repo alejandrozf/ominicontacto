@@ -13,7 +13,7 @@
 </div>
 </template>
 <script>
-import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart';
+import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart.vue';
 import StateAgentsChart from '@/components/DashboardSupervisionCharts/StateAgentsChart';
 import ContactedCallsChart from '@/components/DashboardSupervisionCharts/ContactedCallsChart';
 export default {
