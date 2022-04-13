@@ -68,7 +68,7 @@ class EstadisticasAgenteService():
         Manual y Preview contar logs con ANSWER
         Dialer y Entrante contar logs con CONNECT
         """
-        total_llamadas_campanas_qs = LlamadaLog.objects.filter(
+        total_llamadas_campanas_qs = LlamadaLog.objects.using('replica').filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk,
             agente_id=agente.pk).filter(
                 Q(event='ANSWER', tipo_campana__in=[Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]) |
@@ -88,7 +88,7 @@ class EstadisticasAgenteService():
         :return: retorna el nombre y cantidades de la calificaiones y el total de
         calificaciones
         """
-        calificaciones_query = CalificacionCliente.objects.filter(
+        calificaciones_query = CalificacionCliente.objects.using('replica').filter(
             agente=agente, opcion_calificacion__campana=campana, fecha__range=(
                 fecha_desde, fecha_hasta))
         calificaciones_agrupadas_qs = calificaciones_query.values(

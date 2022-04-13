@@ -71,11 +71,11 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
             self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
 
     def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas.keys(),
-                                         event__in=self.EVENTOS_LLAMADA,
-                                         tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
+        return LlamadaLog.objects.using('replica').filter(time__gte=self.desde,
+                                                          time__lte=self.hasta,
+                                                          campana_id__in=self.campanas.keys(),
+                                                          event__in=self.EVENTOS_LLAMADA,
+                                                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
 
     def _inicializar_conteo_de_campana(self, campana):
         datos_campana = self.INICIALES.copy()
@@ -97,7 +97,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
 
     def _contabilizar_gestiones(self):
         # Contabilizo las gestiones
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             fecha__gte=self.desde,
             fecha__lte=self.hasta,
             opcion_calificacion__campana_id__in=self.campanas.keys(),

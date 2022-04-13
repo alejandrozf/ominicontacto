@@ -66,7 +66,7 @@ NO_CONECTADO_DESCRIPCION = {
 class EstadisticasBaseCampana:
 
     def _obtener_logs_de_llamadas(self):
-        logs_llamadas = LlamadaLog.objects.filter(
+        logs_llamadas = LlamadaLog.objects.using('replica').filter(
             campana_id=self.campana.pk, time__range=(self.fecha_desde, self.fecha_hasta)).order_by(
                 '-time')
         return logs_llamadas
@@ -92,7 +92,7 @@ class EstadisticasBaseCampana:
         self._inicializar_valores_agentes()
 
     def _inicializar_valores_calificaciones(self):
-        calificacion_finales_qs = CalificacionCliente.objects.filter(
+        calificacion_finales_qs = CalificacionCliente.objects.using('replica').filter(
             opcion_calificacion__campana=self.campana, fecha__range=(
                 self.fecha_desde, self.fecha_hasta)).select_related(
                     'agente', 'agente__user', 'contacto', 'contacto__bd_contacto',
@@ -101,11 +101,11 @@ class EstadisticasBaseCampana:
         for calificacion in calificacion_finales_qs:
             self.calificaciones_finales_dict[calificacion.callid] = calificacion
 
-        calificaciones_historicas_qs = HistoricalCalificacionCliente.objects.filter(
-            history_date__range=(self.fecha_desde, self.fecha_hasta),
-            opcion_calificacion__campana=self.campana).select_related(
-                'agente', 'agente__user', 'contacto', 'contacto__bd_contacto',
-                'opcion_calificacion').order_by()
+        calificaciones_historicas_qs = HistoricalCalificacionCliente.objects.using('replica')\
+            .filter(history_date__range=(self.fecha_desde, self.fecha_hasta),
+                    opcion_calificacion__campana=self.campana).select_related(
+                        'agente', 'agente__user', 'contacto', 'contacto__bd_contacto',
+                        'opcion_calificacion').order_by()
 
         self.calificaciones_historicas_dict = {calificacion.callid: calificacion for calificacion
                                                in calificaciones_historicas_qs}

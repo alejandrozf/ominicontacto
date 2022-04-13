@@ -36,6 +36,7 @@ from django.conf import settings
 from django.test.utils import override_settings
 from django.core.management import call_command
 from django.contrib.auth.models import Group
+from django.db import connections
 
 from ominicontacto_app.models import (
     User, AgenteProfile, SupervisorProfile, Contacto,
@@ -533,6 +534,8 @@ class OMLTestUtilsMixin(object):
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
 
+    databases = {'default', 'replica'}
+
     def setUp(self, *args, **kwargs):
         super(OMLBaseTest, self).setUp(*args, **kwargs)
         if hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and \
@@ -545,9 +548,17 @@ class OMLBaseTest(TestCase, OMLTestUtilsMixin):
             Group.objects.create(name=User.AGENTE)
         call_command('actualizar_permisos')
 
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(OMLBaseTest, self).tearDown()
+
 
 class OMLTransaccionBaseTest(TransactionTestCase, OMLTestUtilsMixin):
     """Clase base para tests que involucran transacciones en distintos hilos"""
+    databases = {'default', 'replica'}
 
 
 def default_db_is_postgresql():

@@ -74,6 +74,19 @@ DATABASES = {
         'USER': 'omnileads',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': POSTGRES_HOST,
+        'PORT': 5432,
+        'NAME': 'omnileads',
+        'USER': 'omnileads',
+        'CONN_MAX_AGE': 300,
+        'ATOMIC_REQUESTS': True,
+        'SUPPORTS_TRANSACTIONS': True,
+        'TEST': {
+            'MIRROR': 'default',
+        },
     }
 }
 

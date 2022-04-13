@@ -30,9 +30,11 @@ from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgentePr
 
 from reportes_app.reportes.reporte_llamadas import ReporteDeLlamadas
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
+from django.db import connections
 
 
 class BaseReporteDeLlamadasTests(TestCase):
+    databases = {'default', 'replica'}
 
     def setUp(self):
         super(BaseReporteDeLlamadasTests, self).setUp()
@@ -61,6 +63,13 @@ class BaseReporteDeLlamadasTests(TestCase):
         self.contacto_p = ContactoFactory(bd_contacto=self.preview.bd_contacto)
 
         self.campanas = [self.manual, self.dialer, self.entrante, self.preview, ]
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(BaseReporteDeLlamadasTests, self).tearDown()
 
 
 class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
@@ -598,6 +607,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
 
 class AccesoReportesTests(TestCase):
     PWD = u'admin123'
+    databases = {'default', 'replica'}
 
     def setUp(self):
         self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)

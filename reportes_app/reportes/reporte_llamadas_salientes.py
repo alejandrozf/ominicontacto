@@ -54,10 +54,11 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
         self._calcular_porcentaje_objetivo()
 
     def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas.keys(),
-                                         event__in=self.EVENTOS_LLAMADA)
+        return LlamadaLog.objects.using('replica')\
+            .filter(time__gte=self.desde,
+                    time__lte=self.hasta,
+                    campana_id__in=self.campanas.keys(),
+                    event__in=self.EVENTOS_LLAMADA)
 
     def _inicializar_conteo_de_campana(self, campana):
         datos_campana = self.INICIALES.copy()
@@ -66,7 +67,7 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
 
     def _contabilizar_gestiones(self):
         # Contabilizo las gestiones
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             fecha__gte=self.desde,
             fecha__lte=self.hasta,
             opcion_calificacion__campana_id__in=self.campanas.keys(),
@@ -82,7 +83,7 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
 
     def _calcular_porcentaje_objetivo(self):
         # Contabilizo el porcentaje alcanzado del objetivo
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             opcion_calificacion__campana_id__in=self.campanas.keys(),
             opcion_calificacion__positiva=True
         ).values('opcion_calificacion__campana_id').annotate(

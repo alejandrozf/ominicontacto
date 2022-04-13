@@ -59,7 +59,7 @@ class ReporteSupervisores(object):
         # Los administradores tendran asignados a todos los agentes
         administradores = []
         agentes_por_supervisor = {}
-        supervisores = SupervisorProfile.objects.filter(
+        supervisores = SupervisorProfile.objects.using('replica').filter(
             borrado=False, user__is_active=True, user__borrado=False)
         for supervisor in supervisores:
             if supervisor.is_administrador:
