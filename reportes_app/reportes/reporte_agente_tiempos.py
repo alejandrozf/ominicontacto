@@ -310,18 +310,18 @@ class TiemposAgente(object):
             callid = log.callid
             fecha_desde = datetime_hora_minima_dia(fecha_actual)
             fecha_hasta = datetime_hora_maxima_dia(fecha_actual)
-            unhold_fecha = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid,
-                                                     event='UNHOLD',
-                                                     time__range=(log.time, fecha_hasta)
-                                                     ).order_by('time').first()
+            unhold_fecha = LlamadaLog.objects.using('replica')\
+                .filter(agente_id=agente.id, callid=callid,
+                        event='UNHOLD', time__range=(log.time, fecha_hasta))\
+                .order_by('time').first()
             if unhold_fecha:
                 # Si existen varios unhold dentro de una llamada se elige el primero
                 fin_hold = unhold_fecha.time
             else:
                 # Si se corta la llamada sin haber podido hacer unhold o por otro motivo
-                log_llamada = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid,
-                                                        time__range=(fecha_desde, fecha_hasta)
-                                                        ).last()
+                log_llamada = LlamadaLog.objects.using('replica')\
+                    .filter(agente_id=agente.id, callid=callid,
+                            time__range=(fecha_desde, fecha_hasta)).last()
                 if log_llamada and log_llamada.event != 'HOLD':
                     fin_hold = log_llamada.time
                 else:

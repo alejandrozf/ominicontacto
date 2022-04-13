@@ -66,12 +66,12 @@ class ReporteEstadisticasDiariaAgente(object):
     CANTIDAD_LOGS = 10
 
     def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         event__in=self.EVENTOS_REPORTE).order_by('-time')
+        return LlamadaLog.objects.using('replica')\
+            .filter(time__gte=self.desde, time__lte=self.hasta,
+                    event__in=self.EVENTOS_REPORTE).order_by('-time')
 
     def _obtener_estadisticas_calificacion(self):
-        return CalificacionCliente.objects.filter(
+        return CalificacionCliente.objects.using('replica').filter(
             fecha__gte=self.desde, fecha__lte=self.hasta).select_related(
                 'auditoriacalificacion', 'agente', 'opcion_calificacion')
 

@@ -419,24 +419,24 @@ class ActividadAgente(object):
     def _procesa_tiempo_hold(self, fecha_inicio, fecha_fin):
         fecha_superior = datetime_hora_maxima_dia(fecha_fin)
         fecha_inferior = datetime_hora_minima_dia(fecha_inicio)
-        logs = [hold for hold in LlamadaLog.objects.filter(agente_id=self.agente.id, event='HOLD',
-                                                           time__range=(fecha_inferior,
-                                                                        fecha_superior))]
+        logs = [hold for hold in LlamadaLog.objects.using('replica')
+                .filter(agente_id=self.agente.id, event='HOLD', time__range=(fecha_inferior,
+                                                                             fecha_superior))]
         for log in logs:
             inicio_hold = log.time
             callid = log.callid
-            unholds = LlamadaLog.objects.filter(agente_id=self.agente.id, callid=callid,
-                                                event='UNHOLD',
-                                                time__range=(log.time, fecha_superior)
-                                                ).order_by('time').first()
+            unholds = LlamadaLog.objects.using('replica')\
+                .filter(agente_id=self.agente.id, callid=callid,
+                        event='UNHOLD',
+                        time__range=(log.time, fecha_superior)).order_by('time').first()
             if unholds:
                 # Si existen varios unhold dentro de una llamada se elige el primero
                 fin_hold = unholds.time
             else:
                 # Si se corta la llamada sin haber podido hacer unhold o por otro motivo
-                log_llamada = LlamadaLog.objects.filter(agente_id=self.agente.id, callid=callid,
-                                                        time__range=(fecha_inferior, fecha_superior)
-                                                        ).last()
+                log_llamada = LlamadaLog.objects.using('replica')\
+                    .filter(agente_id=self.agente.id, callid=callid,
+                            time__range=(fecha_inferior, fecha_superior)).last()
                 if log_llamada.event == 'HOLD':
                     fin_hold = now()
                 else:

@@ -57,7 +57,7 @@ class ReporteDeResultadosDeCampana(object):
         return ids
 
     def _registrar_calificaciones(self, contactos_ids):
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             opcion_calificacion__campana=self.campana,
             contacto_id__in=contactos_ids)
         calificados_ids = []

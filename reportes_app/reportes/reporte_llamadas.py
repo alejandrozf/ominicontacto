@@ -140,9 +140,9 @@ class ReporteDeLlamadas(object):
     def __init__(self, desde, hasta, incluir_finalizadas, user):
         self.campanas = self._campanas_implicadas(user, incluir_finalizadas)
         campanas_ids = self.campanas.values_list('id', flat=True)
-        self.logs = LlamadaLog.objects.filter(time__gte=desde,
-                                              time__lte=hasta,
-                                              campana_id__in=campanas_ids)
+        self.logs = LlamadaLog.objects.using('replica')\
+            .filter(time__gte=desde, time__lte=hasta, campana_id__in=campanas_ids)
+
         self._inicializar_conteo_de_estadisticas(desde, hasta)
 
         self._contabilizar_estadisticas()
@@ -783,9 +783,9 @@ class GeneradorReportesLlamadasCSV(object):
 class ReporteTipoDeLlamadasDeCampana(ReporteDeLlamadas):
 
     def __init__(self, desde, hasta, id_campana):
-        self.logs = LlamadaLog.objects.filter(time__gte=desde,
-                                              time__lte=hasta,
-                                              campana_id=id_campana)
+        self.logs = LlamadaLog.objects.using('replica').filter(time__gte=desde,
+                                                               time__lte=hasta,
+                                                               campana_id=id_campana)
 
         self.campana = Campana.objects.get(id=id_campana)
         tipo = str(self.campana.type)

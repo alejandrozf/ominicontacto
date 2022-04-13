@@ -190,7 +190,7 @@ class ReporteDeResultadosView(TemplateView):
         # TODO: [PERMISOS] Verificar que
         # el supervisor tenga acceso a la campaña
         try:
-            self.campana = Campana.objects.get(id=kwargs['pk_campana'])
+            self.campana = Campana.objects.using('replica').get(id=kwargs['pk_campana'])
         except Campana.DoesNotExist:
             return redirect('index')
         return super(

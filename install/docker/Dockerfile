@@ -25,11 +25,20 @@ RUN apk add bash \
         pcre pcre-dev \
         aws-cli \
         git \
+        build-base \
+        gcc \
+        wget \
+    && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
+    &&  tar xzvf libffi-3.3.tar.gz \
+    && cd libffi-3.3/ \
+    && ./configure \
+    && make \
+    && make install \
     && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h $INSTALL_PREFIX -s /bin/bash \
     && cd $INSTALL_PREFIX \
     && mkdir -p wombat-json bin backup media_root/reporte_campana static log run \
     && chown -R omnileads.omnileads $INSTALL_PREFIX /var/spool/cron/ /var/spool/cron/crontabs/ \
-    && wget https://keys-server.freetech.com.ar:20852/cert --no-check-certificate
+    && wget https://keys-server.freetech.com.ar:20852/cert --no-check-certificate 
 
 #Copia el codigo de rama actual
 COPY ominicontacto/ $INSTALL_PREFIX/ominicontacto/ominicontacto
@@ -48,3 +57,4 @@ COPY install/docker/scripts/docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD [""]
+	

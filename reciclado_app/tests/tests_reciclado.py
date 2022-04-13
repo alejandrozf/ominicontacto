@@ -27,6 +27,7 @@ import random
 
 from mock import patch
 
+from django.db import connections
 from django.db.models import Count
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import CalificacionCliente
@@ -42,6 +43,7 @@ class RecicladoTest(OMLBaseTest):
 
     @patch.object(ConversorDeAudioService, '_convertir_audio')
     def setUp(self, _convertir_audio):
+        super(RecicladoTest, self).setUp()
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
         self.campana_2 = self.crear_campana_dialer(bd_contactos=base_datos)
@@ -50,6 +52,9 @@ class RecicladoTest(OMLBaseTest):
 
         # estados no contactados (no incluye ABANDONWEL porque es solo de entrantes):
         self.estados = LlamadaLog.EVENTOS_NO_CONEXION[:-1]
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
 
     def test_devuelve_correctamente_no_contactacion(self):
         """

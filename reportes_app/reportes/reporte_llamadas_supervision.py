@@ -67,7 +67,7 @@ class ReporteDeLlamadasDeSupervision(object):
 
     def _contabilizar_gestiones(self):
         # Contabilizo las gestiones
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             fecha__gte=self.desde,
             fecha__lte=self.hasta,
             opcion_calificacion__campana_id__in=self.campanas.keys(),
@@ -92,7 +92,7 @@ class ReporteDeLlamadasDeSupervision(object):
 
     def _calcular_porcentaje_objetivo(self):
         # Contabilizo las gestiones
-        calificaciones = CalificacionCliente.objects.filter(
+        calificaciones = CalificacionCliente.objects.using('replica').filter(
             opcion_calificacion__campana_id__in=self.campanas.keys(),
             opcion_calificacion__positiva=True
         ).values('opcion_calificacion__campana_id').annotate(
@@ -158,7 +158,7 @@ class ReporteStatusDeAgentesEnCampanasMixin(object):
             self.estadisticas[campana_id]['agentes_pausa'] = agentes_pausa
 
     def _genera_agentes_activos_campana_dict(self, agentes_activos_list):
-        tuplas = Campana.objects.filter(
+        tuplas = Campana.objects.using('replica').filter(
             queue_campana__members__id__in=agentes_activos_list)\
             .filter(id__in=self.campanas.keys()).values_list('id', 'queue_campana__members__id')
 
@@ -275,11 +275,11 @@ class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
             .filter(estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA])
 
     def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas.keys(),
-                                         tipo_llamada=Campana.TYPE_DIALER,
-                                         event__in=self.EVENTOS_LLAMADA)
+        return LlamadaLog.objects.using('replica').filter(time__gte=self.desde,
+                                                          time__lte=self.hasta,
+                                                          campana_id__in=self.campanas.keys(),
+                                                          tipo_llamada=Campana.TYPE_DIALER,
+                                                          event__in=self.EVENTOS_LLAMADA)
 
     def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
         if log.event == 'DIAL':
