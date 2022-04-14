@@ -447,6 +447,10 @@ echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --targ
 fi
 
 echo "********************* Deactivate cron callrec convert to mp3 *****************"
+if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  == "nfs" ];then
+sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads
+fi
+
 if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  != "nfs" ];then
 sed -i "s/conversor.sh 1 0/conversor.sh 2 0/g" /var/spool/cron/omnileads
 fi
