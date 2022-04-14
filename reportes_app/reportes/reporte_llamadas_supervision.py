@@ -63,6 +63,7 @@ class ReporteDeLlamadasDeSupervision(object):
         campana = self.campanas[campana_id]
         datos_campana = self.INICIALES.copy()
         datos_campana['nombre'] = force_text(campana.nombre)
+        datos_campana['status'] = campana.estado
         self.estadisticas[campana.id] = datos_campana
 
     def _contabilizar_gestiones(self):
@@ -341,6 +342,7 @@ class ReporteLlamadasDialersFamily(AbstractRedisFamily):
     def _create_dict(self, datos_reporte):
         dict_reporte = {
             'NOMBRE': datos_reporte['nombre'],
+            'STATUS': datos_reporte['status'],
             'ESTADISTICAS': json.dumps(datos_reporte)
         }
         return dict_reporte
