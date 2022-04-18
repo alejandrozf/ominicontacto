@@ -255,7 +255,7 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Auditoría a supervisores'),
              'version': '1.20.0'},
         'api_database_metadata_columns_fields':
-            {'descripcion': _('Listas de nombres de columnas para Base de datos de Conatactos'),
+            {'descripcion': _('Listas de nombres de columnas para Base de datos de Contactos'),
              'version': '1.20.0'},
         'api_restart_wombat':
             {'descripcion': _('Reinicia servicio Wombat Dialer'),
