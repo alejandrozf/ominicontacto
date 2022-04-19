@@ -146,10 +146,13 @@ class PhoneJSController {
         }
 
         this.view.setPauseButton.click(function() {
-            var pause_id = $('#pauseType').val();
-            var pause_name = $('#pauseType option:selected').html().replace(' ', '');
+            const pause_data = $('#pauseType').val().split(',');
+            var pause_id = parseInt(pause_data[0]);
+            var pause_name = pause_data[1];
+            var pause_time = parseInt(pause_data[2]);
             clearTimeout(self.ACW_pause_timeout_handler);
-            self.setPause(pause_id, pause_name);
+            clearTimeout(self.pause_timeout_handler);
+            self.setPause(pause_id, pause_name, pause_time);
         });
 
         this.view.hangUpButton.click(function() {
@@ -429,7 +432,7 @@ class PhoneJSController {
                 self.view.setCallStatus(gettext('Agente conectado.'), 'yellowgreen');
             if (self.phone_fsm.state == 'Paused') {
                 self.view.setCallStatus(gettext('Agente en pausa.'), 'orange');
-                self.setPause(self.pause_manager.pause_id, self.pause_manager.pause_name);
+                self.setPause(self.pause_manager.pause_id, self.pause_manager.pause_name, self.pause_manager.pause_time);
             }
         });
 
@@ -668,22 +671,33 @@ class PhoneJSController {
         }
     }
 
-    setPause(pause_id, pause_name) {
+    setPause(pause_id, pause_name, pause_time = 0) {
+        var self = this;
         if (this.phone_fsm.state == 'Paused') {
             this.phone_fsm.changePause();
         } else {
             this.phone_fsm.startPause();
         }
-        this.pause_manager.setPause(pause_id, pause_name);
+        this.pause_manager.setPause(pause_id, pause_name, pause_time);
         this.view.setUserStatus('label label-danger', pause_name);
         var message = interpolate(gettext('Obteniendo pausa: %(pause_name)s'),
             {pause_name: pause_name}, true);
         this.view.setCallStatus(message, 'yellowgreen');
 
+        this.timers.toEndPause.hide_element();
+        this.timers.toEndPause.reset();
+        if(pause_time > 0) {
+            let m_seconds = pause_time * 1000;
+            this.pause_timeout_handler = setTimeout(
+                function() {self.leavePause();},
+                m_seconds
+            );
+            this.timers.toEndPause.show_element();
+            this.timers.toEndPause.start_countdown(pause_time);
+        }
         this.timers.pausa.start();
         this.timers.operacion.stop();
 
-        var self = this;
         var pause_ok = function(){
             self.phone_fsm.pauseSet();
             self.view.setCallStatus(gettext('Agente en pausa'), 'orange');
@@ -694,6 +708,8 @@ class PhoneJSController {
             self.phone_fsm.pauseAborted();
             // Arrancar de nuevo timer de operacion
             self.timers.pausa.stop();
+            self.timers.toEndPause.hide_element();
+            self.timers.toEndPause.reset();
             self.timers.operacion.start();
             self.pause_manager.leavePause();
         };
@@ -734,6 +750,7 @@ class PhoneJSController {
 
     doLeavePause() {
         clearTimeout(this.ACW_pause_timeout_handler);
+        clearTimeout(this.pause_timeout_handler);
         var pause_id = this.pause_manager.pause_id;
         this.pause_manager.leavePause();
 
@@ -752,6 +769,8 @@ class PhoneJSController {
         };
         this.oml_api.makeUnpause(pause_id, unpause_ok, unpause_error);
         this.timers.pausa.stop();
+        this.timers.toEndPause.hide_element();
+        this.timers.toEndPause.reset();
         this.timers.operacion.start();
         this.phone_fsm.unpause();
         this.view.setCallStatus(gettext('Liberando pausa...'), 'yellowgreen');
@@ -1032,19 +1051,22 @@ class PhoneJSController {
 
 class PauseManager {
     constructor() {
+        this.initPause();
+    }
+    initPause() {
         this.pause_id = undefined;
         this.pause_name = undefined;
+        this.pause_time = undefined;
         this.pause_enabled = false;
     }
-    setPause(id, name) {
+    setPause(id, name, time) {
         this.pause_id = id;
         this.pause_name = name;
+        this.pause_time = time;
         this.pause_enabled = true;
     }
     leavePause() {
-        //this.pause_id = undefined;
-        //this.pause_name = undefined;
-        this.pause_enabled = false;
+        this.initPause();
     }
     get in_ACW_pause() {
         return this.pause_enabled && this.pause_id == ACW_PAUSE_ID;

@@ -48,7 +48,6 @@ import AddAgents from '@/components/campaigns/agents/AddAgents.vue';
 import AddGroupAgents from '@/components/campaigns/agents/AddGroupAgents.vue';
 import AgentsCampaignTable from '@/components/campaigns/agents/AgentsCampaignTable.vue';
 import AgentsCampaignService from '@/services/agentsCampaignService';
-import { getToasConfig } from '@/helpers/sweet_alerts_helper';
 
 export default {
     name: 'AddAgentsToCampaign',
@@ -57,6 +56,7 @@ export default {
         AddGroupAgents,
         AddAgents
     },
+    inject: ['$helpers'],
     data () {
         return {
             campaignId: null,
@@ -110,7 +110,7 @@ export default {
                             await this.initAgentsCampaign(this.campaignId);
                             await this.initActiveAgents();
                             this.$swal(
-                                getToasConfig(
+                                this.$helpers.getToasConfig(
                                     this.$t('globals.success_notification'),
                                     this.$tc('globals.success_updated_type', {
                                         type: this.$tc('globals.agent', 2)
@@ -120,7 +120,7 @@ export default {
                             );
                         } else {
                             this.$swal(
-                                getToasConfig(
+                                this.$helpers.getToasConfig(
                                     this.$t('globals.error_notification'),
                                     this.$tc('globals.error_to_updated', {
                                         type: this.$tc('globals.agent', 2)
@@ -132,7 +132,7 @@ export default {
                         this.btnStatusSave = false;
                     } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                         this.$swal(
-                            getToasConfig(
+                            this.$helpers.getToasConfig(
                                 this.$t('globals.cancelled'),
                                 this.$t('views.add_agents_to_campaign.agents_not_save'),
                                 this.$t('globals.icon_error')
@@ -159,7 +159,7 @@ export default {
                     await this.initAgentsCampaign(this.campaignId);
                     await this.initActiveAgents();
                     this.$swal(
-                        getToasConfig(
+                        this.$helpers.getToasConfig(
                             this.$t('globals.success_notification'),
                             this.$tc('globals.success_updated_type', {
                                 type: this.$tc('globals.agent', 2)
@@ -169,7 +169,7 @@ export default {
                     );
                 } else {
                     this.$swal(
-                        getToasConfig(
+                        this.$helpers.getToasConfig(
                             this.$t('globals.error_notification'),
                             this.$tc('globals.error_to_updated', {
                                 type: this.$tc('globals.agent', 2)

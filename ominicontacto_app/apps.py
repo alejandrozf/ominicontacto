@@ -295,6 +295,11 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nueva pausa'),
                 'url': reverse('pausa_nuevo')
             })
+        if 'conjuntos_de_pausas_list' in permissions:
+            pausas.append({
+                'label': _('Conjuntos de pausas'),
+                'url': reverse('conjuntos_de_pausas_list')
+            })
         if pausas:
             items.append({'order': 200,
                           'label': _('Pausas'),
@@ -773,7 +778,9 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'seguridad_auditorias',
-             'roles': ['Administrador', ]}
+             'roles': ['Administrador', ]},
+            {'nombre': 'conjuntos_de_pausas_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -1227,4 +1234,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
         'seguridad_auditorias':
             {'descripcion': _('Ver acciones realizadas por supervisores'), 'version': '1.19.0'},
+        'conjuntos_de_pausas_list':
+            {'descripcion': _('Listado de conjuntos de pausas'), 'version': '1.21.0'},
     }

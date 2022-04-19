@@ -28,16 +28,17 @@ from factory import (DjangoModelFactory, lazy_attribute, SubFactory, Sequence, p
 
 from django.utils import timezone
 
-from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      NombreCalificacion, Formulario, FieldFormulario,
-                                      GrabacionMarca,
-                                      SitioExterno, User, Contacto, SupervisorProfile,
-                                      AgenteEnContacto, QueueMember, CalificacionCliente,
-                                      OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
-                                      ActuacionVigente, Pausa, RespuestaFormularioGestion,
-                                      Blacklist, AgendaContacto, SistemaExterno,
-                                      AgenteEnSistemaExterno, AuditoriaCalificacion,
-                                      ConfiguracionDeAgentesDeCampana)
+from ominicontacto_app.models import (
+    AgenteProfile, BaseDatosContacto, Campana, GrabacionMarca,
+    ConfiguracionDePausa, ConjuntoDePausa, Grupo, Queue,
+    NombreCalificacion, Formulario, FieldFormulario,
+    SitioExterno, User, Contacto, SupervisorProfile,
+    AgenteEnContacto, QueueMember, CalificacionCliente,
+    OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
+    ActuacionVigente, Pausa, RespuestaFormularioGestion,
+    Blacklist, AgendaContacto, SistemaExterno,
+    AgenteEnSistemaExterno, AuditoriaCalificacion,
+    ConfiguracionDeAgentesDeCampana)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -401,3 +402,19 @@ class ConfiguracionDeAgentesDeCampanaFactory(DjangoModelFactory):
 
     class Meta:
         model = ConfiguracionDeAgentesDeCampana
+
+
+class ConjuntoDePausaFactory(DjangoModelFactory):
+    class Meta:
+        model = ConjuntoDePausa
+
+    nombre = Sequence(lambda n: "Conjunto_De_Pausa_{0}".format(n))
+
+
+class ConfiguracionDePausaFactory(DjangoModelFactory):
+    pausa = SubFactory(PausaFactory)
+    conjunto_de_pausa = SubFactory(ConjuntoDePausaFactory)
+    time_to_end_pause = lazy_attribute(lambda a: faker.random_int(1, 1200))
+
+    class Meta:
+        model = ConfiguracionDePausa

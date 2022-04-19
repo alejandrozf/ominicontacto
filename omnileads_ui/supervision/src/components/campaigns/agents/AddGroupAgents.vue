@@ -26,9 +26,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { getToasConfig } from '@/helpers/sweet_alerts_helper';
 
 export default {
+    inject: ['$helpers'],
     data () {
         return {
             groupsSelectize: [],
@@ -57,7 +57,7 @@ export default {
                 this.selectedGroup = null;
                 if (existingAgents.length > 0) {
                     this.$swal(
-                        getToasConfig(
+                        this.$helpers.getToasConfig(
                             this.$t('globals.warning_notification'),
                             this.$t(
                                 'views.add_agents_to_campaign.already_agents_in_campaign',
@@ -68,7 +68,7 @@ export default {
                     );
                 } else {
                     this.$swal(
-                        getToasConfig(
+                        this.$helpers.getToasConfig(
                             this.$t('globals.success_notification'),
                             this.$tc('globals.success_added_type', {
                                 type: this.$tc('globals.group')
@@ -79,7 +79,7 @@ export default {
                 }
             } else {
                 this.$swal(
-                    getToasConfig(
+                    this.$helpers.getToasConfig(
                         this.$t('globals.warning_notification'),
                         this.$tc('globals.not_select_type', {
                             type: this.$tc('globals.group')

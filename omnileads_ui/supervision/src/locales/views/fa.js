@@ -11,5 +11,19 @@ export default {
         how_to_edit_penalty: 'برای تغییر مجازات، ستون را انتخاب کنید',
         agents_campaign: 'عوامل کمپین',
         agents_not_save: 'عوامل ذخیره نشدند'
+    },
+    pause_sets: {
+        title: 'مجموعه های مکث',
+        configured_pauses: 'شکست های پیکربندی شده',
+        infinite_pause: 'مکث بی نهایت',
+        pause_settings_will_be_deleted: 'تمام تنظیمات مکث حذف خواهد شد',
+        pause_sets_not_deleted: 'مجموعه مکث حذف نشد',
+        pause_config_not_deleted: 'تنظیم مکث حذف نشد',
+        pause_sets_without_pauses: 'نمی توان یک مجموعه مکث بدون مکث ایجاد کرد',
+        how_to_edit_pause_setting: 'برای ویرایش مکث ها، روی سلول Time تا پایان مکث کلیک کنید'
+    },
+    pause_setting: {
+        max_time_allowed: 'حداکثر زمان مکث 8 ساعت (28800 ثانیه) است.',
+        min_time_allowed: 'زمان بی نهایت به این معنی است که هرگز مکث را ترک نخواهید کرد (0 ثانیه)'
     }
 };

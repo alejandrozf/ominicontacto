@@ -257,6 +257,11 @@ class PausaListView(TemplateView):
         return context
 
 
+class ConjuntosDePausaListView(TemplateView):
+    """Vista para listar los conjuntos de pausa"""
+    template_name = 'conjuntos_de_pausas_list.html'
+
+
 class SincronizarPausaMixin(object):
 
     def get_success_url(self):
@@ -312,18 +317,25 @@ class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
             return redirect('pausa_list')
         return self.render_to_response({'object': pausa})
 
-    def post(self, request, pk):
+    def post(self, request, *args, **kwargs):
+        operationType = int(request.POST.get('operationType'))
         try:
-            pausa = Pausa.objects.get(pk=pk)
+            pausa = Pausa.objects.get(pk=self.kwargs['pk'])
         except Pausa.DoesNotExist:
             return redirect('pausa_list')
-        pausa.eliminada = not pausa.eliminada
-        pausa.save()
-        if pausa.eliminada:
-            self.sincronizar(pausa, request, True)
+        if pausa.tiene_configuraciones() and operationType == 0:
+            message = ("No se puede eliminar la pausa "
+                       "porque tiene configuraciones creadas")
+            messages.warning(self.request, message)
+            return redirect('pausa_list')
         else:
-            self.sincronizar(pausa, request)
-        return redirect('pausa_list')
+            pausa.eliminada = not pausa.eliminada
+            pausa.save()
+            if pausa.eliminada:
+                self.sincronizar(pausa, request, True)
+            else:
+                self.sincronizar(pausa, request)
+            return redirect('pausa_list')
 
 
 ##################
@@ -343,6 +355,25 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
             return redirect('login')
 
         return super(ConsolaAgenteView, self).dispatch(request, *args, **kwargs)
+
+    def get_pausas(self, agent):
+        pausas = []
+        if agent.grupo.conjunto_de_pausa:
+            for pause in agent.grupo.conjunto_de_pausa.pausas.all():
+                if not pause.pausa.eliminada:
+                    pausas.append({
+                        'id': pause.pausa.id,
+                        'name': pause.pausa.nombre,
+                        'timeToEndPause': pause.time_to_end_pause
+                    })
+        else:
+            for pause in Pausa.objects.activas():
+                pausas.append({
+                    'id': pause.id,
+                    'name': pause.nombre,
+                    'timeToEndPause': 0
+                })
+        return pausas
 
     def get_context_data(self, **kwargs):
         context = super(ConsolaAgenteView, self).get_context_data(**kwargs)
@@ -364,7 +395,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         registros = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
-        context['pausas'] = Pausa.objects.activas
+        context['pausas'] = self.get_pausas(agente_profile)
         context['registros'] = registros
         context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
         context['campanas_preview_activas'] = campanas_preview_activas

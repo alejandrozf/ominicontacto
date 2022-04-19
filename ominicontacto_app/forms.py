@@ -2046,20 +2046,22 @@ class GrupoForm(forms.ModelForm):
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
-                  'acceso_campanas_preview_agente',
+                  'acceso_campanas_preview_agente', 'conjunto_de_pausa'
                   )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
                 'class': 'form-control', 'style': 'display:inline; width:8ch'}),
             'tiempo_maximo_para_agendar': forms.NumberInput(attrs={
-                'class': 'form-control', 'style': 'display:inline; width:8ch'})
+                'class': 'form-control', 'style': 'display:inline; width:8ch'}),
+            'conjunto_de_pausa': forms.Select(attrs={'class': 'form-control'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
             'cantidad_agendas_personales': _('Cantidad máxima de agendas'),
             'tiempo_maximo_para_agendar': _('Cantidad máxima de días para agendar'),
             'obligar_despausa': _('Forzar Despausa'),
+            'conjunto_de_pausa': _('Conjunto de Pausas'),
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),

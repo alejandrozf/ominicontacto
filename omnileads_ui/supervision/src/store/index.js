@@ -1,5 +1,8 @@
 import { createStore } from 'vuex';
 import AgentsCampaignService from '../services/agentsCampaignService.js';
+import PauseSetActions from './pause_sets/actions';
+import PauseSetMutations from './pause_sets/mutations';
+import PauseSetState from './pause_sets/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -7,7 +10,8 @@ export default createStore({
         agents_by_campaign: [],
         active_agents: [],
         campaign: {},
-        groups: []
+        groups: [],
+        ...PauseSetState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -22,9 +26,6 @@ export default createStore({
         initActiveAgents (state, activeAgents) {
             state.active_agents = activeAgents;
         },
-        initGroups (state, groups) {
-            state.groups = groups;
-        },
         removeAgentOfCampaign (state, agentId) {
             state.agents_by_campaign = state.agents_by_campaign.filter(e => e.agent_id !== agentId);
         },
@@ -35,7 +36,8 @@ export default createStore({
                     agent.agent_penalty = payload.penalty;
                 }
             });
-        }
+        },
+        ...PauseSetMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -56,7 +58,8 @@ export default createStore({
         },
         updateAgentPenalty ({ commit }, payload) {
             commit('updateAgentPenalty', payload);
-        }
+        },
+        ...PauseSetActions
     },
     modules: {
     },
@@ -64,6 +67,9 @@ export default createStore({
         getAgentsByCampaign: state => state.agents_by_campaign,
         getActiveAgents: state => state.active_agents,
         getCampaign: state => state.campaign,
-        getGroups: state => state.groups
+        getGroups: state => state.groups,
+        getPauseSets: state => state.pauseSets,
+        getPauseSetDetail: state => state.pauseSetDetail,
+        getPauses: state => state.pauses
     }
 });

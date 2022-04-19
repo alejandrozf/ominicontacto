@@ -36,6 +36,12 @@ export default {
     select: 'انتخاب کنید',
     not_select_type: 'No seleccionaste un {type} | No seleccionaste una {type}',
     showing_datatable_info: 'نمایش {first} از {last} از {totalRecords}',
+    pause_set: 'مجموعه مکث | مجموعه مکث',
+    pause_set_info: 'مجموعه مکث: {name}',
+    pause_config: 'تنظیمات مکث | تنظیمات مکث',
+    pause_config_info: 'تنظیمات مکث: {name}',
+    pause_config_by_set: 'تنظیمات مکث گروه: {set}',
+    infinite_pause: 'مکث بی نهایت',
     // -------------
     // -- Actions --
     // -------------
@@ -67,6 +73,9 @@ export default {
     create_by_type: 'ایجاد یک {type} | ایجاد یک {type}',
     update_by_type: 'به روز رسانی a {type} | به روز رسانی a {type}',
     without_data: 'بدون اطلاعات',
+    filter_by_type: 'محدود شده توسط {type}',
+    in_seconds: 'در چند ثانیه',
+    type_of: 'نوع {type}',
     // ---------------------
     // --- Notifications ---
     // ---------------------

@@ -195,6 +195,14 @@ urlpatterns = [
         ),
 
     # ==========================================================================
+    # Conjuntos de Pausas
+    # ==========================================================================
+    url(r'^conjuntos_de_pausa/list/$',
+        login_required(views.ConjuntosDePausaListView.as_view()),
+        name='conjuntos_de_pausas_list',
+        ),
+
+    # ==========================================================================
     # Grabaciones
     # ==========================================================================
     url(r'^node/grabacion/marcar/$',

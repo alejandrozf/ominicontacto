@@ -11,5 +11,19 @@ export default {
         how_to_edit_penalty: 'Para modificar a penalidade selecione a coluna',
         agents_campaign: 'Agentes de campainha',
         agents_not_save: 'Agentes não salvos'
+    },
+    pause_sets: {
+        title: 'Conjuntos de pausas',
+        configured_pauses: 'Pausas configuradas',
+        infinite_pause: 'Pausa infinita',
+        pause_settings_will_be_deleted: 'Todas as configurações de pausa serão removidas',
+        pause_sets_not_deleted: 'Conjunto de pausa não removido',
+        pause_config_not_deleted: 'A configuração de pausa não foi removida',
+        pause_sets_without_pauses: 'Não é possível criar um conjunto de pausas sem pausas',
+        how_to_edit_pause_setting: 'Para editar as pausas, clique na célula Time to end pause'
+    },
+    pause_setting: {
+        max_time_allowed: 'O tempo máximo de pausa é de 8 horas (28800 segundos)',
+        min_time_allowed: 'Tempo infinito, significa que você nunca sairá da pausa (0 segundos)'
     }
 };
