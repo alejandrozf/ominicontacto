@@ -777,7 +777,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'seguridad_auditorias',
+            {'nombre': 'seguridad_auditoria',
              'roles': ['Administrador', ]},
             {'nombre': 'conjuntos_de_pausas_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
