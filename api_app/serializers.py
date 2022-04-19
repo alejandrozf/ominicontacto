@@ -26,8 +26,11 @@ from django.forms import ValidationError
 from rest_framework import serializers
 
 from ominicontacto_app.forms import FormularioNuevoContacto
-from ominicontacto_app.models import AgenteEnContacto, AgenteProfile, ArchivoDeAudio, \
-    CalificacionCliente, Campana, Contacto, Grupo, OpcionCalificacion, User, QueueMember
+from ominicontacto_app.models import (
+    AgenteEnContacto, AgenteProfile, ArchivoDeAudio,
+    CalificacionCliente, Campana, ConfiguracionDePausa,
+    Contacto, Grupo, ConjuntoDePausa, OpcionCalificacion,
+    Pausa, User, QueueMember)
 from auditlog.models import LogEntry
 
 
@@ -358,3 +361,40 @@ class AgenteActivoSerializer(serializers.ModelSerializer):
 
     def get_agent_penalty(self, queue_member):
         return 0
+
+
+class ConjuntoDePausaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConjuntoDePausa
+        fields = ('id', 'nombre')
+
+
+class ConfiguracionDePausaSerializer(serializers.ModelSerializer):
+    pause_id = serializers.SerializerMethodField(read_only=True)
+    pause_name = serializers.SerializerMethodField(read_only=True)
+    pause_type = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ConfiguracionDePausa
+        fields = (
+            'id', 'time_to_end_pause', 'pause_name', 'pause_id', 'pause_type')
+
+    def get_pause_id(self, config):
+        return config.pausa.pk
+
+    def get_pause_name(self, config):
+        return config.pausa.nombre
+
+    def get_pause_type(self, config):
+        return config.pausa.get_tipo()
+
+
+class PausaSerializer(serializers.ModelSerializer):
+    es_productiva = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Pausa
+        fields = ('id', 'nombre', 'es_productiva')
+
+    def get_es_productiva(self, pausa):
+        return pausa.es_productiva()

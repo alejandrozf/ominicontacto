@@ -43,7 +43,6 @@ class APITest(OMLBaseTest):
         usr_agente = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(usr_agente)
         self.client.login(username=usr_supervisor.username, password=PASSWORD)
-
         # Campaña
         bd_contacto = self.crear_base_datos_contacto(cant_contactos=3, columna_id_externo='id_ext')
         self.campana = self.crear_campana_manual(cant_contactos=3,

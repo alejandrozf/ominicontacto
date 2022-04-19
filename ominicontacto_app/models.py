@@ -41,7 +41,7 @@ from django.db.models import Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
@@ -222,6 +222,19 @@ class User(AbstractUser):
         return not campanas_supervisor.isdisjoint(campanas_agent)
 
 
+class ConjuntoDePausa(models.Model):
+    nombre = models.CharField(max_length=128)
+
+    def tiene_grupos(self):
+        return len(self.grupos.all()) > 0
+
+    def se_puede_eliminar_pausa(self):
+        return len(self.pausas.all()) > 1
+
+    def __str__(self):
+        return self.nombre
+
+
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
     auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
@@ -256,6 +269,12 @@ class Grupo(models.Model):
         'Acceso a las calificaciones como agente'))
     acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso a las campañas preview como agente'))
+    conjunto_de_pausa = models.ForeignKey(
+        ConjuntoDePausa,
+        related_name='grupos',
+        null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         return self.nombre
@@ -1795,6 +1814,9 @@ class Pausa(models.Model):
     def __str__(self):
         return self.nombre
 
+    def tiene_configuraciones(self):
+        return len(self.configuraciones.all()) > 0
+
     def es_productiva(self):
         return self.tipo == self.TIPO_PRODUCTIVA
 
@@ -1802,6 +1824,20 @@ class Pausa(models.Model):
         if self.es_productiva():
             return self.CHOICE_PRODUCTIVA
         return self.CHOICE_RECREATIVA
+
+
+class ConfiguracionDePausa(models.Model):
+    pausa = models.ForeignKey(
+        Pausa, related_name='configuraciones',
+        verbose_name=_("Pausa"), on_delete=models.CASCADE)
+    conjunto_de_pausa = models.ForeignKey(
+        ConjuntoDePausa, related_name='pausas',
+        verbose_name=_("Conjunto De Pausas"), on_delete=models.CASCADE)
+    time_to_end_pause = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(28800)])
+
+    def __str__(self):
+        return self.pausa.nombre
 
 # ==============================================================================
 # Base Datos Contactos

@@ -104,9 +104,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
-import { getToasConfig } from '@/helpers/sweet_alerts_helper';
 
 export default {
+    inject: ['$helpers'],
     data () {
         return {
             filters: null,
@@ -139,7 +139,7 @@ export default {
         removeAgent (agentId) {
             this.removeAgentOfCampaign(agentId);
             this.$swal(
-                getToasConfig(
+                this.$helpers.getToasConfig(
                     this.$t('globals.success_notification'),
                     this.$tc('globals.success_deleted_type', {
                         type: this.$tc('globals.agent')
@@ -155,7 +155,7 @@ export default {
                 penalty: newValue
             });
             this.$swal(
-                getToasConfig(
+                this.$helpers.getToasConfig(
                     this.$t('globals.success_notification'),
                     this.$tc('globals.success_updated_type', {
                         type: this.$t('globals.penalty')

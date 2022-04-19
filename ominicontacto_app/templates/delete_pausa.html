@@ -24,20 +24,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <div>
     <form method="post">{% csrf_token %}
+        {% if object.eliminada %}
+            <input type="hidden" name="operationType" value="1">
+        {% else %}
+            <input type="hidden" name="operationType" value="0">
+        {% endif %}
         <h1>{% blocktrans with nombre=object.nombre %}Pausa "{{ nombre }}" {% endblocktrans %}</h1>
         {% if object.eliminada %}
            <p>{% trans '¿Desea reactivar esta Pausa?' %}</p>
         {% else %}
            <p>{% trans '¿Está seguro que desea eliminar esta Pausa?' %}</p>
         {% endif %}
-        <button type="submit" class="btn btn-danger">
         {% if object.eliminada %}
-            {% trans 'Reactivar' %}
+            <button type="submit" class="btn btn-info">
+                {% trans 'Reactivar' %}
+            </button>
         {% else %}
-            {% trans 'Eliminar' %}
+            <button type="submit" class="btn btn-danger">
+                {% trans 'Eliminar' %}
+            </button>
         {% endif %}
-        </button>
-        <a class="btn btn-outline-danger" href="{% url 'pausa_list' %}">{% trans 'Cancelar' %}</a>
+        <a class="btn btn-outline-secondary" href="{% url 'pausa_list' %}">{% trans 'Cancelar' %}</a>
     </form>
 </div>
 {% endblock %}

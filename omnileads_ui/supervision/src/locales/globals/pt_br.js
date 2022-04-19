@@ -36,6 +36,12 @@ export default {
     select: 'Selecione',
     not_select_type: 'Você não selecionou um {type} | Você não selecionou uma {type}',
     showing_datatable_info: 'Mostrando {first} de {last} de {totalRecords}',
+    pause_set: 'Conjunto de pausa | Conjuntos de pausas',
+    pause_set_info: 'Conjunto de pausa: {name}',
+    pause_config: 'Pausar configurações | Pausar configurações',
+    pause_config_info: 'Pausar configurações: {name}',
+    pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
+    infinite_pause: 'Pausa infinita',
     // -------------
     // -- Actions --
     // -------------
@@ -67,6 +73,9 @@ export default {
     create_by_type: 'Crie um {type} | Crie uma {type}',
     update_by_type: 'Atualizar um {type} | Atualizar um {type}',
     without_data: 'Não há dados',
+    filter_by_type: 'Filtrar por {type}',
+    in_seconds: 'Em segundos',
+    type_of: 'Tipo de {type}',
     // ---------------------
     // --- Notifications ---
     // ---------------------
