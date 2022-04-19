@@ -21,8 +21,12 @@
 
 import os
 from ominicontacto.settings.defaults import BASE_DIR
+from django.utils.timezone import datetime, timedelta
+from datetime import timezone
 
+# TODO: Ver si es posible Moverlo a defaults.py
 CONSTANCE_CONFIG = {
+    # Key Server data:
     'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
     'CLIENT_NAME': ('', 'CLIENT_NAME', str),
@@ -30,7 +34,14 @@ CONSTANCE_CONFIG = {
     'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
     'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
     'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
-    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
+
+    # OMniLeads:
+    'WOMBAT_DIALER_ALLOW_REFRESH': (False, 'WOMBAT_DIALER_ALLOW_REFRESH', bool),
+    'WOMBAT_DIALER_STATE': ('READY', 'WOMBAT_DIALER_STATE', str),
+    'WOMBAT_DIALER_UP_SINCE': (datetime(2022, 2, 2, 22, 2, 22, 2222, timezone(timedelta(0))),
+                               'WOMBAT_DIALER_UP_SINCE', datetime),
+
+    # Addons configs
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
     'WEBPHONE_CLIENT_TTL': (1200, 'WEBPHONE_CLIENT_TTL', int),
     'WEBPHONE_VIDEO_DOMAIN': ('meet.jit.si', 'WEBPHONE_VIDEO_DOMAIN', str),
@@ -39,14 +50,23 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
+    'Registration': {
+        'fields': ('KEYS_SERVER_HOST', 'SSL_CERT_FILE', 'CLIENT_NAME',
+                   'CLIENT_KEY', 'CLIENT_PASSWORD', 'CLIENT_EMAIL',
+                   'CLIENT_PHONE',
+                   ),
+        'collapse': False,
+    },
     'Addons Options': {
-        'fields': ('KEYS_SERVER_HOST', 'SSL_CERT_FILE','CLIENT_NAME',
-                    'CLIENT_KEY','CLIENT_PASSWORD','CLIENT_EMAIL',
-                    'CLIENT_PHONE','WEBPHONE_CLIENT_ENABLED',
-                    'WEBPHONE_CLIENT_TTL','WEBPHONE_VIDEO_DOMAIN','LIMIT_USERS_TO',
-                    'LIMIT_AGENTS_CONCURRENT_NUMBER',
-                ),
+        'fields': ('WEBPHONE_CLIENT_ENABLED', 'WEBPHONE_CLIENT_TTL', 'WEBPHONE_VIDEO_DOMAIN',
+                   'LIMIT_USERS_TO', 'LIMIT_AGENTS_CONCURRENT_NUMBER',
+                   ),
         'collapse': False
+    },
+    'Omnileads': {
+        'fields': ('WOMBAT_DIALER_ALLOW_REFRESH', 'WOMBAT_DIALER_STATE', 'WOMBAT_DIALER_UP_SINCE',
+                   ),
+        'collapse': True
     },
 }
 

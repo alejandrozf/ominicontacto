@@ -192,7 +192,7 @@
 
   - name: Copy backup file to correct dst
     ansible.builtin.copy:
-      src: /var/tmp/{{ backup_file_name }}.tar.gz 
+      src: /var/tmp/{{ backup_file_name }}.tar.gz
       dest: /opt/omnileads/backup
       owner: omnileads
       group: omnileads
@@ -200,14 +200,14 @@
     when:
       - postgres_host != "localhost"
       - backup_file_name is defined
-      - auto_restore == "true"  
+      - auto_restore == "true"
 
   - name: Restore addons when use infrasctructure as code
     command: bash -x /opt/omnileads/bin/backup-restore.sh --restore={{ backup_file_name }}.tar.gz --omniapp
     when:
       - postgres_host != "localhost"
       - backup_file_name is defined
-      - auto_restore == "true"  
+      - auto_restore == "true"
 
   # Solution to issue OML-214: Re-setting backed up addons after installation
   - name: Re-setting addons after installation
@@ -228,6 +228,7 @@
     shell: "{{ install_prefix }}/bin/reinstall_rebrand.sh {{ repo_location }}"
     when: rebrand == "true"
     tags: always
+    ignore_errors: yes
 
   # Reset password for user "admin", if it was requested
   - name: Reset password for user "admin", if it was requested
@@ -266,37 +267,37 @@
   - name: Edit oml_uwsgi.ini High Load params
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
-      regexp: "processes = 30" 
+      regexp: "processes = 30"
       line: "processes = 50"
       state: present
       backup: yes
-    when: high_load == "true"  
-
-  - name: Edit oml_uwsgi.ini High Load params
-    lineinfile:
-      path: /opt/omnileads/run/oml_uwsgi.ini
-      regexp: "harakiri = 600" 
-      line: "harakiri = 3600"
-      state: present
-      backup: yes      
     when: high_load == "true"
 
   - name: Edit oml_uwsgi.ini High Load params
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
-      regexp: "socket-timeout = 600" 
-      line: "socket-timeout = 3600"
+      regexp: "harakiri = 600"
+      line: "harakiri = 3600"
       state: present
-      backup: yes      
-    when: high_load == "true"   
+      backup: yes
+    when: high_load == "true"
 
   - name: Edit oml_uwsgi.ini High Load params
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
-      regexp: "max-worker-lifetime = 10800" 
+      regexp: "socket-timeout = 600"
+      line: "socket-timeout = 3600"
+      state: present
+      backup: yes
+    when: high_load == "true"
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "max-worker-lifetime = 10800"
       line: "max-worker-lifetime = 7200"
       state: present
-      backup: yes      
+      backup: yes
     when: high_load == "true"
 
   # OMniLeads restart

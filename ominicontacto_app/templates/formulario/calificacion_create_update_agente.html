@@ -40,6 +40,9 @@
 <div class="container">
     <input class="hidden" value='{{ configuracion_sitio_externo|safe }}' id="configuracionSitioExterno">
 
+    {% if call_data and call_data.Omlinroutename and campana.mostrar_nombre_ruta_entrante%}
+        <h1>{{ call_data.Omlinroutename }}</h1>
+    {% endif %}
     {% if campana.mostrar_nombre %}
         <h1>{{ campana.nombre }}</h1>
     {% endif %}
@@ -128,14 +131,14 @@
             </div>
         </div>
     </form>
-    <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAP_CENTER}}">
+    <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAPS_CENTER}}">
 </div>
 </div>
 {% if campana.campo_direccion %}    
     <script src="{% static 'ominicontacto/JS/agente/googlemap.js' %}">
     </script>
     <script
-    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&callback=initMap&libraries=places&v=weekly"
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAPS_API_KEY}}&callback=initMap&libraries=places&v=weekly"
     async
     ></script>
 {% endif %}

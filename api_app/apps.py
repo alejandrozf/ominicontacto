@@ -95,6 +95,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_make_ringing',
              'roles': ['Agente', ]},
+            {'nombre': 'api_make_reject_call',
+             'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
             {'nombre': 'api_set_estado_revision',
@@ -123,6 +125,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_database_metadata_columns_fields',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_restart_wombat',
+             'roles': ['Administrador', ]},
+            {'nombre': 'api_wombat_state',
+             'roles': ['Administrador', ]},
             {'nombre': 'api_agents_campaign',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_update_agents_campaign',
@@ -230,6 +236,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
         'api_make_ringing':
             {'descripcion': _('Establece el estado Ringing del Agente'), 'version': '1.7.0'},
+        'api_make_reject_call':
+            {'descripcion': _('Establece el estado Reject del Agente'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':
@@ -271,8 +279,14 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Auditoría a supervisores'),
              'version': '1.20.0'},
         'api_database_metadata_columns_fields':
-            {'descripcion': _('Listas de nombres de columnas para Base de datos de Conatactos'),
+            {'descripcion': _('Listas de nombres de columnas para Base de datos de Contactos'),
              'version': '1.20.0'},
+        'api_restart_wombat':
+            {'descripcion': _('Reinicia servicio Wombat Dialer'),
+             'version': '1.22.0'},
+        'api_wombat_state':
+            {'descripcion': _('Estado del servicio Wombat Dialer'),
+             'version': '1.22.0'},
         'api_agents_campaign':
             {'descripcion': _('Lista de agentes por campaña'),
              'version': '1.19.0'},

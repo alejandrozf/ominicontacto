@@ -267,6 +267,7 @@ class PhoneJSController {
         $('[id^=doNotAnswer]').click(function() {
             $('#modalReceiveCalls').modal('hide');
             self.phone.refuseCall();
+            self.agentRejectCall();
         });
 
         this.view.reload_video_button.click(function() {
@@ -1045,6 +1046,10 @@ class PhoneJSController {
             PHONE_STATUS_CONFIGS['OnCall'].enabled_buttons = filter_on_call;
             PHONE_STATUS_CONFIGS['OnHold'].enabled_buttons = filter_on_hold;
         }
+    }
+
+    agentRejectCall() {
+        this.oml_api.eventReject();
     }
 
 }

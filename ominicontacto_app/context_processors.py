@@ -31,8 +31,8 @@ import os
 def global_settings(request):
     return {
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
-        'GOOGLE_API_KEY': os.getenv('GOOGLE_API_KEY'),
-        'GOOGLE_MAP_CENTER': os.getenv('GOOGLE_MAP_CENTER')
+        'GOOGLE_MAPS_API_KEY': os.getenv('GOOGLE_MAPS_API_KEY'),
+        'GOOGLE_MAPS_CENTER': os.getenv('GOOGLE_MAPS_CENTER'),
     }
 
 

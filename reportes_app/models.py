@@ -312,6 +312,13 @@ class LlamadaLogManager(models.Manager):
             ),
         ).only("id").distinct("contacto_id").count()
 
+    def cantidad_llamadas_rechazadas_fecha(self, agente_id, fecha_inferior, fecha_superior):
+        fecha_desde = datetime_hora_minima_dia(fecha_inferior)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_superior)
+        return self.filter(agente_id=agente_id, agente_extra_id=agente_id,
+                           time__gte=fecha_desde, time__lte=fecha_hasta,
+                           event__in=LlamadaLog.EVENTOS_REJECT).exclude(campana_id='0').count()
+
 
 class LlamadaLog(models.Model):
     """
@@ -378,6 +385,9 @@ class LlamadaLog(models.Model):
 
     # eventos de hold en una llamada
     EVENTOS_HOLD = ['HOLD', 'UNHOLD']
+
+    # eventos de no atendida una llamada
+    EVENTOS_REJECT = ['RINGNOANSWER']
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']

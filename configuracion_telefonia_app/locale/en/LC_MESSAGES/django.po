@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-17 11:21-0300\n"
+"POT-Creation-Date: 2022-04-18 17:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1300,20 +1300,20 @@ msgstr "Outbound route removed"
 msgid "No se ha podido eliminar la Ruta Saliente."
 msgstr "Unable to remove Outbound route"
 
-#: configuracion_telefonia_app/views/audio.py:105
+#: configuracion_telefonia_app/views/audio.py:106
 msgid "Se ha instalado el paquete de idioma satisfactoriamente."
 msgstr "Language package installed successfully"
 
-#: configuracion_telefonia_app/views/audio.py:107
+#: configuracion_telefonia_app/views/audio.py:108
 #, python-brace-format
 msgid "Error al instalar el paquete de idioma: {0}"
 msgstr "Error when installing language pack: {0}"
 
-#: configuracion_telefonia_app/views/audio.py:110
+#: configuracion_telefonia_app/views/audio.py:111
 msgid "Ha ocurrido un error al instalar el paquete de idioma"
 msgstr "An error ocurred when installing language package"
 
-#: configuracion_telefonia_app/views/audio.py:153
+#: configuracion_telefonia_app/views/audio.py:154
 msgid ""
 "No se puede eliminar una Playlist que tiene Músicas en Espera. Elimine las "
 "Músicas en Espera primero"
@@ -1321,22 +1321,22 @@ msgstr ""
 "You can't remove a Playlist with Musics on Hold. Remove the Musics o Hold "
 "first"
 
-#: configuracion_telefonia_app/views/audio.py:164
+#: configuracion_telefonia_app/views/audio.py:165
 msgid "No se puede eliminar una Playlist que está siendo usada en una Campaña"
 msgstr "You cannot delete a Playlist being in use by campaign"
 
-#: configuracion_telefonia_app/views/audio.py:180
+#: configuracion_telefonia_app/views/audio.py:181
 msgid ""
 "Hubo un problema al eliminar la Playlist. Por Favor notifique a su "
 "Administrador."
 msgstr ""
 "There have been problems removing the playlist. Please notify your admin."
 
-#: configuracion_telefonia_app/views/audio.py:189
+#: configuracion_telefonia_app/views/audio.py:190
 msgid "Playlist eliminada con éxito"
 msgstr "Playlist deleted successfully"
 
-#: configuracion_telefonia_app/views/audio.py:278
+#: configuracion_telefonia_app/views/audio.py:298
 msgid "Musica de Espera eliminada con éxito"
 msgstr "Music on Hold deleted successfully"
 

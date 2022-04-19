@@ -39,7 +39,7 @@
 #export s3_bucket_name=
 # s3 endpoint url Only when use non AWS S3 object | NULL
 #export s3_enpoint_url=NULL
-# s3 bucket region | NULL 
+# s3 bucket region | NULL
 #export s3_region=NULL
 
 # Parameters for NFS when nfs is selected as store for oml_callrec_device
@@ -130,6 +130,10 @@
 # Above 200 users enable this
 # Values: true | NULL
 #export oml_high_load=NULL
+
+# Google maps API
+#export oml_google_maps_api_key=NULL
+#export oml_google_maps_center='{ "lat": -31.416668, "lng": -64.183334 }'
 
 # ******************** SET ENV VARS ******************** #
 
@@ -232,7 +236,7 @@ echo "******************** yum update and install packages ********************"
 case ${oml_infras_stage} in
   aws)
     yum remove -y python3 python3-pip
-    yum install -y $SSM_AGENT_URL 
+    yum install -y $SSM_AGENT_URL
     yum install -y patch libedit-devel libuuid-devel git
     amazon-linux-extras install -y epel
     amazon-linux-extras install python3 -y
@@ -377,6 +381,11 @@ if [[ "${oml_high_load}" != "NULL" ]];then
 sed -i "s/high_load=false/high_load=${oml_high_load}/g" $PATH_DEPLOY/inventory
 fi
 
+if [[ "${oml_google_maps_api_key}" != "NULL" ]];then
+sed -i "s%\#google_maps_api_key=%google_maps_api_key=${oml_google_maps_api_key}%g" $PATH_DEPLOY/inventory
+sed -i "s%\#google_maps_center=%google_maps_center='${oml_google_maps_center}'%g" $PATH_DEPLOY/inventory
+fi
+
 # User certs verification *******
 
 if [ -f $PATH_CERTS/key.pem ] && [ -f $PATH_CERTS/cert.pem ];then
@@ -430,24 +439,21 @@ if [[ "${oml_redis_host}" == "NULL" ]];then
   sed -i "s/bind 127.0.0.1/bind 127.0.0.1 $PRIVATE_IPV4/g" /etc/redis.conf
 fi
 
-echo "******************** WA issue #172 ********************"
-
-chown omnileads.omnileads -R /opt/omnileads/media_root
 
 echo "******************** setting demo environment ********************"
-
-if [[ "${oml_app_init_env}" == "true" ]];then
-  su -c "/opt/omnileads/bin/manage.sh inicializar_entorno" --login omnileads
-fi
 
 if [[ "${oml_auto_restore}" != "NULL" ]];then
 echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
 fi
 
 echo "********************* Deactivate cron callrec convert to mp3 *****************"
-if [[ "${oml_acd_host}"  != "NULL" ]];then
+if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  == "nfs" ];then
 sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads
-fi 
+fi
+
+if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  != "nfs" ];then
+sed -i "s/conversor.sh 1 0/conversor.sh 2 0/g" /var/spool/cron/omnileads
+fi
 
 echo "******************** sngrep SIP sniffer install ********************"
 
@@ -458,4 +464,3 @@ if [[ "${oml_app_install_sngrep}" == "true" ]];then
   cd sngrep && ./bootstrap.sh && ./configure && make && make install
   ln -s /usr/local/bin/sngrep /usr/bin/sngrep
 fi
-
