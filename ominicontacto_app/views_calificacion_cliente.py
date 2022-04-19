@@ -112,7 +112,7 @@ class CalificacionClienteFormView(FormView):
         id_contacto = None
         self.call_data = None
         call_data_json = 'false'
-        if 'call_data_json' in kwargs:
+        if 'call_data_json' in kwargs and kwargs['call_data_json']:
             call_data_json = kwargs['call_data_json']
             self.call_data = json.loads(call_data_json)
             self.campana = Campana.objects.get(pk=self.call_data['id_campana'])
@@ -162,35 +162,39 @@ class CalificacionClienteFormView(FormView):
         if not self.call_data or self.campana.sitio_externo is None:
             return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
-        # Analizar interaccion con Sitio Externo
-        en_recepcion_de_llamada = self.request.method == 'GET'
-        sitio_externo = self.campana.sitio_externo
-        # Metodo      Disparador            Formato         Target
-        # GET/POST    Agente/JS/Server      HTML/JSON       Iframe/NewTab
-        if sitio_externo.disparador == SitioExterno.SERVER:
-            # Sólo disparar al recibir la llamada.
-            if en_recepcion_de_llamada:
-                servicio = InteraccionConSistemaExterno()
-                error = servicio.ejecutar_interaccion(sitio_externo,
-                                                      self.agente,
-                                                      self.campana,
-                                                      self.contacto,
-                                                      self.call_data)
-                if error is not None:
-                    pass
-        else:
-            if sitio_externo.disparador == SitioExterno.AUTOMATICO:
-                if sitio_externo.metodo == SitioExterno.GET and \
-                        sitio_externo.objetivo == SitioExterno.EMBEBIDO:
-                    return redirect(sitio_externo.get_url_interaccion(
-                        self.agente, self.campana, self.contacto, self.call_data, True))
-                elif en_recepcion_de_llamada:
+        if self.campana.sitio_externo.disparador is not SitioExterno.CALIFICACION:
+            # Analizar interaccion con Sitio Externo
+            en_recepcion_de_llamada = self.request.method == 'GET'
+            sitio_externo = self.campana.sitio_externo
+            # Metodo      Disparador            Formato         Target
+            # GET/POST    Agente/JS/Server      HTML/JSON       Iframe/NewTab
+            if sitio_externo.disparador == SitioExterno.SERVER:
+                # Sólo disparar al recibir la llamada.
+                if en_recepcion_de_llamada:
+                    servicio = InteraccionConSistemaExterno()
+                    error = servicio.ejecutar_interaccion(
+                        sitio_externo,
+                        self.agente,
+                        self.campana,
+                        self.contacto,
+                        self.call_data
+                    )
+                    if error is not None:
+                        pass
+            else:
+                if sitio_externo.disparador == SitioExterno.AUTOMATICO:
+                    if sitio_externo.metodo == SitioExterno.GET and \
+                            sitio_externo.objetivo == SitioExterno.EMBEBIDO:
+                        return redirect(sitio_externo.get_url_interaccion(
+                            self.agente, self.campana, self.contacto, self.call_data, True))
+                    elif en_recepcion_de_llamada:
+                        self.configuracion_sitio_externo = \
+                            sitio_externo.get_configuracion_de_interaccion(
+                                self.agente, self.campana, self.contacto, self.call_data)
+                else:
                     self.configuracion_sitio_externo = \
                         sitio_externo.get_configuracion_de_interaccion(
                             self.agente, self.campana, self.contacto, self.call_data)
-            else:
-                self.configuracion_sitio_externo = sitio_externo.get_configuracion_de_interaccion(
-                    self.agente, self.campana, self.contacto, self.call_data)
 
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
@@ -263,6 +267,22 @@ class CalificacionClienteFormView(FormView):
             calificacion_llamada.create_family(self.agente, self.call_data,
                                                self.kwargs['call_data_json'], calificado=False,
                                                gestion=False, id_calificacion=None)
+        if calificacion_form.instance and kwargs['from'] == 'recalificacion':
+            sitio_externo = self.campana.sitio_externo
+            if calificacion_form.instance.opcion_calificacion.interaccion_crm and \
+                    sitio_externo and sitio_externo.disparador == SitioExterno.CALIFICACION \
+                    and self.call_data:
+                agente = self.request.user.get_agente_profile()
+                call_data = json.loads(self.kwargs['call_data_json']) \
+                    if self.kwargs['call_data_json'] else {}
+                call_data['id_contacto'] = self.contacto.pk
+                call_data['id_calificacion'] = calificacion_form.instance.id
+                call_data['formulario'] = ""
+                call_data['nombre_opcion_calificacion'] = \
+                    calificacion_form.instance.opcion_calificacion.nombre
+                self.configuracion_sitio_externo = \
+                    sitio_externo.get_configuracion_de_interaccion(
+                        agente, self.campana, self.contacto, call_data)
 
         return self.render_to_response(self.get_context_data(
             contacto=self.contacto,
@@ -341,11 +361,22 @@ class CalificacionClienteFormView(FormView):
                     self.call_data['dialer_id'], regla)
 
         if self.object_calificacion.es_gestion() and \
-                not self.campana.tiene_interaccion_con_sitio_externo:
+                not self.campana.tipo_interaccion == Campana.SITIO_EXTERNO:
             if self.agente.grupo.obligar_calificacion:
                 calificacion_llamada = CalificacionLLamada()
-                calificacion_llamada.create_family(self.agente, self.call_data,
-                                                   self.kwargs['call_data_json'], calificado=False,
+                call_data_json = self.kwargs['call_data_json'] \
+                    if 'call_data_json' in self.kwargs else None
+                call_data = self.call_data
+                calificado = False
+                if self.call_data is None:
+                    calificado = True
+                    call_data = {}
+                    call_data['call_id'] = calificacion_form.instance.callid
+                    call_data['id_campana'] = \
+                        calificacion_form.instance.opcion_calificacion.campana_id
+                    call_data['telefono'] = calificacion_form.instance.contacto.telefono
+                calificacion_llamada.create_family(self.agente, call_data,
+                                                   call_data_json, calificado=calificado,
                                                    gestion=True,
                                                    id_calificacion=calificacion_form.instance.pk)
             return redirect(self.get_success_url_venta())
@@ -430,8 +461,10 @@ class CalificacionClienteFormView(FormView):
         )
 
     def get_success_url_venta(self):
-        return reverse('formulario_venta',
-                       kwargs={"pk_calificacion": self.object_calificacion.id})
+        kwargs = {"pk_calificacion": self.object_calificacion.id}
+        if self.call_data:
+            kwargs.update(call_data_json=json.dumps(self.call_data))
+        return reverse('formulario_venta', kwargs=kwargs)
 
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
@@ -446,9 +479,13 @@ class CalificacionClienteFormView(FormView):
         return reverse('reporte_agente_calificaciones')
 
     def get_success_url(self):
+        kwargs = {"pk_campana": self.campana.id,
+                  "pk_contacto": self.contacto.id}
+        if self.call_data:
+            self.call_data['force_disposition'] = False
+            kwargs.update(call_data_json=json.dumps(self.call_data))
         return reverse('recalificacion_formulario_update_or_create',
-                       kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id})
+                       kwargs=kwargs)
 
     def es_auditoria(self):
         return False
@@ -506,6 +543,11 @@ class RespuestaFormularioDetailView(DetailView):
     template_name = 'formulario/respuesta_formulario_detalle.html'
     model = RespuestaFormularioGestion
 
+    def dispatch(self, *args, **kwargs):
+        self.call_data = json.loads(kwargs['call_data_json']) \
+            if 'call_data_json' in kwargs else None
+        return super(RespuestaFormularioDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(
             RespuestaFormularioDetailView, self).get_context_data(**kwargs)
@@ -519,11 +561,26 @@ class RespuestaFormularioDetailView(DetailView):
         for nombre, dato in zip(nombres, datos):
             if nombre not in campos_a_ocultar:
                 mas_datos.append((nombre, dato))
-
         context['contacto'] = contacto
         context['mas_datos'] = mas_datos
         context['metadata'] = json.loads(respuesta.metadata)
 
+        sitio_externo = respuesta.calificacion.opcion_calificacion.campana.sitio_externo
+        if respuesta.calificacion.opcion_calificacion.interaccion_crm and sitio_externo and \
+                sitio_externo.disparador == SitioExterno.CALIFICACION:
+            campana = respuesta.calificacion.opcion_calificacion.campana
+            agente = self.request.user.get_agente_profile()
+            if self.request.method == 'GET' and self.call_data:
+                call_data = self.call_data
+                call_data['id_contacto'] = contacto.pk
+                call_data['formulario'] = respuesta.metadata
+                call_data['id_calificacion'] = respuesta.calificacion.id
+                call_data['nombre_opcion_calificacion'] = \
+                    respuesta.calificacion.opcion_calificacion.nombre
+                configuracion_sitio_externo = \
+                    sitio_externo.get_configuracion_de_interaccion(
+                        agente, campana, contacto, call_data)
+                context['configuracion_sitio_externo'] = json.dumps(configuracion_sitio_externo)
         return context
 
 
@@ -539,7 +596,8 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
     def dispatch(self, *args, **kwargs):
         self.calificacion = self._get_calificacion()
-
+        self.call_data = kwargs['call_data_json'] \
+            if 'call_data_json' in kwargs else None
         # Verifico que este asignado a la campaña:
         if not self._usuario_esta_asignado_a_campana():
             messages.warning(
@@ -636,7 +694,10 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
             form=form, contacto_form=contacto_form))
 
     def get_success_url(self):
-        return reverse('formulario_detalle', kwargs={"pk": self.object.pk})
+        kwargs = {"pk": self.object.pk}
+        if self.call_data:
+            kwargs.update(call_data_json=self.call_data)
+        return reverse('formulario_detalle', kwargs=kwargs)
 
 
 class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpdateFormView):

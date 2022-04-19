@@ -117,8 +117,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <h4 class="cuerpoLlamEntrante">
                 <span class="label label-info">{% trans 'De:' %}</span>
                 <label name="callerid" id="callerid"></label><br>
+                <span class="label label-info">{% trans 'Teléfono:' %}</span>
+                <label name="numberAni" id="numberAni"></label><br>
                 <span class="label label-info">{% trans 'Info extra:' %}</span>
                 <label name="extraInfo" id="extraInfo">.....</label>
+                <span class="label label-info">{% trans 'Campaña:' %}</span>
+                <label name="omlcampname" id="omlcampname"></label><br>
+                <span class="label label-info">{% trans 'Número:' %}</span>
+                <label name="omldid" id="omldid"></label><br>
+                <span class="label label-info">{% trans 'Ruta Entrante:' %}</span>
+                <label name="omlinroutename" id="omlinroutename"></label><br>
                 </h4>
             </div>
             <div class="modal-footer">
@@ -592,6 +600,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
               </li>
             {% endif %}
+            {% if agente_profile.grupo.acceso_contactos_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
                 <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
@@ -605,15 +614,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </li>
                 </ul>
             </li>
+            {% endif %}
+            {% if agente_profile.grupo.acceso_agendas_agente %}
             <li id="btn_agendas" class="main-menu-li">
                 <span class="icon icon-agenda"></span>
                 <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">{% trans 'Agendas' %}<b id="num_agendas"></b></a>
             </li>
+            {% endif %}
+            {% if agente_profile.grupo.acceso_calificaciones_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-ratings"></span>
                 <a class="menu-link" href="{% url 'reporte_agente_calificaciones' %}" target="crm">{% trans 'Calificaciones' %}</a>
             </li>
-            {% if campanas_preview_activas %}
+            {% endif %}
+            {% if campanas_preview_activas and agente_profile.grupo.acceso_campanas_preview_agente %}
             <li class="main-menu-li">
                 <span class="icon icon-agenda"></span>
                 <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">{% trans 'Campañas preview' %}</a>
@@ -698,14 +712,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                 <div id="timeBar">
                     <div id="timers">
-                        <div id="operationTime" class="label label-default">
-                            {% trans 'Operación:' %}
-                            <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
-                        </div>
-                        <div id="pauseTime" class="label label-default">
-                            {% trans 'Pausa:' %}
-                            <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
-                        </div>
+                        {% if agente_profile.grupo.show_console_timers %}
+                            <div id="operationTime" class="label label-default">
+                                {% trans 'Operación:' %}
+                                <span id="horaO"></span><span id="minsO"></span><span id="segsO"></span>
+                            </div>
+                            <div id="pauseTime" class="label label-default">
+                                {% trans 'Pausa:' %}
+                                <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
+                            </div>
+                        {% endif %}
                         <!-- <div id="sumTime" class="label label-default">
                              Total:
                              <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
@@ -731,8 +747,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="wrapper-info">
                     {% if agente_profile.grupo.acceso_dashboard_agente %}
                         <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
-                    {% else %}
+                    {% elif agente_profile.grupo.acceso_agendas_agente %}
                         <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="crm" name="crm"></iframe>
+                    {% else %}
+                        <iframe src="{% url 'view_blanco' %}" id="dataView" class="crm" name="crm"></iframe>
                     {% endif %}
                 </div>
             </div>

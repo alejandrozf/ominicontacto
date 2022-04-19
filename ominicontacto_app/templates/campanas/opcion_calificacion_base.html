@@ -96,6 +96,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {{ form.oculta|add_class:"form-control" }}
                     {% endif %}
                     </td>
+                    {% if not form.instance.es_agenda %}
+                    <td class="positiva" style="padding:10px">
+                        {{ form.interaccion_crm.label }}
+                        {{ form.interaccion_crm.errors }}
+                        {{ form.interaccion_crm|add_class:"form-control" }}
+                    </td>
+                    {% endif %}
 
                     <td>{{ form.id }}</td>
                 </tr>

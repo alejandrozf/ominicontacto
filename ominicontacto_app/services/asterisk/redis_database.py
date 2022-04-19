@@ -175,6 +175,9 @@ class CampanaFamily(AbstractRedisFamily):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': str(campana.videocall_habilitada),
+            'SHOWDID': str(campana.mostrar_did),
+            'SHOWINROUTENAME': str(campana.mostrar_nombre_ruta_entrante),
+            'SHOWCAMPNAME': campana.nombre if campana.mostrar_nombre else ""
         }
 
         if campana.queue_campana.timeout:

@@ -37,8 +37,8 @@ from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms import (
     CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
     CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
-from ominicontacto_app.models import (Campana, ArchivoDeAudio, SupervisorProfile, AgenteProfile,
-                                      QueueMember)
+from ominicontacto_app.models import (Campana, ArchivoDeAudio, SitioExterno, SupervisorProfile,
+                                      AgenteProfile, QueueMember)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
@@ -177,7 +177,8 @@ class CampanaTemplateCreateCampanaMixin(object):
         kwargs = super(CampanaTemplateCreateCampanaMixin, self).get_form_kwargs(step)
         if step == self.OPCIONES_CALIFICACION:
             cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            con_formulario = cleaned_data.get('tipo_interaccion') == Campana.FORMULARIO
+            con_formulario = cleaned_data.get('tipo_interaccion') \
+                in [Campana.FORMULARIO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
             return {'form_kwargs': {'con_formulario': con_formulario}}
         return kwargs
 
@@ -204,7 +205,7 @@ def mostrar_form_parametros_crm_form(wizard):
     else:
         cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
         interaccion = cleaned_data.get('tipo_interaccion', '')
-    return interaccion == Campana.SITIO_EXTERNO
+    return interaccion in [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
 
 
 class CampanaWizardMixin(object):
@@ -257,8 +258,12 @@ class CampanaWizardMixin(object):
             return {'form_kwargs': {'members': members}}
         if step == self.OPCIONES_CALIFICACION:
             cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            con_formulario = cleaned_data.get('tipo_interaccion') == Campana.FORMULARIO
-            return {'form_kwargs': {'con_formulario': con_formulario}}
+            con_formulario = cleaned_data.get('tipo_interaccion') in \
+                [Campana.FORMULARIO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
+            con_crm_calificacion = cleaned_data.get("sitio_externo", None) and \
+                cleaned_data.get("sitio_externo", None).disparador == SitioExterno.CALIFICACION
+            return {'form_kwargs': {'con_formulario': con_formulario,
+                                    'con_crm_calificacion': con_crm_calificacion}}
         else:
             return {}
 
@@ -274,13 +279,16 @@ class CampanaWizardMixin(object):
             bd_contacto = campana['bd_contacto']
             columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
             form_class = self.form_list[step]
+            con_crm_calificacion = campana.get("sitio_externo", None) and \
+                campana.get("sitio_externo", None).disparador == SitioExterno.CALIFICACION
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
                 'data': data,
                 'files': files,
                 'prefix': self.get_form_prefix(step, form_class),
                 'initial': self.get_form_initial(step),
-                'form_kwargs': {'columnas_bd': columnas_bd},
+                'form_kwargs': {'columnas_bd': columnas_bd,
+                                'con_crm_calificacion': con_crm_calificacion},
             })
             if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
                 kwargs.setdefault('instance', self.get_form_instance(step))
@@ -313,12 +321,13 @@ class CampanaWizardMixin(object):
         current_step = self.steps.current
         if pk:
             campana = get_object_or_404(Campana, pk=pk)
-            context['interaccion_crm'] = campana.tipo_interaccion == Campana.SITIO_EXTERNO
+            context['interaccion_crm'] = campana.tiene_interaccion_con_sitio_externo
         else:
             if current_step != self.INICIAL:
                 cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
                 tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
-                context['interaccion_crm'] = tipo_interaccion == Campana.SITIO_EXTERNO
+                context['interaccion_crm'] = tipo_interaccion in \
+                    [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
 
         # se adiciona el formulario de los grupos para etapa de asignación de agentes
         if current_step == self.ADICION_AGENTES:
@@ -450,7 +459,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def _save_forms(self, form_list, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
-        interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
+        interaccion_crm = campana_form.instance.tiene_interaccion_con_sitio_externo
         queue_form = list(form_list)[int(self.COLA)]
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
@@ -533,7 +542,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         opts_calif_init_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
-        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+        if campana.tiene_interaccion_con_sitio_externo:
             parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()

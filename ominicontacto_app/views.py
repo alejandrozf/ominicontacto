@@ -42,8 +42,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import (
-    ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
-)
+    ListView, CreateView, UpdateView, DeleteView,
+    FormView, TemplateView, DetailView)
+from django.db.models import Q
+from utiles_globales import obtener_paginas
 
 from constance import config as config_constance
 
@@ -194,6 +196,20 @@ class GrupoListView(ListView):
     """Vista para listar los grupos"""
     model = Grupo
     template_name = 'usuarios_grupos/grupo_list.html'
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super(GrupoListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
+
+    def get_queryset(self):
+        queryset = Grupo.objects.all()
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            return queryset.filter(Q(nombre__icontains=search))
+        else:
+            return queryset
 
 
 class GrupoDeleteView(DeleteView):
@@ -216,6 +232,14 @@ class GrupoDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('grupo_list')
+
+
+class GrupoDetalleView(DetailView):
+    """
+    Esta vista se encarga de mostrar la info del grupo
+    """
+    model = Grupo
+    template_name = 'usuarios_grupos/grupo_detalle.html'
 
 
 ####################

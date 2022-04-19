@@ -21,22 +21,36 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
-{% block content %}
-<h1>{% trans 'Grupos de agentes' %}</h1>
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/grupos/grupo_list.js' %}"></script>
+{% endblock %}
 
+{% block content %}
+
+<div class="d-flex justify-content-end form-row">
+    <div class="col-md-9">
+        <h1>{% trans 'Grupos de agentes' %}</h1>
+    </div>
+    <div class="col-md-3">
+        <form method="GET" action="{% url 'grupo_list' %}" class="filter-flex">
+            <input type="text" class="form-control" name="search" placeholder="Busca por nombre" value="{{ search }}">
+            <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+        </form>
+    </div>
+</div>
+<hr>
 <table class="table">
     <thead>
         <tr>
-            <th>{% trans 'id' %}</th>
+            <th>{% trans 'ID' %}</th>
             <th>{% trans 'Nombre' %}</th>
-            <th>{% trans 'Auto attend inbound' %}</th>
-            <th>{% trans 'Auto attend dialer' %}</th>
-            <th>{% trans 'Auto unpause' %}</th>
-            <th>{% trans 'Forzar Calificación' %}</th>
-            <th>{% trans 'Llamada fuera de campaña' %}</th>
-            <th>{% trans 'Ver grabaciones' %}</th>
+            <th class="text-center">{% trans 'Auto unpause' %}</th>
+            <th class="text-center">{% trans 'Auto attend inbound' %}</th>
+            <th class="text-center">{% trans 'Auto attend dialer' %}</th>
+            <th class="text-center">{% trans 'Forzar Calificación' %}</th>
             {% if user.get_es_administrador_o_supervisor_normal %}
-                <th>{% trans 'acciones' %}</th>
+                <th class="text-center">{% trans 'Acciones' %}</th>
             {% endif %}
         </tr>
     </thead>
@@ -44,50 +58,39 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% for grupo in object_list %}
         <tr id="{{ grupo.nombre }}">
             <td>{{ grupo.id }}</td>
-            <td>{{ grupo.nombre }}</td>
-            <td>
+            <td><a href="#" onclick="mostrarDetalleGrupo({{ grupo.id }})">{{ grupo.nombre }}</a></td>
+            <td class="text-center">{{grupo.auto_unpause}}</td>
+            <td class="text-center">
                 {% if grupo.auto_attend_inbound %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
-            <td>
+            <td class="text-center">
                 {% if grupo.auto_attend_dialer %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}
             </td>
-            <td>{{grupo.auto_unpause}}</td>
-            <td>
+            <td class="text-center">
                 {% if grupo.obligar_calificacion %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"><span>
                 {% endif %}
             </td>
-            <td>
-                {% if grupo.call_off_camp %}
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                {% else %}
-                    <span class="icon icon-cancel" aria-hidden="true"><span>
-                {% endif %}
-            </td>
-            <td>
-                {% if grupo.acceso_grabaciones_agente %}
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                {% else %}
-                    <span class="icon icon-cancel" aria-hidden="true"><span>
-                {% endif %}
-            </td>
             {% if user.get_es_administrador_o_supervisor_normal %}
-            <td>
+            <td class="text-center">
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% trans 'Opciones' %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        <a class="dropdown-item" href="#" onclick="mostrarDetalleGrupo({{ grupo.id }})">
+                            <span class="icon icon-search"></span>{% trans 'Ver detalle' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'grupo_update' grupo.id %}">
                             <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                         </a>
@@ -107,4 +110,62 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </tbody>
 </table>
 
+
+<a class="btn btn-light btn-sm" href="{% url 'grupo_nuevo' %}" >{% trans 'Nuevo grupo' %}</a>
+
+{% if is_paginated %}
+    <nav class="mt-5" aria-label="Page navigation">
+        <ul class="pagination pagination-centered">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" aria-label="First" href="{{request.path}}?page={{1}}">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Principio' %}</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" aria-label="Previous" href="{{request.path}}?page={{page_obj.previous_page_number}}">
+                    <span aria-hidden="true">&lt;</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
+                  </a>
+                </li>
+            {% endif %}
+            {% for i in pages %}
+                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                  <a class="page-link" href="{{request.path}}?page={{i}}"> {{i}} </a>
+                </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" aria-label="Next" href="{{request.path}}?page={{page_obj.next_page_number}}">
+                    <span aria-hidden="true">&gt;</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" aria-label="Last" href="{{request.path}}?page={{page_obj.paginator.num_pages}}">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans 'Final' %}</span>
+                  </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+<div class="modal" id="detalleDelGrupoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans 'Información del Grupo' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar'  %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

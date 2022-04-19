@@ -213,13 +213,17 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
                 listado_grabaciones[grabacion.callid]['campana_id'] = grabacion.campana_id
                 listado_grabaciones[grabacion.callid]['callid'] = grabacion.callid
             elif listado_grabaciones[grabacion.callid]['origen'].time > grabacion.time:
+                if 'transfer' not in listado_grabaciones[grabacion.callid]:
+                    listado_grabaciones[grabacion.callid]['transfer'] = []
                 aux = listado_grabaciones[grabacion.callid]['origen']
                 listado_grabaciones[grabacion.callid]['origen'] = grabacion
-                listado_grabaciones[grabacion.callid]['transfer'] = aux
                 listado_grabaciones[grabacion.callid]['contacto_id'] = grabacion.contacto_id
+                listado_grabaciones[grabacion.callid]['transfer'].append(aux)
                 listado_grabaciones[grabacion.callid]['campana_id'] = grabacion.campana_id
             else:
-                listado_grabaciones[grabacion.callid]['transfer'] = grabacion
+                if 'transfer' not in listado_grabaciones[grabacion.callid]:
+                    listado_grabaciones[grabacion.callid]['transfer'] = []
+                listado_grabaciones[grabacion.callid]['transfer'].append(grabacion)
 
         return list(listado_grabaciones.values())
 

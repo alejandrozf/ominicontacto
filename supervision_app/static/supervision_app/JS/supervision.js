@@ -230,9 +230,9 @@ function obtenerNodosAcciones(pk_agent, status) {
         'onclick': 'executeSupervisorAction(\'' + pk_agent + '\', \'CHANSPY\')'
     });
     var $spanSpy = create_node('span', {
-        'class': 'fas fa-user-secret',
+        'class': 'fas fa-volume-up',
         'aria-hidden': 'true',
-        'title': gettext('Espiar'),
+        'title': gettext('Monitoreo'),
     });
     $spy.append($spanSpy);
 

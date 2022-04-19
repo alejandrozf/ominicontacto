@@ -25,11 +25,14 @@ from django.conf import settings
 from django.apps import apps
 
 from ominicontacto_app.permisos import PermisoOML
+import os
 
 
 def global_settings(request):
     return {
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
+        'GOOGLE_MAPS_API_KEY': os.getenv('GOOGLE_MAPS_API_KEY'),
+        'GOOGLE_MAPS_CENTER': os.getenv('GOOGLE_MAPS_CENTER'),
     }
 
 

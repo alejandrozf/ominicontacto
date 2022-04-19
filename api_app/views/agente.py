@@ -327,6 +327,29 @@ class AgentRingingAsterisk(APIView):
             })
 
 
+class AgentRejectCallAsterisk(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        try:
+            agente_profile = self.request.user.get_agente_profile()
+            reject_call = LlamadaLog.objects.filter(agente_id=agente_profile.id,
+                                                    event__in=LlamadaLog.EVENTOS_REJECT).last()
+            reject_call.agente_extra_id = agente_profile.id
+            reject_call.save()
+            return Response(data={
+                'status': 'OK',
+            })
+        except Exception as e:
+            print(e)
+            return Response(data={
+                'status': 'ERROR',
+            })
+
+
 class AgentLogoutView(View):
     """
         Vista para ejecutar el logout de agente a asterisk, realizando las acciones

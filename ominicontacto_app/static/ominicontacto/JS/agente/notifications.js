@@ -24,7 +24,8 @@ class NotificationSocket
     constructor() {
         /* eventsCallbacks */
         this.eventsCallbacks = {
-            onNotificationForzarDespausa: $.Callbacks()
+            onNotificationForzarDespausa: $.Callbacks(),
+            onNotificationPhoneJsLogout: $.Callbacks()
         };
     }
 
@@ -40,6 +41,8 @@ class NotificationSocket
             const data = JSON.parse(e.data);
             if (data.type == 'unpause-call')
                 self.eventsCallbacks.onNotificationForzarDespausa.fire(data.args);
+            if (data.type == 'logout')
+                self.eventsCallbacks.onNotificationPhoneJsLogout.fire();
                 
         };
       

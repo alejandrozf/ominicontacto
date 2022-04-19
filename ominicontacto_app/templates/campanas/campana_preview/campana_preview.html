@@ -20,6 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "campanas/wizard_base.html" %}
 {% load i18n %}
 {% load static %}
+{% load util_tags %}
 {% load widget_tweaks %}
 
 {% block head_js %}
@@ -28,6 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    </script>
    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}">
    </script>
+   <script type="text/javascript" src="{% static 'ominicontacto/JS/campoDireccion.js' %}"></script>
    <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
 {% endblock head_js %}
 
@@ -75,7 +77,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div>
             {{ form.tipo_interaccion.errors }}
             {% if form.instance.pk %}
-                {% if form.instance.tipo_interaccion == 2 %}
+                {% if form.instance.tipo_interaccion|interaccion_crm %}
                     <div class="col-md-6">
                         <label>{% trans "Sitio Externo" %}</label>
                         {{ form.sitio_externo|add_class:"edit_url" }}
@@ -88,6 +90,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               <label> {% trans "Tipo de Interacción" %}</label>
                 <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
                 <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
+                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
             </div>
             <div class="col-md-5">
                 <label><div class="myradio" id="url_externa">
@@ -96,6 +99,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.sitio_externo }}
             </div>
         {% endif %}
+        <div class="col-md-5">
+            {{ form.campo_direccion.as_hidden }}
+            <label for="{{ form.campo_direccion_choice.id_for_label }}">{% trans 'Campo para dirección:' %}</label>
+            {{ form.campo_direccion_choice }}
+            {{ form.campo_direccion_choice.errors }}
+        </div>
         <div class="col-md-3">
             <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
             {{ form.auto_grabacion }}

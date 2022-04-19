@@ -264,6 +264,7 @@ class PhoneJSController {
         $('[id^=doNotAnswer]').click(function() {
             $('#modalReceiveCalls').modal('hide');
             self.phone.refuseCall();
+            self.agentRejectCall();
         });
 
         this.view.reload_video_button.click(function() {
@@ -468,6 +469,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
+            $('#numberAni').html(session_data.from);
             $('#callerid').html(session_data.from_agent_name);
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
@@ -595,6 +597,17 @@ class PhoneJSController {
             else
                 self.llamada_calificada = false;
         });
+        
+        this.notification_agent.eventsCallbacks.onNotificationPhoneJsLogout.add(function(args){
+            self.phone.logout();
+            self.view.setSipStatus('UNREGISTERED');
+            var message = gettext('Se ha detectado un nuevo inicio de sesión con su usuario.\
+                            La sesión actual será suspendida. Por favor, contacte con su Administrador');
+            self.view.setCallStatus(message, 'red');
+            alert(message);
+            
+        });
+
     }
 
     goToReadyAfterLogin() {
@@ -867,6 +880,9 @@ class PhoneJSController {
         } else {
             var from = session_data.from;
             $('#callerid').text(from);
+            $('#omlcampname').text(session_data.remote_call['Omlcampname']);
+            $('#omldid').text(session_data.remote_call['Omldid']);
+            $('#omlinroutename').text(session_data.remote_call['Omlinroutename']);
             $('#modalReceiveCalls').modal('show');
             this.oml_api.eventRinging();
         }
@@ -1011,6 +1027,10 @@ class PhoneJSController {
             PHONE_STATUS_CONFIGS['OnCall'].enabled_buttons = filter_on_call;
             PHONE_STATUS_CONFIGS['OnHold'].enabled_buttons = filter_on_hold;
         }
+    }
+
+    agentRejectCall() {
+        this.oml_api.eventReject();
     }
 
 }

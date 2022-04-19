@@ -221,6 +221,9 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
+            'SHOWCAMPNAME': self.campana_entrante.nombre,
+            'SHOWDID': 'False',
+            'SHOWINROUTENAME': 'False',
         }
         family = CampanaFamily()
 
@@ -246,6 +249,9 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
+            'SHOWCAMPNAME': self.campana_dialer.nombre,
+            'SHOWDID': 'False',
+            'SHOWINROUTENAME': 'False',
         }
         family = CampanaFamily()
 
@@ -271,6 +277,9 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
+            'SHOWCAMPNAME': self.campana_manual.nombre,
+            'SHOWDID': 'False',
+            'SHOWINROUTENAME': 'False',
         }
         family = CampanaFamily()
 
@@ -296,6 +305,9 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'PERMITOCCULT': "",
             'MAXCALLS': "",
             'VIDEOCALL': 'False',
+            'SHOWCAMPNAME': self.campana_preview.nombre,
+            'SHOWDID': 'False',
+            'SHOWINROUTENAME': 'False',
         }
         family = CampanaFamily()
 

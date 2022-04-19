@@ -1,0 +1,189 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% load i18n  %}
+
+<h3><strong>{% trans 'Nombre' %}:</strong> {{ grupo.nombre }}</h3>
+<h3><strong>{% trans 'Auto unpause' %}:</strong> {{ grupo.auto_unpause }} segundos</h3>
+<hr>
+<h3><strong>{% trans 'Llamadas' %}</strong></h3>
+<ul>
+    <li>
+        <h4>{% trans 'Auto atender entrantes' %}: 
+            {% if grupo.auto_attend_inbound %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Auto atender dailer' %}: 
+            {% if grupo.auto_attend_dialer %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Llamadas fuera de campaña' %}: 
+            {% if grupo.call_off_camp %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Despausar automaticamente' %}: 
+            {% if grupo.auto_unpause %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Forzar calificación' %}: 
+            {% if grupo.obligar_calificacion %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Forzar Despausa' %}: 
+            {% if grupo.obligar_despausa %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+</ul>
+<hr>
+<h3><strong>{% trans 'Agendas' %}</strong></h3>
+<ul>
+    <li>
+        <h4>{% trans 'Limitar agendas personales' %}: 
+            {% if grupo.limitar_agendas_personales %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Limitar agendas personales en días' %}: 
+            {% if grupo.limitar_agendas_personales_en_dias %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Cantidad agendas personales' %}: 
+            {% if grupo.cantidad_agendas_personales %}
+                {{ grupo.cantidad_agendas_personales }}
+            {% else %}
+                ---
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Tiempo máximo para agendar' %}:
+            {% if grupo.tiempo_maximo_para_agendar %}
+                {{ grupo.tiempo_maximo_para_agendar }}
+            {% else %}
+                ---
+            {% endif %}
+        </h4>
+    </li>
+</ul>
+<hr>
+<h3><strong>{% trans 'Permisos en consola de agente' %}</strong></h3>
+<ul>
+    <li>
+        <h4>{% trans 'Acceso al dashboard' %}: 
+            {% if grupo.acceso_dashboard_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Acceso a las grabaciones' %}: 
+            {% if grupo.acceso_grabaciones_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+
+    <li>
+        <h4>{% trans 'Ver timers' %}: 
+            {% if grupo.show_console_timers %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Acceso a los contactos' %}: 
+            {% if grupo.acceso_contactos_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Acceso a las agendas' %}: 
+            {% if grupo.acceso_agendas_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Acceso a las calificaciones' %}: 
+            {% if grupo.acceso_calificaciones_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
+        <h4>{% trans 'Acceso a las campañas preview' %}: 
+            {% if grupo.acceso_campanas_preview_agente %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+</ul>

@@ -277,6 +277,18 @@ class OMLAPI {
                 console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
+    }
 
+    eventReject(){
+        var URL = Urls.api_make_reject_call();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
     }
 }

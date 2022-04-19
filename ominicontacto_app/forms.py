@@ -714,7 +714,8 @@ class CampanaMixinForm(object):
                         "configurar una campana")
             self.add_error('bd_contacto', message)
             raise forms.ValidationError(message, code='invalid')
-        if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
+        if self.cleaned_data.get('tipo_interaccion') in \
+            [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO] and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
             raise forms.ValidationError(message, code='invalid')
@@ -731,6 +732,13 @@ class CampanaMixinForm(object):
         if tipo_interaccion == Campana.FORMULARIO and sitio_externo is not None:
             msg = _('No se puede elegir un URL externo si selecciono un formulario.')
             raise forms.ValidationError(msg)
+        if tipo_interaccion == Campana.FORMULARIO_Y_SITIO_EXTERNO and sitio_externo and \
+                sitio_externo.objetivo == SitioExterno.EMBEBIDO and \
+                sitio_externo.disparador != SitioExterno.CALIFICACION:
+            msg = _('Para este tipo de interacción no puede elegir un sitio \
+                externo con "Objetivo" embebido')
+            raise forms.ValidationError(msg)
+
         return sitio_externo
 
     def clean_id_externo(self):
@@ -759,6 +767,9 @@ class CampanaMixinForm(object):
 
 
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
+
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(CampanaEntranteForm, self).__init__(*args, **kwargs)
@@ -791,9 +802,10 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+        fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'videocall_habilitada', 'speech')
+                  'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
+                  'videocall_habilitada', 'speech',)
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -801,6 +813,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -815,7 +828,8 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva')
+        fields = (
+            'tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva', 'interaccion_crm')
 
         widgets = {
             'nombre': forms.Select(),
@@ -825,6 +839,8 @@ class OpcionCalificacionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         nombres_calificaciones = kwargs.pop('nombres_calificaciones')
         con_formulario = kwargs.pop('con_formulario')
+        con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
+            if 'con_crm_calificacion' in kwargs else None
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -845,6 +861,9 @@ class OpcionCalificacionForm(forms.ModelForm):
 
         if not con_formulario:
             self.fields.pop('formulario')
+
+        if not con_crm_calificacion:
+            self.fields.pop('interaccion_crm')
 
     def clean_nombre(self):
         instance = getattr(self, 'instance', None)
@@ -1456,6 +1475,10 @@ class AgendaContactoForm(forms.ModelForm):
 
 
 class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
+
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
@@ -1488,7 +1511,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sistema_externo', 'id_externo',
+                  'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'outcid', 'outr', 'speech')
         labels = {
@@ -1497,6 +1520,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1870,6 +1894,8 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     detectar_contestadores = forms.BooleanField(required=False)
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
@@ -1884,7 +1910,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+        fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr',
                   'speech')
 
@@ -1906,6 +1932,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
+    campo_direccion_choice = forms.CharField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
@@ -1921,10 +1949,11 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion', 'outr', 'outcid', 'speech')
+                  'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -2015,6 +2044,9 @@ class GrupoForm(forms.ModelForm):
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
                   'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
+                  'show_console_timers', 'acceso_contactos_agente',
+                  'acceso_agendas_agente', 'acceso_calificaciones_agente',
+                  'acceso_campanas_preview_agente',
                   )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -2063,9 +2095,15 @@ class GrupoForm(forms.ModelForm):
 class ParametrosCrmForm(forms.ModelForm):
 
     def __init__(self, columnas_bd, *args, **kwargs):
+        self.con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
+            if 'con_crm_calificacion' in kwargs else None
         super(ParametrosCrmForm, self).__init__(*args, **kwargs)
         self.columnas_bd = columnas_bd
         self.columnas_bd_keys = [x[0] for x in columnas_bd]
+        if not self.con_crm_calificacion:
+            tipo_choices = [(choice[0], choice[1]) for choice in self.fields['tipo'].choices
+                            if choice[0] != ParametrosCrm.DATO_CALIFICACION]
+            self.fields['tipo'] = forms.ChoiceField(choices=tipo_choices)
 
     class Meta:
         model = ParametrosCrm
@@ -2078,7 +2116,7 @@ class ParametrosCrmForm(forms.ModelForm):
         }
 
     def clean_valor(self):
-        tipo = self.cleaned_data.get('tipo')
+        tipo = int(self.cleaned_data.get('tipo'))
         valor = self.cleaned_data.get('valor')
         if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
             raise forms.ValidationError(
@@ -2097,6 +2135,10 @@ class ParametrosCrmForm(forms.ModelForm):
                     _('El valor debe tener el prefijo {0}'.format(ParametrosCrm.PREFIJO_DIALPLAN))))
             else:
                 return valor.capitalize()
+        if tipo == ParametrosCrm.DATO_CALIFICACION and \
+                valor not in ParametrosCrm.OPCIONES_DATO_CALIFICACION_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo válido de datos de calificación'))
         return valor
 
     def clean_nombre(self):

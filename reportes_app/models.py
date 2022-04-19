@@ -191,32 +191,33 @@ class LlamadaLogManager(models.Manager):
     def obtener_grabaciones_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
         fecha_fin = datetime_hora_maxima_dia(fecha_fin)
-        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
-                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
+                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
 
-        return self.filter(time__range=(fecha_inicio, fecha_fin),
-                           campana_id__in=campanas, duracion_llamada__gt=0,
-                           event__in=INCLUDED_EVENTS,
-                           archivo_grabacion__isnull=False).order_by('-time').\
-            exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+        query = self.filter(time__range=(fecha_inicio, fecha_fin),
+                            campana_id__in=campanas,
+                            event__in=INCLUDED_EVENTS,
+                            archivo_grabacion__isnull=False)
+        query = query.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
+        query = query.order_by('-time')
+        return query.exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
                                       marcadas, duracion, gestion):
-        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
-                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
+                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
         campanas_id = [campana.id for campana in campanas]
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
-                                  duracion_llamada__gt=0,
                                   event__in=INCLUDED_EVENTS)
-
+        grabaciones = grabaciones.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
@@ -311,6 +312,13 @@ class LlamadaLogManager(models.Manager):
             ),
         ).only("id").distinct("contacto_id").count()
 
+    def cantidad_llamadas_rechazadas_fecha(self, agente_id, fecha_inferior, fecha_superior):
+        fecha_desde = datetime_hora_minima_dia(fecha_inferior)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_superior)
+        return self.filter(agente_id=agente_id, agente_extra_id=agente_id,
+                           time__gte=fecha_desde, time__lte=fecha_hasta,
+                           event__in=LlamadaLog.EVENTOS_REJECT).exclude(campana_id='0').count()
+
 
 class LlamadaLog(models.Model):
     """
@@ -377,6 +385,9 @@ class LlamadaLog(models.Model):
 
     # eventos de hold en una llamada
     EVENTOS_HOLD = ['HOLD', 'UNHOLD']
+
+    # eventos de no atendida una llamada
+    EVENTOS_REJECT = ['RINGNOANSWER']
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']

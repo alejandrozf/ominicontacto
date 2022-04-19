@@ -357,7 +357,7 @@ class OminicontactoAppConfig(AppConfig):
 
         # Auditoria al supervisor
         auditoria = []
-        if 'seguridad_auditorias' in permissions:
+        if 'seguridad_auditoria' in permissions:
             auditoria.append({
                 'label': _('Auditoría'),
                 'url': reverse('seguridad_auditoria'),
@@ -423,6 +423,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'grupo_update',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'grupo_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'grupo_detalle',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'pausa_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -618,6 +620,12 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'disposition_incidence_edit',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'incidence_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'incidence_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'incidence_edit',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_manual_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_manual_create',
@@ -681,6 +689,12 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'black_list_create',
              'roles': ['Administrador', ]},
             {'nombre': 'black_list_list',
+             'roles': ['Administrador', ]},
+            {'nombre': 'update_blacklist',
+             'roles': ['Administrador', ]},
+            {'nombre': 'eliminar_blacklist',
+             'roles': ['Administrador', ]},
+            {'nombre': 'nuevo_contacto_blacklist',
              'roles': ['Administrador', ]},
             {'nombre': 'sistema_externo_list',
              'roles': ['Administrador', ]},
@@ -772,7 +786,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'seguridad_auditorias',
+            {'nombre': 'seguridad_auditoria',
              'roles': ['Administrador', ]}
         ]
 
@@ -828,6 +842,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Modificar Grupo'), 'version': '1.7.0'},
         'grupo_delete':
             {'descripcion': _('Borrar Grupo'), 'version': '1.7.0'},
+        'grupo_detalle':
+            {'descripcion': _('Detalle del Grupo'), 'version': '1.7.0'},
         'pausa_list':
             {'descripcion': _('Ver lista de Pausas'), 'version': '1.7.0'},
         'pausa_nuevo':
@@ -1056,6 +1072,15 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crear Regla de incidencia por calificación'), 'version': '1.11.8'},
         'disposition_incidence_edit':
             {'descripcion': _('Editar Regla de incidencia por calificación'), 'version': '1.11.8'},
+        'incidence_delete':
+            {'descripcion': _('Borrar regla de incidencia por estado de sistema'),
+             'version': '1.11.8'},
+        'incidence_create':
+            {'descripcion': _('Crear Regla de incidencia por estado de sistema'),
+             'version': '1.11.8'},
+        'incidence_edit':
+            {'descripcion': _('Editar Regla de incidencia estado de sistema'),
+             'version': '1.11.8'},
         'campana_manual_list':
             {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.7.0'},
         'campana_manual_create':
@@ -1126,6 +1151,12 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Creacion de una Blacklist'), 'version': '1.7.0'},
         'black_list_list':
             {'descripcion': _('Ver lista de Blacklists'), 'version': '1.7.0'},
+        'update_blacklist':
+            {'descripcion': _('Actualizar lista de Blacklists'), 'version': '1.7.0'},
+        'eliminar_blacklist':
+            {'descripcion': _('Eliminar lista de Blacklists'), 'version': '1.7.0'},
+        'nuevo_contacto_blacklist':
+            {'descripcion': _('Agregar contacto a lista de Blacklists'), 'version': '1.7.0'},
         'sistema_externo_list':
             {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},
         'sistema_externo_create':
@@ -1225,6 +1256,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Elimina un contacto de una lista rapida'), 'version': '1.19.0'},
         'nuevo_contacto_lista_rapida':
             {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
-        'seguridad_auditorias':
+        'seguridad_auditoria':
             {'descripcion': _('Ver acciones realizadas por supervisores'), 'version': '1.19.0'},
     }

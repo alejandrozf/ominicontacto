@@ -480,6 +480,14 @@ class SessionData {
             call_data.video_channel = invite_request.headers.Omlvideo[0].raw;
         }
 
+        if (invite_request.headers.Omldid)
+            call_data.Omldid = invite_request.headers.Omldid[0].raw;
+        
+        if (invite_request.headers.Omlcampname)
+            call_data.Omlcampname = invite_request.headers.Omlcampname[0].raw;
+        
+        if (invite_request.headers.Omlinroutename)
+            call_data.Omlinroutename = invite_request.headers.Omlinroutename[0].raw;
 
         // Campaign agent behaviour configuration
         if (invite_request.headers['Force-Disposition']){
