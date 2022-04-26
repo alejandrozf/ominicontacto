@@ -1541,9 +1541,13 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'control_de_duplicados',
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'speech')
+                  'outcid', 'outr', 'speech', 'prioridad')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
+        }
+
+        help_texts = {
+            'prioridad': _('Valor entre 1 y 100'),
         }
 
         widgets = {
@@ -1557,7 +1561,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
-            'speech': forms.Textarea(attrs={'class': 'form-control'})
+            'speech': forms.Textarea(attrs={'class': 'form-control'}),
+            'prioridad': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 

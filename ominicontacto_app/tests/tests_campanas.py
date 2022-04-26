@@ -178,6 +178,8 @@ class CampanasTests(OMLBaseTest):
     GESTION = 'Venta'
 
     def setUp(self):
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
         self.tiempo_desconexion = 3
 
         self.usuario_admin_supervisor = self.crear_administrador()
@@ -808,6 +810,7 @@ class SupervisorCampanaTests(CampanasTests):
             '0-tipo_interaccion': self.campana.tipo_interaccion,
             '0-control_de_duplicados': self.campana.control_de_duplicados,
             '0-objetivo': 0,
+            '0-prioridad': 10,
             '0-fecha_inicio': fecha_inicio.date().strftime("%d/%m/%Y"),
             '0-fecha_fin': fecha_fin.date().strftime("%d/%m/%Y"),
             'campana_dialer_create_view-current_step': 0,

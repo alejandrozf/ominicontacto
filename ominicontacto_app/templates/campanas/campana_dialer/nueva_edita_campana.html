@@ -143,10 +143,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{form.outcid}}
                 {{form.outcid.errors}}
             </div>
-            <div class="col-md-1">
+            <div class="col-md-3">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}
                 {{ form.objetivo.errors }}
+            </div>
+            <div class="col-md-3">
+                <label>{% trans 'Prioridad:' %}</label>
+                {{ form.prioridad }}
+                <small class="form-text text-muted">{{ form.prioridad.help_text }}</small>
+                {{ form.prioridad.errors }}
             </div>
             <div class="col-md-6">
                 <label for="{{ form.speech.id_for_label }}">{% trans 'Speech:' %}</label>
