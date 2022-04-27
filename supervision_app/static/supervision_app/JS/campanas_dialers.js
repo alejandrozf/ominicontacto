@@ -36,6 +36,8 @@ $(function() {
     }
     campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
     createDataTable();
+    subcribeFilterChange();
+    handle_filter();
 
     const contactadosSocket = new WebSocket(
         'wss://' +
@@ -130,7 +132,6 @@ $(function() {
             stats.agentes_llamada == 0 &&
             stats.agentes_pausa == 0;
     }
-
 });
 
 function createDataTable() {
@@ -153,6 +154,24 @@ function createDataTable() {
             { 'data': 'gestiones' },
             { 'data': 'pendientes' },
             { 'data': 'porcentaje_objetivo' },
+            { 'data': 'status', 'visible': false },
+        ],
+        'searchCols': [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            { 'search': filter_by_status(), },
         ],
         lengthMenu: [[10, 25, 50, 100, 200, 500, -1], [10, 25, 50, 100, 200, 500 , gettext('Todos')]],
         language: {
@@ -190,6 +209,7 @@ class DialerStats {
         this.agentes_pausa = 0;
         this.agentes_ready = 0;
         this.porcentaje_objetivo = 0;
+        this.status = 0;
     }
 
     isEmpty() {
@@ -219,6 +239,7 @@ class DialerStats {
         this.pendientes = newStats['ESTADISTICAS']['pendientes'];
         this.canales_discando = newStats['ESTADISTICAS']['canales_discando'];
         this.porcentaje_objetivo = newStats['ESTADISTICAS']['porcentaje_objetivo'];
+        this.status = parseInt(newStats['STATUS']);
     }
 
     updateAgentStats(agentStats) {
@@ -282,6 +303,26 @@ class Agents {
 
     }
 
+}
+
+function subcribeFilterChange() {
+    $('#filter_by_status').change(function() {
+        handle_filter();
+    });
+}
+
+function handle_filter() {
+    let selection = $('#filter_by_status').find('option:selected');
+    let value = selection.val();
+    if(value > 0){
+        table_dialers.columns(14).search(value).draw();
+    } else {
+        table_dialers.columns().search('').draw();
+    }
+}
+
+function filter_by_status() {
+    return $('#filter_by_status option:selected').val();
 }
 
 var agents = new Agents();
