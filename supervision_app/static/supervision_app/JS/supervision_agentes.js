@@ -85,3 +85,14 @@ function preventLeaveOnCall(event) {
         return gettext('Debe finalizar la acción actual antes de salir de esta pantalla.');
     }
 }
+
+$(document).ready(function(){
+    $('#tableAgentes').tooltip({
+        altPosition: {
+            minOuterHeight: 60,
+            tagName: 'select',
+            callback: function() { return this.element.val().length > 20; },
+            position: {my: 'left+100 top', at: 'right top', collision: 'flipfit'} // Right side
+        }
+    });
+});

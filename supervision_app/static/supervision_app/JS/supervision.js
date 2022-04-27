@@ -204,7 +204,8 @@ function createDataTable() {
             },
             lengthMenu: gettext('Mostrar _MENU_ entradas'),
             info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
-        }
+        },
+        'orderMulti': true,
     });
 }
 
