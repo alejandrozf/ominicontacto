@@ -370,7 +370,7 @@ class LlamadaLog(models.Model):
     # Marcan el fin de la conexion por una transferencia para el agente original
     EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
                                          'CAMPT-COMPLETE', 'CAMPT-FAIL',
-                                         'CT_COMPLETE', 'CTOUT-COMPLETE']
+                                         'CT-COMPLETE', 'CTOUT-COMPLETE']
 
     EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
                                'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
