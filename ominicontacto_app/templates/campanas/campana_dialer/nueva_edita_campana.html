@@ -83,6 +83,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.bd_contacto }}
                 {{ form.bd_contacto.errors }}
             </div>
+            <div class="col-md-4">
+                <label for="{{ form.control_de_duplicados.id_for_label }}">{% trans 'Control de contactos duplicados:' %}</label>
+                {{ form.control_de_duplicados }}
+                {{ form.control_de_duplicados.errors }}
+            </div>
             {% if not form.initial.es_template %}
                 <div class="col-md-3">
                     <label for="{{ form.fecha_inicio.id_for_label }}">{% trans 'Fecha inicio:' %}</label>

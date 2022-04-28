@@ -354,13 +354,6 @@ class CrearContactoTest(APITest):
         self.contacto_ok['id'] = Contacto.objects.last().id
         response_json = response.json()
         self.assertEqual(response_json, self.contacto_ok)
-        response = self.client.post(self.URL, json.dumps(self.post_data_contacto_externo),
-                                    format='json', content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Contacto.objects.count(), cant_inicial + 2)
-        self.contacto_ok['id'] = Contacto.objects.last().id
-        response_json = response.json()
-        self.assertEqual(response_json, self.contacto_ok)
 
     def test_creacion_usuario_preview_por_agente_crea_agente_en_contacto(self):
         campana = CampanaFactory(type=Campana.TYPE_PREVIEW, estado=Campana.ESTADO_ACTIVA,

@@ -21,10 +21,49 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <form action="" enctype="multipart/form-data" method="post">
       {% csrf_token %}
       <div style="position: relative;">
-          {{contacto_form.as_table}}
-          {{form.as_table}}
+          {{ contacto_form.non_field_errors }}
+          {% for hidden_field in contacto_form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+          {% endfor %}
+          {{ form.non_field_errors }}
+          {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+          {% endfor %}
+          <table class="table">
+              {% for field in contacto_form.visible_fields %}
+                  {% if field.name != "confirmar_duplicado" %}
+                      <tr>
+                      <th>{{ field.label_tag }}</th>
+                      <td>
+                          {{ field.errors }}
+                          {{ field }}
+                          {{ field.help_text }}
+                      </td>
+                      </tr>
+                  {% endif %}
+              {% endfor %}
+              {% for field in form.visible_fields %}
+                    <tr>
+                    <th>{{ field.label_tag }}</th>
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                    </tr>
+                {% endfor %}
+        </table>
+          <!-- {{form.as_table}} -->
       </div>
       <hr>
+      {% if contacto_form.confirmar_duplicado in contacto_form.hidden_fields %}
+          {{ contacto_form.confirmar_duplicado }}
+      {% else %}
+          {{ contacto_form.confirmar_duplicado.label_tag }}{{ contacto_form.confirmar_duplicado }}
+          <hr>
+      {% endif %}
       <button type="submit"  class="btn btn-primary">
           {% trans 'Guardar'  %}
       </button>

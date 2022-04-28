@@ -1144,6 +1144,14 @@ class Campana(models.Model):
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
 
+    EVITAR_DUPLICADOS = 1
+    PERMITIR_DUPLICADOS = 2
+
+    CONTROL_DE_DUPLICADOS = (
+        (EVITAR_DUPLICADOS, _('Evitar duplicados')),
+        (PERMITIR_DUPLICADOS, _('Permitir duplicados')),
+    )
+
     history = AuditlogHistoryField()
 
     estado = models.PositiveIntegerField(
@@ -1199,6 +1207,10 @@ class Campana(models.Model):
     campo_direccion = models.CharField(max_length=128, null=True, blank=True)
     mostrar_did = models.BooleanField(default=False)
     mostrar_nombre_ruta_entrante = models.BooleanField(default=False)
+    control_de_duplicados = models.PositiveIntegerField(
+        choices=CONTROL_DE_DUPLICADOS,
+        default=PERMITIR_DUPLICADOS,
+    )
 
     def __str__(self):
         return self.nombre

@@ -69,16 +69,28 @@
         {% endif %}
         <div class="row">
             <div class="col-md-6">
+                {{ contacto_form.non_field_errors }}
+                {% for hidden_field in contacto_form.hidden_fields %}
+                  {{ hidden_field.errors }}
+                  {{ hidden_field }}
+                {% endfor %}
+                {% if contacto_form.confirmar_duplicado in contacto_form.hidden_fields %}
+                    {{ contacto_form.confirmar_duplicado }}
+                {% else %}
+                    {{ contacto_form.confirmar_duplicado.label_tag }}{{ contacto_form.confirmar_duplicado }}
+                {% endif %}
                 {% for field in contacto_form %}
-                    <tr>
-                        <th>{{ field.label_tag}}</th>
-                        <th>{{ field.errors }}</th>
-                        <td> {{ field }}
-                        {% if contacto and field.name in campos_telefono %}
-                                <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
-                        {% endif %}
-                        </td>
-                    </tr>
+                    {% if field.name != "confirmar_duplicado" %}
+                        <tr>
+                            <th>{{ field.label_tag}}</th>
+                            <th>{{ field.errors }}</th>
+                            <td> {{ field }}
+                            {% if contacto and field.name in campos_telefono %}
+                                    <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
+                            {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
                 <br>
                 <button type="submit" id="id_guardar" class="btn btn-primary">
