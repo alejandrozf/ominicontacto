@@ -216,6 +216,7 @@ class CampanaFactory(DjangoModelFactory):
     sitio_externo = None
     reported_by = SubFactory(UserFactory)
     nombre_template = lazy_attribute(lambda a: faker.text(max_nb_chars=6))
+    prioridad = 10
 
     @post_generation
     def supervisors(self, create, extracted, **kwargs):

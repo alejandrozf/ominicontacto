@@ -1197,6 +1197,8 @@ class Campana(models.Model):
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
+    prioridad = models.PositiveIntegerField(
+        default=10, validators=[MinValueValidator(1), MaxValueValidator(100)])
 
     # para uso en campañas preview
     tiempo_desconexion = models.PositiveIntegerField(default=0)

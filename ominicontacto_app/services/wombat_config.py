@@ -56,7 +56,7 @@ class CampanaCreator(object):
             "campaignId": campana_id_wombat,
             "name": campana.get_queue_id_name(),
 
-            "priority": 10,
+            "priority": campana.prioridad,
             "pace": "RUNNABLE",
             "pauseWhenFinished": 0,
             "batchSize": 100,
