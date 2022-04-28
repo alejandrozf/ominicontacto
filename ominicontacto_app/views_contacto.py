@@ -494,6 +494,7 @@ class FormularioNuevoContactoFormView(FormView):
         kwargs['base_datos'] = self.campana.bd_contacto
         kwargs['campos_bloqueados'] = self.campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = self.campana.get_campos_ocultos()
+        kwargs['control_de_duplicados'] = self.campana.control_de_duplicados
 
         return kwargs
 

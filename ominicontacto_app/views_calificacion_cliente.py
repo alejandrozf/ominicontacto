@@ -237,7 +237,8 @@ class CalificacionClienteFormView(FormView):
         return FormularioNuevoContacto(
             base_datos=self.campana.bd_contacto,
             **self.get_contacto_form_kwargs(),
-            es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE
+            es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE,
+            control_de_duplicados=self.campana.control_de_duplicados
         )
 
     def _formulario_llamada_entrante(self):
@@ -617,7 +618,10 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
         return kwargs
 
     def get_contacto_form(self):
-        return FormularioNuevoContacto(**self.get_contacto_form_kwargs())
+        return \
+            FormularioNuevoContacto(**self.get_contacto_form_kwargs(),
+                                    control_de_duplicados=self.calificacion.
+                                    opcion_calificacion.campana.control_de_duplicados)
 
     def get_form_kwargs(self):
         kwargs = super(RespuestaFormularioCreateUpdateFormView, self).get_form_kwargs()
