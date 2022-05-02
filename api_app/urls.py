@@ -53,6 +53,8 @@ from api_app.views.agente import (
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
+from api_app.views.system import AsteriskQueuesData
+
 
 router = routers.DefaultRouter()
 
@@ -248,5 +250,9 @@ urlpatterns = [
         ReiniciarWombat.as_view(), name='api_restart_wombat'),
     url(r'^api/v1/womabat_dialer/status',
         WombatState.as_view(), name='api_wombat_state'),
+
+    # ###########  ASTERISK    ############ #
+    url(r'^api/v1/asterisk/queues_data/',
+        AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
 
 ]
