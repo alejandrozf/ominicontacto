@@ -31,16 +31,13 @@ $(function() {
     campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
     createDataTable();
 
-    const contactadosSocket = new WebSocket(
-        'wss://' +
-        window.location.host +
-        '/consumers/stream/supervisor/' +
-        $('input#supervisor_id').val() +
-        '/' +
-        'entrantes'
-    );
-
-    contactadosSocket.onmessage = function(e) {
+    const url = `wss://${window.location.host}/consumers/stream/supervisor/${$('input#supervisor_id').val()}/entrantes`;
+    const rws = new ReconnectingWebSocket(url, [], {
+        connectionTimeout: 2000,
+        maxReconnectionDelay: 3000,
+        minReconnectionDelay: 1000,
+    });
+    rws.addEventListener('message', function(e) {
         if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
             try {
                 var data = JSON.parse(e.data);
@@ -49,7 +46,7 @@ $(function() {
                 console.log(err);
             }
         }
-    };
+    });
 
     function processData(data) {
         let haveAgentsData = false;
