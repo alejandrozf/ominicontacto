@@ -35,16 +35,21 @@ class NotificationSocket
     }
 
     startNotificationSocket2() {
-        var notificationSocket = new WebSocket('wss://' + window.location.host + '/channels/agent-console');
+        const url = `wss://${window.location.host}/channels/agent-console`;
+        const rws = new ReconnectingWebSocket(url, [], {
+            connectionTimeout: 2000,
+            maxReconnectionDelay: 3000,
+            minReconnectionDelay: 1000,
+        });
         var self = this;
-        notificationSocket.onmessage = function(e) {
+        rws.addEventListener('message', function(e) {
             const data = JSON.parse(e.data);
             if (data.type == 'unpause-call')
                 self.eventsCallbacks.onNotificationForzarDespausa.fire(data.args);
             if (data.type == 'logout')
                 self.eventsCallbacks.onNotificationPhoneJsLogout.fire();
                 
-        };
+        });
       
     }
 

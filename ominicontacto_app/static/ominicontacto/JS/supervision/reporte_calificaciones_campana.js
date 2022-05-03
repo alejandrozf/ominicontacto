@@ -60,18 +60,13 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, taskId, urlExportacion, $ba
    
     // establece conexion a websocket para obtener los status
     // y enviarlos a la barra de progreso
-    const contactadosSocket = new WebSocket(
-        'wss://' +
-        window.location.host +
-        '/consumers/reporte_grafico_campana/' +
-        sufijoUrl +
-        '/' +
-        campanaId +
-        '/' +
-        taskId
-    );
-
-    contactadosSocket.onmessage = function(e) {
+    const url = `wss://${window.location.host}/consumers/reporte_grafico_campana/${sufijoUrl}/${campanaId}/${taskId}`;
+    const rws = new ReconnectingWebSocket(url, [], {
+        connectionTimeout: 2000,
+        maxReconnectionDelay: 3000,
+        minReconnectionDelay: 1000,
+    });
+    rws.addEventListener('message', function(e) {
         var data = e.data;
         if (data == subscribeConfirmationMessage) {
             generarReporteCSV(urlExportacion, $csvDescarga, sufijoUrl, start, end,
@@ -96,10 +91,10 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, taskId, urlExportacion, $ba
                 setTimeout(function() {
                     notification.close();
                 }, 3000);
-                contactadosSocket.close();
+                rws.close();
             }
         }
-    };
+    });
 }
 
 

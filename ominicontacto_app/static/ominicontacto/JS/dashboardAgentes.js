@@ -56,17 +56,13 @@ if (dataDashboardSession == undefined) {
     });
 }
 
-
-const contactadosSocket = new WebSocket(
-    'wss://' +
-    window.location.host +
-    '/consumers/reporte_agente/estadisticas_dia_actual/' +
-    agenteId +
-    '/' +
-    taskId
-);
-
-contactadosSocket.onmessage = function(e) {
+const url = `wss://${window.location.host}/consumers/reporte_agente/estadisticas_dia_actual/${agenteId}/${taskId}`;
+const rws = new ReconnectingWebSocket(url, [], {
+    connectionTimeout: 2000,
+    maxReconnectionDelay: 3000,
+    minReconnectionDelay: 1000,
+});
+rws.addEventListener('message', function(e) {
     if (e.data != subscribeConfirmationMessage) {
         var data = JSON.parse(e.data);
         var conectadasData = JSON.parse(data.conectadas);
@@ -185,4 +181,4 @@ contactadosSocket.onmessage = function(e) {
         vue_app.core = dashboardData.core;
     }
 
-};
+});

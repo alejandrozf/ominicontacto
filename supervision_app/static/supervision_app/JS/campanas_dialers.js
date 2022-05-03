@@ -39,16 +39,14 @@ $(function() {
     subcribeFilterChange();
     handle_filter();
 
-    const contactadosSocket = new WebSocket(
-        'wss://' +
-        window.location.host +
-        '/consumers/stream/supervisor/' +
-        $('input#supervisor_id').val() +
-        '/' +
-        'dialers'
-    );
+    const url = `wss://${window.location.host}/consumers/stream/supervisor/${$('input#supervisor_id').val()}/dialers`;
+    const rws = new ReconnectingWebSocket(url, [], {
+        connectionTimeout: 2000,
+        maxReconnectionDelay: 3000,
+        minReconnectionDelay: 1000,
+    });
 
-    contactadosSocket.onmessage = function(e) {
+    rws.addEventListener('message', function(e) {
         if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
             try {
                 var data = JSON.parse(e.data);
@@ -61,7 +59,7 @@ $(function() {
                 console.log(err);
             }
         }
-    };
+    });
 
     function processData(data) {
         let haveAgentsData = false;
