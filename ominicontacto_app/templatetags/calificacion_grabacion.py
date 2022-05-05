@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from django.template import Library
+from reportes_app.models import LlamadaLog
 
 register = Library()
 
@@ -31,3 +32,11 @@ def es_calificacion_llamada(grabacion, calificacion):
         # no es una recalificacion sin llamada
         return calificacion
     return False
+
+
+@register.filter(name='select_contacto_id')
+def select_contacto_id(grabacion):
+    """Devuelve el id del contacto de la grabación"""
+    if int(grabacion.contacto_id) == -1:
+        return LlamadaLog.objects.filter(callid=grabacion.callid).first().contacto_id
+    return grabacion.contacto_id

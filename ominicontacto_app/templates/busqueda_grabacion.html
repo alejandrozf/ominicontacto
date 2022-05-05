@@ -127,7 +127,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </button>
                 </td>
                 <td style="display:none;">{{ grabacion.origen.agente.user}}</td>
-                <td style="display:none;">{{ grabacion.origen.contacto_id}}</td>
+                <td style="display:none;">{{ grabacion.origen|select_contacto_id}}</td>
             </tr>
             {% if grabacion.transfer %}
               {% for transfer in grabacion.transfer %}
