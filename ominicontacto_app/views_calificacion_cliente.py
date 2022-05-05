@@ -415,6 +415,12 @@ class CalificacionClienteFormView(FormView):
                 self.contacto.es_originario = False
             self.contacto.save()
 
+            # Actualizar el contacto en LlamadaLog
+            if self.call_data is not None and self.call_data['call_id']:
+                llamadalog = LlamadaLog.objects.filter(callid=self.call_data['call_id'])
+                if llamadalog:
+                    llamadalog.update(contacto_id=self.contacto.id)
+
             force_disposition = False
             if self.call_data:
                 force_disposition = self.agente.grupo.obligar_calificacion
