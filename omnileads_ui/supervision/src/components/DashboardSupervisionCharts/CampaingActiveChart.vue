@@ -2,7 +2,7 @@
     <Card>
         <template #title>
             <h5 class='p-text-center'>
-                {{$t('pages.dashboard_home_page.active_campaign_by_type', {type: titleize(chartName)})}}
+                {{$t('views.dashboard_home_page.active_campaign_by_type', {type: titleize(chartName)})}}
             </h5>
         </template>
         <template #content>

@@ -2,14 +2,10 @@
     <DashboardSupervision></DashboardSupervision>
 </template>
 <script>
-import DashboardSupervision from '@/components/DashboardSupervision';
+import DashboardSupervision from '@/components/supervision_dashboard/DashboardSupervision';
 export default {
-    name: 'DashboardSupervision',
     components: {
         DashboardSupervision
-    },
-    setup () {
-
     }
 };
 </script>

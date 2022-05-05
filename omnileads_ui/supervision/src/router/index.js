@@ -6,14 +6,14 @@ import PauseSetRoutes from './pause_sets_routes';
 
 const routes = [
     {
+        path: '/supervision_dashboard.html',
+        name: 'supervision_dashboard',
+        component: DashboardSupervision
+    },
+    {
         path: '/audit.html',
         name: 'audit_supervisor',
         component: AuditSupervisor
-    },
-    {
-        path: '/dashboard.html',
-        name: 'dashboard',
-        component: DashboardSupervision
     },
     {
         path: '/add_agents_to_campaign.html',

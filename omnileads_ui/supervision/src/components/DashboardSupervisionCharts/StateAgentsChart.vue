@@ -1,7 +1,7 @@
 <template>
     <Card>
         <template #title>
-            <h5 class='p-text-center'>{{$t('pages.dashboard_home_page.agent_status')}}</h5>
+            <h5 class='p-text-center'>{{$t('views.dashboard_home_page.agent_status')}}</h5>
         </template>
         <template #content>
             <Chart type="bar" :data="basicData" :options="chartOptions" />

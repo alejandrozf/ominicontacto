@@ -34,6 +34,7 @@ import Toolbar from 'primevue/toolbar';
 import Dialog from 'primevue/dialog';
 import InputNumber from 'primevue/inputnumber';
 import Checkbox from 'primevue/checkbox';
+import Calendar from 'primevue/calendar';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -66,6 +67,7 @@ app.component('Toolbar', Toolbar);
 app.component('Dialog', Dialog);
 app.component('InputNumber', InputNumber);
 app.component('Checkbox', Checkbox);
+app.component('Calendar', Calendar);
 
 // Register Helpers
 app.provide('$helpers', Helpers);
