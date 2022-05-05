@@ -983,7 +983,6 @@ class ActualizaAgentesCampana(APIView):
                 data={'status': 'ERROR', 'message': _(u'No existe el agente en cola')},
                 status=status.HTTP_404_NOT_FOUND)
         self.remover_agente_cola_asterisk(campaign, agent, client)
-        self.activar_cola()
 
     def _get_current_agent_ids(self, campaign):
         qms = QueueMember.objects.filter(
@@ -1044,7 +1043,7 @@ class ActualizaAgentesCampana(APIView):
                         sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
                         self.adicionar_agente_activo_cola(
                             queue_member, campaign, sip_agentes_logueados, client)
-                        self.activar_cola()
+                self.activar_cola()
                 client.disconnect()
                 return Response(data=data, status=status.HTTP_200_OK)
             except Exception:
