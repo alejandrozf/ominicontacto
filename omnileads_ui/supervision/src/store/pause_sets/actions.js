@@ -30,28 +30,28 @@ export default {
         }
         return false;
     },
-    async updatePauseSetName ({ id, name }) {
+    async updatePauseSetName ({ commit }, { id, name }) {
         const { status } = await pauseSetService.updatePauseSetName(id, { nombre: name });
         if (status === 'SUCCESS') {
             return true;
         }
         return false;
     },
-    async deletePauseConfig (id) {
+    async deletePauseConfig ({ commit }, id) {
         const { status } = await pauseSetService.deletePauseConfig(id);
         if (status === 'SUCCESS') {
             return true;
         }
         return false;
     },
-    async updatePauseConfig ({ id, timeToEndPause }) {
+    async updatePauseConfig ({ commit }, { id, timeToEndPause }) {
         const { status } = await pauseSetService.updatePauseConfig(id, { timeToEndPause });
         if (status === 'SUCCESS') {
             return true;
         }
         return false;
     },
-    async createPauseConfig ({ pauseId, setId, timeToEndPause }) {
+    async createPauseConfig ({ commit }, { pauseId, setId, timeToEndPause }) {
         const { status } = await pauseSetService.createPauseConfig({ pauseId, setId, timeToEndPause });
         if (status === 'SUCCESS') {
             return true;
