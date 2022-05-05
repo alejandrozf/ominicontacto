@@ -63,7 +63,8 @@ export default {
                                 'views.add_agents_to_campaign.already_agents_in_campaign',
                                 { agents: existingAgents.join(' - ') }
                             ),
-                            this.$t('globals.icon_warning')
+                            this.$t('globals.icon_warning'),
+                            this.$t('views.add_agents_to_campaign.how_to_update')
                         )
                     );
                 } else {
@@ -73,7 +74,8 @@ export default {
                             this.$tc('globals.success_added_type', {
                                 type: this.$tc('globals.group')
                             }),
-                            this.$t('globals.icon_success')
+                            this.$t('globals.icon_success'),
+                            this.$t('views.add_agents_to_campaign.how_to_update')
                         )
                     );
                 }

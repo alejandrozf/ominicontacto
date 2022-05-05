@@ -71,7 +71,8 @@ export default {
                             this.$tc('globals.success_added_type', {
                                 type: this.$tc('globals.agent')
                             }),
-                            this.$t('globals.icon_success')
+                            this.$t('globals.icon_success'),
+                            this.$t('views.add_agents_to_campaign.how_to_update')
                         )
                     );
                 }

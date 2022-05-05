@@ -10,7 +10,8 @@ export default {
         empty_campaign_notice: 'کارگزاران کمپین تمام خواهد شد',
         how_to_edit_penalty: 'برای تغییر مجازات، ستون را انتخاب کنید',
         agents_campaign: 'عوامل کمپین',
-        agents_not_save: 'عوامل ذخیره نشدند'
+        agents_not_save: 'عوامل ذخیره نشدند',
+        how_to_update: 'برای تداوم تغییرات روی دکمه "ذخیره" کلیک کنید'
     },
     pause_sets: {
         title: 'مجموعه های مکث',

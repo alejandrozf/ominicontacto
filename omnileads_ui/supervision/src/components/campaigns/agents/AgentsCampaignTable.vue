@@ -28,7 +28,6 @@
         'representative.name',
       ]"
       editMode="cell"
-      @cell-edit-complete="onCellEditComplete"
     >
       <template #header>
         <div class="p-d-flex p-jc-between">
@@ -75,6 +74,7 @@
           <Dropdown
             v-model="data[field]"
             :options="penalties"
+            @change='changePenalty(data)'
             optionLabel="label"
             optionValue="value"
             :placeholder="
@@ -144,15 +144,15 @@ export default {
                     this.$tc('globals.success_deleted_type', {
                         type: this.$tc('globals.agent')
                     }),
-                    this.$t('globals.icon_success')
+                    this.$t('globals.icon_success'),
+                    this.$t('views.add_agents_to_campaign.how_to_update')
                 )
             );
         },
-        onCellEditComplete (event) {
-            const { data, newValue } = event;
+        changePenalty (data) {
             this.updateAgentPenalty({
                 agent_id: data.agent_id,
-                penalty: newValue
+                penalty: data.agent_penalty
             });
             this.$swal(
                 this.$helpers.getToasConfig(
@@ -160,7 +160,8 @@ export default {
                     this.$tc('globals.success_updated_type', {
                         type: this.$t('globals.penalty')
                     }),
-                    this.$t('globals.icon_success')
+                    this.$t('globals.icon_success'),
+                    this.$t('views.add_agents_to_campaign.how_to_update')
                 )
             );
         },
