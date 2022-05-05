@@ -10,12 +10,12 @@ function getCsfrToken (cookie) {
 module.exports = {
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
-        page_dashboard: {
+        supervision_dashboard: {
             entry: 'src/main.js',
-            template: 'public/index.html',
-            filename: 'index.html',
-            title: 'dashboard',
-            chunks: ['chunk-vendors', 'chunk-common', 'page_dashboard']
+            template: 'public/supervision_dashboard.html',
+            filename: 'supervision_dashboard.html',
+            title: 'supervision_dashboard',
+            chunks: ['chunk-vendors', 'chunk-common', 'supervision_dashboard']
         },
         page_audit: {
             entry: 'src/main.js',

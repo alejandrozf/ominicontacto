@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import PauseSetService from '@/services/pauseSetService.js';
 const pauseSetService = new PauseSetService();
 

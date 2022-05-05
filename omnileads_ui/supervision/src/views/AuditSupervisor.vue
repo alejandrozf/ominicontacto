@@ -13,15 +13,13 @@
 import { reactive, toRefs, watch, ref } from 'vue';
 import apiUrls from '@/const/api-urls';
 import { apiCall, httpMethods } from '@/hooks/apiCall';
-import DataTableAuditSupervisor from '@/components/DataTableAuditSupervisor';
-import FilterAuditSupervisor from '@/components/FilterAuditSupervisor';
-import Card from 'primevue/card';
+import DataTableAuditSupervisor from '@/components/audit/DataTableAuditSupervisor';
+import FilterAuditSupervisor from '@/components/audit/FilterAuditSupervisor';
 export default {
     name: 'AuditSupervisor',
     components: {
         DataTableAuditSupervisor,
-        FilterAuditSupervisor,
-        Card
+        FilterAuditSupervisor
     },
     setup () {
         const loadingData = ref(false);
