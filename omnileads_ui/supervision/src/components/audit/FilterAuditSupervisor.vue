@@ -1,17 +1,23 @@
 <template>
-    <Toolbar class="p-mb-4">
-        <template #start>
-            <Calendar id="range"
-            v-model="dateRange"
-            selectionMode="range"
-            :manualInput="false"
-            dateFormat="dd/mm/yy"
-            />
-        </template>
-        <template #end>
-            <Button label="Filtrar"  icon="pi pi-search" class="p-button-success p-mr-2" @click="applyFilter" />
-        </template>
-    </Toolbar>
+  <Toolbar class="p-mb-4">
+    <template #start>
+      <Calendar
+        id="range"
+        v-model="dateRange"
+        selectionMode="range"
+        :manualInput="false"
+        dateFormat="dd/mm/yy"
+      />
+    </template>
+    <template #end>
+      <Button
+        :label="$t('globals.filter')"
+        icon="pi pi-search"
+        class="p-button-success p-mr-2"
+        @click="applyFilter"
+      />
+    </template>
+  </Toolbar>
 </template>
 <script>
 import { ref } from 'vue';

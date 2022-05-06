@@ -33,3 +33,23 @@ export default {
     }
 };
 </script>
+
+<style>
+#app {
+  font-family: sans-serif;
+  font-weight: unset;
+}
+
+.swal2-popup {
+  font-family: sans-serif;
+  font-weight: unset;
+}
+
+.swal2-popup .swal2-styled:focus {
+    box-shadow: none !important;
+}
+
+h1, h2, h3, h4 {
+    font-weight: unset;
+}
+</style>

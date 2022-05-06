@@ -26,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'حداکثر زمان مکث 8 ساعت (28800 ثانیه) است.',
         min_time_allowed: 'زمان بی نهایت به این معنی است که هرگز مکث را ترک نخواهید کرد (0 ثانیه)'
+    },
+    audit: {
+        title: 'حسابرسی اداری'
     }
 };

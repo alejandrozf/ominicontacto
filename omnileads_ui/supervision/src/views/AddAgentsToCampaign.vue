@@ -89,6 +89,8 @@ export default {
                     showCancelButton: true,
                     confirmButtonText: this.$t('globals.yes'),
                     cancelButtonText: this.$t('globals.no'),
+                    confirmButtonColor: '#4CAF50',
+                    cancelButtonColor: '#D32F2F',
                     backdrop: false,
                     reverseButtons: true
                 }).then(async (result) => {

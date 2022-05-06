@@ -26,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'El tiempo maximo de pausa es de 8 horas (28800 segundos)',
         min_time_allowed: 'Tiempo infinito, quiere decir que nunca saldras de la pausa (0 segundos)'
+    },
+    audit: {
+        title: 'Auditoría administrativa'
     }
 };

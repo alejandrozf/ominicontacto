@@ -16,7 +16,7 @@
     <div class="p-field p-col-12 p-md-4 p-lg-4">
       <Button
         type="button"
-        class="p-button p-button-secondary"
+        class="p-button"
         v-bind:label="$t('globals.add')"
         @click="addGroup"
       />
