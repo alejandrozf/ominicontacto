@@ -42,7 +42,10 @@ export default {
     pause_config_info: 'Pausar configurações: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
+    external_site: 'Site externo | Sites externos',
     call_disposition: 'Qualificação | Qualificação',
+    external_system: 'Sistema externo | Sistemas externos',
+    form: 'Formulário | Formulários',
     // -------------
     // -- Actions --
     // -------------
@@ -63,6 +66,7 @@ export default {
     close: 'Fechar',
     download: 'Download',
     back_to: 'De volta a {type}',
+    back: 'De volta',
     yes: 'Sim',
     no: 'Não',
     a: 'Um | Uma',
@@ -79,6 +83,9 @@ export default {
     type_of: 'Tipo de {type}',
     export_type: 'Exportar {type}',
     filter: 'Filtro',
+    next: 'Siguiente',
+    up: 'Subir',
+    down: 'Descer',
     // ---------------------
     // --- Notifications ---
     // ---------------------

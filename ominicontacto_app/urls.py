@@ -922,12 +922,6 @@ urlpatterns = [
     re_path(r'^sistema_externo/list/$',
             login_required(views_sistema_externo.SistemaExternoListView.as_view()),
             name="sistema_externo_list"),
-    re_path(r'^sistema_externo/nuevo/$',
-            login_required(views_sistema_externo.SistemaExternoCreateView.as_view()),
-            name="sistema_externo_create"),
-    re_path(r'^sistema_externo/(?P<pk>\d+)/update/$',
-            login_required(views_sistema_externo.SistemaExternoUpdateView.as_view()),
-            name='modificar_sistema_externo', ),
     # ==========================================================================
     # Sitio Externo
     # ==========================================================================

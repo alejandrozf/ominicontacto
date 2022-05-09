@@ -43,7 +43,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
-    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm,
     AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -2133,10 +2133,6 @@ ParametrosCrmFormSet = inlineformset_factory(
 QueueMemberFormset = inlineformset_factory(
     Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
     can_delete=True, min_num=0)
-
-AgenteEnSistemaExternoFormset = inlineformset_factory(
-    SistemaExterno, AgenteEnSistemaExterno, fields=('agente', 'id_externo_agente'),
-    extra=1, can_delete=True, min_num=0)
 
 
 class RegistroForm(forms.Form):

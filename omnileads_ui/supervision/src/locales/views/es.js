@@ -41,5 +41,22 @@ export default {
         list_title: 'Calificaciones',
         edit_title: 'Edita la calificacion',
         new_title: 'Nueva calificacion'
+    },
+    external_system: {
+        new_agent_on_system: 'Nuevo agente en sistema',
+        edit_agent_on_system: 'Edita agente en sistema'
+    },
+    form: {
+        step1: {
+            title: 'Datos del Formulario'
+        },
+        step2: {
+            title: 'Campos del Formulario'
+        },
+        step3: {
+            title: 'Vista previa',
+            display_name: 'Nombre:',
+            display_description: 'Descripcion:'
+        }
     }
 };

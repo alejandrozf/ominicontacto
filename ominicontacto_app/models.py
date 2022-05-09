@@ -3250,8 +3250,12 @@ class SistemaExterno(models.Model):
 
 class AgenteEnSistemaExterno(models.Model):
     """Representa la relación entre un agente de OML y un sistema externo"""
-    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
-    sistema_externo = models.ForeignKey(SistemaExterno, on_delete=models.CASCADE)
+    agente = models.ForeignKey(
+        AgenteProfile, on_delete=models.CASCADE,
+        related_name='sistemas_externos')
+    sistema_externo = models.ForeignKey(
+        SistemaExterno, on_delete=models.CASCADE,
+        related_name='agentes_en_sistema')
     id_externo_agente = models.CharField(max_length=128)
 
     def __str__(self):

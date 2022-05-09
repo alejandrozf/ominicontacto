@@ -41,5 +41,22 @@ export default {
         list_title: 'رتبه بندی ها',
         edit_title: 'امتیاز را ویرایش کنید',
         new_title: 'رتبه بندی جدید'
+    },
+    external_system: {
+        new_agent_on_system: 'عامل جدید در سیستم',
+        edit_agent_on_system: 'ویرایش عامل در سیستم'
+    },
+    form: {
+        step1: {
+            title: 'داده های فرم'
+        },
+        step2: {
+            title: 'فیلدهای فرم'
+        },
+        step3: {
+            title: 'پیش نمایش',
+            display_name: 'نام:',
+            display_description: 'شرح:'
+        }
     }
 };

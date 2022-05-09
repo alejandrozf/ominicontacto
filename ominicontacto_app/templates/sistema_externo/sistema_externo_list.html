@@ -22,37 +22,5 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
-
-<h1>{% trans 'Sistemas Externos' %}</h1>
-<hr>
-<table class="table">
-    <thead>
-      <tr class="fts-table-bg">
-        <th>{% trans 'ID' %}</th>
-        <th>{% trans 'Sistema externo' %}</th>
-      </tr>
-    </thead>
-    <tbody id="t_body_ocultas">
-        {% for sistema in object_list %}
-            <tr id="{{sistema.nombre}}">
-                <td>
-                    {{ sistema.id }}
-                </td>
-                <td>
-                    <a  href="{% url 'modificar_sistema_externo' sistema.id %}">
-                        {{ sistema.nombre }}
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td>
-                    <p>{% trans 'No se encontraron sistemas externos creados.' %}</p>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
+    <iframe src="{% static 'omnileads-ui-supervision/external_systems.html' %}" class="crm" name="crm"></iframe>
 {% endblock %}
