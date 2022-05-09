@@ -11,7 +11,7 @@ export default {
         const { pauseSetDetail } = await pauseSetService.getPauseSetDetail(idPauseGroup);
         commit('initPauseSetDetail', pauseSetDetail);
     },
-    async deletePauseSet (id) {
+    async deletePauseSet ({ commit }, id) {
         const { status } = await pauseSetService.deletePauseSet(id);
         if (status === 'SUCCESS') {
             return true;

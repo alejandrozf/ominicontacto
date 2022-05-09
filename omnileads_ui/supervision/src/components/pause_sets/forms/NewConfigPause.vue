@@ -86,7 +86,6 @@
         class="p-button-text p-button-danger"
       />
       <Button
-        class="p-button-info"
         :disabled="btnAddPauseStatus"
         :label="$t('globals.add')"
         @click="addConfigPause"

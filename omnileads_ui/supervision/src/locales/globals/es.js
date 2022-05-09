@@ -76,6 +76,8 @@ export default {
     filter_by_type: 'Filtra por {type}',
     in_seconds: 'En segundos',
     type_of: 'Tipo de {type}',
+    export_type: 'Exportar {type}',
+    filter: 'Filtrar',
     // ---------------------
     // --- Notifications ---
     // ---------------------

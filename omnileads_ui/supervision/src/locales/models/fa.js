@@ -15,5 +15,13 @@ export default {
         pause_type: 'نوع مکث',
         set: 'تنظیم',
         time_to_end_pause: 'زمان پایان دادن به مکث'
+    },
+    audit: {
+        user: 'کاربر',
+        object: 'هدف - شی',
+        name: 'نام',
+        action: 'عمل',
+        change: 'تغییر دادن',
+        datetime: 'تاریخ و زمان'
     }
 };

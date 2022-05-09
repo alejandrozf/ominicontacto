@@ -26,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'The maximum pause time is 8 hours (28800 seconds)',
         min_time_allowed: 'Infinite time, it means that you will never leave the pause (0 seconds)'
+    },
+    audit: {
+        title: 'Administrative audit'
     }
 };
