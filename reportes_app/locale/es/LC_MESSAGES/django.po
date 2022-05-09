@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-18 17:44-0300\n"
+"POT-Creation-Date: 2022-05-09 15:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,14 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: reportes_app/actividad_agente_log.py:147
-msgid "1 día, "
-msgstr ""
-
-#: reportes_app/actividad_agente_log.py:149
-msgid " días, "
-msgstr ""
 
 #: reportes_app/apps.py:33
 #: reportes_app/templates/reporte_grafico_campana.html:273
@@ -1378,6 +1370,6 @@ msgid ""
 "administrador."
 msgstr ""
 
-#: reportes_app/views_reportes.py:99 reportes_app/views_reportes.py:236
+#: reportes_app/views_reportes.py:99 reportes_app/views_reportes.py:239
 msgid "Usted no puede acceder a esta campaña."
 msgstr ""
