@@ -6,6 +6,9 @@ import PauseSetState from './pause_sets/state';
 import ExternalSiteActions from './external_sites/actions';
 import ExternalSiteMutations from './external_sites/mutations';
 import ExternalSiteState from './external_sites/state';
+import CallDispositionActions from './call_disposition/actions';
+import CallDispositionMutations from './call_disposition/mutations';
+import CallDispositionState from './call_disposition/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -15,7 +18,8 @@ export default createStore({
         campaign: {},
         groups: [],
         ...PauseSetState,
-        ...ExternalSiteState
+        ...ExternalSiteState,
+        ...CallDispositionState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -42,7 +46,8 @@ export default createStore({
             });
         },
         ...PauseSetMutations,
-        ...ExternalSiteMutations
+        ...ExternalSiteMutations,
+        ...CallDispositionMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -65,7 +70,8 @@ export default createStore({
             commit('updateAgentPenalty', payload);
         },
         ...PauseSetActions,
-        ...ExternalSiteActions
+        ...ExternalSiteActions,
+        ...CallDispositionActions
     },
     modules: {
     },

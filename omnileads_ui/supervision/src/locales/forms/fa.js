@@ -9,5 +9,8 @@ export default {
     pause_setting: {
         enter_time: 'زمان را وارد کنید',
         infinite_time: 'زمان بی نهایت'
+    },
+    call_disposition: {
+        enter_name: 'نام را وارد کنید'
     }
 };

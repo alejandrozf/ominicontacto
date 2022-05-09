@@ -33,5 +33,9 @@ export default {
         objective: 'Objective',
         trigger: 'Trigger',
         status: 'Status'
+    },
+    call_disposition: {
+        id: 'ID',
+        name: 'Name'
     }
 };

@@ -36,5 +36,10 @@ export default {
         remove_hiddens: 'remover oculto',
         hide: 'Disfarce',
         show: 'mostrar'
+    },
+    call_dispositions: {
+        list_title: 'Classificações',
+        edit_title: 'Editar a classificação',
+        new_title: 'nova classificação'
     }
 };

@@ -36,5 +36,10 @@ export default {
         remove_hiddens: 'Quitar ocultos',
         hide: 'Ocultar',
         show: 'Desocultar'
+    },
+    call_dispositions: {
+        list_title: 'Calificaciones',
+        edit_title: 'Edita la calificacion',
+        new_title: 'Nueva calificacion'
     }
 };

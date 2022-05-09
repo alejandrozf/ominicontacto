@@ -167,6 +167,16 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_show',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -357,5 +367,20 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_external_sites_show':
             {'descripcion': _('Desoculta un sitio externo'),
+             'version': '1.23.0'},
+        'api_call_dispositions_list':
+            {'descripcion': _('Lista las calificaciones'),
+             'version': '1.23.0'},
+        'api_call_dispositions_create':
+            {'descripcion': _('Crea una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_update':
+            {'descripcion': _('Actualiza una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_delete':
+            {'descripcion': _('Elimina una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_detail':
+            {'descripcion': _('Obtiene detalle de una calificacion'),
              'version': '1.23.0'},
     }

@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'Pausar configurações: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
+    call_disposition: 'Qualificação | Qualificação',
     // -------------
     // -- Actions --
     // -------------

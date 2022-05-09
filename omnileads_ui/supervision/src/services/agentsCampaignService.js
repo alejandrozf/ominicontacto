@@ -1,4 +1,4 @@
-import apiUrls from './../const';
+import apiUrls from '../const';
 import { HTTP, BaseService } from './apiBaseService';
 
 export default class AgentsCampaignService extends BaseService {

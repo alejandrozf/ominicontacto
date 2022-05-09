@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'Pause setting: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Infinite pause',
+    call_disposition: 'Call Disposition | Call Dispositions',
     // -------------
     // -- Actions --
     // -------------

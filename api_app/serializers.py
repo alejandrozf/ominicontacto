@@ -29,7 +29,7 @@ from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import (
     AgenteEnContacto, AgenteProfile, ArchivoDeAudio,
     CalificacionCliente, Campana, ConfiguracionDePausa,
-    Contacto, Grupo, ConjuntoDePausa, OpcionCalificacion,
+    Contacto, Grupo, ConjuntoDePausa, NombreCalificacion, OpcionCalificacion,
     Pausa, SitioExterno, User, QueueMember)
 from easyaudit.models import CRUDEvent, LoginEvent, RequestEvent
 
@@ -492,3 +492,10 @@ class PausaSerializer(serializers.ModelSerializer):
 
     def get_es_productiva(self, pausa):
         return pausa.es_productiva()
+
+
+class NombreCalificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NombreCalificacion
+        fields = (
+            'id', 'nombre')

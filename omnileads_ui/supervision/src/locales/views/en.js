@@ -36,5 +36,10 @@ export default {
         remove_hiddens: 'Remove hidden',
         hide: 'Hide',
         show: 'Unhide'
+    },
+    call_dispositions: {
+        list_title: 'Call Dispositions',
+        edit_title: 'Edit Call Disposition',
+        new_title: 'New Call Disposition'
     }
 };

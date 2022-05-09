@@ -33,5 +33,9 @@ export default {
         objective: 'Meta',
         trigger: 'Acionar',
         status: 'Doença'
+    },
+    call_disposition: {
+        id: 'ID',
+        name: 'Nome'
     }
 };
