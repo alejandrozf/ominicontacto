@@ -65,7 +65,7 @@ INICIALES_POR_TIPO = {
         'abandonadas': 0,  # ABANDON(tipo_llamada = Entrante:3)
         'abandonadas_anuncio': 0,  # ABANDONWEL(tipo_llamada = Entrante:3)
         'transferidas_atendidas': 0,  # CONNECT (tipo_llamada = Transf_interna:8)
-        'transferidas_no_atendidas': 0,  # CAMPT-FAIL (tipo_llamada = Transf_interna:8)
+        'transferidas_no_atendidas': 0,  # CAMPT-FAIL (tipo_llamada = cualquiera)
     },
     str(Campana.TYPE_PREVIEW): {
         'total': 0,  # DIAL(tipo_llamada = Preview:4)
@@ -236,6 +236,8 @@ class ReporteDeLlamadas(object):
             tipo_llamada = str(log.tipo_llamada)
             if tipo_llamada == str(LLAMADA_TRANSF_INTERNA):
                 tipo_llamada = str(LLAMADA_ENTRANTE)
+            if log.event == 'CAMPT-FAIL':
+                tipo_llamada = str(LLAMADA_ENTRANTE)
             self._contabilizar_total_llamadas_procesadas(log)
 
             # Si no se identifica el tipo de llamada no se contabiliza por tipo.
@@ -272,8 +274,8 @@ class ReporteDeLlamadas(object):
                 estadisticas_tipo['total'] += 1
             elif log.event == 'CONNECT':
                 estadisticas_tipo['transferidas_atendidas'] += 1
-            elif log.event == 'CAMPT-FAIL':
-                estadisticas_tipo['transferidas_no_atendidas'] += 1
+        elif log.event == 'CAMPT-FAIL':
+            estadisticas_tipo['transferidas_no_atendidas'] += 1
         elif log.event == 'DIAL':
             if not log.tipo_llamada == Campana.TYPE_ENTRANTE:
                 estadisticas_tipo['total'] += 1
