@@ -62,7 +62,6 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgr
     // establece conexion a websocket para obtener los status
     // y enviarlos a la barra de progreso
     const url = `wss://${window.location.host}/consumers/reporte_grafico_campana/${sufijoUrl}/${campanaId}/${taskId}`;
-    console.log(url);
     const rws = new ReconnectingWebSocket(url, [], {
         connectionTimeout: 2000,
         maxReconnectionDelay: 3000,
