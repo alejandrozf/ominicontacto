@@ -62,7 +62,7 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion,
     // y enviarlos a la barra de progreso
     const url = `wss://${window.location.host}/consumers/reporte_resultados_de_base_campana/${sufijoUrl}/${campanaId}/${taskId}`;
     const rws = new ReconnectingWebSocket(url, [], {
-        connectionTimeout: 2000,
+        connectionTimeout: 8000,
         maxReconnectionDelay: 3000,
         minReconnectionDelay: 1000,
     });

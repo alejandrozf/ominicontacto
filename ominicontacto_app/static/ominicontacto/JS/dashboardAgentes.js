@@ -58,7 +58,7 @@ if (dataDashboardSession == undefined) {
 
 const url = `wss://${window.location.host}/consumers/reporte_agente/estadisticas_dia_actual/${agenteId}/${taskId}`;
 const rws = new ReconnectingWebSocket(url, [], {
-    connectionTimeout: 2000,
+    connectionTimeout: 8000,
     maxReconnectionDelay: 3000,
     minReconnectionDelay: 1000,
 });
