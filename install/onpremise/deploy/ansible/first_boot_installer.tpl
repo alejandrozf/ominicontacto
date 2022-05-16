@@ -90,6 +90,13 @@
 # ******* Variables for Redis and Websocket *******
 # Values: NULL | IP address or FQDN
 #export oml_redis_host=NULL
+
+# Values: True or NULL
+#export oml_redis_ha=NULL
+#export oml_redis_sentinel_01=NULL
+#export oml_redis_sentinel_02=NULL
+#export oml_redis_sentinel_03=NULL
+
 # Values: NULL | IP address or FQDN
 #export oml_websocket_host=NULL
 #export oml_websocket_port=NULL
@@ -322,10 +329,18 @@ if [[ "${oml_extern_ip}" != "NULL" ]];then
 fi
 
 # Redis, Nginx and Websockets params *******
-
 if [[ "${oml_redis_host}" != "NULL" ]];then
   sed -i "s/#redis_host=/redis_host=${oml_redis_host}/g" $PATH_DEPLOY/inventory
 fi
+
+if [[ "${oml_redis_ha}" == "true" ]];then
+sed -i "s/#redis_ha=true/redis_ha=true/g" $PATH_DEPLOY/inventory
+sed -i "s/#redis_sentinel_01=/redis_sentinel_01=${oml_redis_sentinel_01}/g" $PATH_DEPLOY/inventory
+sed -i "s/#redis_sentinel_02=/redis_sentinel_03=${oml_redis_sentinel_02}/g" $PATH_DEPLOY/inventory
+sed -i "s/#redis_sentinel_03=/redis_sentinel_04=${oml_redis_sentinel_03}/g" $PATH_DEPLOY/inventory
+fi
+
+
 if [[ "$NGINX_HOST" != "NULL" ]];then
   sed -i "s/#nginx_host=/nginx_host=$NGINX_HOST/g" $PATH_DEPLOY/inventory
 fi
