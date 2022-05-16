@@ -310,7 +310,7 @@ class GeneradorDeLlamadaLogs():
             'incorrecta: %s' % finalizacion
             LlamadaLogFactory(event='CAMPT-FAIL',
                               campana_id=campana_orig.id, tipo_campana=campana_orig.type,
-                              tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
+                              tipo_llamada=tipo_llamada,
                               agente_id=agente_orig.id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=duracion_llamada,
