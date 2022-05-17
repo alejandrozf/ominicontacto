@@ -21,7 +21,7 @@ export default {
         object: 'هدف - شی',
         name: 'نام',
         action: 'عمل',
-        change: 'تغییر دادن',
+        additional_information: 'تغییر دادن',
         datetime: 'تاریخ و زمان'
     }
 };

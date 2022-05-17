@@ -46,15 +46,14 @@ from rest_framework.authentication import SessionAuthentication
 
 from simple_history.utils import update_change_reason
 
-from auditlog.models import LogEntry
+from easyaudit.models import CRUDEvent, RequestEvent, LoginEvent
 
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (
-    CampanaSerializer, AuditSupervisorSerializer,
-    AgenteDeCampanaSerializer, AgenteActivoSerializer,
-    ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer,
-    GrupoSerializer, PausaSerializer)
+    CampanaSerializer, AuditSupervisorCRUDEventSerializer, AuditSupervisorLoginEventSerializer,
+    AuditSupervisorRequestEventSerializer, AgenteDeCampanaSerializer, AgenteActivoSerializer,
+    ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer, GrupoSerializer, PausaSerializer)
 
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, ConfiguracionDePausa,
@@ -879,16 +878,33 @@ class AuditSupervisor(APIView):
 
     def post(self, request):
         data = request.data
-        queryset = LogEntry.objects.filter(
-            timestamp__date__range=[data['date_start'], data['date_end']])
-        serializer = AuditSupervisorSerializer(queryset, many=True)
-        return Response(serializer.data)
+        filter_kwargs = {'datetime__date__range': [data['date_start'], data['date_end']]}
+        qs_crudevent = CRUDEvent.objects.filter(**filter_kwargs)\
+            .exclude(event_type=CRUDEvent.UPDATE, changed_fields='null')
+        qs_loginevent = LoginEvent.objects.filter(**filter_kwargs)
+        qs_requestevent = RequestEvent.objects.filter(**filter_kwargs)
+        crudevent = AuditSupervisorCRUDEventSerializer(qs_crudevent, many=True)
+        loginevent = AuditSupervisorLoginEventSerializer(qs_loginevent, many=True)
+        requestevent = AuditSupervisorRequestEventSerializer(qs_requestevent, many=True)
+        data = crudevent.data + loginevent.data + requestevent.data
+        json_list_sorted = sorted(
+            data, key=lambda r: datetime.datetime.strptime(r["date"], "%Y-%m-%d %H:%M"))
+        return Response(json_list_sorted)
 
     def get(self, request):
         today = timezone.now().astimezone(timezone.get_current_timezone()).date()
-        queryset = LogEntry.objects.filter(timestamp__date=today)
-        serializer = AuditSupervisorSerializer(queryset, many=True)
-        return Response(serializer.data)
+        filter_kwargs = {'datetime__date': today}
+        qs_crudevent = CRUDEvent.objects.filter(**filter_kwargs)\
+            .exclude(event_type=CRUDEvent.UPDATE, changed_fields='null')
+        qs_loginevent = LoginEvent.objects.filter(**filter_kwargs)
+        qs_requestevent = RequestEvent.objects.filter(**filter_kwargs)
+        crudevent = AuditSupervisorCRUDEventSerializer(qs_crudevent, many=True)
+        loginevent = AuditSupervisorLoginEventSerializer(qs_loginevent, many=True)
+        requestevent = AuditSupervisorRequestEventSerializer(qs_requestevent, many=True)
+        data = crudevent.data + loginevent.data + requestevent.data
+        json_list_sorted = sorted(
+            data, key=lambda r: datetime.datetime.strptime(r["date"], "%Y-%m-%d %H:%M"))
+        return Response(json_list_sorted)
 
 
 class AgentesCampana(APIView):
