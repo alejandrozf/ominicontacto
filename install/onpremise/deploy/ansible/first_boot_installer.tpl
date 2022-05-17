@@ -451,19 +451,6 @@ if [[ "${oml_rtpengine_host}" == "NULL" && "${oml_infras_stage}" != "onpremise" 
   systemctl start rtpengine
 fi
 
-echo "******************** REDIS accept conection on private NIC ********************"
-
-if [[ "${oml_redis_host}" == "NULL" ]];then
-  sed -i "s/bind 127.0.0.1/bind 127.0.0.1 $PRIVATE_IPV4/g" /etc/redis.conf
-fi
-
-
-echo "******************** setting demo environment ********************"
-
-if [[ "${oml_auto_restore}" != "NULL" ]];then
-echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
-fi
-
 echo "********************* Deactivate cron callrec convert to mp3 *****************"
 if [ "${oml_acd_host}"  != "NULL" ] &&  [ "${oml_callrec_device}"  == "nfs" ];then
 sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads

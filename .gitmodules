@@ -17,7 +17,7 @@
 [submodule "modules/redis"]
     path = modules/redis
     url = https://gitlab.com/omnileads/omlredis.git
-    branch = master
+    branch = oml-2207-dev-websockets-ha
 [submodule "modules/postgresql"]
     path = modules/postgresql
     url = https://gitlab.com/omnileads/omlpgsql.git
