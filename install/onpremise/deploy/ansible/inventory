@@ -20,8 +20,8 @@
 
 [everyone:vars]
 
-oml_lan_ip=
-oml_wan_ip=
+#oml_lan_ip=
+#oml_wan_ip=
 
 #####################################################################
 #                           Database                                #

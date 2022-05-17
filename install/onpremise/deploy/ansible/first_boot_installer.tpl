@@ -244,13 +244,13 @@ case ${oml_infras_stage} in
   aws)
     yum remove -y python3 python3-pip
     yum install -y $SSM_AGENT_URL
-    yum install -y patch libedit-devel libuuid-devel git
+    yum install -y patch libedit-devel libuuid-devel git podman
     amazon-linux-extras install -y epel
     amazon-linux-extras install python3 -y
     systemctl start amazon-ssm-agent
     ;;
   *)
-    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli
+    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli podman
     ;;
 esac
 
@@ -271,8 +271,8 @@ echo "******************** inventory setting ********************"
 
 sed -i "s/#localhost ansible/localhost ansible/g" $PATH_DEPLOY/inventory
 
-sed -i "s/oml_lan_ip=/oml_lan_ip=$PRIVATE_IPV4/g" $PATH_DEPLOY/inventory
-sed -i "s/oml_wan_ip=/oml_wan_ip=$PUBLIC_IPV4/g" $PATH_DEPLOY/inventory
+# sed -i "s/oml_lan_ip=/oml_lan_ip=$PRIVATE_IPV4/g" $PATH_DEPLOY/inventory
+# sed -i "s/oml_wan_ip=/oml_wan_ip=$PUBLIC_IPV4/g" $PATH_DEPLOY/inventory
 
 # PGSQL edit inventory params **************************************************
 
