@@ -93,9 +93,9 @@
 
 # Values: True or NULL
 #export oml_redis_ha=NULL
-#export oml_redis_sentinel_01=NULL
-#export oml_redis_sentinel_02=NULL
-#export oml_redis_sentinel_03=NULL
+#export oml_sentinel_host_01=NULL
+#export oml_sentinel_host_02=NULL
+#export oml_sentinel_host_03=NULL
 
 # Values: NULL | IP address or FQDN
 #export oml_websocket_host=NULL
@@ -338,9 +338,9 @@ fi
 
 if [[ "${oml_redis_ha}" == "true" ]];then
 sed -i "s/redis_ha=false/redis_ha=true/g" $PATH_DEPLOY/inventory
-sed -i "s/#redis_sentinel_01=/redis_sentinel_01=${oml_redis_sentinel_01}/g" $PATH_DEPLOY/inventory
-sed -i "s/#redis_sentinel_02=/redis_sentinel_03=${oml_redis_sentinel_02}/g" $PATH_DEPLOY/inventory
-sed -i "s/#redis_sentinel_03=/redis_sentinel_04=${oml_redis_sentinel_03}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_01=/sentinel_host_01=${sentinel_host_01}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_02=/sentinel_host_03=${sentinel_host_02}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_03=/sentinel_host_04=${sentinel_host_03}/g" $PATH_DEPLOY/inventory
 fi
 
 
