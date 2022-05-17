@@ -271,6 +271,9 @@ echo "******************** inventory setting ********************"
 
 sed -i "s/#localhost ansible/localhost ansible/g" $PATH_DEPLOY/inventory
 
+sed -i "s/oml_lan_ip=/oml_lan_ip=$PRIVATE_IPV4/g" $PATH_DEPLOY/inventory
+sed -i "s/oml_wan_ip=/oml_wan_ip=$PUBLIC_IPV4/g" $PATH_DEPLOY/inventory
+
 # PGSQL edit inventory params **************************************************
 
 if [[ "${oml_pgsql_cloud}"  == "true" ]];then
@@ -334,7 +337,7 @@ if [[ "${oml_redis_host}" != "NULL" ]];then
 fi
 
 if [[ "${oml_redis_ha}" == "true" ]];then
-sed -i "s/#redis_ha=true/redis_ha=true/g" $PATH_DEPLOY/inventory
+sed -i "s/redis_ha=false/redis_ha=true/g" $PATH_DEPLOY/inventory
 sed -i "s/#redis_sentinel_01=/redis_sentinel_01=${oml_redis_sentinel_01}/g" $PATH_DEPLOY/inventory
 sed -i "s/#redis_sentinel_02=/redis_sentinel_03=${oml_redis_sentinel_02}/g" $PATH_DEPLOY/inventory
 sed -i "s/#redis_sentinel_03=/redis_sentinel_04=${oml_redis_sentinel_03}/g" $PATH_DEPLOY/inventory

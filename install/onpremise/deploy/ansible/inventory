@@ -20,6 +20,9 @@
 
 [everyone:vars]
 
+oml_lan_ip=
+oml_wan_ip=
+
 #####################################################################
 #                           Database                                #
 #   Set PostgreSQL password. If you have a PostgreSQL instance in a #
@@ -74,11 +77,11 @@ websocket_port=8000
 #redis_host=
 
 # only when deploy REDIS HA cluster with Sentinel
-#redis_ha=true
+redis_ha=false
+
 #redis_sentinel_01=
 #redis_sentinel_02=
 #redis_sentinel_03=
-
 
 #########################################################################################################################################
 # External IP. This parameter will set the public IP for SIP and RTP traffic, on environments where calls go through a firewall. 	#
