@@ -31,7 +31,7 @@ $(function() {
 
     const url = `wss://${window.location.host}/consumers/stream/supervisor/${$('input#supervisor_id').val()}/agentes`;
     const rws = new ReconnectingWebSocket(url, [], {
-        connectionTimeout: 2000,
+        connectionTimeout: 10000,
         maxReconnectionDelay: 3000,
         minReconnectionDelay: 1000,
     });

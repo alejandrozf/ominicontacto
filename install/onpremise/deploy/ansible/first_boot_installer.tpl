@@ -127,13 +127,6 @@
 #export oml_app_reset_admin_pass=true
 #export oml_app_install_sngrep=true
 
-# In case of infrastructure as code deploy set the omlapp-backup-filename
-# Onpremise deploy all "NULL"
-# Values: backup file name (without .tar.gz) or NULL
-#export oml_backup_filename=NULL
-# Values: true | NULL
-#export oml_auto_restore=NULL
-
 # Above 200 users enable this
 # Values: true | NULL
 #export oml_high_load=NULL
@@ -338,9 +331,9 @@ fi
 
 if [[ "${oml_redis_ha}" == "true" ]];then
 sed -i "s/redis_ha=false/redis_ha=true/g" $PATH_DEPLOY/inventory
-sed -i "s/#sentinel_host_01=/sentinel_host_01=${sentinel_host_01}/g" $PATH_DEPLOY/inventory
-sed -i "s/#sentinel_host_02=/sentinel_host_03=${sentinel_host_02}/g" $PATH_DEPLOY/inventory
-sed -i "s/#sentinel_host_03=/sentinel_host_04=${sentinel_host_03}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_01=/sentinel_host_01=${oml_sentinel_host_01}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_02=/sentinel_host_02=${oml_sentinel_host_02}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_03=/sentinel_host_03=${oml_sentinel_host_03}/g" $PATH_DEPLOY/inventory
 fi
 
 
