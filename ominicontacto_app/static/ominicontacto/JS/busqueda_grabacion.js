@@ -108,7 +108,7 @@ function wsProcess() {
     const userId = $('#user_id').val();
     const url = `wss://${window.location.host}/consumers/genera_zip_grabaciones/grabaciones/${userId}/zip`;
     const rws = new ReconnectingWebSocket(url, [], {
-        connectionTimeout: 2000,
+        connectionTimeout: 8000,
         maxReconnectionDelay: 3000,
         minReconnectionDelay: 1000,
     });
