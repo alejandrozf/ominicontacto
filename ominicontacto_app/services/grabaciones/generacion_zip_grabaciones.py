@@ -32,16 +32,18 @@ import csv
 import logging
 
 from api_app.services.storage_service import StorageService
+from ominicontacto_app.models import Contacto
 
 logger = logging.getLogger(__name__)
 
 
 class GeneracionZipGrabaciones:
-    def __init__(self, listado_archivos, zip_path, key_task, username):
+    def __init__(self, listado_archivos, zip_path, key_task, username, mostrar_datos_contacto):
         self.listado_archivos = listado_archivos
         self.key_task = key_task
         self.username = username
         self.zip_path = zip_path
+        self.mostrar_datos_contacto = mostrar_datos_contacto
         if not os.path.exists(self.zip_path):
             os.makedirs(self.zip_path, mode=0o755)
         self.zip_name = os.path.join(self.zip_path, self._generar_zip_name(self.username))
@@ -56,8 +58,13 @@ class GeneracionZipGrabaciones:
         zf = zipfile.ZipFile(self.zip_name, mode="w")
         in_memory_csv = io.StringIO()
         csv_writer = csv.writer(in_memory_csv)
-        csv_writer.writerows([['Fecha', 'Tipo de llamada', 'Teléfono cliente',
-                               'Agente', 'Campaña', 'Calificación', 'Nombre grabación']])
+
+        nombres_columnas = ['Fecha', 'Tipo de llamada', 'Teléfono cliente',
+                            'Agente', 'Campaña', 'Calificación', 'Nombre grabación']
+        if self.mostrar_datos_contacto:
+            nombres_columnas.extend(['Agente Username', 'Datos de contacto'])
+
+        csv_writer.writerows([nombres_columnas])
         progreso = 0
         cantidad_archivos = len(self.listado_archivos)
         self.redis_connection.publish(self.key_task, progreso)
@@ -91,6 +98,15 @@ class GeneracionZipGrabaciones:
                 archivo['calificacion'],
                 archivo['archivo'] + obs
             ]]
+            if self.mostrar_datos_contacto:
+                try:
+                    datos_contacto = {}
+                    if int(archivo['contacto_id']) != -1:
+                        contacto = Contacto.objects.get(pk=archivo['contacto_id'])
+                        datos_contacto = contacto.obtener_datos()
+                    csv_line[0].extend([archivo['agente_username'], datos_contacto])
+                except Exception as e:
+                    print(archivo['contacto_id'] + ' ' + e.__str__())
             csv_writer.writerows(csv_line)
         in_memory_csv.seek(0)
         zf.writestr('datos.csv', in_memory_csv.getvalue(), compress_type=compression)

@@ -129,6 +129,30 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'api_wombat_state',
              'roles': ['Administrador', ]},
+            {'nombre': 'api_agents_campaign',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_update_agents_campaign',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_active_agents',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_set_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_set_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_set_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_set_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_set_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_config_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_config_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pause_config_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -263,4 +287,40 @@ class ApiAppConfig(AppConfig):
         'api_wombat_state':
             {'descripcion': _('Estado del servicio Wombat Dialer'),
              'version': '1.22.0'},
+        'api_agents_campaign':
+            {'descripcion': _('Lista de agentes por campaña'),
+             'version': '1.19.0'},
+        'api_update_agents_campaign':
+            {'descripcion': _('Actualiza los agentes de una campaña'),
+             'version': '1.19.0'},
+        'api_active_agents':
+            {'descripcion': _('Obtiene todos los agentes activos'),
+             'version': '1.19.0'},
+        'api_pauses_list':
+            {'descripcion': _('Obtiene las pausas que no estan eliminadas'),
+             'version': '1.21.0'},
+        'api_pause_set_list':
+            {'descripcion': _('Lista los conjuntos de pausas'),
+             'version': '1.21.0'},
+        'api_pause_set_detail':
+            {'descripcion': _('Obtiene el detalle de un conjunto de pausas'),
+             'version': '1.21.0'},
+        'api_pause_set_create':
+            {'descripcion': _('Crea un conjunto de pausas'),
+             'version': '1.21.0'},
+        'api_pause_set_update':
+            {'descripcion': _('Actualiza un conjunto de pausas'),
+             'version': '1.21.0'},
+        'api_pause_set_delete':
+            {'descripcion': _('Elimina un conjunto de pausas'),
+             'version': '1.21.0'},
+        'api_pause_config_create':
+            {'descripcion': _('Crea una configuracion de pausa'),
+             'version': '1.21.0'},
+        'api_pause_config_update':
+            {'descripcion': _('Actualiza una configuracion de pausa'),
+             'version': '1.21.0'},
+        'api_pause_config_delete':
+            {'descripcion': _('Elimina una configuracion de pausa'),
+             'version': '1.21.0'},
     }

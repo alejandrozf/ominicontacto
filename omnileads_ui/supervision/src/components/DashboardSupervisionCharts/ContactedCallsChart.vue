@@ -1,7 +1,7 @@
 <template>
     <Card>
         <template #title>
-            <h5 class='p-text-center'>Call Summary</h5>
+            <h5 class='p-text-center'>{{$t('views.dashboard_home_page.call_sumary')}}</h5>
         </template>
         <template #content>
             <Chart type="pie" :data="basicData" :options="chartOptions" />
@@ -10,14 +10,11 @@
 </template>
 <script>
 import { ref, watch } from 'vue';
-import Chart from 'primevue/chart';
+
 export default {
     props: {
         chartData: Object,
         chartName: String
-    },
-    components: {
-        Chart
     },
     setup (props) {
         const chartOptions = ref(

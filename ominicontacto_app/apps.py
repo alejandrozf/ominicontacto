@@ -295,6 +295,11 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nueva pausa'),
                 'url': reverse('pausa_nuevo')
             })
+        if 'conjuntos_de_pausas_list' in permissions:
+            pausas.append({
+                'label': _('Conjuntos de pausas'),
+                'url': reverse('conjuntos_de_pausas_list')
+            })
         if pausas:
             items.append({'order': 200,
                           'label': _('Pausas'),
@@ -722,8 +727,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'queue_member_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'queue_member_elimina',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_template_create',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_campana_dialer_template',
@@ -787,7 +790,9 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'seguridad_auditoria',
-             'roles': ['Administrador', ]}
+             'roles': ['Administrador', ]},
+            {'nombre': 'conjuntos_de_pausas_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -1183,8 +1188,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Agregar un Grupo de Agentes a una Campaña'), 'version': '1.7.0'},
         'queue_member_campana':
             {'descripcion': _('Pantalla de asignacion de Agentes a Campaña'), 'version': '1.7.0'},
-        'queue_member_elimina':
-            {'descripcion': _('Eliminar un Agente de una Campaña'), 'version': '1.7.0'},
         'campana_dialer_template_create':
             {'descripcion': _('Crear un template de una Campaña Dialer'), 'version': '1.7.0'},
         'lista_campana_dialer_template':
@@ -1258,4 +1261,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
         'seguridad_auditoria':
             {'descripcion': _('Ver acciones realizadas por supervisores'), 'version': '1.19.0'},
+        'conjuntos_de_pausas_list':
+            {'descripcion': _('Listado de conjuntos de pausas'), 'version': '1.21.0'},
     }

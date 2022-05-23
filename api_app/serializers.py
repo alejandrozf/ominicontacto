@@ -26,8 +26,11 @@ from django.forms import ValidationError
 from rest_framework import serializers
 
 from ominicontacto_app.forms import FormularioNuevoContacto
-from ominicontacto_app.models import AgenteEnContacto, AgenteProfile, ArchivoDeAudio, \
-    CalificacionCliente, Campana, Contacto, Grupo, OpcionCalificacion, User
+from ominicontacto_app.models import (
+    AgenteEnContacto, AgenteProfile, ArchivoDeAudio,
+    CalificacionCliente, Campana, ConfiguracionDePausa,
+    Contacto, Grupo, ConjuntoDePausa, OpcionCalificacion,
+    Pausa, User, QueueMember)
 from auditlog.models import LogEntry
 
 
@@ -300,3 +303,98 @@ class AuditSupervisorSerializer(serializers.ModelSerializer):
         if obj.action == 1:
             return obj.changes_str
         return '-'
+
+
+class AgenteDeCampanaSerializer(serializers.ModelSerializer):
+    agent_id = serializers.SerializerMethodField(read_only=True)
+    agent_username = serializers.SerializerMethodField(read_only=True)
+    agent_full_name = serializers.SerializerMethodField(read_only=True)
+    agent_sip_id = serializers.SerializerMethodField(read_only=True)
+    agent_penalty = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = QueueMember
+        fields = (
+            'agent_id', 'agent_username',
+            'agent_full_name', 'agent_sip_id', 'agent_penalty',)
+
+    def get_agent_id(self, queue_member):
+        return queue_member.member_id
+
+    def get_agent_username(self, queue_member):
+        return queue_member.member.user.username
+
+    def get_agent_full_name(self, queue_member):
+        return queue_member.membername
+
+    def get_agent_sip_id(self, queue_member):
+        return "SIP/{0}".format(queue_member.member.sip_extension)
+
+    def get_agent_penalty(self, queue_member):
+        return queue_member.penalty
+
+
+class AgenteActivoSerializer(serializers.ModelSerializer):
+    agent_id = serializers.SerializerMethodField(read_only=True)
+    agent_username = serializers.SerializerMethodField(read_only=True)
+    agent_full_name = serializers.SerializerMethodField(read_only=True)
+    agent_sip_id = serializers.SerializerMethodField(read_only=True)
+    agent_penalty = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = AgenteProfile
+        fields = (
+            'agent_id', 'agent_username',
+            'agent_full_name', 'agent_sip_id', 'agent_penalty',)
+
+    def get_agent_id(self, agent_profile):
+        return agent_profile.id
+
+    def get_agent_username(self, agent_profile):
+        return agent_profile.user.username
+
+    def get_agent_full_name(self, agent_profile):
+        return agent_profile.user.get_full_name()
+
+    def get_agent_sip_id(self, agent_profile):
+        return "SIP/{0}".format(agent_profile.sip_extension)
+
+    def get_agent_penalty(self, queue_member):
+        return 0
+
+
+class ConjuntoDePausaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConjuntoDePausa
+        fields = ('id', 'nombre')
+
+
+class ConfiguracionDePausaSerializer(serializers.ModelSerializer):
+    pause_id = serializers.SerializerMethodField(read_only=True)
+    pause_name = serializers.SerializerMethodField(read_only=True)
+    pause_type = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ConfiguracionDePausa
+        fields = (
+            'id', 'time_to_end_pause', 'pause_name', 'pause_id', 'pause_type')
+
+    def get_pause_id(self, config):
+        return config.pausa.pk
+
+    def get_pause_name(self, config):
+        return config.pausa.nombre
+
+    def get_pause_type(self, config):
+        return config.pausa.get_tipo()
+
+
+class PausaSerializer(serializers.ModelSerializer):
+    es_productiva = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Pausa
+        fields = ('id', 'nombre', 'es_productiva')
+
+    def get_es_productiva(self, pausa):
+        return pausa.es_productiva()

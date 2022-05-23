@@ -195,6 +195,14 @@ urlpatterns = [
         ),
 
     # ==========================================================================
+    # Conjuntos de Pausas
+    # ==========================================================================
+    url(r'^conjuntos_de_pausa/list/$',
+        login_required(views.ConjuntosDePausaListView.as_view()),
+        name='conjuntos_de_pausas_list',
+        ),
+
+    # ==========================================================================
     # Grabaciones
     # ==========================================================================
     url(r'^node/grabacion/marcar/$',
@@ -972,11 +980,6 @@ urlpatterns = [
         login_required(views_queue_member.QueueMemberCampanaView.as_view()),
         name='queue_member_campana',
         ),
-    url(
-        r'^queue_member/(?P<pk_queuemember>\d+)/elimina/(?P<pk_campana>\d+)/$',
-        login_required(views_queue_member.queue_member_delete_view),
-        name='queue_member_elimina',
-    ),
 
     # ==========================================================================
     # Campana Dialer Template

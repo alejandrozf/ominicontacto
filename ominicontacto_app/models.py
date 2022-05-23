@@ -41,7 +41,7 @@ from django.db.models import Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
@@ -66,6 +66,17 @@ logger = logging.getLogger(__name__)
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_ALFANUMERICO = r'^[\w]+$'
 SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
+
+TYPE_PERSONAL = 1
+"""Tipo de agenda Personal"""
+
+TYPE_GLOBAL = 2
+"""Tipo de agenda Global"""
+
+TYPE_AGENDA_CHOICES = (
+    (TYPE_PERSONAL, 'PERSONAL'),
+    (TYPE_GLOBAL, 'GLOBAL'),
+)
 
 
 class User(AbstractUser):
@@ -211,6 +222,19 @@ class User(AbstractUser):
         return not campanas_supervisor.isdisjoint(campanas_agent)
 
 
+class ConjuntoDePausa(models.Model):
+    nombre = models.CharField(max_length=128)
+
+    def tiene_grupos(self):
+        return len(self.grupos.all()) > 0
+
+    def se_puede_eliminar_pausa(self):
+        return len(self.pausas.all()) > 1
+
+    def __str__(self):
+        return self.nombre
+
+
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
     auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
@@ -245,6 +269,12 @@ class Grupo(models.Model):
         'Acceso a las calificaciones como agente'))
     acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso a las campañas preview como agente'))
+    conjunto_de_pausa = models.ForeignKey(
+        ConjuntoDePausa,
+        related_name='grupos',
+        null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
 
     def __str__(self):
         return self.nombre
@@ -1114,6 +1144,14 @@ class Campana(models.Model):
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
 
+    EVITAR_DUPLICADOS = 1
+    PERMITIR_DUPLICADOS = 2
+
+    CONTROL_DE_DUPLICADOS = (
+        (EVITAR_DUPLICADOS, _('Evitar duplicados')),
+        (PERMITIR_DUPLICADOS, _('Permitir duplicados')),
+    )
+
     history = AuditlogHistoryField()
 
     estado = models.PositiveIntegerField(
@@ -1159,6 +1197,8 @@ class Campana(models.Model):
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
+    prioridad = models.PositiveIntegerField(
+        default=10, validators=[MinValueValidator(1), MaxValueValidator(100)])
 
     # para uso en campañas preview
     tiempo_desconexion = models.PositiveIntegerField(default=0)
@@ -1169,6 +1209,10 @@ class Campana(models.Model):
     campo_direccion = models.CharField(max_length=128, null=True, blank=True)
     mostrar_did = models.BooleanField(default=False)
     mostrar_nombre_ruta_entrante = models.BooleanField(default=False)
+    control_de_duplicados = models.PositiveIntegerField(
+        choices=CONTROL_DE_DUPLICADOS,
+        default=PERMITIR_DUPLICADOS,
+    )
 
     def __str__(self):
         return self.nombre
@@ -1784,6 +1828,9 @@ class Pausa(models.Model):
     def __str__(self):
         return self.nombre
 
+    def tiene_configuraciones(self):
+        return len(self.configuraciones.all()) > 0
+
     def es_productiva(self):
         return self.tipo == self.TIPO_PRODUCTIVA
 
@@ -1791,6 +1838,20 @@ class Pausa(models.Model):
         if self.es_productiva():
             return self.CHOICE_PRODUCTIVA
         return self.CHOICE_RECREATIVA
+
+
+class ConfiguracionDePausa(models.Model):
+    pausa = models.ForeignKey(
+        Pausa, related_name='configuraciones',
+        verbose_name=_("Pausa"), on_delete=models.CASCADE)
+    conjunto_de_pausa = models.ForeignKey(
+        ConjuntoDePausa, related_name='pausas',
+        verbose_name=_("Conjunto De Pausas"), on_delete=models.CASCADE)
+    time_to_end_pause = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(28800)])
+
+    def __str__(self):
+        return self.pausa.nombre
 
 # ==============================================================================
 # Base Datos Contactos
@@ -2707,6 +2768,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
                                on_delete=models.CASCADE)
     observaciones = models.TextField(blank=True, null=True)
     agendado = models.BooleanField(default=False)
+    tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES, null=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
 
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
@@ -2925,16 +2987,13 @@ class AgendaContactoManager(models.Manager):
 class AgendaContacto(models.Model):
     objects = AgendaContactoManager()
 
-    TYPE_PERSONAL = 1
+    TYPE_PERSONAL = TYPE_PERSONAL
     """Tipo de agenda Personal"""
 
-    TYPE_GLOBAL = 2
+    TYPE_GLOBAL = TYPE_GLOBAL
     """Tipo de agenda Global"""
 
-    TYPE_AGENDA_CHOICES = (
-        (TYPE_PERSONAL, 'PERSONAL'),
-        (TYPE_GLOBAL, 'GLOBAL'),
-    )
+    TYPE_AGENDA_CHOICES = TYPE_AGENDA_CHOICES
 
     agente = models.ForeignKey(AgenteProfile, related_name="agendacontacto",
                                on_delete=models.CASCADE)

@@ -106,7 +106,8 @@ $(function() {
                         className: 'btn btn-outline-primary'
                     }],
                     searching: false,
-                    paging: false
+                    paging: false,
+                    ordering: false
                 });
                 rep_table.buttons().container().appendTo( $('#exportButtonCol'));
             },

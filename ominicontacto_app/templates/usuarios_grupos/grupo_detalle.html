@@ -21,6 +21,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <h3><strong>{% trans 'Nombre' %}:</strong> {{ grupo.nombre }}</h3>
 <h3><strong>{% trans 'Auto unpause' %}:</strong> {{ grupo.auto_unpause }} segundos</h3>
+<h3>
+    <strong>{% trans 'Conjunto de pausas' %}:</strong>
+    {% if grupo.conjunto_de_pausa %}
+    {{ grupo.conjunto_de_pausa }}
+    {% else %}
+    ---
+    {% endif %}
+</h3>
 <hr>
 <h3><strong>{% trans 'Llamadas' %}</strong></h3>
 <ul>

@@ -36,10 +36,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body>
     {% include "contactos/messages_contacto.html" %}
 <form action = "" method = "post"> {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for hidden_field in form.hidden_fields %}
+    {{ hidden_field.errors }}
+    {{ hidden_field }}
+    {% endfor %}
     <table class="table">
-        {{form.as_table}}
+        {% for field in form.visible_fields %}
+            {% if field.name != "confirmar_duplicado" %}
+                <tr>
+                <th>{{ field.label_tag }}</th>
+                <td>
+                    {{ field.errors }}
+                    {{ field }}
+                    {{ field.help_text }}
+                </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
     </table>
     <hr>
+    {% if form.confirmar_duplicado in form.hidden_fields %}
+        {{ form.confirmar_duplicado }}
+    {% else %}
+        {{ form.confirmar_duplicado.label_tag }}{{ form.confirmar_duplicado }}
+        <hr>
+    {% endif %}
     <button type="submit"  class="btn btn-primary">
         {% if accion == 'llamar' %}
             {% trans 'Guardar y llamar' %}

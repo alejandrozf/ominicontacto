@@ -805,7 +805,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
-                  'videocall_habilitada', 'speech',)
+                  'videocall_habilitada', 'speech', 'control_de_duplicados')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -813,6 +813,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
@@ -1161,20 +1162,24 @@ class SincronizaDialerForm(forms.Form):
 
 
 class FormularioNuevoContacto(forms.ModelForm):
+    confirmar_duplicado = forms.BooleanField(initial=False, required=False,
+                                             widget=forms.HiddenInput)
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'id_externo')
+        fields = ('telefono', 'id_externo', 'confirmar_duplicado')
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
             "id_externo": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, base_datos=None, campos_bloqueados=[], campos_ocultos=[], *args, **kwargs):
+    def __init__(self, base_datos=None, campos_bloqueados=[], campos_ocultos=[],
+                 control_de_duplicados=None, *args, **kwargs):
         campos_a_bloquear = []  # Son los campos a bloquear para la edicion.
         campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
         self.campos_a_bloquear = campos_a_bloquear
         self.campos_a_ocultar = campos_a_ocultar
+        self.control_de_duplicados = control_de_duplicados
         self.es_campana_entrante = kwargs.pop('es_campana_entrante', False)
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
@@ -1226,6 +1231,11 @@ class FormularioNuevoContacto(forms.ModelForm):
             self.fields.pop('id_externo')
 
         self.bd_metadata = bd_metadata
+
+        self.msg_consfirmacion_duplicado = \
+            _('Ya existe un contacto con el mismo teléfono. Desea continuar?')
+        if any(e == self.msg_consfirmacion_duplicado for e in self.errors.get('__all__', [])):
+            self.fields['confirmar_duplicado'].widget = forms.CheckboxInput()
 
     @classmethod
     def get_nombre_input(cls, nombre_campo):
@@ -1289,7 +1299,25 @@ class FormularioNuevoContacto(forms.ModelForm):
         if not self.instance.id:
             self.instance.bd_contacto = self.base_datos
         self.validate_phone_fields()
+        self.validate_duplicate_phone_field()
         return super(FormularioNuevoContacto, self).clean()
+
+    def validate_duplicate_phone_field(self):
+        if all((key in self.cleaned_data for key in ['telefono', 'confirmar_duplicado'])):
+            telefono = self.cleaned_data.get('telefono')
+            if telefono in self.base_datos.contactos.all().values_list('telefono', flat=True) and \
+                    self.instance.telefono != telefono:
+                if self.control_de_duplicados == Campana.EVITAR_DUPLICADOS:
+                    msg = _('Ya existe un contacto con el mismo teléfono.')
+                    raise forms.ValidationError(msg)
+                else:
+                    # Si el control de duplicados es permitir duplicados,
+                    # se debe permitir que se guarde el contacto con el mismo telefono
+                    # si se confirma por el usuario.
+                    if not self.cleaned_data.get('confirmar_duplicado'):
+                        raise forms.ValidationError(self.msg_consfirmacion_duplicado)
+            return True
+        return False
 
     def validate_phone_fields(self):
         db_metadata = self.base_datos.get_metadata()
@@ -1510,16 +1538,21 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'fecha_inicio', 'fecha_fin',
+        fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'control_de_duplicados',
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'speech')
+                  'outcid', 'outr', 'speech', 'prioridad')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
 
+        help_texts = {
+            'prioridad': _('Valor entre 1 y 100'),
+        }
+
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
@@ -1528,7 +1561,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
-            'speech': forms.Textarea(attrs={'class': 'form-control'})
+            'speech': forms.Textarea(attrs={'class': 'form-control'}),
+            'prioridad': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -1910,9 +1944,9 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr',
-                  'speech')
+        fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
+                  'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
+                  'objetivo', 'outcid', 'outr', 'speech')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1921,6 +1955,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
             'speech': forms.Textarea(attrs={'class': 'form-control'})
@@ -1947,12 +1982,13 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'sistema_externo', 'id_externo',
+        fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
             'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
@@ -2046,20 +2082,22 @@ class GrupoForm(forms.ModelForm):
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
-                  'acceso_campanas_preview_agente',
+                  'acceso_campanas_preview_agente', 'conjunto_de_pausa'
                   )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
                 'class': 'form-control', 'style': 'display:inline; width:8ch'}),
             'tiempo_maximo_para_agendar': forms.NumberInput(attrs={
-                'class': 'form-control', 'style': 'display:inline; width:8ch'})
+                'class': 'form-control', 'style': 'display:inline; width:8ch'}),
+            'conjunto_de_pausa': forms.Select(attrs={'class': 'form-control'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
             'cantidad_agendas_personales': _('Cantidad máxima de agendas'),
             'tiempo_maximo_para_agendar': _('Cantidad máxima de días para agendar'),
             'obligar_despausa': _('Forzar Despausa'),
+            'conjunto_de_pausa': _('Conjunto de Pausas'),
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),

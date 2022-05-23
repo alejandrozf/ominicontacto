@@ -232,7 +232,7 @@ class Agents {
                     stats[campaign]['agentes_online']++;
                     if (agent.status.indexOf('PAUSE') == 0) {
                         stats[campaign]['agentes_pausa']++;
-                    } else if (agent.status.indexOf('ONCALL') == 0) {
+                    } else if (agent.status.indexOf('ONCALL') == 0 || agent.status.indexOf('DIALING') == 0) {
                         stats[campaign]['agentes_llamada']++;
                     }
                 }

@@ -94,9 +94,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="modal-body">
                 <select class="form-control" id="pauseType">
                     {% for pausa in pausas %}
-                        <option id="" value="{{ pausa.id }}">{{ pausa.nombre }}</option>
+                        <option id="" value="{{ pausa.id }},{{ pausa.name }},{{ pausa.timeToEndPause }}">{{ pausa.name }}</option>
                     {% endfor %}
                 </select>
+                <div class="mt-2">
+                    <small id="showPauseTimer"></small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="setPause" class="btn btn-primary">{% trans 'Iniciar' %}</button>
@@ -721,6 +724,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 {% trans 'Pausa:' %}
                                 <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
                             </div>
+                            <div id="timeToEndPause" class="label label-default d-none">
+                                {% trans 'La pausa termina en:' %}
+                                <span id="horaTEP"></span><span id="minsTEP"></span><span id="segsTEP"></span>
+                            </div>
                         {% endif %}
                         <!-- <div id="sumTime" class="label label-default">
                              Total:
@@ -958,6 +965,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/click2Call.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/agendas_notifications.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/notifications.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/pauseTimer.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/main.js' %}"></script>
 <!-- JsSip Debug -->
 <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->

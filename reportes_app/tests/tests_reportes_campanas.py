@@ -30,6 +30,7 @@ from mock import patch
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+from django.db import connections
 
 from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalificacion
 from ominicontacto_app.services.estadisticas_campana import (
@@ -112,6 +113,13 @@ class BaseTestDeReportes(OMLBaseTest):
         CalificacionCliente.history.all().update(history_change_reason='calificacion')
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=PASSWORD)
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(OMLBaseTest, self).tearDown()
 
 
 class ReportesCampanasTests(BaseTestDeReportes):

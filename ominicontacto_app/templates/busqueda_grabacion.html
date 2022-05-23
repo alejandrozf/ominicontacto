@@ -50,6 +50,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <label for="check-mostrar-datos-contacto">{% trans "Agregar username de agente y datos de contacto:" %}</label>
+            <input class=" ml-0 mt-0" type="checkbox" name="check-mostrar-datos-contacto" id="check-mostrar-datos-contacto" title="{% trans '¡Advertencia! Esta acción puede consumir más recursos de los esperados, según el rango de fecha seleccionado.' %}" >
+        </div>
     </div>
     <table class="table table-stripped">
         <thead>
@@ -66,6 +70,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans 'Grabación' %}</th>
                 <th>{% trans 'Calificacion' %}</th>
                 <th>{% trans 'Descripción' %}</th>
+                <th style="display:none;">{% trans 'Username' %}</th>
+                <th style="display:none;">{% trans 'ContactoId' %}</th>
             </tr>
         </thead>
         <tbody>
@@ -96,7 +102,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {% for calificacion in calificaciones %} {% es_calificacion_llamada grabacion.origen calificacion as calificacion %} {% if calificacion %}
                     <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">
-                        {{ calificacion.opcion_calificacion.nombre }}
+                        {% if calificacion.agendado %}
+                            {{ calificacion.opcion_calificacion.nombre }} {{ calificacion.get_tipo_agenda_display }}
+                        {% else %} 
+                            {{ calificacion.opcion_calificacion.nombre }}
+                        {% endif %}
                     </a> {% endif %} {% with auditoria=calificacion.instance.obtener_auditoria %} {% if auditoria %} {% if auditoria.es_aprobada %}
                     <button class="btn aprobada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
                         {% elif auditoria.es_rechazada %}
@@ -116,6 +126,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ grabacion.origen.callid }}">{% trans 'Descripción' %}
                     </button>
                 </td>
+                <td style="display:none;">{{ grabacion.origen.agente.user}}</td>
+                <td style="display:none;">{{ grabacion.origen|select_contacto_id}}</td>
             </tr>
             {% if grabacion.transfer %}
               {% for transfer in grabacion.transfer %}

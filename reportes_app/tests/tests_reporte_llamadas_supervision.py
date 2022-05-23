@@ -21,6 +21,8 @@ from ominicontacto_app.models import Campana, OpcionCalificacion
 from mock import patch
 
 from django.test import TestCase
+from django.db import connections
+
 import json
 
 from reportes_app.reportes.reporte_llamadas_supervision import (
@@ -37,6 +39,7 @@ from ominicontacto_app.tests.factories import AgenteProfileFactory, Calificacion
 
 
 class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
+    databases = {'default', 'replica'}
 
     PWD = u'admin123'
 
@@ -60,6 +63,12 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.entrante2 = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, nombre='camp-entrante-2',
                                                estado=Campana.ESTADO_ACTIVA)
         self.queue = QueueFactory.create(campana=self.entrante1)
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(ReporteDeLLamadasEntrantesDeSupervisionTest, self).tearDown()
 
     @patch('redis.Redis.keys')
     @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
@@ -173,6 +182,7 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
 
 
 class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
+    databases = {'default', 'replica'}
 
     def setUp(self):
         super(ReporteDeLLamadasSalientesDeSupervisionTest, self).setUp()
@@ -206,6 +216,12 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                                                 tipo=OpcionCalificacion.GESTION)
         self.dialer2 = CampanaFactory.create(type=Campana.TYPE_DIALER, nombre='camp-dialer-2',
                                              estado=Campana.ESTADO_ACTIVA)
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(ReporteDeLLamadasSalientesDeSupervisionTest, self).tearDown()
 
     def test_reporte_vacio(self):
         reporte = ReporteDeLLamadasSalientesDeSupervision()

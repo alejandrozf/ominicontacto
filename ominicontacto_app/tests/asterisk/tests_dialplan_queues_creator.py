@@ -32,6 +32,7 @@ from ominicontacto_app.asterisk_config import QueuesCreator
 from ominicontacto_app.tests.factories import (
     CampanaFactory, QueueFactory
 )
+from django.db import connections
 
 
 class QueuesCreatorTest(OMLBaseTest):
@@ -42,6 +43,9 @@ class QueuesCreatorTest(OMLBaseTest):
     def setUp(self):
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.queue_entrante = QueueFactory(campana=self.campana_entrante)
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
 
     def test_generar_dialplan_entrante_default(self):
         creator = QueuesCreator()

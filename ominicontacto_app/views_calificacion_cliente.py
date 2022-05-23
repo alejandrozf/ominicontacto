@@ -237,7 +237,8 @@ class CalificacionClienteFormView(FormView):
         return FormularioNuevoContacto(
             base_datos=self.campana.bd_contacto,
             **self.get_contacto_form_kwargs(),
-            es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE
+            es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE,
+            control_de_duplicados=self.campana.control_de_duplicados
         )
 
     def _formulario_llamada_entrante(self):
@@ -413,6 +414,12 @@ class CalificacionClienteFormView(FormView):
             if nuevo_contacto:
                 self.contacto.es_originario = False
             self.contacto.save()
+
+            # Actualizar el contacto en LlamadaLog
+            if self.call_data is not None and self.call_data['call_id']:
+                llamadalog = LlamadaLog.objects.filter(callid=self.call_data['call_id'])
+                if llamadalog:
+                    llamadalog.update(contacto_id=self.contacto.id)
 
             force_disposition = False
             if self.call_data:
@@ -617,7 +624,10 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
         return kwargs
 
     def get_contacto_form(self):
-        return FormularioNuevoContacto(**self.get_contacto_form_kwargs())
+        return \
+            FormularioNuevoContacto(**self.get_contacto_form_kwargs(),
+                                    control_de_duplicados=self.calificacion.
+                                    opcion_calificacion.campana.control_de_duplicados)
 
     def get_form_kwargs(self):
         kwargs = super(RespuestaFormularioCreateUpdateFormView, self).get_form_kwargs()

@@ -151,6 +151,7 @@ def reporte_por_fecha_modal_agente_view(request):
             agente = AgenteProfile.objects.get(pk=int(id_agente))
             agentes, error = tiempos_agentes.generar_por_fecha_agente(
                 agente, fecha_desde, fecha_hasta)
+            agentes.sort(key=lambda r: r.agente)
             ctx = {'agentes': agentes}
             t = loader.get_template('tbody_fechas_agentes.html')
             html = t.render(ctx)

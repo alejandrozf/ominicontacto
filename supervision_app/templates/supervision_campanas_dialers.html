@@ -25,40 +25,52 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% include 'config.html' %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
 {% endblock %} {% block content %}
+<div class="p-3">
+    <div class="d-flex justify-content-between">
+        <h1>{% trans 'Campañas Dialer' %}</h1>
+        <div class="col col-xs-3 col-md-3 col-lg-3 filter_by_status">
+            <label>{% trans 'Filtrar por estado' %}</label>
+            <select class="form-control" id="filter_by_status">
+                    <option value="0">Todas</option>
+                    <option value="2">Activas</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-5">
+        <input id="supervisor_id" type="hidden" value="{{supervisor_id}}">
+        <input id="campanas_list" type="hidden" value="{{campanas}}">
+        <input id="campanas_list_id" type="hidden" value="{{campanas_ids}}">
 
-<h1>{% trans 'Campañas Dialer' %}</h1>
-<div>
-    <input id="supervisor_id" type="hidden" value="{{supervisor_id}}">
-    <input id="campanas_list" type="hidden" value="{{campanas}}">
-    <input id="campanas_list_id" type="hidden" value="{{campanas_ids}}">
-
-    <table class="table" id="tableDialers">
-        <thead>
-            <tr class="row-dialer">
-                <th></th>
-                <th colspan="4">{% trans 'Agentes' %}</th>
-                <th colspan="6">{% trans 'Llamadas' %}</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Agentes Online' %}</th>
-                <th>{% trans 'Agentes en llamada' %}</th>
-                <th>{% trans 'Agentes en pausa' %}</th>
-                <th>{% trans 'Agentes en Ready' %}</th>
-                <th>{% trans 'Llamadas discadas' %}</th>
-                <th>{% trans 'Atendidas' %}</th>
-                <th>{% trans 'No atendidas' %}</th>
-                <th>{% trans 'Contestadores' %}</th>
-                <th>{% trans 'Canales discando' %}</th>
-                <th>{% trans 'Llamadas conectadas perdidas' %}</th>
-                <th>{% trans 'Gestiones' %}</th>
-                <th>{% trans 'Llamadas pendientes' %}</th>
-                <th>{% trans '% Objetivo' %}</th>
-            </tr>
-        </thead>
-    </table>
+        <table class="table" id="tableDialers">
+            <thead>
+                <tr class="row-dialer">
+                    <th></th>
+                    <th colspan="4">{% trans 'Agentes' %}</th>
+                    <th colspan="6">{% trans 'Llamadas' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>{% trans 'Nombre' %}</th>
+                    <th>{% trans 'Agentes Online' %}</th>
+                    <th>{% trans 'Agentes en llamada' %}</th>
+                    <th>{% trans 'Agentes en pausa' %}</th>
+                    <th>{% trans 'Agentes en Ready' %}</th>
+                    <th>{% trans 'Llamadas discadas' %}</th>
+                    <th>{% trans 'Atendidas' %}</th>
+                    <th>{% trans 'No atendidas' %}</th>
+                    <th>{% trans 'Contestadores' %}</th>
+                    <th>{% trans 'Canales discando' %}</th>
+                    <th>{% trans 'Llamadas conectadas perdidas' %}</th>
+                    <th>{% trans 'Gestiones' %}</th>
+                    <th>{% trans 'Llamadas pendientes' %}</th>
+                    <th>{% trans '% Objetivo' %}</th>
+                    <th type="hidden"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 {% endblock content %}

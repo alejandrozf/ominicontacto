@@ -1,26 +1,27 @@
 <template>
-    <Card>
-        <template #title>
-            Auditoría Administrativa
-        </template>
-        <template #content>
-            <FilterAuditSupervisor @filterChange="loadData"></FilterAuditSupervisor>
-            <DataTableAuditSupervisor :tableData="tableData.data" :loading="loadingData"></DataTableAuditSupervisor>
-        </template>
-    </Card>
+  <div class="card">
+    <Toolbar class="p-mb-4">
+      <template #start>
+        <h1>{{ $t("views.audit.title") }}</h1>
+      </template>
+    </Toolbar>
+    <FilterAuditSupervisor @filterChange="loadData"></FilterAuditSupervisor>
+    <DataTableAuditSupervisor
+      :tableData="tableData.data"
+      :loading="loadingData"
+    ></DataTableAuditSupervisor>
+  </div>
 </template>
 <script>
 import { reactive, toRefs, watch, ref } from 'vue';
 import apiUrls from '@/const/api-urls';
 import { apiCall, httpMethods } from '@/hooks/apiCall';
-import DataTableAuditSupervisor from '@/components/DataTableAuditSupervisor';
-import FilterAuditSupervisor from '@/components/FilterAuditSupervisor';
-import Card from 'primevue/card';
+import DataTableAuditSupervisor from '@/components/audit/DataTableAuditSupervisor';
+import FilterAuditSupervisor from '@/components/audit/FilterAuditSupervisor';
 export default {
     components: {
         DataTableAuditSupervisor,
-        FilterAuditSupervisor,
-        Card
+        FilterAuditSupervisor
     },
     setup () {
         const loadingData = ref(false);
@@ -35,7 +36,11 @@ export default {
         const state = reactive({
             loadData: (data) => {
                 const params = { ...data };
-                const { loading, response } = apiCall(apiUrls.AuditSupervisor, httpMethods.POST, params);
+                const { loading, response } = apiCall(
+                    apiUrls.AuditSupervisor,
+                    httpMethods.POST,
+                    params
+                );
                 watch(loading, () => {
                     loadingData.value = loading.value;
                     tableData.value = response.value;
@@ -48,6 +53,5 @@ export default {
             tableData
         };
     }
-
 };
 </script>

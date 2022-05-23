@@ -50,3 +50,17 @@
     display: flex;
     align-items: center;
 } 
+
+table.dataTable thead .sorting_desc {
+    background-image: url(../images/sort_desc.png);
+    background-color: lightgreen;
+}
+
+table.dataTable thead .sorting_asc {
+    background-image: url(../images/sort_asc.png);
+    background-color: lightgreen;
+}
+
+table.dataTable thead .sorting  {
+    background-image: url(../images/sort_both.png);
+}

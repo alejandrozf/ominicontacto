@@ -54,6 +54,18 @@ class AgendaContactoUpdateView(UpdateView):
     def form_valid(self, form):
         try:
             super(AgendaContactoUpdateView, self).form_valid(form)
+            calificaciones = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=self.object.campana,
+                contacto__pk=self.object.contacto.pk,
+                agente__pk=self.object.agente.id)
+            if calificaciones.first().tipo_agenda != self.object.tipo_agenda:
+                # para no crear una nueva historia calificación(solo se actuliaza tipo de agenda)
+                calificaciones.update(tipo_agenda=self.object.tipo_agenda)
+                # se actuliza la última historia creada
+                ultima_calificacion_history = CalificacionCliente.history \
+                    .filter(id=calificaciones.first().id).first()
+                ultima_calificacion_history.tipo_agenda = self.object.tipo_agenda
+                ultima_calificacion_history.save()
             return redirect(self.get_success_url())
         except ValidationError as e:
             messages.error(self.request, e.message)
@@ -89,6 +101,7 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         try:
+            print("form_valid")
             self.object = form.save(commit=False)
             self.object.agente = self.request.user.get_agente_profile()
             campana = form.instance.campana
@@ -105,9 +118,18 @@ class AgendaContactoCreateView(CreateView):
                         campana.pk, self.object.contacto.pk))
                 self.object.save()
             # Después de agendado el contacto se marca como agendado en la calificación
-            CalificacionCliente.objects.filter(
+            calificacion = CalificacionCliente.objects.filter(
                 opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
-                agente__pk=self.object.agente.id).update(agendado=True)
+                agente__pk=self.object.agente.id)
+            if calificacion:
+                calificacion.update(agendado=True, tipo_agenda=self.object.tipo_agenda)
+                # se actuliza la última historia creada
+                ultima_calificacion_history = CalificacionCliente.history\
+                    .filter(id=calificacion[0].id).first()
+                ultima_calificacion_history.agendado = True
+                ultima_calificacion_history.tipo_agenda = self.object.tipo_agenda
+                ultima_calificacion_history.save()
+
             return super(AgendaContactoCreateView, self).form_valid(form)
         except ValidationError as e:
             messages.error(self.request, e.message)

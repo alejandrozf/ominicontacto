@@ -36,11 +36,25 @@ ALLOWED_HOSTS = [
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 SIP_SECRET_KEY = 'SUp3rS3cr3tK3y'
 
+DATABASE_REPLICA_ENABLED = os.getenv("PGHOSTHA") == "True"
+DATABASE_REPLICA_HOST = os.getenv("PGHOSTRO")
+if DATABASE_REPLICA_ENABLED and DATABASE_REPLICA_HOST is None:
+    raise Exception("DATABASE_REPLICA_HOST is required when DATABASE_REPLICA_ENABLED is True")
+
 # Datos de conexión de base db postgresql
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
+        'NAME': POSTGRES_DATABASE,
+        'USER': POSTGRES_USER,
+        'CONN_MAX_AGE': 300,
+        'ATOMIC_REQUESTS': True,
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': DATABASE_REPLICA_HOST if DATABASE_REPLICA_ENABLED else POSTGRES_HOST,
         'PORT': POSTGRES_PORT,
         'NAME': POSTGRES_DATABASE,
         'USER': POSTGRES_USER,

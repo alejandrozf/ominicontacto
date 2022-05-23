@@ -1492,19 +1492,3 @@ msgstr "AMD configuration updated successfully"
 #: configuracion_telefonia_app/views/opciones_avanzadas.py:65
 msgid "Se ha modificado el formato de los nombres de graciones con éxito"
 msgstr "Recording scheme updated successfully"
-
-#, python-format
-#~ msgid ""
-#~ "\n"
-#~ "                    Página %(page_number)s de %(num_pages)s\n"
-#~ "                "
-#~ msgstr ""
-#~ "\n"
-#~ "                    Page %(page_number)s of %(num_pages)s\n"
-#~ "                "
-
-#~ msgid "Pagina"
-#~ msgstr "Page"
-
-#~ msgid "de"
-#~ msgstr "of"

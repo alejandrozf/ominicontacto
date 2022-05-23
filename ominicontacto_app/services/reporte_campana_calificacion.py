@@ -103,7 +103,11 @@ class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
         datos = json.loads(calificacion.contacto.datos)
         for dato in datos:
             lista_opciones.append(dato)
-        lista_opciones.append(calificacion.opcion_calificacion.nombre)
+        opcion_calificacion_nombre = calificacion.opcion_calificacion.nombre
+        if calificacion.agendado:
+            opcion_calificacion_nombre = "{} {}".\
+                format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
+        lista_opciones.append(opcion_calificacion_nombre)
         lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         if calificacion.contacto.es_originario:
             lista_opciones.append(calificacion.contacto.bd_contacto)

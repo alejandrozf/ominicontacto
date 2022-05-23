@@ -17,7 +17,7 @@
 [submodule "modules/redis"]
     path = modules/redis
     url = https://gitlab.com/omnileads/omlredis.git
-    branch = 220408.01
+    branch = 220429.01
 [submodule "modules/postgresql"]
     path = modules/postgresql
     url = https://gitlab.com/omnileads/omlpgsql.git
@@ -25,4 +25,4 @@
 [submodule "modules/asterisk"]
     path = modules/asterisk
     url = https://gitlab.com/omnileads/omlacd.git
-    branch = 220408.01
+    branch = 220523.01

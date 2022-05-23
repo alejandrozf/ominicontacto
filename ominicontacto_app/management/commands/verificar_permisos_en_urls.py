@@ -32,9 +32,12 @@ class Command(BaseCommand):
             'ominicontacto_app': [
                 'index', 'login', 'acerca', 'view_blanco',
                 # Deprecated urls?
-                'chat_create', 'nueva_mensaje_chat', 'agenda_agente_list', 'agenda_nuevo'],
+                'chat_create', 'nueva_mensaje_chat', 'agenda_agente_list', 'agenda_nuevo'
+            ],
             'api_app': [
-                'api_login', 'api'],
+                'api_login', 'api',
+                'api_asterisk_queues_data,',
+            ],
         }
 
         print('Este script sólo verificará urls definidas con un name.')

@@ -138,7 +138,7 @@ services:
       - TZ=${TZ}
       - ENV=devenv
       - INFRA=docker
-    image: freetechsolutions/omlnginx:develop
+    image: freetechsolutions/omlnginx:latest
     networks:
       - devenv
     privileged: true

@@ -30,13 +30,18 @@ from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
-    SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
+    SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
+    StatusCampanasEntrantesView, Pausas,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
     ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
-    DashboardSupervision, AuditSupervisor)
+    DashboardSupervision, AuditSupervisor,
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos,
+    ConjuntoDePausaCreate, ConjuntoDePausaDelete, ConjuntoDePausaDetalle,
+    ConjuntoDePausaList, ConjuntoDePausaUpdate, ConfiguracionDePausaCreate,
+    ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -48,6 +53,8 @@ from api_app.views.agente import (
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
+from api_app.views.system import AsteriskQueuesData
+
 
 router = routers.DefaultRouter()
 
@@ -158,8 +165,43 @@ urlpatterns = [
     url(r'api/v1/dashboard_supervision/$',
         DashboardSupervision.as_view(),
         name='api_dashboard_supervision'),
-
-
+    url(r'api/v1/campaign/(?P<pk_campana>\d+)/agents/$',
+        AgentesCampana.as_view(),
+        name='api_agents_campaign'),
+    url(r'api/v1/campaign/agents_update/$',
+        ActualizaAgentesCampana.as_view(),
+        name='api_update_agents_campaign'),
+    url(r'api/v1/active_agents/$',
+        AgentesActivos.as_view(),
+        name='api_active_agents'),
+    # Conjuntos de Pausas
+    url(r'api/v1/pauses/$',
+        Pausas.as_view(),
+        name='api_pauses_list'),
+    url(r'api/v1/pause_sets/$',
+        ConjuntoDePausaList.as_view(),
+        name='api_pause_set_list'),
+    url(r'api/v1/pause_sets/(?P<pk>\d+)/$',
+        ConjuntoDePausaDetalle.as_view(),
+        name='api_pause_set_detail'),
+    url(r'api/v1/pause_sets/create/$',
+        ConjuntoDePausaCreate.as_view(),
+        name='api_pause_set_create'),
+    url(r'api/v1/pause_sets/(?P<pk>\d+)/update/$',
+        ConjuntoDePausaUpdate.as_view(),
+        name='api_pause_set_update'),
+    url(r'api/v1/pause_sets/(?P<pk>\d+)/delete/$',
+        ConjuntoDePausaDelete.as_view(),
+        name='api_pause_set_delete'),
+    url(r'api/v1/pause_config/create/$',
+        ConfiguracionDePausaCreate.as_view(),
+        name='api_pause_config_create'),
+    url(r'api/v1/pause_config/(?P<pk>\d+)/update/$',
+        ConfiguracionDePausaUpdate.as_view(),
+        name='api_pause_config_update'),
+    url(r'api/v1/pause_config/(?P<pk>\d+)/delete/$',
+        ConfiguracionDePausaDelete.as_view(),
+        name='api_pause_config_delete'),
     # ###########     AGENTE      ############ #
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
         API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
@@ -208,5 +250,9 @@ urlpatterns = [
         ReiniciarWombat.as_view(), name='api_restart_wombat'),
     url(r'^api/v1/womabat_dialer/status',
         WombatState.as_view(), name='api_wombat_state'),
+
+    # ###########  ASTERISK    ############ #
+    url(r'^api/v1/asterisk/queues_data/',
+        AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
 
 ]

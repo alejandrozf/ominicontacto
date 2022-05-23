@@ -178,6 +178,8 @@ class CampanasTests(OMLBaseTest):
     GESTION = 'Venta'
 
     def setUp(self):
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
         self.tiempo_desconexion = 3
 
         self.usuario_admin_supervisor = self.crear_administrador()
@@ -234,6 +236,7 @@ class CampanasTests(OMLBaseTest):
         campana_preview_data = {'nombre': 'test',
                                 'bd_contacto': self.contacto.bd_contacto,
                                 'tipo_interaccion': Campana.FORMULARIO,
+                                'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                 'objetivo': 1,
                                 'sitio_externo': sitio_externo.pk,
                                 'tiempo_desconexion': 2}
@@ -246,6 +249,7 @@ class CampanasTests(OMLBaseTest):
         campana_dailer_data = {'nombre': 'test',
                                'bd_contacto': self.contacto.bd_contacto,
                                'tipo_interaccion': Campana.FORMULARIO,
+                               'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                'objetivo': 1,
                                'sitio_externo': sitio_externo.pk,
                                'tiempo_desconexion': 2}
@@ -258,6 +262,7 @@ class CampanasTests(OMLBaseTest):
         campana_entrante_data = {'nombre': 'test',
                                  'bd_contacto': self.contacto.bd_contacto,
                                  'tipo_interaccion': Campana.FORMULARIO,
+                                 'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                  'objetivo': 1,
                                  'sitio_externo': sitio_externo.pk,
                                  'tiempo_desconexion': 2}
@@ -284,6 +289,7 @@ class CampanasTests(OMLBaseTest):
         campana_preview_data = {'nombre': 'test',
                                 'bd_contacto': bd.pk,
                                 'tipo_interaccion': Campana.FORMULARIO,
+                                'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                 'objetivo': 1,
                                 'tiempo_desconexion': 2}
         campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
@@ -295,6 +301,7 @@ class CampanasTests(OMLBaseTest):
         campana_dialer_data = {'nombre': 'test',
                                'bd_contacto': bd.pk,
                                'tipo_interaccion': Campana.FORMULARIO,
+                               'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                'objetivo': 1,
                                'tiempo_desconexion': 2}
         campana_dialer_form = CampanaDialerForm(data=campana_dialer_data)
@@ -307,6 +314,8 @@ class AgenteCampanaTests(CampanasTests):
     def setUp(self, *args, **kwargs):
         super(AgenteCampanaTests, self).setUp(*args, **kwargs)
         self.client.login(username=self.agente.username, password=self.PWD)
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
 
     def test_usuario_no_logueado_no_accede_a_vista_campanas_preview_agente(self):
         self.client.logout()
@@ -386,6 +395,8 @@ class SupervisorCampanaTests(CampanasTests):
     def setUp(self, *args, **kwargs):
         super(SupervisorCampanaTests, self).setUp(*args, **kwargs)
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
 
     def test_campana_contiene_atributo_entero_positivo_llamado_objetivo(self):
         self.assertTrue(self.campana.objetivo >= 0)
@@ -726,6 +737,7 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': '',
             '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-control_de_duplicados': self.campana.control_de_duplicados,
             '0-objetivo': 0,
             'campana_entrante_create_view-current_step': 0,
         }
@@ -796,7 +808,9 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': self.campana_activa.bd_contacto.pk,
             '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-control_de_duplicados': self.campana.control_de_duplicados,
             '0-objetivo': 0,
+            '0-prioridad': 10,
             '0-fecha_inicio': fecha_inicio.date().strftime("%d/%m/%Y"),
             '0-fecha_fin': fecha_fin.date().strftime("%d/%m/%Y"),
             'campana_dialer_create_view-current_step': 0,
@@ -959,6 +973,7 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': '',
             '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-control_de_duplicados': self.campana.control_de_duplicados,
             '0-objetivo': 0,
             'campana_manual_create_view-current_step': 0,
         }

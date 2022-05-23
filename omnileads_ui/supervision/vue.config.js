@@ -10,19 +10,33 @@ function getCsfrToken (cookie) {
 module.exports = {
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
-        page_dashboard: {
-            entry: 'src/page_dashboard/main.js',
-            template: 'public/index.html',
-            filename: 'index.html',
-            title: 'dashboard',
-            chunks: ['chunk-vendors', 'chunk-common', 'page_dashboard']
+        supervision_dashboard: {
+            entry: 'src/main.js',
+            template: 'public/supervision_dashboard.html',
+            filename: 'supervision_dashboard.html',
+            title: 'supervision_dashboard',
+            chunks: ['chunk-vendors', 'chunk-common', 'supervision_dashboard']
         },
         page_audit: {
-            entry: 'src/page_audit/main.js',
+            entry: 'src/main.js',
             template: 'public/audit.html',
             filename: 'audit.html',
             title: 'audit',
             chunks: ['chunk-vendors', 'chunk-common', 'page_audit']
+        },
+        add_agents_to_campaign: {
+            entry: 'src/main.js',
+            template: 'public/add_agents_to_campaign.html',
+            filename: 'add_agents_to_campaign.html',
+            title: 'add_agents_to_campaign',
+            chunks: ['chunk-vendors', 'chunk-common', 'add_agents_to_campaign']
+        },
+        pause_sets: {
+            entry: 'src/main.js',
+            template: 'public/pause_sets.html',
+            filename: 'pause_sets.html',
+            title: 'pause_sets',
+            chunks: ['chunk-vendors', 'chunk-common', 'pause_sets']
         }
     },
     devServer: {

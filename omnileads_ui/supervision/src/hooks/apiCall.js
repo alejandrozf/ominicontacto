@@ -21,7 +21,7 @@ export const apiCall = (url, method = httpMethods.GET, params = {}) => {
 
     const formData = new FormData();
 
-    for (var key in params) {
+    for (const key in params) {
         formData.append(key, params[key]);
     }
 
@@ -55,7 +55,6 @@ export const apiCall = (url, method = httpMethods.GET, params = {}) => {
                 data: res,
                 error: error.value
             };
-            console.log(r);
             response.value = r;
             loading.value = false;
         }

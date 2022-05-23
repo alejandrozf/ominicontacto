@@ -36,6 +36,8 @@ from configuracion_telefonia_app.tests.factories import (
 from ominicontacto_app.tests.factories import ConfiguracionDeAgentesDeCampanaFactory
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
+from django.db import connections
+
 
 class AsteriskDatabaseTest(OMLBaseTest):
 
@@ -45,6 +47,9 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.campana_entrante = self.crear_campana_entrante()
         user = self.crear_user_agente()
         self.agente = self.crear_agente_profile(user)
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
 
     def test_devuelve_correctamente_dict_campana_asterisk(self):
         """

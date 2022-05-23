@@ -24,10 +24,7 @@ los tiempo del agente
 
 from __future__ import unicode_literals, division
 
-import datetime
 import logging
-from django.utils.translation import ugettext as _
-
 
 logger = logging.getLogger(__name__)
 
@@ -141,14 +138,11 @@ class AgenteTiemposReporte(object):
 
     def _get_string(self, delta):
         if delta:
-            dias = ''
-            n_dias = delta.days
-            if n_dias == 1:
-                dias = _('1 día, ')
-            elif n_dias > 1:
-                dias = str(n_dias) + _(' días, ')
-            return dias + str(datetime.timedelta(seconds=delta.seconds))
-        return delta
+            seconds = delta.total_seconds()
+            hours = seconds // 3600
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+        return '%02d:%02d:%02d' % (hours, minutes, seconds) if delta else '00:00:00'
 
     def get_string_tiempo_sesion(self):
         return self._get_string(self.tiempo_sesion)
@@ -157,9 +151,7 @@ class AgenteTiemposReporte(object):
         return self._get_string(self.tiempo_pausa)
 
     def get_string_tiempo_llamada(self):
-        if self.tiempo_llamada:
-            return datetime.timedelta(0, self.tiempo_llamada)
-        return self.tiempo_llamada
+        return self._get_string(self.tiempo_llamada)
 
     def get_string_tiempo_hold(self):
         return self._get_string(self.tiempo_hold)
