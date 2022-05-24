@@ -10,7 +10,8 @@ export default {
         empty_campaign_notice: 'The campaign will run out of agents',
         how_to_edit_penalty: 'To modify the penalty select the column',
         agents_campaign: 'Campaign agents',
-        agents_not_save: 'Agents not saved'
+        agents_not_save: 'Agents not saved',
+        how_to_update: 'Click the "Save" button to persist the changes'
     },
     pause_sets: {
         title: 'Pause sets',
@@ -25,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'The maximum pause time is 8 hours (28800 seconds)',
         min_time_allowed: 'Infinite time, it means that you will never leave the pause (0 seconds)'
+    },
+    audit: {
+        title: 'Administrative audit'
     }
 };

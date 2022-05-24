@@ -16,7 +16,7 @@
     <div class="p-field p-col-12 p-md-4 p-lg-4">
       <Button
         type="button"
-        class="p-button p-button-secondary"
+        class="p-button"
         v-bind:label="$t('globals.add')"
         @click="addAgent"
       />
@@ -71,7 +71,8 @@ export default {
                             this.$tc('globals.success_added_type', {
                                 type: this.$tc('globals.agent')
                             }),
-                            this.$t('globals.icon_success')
+                            this.$t('globals.icon_success'),
+                            this.$t('views.add_agents_to_campaign.how_to_update')
                         )
                     );
                 }

@@ -10,7 +10,8 @@ export default {
         empty_campaign_notice: 'کارگزاران کمپین تمام خواهد شد',
         how_to_edit_penalty: 'برای تغییر مجازات، ستون را انتخاب کنید',
         agents_campaign: 'عوامل کمپین',
-        agents_not_save: 'عوامل ذخیره نشدند'
+        agents_not_save: 'عوامل ذخیره نشدند',
+        how_to_update: 'برای تداوم تغییرات روی دکمه "ذخیره" کلیک کنید'
     },
     pause_sets: {
         title: 'مجموعه های مکث',
@@ -25,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'حداکثر زمان مکث 8 ساعت (28800 ثانیه) است.',
         min_time_allowed: 'زمان بی نهایت به این معنی است که هرگز مکث را ترک نخواهید کرد (0 ثانیه)'
+    },
+    audit: {
+        title: 'حسابرسی اداری'
     }
 };

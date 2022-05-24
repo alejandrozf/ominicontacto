@@ -36,7 +36,7 @@
             <Button
               :label="$tc('globals.new')"
               icon="pi pi-plus"
-              class="p-button-success p-mr-2"
+              class="p-mr-2"
               @click="newPauseConfigModal"
               v-tooltip.top="'Nueva configuracion de pausa'"
             />
@@ -140,6 +140,8 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: this.$t('globals.yes'),
                 cancelButtonText: this.$t('globals.no'),
+                confirmButtonColor: '#4CAF50',
+                cancelButtonColor: '#D32F2F',
                 backdrop: false,
                 reverseButtons: true
             }).then(async (result) => {

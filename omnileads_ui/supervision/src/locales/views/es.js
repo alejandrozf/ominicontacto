@@ -10,7 +10,8 @@ export default {
         empty_campaign_notice: 'La campaña se quedará sin agentes',
         how_to_edit_penalty: 'Para modificar el penalty selecciona la columna',
         agents_campaign: 'Agentes de campaña',
-        agents_not_save: 'No se guardaron los agentes'
+        agents_not_save: 'No se guardaron los agentes',
+        how_to_update: 'Haga click en el boton "Guardar" para persistir los cambios'
     },
     pause_sets: {
         title: 'Conjuntos de pausas',
@@ -25,5 +26,8 @@ export default {
     pause_setting: {
         max_time_allowed: 'El tiempo maximo de pausa es de 8 horas (28800 segundos)',
         min_time_allowed: 'Tiempo infinito, quiere decir que nunca saldras de la pausa (0 segundos)'
+    },
+    audit: {
+        title: 'Auditoría administrativa'
     }
 };

@@ -248,7 +248,7 @@ class CampanaFamily(AbstractRedisFamily):
     def _obtener_todos(self):
         """Devuelve las campanas para generar .
         """
-        return Campana.objects.obtener_all_dialplan_asterisk()
+        return Campana.objects.obtener_actuales()
 
     def _get_nombre_family(self, campana):
         return "{0}:{1}".format(self.get_nombre_families(), campana.id)

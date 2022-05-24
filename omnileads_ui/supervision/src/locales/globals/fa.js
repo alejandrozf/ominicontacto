@@ -76,6 +76,8 @@ export default {
     filter_by_type: 'محدود شده توسط {type}',
     in_seconds: 'در چند ثانیه',
     type_of: 'نوع {type}',
+    export_type: 'صادرات {type}',
+    filter: 'فیلتر کنید',
     // ---------------------
     // --- Notifications ---
     // ---------------------
