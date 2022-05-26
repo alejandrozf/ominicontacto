@@ -17,15 +17,15 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.decorators import login_required
 from reciclado_app import views
 
 urlpatterns = [
-    url(r'^reciclar/(?P<pk_campana>\d+)/dialer/$',
-        login_required(views.ReciclarCampanaDialerFormView.as_view()),
-        name='reciclar_campana_dialer'),
-    url(r'^reciclar/(?P<pk_campana>\d+)/preview/$',
-        login_required(views.ReciclarCampanaPreviewFormView.as_view()),
-        name='reciclar_campana_preview'),
+    re_path(r'^reciclar/(?P<pk_campana>\d+)/dialer/$',
+            login_required(views.ReciclarCampanaDialerFormView.as_view()),
+            name='reciclar_campana_dialer'),
+    re_path(r'^reciclar/(?P<pk_campana>\d+)/preview/$',
+            login_required(views.ReciclarCampanaPreviewFormView.as_view()),
+            name='reciclar_campana_preview'),
 ]

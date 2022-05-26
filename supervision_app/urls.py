@@ -17,7 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.auth.decorators import login_required
 from supervision_app.views import (
     SupervisionAgentesView, SupervisionCampanasEntrantesView, SupervisionCampanasSalientesView,
@@ -25,20 +25,20 @@ from supervision_app.views import (
 )
 
 urlpatterns = [
-    url(r'^supervision/agentes/$',
-        login_required(SupervisionAgentesView.as_view()),
-        name='supervision_agentes',
-        ),
-    url(r'^supervision/campanas/entrantes/$',
-        login_required(SupervisionCampanasEntrantesView.as_view()),
-        name='supervision_campanas_entrantes',
-        ),
-    url(r'^supervision/campanas/salientes/$',
-        login_required(SupervisionCampanasSalientesView.as_view()),
-        name='supervision_campanas_salientes',
-        ),
-    url(r'^supervision/campanas/dialer/$',
-        login_required(SupervisionCampanasDialerView.as_view()),
-        name='supervision_campanas_dialer',
-        ),
+    re_path(r'^supervision/agentes/$',
+            login_required(SupervisionAgentesView.as_view()),
+            name='supervision_agentes',
+            ),
+    re_path(r'^supervision/campanas/entrantes/$',
+            login_required(SupervisionCampanasEntrantesView.as_view()),
+            name='supervision_campanas_entrantes',
+            ),
+    re_path(r'^supervision/campanas/salientes/$',
+            login_required(SupervisionCampanasSalientesView.as_view()),
+            name='supervision_campanas_salientes',
+            ),
+    re_path(r'^supervision/campanas/dialer/$',
+            login_required(SupervisionCampanasDialerView.as_view()),
+            name='supervision_campanas_dialer',
+            ),
 ]
