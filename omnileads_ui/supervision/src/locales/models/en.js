@@ -21,7 +21,7 @@ export default {
         object: 'Object',
         name: 'Name',
         action: 'Action',
-        change: 'Change',
+        additional_information: 'Additional Information',
         datetime: 'Datetime'
     }
 };

@@ -31,7 +31,7 @@ from ominicontacto_app.models import (
     CalificacionCliente, Campana, ConfiguracionDePausa,
     Contacto, Grupo, ConjuntoDePausa, OpcionCalificacion,
     Pausa, User, QueueMember)
-from auditlog.models import LogEntry
+from easyaudit.models import CRUDEvent, LoginEvent, RequestEvent
 
 
 class CalificacionClienteSerializerMixin(object):
@@ -287,22 +287,67 @@ class GrupoSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class AuditSupervisorSerializer(serializers.ModelSerializer):
-    actor = serializers.CharField()
+class AuditSupervisorCRUDEventSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user')
     object = serializers.CharField(source='content_type')
     name = serializers.CharField(source='object_repr')
-    action = serializers.CharField(source='get_action_display')
-    date = serializers.DateTimeField(source='timestamp', format="%Y-%m-%d %H:%M")
-    changes = serializers.SerializerMethodField()
+    action = serializers.SerializerMethodField()
+    additional_information = serializers.SerializerMethodField()
+    date = serializers.DateTimeField(source='datetime', format="%Y-%m-%d %H:%M")
 
     class Meta:
-        model = LogEntry
-        fields = ('id', 'actor', 'object', 'name', 'action', 'changes', 'date')
+        model = CRUDEvent
+        fields = ('id', 'username', 'object', 'name', 'action', 'additional_information', 'date')
 
-    def get_changes(self, obj):
-        if obj.action == 1:
-            return obj.changes_str
+    def get_additional_information(self, obj):
+        if obj.event_type == 2:
+            return self.additional_information_display(obj.changed_fields)
         return '-'
+
+    def get_action(self, obj):
+        return obj.get_event_type_display()
+
+    def additional_information_display(self, changes, colon=": ", arrow=" \u2192 ", separator="; "):
+        substrings = []
+        changes = json.loads(changes)
+        if changes:
+            for field, values in changes.items():
+                substring = "{field_name:s}{colon:s}{old:s}{arrow:s}{new:s}".format(
+                    field_name=field,
+                    colon=colon,
+                    old=values[0],
+                    arrow=arrow,
+                    new=values[1],
+                )
+                substrings.append(substring)
+
+            return separator.join(substrings)
+        return '-'
+
+
+class AuditSupervisorRequestEventSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user')
+    action = serializers.CharField(source='method')
+    date = serializers.DateTimeField(source='datetime', format="%Y-%m-%d %H:%M")
+    additional_information = serializers.CharField(source='url')
+
+    class Meta:
+        model = RequestEvent
+        fields = ('id', 'username', 'action', 'additional_information', 'date')
+
+
+class AuditSupervisorLoginEventSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user')
+    action = serializers.SerializerMethodField()
+    additional_information = serializers.CharField(source='remote_ip')
+    date = serializers.DateTimeField(source='datetime', format="%Y-%m-%d %H:%M")
+
+    class Meta:
+        model = LoginEvent
+        fields = ('id', 'username', 'action', 'additional_information', 'date')
+
+    def get_action(self, obj):
+        return obj.get_login_type_display()
 
 
 class AgenteDeCampanaSerializer(serializers.ModelSerializer):
