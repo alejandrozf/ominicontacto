@@ -50,6 +50,8 @@ import json
 
 logger = logging.getLogger(__name__)
 
+flock_template = 'flock -n /tmp/{}.lock'
+
 
 class RestablecerDialplanError(OmlError):
     """Indica que se produjo un error al crear el dialplan."""
@@ -137,6 +139,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[0])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(settings.INSTALL_PREFIX,
                                           'ominicontacto/manage.py logout_unavailable_agents')
@@ -145,8 +148,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[0])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[0])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
@@ -183,6 +186,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[2])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
@@ -192,8 +196,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[2])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[2])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES)
@@ -206,6 +210,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[3])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script = os.path.join(
             settings.INSTALL_PREFIX,
@@ -215,8 +220,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[3])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script),
                 comment=self.tareas_programadas_ids[3])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTE_SUPERVISORES)
@@ -229,6 +234,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[4])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script = os.path.join(
             settings.INSTALL_PREFIX,
@@ -238,8 +244,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[4])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script),
                 comment=self.tareas_programadas_ids[4])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_DASHBOARD_AGENTES)
@@ -252,6 +258,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[5])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
@@ -262,8 +269,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[5])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[5])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_SALIENTES)
@@ -276,6 +283,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        flock = flock_template.format(self.tareas_programadas_ids[6])
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
@@ -286,8 +294,8 @@ class RegeneracionAsteriskService(object):
         crontab.remove_all(comment=self.tareas_programadas_ids[6])
         if list(job) == []:
             job = crontab.new(
-                command='{0} {1} {2}'.format(
-                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
+                command='{0} {1} {2} {3}'.format(
+                    ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[6])
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_DIALERS)
