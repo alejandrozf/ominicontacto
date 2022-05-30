@@ -59,8 +59,7 @@ class ReporteAgentes(object):
         self.genera_tiempos_pausa(agentes, fecha_inicio, fecha_fin)
         self.genera_tiempos_campana_agentes(agentes, fecha_inicio, fecha_fin)
         self.calcula_total_intentos_fallidos(agentes, fecha_inicio, fecha_fin)
-        # Por ahora no calculamos la no atendidas
-        # self.calcula_llamadas_entrantes_no_atendidas(agentes, fecha_inicio, fecha_fin)
+        self.calcula_llamadas_entrantes_no_atendidas(agentes, fecha_inicio, fecha_fin)
         self.calcula_llamadas_entrantes_rechazadas(agentes, fecha_inicio, fecha_fin)
         self._genera_tiempos_totales_agentes()
         dict_agentes_llamadas = self._obtener_total_agentes_tipo_llamada(fecha_inicio, fecha_fin)
@@ -164,21 +163,19 @@ class ReporteAgentes(object):
                     agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].intentos_fallidos += int(log[1])
 
-    def calcula_llamadas_entrantes_no_atendidas(self, agentes, fecha_inferior, fecha_superior):
-        eventos_llamadas = ['RINGNOANSWER', ]
-        agentes_dict = {agente.id: agente for agente in agentes}
-        logs = LlamadaLog.objects.obtener_count_evento_agente(
-            eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()))
-        for log in logs:
-            agente_id = int(log[0])
-            self.datos_agentes[agente_id].entrantes_no_atendidas += int(log[1])
-
     def calcula_llamadas_entrantes_rechazadas(self, agentes, fecha_inferior, fecha_superior):
         for agente in agentes:
             total_call_rejets = LlamadaLog.objects.\
                 cantidad_llamadas_rechazadas_fecha(agente.id, fecha_inferior, fecha_superior)
             if total_call_rejets:
                 self.datos_agentes[agente.id].entrantes_rechazadas += total_call_rejets
+
+    def calcula_llamadas_entrantes_no_atendidas(self, agentes, fecha_inferior, fecha_superior):
+        for agente in agentes:
+            total_call = LlamadaLog.objects.\
+                cantidad_llamadas_no_atendidas_fecha(agente.id, fecha_inferior, fecha_superior)
+            if total_call:
+                self.datos_agentes[agente.id].entrantes_no_atendidas += total_call
 
     def _genera_tiempos_totales_agentes(self):
         for agente in self.datos_agentes.values():

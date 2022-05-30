@@ -319,6 +319,16 @@ class LlamadaLogManager(models.Manager):
                            time__gte=fecha_desde, time__lte=fecha_hasta,
                            event__in=LlamadaLog.EVENTOS_REJECT).exclude(campana_id='0').count()
 
+    def cantidad_llamadas_no_atendidas_fecha(self, agente_id, fecha_inferior, fecha_superior):
+        fecha_desde = datetime_hora_minima_dia(fecha_inferior)
+        fecha_hasta = datetime_hora_maxima_dia(fecha_superior)
+        return self.filter(
+            agente_id=agente_id,
+            agente_extra_id=-1,
+            time__gte=fecha_desde,
+            time__lte=fecha_hasta,
+            event__in=LlamadaLog.EVENTOS_REJECT).exclude(campana_id='0').count()
+
 
 class LlamadaLog(models.Model):
     """
