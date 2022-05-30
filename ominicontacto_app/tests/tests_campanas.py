@@ -200,6 +200,7 @@ class CampanasTests(OMLBaseTest):
 
         self.campana = CampanaFactory.create()
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
+        self.actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
         self.opcion_calificacion_gestion_dialer = OpcionCalificacionFactory(
             campana=self.campana_dialer, nombre=calificacion_nombre,
             tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
@@ -909,7 +910,7 @@ class SupervisorCampanaTests(CampanasTests):
     def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso,
                                                               destino):
         queue_member = QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
-        (post_step0_data, post_step1_data, post_step2_data, post_step3_data, __, __,
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data, __,
          post_step6_data,
          post_step7_data, __) = self._obtener_post_data_wizard_creacion_campana_dialer(
             nombre_campana, audio_ingreso, destino)
@@ -953,7 +954,8 @@ class SupervisorCampanaTests(CampanasTests):
             '2-MAX_NUM_FORMS': 1000,
         }
         post_step3_data['campana_dialer_update_view-current_step'] = 3
-        post_step6_data['campana_dialer_update_view-current_step'] = 4
+        post_step4_data['campana_dialer_update_view-current_step'] = 4
+        post_step6_data['campana_dialer_update_view-current_step'] = 5
         post_step6_data['4-supervisors'] = self.supervisor_profile.user.pk
         post_step7_data = {
             '5-0-penalty': 3,
@@ -963,10 +965,10 @@ class SupervisorCampanaTests(CampanasTests):
             '5-TOTAL_FORMS': 1,
             '5-INITIAL_FORMS': 1,
             '5-MIN_NUM_FORMS': 1,
-            'campana_dialer_update_view-current_step': 5}
+            'campana_dialer_update_view-current_step': 6}
 
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-                post_step6_data, post_step7_data)
+                post_step4_data, post_step6_data, post_step7_data)
 
     def _obtener_post_data_wizard_creacion_campana_manual(self, nombre_campana):
         post_step0_data = {
@@ -1367,8 +1369,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.campana_dialer.queue_campana.destino = destino
         self.campana_dialer.queue_campana.save()
         (post_step0_data, post_step1_data, post_step2_data,
-         post_step3_data, post_step4_data,
-         post_step5_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
+         post_step3_data, post_step4_data, post_step5_data,
+         post_step6_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
              self.campana_dialer.nombre, audio_ingreso, destino)
         self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
         post_step0_data['0-objetivo'] = nuevo_objetivo
@@ -1378,7 +1380,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step2_data, follow=True)
         # self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
-        response = self.client.post(url, post_step5_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+        response = self.client.post(url, post_step6_data, follow=True)
         self.assertNotContains(response, 'El servicio Discador no se encuentra disponible')
         self.campana_dialer.refresh_from_db()
         self.assertEqual(self.campana_dialer.objetivo, nuevo_objetivo)
@@ -1608,7 +1611,6 @@ class SupervisorCampanaTests(CampanasTests):
         destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         # parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
         opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
-        actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data, post_step6_data, post_step7_data,
          post_step8_data) = self._obtener_post_data_wizard_creacion_campana_dialer_desde_template(
@@ -1638,11 +1640,11 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
         # self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
         # self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
-        self.assertEqual(actuacion_vigente_clonada.lunes, actuacion_vigente.lunes)
+        self.assertEqual(actuacion_vigente_clonada.lunes, self.actuacion_vigente.lunes)
         self.assertEqual(actuacion_vigente_clonada.hora_desde.strftime("%H:%M"),
-                         actuacion_vigente.hora_desde.strftime("%H:%M"))
+                         self.actuacion_vigente.hora_desde.strftime("%H:%M"))
         self.assertEqual(actuacion_vigente_clonada.hora_hasta.strftime("%H:%M"),
-                         actuacion_vigente.hora_hasta.strftime("%H:%M"))
+                         self.actuacion_vigente.hora_hasta.strftime("%H:%M"))
 
     def _obtener_post_data_wizard_creacion_template_campana_manual(self, nombre_campana):
         (post_step0_data, post_step1_data,
