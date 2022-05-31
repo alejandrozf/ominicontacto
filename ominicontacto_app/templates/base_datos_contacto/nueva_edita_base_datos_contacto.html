@@ -27,18 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% endblock %}
 {% block content %}
-    <!-- Button back -->
-    <nav>
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="{% url 'lista_base_datos_contacto' 1 %}" >
-                    <span aria-hidden="true">&laquo;</span>
-                    {% trans 'Atras' %}
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <h1>{% trans 'Nueva base de datos de contacto' %}</h1>
+    <h1>{% trans 'Base de datos de contacto' %}</h1>
     <form role="form" method="post" enctype="multipart/form-data" >
         {% include "base_form_fields.html" with form=form %}
         <hr>

@@ -828,8 +828,14 @@ class ActualizaBaseDatosContactoView(UpdateView):
             # para los contactos nuevos.
             if self.campana is not None and self.campana.type == Campana.TYPE_PREVIEW:
                 self._generar_relaciones_agente_en_contacto()
+                self._activate_preview_campaign()
 
             return redirect(self.get_success_url())
+
+    def _activate_preview_campaign(self):
+        if self.campana.estado == Campana.ESTADO_FINALIZADA and \
+                self.campana.type == Campana.TYPE_PREVIEW:
+            self.campana.activar()
 
     def _generar_relaciones_agente_en_contacto(self):
         contactos = self.campana.bd_contacto.contactos.filter(id__gt=self.id_ultimo_contacto)
