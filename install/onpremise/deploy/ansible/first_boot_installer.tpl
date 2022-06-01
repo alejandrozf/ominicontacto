@@ -90,6 +90,13 @@
 # ******* Variables for Redis and Websocket *******
 # Values: NULL | IP address or FQDN
 #export oml_redis_host=NULL
+
+# Values: True or NULL
+#export oml_redis_ha=NULL
+#export oml_sentinel_host_01=NULL
+#export oml_sentinel_host_02=NULL
+#export oml_sentinel_host_03=NULL
+
 # Values: NULL | IP address or FQDN
 #export oml_websocket_host=NULL
 #export oml_websocket_port=NULL
@@ -119,13 +126,6 @@
 #export oml_app_init_env=true
 #export oml_app_reset_admin_pass=true
 #export oml_app_install_sngrep=true
-
-# In case of infrastructure as code deploy set the omlapp-backup-filename
-# Onpremise deploy all "NULL"
-# Values: backup file name (without .tar.gz) or NULL
-#export oml_backup_filename=NULL
-# Values: true | NULL
-#export oml_auto_restore=NULL
 
 # Above 200 users enable this
 # Values: true | NULL
@@ -237,13 +237,13 @@ case ${oml_infras_stage} in
   aws)
     yum remove -y python3 python3-pip
     yum install -y $SSM_AGENT_URL
-    yum install -y patch libedit-devel libuuid-devel git
+    yum install -y patch libedit-devel libuuid-devel git podman
     amazon-linux-extras install -y epel
     amazon-linux-extras install python3 -y
     systemctl start amazon-ssm-agent
     ;;
   *)
-    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli
+    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3 awscli podman
     ;;
 esac
 
@@ -263,6 +263,9 @@ git submodule update --remote
 echo "******************** inventory setting ********************"
 
 sed -i "s/#localhost ansible/localhost ansible/g" $PATH_DEPLOY/inventory
+
+# sed -i "s/oml_lan_ip=/oml_lan_ip=$PRIVATE_IPV4/g" $PATH_DEPLOY/inventory
+# sed -i "s/oml_wan_ip=/oml_wan_ip=$PUBLIC_IPV4/g" $PATH_DEPLOY/inventory
 
 # PGSQL edit inventory params **************************************************
 
@@ -322,10 +325,18 @@ if [[ "${oml_extern_ip}" != "NULL" ]];then
 fi
 
 # Redis, Nginx and Websockets params *******
-
 if [[ "${oml_redis_host}" != "NULL" ]];then
   sed -i "s/#redis_host=/redis_host=${oml_redis_host}/g" $PATH_DEPLOY/inventory
 fi
+
+if [[ "${oml_redis_ha}" == "true" ]];then
+sed -i "s/redis_ha=false/redis_ha=true/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_01=/sentinel_host_01=${oml_sentinel_host_01}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_02=/sentinel_host_02=${oml_sentinel_host_02}/g" $PATH_DEPLOY/inventory
+sed -i "s/#sentinel_host_03=/sentinel_host_03=${oml_sentinel_host_03}/g" $PATH_DEPLOY/inventory
+fi
+
+
 if [[ "$NGINX_HOST" != "NULL" ]];then
   sed -i "s/#nginx_host=/nginx_host=$NGINX_HOST/g" $PATH_DEPLOY/inventory
 fi
@@ -431,19 +442,6 @@ if [[ "${oml_rtpengine_host}" == "NULL" && "${oml_infras_stage}" != "onpremise" 
   echo -n "STAGE rtpengine \n"
   echo "OPTIONS="-i $PUBLIC_IPV4 -o 60 -a 3600 -d 30 -s 120 -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1""  > /etc/rtpengine-config.conf
   systemctl start rtpengine
-fi
-
-echo "******************** REDIS accept conection on private NIC ********************"
-
-if [[ "${oml_redis_host}" == "NULL" ]];then
-  sed -i "s/bind 127.0.0.1/bind 127.0.0.1 $PRIVATE_IPV4/g" /etc/redis.conf
-fi
-
-
-echo "******************** setting demo environment ********************"
-
-if [[ "${oml_auto_restore}" != "NULL" ]];then
-echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
 fi
 
 echo "********************* Deactivate cron callrec convert to mp3 *****************"

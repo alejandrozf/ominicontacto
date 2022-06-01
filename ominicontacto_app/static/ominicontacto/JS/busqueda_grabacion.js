@@ -106,13 +106,13 @@ function wsProcess() {
     // establece conexion a websocket para obtener los status
     // y enviarlos a la barra de progreso
     const userId = $('#user_id').val();
-    const zipSocket = new WebSocket(
-        'wss://' +
-        window.location.host +
-        '/consumers/genera_zip_grabaciones/grabaciones/' + userId + '/zip'
-    );
-
-    zipSocket.onmessage = function(e) {
+    const url = `wss://${window.location.host}/consumers/genera_zip_grabaciones/grabaciones/${userId}/zip`;
+    const rws = new ReconnectingWebSocket(url, [], {
+        connectionTimeout: 8000,
+        maxReconnectionDelay: 3000,
+        minReconnectionDelay: 1000,
+    });
+    rws.addEventListener('message', function(e) {
         var data = e.data;
         if (data == subscribeConfirmationMessage) {
             generarZip();
@@ -141,10 +141,10 @@ function wsProcess() {
             setTimeout(function() {
                 notification.close();
             }, 3000);
-            zipSocket.close();
+            rws.close();
         }
 
-    };
+    });
 }
 
 function prepareData() {
