@@ -492,8 +492,12 @@ class RutasSalientesConfigCreator(object):
             rutas_file.append("include => oml-outr-{0}\n".format(ruta.id))
 
         # Agrega parametros
-        rutas_file.append("exten => i,1,Verbose(2, no existe patron)\n")
+        rutas_file.append("exten => i,1,Verbose(2, dont exist pattern)\n")
         rutas_file.append("same => n,Set(__DIALSTATUS=NONDIALPLAN)\n")
+        rutas_file.append("same => n,ExecIf($[${CUT(OMLCALLSTATUS,-,1)} == BTOUT]"
+                          "?Set(__DIALSTATUS=BTOUT-NONDIALPLAN))\n")
+        rutas_file.append("same => n,ExecIf($[${CUT(OMLCALLSTATUS,-,1)} == CTOUT]"
+                          "?Set(__DIALSTATUS=CTOUT-NONDIALPLAN))\n")
         rutas_file.append("same => n,Set(SHARED(OMLCALLSTATUS,${OMLMOTHERCHAN})=${DIALSTATUS})\n")
         gosub = \
             "same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${OMLOUTNUM}))\n"
