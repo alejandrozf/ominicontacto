@@ -304,3 +304,8 @@
   - name: Restart OMniLeads service
     systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
     tags: postinstall
+
+  # OMniLeads restart
+  - name: Restart OMniLeads Daphne service
+    systemd: name=omnileads-daphne state=restarted enabled=yes daemon_reload=yes
+    tags: postinstall

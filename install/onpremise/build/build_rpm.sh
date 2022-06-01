@@ -41,6 +41,7 @@ fpm -s dir -d cairo -d crontabs -d cronie -d cronie-anacron -d which -d vim \
   --after-remove scripts/after_remove.sh \
   -f $INSTALL_PREFIX \
   omnileads.service=/etc/systemd/system/omnileads.service \
+  omnileads-daphne.service=/etc/systemd/system/omnileads-daphne.service \
   scripts/cron/omnileads=/var/spool/cron/omnileads
 
 mv virtualenv-* /root

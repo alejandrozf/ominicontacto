@@ -30,11 +30,6 @@ class NotificationSocket
     }
 
     startNotificationSocket() {
-        /** Bloqueo funcionalidad oml-2103 por problemas con django-channels  **/
-        return;
-    }
-
-    startNotificationSocket2() {
         const url = 'wss://' + window.location.host + '/channels/agent-console';
         const rws = new ReconnectingWebSocket(url, [], {
             connectionTimeout: 10000,

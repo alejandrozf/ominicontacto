@@ -2018,8 +2018,8 @@ class GrupoForm(forms.ModelForm):
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
-                  'acceso_campanas_preview_agente', 'conjunto_de_pausa'
-                  )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
+                  'acceso_campanas_preview_agente', 'conjunto_de_pausa',
+                  'obligar_despausa')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
