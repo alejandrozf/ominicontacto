@@ -18,85 +18,14 @@
 #
 
 from __future__ import unicode_literals
-
-from django.urls import reverse
-
-from ominicontacto_app.models import SitioExterno, ParametrosCrm
+from ominicontacto_app.models import ParametrosCrm
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (
-    SitioExternoFactory, CampanaFactory, ParametrosCrmFactory, ContactoFactory, COLUMNAS_DB_DEFAULT)
+    SitioExternoFactory, CampanaFactory,
+    ParametrosCrmFactory, ContactoFactory, COLUMNAS_DB_DEFAULT)
 
 
-class TestsABMSitioExterno(OMLBaseTest):
-    PWD = u'admin123'
-
-    def setUp(self, *args, **kwargs):
-        super(TestsABMSitioExterno, self).setUp(*args, **kwargs)
-
-        self.admin = self.crear_administrador()
-        self.agente = self.crear_user_agente()
-        self.agente.set_password(self.PWD)
-        self.admin.set_password(self.PWD)
-
-        self.sitio_externo = SitioExternoFactory()
-
-    def _obtener_post_sitio_externo(self):
-        return {
-            'nombre': 'test_ruta_entrante',
-            'url': 'http://www.infobae.com/',
-            'disparador': SitioExterno.BOTON,
-            'metodo': SitioExterno.GET,
-            # 'formato': None,
-            'objetivo': SitioExterno.EMBEBIDO,
-        }
-
-    def test_crear_sitio_externo(self):
-        url = reverse('sitio_externo_create')
-        self.client.login(username=self.admin.username, password=self.PWD)
-        post_data = self._obtener_post_sitio_externo()
-        n_sitio_externo = SitioExterno.objects.count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(SitioExterno.objects.count(), n_sitio_externo + 1)
-        list_url = reverse('sitio_externo_list')
-        self.assertRedirects(response, list_url)
-
-    def test_update_sitio_externo(self):
-        url = reverse('modificar_sitio_externo', args=[self.sitio_externo.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
-        nombre_modificado = 'sitio_crm_ventas'
-        post_data = self._obtener_post_sitio_externo()
-        post_data['nombre'] = nombre_modificado
-        response = self.client.post(url, post_data, follow=True)
-        self.sitio_externo.refresh_from_db()
-        self.assertEqual(self.sitio_externo.nombre, nombre_modificado)
-        list_url = reverse('sitio_externo_list')
-        self.assertRedirects(response, list_url)
-
-    def test_admin_elimina_sitio_externo(self):
-        url = reverse('sitio_externo_delete', args=[self.sitio_externo.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
-        n_sitio_externo = SitioExterno.objects.count()
-        response = self.client.post(url, follow=True)
-        self.assertEqual(SitioExterno.objects.count(), n_sitio_externo - 1)
-        list_url = reverse('sitio_externo_list')
-        self.assertRedirects(response, list_url)
-
-    def test_no_se_permite_eliminar_sitio_externo_asociado_campana(self):
-        url = reverse('sitio_externo_delete', args=[self.sitio_externo.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
-        CampanaFactory.create(sitio_externo=self.sitio_externo, tipo_interaccion=2)
-        n_sitio_externo = SitioExterno.objects.count()
-        self.client.post(url, follow=True)
-        self.assertEqual(SitioExterno.objects.count(), n_sitio_externo)
-
-    def test_usuario_no_admin_no_puede_eliminar_sitio_externo(self):
-        self.client.login(username=self.agente.username, password=self.PWD)
-        url = reverse('sitio_externo_delete', args=[self.sitio_externo.pk])
-        response = self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, '403.html')
-
-
-class TestsSitioExterno(OMLBaseTest):
+class TestsParametrosCRM(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self, *args, **kwargs):
@@ -115,7 +44,7 @@ class TestsSitioExterno(OMLBaseTest):
             'Omlcrmnombre_1': 'valor_crm_1',
             'Omlcrmnombre_2': 'valor_crm_2',
         }
-        super(TestsSitioExterno, self).setUp(*args, **kwargs)
+        super(TestsParametrosCRM, self).setUp(*args, **kwargs)
 
     def test_obtener_parametros_campana(self):
         nombres = ['id', 'nombre', 'tipo']

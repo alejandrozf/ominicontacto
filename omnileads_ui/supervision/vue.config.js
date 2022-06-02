@@ -7,37 +7,24 @@ function getCsfrToken (cookie) {
     }
 }
 
+function getPageConfig (pageName) {
+    return {
+        entry: 'src/main.js',
+        template: `public/${pageName}.html`,
+        filename: `${pageName}.html`,
+        title: pageName,
+        chunks: ['chunk-vendors', 'chunk-common', pageName]
+    };
+}
+
 module.exports = {
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
-        supervision_dashboard: {
-            entry: 'src/main.js',
-            template: 'public/supervision_dashboard.html',
-            filename: 'supervision_dashboard.html',
-            title: 'supervision_dashboard',
-            chunks: ['chunk-vendors', 'chunk-common', 'supervision_dashboard']
-        },
-        page_audit: {
-            entry: 'src/main.js',
-            template: 'public/audit.html',
-            filename: 'audit.html',
-            title: 'audit',
-            chunks: ['chunk-vendors', 'chunk-common', 'page_audit']
-        },
-        add_agents_to_campaign: {
-            entry: 'src/main.js',
-            template: 'public/add_agents_to_campaign.html',
-            filename: 'add_agents_to_campaign.html',
-            title: 'add_agents_to_campaign',
-            chunks: ['chunk-vendors', 'chunk-common', 'add_agents_to_campaign']
-        },
-        pause_sets: {
-            entry: 'src/main.js',
-            template: 'public/pause_sets.html',
-            filename: 'pause_sets.html',
-            title: 'pause_sets',
-            chunks: ['chunk-vendors', 'chunk-common', 'pause_sets']
-        }
+        supervision_dashboard: getPageConfig('supervision_dashboard'),
+        audit_supervisor: getPageConfig('audit_supervisor'),
+        add_agents_to_campaign: getPageConfig('add_agents_to_campaign'),
+        pause_sets: getPageConfig('pause_sets'),
+        external_sites: getPageConfig('external_sites')
     },
     devServer: {
         proxy: {
@@ -56,7 +43,6 @@ module.exports = {
             '/media': {
                 target: 'https://nginx',
                 changeOrigin: true
-
             }
         }
     }

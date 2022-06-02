@@ -241,21 +241,10 @@ class OminicontactoAppConfig(AppConfig):
                 'children': formularios
             })
         #  Sitios Externos
-        sitios_externos = []
-        if 'sitio_externo_create' in permissions:
-            sitios_externos.append({
-                'label': _('Nuevo sitio'),
-                'url': reverse('sitio_externo_create')
-            })
         if 'sitio_externo_list' in permissions:
-            sitios_externos.append({
-                'label': _('Listado de sitios'),
-                'url': reverse('sitio_externo_list')
-            })
             campanas.append({
                 'label': _('Sitios Externos'),
-                'id': 'menuSites',
-                'children': sitios_externos
+                'url': reverse('sitio_externo_list')
             })
         #  Sistemas EXternos
         sistemas_externos = []
@@ -709,18 +698,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_list',
              'roles': ['Administrador', ]},
-            {'nombre': 'sitio_externo_create',
-             'roles': ['Administrador', ]},
-            {'nombre': 'oculta_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'desoculta_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'mostrar_sitios_externo_ocultos',
-             'roles': ['Administrador', ]},
-            {'nombre': 'modificar_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'sitio_externo_delete',
-             'roles': ['Administrador', ]},
             {'nombre': 'queue_member_add',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'queue_member_grupo_agente',
@@ -1170,18 +1147,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.7.0'},
         'sitio_externo_list':
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
-        'sitio_externo_create':
-            {'descripcion': _('Crear un Sitio Externo'), 'version': '1.7.0'},
-        'oculta_sitio_externo':
-            {'descripcion': _('Ocultar un Sitio Externo'), 'version': '1.7.0'},
-        'desoculta_sitio_externo':
-            {'descripcion': _('Mostrar un Sitio Externo oculto'), 'version': '1.7.0'},
-        'mostrar_sitios_externo_ocultos':
-            {'descripcion': _('Mostrar los Sitios Externos ocultos'), 'version': '1.7.0'},
-        'modificar_sitio_externo':
-            {'descripcion': _('Modificar un Sitio Externo'), 'version': '1.7.0'},
-        'sitio_externo_delete':
-            {'descripcion': _('Borrar un Sitio Externo'), 'version': '1.7.0'},
         'queue_member_add':
             {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
         'queue_member_grupo_agente':

@@ -19,7 +19,7 @@ export default {
     pause: 'Pausa | Pausas',
     contact: 'Contacto | Contactos',
     report: 'Reporte | Reportes',
-    help: 'Ayuda',
+    help: 'Ayuda | Informacion',
     audio: 'Audio | Audios',
     inbound: 'Entrante | Entrantes',
     dialer: 'Dialer',
@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'Configuracion de pausa: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
+    external_site: 'Sitio externo | Sitios externos',
     // -------------
     // -- Actions --
     // -------------
@@ -92,12 +93,16 @@ export default {
     error_to_deleted: 'Error al eliminar',
     error_to_updated_type: 'Error al actualizar {type}',
     error_to_updated: 'Error al actualizar',
+    error_to_hide_type: 'Error al ocultar {type}',
+    error_to_show_type: 'Error al desocultar {type}',
     success_updated_type: '{type} actualizado exitosamente | {type} actualizada exitosamente',
     success_updated: 'Actualizado exitosamente | Actualizada exitosamente | Actualizados exitosamente',
     success_added_type: '{type} agregado exitosamente | {type} agregada exitosamente',
     success_added: 'Agregado exitosamente | Agregada exitosamente',
     success_deleted_type: '{type} eliminado exitosamente | {type} eliminada exitosamente',
     success_deleted: 'Eliminado exitosamente | Eliminada exitosamente',
+    success_show_type: '{type} desocultado exitosamente | {type} desocultada exitosamente',
+    success_hide_type: '{type} ocultado exitosamente | {type} ocultada exitosamente',
     confirm_to_delete: '¿Estás seguro de que quieres eliminar?',
     success_notification: '¡Operación exitosa!',
     error_notification: '¡Operación erronea!',

@@ -23,5 +23,15 @@ export default {
         action: 'Accion',
         additional_information: 'Información Adicional',
         datetime: 'Fecha y hora'
+    },
+    external_site: {
+        id: 'ID',
+        name: 'Nombre',
+        url: 'Url',
+        method: 'Metodo',
+        format: 'Formato',
+        objective: 'Objetivo',
+        trigger: 'Disparador',
+        status: 'Estado'
     }
 };

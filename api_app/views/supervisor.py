@@ -53,7 +53,8 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (
     CampanaSerializer, AuditSupervisorCRUDEventSerializer, AuditSupervisorLoginEventSerializer,
     AuditSupervisorRequestEventSerializer, AgenteDeCampanaSerializer, AgenteActivoSerializer,
-    ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer, GrupoSerializer, PausaSerializer)
+    ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer,
+    GrupoSerializer, PausaSerializer)
 
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, ConfiguracionDePausa,

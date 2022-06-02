@@ -31,8 +31,9 @@ from api_app.views.administrador import (
     SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
-    StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
-    CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
+    StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
+    LlamadasDeCampanaView, CalificacionesDeCampanaView,
+    ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     StatusCampanasEntrantesView, Pausas,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
@@ -42,6 +43,10 @@ from api_app.views.supervisor import (
     ConjuntoDePausaCreate, ConjuntoDePausaDelete, ConjuntoDePausaDetalle,
     ConjuntoDePausaList, ConjuntoDePausaUpdate, ConfiguracionDePausaCreate,
     ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate)
+from api_app.views.external_site import (
+    SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
+    SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
+    SitioExternoUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -202,6 +207,30 @@ urlpatterns = [
     re_path(r'api/v1/pause_config/(?P<pk>\d+)/delete/$',
             ConfiguracionDePausaDelete.as_view(),
             name='api_pause_config_delete'),
+    # =========================
+    # Sitios Externos
+    # =========================
+    re_path(r'api/v1/external_sites/$',
+            SitioExternoList.as_view(),
+            name='api_external_sites_list'),
+    re_path(r'api/v1/external_sites/(?P<pk>\d+)/$',
+            SitioExternoDetalle.as_view(),
+            name='api_external_sites_detail'),
+    re_path(r'api/v1/external_sites/create/$',
+            SitioExternoCreate.as_view(),
+            name='api_external_sites_create'),
+    re_path(r'api/v1/external_sites/(?P<pk>\d+)/update/$',
+            SitioExternoUpdate.as_view(),
+            name='api_external_sites_update'),
+    re_path(r'api/v1/external_sites/(?P<pk>\d+)/delete/$',
+            SitioExternoDelete.as_view(),
+            name='api_external_sites_delete'),
+    re_path(r'api/v1/external_sites/(?P<pk>\d+)/hide/$',
+            SitioExternoOcultar.as_view(),
+            name='api_external_sites_hide'),
+    re_path(r'api/v1/external_sites/(?P<pk>\d+)/show/$',
+            SitioExternoDesocultar.as_view(),
+            name='api_external_sites_show'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

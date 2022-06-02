@@ -20,77 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% load js_reverse %}
-{% block head_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/sitio_externo_list.js' %}"></script>
-{% endblock %}
 
 {% block content %}
-
-<h1>{% trans 'Sitios Externos' %}</h1>
-<a class="btn btn-light btn-sm" href="#" onclick="mostrar_sitios_ocultos()" >
-    {% trans 'Mostrar ocultos' %}
-</a>
-<hr>
-<table class="table">
-    <thead>
-      <tr class="fts-table-bg">
-        <th>{% trans 'Sitio externo' %}</th>
-        <th>{% trans 'Url' %}</th>
-        <th>{% trans 'Disparador' %}</th>
-        <th>{% trans 'Método' %}</th>
-        <th>{% trans 'Formato' %}</th>
-        <th>{% trans 'Objetivo' %}</th>
-        <th>{% trans 'Acciones' %}</th>
-      </tr>
-    </thead>
-    <tbody id="t_body_ocultas">
-        {% for sitio in sitios_externos %}
-            <tr id="{{sitio.nombre}}">
-                <td>
-                    <a  href="{% url 'modificar_sitio_externo' sitio.id %}">
-                        {{ sitio.nombre }}
-                    </a>
-                </td>
-                <td>
-                    {{ sitio.url }}
-                </td>
-                <td id="{{ sitio.get_disparador_display }}">
-                    {{ sitio.get_disparador_display }}
-                </td>
-                <td>
-                    {{ sitio.get_metodo_display }}
-                </td>
-                <td>
-                    {{ sitio.get_formato_display }}
-                </td>
-                <td>
-                    {{ sitio.get_objetivo_display }}
-                </td>
-                <td>
-                    {% if sitio.oculto %}
-                    <a class="btn btn-light" href="{% url 'desoculta_sitio_externo' sitio.pk %}" >
-                        <span class="icon icon-eye" aria-hidden="true" title="visible"></span>{% trans 'Hacer visible' %}
-                    </a>
-                    {% else %}
-                    <a class="btn btn-light" href="{% url 'oculta_sitio_externo' sitio.pk %}" >
-                        <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>{% trans 'Ocultar' %}
-                    </a>
-                    {% endif %}
-
-                    <a class="btn btn-light" href="{% url 'sitio_externo_delete' sitio.pk %}"><span class="icon" aria-hidden="true" title="visible"></span>{%trans 'Eliminar'%}
-
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td>
-                    <p>{% trans 'No se encontraron sitios externos creados.' %}</p>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
+    <iframe src="{% static 'omnileads-ui-supervision/external_sites.html' %}" class="crm" name="crm"></iframe>
 {% endblock %}

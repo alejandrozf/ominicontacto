@@ -29,5 +29,12 @@ export default {
     },
     audit: {
         title: 'Administrative audit'
+    },
+    external_sites: {
+        list_title: 'External Sites',
+        show_hiddens: 'Show hidden',
+        remove_hiddens: 'Remove hidden',
+        hide: 'Hide',
+        show: 'Unhide'
     }
 };
