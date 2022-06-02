@@ -23,5 +23,15 @@ export default {
         action: 'عمل',
         additional_information: 'تغییر دادن',
         datetime: 'تاریخ و زمان'
+    },
+    external_site: {
+        id: 'برو',
+        name: 'نام',
+        url: 'URL',
+        method: 'روش',
+        format: 'قالب',
+        objective: 'هدف',
+        trigger: 'ماشه',
+        status: 'شرایط. شرط'
     }
 };

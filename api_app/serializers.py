@@ -30,7 +30,7 @@ from ominicontacto_app.models import (
     AgenteEnContacto, AgenteProfile, ArchivoDeAudio,
     CalificacionCliente, Campana, ConfiguracionDePausa,
     Contacto, Grupo, ConjuntoDePausa, OpcionCalificacion,
-    Pausa, User, QueueMember)
+    Pausa, SitioExterno, User, QueueMember)
 from easyaudit.models import CRUDEvent, LoginEvent, RequestEvent
 
 
@@ -412,6 +412,55 @@ class ConjuntoDePausaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConjuntoDePausa
         fields = ('id', 'nombre')
+
+
+class SitioExternoSerializer(serializers.ModelSerializer):
+
+    def validarFormato(self, formato, metodo):
+        if metodo == SitioExterno.GET and formato:
+            raise serializers.ValidationError({
+                'formato': 'Si el método es GET, no debe indicarse formato'
+            })
+        elif metodo == SitioExterno.POST and not formato:
+            raise serializers.ValidationError({
+                'formato': 'Si el método es POST, debe seleccionar un formato'
+            })
+
+    def validarObjetivo(self, objetivo, disparador, formato):
+        if formato == SitioExterno.JSON and objetivo:
+            raise serializers.ValidationError({
+                'objetivo': 'Si el formato es JSON, '
+                            'no puede haber un objetivo.'
+            })
+        if disparador == SitioExterno.SERVER and objetivo:
+            raise serializers.ValidationError({
+                'objetivo': 'Si el disparador es el servidor, '
+                            'no puede haber un objetivo.'
+            })
+        elif disparador != SitioExterno.SERVER and not objetivo:
+            raise serializers.ValidationError({
+                'objetivo': 'Debe indicar un objetivo válido'
+            })
+
+    def validate(self, data):
+        metodo = data['metodo']
+        formato = data['formato']
+        disparador = data['disparador']
+        objetivo = data['objetivo']
+        self.validarFormato(formato, metodo)
+        self.validarObjetivo(objetivo, disparador, formato)
+        if not objetivo or objetivo is None:
+            data['objetivo'] = 1
+        if not formato or formato is None:
+            data['formato'] = 1
+        return data
+
+    class Meta:
+        model = SitioExterno
+        fields = (
+            'id', 'nombre', 'url',
+            'oculto', 'disparador', 'metodo',
+            'formato', 'objetivo')
 
 
 class ConfiguracionDePausaSerializer(serializers.ModelSerializer):

@@ -23,5 +23,15 @@ export default {
         action: 'Açao',
         additional_information: 'Mudar',
         datetime: 'Data e hora'
+    },
+    external_site: {
+        id: 'ID',
+        name: 'Nome',
+        url: 'URL',
+        method: 'Método',
+        format: 'Formato',
+        objective: 'Meta',
+        trigger: 'Acionar',
+        status: 'Doença'
     }
 };

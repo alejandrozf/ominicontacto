@@ -14,7 +14,7 @@
 </template>
 <script>
 import { reactive, toRefs, watch, ref } from 'vue';
-import apiUrls from '@/const/api-urls';
+import apiUrls from '@/const';
 import { apiCall, httpMethods } from '@/hooks/apiCall';
 import DataTableAuditSupervisor from '@/components/audit/DataTableAuditSupervisor';
 import FilterAuditSupervisor from '@/components/audit/FilterAuditSupervisor';
