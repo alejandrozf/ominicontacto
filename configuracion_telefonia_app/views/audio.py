@@ -38,8 +38,7 @@ from configuracion_telefonia_app.models import AudiosAsteriskConf, MusicaDeEsper
 
 from ominicontacto_app.services.asterisk.playlist import PlaylistDirectoryManager
 from ominicontacto_app.views_archivo_de_audio import ArchivoDeAudioMixin
-from ominicontacto_app.asterisk_config import (
-    AudioConfigFile, PlaylistsConfigCreator, AsteriskConfigReloader)
+from ominicontacto_app.asterisk_config import AudioConfigFile, PlaylistsConfigCreator
 from pathlib import Path
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
@@ -250,11 +249,6 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
     def form_valid(self, form):
         form.save()
         self._procesar_archivo_de_audio(form)
-        # Si esta musica es la primera que se agrega a la playlist:
-        if self.playlist.musicas.count() == 1:
-            # "Reinicio" el mudulo de musiconhold en Asterisk
-            reloader = AsteriskConfigReloader()
-            reloader.reload_asterisk()
 
         return super(MusicaDeEsperaCreateView, self).form_valid(form)
 
@@ -286,12 +280,6 @@ class MusicaDeEsperaDeleteView(DeleteView):
         if musica.audio_original:
             if os.path.isfile(musica.audio_original.path):
                 os.remove(musica.audio_original.path)
-
-        # Si esta musica es la última que había en la playlist:
-        if musica.playlist.musicas.count() == 1:
-            # "Reinicio" el mudulo de musiconhold en Asterisk
-            reloader = AsteriskConfigReloader()
-            reloader.reload_asterisk()
 
         super(MusicaDeEsperaDeleteView, self).delete(request, *args, **kwargs)
 
