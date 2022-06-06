@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-09 15:44-0300\n"
+"POT-Creation-Date: 2022-06-06 14:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: reportes_app/apps.py:33
-#: reportes_app/templates/reporte_grafico_campana.html:273
+#: reportes_app/templates/reporte_grafico_campana.html:274
 #: reportes_app/templates/reporte_llamadas.html:33
 #: reportes_app/templates/reporte_llamadas.html:70
 msgid "Llamadas"
@@ -150,44 +150,44 @@ msgstr ""
 msgid "No se encontraron holds "
 msgstr ""
 
-#: reportes_app/models.py:466
+#: reportes_app/models.py:476
 msgid "Llamada manual"
 msgstr ""
 
-#: reportes_app/models.py:467
+#: reportes_app/models.py:477
 msgid "Llamada dialer"
 msgstr ""
 
-#: reportes_app/models.py:468
+#: reportes_app/models.py:478
 msgid "Llamada entrante"
 msgstr ""
 
-#: reportes_app/models.py:469
+#: reportes_app/models.py:479
 msgid "Llamada preview"
 msgstr ""
 
-#: reportes_app/models.py:470
+#: reportes_app/models.py:480
 msgid "Llamada click2call"
 msgstr ""
 
-#: reportes_app/models.py:471
+#: reportes_app/models.py:481
 msgid "Llamada transferencia interna"
 msgstr ""
 
-#: reportes_app/models.py:472
+#: reportes_app/models.py:482
 msgid "Llamada transferencia externa"
 msgstr ""
 
-#: reportes_app/models.py:514
+#: reportes_app/models.py:524
 msgid "No se encontraron pausas "
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos.py:422
-#: reportes_app/reportes/reporte_agentes.py:327
+#: reportes_app/reportes/reporte_agente_tiempos.py:421
+#: reportes_app/reportes/reporte_agentes.py:324
 msgid "ACW"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos.py:425
+#: reportes_app/reportes/reporte_agente_tiempos.py:424
 msgid "Supervisión"
 msgstr ""
 
@@ -200,20 +200,20 @@ msgid ""
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:78
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:148
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:181
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:216
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:150
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:183
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:218
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:176
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:315
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:431
 #: reportes_app/templates/reporte_agente.html:30
-#: reportes_app/templates/reporte_grafico_campana.html:233
+#: reportes_app/templates/reporte_grafico_campana.html:234
 #: reportes_app/templates/reportes_agentes_tiempos.html:107
-#: reportes_app/templates/reportes_agentes_tiempos.html:196
-#: reportes_app/templates/reportes_agentes_tiempos.html:228
-#: reportes_app/templates/reportes_agentes_tiempos.html:261
-#: reportes_app/templates/reportes_agentes_tiempos.html:307
-#: reportes_app/templates/reportes_agentes_tiempos.html:352
+#: reportes_app/templates/reportes_agentes_tiempos.html:198
+#: reportes_app/templates/reportes_agentes_tiempos.html:230
+#: reportes_app/templates/reportes_agentes_tiempos.html:263
+#: reportes_app/templates/reportes_agentes_tiempos.html:309
+#: reportes_app/templates/reportes_agentes_tiempos.html:355
 msgid "Agente"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgid "Tiempo de hold"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:81
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:151
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:153
 msgid "Tiempo de pausa"
 msgstr ""
 
@@ -252,15 +252,15 @@ msgid "Porcentaje en espera"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:86
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:184
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:186
 #: reportes_app/templates/reporte_agente.html:117
 msgid "Cantidad de llamadas procesadas"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:87
 #: reportes_app/templates/reportes_agentes_tiempos.html:112
-#: reportes_app/templates/reportes_agentes_tiempos.html:232
-#: reportes_app/templates/reportes_agentes_tiempos.html:327
+#: reportes_app/templates/reportes_agentes_tiempos.html:234
+#: reportes_app/templates/reportes_agentes_tiempos.html:329
 msgid "Transferidas a Agente"
 msgstr ""
 
@@ -275,84 +275,88 @@ msgid "Cantidad de intentos fallidos"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:90
-#: reportes_app/templates/reportes_agentes_tiempos.html:115
-#: reportes_app/templates/reportes_agentes_tiempos.html:330
+msgid "Entrantes No Atendidas"
+msgstr ""
+
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:91
+#: reportes_app/templates/reportes_agentes_tiempos.html:116
+#: reportes_app/templates/reportes_agentes_tiempos.html:333
 msgid "Entrantes Rechazadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:149
-#: reportes_app/templates/reportes_agentes_tiempos.html:197
-#: reportes_app/templates/reportes_agentes_tiempos.html:321
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:151
+#: reportes_app/templates/reportes_agentes_tiempos.html:199
+#: reportes_app/templates/reportes_agentes_tiempos.html:323
 msgid "Pausa"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:150
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:152
 msgid "Tipo de pausa"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:182
-#: reportes_app/templates/reportes_agentes_tiempos.html:229
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:184
+#: reportes_app/templates/reportes_agentes_tiempos.html:231
 msgid "Cola"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:183
-#: reportes_app/templates/reportes_agentes_tiempos.html:230
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:185
+#: reportes_app/templates/reportes_agentes_tiempos.html:232
 msgid "Tiempo de llamadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:185
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:187
 msgid "Transferidas a agente"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:217
-#: reportes_app/reportes/reporte_llamadas.py:536
-#: reportes_app/reportes/reporte_llamadas.py:654
-#: reportes_app/reportes/reporte_llamadas.py:697
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:219
+#: reportes_app/reportes/reporte_llamadas.py:538
+#: reportes_app/reportes/reporte_llamadas.py:656
+#: reportes_app/reportes/reporte_llamadas.py:699
 #: reportes_app/templates/reporte_llamadas.html:236
 #: reportes_app/templates/reporte_llamadas.html:661
 #: reportes_app/templates/reporte_llamadas.html:696
 #: reportes_app/templates/reporte_llamadas.html:736
 #: reportes_app/templates/reporte_llamadas.html:774
 #: reportes_app/templates/reporte_llamadas.html:808
-#: reportes_app/templates/reportes_agentes_tiempos.html:262
+#: reportes_app/templates/reportes_agentes_tiempos.html:264
 msgid "Total"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:218
-msgid "ICS"
-msgstr ""
-
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:219
-#: reportes_app/templates/reportes_agentes_tiempos.html:264
-msgid "DIALER"
-msgstr ""
-
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:220
-#: reportes_app/templates/reportes_agentes_tiempos.html:265
-msgid "INBOUND"
+msgid "ICS"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:221
 #: reportes_app/templates/reportes_agentes_tiempos.html:266
-msgid "MANUAL"
+msgid "DIALER"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:222
 #: reportes_app/templates/reportes_agentes_tiempos.html:267
-msgid "TRANSFERIDAS A AGENTE"
+msgid "INBOUND"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:223
 #: reportes_app/templates/reportes_agentes_tiempos.html:268
-msgid "TRANSFERIDAS A CAMPAÑA"
+msgid "MANUAL"
 msgstr ""
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:224
 #: reportes_app/templates/reportes_agentes_tiempos.html:269
+msgid "TRANSFERIDAS A AGENTE"
+msgstr ""
+
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:225
+#: reportes_app/templates/reportes_agentes_tiempos.html:270
+msgid "TRANSFERIDAS A CAMPAÑA"
+msgstr ""
+
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:226
+#: reportes_app/templates/reportes_agentes_tiempos.html:271
 msgid "FUERA DE CAMPAÑA"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:291
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:293
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:525
 #, python-brace-format
 msgid ""
@@ -360,7 +364,7 @@ msgid ""
 "la campana {0}"
 msgstr ""
 
-#: reportes_app/reportes/reporte_agentes.py:328
+#: reportes_app/reportes/reporte_agentes.py:325
 msgid "Pausa-Supervisión"
 msgstr ""
 
@@ -373,9 +377,9 @@ msgstr ""
 msgid "Transferencias"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:467
-#: reportes_app/reportes/reporte_llamadas.py:537
-#: reportes_app/reportes/reporte_llamadas.py:697
+#: reportes_app/reportes/reporte_llamadas.py:469
+#: reportes_app/reportes/reporte_llamadas.py:539
+#: reportes_app/reportes/reporte_llamadas.py:699
 #: reportes_app/templates/reporte_llamadas.html:237
 #: reportes_app/templates/reporte_llamadas.html:280
 #: reportes_app/templates/reporte_llamadas.html:389
@@ -383,25 +387,25 @@ msgstr ""
 msgid "Manuales"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:467
-#: reportes_app/reportes/reporte_llamadas.py:519
+#: reportes_app/reportes/reporte_llamadas.py:469
+#: reportes_app/reportes/reporte_llamadas.py:521
 msgid "Dialer"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:467
+#: reportes_app/reportes/reporte_llamadas.py:469
 msgid "Entrantes"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:467
-#: reportes_app/reportes/reporte_llamadas.py:521
+#: reportes_app/reportes/reporte_llamadas.py:469
+#: reportes_app/reportes/reporte_llamadas.py:523
 msgid "Preview"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:470
+#: reportes_app/reportes/reporte_llamadas.py:472
 msgid "Intentos"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:479
+#: reportes_app/reportes/reporte_llamadas.py:481
 #: reportes_app/templates/reporte_llamadas.html:279
 #: reportes_app/templates/reporte_llamadas.html:494
 #: reportes_app/templates/reporte_llamadas.html:565
@@ -409,55 +413,55 @@ msgstr ""
 msgid "Conexión"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:493
+#: reportes_app/reportes/reporte_llamadas.py:495
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:58
 msgid "Fallo"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:503
+#: reportes_app/reportes/reporte_llamadas.py:505
 msgid "No hay llamadas para ese periodo"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:518
+#: reportes_app/reportes/reporte_llamadas.py:520
 msgid "Manual"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:520
+#: reportes_app/reportes/reporte_llamadas.py:522
 msgid "Entrante"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:557
+#: reportes_app/reportes/reporte_llamadas.py:559
 msgid "No contactadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:558
+#: reportes_app/reportes/reporte_llamadas.py:560
 msgid "Procesadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:559
-#: reportes_app/reportes/reporte_llamadas.py:581
-#: reportes_app/reportes/reporte_llamadas.py:656
-#: reportes_app/reportes/reporte_llamadas.py:722
-#: reportes_app/reportes/reporte_llamadas.py:744
+#: reportes_app/reportes/reporte_llamadas.py:561
+#: reportes_app/reportes/reporte_llamadas.py:583
+#: reportes_app/reportes/reporte_llamadas.py:658
+#: reportes_app/reportes/reporte_llamadas.py:724
+#: reportes_app/reportes/reporte_llamadas.py:746
 #: reportes_app/templates/reporte_llamadas.html:116
 #: reportes_app/templates/reporte_llamadas.html:732
 msgid "Abandonadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:560
-#: reportes_app/reportes/reporte_llamadas.py:583
-#: reportes_app/reportes/reporte_llamadas.py:655
-#: reportes_app/reportes/reporte_llamadas.py:721
-#: reportes_app/reportes/reporte_llamadas.py:744
+#: reportes_app/reportes/reporte_llamadas.py:562
+#: reportes_app/reportes/reporte_llamadas.py:585
+#: reportes_app/reportes/reporte_llamadas.py:657
+#: reportes_app/reportes/reporte_llamadas.py:723
+#: reportes_app/reportes/reporte_llamadas.py:746
 #: reportes_app/templates/reporte_llamadas.html:112
 #: reportes_app/templates/reporte_llamadas.html:731
 msgid "Expiradas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:580
-#: reportes_app/reportes/reporte_llamadas.py:655
-#: reportes_app/reportes/reporte_llamadas.py:721
-#: reportes_app/reportes/reporte_llamadas.py:744
+#: reportes_app/reportes/reporte_llamadas.py:582
+#: reportes_app/reportes/reporte_llamadas.py:657
+#: reportes_app/reportes/reporte_llamadas.py:723
+#: reportes_app/reportes/reporte_llamadas.py:746
 #: reportes_app/templates/reporte_llamadas.html:82
 #: reportes_app/templates/reporte_llamadas.html:108
 #: reportes_app/templates/reporte_llamadas.html:658
@@ -465,21 +469,21 @@ msgstr ""
 msgid "Atendidas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:582
-#: reportes_app/reportes/reporte_llamadas.py:656
-#: reportes_app/reportes/reporte_llamadas.py:745
+#: reportes_app/reportes/reporte_llamadas.py:584
+#: reportes_app/reportes/reporte_llamadas.py:658
+#: reportes_app/reportes/reporte_llamadas.py:747
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:65
 #: reportes_app/templates/reporte_llamadas.html:120
 #: reportes_app/templates/reporte_llamadas.html:733
 msgid "Abandonadas durante anuncio"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:599
-#: reportes_app/reportes/reporte_llamadas.py:617
-#: reportes_app/reportes/reporte_llamadas.py:654
-#: reportes_app/reportes/reporte_llamadas.py:708
-#: reportes_app/reportes/reporte_llamadas.py:721
-#: reportes_app/reportes/reporte_llamadas.py:766
+#: reportes_app/reportes/reporte_llamadas.py:601
+#: reportes_app/reportes/reporte_llamadas.py:619
+#: reportes_app/reportes/reporte_llamadas.py:656
+#: reportes_app/reportes/reporte_llamadas.py:710
+#: reportes_app/reportes/reporte_llamadas.py:723
+#: reportes_app/reportes/reporte_llamadas.py:768
 #: reportes_app/templates/reporte_llamadas.html:146
 #: reportes_app/templates/reporte_llamadas.html:168
 #: reportes_app/templates/reporte_llamadas.html:694
@@ -488,106 +492,106 @@ msgstr ""
 msgid "Conectadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:600
-#: reportes_app/reportes/reporte_llamadas.py:618
-#: reportes_app/reportes/reporte_llamadas.py:654
-#: reportes_app/reportes/reporte_llamadas.py:708
-#: reportes_app/reportes/reporte_llamadas.py:766
+#: reportes_app/reportes/reporte_llamadas.py:602
+#: reportes_app/reportes/reporte_llamadas.py:620
+#: reportes_app/reportes/reporte_llamadas.py:656
+#: reportes_app/reportes/reporte_llamadas.py:710
+#: reportes_app/reportes/reporte_llamadas.py:768
 msgid "No conectadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:654
-#: reportes_app/reportes/reporte_llamadas.py:697
+#: reportes_app/reportes/reporte_llamadas.py:656
+#: reportes_app/reportes/reporte_llamadas.py:699
 #: reportes_app/templates/reporte_llamadas.html:238
-#: reportes_app/templates/reportes_agentes_tiempos.html:198
+#: reportes_app/templates/reportes_agentes_tiempos.html:200
 msgid "Tipo"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:655
+#: reportes_app/reportes/reporte_llamadas.py:657
 #: reportes_app/templates/reporte_llamadas.html:86
 #: reportes_app/templates/reporte_llamadas.html:659
 msgid "No atendidas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:655
+#: reportes_app/reportes/reporte_llamadas.py:657
 #: reportes_app/templates/reporte_llamadas.html:90
 #: reportes_app/templates/reporte_llamadas.html:660
 msgid "Perdidas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:657
+#: reportes_app/reportes/reporte_llamadas.py:659
 #: reportes_app/templates/reporte_llamadas.html:124
 #: reportes_app/templates/reporte_llamadas.html:734
 msgid "Transferidas Atendidas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:657
+#: reportes_app/reportes/reporte_llamadas.py:659
 #: reportes_app/templates/reporte_llamadas.html:128
 #: reportes_app/templates/reporte_llamadas.html:735
 msgid "Transferidas No Atendidas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:697
-#: reportes_app/reportes/reporte_llamadas.py:708
-#: reportes_app/reportes/reporte_llamadas.py:721
-#: reportes_app/reportes/reporte_llamadas.py:744
-#: reportes_app/reportes/reporte_llamadas.py:766
+#: reportes_app/reportes/reporte_llamadas.py:699
+#: reportes_app/reportes/reporte_llamadas.py:710
+#: reportes_app/reportes/reporte_llamadas.py:723
+#: reportes_app/reportes/reporte_llamadas.py:746
+#: reportes_app/reportes/reporte_llamadas.py:768
 #: reportes_app/templates/reporte_llamadas.html:386
 #: reportes_app/templates/reporte_llamadas.html:492
 #: reportes_app/templates/reporte_llamadas.html:563
 msgid "Nombre"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:708
-#: reportes_app/reportes/reporte_llamadas.py:721
-#: reportes_app/reportes/reporte_llamadas.py:766
+#: reportes_app/reportes/reporte_llamadas.py:710
+#: reportes_app/reportes/reporte_llamadas.py:723
+#: reportes_app/reportes/reporte_llamadas.py:768
 #: reportes_app/templates/reporte_llamadas.html:278
 #: reportes_app/templates/reporte_llamadas.html:493
 #: reportes_app/templates/reporte_llamadas.html:564
 msgid "Efectuadas"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:709
-#: reportes_app/reportes/reporte_llamadas.py:723
-#: reportes_app/reportes/reporte_llamadas.py:745
-#: reportes_app/reportes/reporte_llamadas.py:767
+#: reportes_app/reportes/reporte_llamadas.py:711
+#: reportes_app/reportes/reporte_llamadas.py:725
+#: reportes_app/reportes/reporte_llamadas.py:747
+#: reportes_app/reportes/reporte_llamadas.py:769
 msgid "T. Espera Conexion"
-msgstr ""
-
-#: reportes_app/reportes/reporte_llamadas.py:722
-#: reportes_app/reportes/reporte_llamadas.py:745
-msgid "T. Abandono"
-msgstr ""
-
-#: reportes_app/reportes/reporte_llamadas.py:722
-msgid "T. Espera Atención"
-msgstr ""
-
-#: reportes_app/reportes/reporte_llamadas.py:723
-#: reportes_app/reportes/reporte_llamadas.py:746
-#: reportes_app/reportes/reporte_llamadas.py:767
-msgid "Manuales Efectuadas"
-msgstr ""
-
-#: reportes_app/reportes/reporte_llamadas.py:723
-#: reportes_app/reportes/reporte_llamadas.py:746
-#: reportes_app/reportes/reporte_llamadas.py:767
-msgid "Manuales Conectadas"
-msgstr ""
-
-#: reportes_app/reportes/reporte_llamadas.py:724
-#: reportes_app/reportes/reporte_llamadas.py:746
-#: reportes_app/reportes/reporte_llamadas.py:768
-msgid "Manuales No Conectadas"
 msgstr ""
 
 #: reportes_app/reportes/reporte_llamadas.py:724
 #: reportes_app/reportes/reporte_llamadas.py:747
-#: reportes_app/reportes/reporte_llamadas.py:768
+msgid "T. Abandono"
+msgstr ""
+
+#: reportes_app/reportes/reporte_llamadas.py:724
+msgid "T. Espera Atención"
+msgstr ""
+
+#: reportes_app/reportes/reporte_llamadas.py:725
+#: reportes_app/reportes/reporte_llamadas.py:748
+#: reportes_app/reportes/reporte_llamadas.py:769
+msgid "Manuales Efectuadas"
+msgstr ""
+
+#: reportes_app/reportes/reporte_llamadas.py:725
+#: reportes_app/reportes/reporte_llamadas.py:748
+#: reportes_app/reportes/reporte_llamadas.py:769
+msgid "Manuales Conectadas"
+msgstr ""
+
+#: reportes_app/reportes/reporte_llamadas.py:726
+#: reportes_app/reportes/reporte_llamadas.py:748
+#: reportes_app/reportes/reporte_llamadas.py:770
+msgid "Manuales No Conectadas"
+msgstr ""
+
+#: reportes_app/reportes/reporte_llamadas.py:726
+#: reportes_app/reportes/reporte_llamadas.py:749
+#: reportes_app/reportes/reporte_llamadas.py:770
 msgid "T. Espera Conexión Manuales"
 msgstr ""
 
-#: reportes_app/reportes/reporte_llamadas.py:744
+#: reportes_app/reportes/reporte_llamadas.py:746
 #: reportes_app/templates/reporte_llamadas.html:387
 msgid "Recibidas"
 msgstr ""
@@ -703,8 +707,8 @@ msgstr ""
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:183
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:314
-#: reportes_app/templates/calificaciones_campana.html:105
-#: reportes_app/templates/calificaciones_campana.html:144
+#: reportes_app/templates/calificaciones_campana.html:106
+#: reportes_app/templates/calificaciones_campana.html:145
 msgid "Observaciones"
 msgstr ""
 
@@ -720,22 +724,22 @@ msgstr ""
 msgid "Sin datos"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:30
+#: reportes_app/templates/calificaciones_campana.html:31
 #: reportes_app/templates/reporte_llamadas.html:235
 #: reportes_app/templates/reporte_llamadas.html:277
 msgid "Campaña"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:33
+#: reportes_app/templates/calificaciones_campana.html:34
 msgid "Desde:"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:34
+#: reportes_app/templates/calificaciones_campana.html:35
 msgid "Hasta:"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:41
-#: reportes_app/templates/reporte_grafico_campana.html:80
+#: reportes_app/templates/calificaciones_campana.html:42
+#: reportes_app/templates/reporte_grafico_campana.html:81
 #: reportes_app/templates/reporte_llamadas.html:42
 #: reportes_app/templates/reporte_llamadas.html:58
 #: reportes_app/templates/reportes_agentes_tiempos.html:47
@@ -743,66 +747,66 @@ msgstr ""
 msgid "Buscar"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:51
+#: reportes_app/templates/calificaciones_campana.html:52
 #: reportes_app/templates/reporte_agente.html:47
-#: reportes_app/templates/reporte_grafico_campana.html:90
+#: reportes_app/templates/reporte_grafico_campana.html:91
 msgid "Filtrar por esa fecha"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:58
+#: reportes_app/templates/calificaciones_campana.html:59
 msgid "Base Datos:"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:63
+#: reportes_app/templates/calificaciones_campana.html:64
 msgid "Generar Reporte de Calificaciones (CSV)"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:64
-#: reportes_app/templates/reporte_grafico_campana.html:154
+#: reportes_app/templates/calificaciones_campana.html:65
+#: reportes_app/templates/reporte_grafico_campana.html:155
 msgid "Descargar Reporte de calificados (CSV)"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:66
-#: reportes_app/templates/calificaciones_campana.html:82
-#: reportes_app/templates/reporte_de_resultados.html:43
-#: reportes_app/templates/reporte_de_resultados.html:63
-#: reportes_app/templates/reporte_grafico_campana.html:104
-#: reportes_app/templates/reporte_grafico_campana.html:156
-#: reportes_app/templates/reporte_grafico_campana.html:212
+#: reportes_app/templates/calificaciones_campana.html:67
+#: reportes_app/templates/calificaciones_campana.html:83
+#: reportes_app/templates/reporte_de_resultados.html:44
+#: reportes_app/templates/reporte_de_resultados.html:64
+#: reportes_app/templates/reporte_grafico_campana.html:105
+#: reportes_app/templates/reporte_grafico_campana.html:157
+#: reportes_app/templates/reporte_grafico_campana.html:213
 msgid ""
 "ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los "
 "agentes puede generar lentitud en el sistema"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:79
+#: reportes_app/templates/calificaciones_campana.html:80
 msgid "Generar Reporte de Gestión (CSV)"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:80
+#: reportes_app/templates/calificaciones_campana.html:81
 msgid "Descargar Reporte de Gestión (CSV)"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:102
-#: reportes_app/templates/reporte_de_resultados.html:82
+#: reportes_app/templates/calificaciones_campana.html:103
+#: reportes_app/templates/reporte_de_resultados.html:83
 msgid "Teléfono"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:103
+#: reportes_app/templates/calificaciones_campana.html:104
 msgid "Datos"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:104
-#: reportes_app/templates/calificaciones_campana.html:143
+#: reportes_app/templates/calificaciones_campana.html:105
+#: reportes_app/templates/calificaciones_campana.html:144
 #: reportes_app/templates/reporte_agente.html:72
-#: reportes_app/templates/reporte_de_resultados.html:86
+#: reportes_app/templates/reporte_de_resultados.html:87
 msgid "Calificación"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:136
+#: reportes_app/templates/calificaciones_campana.html:137
 msgid "Histórico de calificaciones"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:142
+#: reportes_app/templates/calificaciones_campana.html:143
 #: reportes_app/templates/reporte_llamadas.html:48
 #: reportes_app/templates/reporte_llamadas.html:657
 #: reportes_app/templates/reporte_llamadas.html:693
@@ -810,21 +814,21 @@ msgstr ""
 #: reportes_app/templates/reporte_llamadas.html:771
 #: reportes_app/templates/reporte_llamadas.html:805
 #: reportes_app/templates/reportes_agentes_tiempos.html:56
-#: reportes_app/templates/reportes_agentes_tiempos.html:318
-#: reportes_app/templates/reportes_agentes_tiempos.html:361
+#: reportes_app/templates/reportes_agentes_tiempos.html:320
+#: reportes_app/templates/reportes_agentes_tiempos.html:364
 msgid "Fecha"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:142
+#: reportes_app/templates/calificaciones_campana.html:143
 msgid "Hora"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:145
-#: reportes_app/templates/reporte_grafico_campana.html:234
+#: reportes_app/templates/calificaciones_campana.html:146
+#: reportes_app/templates/reporte_grafico_campana.html:235
 msgid "Gestiones"
 msgstr ""
 
-#: reportes_app/templates/calificaciones_campana.html:169
+#: reportes_app/templates/calificaciones_campana.html:170
 msgid "No se encontraron Calificaciones para esta campaña."
 msgstr ""
 
@@ -837,7 +841,7 @@ msgid "cantidad"
 msgstr ""
 
 #: reportes_app/templates/reporte_agente.html:90
-#: reportes_app/templates/reporte_grafico_campana.html:137
+#: reportes_app/templates/reporte_grafico_campana.html:138
 msgid "Total asignados"
 msgstr ""
 
@@ -861,125 +865,125 @@ msgstr ""
 msgid "Volver a reporte campana"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:35
+#: reportes_app/templates/reporte_de_resultados.html:36
 msgid "Estado de contactaciones de la Campaña: "
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:40
+#: reportes_app/templates/reporte_de_resultados.html:41
 msgid "Exportar Contactaciones (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:41
+#: reportes_app/templates/reporte_de_resultados.html:42
 msgid "Descargar Reporte de Contactaciones (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:60
+#: reportes_app/templates/reporte_de_resultados.html:61
 msgid "Contabilizar todos los contactados"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:61
+#: reportes_app/templates/reporte_de_resultados.html:62
 msgid "Descargar Reporte de Todas las Contactaciones (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:87
+#: reportes_app/templates/reporte_de_resultados.html:88
 msgid "Contactación"
 msgstr ""
 
-#: reportes_app/templates/reporte_de_resultados.html:103
+#: reportes_app/templates/reporte_de_resultados.html:104
 msgid "No se encontraron Contactaciones para esta campaña."
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:40
+#: reportes_app/templates/reporte_grafico_campana.html:41
 msgid "Campaña:"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:46
+#: reportes_app/templates/reporte_grafico_campana.html:47
 msgid "Llamadas Pendientes"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:52
+#: reportes_app/templates/reporte_grafico_campana.html:53
 msgid "Llamadas Realizadas"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:58
+#: reportes_app/templates/reporte_grafico_campana.html:59
 msgid "Llamadas Recibidas"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:64
+#: reportes_app/templates/reporte_grafico_campana.html:65
 msgid "Tiempo promedio de espera (en segundos)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:70
+#: reportes_app/templates/reporte_grafico_campana.html:71
 msgid "Tiempo promedio de abandono (en segundos)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:75
+#: reportes_app/templates/reporte_grafico_campana.html:76
 msgid "Exportar Reporte(PDF)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:97
+#: reportes_app/templates/reporte_grafico_campana.html:98
 msgid "Reportes de contactados"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:101
+#: reportes_app/templates/reporte_grafico_campana.html:102
 msgid "Generar Reporte de contactados (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:102
+#: reportes_app/templates/reporte_grafico_campana.html:103
 msgid "Descargar Reporte de contactados (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:118
+#: reportes_app/templates/reporte_grafico_campana.html:119
 msgid "Llamadas conectadas al agente"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:125
+#: reportes_app/templates/reporte_grafico_campana.html:126
 msgid "Calificacion"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:126
-#: reportes_app/templates/reporte_grafico_campana.html:181
-#: reportes_app/templates/reporte_grafico_campana.html:274
+#: reportes_app/templates/reporte_grafico_campana.html:127
+#: reportes_app/templates/reporte_grafico_campana.html:182
+#: reportes_app/templates/reporte_grafico_campana.html:275
 msgid "Cantidad"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:153
+#: reportes_app/templates/reporte_grafico_campana.html:154
 msgid "Generar Reporte de calificados (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:173
+#: reportes_app/templates/reporte_grafico_campana.html:174
 msgid "Cantidad de llamados no atendidos"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:180
+#: reportes_app/templates/reporte_grafico_campana.html:181
 msgid "Resultado"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:192
+#: reportes_app/templates/reporte_grafico_campana.html:193
 msgid "Total no atendidos"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:209
+#: reportes_app/templates/reporte_grafico_campana.html:210
 msgid "Generar Reporte de no atendidos (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:210
+#: reportes_app/templates/reporte_grafico_campana.html:211
 msgid "Descargar Reporte de no atendidos (CSV)"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:227
+#: reportes_app/templates/reporte_grafico_campana.html:228
 msgid "Calificaciones por Agente"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:238
+#: reportes_app/templates/reporte_grafico_campana.html:239
 msgid "Contactos calificados"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:254
+#: reportes_app/templates/reporte_grafico_campana.html:255
 msgid "Totales"
 msgstr ""
 
-#: reportes_app/templates/reporte_grafico_campana.html:266
+#: reportes_app/templates/reporte_grafico_campana.html:267
 msgid "Detalle de las llamadas"
 msgstr ""
 
@@ -1130,7 +1134,7 @@ msgstr ""
 #: reportes_app/templates/reporte_llamadas.html:351
 #: reportes_app/templates/reporte_llamadas.html:427
 #: reportes_app/templates/reporte_llamadas.html:458
-#: reportes_app/templates/reportes_agentes_tiempos.html:173
+#: reportes_app/templates/reportes_agentes_tiempos.html:174
 msgid "espera"
 msgstr ""
 
@@ -1200,8 +1204,8 @@ msgstr ""
 #: reportes_app/templates/reporte_llamadas.html:754
 #: reportes_app/templates/reporte_llamadas.html:788
 #: reportes_app/templates/reporte_llamadas.html:822
-#: reportes_app/templates/reportes_agentes_tiempos.html:341
-#: reportes_app/templates/reportes_agentes_tiempos.html:370
+#: reportes_app/templates/reportes_agentes_tiempos.html:344
+#: reportes_app/templates/reportes_agentes_tiempos.html:373
 msgid "Cerrar"
 msgstr ""
 
@@ -1242,35 +1246,40 @@ msgid "Tiempo de session"
 msgstr ""
 
 #: reportes_app/templates/reportes_agentes_tiempos.html:111
-#: reportes_app/templates/reportes_agentes_tiempos.html:231
-#: reportes_app/templates/reportes_agentes_tiempos.html:326
+#: reportes_app/templates/reportes_agentes_tiempos.html:233
+#: reportes_app/templates/reportes_agentes_tiempos.html:328
 msgid "Llamadas procesadas"
 msgstr ""
 
 #: reportes_app/templates/reportes_agentes_tiempos.html:113
-#: reportes_app/templates/reportes_agentes_tiempos.html:328
+#: reportes_app/templates/reportes_agentes_tiempos.html:330
 msgid "Tiempo promedio"
 msgstr ""
 
 #: reportes_app/templates/reportes_agentes_tiempos.html:114
-#: reportes_app/templates/reportes_agentes_tiempos.html:329
+#: reportes_app/templates/reportes_agentes_tiempos.html:331
 msgid "Intentos fallidos"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:125
-#: reportes_app/templates/reportes_agentes_tiempos.html:208
+#: reportes_app/templates/reportes_agentes_tiempos.html:115
+#: reportes_app/templates/reportes_agentes_tiempos.html:332
+msgid "Entrantes No atendidas"
+msgstr ""
+
+#: reportes_app/templates/reportes_agentes_tiempos.html:126
+#: reportes_app/templates/reportes_agentes_tiempos.html:210
 msgid "ver por fechas"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:130
-#: reportes_app/templates/reportes_agentes_tiempos.html:132
-#: reportes_app/templates/reportes_agentes_tiempos.html:137
-#: reportes_app/templates/reportes_agentes_tiempos.html:139
-#: reportes_app/templates/reportes_agentes_tiempos.html:142
-#: reportes_app/templates/reportes_agentes_tiempos.html:148
-#: reportes_app/templates/reportes_agentes_tiempos.html:150
-#: reportes_app/templates/reportes_agentes_tiempos.html:212
-#: reportes_app/templates/reportes_agentes_tiempos.html:240
+#: reportes_app/templates/reportes_agentes_tiempos.html:131
+#: reportes_app/templates/reportes_agentes_tiempos.html:133
+#: reportes_app/templates/reportes_agentes_tiempos.html:138
+#: reportes_app/templates/reportes_agentes_tiempos.html:140
+#: reportes_app/templates/reportes_agentes_tiempos.html:143
+#: reportes_app/templates/reportes_agentes_tiempos.html:149
+#: reportes_app/templates/reportes_agentes_tiempos.html:151
+#: reportes_app/templates/reportes_agentes_tiempos.html:214
+#: reportes_app/templates/reportes_agentes_tiempos.html:242
 #: reportes_app/templates/tbody_fechas_agentes.html:28
 #: reportes_app/templates/tbody_fechas_agentes.html:30
 #: reportes_app/templates/tbody_fechas_agentes.html:35
@@ -1282,81 +1291,81 @@ msgstr ""
 msgid "hs"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:141
-#: reportes_app/templates/reportes_agentes_tiempos.html:167
+#: reportes_app/templates/reportes_agentes_tiempos.html:142
+#: reportes_app/templates/reportes_agentes_tiempos.html:168
 msgid "pausa"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:143
+#: reportes_app/templates/reportes_agentes_tiempos.html:144
 msgid "llamada"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:179
+#: reportes_app/templates/reportes_agentes_tiempos.html:180
 #: reportes_app/templates/tbody_fechas_agentes.html:71
 msgid "s"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:188
+#: reportes_app/templates/reportes_agentes_tiempos.html:190
 msgid "Exportar reporte de tiempos(CSV)"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:199
-#: reportes_app/templates/reportes_agentes_tiempos.html:362
+#: reportes_app/templates/reportes_agentes_tiempos.html:201
+#: reportes_app/templates/reportes_agentes_tiempos.html:365
 msgid "Tiempo"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:220
+#: reportes_app/templates/reportes_agentes_tiempos.html:222
 msgid "Exportar reporte de pausas(CSV)"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:251
+#: reportes_app/templates/reportes_agentes_tiempos.html:253
 msgid "Exportar reporte cantidad llamadas(CSV)"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:255
+#: reportes_app/templates/reportes_agentes_tiempos.html:257
 msgid "Cantidad de llamadas conectadas por agente"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:263
+#: reportes_app/templates/reportes_agentes_tiempos.html:265
 msgid "PREVIEW"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:290
+#: reportes_app/templates/reportes_agentes_tiempos.html:292
 msgid "Cantidad de llamadas de los agentes por tipo de llamadas"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:298
+#: reportes_app/templates/reportes_agentes_tiempos.html:300
 msgid "Exportar reporte de tipo de llamadas(CSV)"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:319
+#: reportes_app/templates/reportes_agentes_tiempos.html:321
 msgid "Sesión"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:320
+#: reportes_app/templates/reportes_agentes_tiempos.html:322
 msgid "Hold "
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:322
-msgid "Llamada"
-msgstr ""
-
-#: reportes_app/templates/reportes_agentes_tiempos.html:323
-#, python-format
-msgid "%% En llamada"
-msgstr ""
-
 #: reportes_app/templates/reportes_agentes_tiempos.html:324
-#, python-format
-msgid "%% En pausa"
+msgid "Llamada"
 msgstr ""
 
 #: reportes_app/templates/reportes_agentes_tiempos.html:325
 #, python-format
+msgid "%% En llamada"
+msgstr ""
+
+#: reportes_app/templates/reportes_agentes_tiempos.html:326
+#, python-format
+msgid "%% En pausa"
+msgstr ""
+
+#: reportes_app/templates/reportes_agentes_tiempos.html:327
+#, python-format
 msgid "%% En espera"
 msgstr ""
 
-#: reportes_app/templates/reportes_agentes_tiempos.html:352
+#: reportes_app/templates/reportes_agentes_tiempos.html:355
 msgid "para la pausa"
 msgstr ""
 
