@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'تنظیمات مکث: {name}',
     pause_config_by_set: 'تنظیمات مکث گروه: {set}',
     infinite_pause: 'مکث بی نهایت',
+    call_disposition: 'صلاحیت | صلاحیت',
     // -------------
     // -- Actions --
     // -------------

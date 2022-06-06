@@ -24,7 +24,8 @@ module.exports = {
         audit_supervisor: getPageConfig('audit_supervisor'),
         add_agents_to_campaign: getPageConfig('add_agents_to_campaign'),
         pause_sets: getPageConfig('pause_sets'),
-        external_sites: getPageConfig('external_sites')
+        external_sites: getPageConfig('external_sites'),
+        call_dispositions: getPageConfig('call_dispositions')
     },
     devServer: {
         proxy: {

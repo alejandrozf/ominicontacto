@@ -47,6 +47,9 @@ from api_app.views.external_site import (
     SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
     SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
     SitioExternoUpdate)
+from api_app.views.call_disposition import (
+    CalificacionCreate, CalificacionDelete, CalificacionDetail,
+    CalificacionList, CalificacionUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -231,6 +234,24 @@ urlpatterns = [
     re_path(r'api/v1/external_sites/(?P<pk>\d+)/show/$',
             SitioExternoDesocultar.as_view(),
             name='api_external_sites_show'),
+    # =========================
+    # Calificaciones
+    # =========================
+    re_path(r'api/v1/call_dispositions/$',
+            CalificacionList.as_view(),
+            name='api_call_dispositions_list'),
+    re_path(r'api/v1/call_dispositions/create/$',
+            CalificacionCreate.as_view(),
+            name='api_call_dispositions_create'),
+    re_path(r'api/v1/call_dispositions/(?P<pk>\d+)/update/$',
+            CalificacionUpdate.as_view(),
+            name='api_call_dispositions_update'),
+    re_path(r'api/v1/call_dispositions/(?P<pk>\d+)/$',
+            CalificacionDetail.as_view(),
+            name='api_call_dispositions_detail'),
+    re_path(r'api/v1/call_dispositions/(?P<pk>\d+)/delete/$',
+            CalificacionDelete.as_view(),
+            name='api_call_dispositions_delete'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

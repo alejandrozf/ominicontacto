@@ -33,5 +33,9 @@ export default {
         objective: 'هدف',
         trigger: 'ماشه',
         status: 'شرایط. شرط'
+    },
+    call_disposition: {
+        id: 'شناسه',
+        name: 'نام'
     }
 };

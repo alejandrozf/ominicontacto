@@ -3,7 +3,8 @@ import DashboardSupervision from '../views/DashboardSupervision';
 import AuditSupervisor from '../views/AuditSupervisor';
 import AddAgentsToCampaign from '../views/AddAgentsToCampaign';
 import PauseSetRoutes from './pause_sets_routes';
-import ExternalSiteRoutes from './external_sites_routes';
+import ExternalSitesRoutes from './external_sites_routes';
+import CallDispositionRoutes from './call_dispositions_routes';
 
 const routes = [
     {
@@ -12,7 +13,7 @@ const routes = [
         component: DashboardSupervision
     },
     {
-        path: '/audit_supervisor.html',
+        path: '/audit.html',
         name: 'audit_supervisor',
         component: AuditSupervisor
     },
@@ -22,11 +23,12 @@ const routes = [
         component: AddAgentsToCampaign
     },
     ...PauseSetRoutes,
-    ...ExternalSiteRoutes
+    ...ExternalSitesRoutes,
+    ...CallDispositionRoutes
 ];
 
 const router = createRouter({
-    history: createWebHistory('/static/omnileads-ui-supervision'),
+    history: createWebHistory('/static/omnileads-ui-supervision/'),
     routes
 });
 

@@ -491,19 +491,6 @@ urlpatterns = [
             login_required(views_calificacion.CalificacionListView.as_view()),
             name='calificacion_list',
             ),
-    re_path(r'^calificacion/nuevo/$',
-            login_required(
-                views_calificacion.CalificacionCreateView.as_view()),
-            name='calificacion_nuevo',
-            ),
-    re_path(r'^calificacion/update/(?P<pk>\d+)/$',
-            login_required(views_calificacion.CalificacionUpdateView.as_view()),
-            name='calificacion_update',
-            ),
-    re_path(r'^calificacion/delete/(?P<pk>\d+)/$',
-            login_required(views_calificacion.CalificacionDeleteView.as_view()),
-            name='calificacion_delete',
-            ),
 
     # ==========================================================================
     # Formulario

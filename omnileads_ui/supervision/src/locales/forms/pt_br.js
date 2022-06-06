@@ -9,5 +9,8 @@ export default {
     pause_setting: {
         enter_time: 'Digite a hora',
         infinite_time: 'Tempo infinito'
+    },
+    call_disposition: {
+        enter_name: 'Digite o nome'
     }
 };

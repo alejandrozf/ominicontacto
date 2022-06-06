@@ -205,22 +205,10 @@ class OminicontactoAppConfig(AppConfig):
                 'children': manuales
             })
         #  Calificaciones
-        calificaciones = []
         if 'calificacion_list' in permissions:
-            calificaciones.append({
-                'label': _('Listado de calificaciones'),
-                'url': reverse('calificacion_list')
-            })
-        if 'calificacion_nuevo' in permissions:
-            calificaciones.append({
-                'label': _('Nueva Calificación'),
-                'url': reverse('calificacion_nuevo')
-            })
-        if calificaciones:
             campanas.append({
                 'label': _('Calificaciones'),
-                'id': 'menuQualifications',
-                'children': calificaciones
+                'url': reverse('calificacion_list')
             })
         #  Formularios
         formularios = []
@@ -517,12 +505,6 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'agente_llamar_sin_campana',
              'roles': ['Agente', ]},
             {'nombre': 'calificacion_list',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_update',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -949,12 +931,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Llamar por fuera de las campañas.'), 'version': '1.7.0'},
         'calificacion_list':
             {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.7.0'},
-        'calificacion_nuevo':
-            {'descripcion': _('Crear nueva Opción de calificación'), 'version': '1.7.0'},
-        'calificacion_update':
-            {'descripcion': _('Modificar Opción de calificación'), 'version': '1.7.0'},
-        'calificacion_delete':
-            {'descripcion': _('Borrar opción de calificación'), 'version': '1.7.0'},
         'formulario_list':
             {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.7.0'},
         'formulario_list_mostrar_ocultos':

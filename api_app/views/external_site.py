@@ -79,8 +79,7 @@ class SitioExternoCreate(APIView):
                 responseData['errors'] = sitio.errors
                 return Response(
                     data=responseData, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(e)
+        except Exception:
             responseData['status'] = 'ERROR'
             responseData['message'] = _('Error al crear el sitio externo')
             return Response(
@@ -171,7 +170,7 @@ class SitioExternoDelete(APIView):
                 data['status'] = 'ERROR'
                 data['message'] = _('No está permitido eliminar un '
                                     'sitio externo asociado a una campaña')
-                return Response(data=data, status=status.HTTP_200_OK)
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             else:
                 sitio.delete()
             return Response(data=data, status=status.HTTP_200_OK)

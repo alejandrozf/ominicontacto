@@ -9,5 +9,8 @@ export default {
     pause_setting: {
         enter_time: 'Ingresa el tiempo',
         infinite_time: 'Tiempo infinito'
+    },
+    call_disposition: {
+        enter_name: 'Ingresa el nombre'
     }
 };

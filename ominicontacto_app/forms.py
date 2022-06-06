@@ -1955,19 +1955,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         return bd_contacto
 
 
-class CalificacionForm(forms.ModelForm):
-    class Meta:
-        model = NombreCalificacion
-        fields = ('nombre',)
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        if nombre == settings.CALIFICACION_REAGENDA:
-            message = _('Esta calificación está reservada para el sistema')
-            raise forms.ValidationError(message, code='invalid')
-        return nombre
-
-
 class ArchivoDeAudioForm(forms.ModelForm):
 
     class Meta:
