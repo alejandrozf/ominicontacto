@@ -259,7 +259,7 @@ class AgenteEnContactoFactory(DjangoModelFactory):
     agente_id = lazy_attribute(lambda a: faker.random_number(7))
     campana_id = lazy_attribute(lambda a: faker.random_number(7))
     contacto_id = lazy_attribute(lambda a: faker.random_number(7))
-    datos_contacto = lazy_attribute(lambda a: faker.random_number(10))
+    datos_contacto = []
     telefono_contacto = lazy_attribute(lambda a: faker.random_number(10))
     estado = AgenteEnContacto.ESTADO_INICIAL
 

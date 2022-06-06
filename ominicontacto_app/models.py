@@ -3475,10 +3475,14 @@ class AgenteEnContacto(models.Model):
         contacto_asignado = AgenteEnContacto.objects.filter(agente_id=agente.id,
                                                             estado=AgenteEnContacto.ESTADO_ASIGNADO,
                                                             campana_id=campana_id)
+        campana = Campana.objects.get(pk=campana_id)
+        campos_ocultos = campana.get_campos_ocultos()
         if contacto_asignado.exists():
             agente_en_contacto = contacto_asignado[0]
             data = model_to_dict(agente_en_contacto)
-            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            datos_contacto = literal_eval(data['datos_contacto'])
+            data['datos_contacto'] = \
+                {x: datos_contacto[x] for x in datos_contacto if x not in campos_ocultos}
             data['result'] = 'OK'
             data['code'] = 'contacto-asignado'
             return data
@@ -3523,7 +3527,9 @@ class AgenteEnContacto(models.Model):
             agente_en_contacto.agente_id = agente.id
             agente_en_contacto.save()
             data = model_to_dict(agente_en_contacto)
-            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            datos_contacto = literal_eval(data['datos_contacto'])
+            data['datos_contacto'] = \
+                {x: datos_contacto[x] for x in datos_contacto if x not in campos_ocultos}
             data['result'] = 'OK'
             data['code'] = 'contacto-entregado'
             return data
