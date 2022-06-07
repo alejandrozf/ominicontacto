@@ -177,6 +177,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_call_dispositions_detail',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_destinations',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_destinations_types',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -383,4 +387,10 @@ class ApiAppConfig(AppConfig):
         'api_call_dispositions_detail':
             {'descripcion': _('Obtiene detalle de una calificacion'),
              'version': '1.23.0'},
+        'api_inbound_destinations':
+            {'descripcion': _('Lista los destinos entrantes'),
+             'version': '1.21.0'},
+        'api_inbound_destinations_types':
+            {'descripcion': _('Lista tipos de destinos entrantes'),
+             'version': '1.21.0'},
     }
