@@ -98,88 +98,11 @@
     when: virtualenv_installed.stdout == virtualenv_version
     tags: postinstall
 
-  # Solution to issue OML-214: Backup of addons, for re-setting after installation
-  - name: Backup of addons, for re-setting after installation
-    when: virtualenv_installed.stdout == "210623.01" or virtualenv_installed.stdout == "210714.01" or virtualenv_installed.stdout == "210802.01"
-    changed_when: false
-    failed_when: false
-    shell: >
-      if [ -f {{ install_prefix }}/bin/addons_installed.sh ];then
-        source {{ install_prefix }}/bin/addons_installed.sh
-        for Addon in "${ADDONS_INSTALLED[@]}";do
-          cp -r {{ install_prefix }}/addons/${Addon} /tmp
-        done
-        cp {{ install_prefix }}/bin/addons_installed.sh /tmp
-        exit 1
-      else
-        exit 0
-      fi
-    register: addons_installed
-    tags: postinstall
-
   # Delete previous Virtualenv package, before installing the latest one
   - name: Delete previous Virtualenv package, before installing the latest one
     command: yum remove -y virtualenv
     tags: postinstall
     when: "virtualenv_installed.stdout != virtualenv_version"
-
-  # Restore media_root in case of IaC deploy
-  - name: Restore backup when use infrasctructure as code - 1/4
-    vars:
-      ansible_python_interpreter: /usr/bin/python3
-    aws_s3:
-        s3_url: "{{ s3url }}"
-        aws_secret_key: "{{ s3_secret_key }}"
-        aws_access_key: "{{ s3_access_key }}"
-        bucket: "{{ s3_bucket_name }}"
-        object: "{{ backup_file_name }}.tar.gz"
-        dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
-        mode: get
-    delegate_to: localhost
-    register: backup_s3_download
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-      - ansible_distribution != "Amazon"
-
-  # Restore media_root in case of IaC deploy
-  - name: Restore backup when use infrasctructure as code - 1/4
-    vars:
-      ansible_python_interpreter: /usr/bin/python3
-    aws_s3:
-        bucket: "{{ s3_bucket_name }}"
-        object: "omlapp-backup/{{ backup_file_name }}.tar.gz"
-        dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
-        mode: get
-    delegate_to: localhost
-    register: backup_s3_download
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-      - ansible_distribution == "Amazon"
-
-  - name: Restore backup when use infrasctructure as code - 2/4
-    command: tar xzvf /var/tmp/{{ backup_file_name }}.tar.gz -C /var/tmp
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-
-  - name: Restore backup when use infrasctructure as code 3/4
-    command: tar xzvf /var/tmp/{{ backup_file_name }}/omniapp.tar.gz -C /var/tmp
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-
-  - name: Restore backup when use infrasctructure as code 4/4
-    command: mv /var/tmp/omniapp/media_root /opt/omnileads/
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
 
   # Install Virtualenv package {{ virtualenv_version }}
   - name: Install Virtualenv package {{ virtualenv_version }} (from s3 source)
@@ -190,41 +113,8 @@
     failed_when:
       - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
 
-  - name: Copy backup file to correct dst
-    ansible.builtin.copy:
-      src: /var/tmp/{{ backup_file_name }}.tar.gz
-      dest: /opt/omnileads/backup
-      owner: omnileads
-      group: omnileads
-      mode: '0644'
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-
-  - name: Restore addons when use infrasctructure as code
-    command: bash -x /opt/omnileads/bin/backup-restore.sh --restore={{ backup_file_name }}.tar.gz --omniapp
-    when:
-      - postgres_host != "localhost"
-      - backup_file_name is defined
-      - auto_restore == "true"
-
-  # Solution to issue OML-214: Re-setting backed up addons after installation
-  - name: Re-setting addons after installation
-    when: addons_installed.rc is defined and addons_installed.rc == 1
-    shell: >
-      if [ ! -f {{ install_prefix }}/bin/addons_installed.sh ];then
-        mv /tmp/addons_installed.sh {{ install_prefix }}/bin
-        source {{ install_prefix }}/bin/addons_installed.sh
-        for Addon in "${ADDONS_INSTALLED[@]}";do
-          mv /tmp/${Addon} {{ install_prefix }}/addons
-        done
-        {{ install_prefix }}/bin/reinstall_addons.sh
-      fi
-    tags: postinstall
-
-  # Se reinstalan los archivos de rebrand, si corresponde
-  - name: Re-install rebrand
+  # Re-install rebrand, if it's the case
+  - name: Re-install rebrand, if it's the case
     shell: "{{ install_prefix }}/bin/reinstall_rebrand.sh {{ repo_location }}"
     when: rebrand == "true"
     tags: always
@@ -237,8 +127,8 @@
       executable: /bin/bash
     when: reset_admin_password == "true"
 
-  # Download backup-restore script
-  - name: omlutilities repo
+  # Download omlutilities repository
+  - name: Download omlutilities repository
     ansible.builtin.git:
       repo: '{{ oml_utilities_repo }}'
       dest: /opt/omnileads/utils
@@ -251,8 +141,8 @@
     file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
     tags: postinstall
 
-  # Some Tweeks for Hight Load over 200 simultaneus users
-  - name: Add high load UWSGI params
+  # Tweak configuration for high load scenario (more than 200 active users)
+  - name: Tweak configuration for high load scenario - UWSGI parameters
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
       state: present
@@ -264,7 +154,7 @@
     - 'max-requests = 2000'
     when: high_load == "true"
 
-  - name: Edit oml_uwsgi.ini High Load params
+  - name: Tweak configuration for high load scenario - UWSGI parameters
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
       regexp: "processes = 30"
@@ -273,7 +163,7 @@
       backup: yes
     when: high_load == "true"
 
-  - name: Edit oml_uwsgi.ini High Load params
+  - name: Tweak configuration for high load scenario - UWSGI parameters
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
       regexp: "harakiri = 600"
@@ -282,7 +172,7 @@
       backup: yes
     when: high_load == "true"
 
-  - name: Edit oml_uwsgi.ini High Load params
+  - name: Tweak configuration for high load scenario - UWSGI parameters
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
       regexp: "socket-timeout = 600"
@@ -291,7 +181,7 @@
       backup: yes
     when: high_load == "true"
 
-  - name: Edit oml_uwsgi.ini High Load params
+  - name: Tweak configuration for high load scenario - UWSGI parameters
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
       regexp: "max-worker-lifetime = 10800"
@@ -300,12 +190,12 @@
       backup: yes
     when: high_load == "true"
 
-  # OMniLeads restart
+  # Restart OMniLeads service
   - name: Restart OMniLeads service
     systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
     tags: postinstall
 
-  # OMniLeads restart
+  # Restart OMniLeads Daphne service
   - name: Restart OMniLeads Daphne service
     systemd: name=omnileads-daphne state=restarted enabled=yes daemon_reload=yes
     tags: postinstall
