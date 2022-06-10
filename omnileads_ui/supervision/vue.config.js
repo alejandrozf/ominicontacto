@@ -21,7 +21,7 @@ module.exports = {
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
         supervision_dashboard: getPageConfig('supervision_dashboard'),
-        audit_supervisor: getPageConfig('audit_supervisor'),
+        security_audit: getPageConfig('security_audit'),
         add_agents_to_campaign: getPageConfig('add_agents_to_campaign'),
         pause_sets: getPageConfig('pause_sets'),
         external_sites: getPageConfig('external_sites'),

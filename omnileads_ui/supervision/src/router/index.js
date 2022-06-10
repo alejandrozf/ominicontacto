@@ -13,8 +13,8 @@ const routes = [
         component: DashboardSupervision
     },
     {
-        path: '/audit.html',
-        name: 'audit_supervisor',
+        path: '/security_audit.html',
+        name: 'security_audit',
         component: AuditSupervisor
     },
     {
