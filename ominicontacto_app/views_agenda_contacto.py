@@ -42,6 +42,7 @@ from ominicontacto_app.models import AgendaContacto, Contacto, Campana, Califica
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
 from ominicontacto_app.utiles import convert_fecha_datetime
+from notification_app.notification import AgentNotifier
 
 
 class AgendaContactoUpdateView(UpdateView):
@@ -101,7 +102,6 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         try:
-            print("form_valid")
             self.object = form.save(commit=False)
             self.object.agente = self.request.user.get_agente_profile()
             campana = form.instance.campana
@@ -136,6 +136,16 @@ class AgendaContactoCreateView(CreateView):
             return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
+        if self.object.agente.forzar_despausa():
+            notification = AgentNotifier()
+            message = {
+                "id": "create_agenda_contacto",
+                "calificada": True
+            }
+            notification.send_message(
+                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message,
+                user_id=self.object.agente.user_id)
+
         return reverse(
             'agenda_contacto_detalle', kwargs={'pk': self.object.pk})
 
