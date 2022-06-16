@@ -25,4 +25,4 @@
 [submodule "modules/asterisk"]
     path = modules/asterisk
     url = https://gitlab.com/omnileads/omlacd.git
-    branch = 220606.01
+    branch = 220614.01
