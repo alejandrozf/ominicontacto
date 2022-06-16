@@ -618,4 +618,5 @@ class CalificacionTests(OMLBaseTest):
         call_data['force_disposition'] = False
 
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
-                                         calificado=True, gestion=False, id_calificacion=None)
+                                         calificado=True, es_agenda=False,
+                                         gestion=False, id_calificacion=None)
