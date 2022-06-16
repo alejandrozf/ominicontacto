@@ -63,6 +63,8 @@ from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
 
+from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
+
 
 router = routers.DefaultRouter()
 
@@ -305,4 +307,9 @@ urlpatterns = [
     re_path(r'^api/v1/asterisk/queues_data/',
             AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
 
+    # ###########  Inbound Destinations    ############ #
+    re_path(r'^api/v1/inbound_destinations/(?P<type>\d+)/list/',
+            DestinoEntranteView.as_view(), name='api_inbound_destinations'),
+    re_path(r'^api/v1/inbound_destinations_types/list/',
+            DestinoEntranteTiposView.as_view(), name='api_inbound_destinations_types'),
 ]
