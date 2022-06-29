@@ -87,7 +87,8 @@ class TiemposAgente(object):
         # Si la ultima sesion esta incompleta, aviso de logs erroneos / sesiones incompletas.
         if datos_ultima_sesion['inicio'] is not None and datos_ultima_sesion['fin'] is None:
             logs_erroneos = True
-            hora_reporte = now()
+            hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+            hora_reporte = min(now(), hora_maxima)
             # Contabilizo duracion de sesión hasta la hora actual
             self._computar_tiempo_session_fecha(tiempos_fechas,
                                                 datos_ultima_sesion['inicio'],
