@@ -73,7 +73,7 @@ class StorageService(object):
                 pass
         try:
             s3_file_path = file_name
-            if s3_file_path is not None:
+            if root_s3_folder is not None:
                 s3_file_path = f'{root_s3_folder}/{s3_file_path}'
             self.client.download_file(self.bucket_name, s3_file_path, file_dest)
         except Exception as e:

@@ -139,13 +139,15 @@ class ReporteAgentes(object):
                 fecha_inferior, fecha_superior, list(agentes_dict.keys()), campanas_ids)
         ID_AGENTE = 0
         ID_CAMPANA = 1
+        fecha_limite = min(now(), fecha_superior)
         for log in totales_llamadas:
             agente_id = int(log[ID_AGENTE])
             campana_id = int(log[ID_CAMPANA])
             transferencias = cantidades_transferencias.get(agente_id, {}).get(campana_id, 0)
             if agente_id not in self.datos_agentes:
                 self.datos_agentes.setdefault(
-                    agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
+                    agente_id, ActividadAgente(
+                        agentes_dict[agente_id], fecha_limite, lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].obtener_tiempo_total_llamada_campana(
                 campanas_dict[campana_id], log, transferencias)
 
@@ -156,11 +158,13 @@ class ReporteAgentes(object):
         logs_time = LlamadaLog.objects.obtener_count_evento_agente(
             eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()))
         lista_pausas = list(Pausa.objects.all())
+        fecha_limite = min(now(), fecha_superior)
         for log in logs_time:
             agente_id = int(log[0])
             if agente_id not in self.datos_agentes:
                 self.datos_agentes.setdefault(
-                    agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
+                    agente_id, ActividadAgente(
+                        agentes_dict[agente_id], fecha_limite, lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].intentos_fallidos += int(log[1])
 
     def calcula_llamadas_entrantes_rechazadas(self, agentes, fecha_inferior, fecha_superior):
@@ -197,9 +201,11 @@ class ReporteAgentes(object):
         agentes_dict = {agente.id: agente for agente in agentes}
         logs_agentes = self._cargar_logs_agentes(list(agentes_dict.keys()), fecha_inicio, fecha_fin)
         lista_pausas = list(Pausa.objects.all())
+        fecha_limite = min(now(), fecha_fin)
         for agente_id, fecha, event, pausa_id in logs_agentes[::-1]:
             datos_agente_actual = self.datos_agentes.setdefault(
-                agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
+                agente_id, ActividadAgente(
+                    agentes_dict[agente_id], fecha_limite, lista_pausas=lista_pausas))
 
             datos_agente_actual.procesa_log(event, fecha, pausa_id)
 
@@ -298,7 +304,7 @@ class ReporteAgentes(object):
 
 class ActividadAgente(object):
 
-    def __init__(self, agente, lista_pausas=None):
+    def __init__(self, agente, fecha_limite, lista_pausas=None):
         self.agente = agente
         self.pausas = []
         self.sesiones = []
@@ -315,6 +321,7 @@ class ActividadAgente(object):
 
         self.pausas_por_id = self._genera_info_pausas(lista_pausas)
         self.tiempo_hold = timedelta()
+        self.fecha_limite = fecha_limite
 
     def _genera_info_pausas(self, lista_pausas):
         lista_pausas_oml = lista_pausas
@@ -372,7 +379,7 @@ class ActividadAgente(object):
     def _totaliza_sesiones(self):
         t = timedelta()
         if len(self.sesiones) > 0 and self.sesiones[-1].fecha_fin is None:
-            self.sesiones[-1].fecha_fin = now()
+            self.sesiones[-1].fecha_fin = self.fecha_limite
             self.sesiones[-1].calcular_duracion()
         for s in self.sesiones:
             t += s.duracion
@@ -446,7 +453,7 @@ class ActividadAgente(object):
                     .filter(agente_id=self.agente.id, callid=callid,
                             time__range=(fecha_inferior, fecha_superior)).last()
                 if log_llamada.event == 'HOLD':
-                    fin_hold = now()
+                    fin_hold = self.fecha_limite
                 else:
                     fin_hold = log_llamada.time
             self.tiempo_hold += fin_hold - inicio_hold

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-06 14:58-0300\n"
+"POT-Creation-Date: 2022-06-28 18:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6680,7 +6680,7 @@ msgstr ""
 
 #: ominicontacto_app/tests/tests_calificacion.py:139
 #: ominicontacto_app/views_calificacion_cliente.py:133
-#: ominicontacto_app/views_calificacion_cliente.py:611
+#: ominicontacto_app/views_calificacion_cliente.py:612
 msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgstr ""
 
@@ -6759,11 +6759,11 @@ msgstr ""
 msgid "Registro exitoso, se le ha enviado un e-mail con su llave de registro."
 msgstr ""
 
-#: ominicontacto_app/views_agenda_contacto.py:206
+#: ominicontacto_app/views_agenda_contacto.py:216
 msgid "La campana indicada no existe."
 msgstr ""
 
-#: ominicontacto_app/views_agenda_contacto.py:213
+#: ominicontacto_app/views_agenda_contacto.py:223
 msgid "No tiene permiso para ver las agendas de esta campaña."
 msgstr ""
 
@@ -6987,11 +6987,11 @@ msgid ""
 "Operación Exitosa! Se llevó a cabo con éxito la calificación del cliente"
 msgstr ""
 
-#: ominicontacto_app/views_calificacion_cliente.py:439
+#: ominicontacto_app/views_calificacion_cliente.py:440
 msgid "Operación Exitosa! Se llevó a cabo con éxito la creación del contacto"
 msgstr ""
 
-#: ominicontacto_app/views_calificacion_cliente.py:674
+#: ominicontacto_app/views_calificacion_cliente.py:675
 msgid ""
 "Operación Exitosa!Se llevó a cabo con éxito el llenado del formulario del "
 "cliente"

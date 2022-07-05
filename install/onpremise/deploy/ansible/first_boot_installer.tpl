@@ -462,3 +462,5 @@ if [[ "${oml_app_install_sngrep}" == "true" ]];then
   cd sngrep && ./bootstrap.sh && ./configure && make && make install
   ln -s /usr/local/bin/sngrep /usr/bin/sngrep
 fi
+
+reboot

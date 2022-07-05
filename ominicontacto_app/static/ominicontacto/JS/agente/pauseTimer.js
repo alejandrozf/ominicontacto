@@ -59,8 +59,8 @@ $('#pauseType').change(function(){
     const timeToEndPause = parseInt(pauseData[2]);
     setTimerText(timeToEndPause);
 });
-
-const pauseData = $('#pauseType').val().split(',');
-const timeToEndPause = parseInt(pauseData[2]);
-setTimerText(timeToEndPause);
-
+if ($('#pauseType').val()) {
+    const pauseData = $('#pauseType').val().split(',');
+    const timeToEndPause = parseInt(pauseData[2]);
+    setTimerText(timeToEndPause);
+}

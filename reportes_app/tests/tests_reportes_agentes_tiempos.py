@@ -34,7 +34,7 @@ from ominicontacto_app.tests.factories import (
     LlamadaLogFactory
 )
 from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
-from ominicontacto_app.utiles import cast_datetime_part_date
+from ominicontacto_app.utiles import cast_datetime_part_date, datetime_hora_maxima_dia
 from reportes_app.reportes.reporte_agentes import ReporteAgentes, ActividadAgente
 
 
@@ -920,8 +920,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.hold1 = LlamadaLogFactory(agente_id=self.agente.id, event='HOLD', time=t_hold1)
         self.fin_conexion = LlamadaLogFactory(agente_id=self.agente.id, event="COMPLETEAGENT",
                                               time=t_fin_conexion, callid=self.hold1.callid)
-        reportes_agente = ActividadAgente(self.agente)
-        reportes_agente1 = ActividadAgente(self.agente1)
+        f_limite_1 = datetime_hora_maxima_dia(t_fin_conexion.date())
+        reportes_agente = ActividadAgente(self.agente, f_limite_1)
+        f_limite_2 = datetime_hora_maxima_dia(t_unhold2.date())
+        reportes_agente1 = ActividadAgente(self.agente1, f_limite_2)
         reportes_agente._procesa_tiempo_hold(t_hold1, t_fin_conexion)
         reportes_agente1._procesa_tiempo_hold(t_hold2, t_unhold2)
 
@@ -983,7 +985,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.hold1 = LlamadaLogFactory(agente_id=self.agente.id, event='HOLD', time=t_hold1)
         self.fin_conexion = LlamadaLogFactory(agente_id=self.agente.id, event="COMPLETEAGENT",
                                               time=t_fin_conexion, callid=self.hold1.callid)
-        reportes_agente = ActividadAgente(self.agente)
+        f_limite = datetime_hora_maxima_dia(t_fin_conexion.date())
+        reportes_agente = ActividadAgente(self.agente, f_limite)
         reportes_agente._procesa_tiempo_hold(t_hold1, t_fin_conexion)
         self.assertEqual(reportes_agente.tiempo_hold.seconds, 15 * 60)
 
@@ -1007,7 +1010,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             tipo_llamada=self.preview.type, agente_id=self.agente1.id, callid=evento_hold_1.callid)
         self.fin_conexion = LlamadaLogFactory(agente_id=self.agente1.id, event="COMPLETEAGENT",
                                               time=t_fin_conexion, callid=evento_hold_1.callid)
-        reportes_agente = ActividadAgente(self.agente1)
+        f_limite = datetime_hora_maxima_dia(t_fin_conexion.date())
+        reportes_agente = ActividadAgente(self.agente1, f_limite)
         reportes_agente._procesa_tiempo_hold(t_hold1, t_fin_conexion)
         self.assertEqual(reportes_agente.tiempo_hold.seconds, 20 * 60)
 
