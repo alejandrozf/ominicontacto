@@ -221,7 +221,7 @@ services:
   websockets:
     tty: true
     container_name: omlwebsockets
-    image: freetechsolutions/omlwebsockets:develop
+    image: freetechsolutions/oml-websockets:run
     ports:
       - "${WEBSOCKET_EXT_PORT}:8000"
     networks:

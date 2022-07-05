@@ -153,6 +153,34 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pause_config_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_hide',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_sites_show',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_dispositions_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_destinations',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_destinations_types',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -322,5 +350,47 @@ class ApiAppConfig(AppConfig):
              'version': '1.21.0'},
         'api_pause_config_delete':
             {'descripcion': _('Elimina una configuracion de pausa'),
+             'version': '1.21.0'},
+        'api_external_sites_list':
+            {'descripcion': _('Lista los sitios externos'),
+             'version': '1.23.0'},
+        'api_external_sites_detail':
+            {'descripcion': _('Obtiene el detalle de un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_sites_create':
+            {'descripcion': _('Crea un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_sites_update':
+            {'descripcion': _('Actualiza un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_sites_delete':
+            {'descripcion': _('Elimina un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_sites_hide':
+            {'descripcion': _('Oculta un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_sites_show':
+            {'descripcion': _('Desoculta un sitio externo'),
+             'version': '1.23.0'},
+        'api_call_dispositions_list':
+            {'descripcion': _('Lista las calificaciones'),
+             'version': '1.23.0'},
+        'api_call_dispositions_create':
+            {'descripcion': _('Crea una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_update':
+            {'descripcion': _('Actualiza una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_delete':
+            {'descripcion': _('Elimina una calificacion'),
+             'version': '1.23.0'},
+        'api_call_dispositions_detail':
+            {'descripcion': _('Obtiene detalle de una calificacion'),
+             'version': '1.23.0'},
+        'api_inbound_destinations':
+            {'descripcion': _('Lista los destinos entrantes'),
+             'version': '1.21.0'},
+        'api_inbound_destinations_types':
+            {'descripcion': _('Lista tipos de destinos entrantes'),
              'version': '1.21.0'},
     }

@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'تنظیمات مکث: {name}',
     pause_config_by_set: 'تنظیمات مکث گروه: {set}',
     infinite_pause: 'مکث بی نهایت',
+    call_disposition: 'صلاحیت | صلاحیت',
     // -------------
     // -- Actions --
     // -------------
@@ -92,12 +93,16 @@ export default {
     error_to_deleted: 'حذف نشد',
     error_to_updated_type: 'به روز رسانی انجام نشد {type}',
     error_to_updated: 'به روز رسانی انجام نشد',
+    error_to_hide_type: 'پنهان کردن ناموفق بود {type}',
+    error_to_show_type: 'نمایش داده نشد {type}',
     success_updated_type: '{type} با موفقیت ارتقا یافت | {type} با موفقیت ارتقا یافت',
     success_updated: 'با موفقیت ارتقا یافت | با موفقیت ارتقا یافت',
     success_added_type: '{type} با موفقیت اضافه شد | {type} با موفقیت اضافه شد',
     success_added: 'با موفقیت اضافه شد | با موفقیت اضافه شد',
     success_deleted_type: '{type} با موفقیت حذف شد | {type} با موفقیت حذف شد',
     success_deleted: 'با موفقیت حذف شد | با موفقیت حذف شد',
+    success_show_type: '{type} با موفقیت پنهان شد | {type} با موفقیت پنهان شد',
+    success_hide_type: '{type} با موفقیت پنهان شد | {type} با موفقیت پنهان شد',
     confirm_to_delete: 'آیا مطمئنید که میخواهید حذف کنید؟',
     success_notification: 'عملیات موفقیت آمیز!',
     error_notification: 'عملیات اشتباه!',

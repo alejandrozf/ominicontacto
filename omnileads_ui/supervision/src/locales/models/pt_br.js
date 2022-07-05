@@ -21,7 +21,21 @@ export default {
         object: 'Objeto',
         name: 'Nome',
         action: 'Açao',
-        change: 'Mudar',
+        additional_information: 'Mudar',
         datetime: 'Data e hora'
+    },
+    external_site: {
+        id: 'ID',
+        name: 'Nome',
+        url: 'URL',
+        method: 'Método',
+        format: 'Formato',
+        objective: 'Meta',
+        trigger: 'Acionar',
+        status: 'Doença'
+    },
+    call_disposition: {
+        id: 'ID',
+        name: 'Nome'
     }
 };

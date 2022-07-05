@@ -21,7 +21,21 @@ export default {
         object: 'Objeto',
         name: 'Nombre',
         action: 'Accion',
-        change: 'Cambio',
+        additional_information: 'Información Adicional',
         datetime: 'Fecha y hora'
+    },
+    external_site: {
+        id: 'ID',
+        name: 'Nombre',
+        url: 'Url',
+        method: 'Metodo',
+        format: 'Formato',
+        objective: 'Objetivo',
+        trigger: 'Disparador',
+        status: 'Estado'
+    },
+    call_disposition: {
+        id: 'ID',
+        name: 'Nombre'
     }
 };

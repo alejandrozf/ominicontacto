@@ -26,6 +26,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
                                      OpcionCalificacionFormSet,
@@ -225,18 +226,28 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
     PARAMETROS_CRM = '3'
+    ACTUACION_VIGENTE = '4'
 
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet),
+             (ACTUACION_VIGENTE, ActuacionVigenteForm), ]
 
     TEMPLATES = {INICIAL: 'campanas/campana_dialer/edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html'}
+                 PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
+                 ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html', }
 
     form_list = FORMS
+
+    def _get_instance_from_campana(self, pk, step):
+        instance = super(CampanaDialerUpdateView, self)._get_instance_from_campana(pk, step)
+        if step == self.ACTUACION_VIGENTE:
+            campana = get_object_or_404(Campana, pk=pk)
+            instance = campana.actuacionvigente
+        return instance
 
     def _save_queue(self, queue_form):
         if queue_form.instance.initial_boost_factor is None:
@@ -254,9 +265,14 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 queue = self._save_queue(queue_form)
                 opciones_calificacion_formset.save()
 
+                offset = 1
                 if campana.tiene_interaccion_con_sitio_externo:
+                    offset = 0
                     parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
                     parametros_crm_formset.save()
+
+                actuacion_vigente_form = list(form_list)[int(self.ACTUACION_VIGENTE) - offset]
+                actuacion_vigente_form.save()
 
                 self._insert_queue_asterisk(queue)
                 campana_service = CampanaService()

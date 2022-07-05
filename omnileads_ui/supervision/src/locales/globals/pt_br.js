@@ -42,6 +42,7 @@ export default {
     pause_config_info: 'Pausar configurações: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
+    call_disposition: 'Qualificação | Qualificação',
     // -------------
     // -- Actions --
     // -------------
@@ -92,12 +93,16 @@ export default {
     error_to_deleted: 'Falha ao excluir',
     error_to_updated_type: 'Falha ao atualizar {type}',
     error_to_updated: 'Falha ao atualizar',
+    error_to_hide_type: 'Falha ao ocultar {type}',
+    error_to_show_type: 'Falha ao exibir {type}',
     success_updated_type: '{type} atualizado com sucesso | {type} atualizado com sucesso',
     success_updated: 'Atualizado com sucesso | Atualizado com sucesso',
     success_added_type: '{type} Adicionado com sucesso | {type} adicionado com sucesso',
     success_added: 'Adicionado com sucesso | Adicionado com sucesso',
     success_deleted_type: '{type} removido com sucesso | {type} removido com sucesso',
     success_deleted: 'Removido com sucesso | removido com sucesso',
+    success_show_type: '{type} eexibido com sucesso | {type} eexibido com sucesso',
+    success_hide_type: '{type} oculto com sucesso | {type} oculto com sucesso',
     confirm_to_delete: 'Tem certeza de que deseja excluir?',
     success_notification: '¡Operação bem-sucedida!',
     error_notification: '¡Operação errada!',

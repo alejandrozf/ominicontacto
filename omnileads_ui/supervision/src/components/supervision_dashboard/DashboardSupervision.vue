@@ -7,7 +7,7 @@
 </template>
 <script>
 import { watch, ref } from 'vue';
-import apiUrls from '@/const/api-urls';
+import apiUrls from '@/const';
 
 import { apiCall } from '@/hooks/apiCall';
 import DashboardSupervisionDetail from '@/components/supervision_dashboard/DashboardSupervisionDetail.vue';

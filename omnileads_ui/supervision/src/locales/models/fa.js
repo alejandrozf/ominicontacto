@@ -21,7 +21,21 @@ export default {
         object: 'هدف - شی',
         name: 'نام',
         action: 'عمل',
-        change: 'تغییر دادن',
+        additional_information: 'تغییر دادن',
         datetime: 'تاریخ و زمان'
+    },
+    external_site: {
+        id: 'برو',
+        name: 'نام',
+        url: 'URL',
+        method: 'روش',
+        format: 'قالب',
+        objective: 'هدف',
+        trigger: 'ماشه',
+        status: 'شرایط. شرط'
+    },
+    call_disposition: {
+        id: 'شناسه',
+        name: 'نام'
     }
 };

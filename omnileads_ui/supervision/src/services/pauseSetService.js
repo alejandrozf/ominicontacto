@@ -1,4 +1,4 @@
-import apiUrls from '../const/api-urls';
+import apiUrls from '../const';
 import { HTTP, BaseService } from './apiBaseService';
 
 export default class PauseSetService extends BaseService {

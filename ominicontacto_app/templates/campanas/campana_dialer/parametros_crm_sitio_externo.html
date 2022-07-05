@@ -28,8 +28,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
         {% if not form.instance.pk %}
-            <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
             {% if not es_template %}
                 <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>

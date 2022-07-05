@@ -87,7 +87,8 @@ class TiemposAgente(object):
         # Si la ultima sesion esta incompleta, aviso de logs erroneos / sesiones incompletas.
         if datos_ultima_sesion['inicio'] is not None and datos_ultima_sesion['fin'] is None:
             logs_erroneos = True
-            hora_reporte = now()
+            hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+            hora_reporte = min(now(), hora_maxima)
             # Contabilizo duracion de sesión hasta la hora actual
             self._computar_tiempo_session_fecha(tiempos_fechas,
                                                 datos_ultima_sesion['inicio'],
@@ -269,10 +270,9 @@ class TiemposAgente(object):
         agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
-        # Por ahora no calculamos las no atendidas
-        # agente_fecha = self.calcula_llamadas_entrantes_no_atendidas(
-        #     agente, fecha_inferior, fecha_superior, agente_fecha
-        # )
+        agente_fecha = self.calcula_llamadas_entrantes_no_atendidas(
+            agente, fecha_inferior, fecha_superior, agente_fecha
+        )
         agente_fecha = self.calcula_llamadas_entrantes_rechazadas(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )

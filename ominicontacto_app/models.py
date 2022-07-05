@@ -52,9 +52,6 @@ from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
 from simple_history.utils import update_change_reason
 
-from auditlog.registry import auditlog
-from auditlog.models import AuditlogHistoryField
-
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
     datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
@@ -358,7 +355,6 @@ class AgenteProfile(models.Model):
         (ESTADO_PAUSA, 'PAUSA'),
     )
 
-    history = AuditlogHistoryField()
     objects = AgenteProfileManager()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
@@ -436,9 +432,6 @@ class AgenteProfile(models.Model):
         if self.grupo.limitar_agendas_personales_en_dias:
             return True, self.grupo.tiempo_maximo_para_agendar
         return False, 0
-
-
-auditlog.register(AgenteProfile)
 
 
 class SupervisorProfile(models.Model):
@@ -1152,8 +1145,6 @@ class Campana(models.Model):
         (PERMITIR_DUPLICADOS, _('Permitir duplicados')),
     )
 
-    history = AuditlogHistoryField()
-
     estado = models.PositiveIntegerField(
         choices=ESTADOS,
         default=ESTADO_INACTIVA,
@@ -1505,9 +1496,6 @@ class Campana(models.Model):
         return self.type == self.TYPE_DIALER
 
 
-auditlog.register(Campana)
-
-
 class OpcionCalificacion(models.Model):
     """
     Especifica el tipo de formulario al cual será redireccionada
@@ -1709,9 +1697,6 @@ class Queue(models.Model):
 
     class Meta:
         db_table = 'queue_table'
-
-
-auditlog.register(Queue)
 
 
 class QueueMemberManager(models.Manager):
@@ -3188,10 +3173,11 @@ class SitioExterno(models.Model):
         (NUEVA_PESTANA, _('Nueva pestaña')),
     )
 
-    nombre = models.CharField(max_length=128)
-    url = models.CharField(max_length=256)
+    nombre = models.CharField(max_length=128, unique=True)
+    url = models.URLField(max_length=250)
     oculto = models.BooleanField(default=False)
-    disparador = models.PositiveIntegerField(choices=DISPARADORES, default=SERVER)
+    disparador = models.PositiveIntegerField(
+        choices=DISPARADORES, default=SERVER)
     metodo = models.PositiveIntegerField(choices=METODOS, default=GET)
     formato = models.PositiveIntegerField(choices=FORMATOS, default=MULTIPART,
                                           blank=True, null=True,
@@ -3489,10 +3475,14 @@ class AgenteEnContacto(models.Model):
         contacto_asignado = AgenteEnContacto.objects.filter(agente_id=agente.id,
                                                             estado=AgenteEnContacto.ESTADO_ASIGNADO,
                                                             campana_id=campana_id)
+        campana = Campana.objects.get(pk=campana_id)
+        campos_ocultos = campana.get_campos_ocultos()
         if contacto_asignado.exists():
             agente_en_contacto = contacto_asignado[0]
             data = model_to_dict(agente_en_contacto)
-            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            datos_contacto = literal_eval(data['datos_contacto'])
+            data['datos_contacto'] = \
+                {x: datos_contacto[x] for x in datos_contacto if x not in campos_ocultos}
             data['result'] = 'OK'
             data['code'] = 'contacto-asignado'
             return data
@@ -3537,7 +3527,9 @@ class AgenteEnContacto(models.Model):
             agente_en_contacto.agente_id = agente.id
             agente_en_contacto.save()
             data = model_to_dict(agente_en_contacto)
-            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            datos_contacto = literal_eval(data['datos_contacto'])
+            data['datos_contacto'] = \
+                {x: datos_contacto[x] for x in datos_contacto if x not in campos_ocultos}
             data['result'] = 'OK'
             data['code'] = 'contacto-entregado'
             return data

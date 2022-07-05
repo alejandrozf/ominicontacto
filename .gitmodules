@@ -1,15 +1,15 @@
 [submodule "modules/websockets"]
     path = modules/websockets
     url = https://gitlab.com/omnileads/omnileads-websockets.git
-    branch = 220408.01
+    branch = 220606.01
 [submodule "modules/nginx"]
     path = modules/nginx
     url = https://gitlab.com/omnileads/omlnginx.git
-    branch = 220214.01
+    branch = 220614.01
 [submodule "modules/kamailio"]
     path = modules/kamailio
     url = https://gitlab.com/omnileads/omlkamailio.git
-    branch = 220408.01
+    branch = 220614.01
 [submodule "modules/rtpengine"]
     path = modules/rtpengine
     url = https://gitlab.com/omnileads/omlrtpengine.git
@@ -17,12 +17,12 @@
 [submodule "modules/redis"]
     path = modules/redis
     url = https://gitlab.com/omnileads/omlredis.git
-    branch = 220429.01
+    branch = 220606.01
 [submodule "modules/postgresql"]
     path = modules/postgresql
     url = https://gitlab.com/omnileads/omlpgsql.git
-    branch = 220408.01
+    branch = 220606.01
 [submodule "modules/asterisk"]
     path = modules/asterisk
     url = https://gitlab.com/omnileads/omlacd.git
-    branch = 220523.01
+    branch = 220614.01

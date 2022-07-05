@@ -1642,70 +1642,6 @@ class SistemaExternoForm(forms.ModelForm):
         fields = ('nombre', )
 
 
-class SitioExternoForm(forms.ModelForm):
-
-    class Meta:
-        model = SitioExterno
-        fields = ('nombre', 'url', 'disparador', 'metodo', 'formato', 'objetivo')
-
-        widgets = {
-            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            "url": forms.TextInput(attrs={'class': 'form-control'}),
-            "disparador": forms.Select(attrs={'class': 'form-control'}),
-            "metodo": forms.Select(attrs={'class': 'form-control'}),
-            "formato": forms.Select(attrs={'class': 'form-control'}),
-            "objetivo": forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def clean_url(self):
-        url = self.cleaned_data.get('url', None)
-        if url:
-            # Verificar que los placeholders están bien formados
-            # y tienen la forma la forma '{x}' con x digito
-            bien = url.count('{') == url.count('}')
-            if bien:
-                # omito el principio hasta el primer placehodler
-                subs = url.split('{')[1:]
-                # Las subcadenas restantes debe ser de la forma 'x}___'
-                for sub in subs:
-                    end = sub.find('}')
-                    bien = bien and end > 0 and sub[0:end].isdigit()
-                    if not bien:
-                        raise forms.ValidationError(_('Formato inválido'))
-
-            if bien:
-                return url
-            raise forms.ValidationError(_('Formato inválido'))
-
-    def clean_objetivo(self):
-        disparador = self.cleaned_data.get('disparador')
-        objetivo = self.cleaned_data.get('objetivo')
-        formato = self.cleaned_data.get('formato')
-        if disparador == SitioExterno.SERVER:
-            if objetivo:
-                msg = _('Si el disparador es el servidor, no puede haber un objetivo.')
-                raise forms.ValidationError(msg)
-        elif formato == SitioExterno.JSON:
-            if objetivo:
-                msg = _('Si el formato es JSON, no puede haber un objetivo.')
-                raise forms.ValidationError(msg)
-        elif objetivo == '':
-            raise forms.ValidationError(_('Debe indicar un objetivo.'))
-        return objetivo
-
-    def clean_formato(self):
-        metodo = self.cleaned_data.get('metodo')
-        formato = self.cleaned_data.get('formato')
-        if metodo == SitioExterno.GET:
-            if formato:
-                msg = _('Si el método es GET, no debe indicarse formato.')
-                raise forms.ValidationError(msg)
-        elif formato == '':
-            msg = _('Si el método es POST, debe seleccionar un formato válido.')
-            raise forms.ValidationError(msg)
-        return formato
-
-
 class ReglasIncidenciaForm(forms.ModelForm):
 
     class Meta:
@@ -2019,19 +1955,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         return bd_contacto
 
 
-class CalificacionForm(forms.ModelForm):
-    class Meta:
-        model = NombreCalificacion
-        fields = ('nombre',)
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        if nombre == settings.CALIFICACION_REAGENDA:
-            message = _('Esta calificación está reservada para el sistema')
-            raise forms.ValidationError(message, code='invalid')
-        return nombre
-
-
 class ArchivoDeAudioForm(forms.ModelForm):
 
     class Meta:
@@ -2082,8 +2005,8 @@ class GrupoForm(forms.ModelForm):
                   'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar',
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
-                  'acceso_campanas_preview_agente', 'conjunto_de_pausa'
-                  )  # 'obligar_despausa') # Bloqueo funcionalidad oml-2103
+                  'acceso_campanas_preview_agente', 'conjunto_de_pausa',
+                  'obligar_despausa')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

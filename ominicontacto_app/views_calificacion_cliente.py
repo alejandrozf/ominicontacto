@@ -430,7 +430,8 @@ class CalificacionClienteFormView(FormView):
                 calificacion_llamada = CalificacionLLamada()
                 calificacion_llamada.create_family(self.agente, self.call_data,
                                                    self.kwargs['call_data_json'], calificado=True,
-                                                   gestion=False, id_calificacion=None)
+                                                   gestion=False, id_calificacion=None,
+                                                   es_agenda=calificacion_form.instance.es_agenda())
             if calificacion_form is not None:
                 # el formulario de calificación no es generado por una llamada entrante
                 return self._calificar_form(calificacion_form)

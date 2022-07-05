@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-09 15:44-0300\n"
+"POT-Creation-Date: 2022-06-28 18:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,252 +17,308 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api_app/apps.py:160
+#: api_app/apps.py:188
 msgid "Lista de agentes activos de un Grupo"
 msgstr ""
 
-#: api_app/apps.py:162
+#: api_app/apps.py:190
 msgid "Campañas relacionadas a un supervisor"
 msgstr ""
 
-#: api_app/apps.py:164
+#: api_app/apps.py:192
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr ""
 
-#: api_app/apps.py:167
+#: api_app/apps.py:195
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr ""
 
-#: api_app/apps.py:170
+#: api_app/apps.py:198
 msgid "Ver/editar calificación cliente"
 msgstr ""
 
-#: api_app/apps.py:172
+#: api_app/apps.py:200
 msgid "Crear calificacion cliente"
 msgstr ""
 
-#: api_app/apps.py:174
+#: api_app/apps.py:202
 msgid "Crear contacto"
 msgstr ""
 
-#: api_app/apps.py:176
+#: api_app/apps.py:204
 msgid "Metadata de la base de datos de una campaña"
 msgstr ""
 
-#: api_app/apps.py:178
+#: api_app/apps.py:206
 msgid "Crear nuevo rol"
 msgstr ""
 
-#: api_app/apps.py:180
+#: api_app/apps.py:208
 msgid "Eliminar rol"
 msgstr ""
 
-#: api_app/apps.py:182
+#: api_app/apps.py:210
 msgid "Actualizar permisos de Rol"
 msgstr ""
 
-#: api_app/apps.py:184
+#: api_app/apps.py:212
 msgid "Devuelve información de los agentes en el sistema"
 msgstr ""
 
-#: api_app/apps.py:187
+#: api_app/apps.py:215
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr ""
 
-#: api_app/apps.py:189
+#: api_app/apps.py:217
 msgid "Reporte de llamadas salientes no dialer de supervisión."
 msgstr ""
 
-#: api_app/apps.py:193
+#: api_app/apps.py:221
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr ""
 
-#: api_app/apps.py:196
+#: api_app/apps.py:224
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr ""
 
-#: api_app/apps.py:199
+#: api_app/apps.py:227
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr ""
 
-#: api_app/apps.py:202
+#: api_app/apps.py:230
 msgid "Reasignar una Agenda a otro Agente"
 msgstr ""
 
-#: api_app/apps.py:204
+#: api_app/apps.py:232
 msgid "Información de contacto de una  Agenda"
 msgstr ""
 
-#: api_app/apps.py:206
+#: api_app/apps.py:234
 msgid "Exportar reporte de contactados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:209
+#: api_app/apps.py:237
 msgid "Exportar reporte de calificados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:212
+#: api_app/apps.py:240
 msgid "Exportar reporte de no atendidos de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:215 api_app/apps.py:218
+#: api_app/apps.py:243 api_app/apps.py:246
 msgid "Exportar reporte de calificaciones de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:221
+#: api_app/apps.py:249
 msgid "API para exportar resultados de base contactados a csv"
 msgstr ""
 
-#: api_app/apps.py:224
+#: api_app/apps.py:252
 msgid "Contactos de una campaña"
 msgstr ""
 
-#: api_app/apps.py:226
+#: api_app/apps.py:254
 msgid "Ejecuta un click 2 call"
 msgstr ""
 
-#: api_app/apps.py:228
+#: api_app/apps.py:256
 msgid "Ejecuta el login del agente en Asterisk."
 msgstr ""
 
-#: api_app/apps.py:230
+#: api_app/apps.py:258
 msgid "Ejecuta el logout del agente en Asterisk"
 msgstr ""
 
-#: api_app/apps.py:232
+#: api_app/apps.py:260
 msgid "Logout del agente en OML"
 msgstr ""
 
-#: api_app/apps.py:234
+#: api_app/apps.py:262
 msgid "Pone al agente en una pausa"
 msgstr ""
 
-#: api_app/apps.py:236
+#: api_app/apps.py:264
 msgid "Saca al agente de una pausa"
 msgstr ""
 
-#: api_app/apps.py:238
+#: api_app/apps.py:266
 msgid "Establece el estado Ringing del Agente"
 msgstr ""
 
-#: api_app/apps.py:240
+#: api_app/apps.py:268
 msgid "Establece el estado Reject del Agente"
 msgstr ""
 
-#: api_app/apps.py:242
+#: api_app/apps.py:270
 msgid "Devuelve credenciales SIP de un agente"
 msgstr ""
 
-#: api_app/apps.py:244
+#: api_app/apps.py:272
 msgid "Establece el estado de revisión de una Auditoría"
 msgstr ""
 
-#: api_app/apps.py:247
+#: api_app/apps.py:275
 msgid "Almacena en la base de datos los contactos subidos en archivo csv"
 msgstr ""
 
-#: api_app/apps.py:250
+#: api_app/apps.py:278
 msgid "Detecta si una llamada esta calificada."
 msgstr ""
 
-#: api_app/apps.py:253
+#: api_app/apps.py:281
 msgid "Reenvía la llave de la instancia registrada por email"
 msgstr ""
 
-#: api_app/apps.py:255
+#: api_app/apps.py:283
 msgid "Retorna el archivo de grabación especificado"
 msgstr ""
 
-#: api_app/apps.py:258
+#: api_app/apps.py:286
 msgid "Retorna Zip con archivos de grabación especificados"
 msgstr ""
 
-#: api_app/apps.py:261
+#: api_app/apps.py:289
 msgid "Devuelve los contactos asignados de una campaña preview"
 msgstr ""
 
-#: api_app/apps.py:264
+#: api_app/apps.py:292
 msgid "Loggea el evento hold o unhold"
 msgstr ""
 
-#: api_app/apps.py:267
+#: api_app/apps.py:295
 msgid "Lista audios de asterisk"
 msgstr ""
 
-#: api_app/apps.py:270
+#: api_app/apps.py:298
 msgid "Lista de grupos de agentes"
 msgstr ""
 
-#: api_app/apps.py:273
+#: api_app/apps.py:301
 msgid "Lista de Agentes"
 msgstr ""
 
-#: api_app/apps.py:276
+#: api_app/apps.py:304
 msgid "Dashboard de supervision"
 msgstr ""
 
-#: api_app/apps.py:279
+#: api_app/apps.py:307
 msgid "Auditoría a supervisores"
 msgstr ""
 
-#: api_app/apps.py:282
+#: api_app/apps.py:310
 msgid "Listas de nombres de columnas para Base de datos de Contactos"
 msgstr ""
 
-#: api_app/apps.py:285
+#: api_app/apps.py:313
 msgid "Reinicia servicio Wombat Dialer"
 msgstr ""
 
-#: api_app/apps.py:288
+#: api_app/apps.py:316
 msgid "Estado del servicio Wombat Dialer"
 msgstr ""
 
-#: api_app/apps.py:291
+#: api_app/apps.py:319
 msgid "Lista de agentes por campaña"
 msgstr ""
 
-#: api_app/apps.py:294
+#: api_app/apps.py:322
 msgid "Actualiza los agentes de una campaña"
 msgstr ""
 
-#: api_app/apps.py:297
+#: api_app/apps.py:325
 msgid "Obtiene todos los agentes activos"
 msgstr ""
 
-#: api_app/apps.py:300
+#: api_app/apps.py:328
 msgid "Obtiene las pausas que no estan eliminadas"
 msgstr ""
 
-#: api_app/apps.py:303
+#: api_app/apps.py:331
 msgid "Lista los conjuntos de pausas"
 msgstr ""
 
-#: api_app/apps.py:306
+#: api_app/apps.py:334
 msgid "Obtiene el detalle de un conjunto de pausas"
 msgstr ""
 
-#: api_app/apps.py:309
+#: api_app/apps.py:337
 msgid "Crea un conjunto de pausas"
 msgstr ""
 
-#: api_app/apps.py:312
+#: api_app/apps.py:340
 msgid "Actualiza un conjunto de pausas"
 msgstr ""
 
-#: api_app/apps.py:315
+#: api_app/apps.py:343
 msgid "Elimina un conjunto de pausas"
 msgstr ""
 
-#: api_app/apps.py:318
+#: api_app/apps.py:346
 msgid "Crea una configuracion de pausa"
 msgstr ""
 
-#: api_app/apps.py:321
+#: api_app/apps.py:349
 msgid "Actualiza una configuracion de pausa"
 msgstr ""
 
-#: api_app/apps.py:324
+#: api_app/apps.py:352
 msgid "Elimina una configuracion de pausa"
+msgstr ""
+
+#: api_app/apps.py:355
+msgid "Lista los sitios externos"
+msgstr ""
+
+#: api_app/apps.py:358
+msgid "Obtiene el detalle de un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:361
+msgid "Crea un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:364
+msgid "Actualiza un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:367
+msgid "Elimina un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:370
+msgid "Oculta un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:373
+msgid "Desoculta un sitio externo"
+msgstr ""
+
+#: api_app/apps.py:376
+msgid "Lista las calificaciones"
+msgstr ""
+
+#: api_app/apps.py:379
+msgid "Crea una calificacion"
+msgstr ""
+
+#: api_app/apps.py:382
+msgid "Actualiza una calificacion"
+msgstr ""
+
+#: api_app/apps.py:385
+msgid "Elimina una calificacion"
+msgstr ""
+
+#: api_app/apps.py:388
+msgid "Obtiene detalle de una calificacion"
+msgstr ""
+
+#: api_app/apps.py:391
+msgid "Lista los destinos entrantes"
+msgstr ""
+
+#: api_app/apps.py:394
+msgid "Lista tipos de destinos entrantes"
 msgstr ""
 
 #: api_app/forms.py:53 api_app/forms.py:98
@@ -306,76 +362,104 @@ msgstr ""
 
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:90
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:100
-#: api_app/views/supervisor.py:906 api_app/views/supervisor.py:1068
+#: api_app/views/supervisor.py:923 api_app/views/supervisor.py:1085
 msgid "Se obtuvieron los agentes de forma exitosa"
 msgstr ""
 
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:119
-#: api_app/views/supervisor.py:998
+#: api_app/views/supervisor.py:1015
 msgid "Se agregaron los agentes de forma exitosa a la campaña"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:70
-#: api_app/views/supervisor.py:1287
+#: api_app/views/supervisor.py:1304
 msgid "Se creo la configuracion de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:88
-#: api_app/views/supervisor.py:1367
+#: api_app/views/supervisor.py:1384
 msgid "Se actualizo la configuracion de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:106
-#: api_app/views/supervisor.py:1334
+#: api_app/views/supervisor.py:1351
 msgid "Se elimino la configuracion de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:125
-#: api_app/views/supervisor.py:1294
+#: api_app/views/supervisor.py:1311
 msgid "El timeout debe ser mayor a cero"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:137
-#: api_app/views/supervisor.py:1342
+#: api_app/views/supervisor.py:1359
 msgid "No puedes dejar a un Conjunto de Pausas vacio"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:67
-#: api_app/views/supervisor.py:1125
+#: api_app/views/supervisor.py:1142
 msgid "Se obtuvieron los conjuntos de pausas de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:89
-#: api_app/views/supervisor.py:1183
+#: api_app/views/supervisor.py:1200
 msgid "Se creo el conjunto de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:110
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:161
-#: api_app/views/supervisor.py:1188 api_app/views/supervisor.py:1224
+#: api_app/views/supervisor.py:1205 api_app/views/supervisor.py:1241
 msgid "El nombre del conjunto es requerido"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:126
-#: api_app/views/supervisor.py:1192
+#: api_app/views/supervisor.py:1209
 msgid "Debe existir al menos una pausa en el conjunto"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:144
-#: api_app/views/supervisor.py:1220
+#: api_app/views/supervisor.py:1237
 msgid "Se actualizo el conjunto de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:173
-#: api_app/views/supervisor.py:1253
+#: api_app/views/supervisor.py:1270
 msgid "Se elimino el conjunto de pausa de forma exitosa"
 msgstr ""
 
 #: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:187
-#: api_app/views/supervisor.py:1260
+#: api_app/views/supervisor.py:1277
 msgid ""
 "No puedes borrar un conjunto de pausas que esta asignado a un grupo de "
 "agentes"
+msgstr ""
+
+#: api_app/tests/tests_api_call_dispositions.py:58
+#: api_app/views/call_disposition.py:44
+msgid "Se obtuvieron las calificaciones de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_api_call_dispositions.py:77
+#: api_app/views/call_disposition.py:113
+msgid "Se creo la calificacion de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_api_call_dispositions.py:93
+#: api_app/tests/tests_external_sites.py:210
+#: api_app/tests/tests_external_sites.py:234
+#: api_app/views/call_disposition.py:120 api_app/views/call_disposition.py:163
+#: api_app/views/external_site.py:78 api_app/views/external_site.py:112
+msgid "Error al hacer la peticion"
+msgstr ""
+
+#: api_app/tests/tests_api_call_dispositions.py:113
+#: api_app/views/call_disposition.py:155
+msgid "Se actualizo la calificacion de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_api_call_dispositions.py:129
+#: api_app/views/call_disposition.py:193
+msgid "Se elimino la calificacion de forma exitosa"
 msgstr ""
 
 #: api_app/tests/tests_api_click2call.py:105
@@ -388,11 +472,11 @@ msgstr ""
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
 #: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:220
-#: api_app/views/base.py:87 api_app/views/base.py:215
+#: api_app/views/base.py:87 api_app/views/base.py:216
 msgid "Sistema externo inexistente."
 msgstr ""
 
-#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:172
+#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:173
 msgid "Contacto agregado"
 msgstr ""
 
@@ -400,7 +484,7 @@ msgstr ""
 #: api_app/tests/tests_api_contactos.py:160
 #: api_app/tests/tests_api_contactos.py:229
 #: api_app/tests/tests_api_contactos.py:252 api_app/views/base.py:118
-#: api_app/views/base.py:247
+#: api_app/views/base.py:248
 msgid "No tiene permiso para editar la campaña."
 msgstr ""
 
@@ -408,13 +492,13 @@ msgstr ""
 #: api_app/tests/tests_api_contactos.py:195
 #: api_app/tests/tests_api_contactos.py:272
 #: api_app/tests/tests_api_contactos.py:292 api_app/views/base.py:111
-#: api_app/views/base.py:240
+#: api_app/views/base.py:241
 msgid "Campaña inexistente."
 msgstr ""
 
 #: api_app/tests/tests_api_contactos.py:186
 #: api_app/tests/tests_api_contactos.py:282 api_app/views/base.py:99
-#: api_app/views/base.py:227
+#: api_app/views/base.py:228
 msgid "Debe indicar un idCampaign válido."
 msgstr ""
 
@@ -494,6 +578,34 @@ msgstr ""
 msgid "La longitud del nombre no debe exceder los {0} caracteres"
 msgstr ""
 
+#: api_app/tests/tests_external_sites.py:66 api_app/views/external_site.py:43
+msgid "Se obtuvieron los sitios externos de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:79 api_app/views/external_site.py:140
+msgid "Se obtuvo la informacion del sitio externo de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:107 api_app/views/external_site.py:165
+msgid "Se elimino el sitio externo de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:123 api_app/views/external_site.py:171
+msgid "No está permitido eliminar un sitio externo asociado a una campaña"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:139 api_app/views/external_site.py:199
+msgid "Se oculto el sitio externo de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:155 api_app/views/external_site.py:222
+msgid "Se desoculto el sitio externo de forma exitosa"
+msgstr ""
+
+#: api_app/tests/tests_external_sites.py:179 api_app/views/external_site.py:70
+msgid "Se creo el sitio externo de forma exitosa"
+msgstr ""
+
 #: api_app/views/administrador.py:202
 msgid "no se pudo crear la base de datos de contacto"
 msgstr ""
@@ -516,7 +628,7 @@ msgid "Error al generar sip password"
 msgstr ""
 
 #: api_app/views/agente.py:219 api_app/views/agente.py:254
-#: api_app/views/base.py:76 api_app/views/base.py:204
+#: api_app/views/base.py:76 api_app/views/base.py:205
 msgid "Hubo errores en los datos recibidos"
 msgstr ""
 
@@ -530,6 +642,82 @@ msgstr ""
 
 #: api_app/views/agente.py:440
 msgid "No tiene permiso para modificar la auditoría"
+msgstr ""
+
+#: api_app/views/call_disposition.py:55
+msgid "Error al obtener las calificaciones"
+msgstr ""
+
+#: api_app/views/call_disposition.py:70
+msgid "Se obtuvo el detalle de la calificacion de forma exitosa"
+msgstr ""
+
+#: api_app/views/call_disposition.py:80 api_app/views/call_disposition.py:209
+msgid "No existe la calificacion"
+msgstr ""
+
+#: api_app/views/call_disposition.py:85
+msgid "Error al obtener el detalle de la calificacion"
+msgstr ""
+
+#: api_app/views/call_disposition.py:127
+msgid "Error al crear la calificacion"
+msgstr ""
+
+#: api_app/views/call_disposition.py:171
+msgid "No existe la calificacion que se quiere actualizar"
+msgstr ""
+
+#: api_app/views/call_disposition.py:177
+msgid "Error al actualizar la calificacion"
+msgstr ""
+
+#: api_app/views/call_disposition.py:201
+msgid "No está permitido eliminar una calificacion reservada del sistema"
+msgstr ""
+
+#: api_app/views/call_disposition.py:214
+msgid "Error al eliminar la calificacion"
+msgstr ""
+
+#: api_app/views/external_site.py:53
+msgid "Error al obtener los sitios externos"
+msgstr ""
+
+#: api_app/views/external_site.py:84
+msgid "Error al crear el sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:101
+msgid "Se actualizo el sitio externo de forma exitosa"
+msgstr ""
+
+#: api_app/views/external_site.py:118
+msgid "No existe el sitio externo que se quiere actualizar"
+msgstr ""
+
+#: api_app/views/external_site.py:124
+msgid "Error al actualizar el sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:149
+msgid "Error al obtener el detalle del sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:179
+msgid "No existe el sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:184
+msgid "Error al eliminar el sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:207
+msgid "Error al ocultar el sitio externo"
+msgstr ""
+
+#: api_app/views/external_site.py:230
+msgid "Error al desocultar el sitio externo"
 msgstr ""
 
 #: api_app/views/grabaciones.py:91
@@ -623,7 +811,7 @@ msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr ""
 
 #: api_app/views/supervisor.py:419 api_app/views/supervisor.py:434
-#: api_app/views/supervisor.py:923
+#: api_app/views/supervisor.py:940
 msgid "No existe la campaña"
 msgstr ""
 
@@ -663,113 +851,109 @@ msgstr ""
 msgid "Exportación de Formularios de Gestiones a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:919
+#: api_app/views/supervisor.py:936
 msgid "La campaña no está activa"
 msgstr ""
 
-#: api_app/views/supervisor.py:947
+#: api_app/views/supervisor.py:964
 #, python-brace-format
 msgid "QueueAdd failed - agente: {0} de la campana: {1} "
 msgstr ""
 
-#: api_app/views/supervisor.py:972
+#: api_app/views/supervisor.py:989
 #, python-brace-format
 msgid "QueueRemove failed - agente: {0} de la campana: {1}"
 msgstr ""
 
-#: api_app/views/supervisor.py:983
+#: api_app/views/supervisor.py:1000
 msgid "No existe el agente en cola"
 msgstr ""
 
-#: api_app/views/supervisor.py:1005
+#: api_app/views/supervisor.py:1022
 msgid "No existe la campaña, no se pueden agregar agentes"
 msgstr ""
 
-#: api_app/views/supervisor.py:1022
+#: api_app/views/supervisor.py:1039
 msgid ""
 "No existe el agente,                                            no se puede "
 "eliminar de la member queue"
 msgstr ""
 
-#: api_app/views/supervisor.py:1033
+#: api_app/views/supervisor.py:1050
 msgid ""
 "No existe el agente,                                            no se puede "
 "crear la member queue"
 msgstr ""
 
-#: api_app/views/supervisor.py:1051
+#: api_app/views/supervisor.py:1068
 msgid "No se pudo confirmar la creación del dialplan"
 msgstr ""
 
-#: api_app/views/supervisor.py:1055
+#: api_app/views/supervisor.py:1072
 msgid "La campaña no está activa, no se pueden agregar agentes"
 msgstr ""
 
-#: api_app/views/supervisor.py:1087
+#: api_app/views/supervisor.py:1104
 msgid "Error al obtener los agentes activos"
 msgstr ""
 
-#: api_app/views/supervisor.py:1101
+#: api_app/views/supervisor.py:1118
 msgid "Se obtuvieron las pausas de forma exitosa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1110
+#: api_app/views/supervisor.py:1127
 msgid "Error al obtener las pausas"
 msgstr ""
 
-#: api_app/views/supervisor.py:1135
+#: api_app/views/supervisor.py:1152
 msgid "Error al obtener los conjuntos de pausas"
 msgstr ""
 
-#: api_app/views/supervisor.py:1150
+#: api_app/views/supervisor.py:1167
 msgid "Se obtuvo la informacion del conjunto de pausa de forma exitosa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1167
+#: api_app/views/supervisor.py:1184
 msgid "Error al obtener el detalle del conjunto de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1205
+#: api_app/views/supervisor.py:1222
 msgid "Error al crear el conjunto de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1233 api_app/views/supervisor.py:1267
-#: api_app/views/supervisor.py:1309
+#: api_app/views/supervisor.py:1250 api_app/views/supervisor.py:1284
+#: api_app/views/supervisor.py:1326
 msgid "No existe el conjunto de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1238
+#: api_app/views/supervisor.py:1255
 msgid "Error al actualizar el conjunto de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1272
+#: api_app/views/supervisor.py:1289
 msgid "Error al eliminar el conjunto de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1301
+#: api_app/views/supervisor.py:1318
 msgid "No existe la pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1319
+#: api_app/views/supervisor.py:1336
 msgid "Error al crear la configuracion de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1347 api_app/views/supervisor.py:1377
+#: api_app/views/supervisor.py:1364 api_app/views/supervisor.py:1394
 msgid "No existe la configuracion de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1352
+#: api_app/views/supervisor.py:1369
 msgid "Error al eliminar la configuracion de pausa"
 msgstr ""
 
-#: api_app/views/supervisor.py:1382
+#: api_app/views/supervisor.py:1399
 msgid "Error al actualizar la configuracion de pausa"
 msgstr ""
 
 #: api_app/views/wombat_dialer.py:48 api_app/views/wombat_dialer.py:92
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
-msgstr ""
-
-#: utiles_globales.py:37
-msgid "Archivos permitidos: .wav"
 msgstr ""

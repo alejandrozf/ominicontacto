@@ -20,6 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %} {% load static %} {% load i18n %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}"> {% endblock %} {% block head_js %}
 
+<script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'supervision_app/JS/campanas_entrantes.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
 {% include 'config.html' %}

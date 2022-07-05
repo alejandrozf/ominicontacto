@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'django_sass',
     'django_sendfile',
-    'auditlog',
+    'easyaudit'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -90,9 +90,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'auditlog.middleware.AuditlogMiddleware',
     'defender.middleware.FailedLoginMiddleware',
-    'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware'
+    'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware',
+    'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 ]
 
 
@@ -390,3 +390,19 @@ ALLOW_FEEDBACK = False
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
+DJANGO_EASY_AUDIT_REGISTERED_CLASSES = [
+    'ominicontacto_app.campana', 
+    'ominicontacto_app.queue', 
+    'ominicontacto_app.agenteprofile'
+]
+
+DJANGO_EASY_AUDIT_REGISTERED_URLS = [
+    r'^/reporte/llamadas/', 
+    r'^/reportes/agentes_tiempos/', 
+    r'^/auditar_gestion/buscar/(\d+)/',
+    r'^/campana/(\d+)/reporte_grafico/',
+    r'^/reporte_de_resultados/(\d+)/',
+    r'^/campana/(\d+)/reporte_calificacion/',
+    r'^/premium_reports/',
+    r'^/grabacion/buscar/(\d+)/',
+]

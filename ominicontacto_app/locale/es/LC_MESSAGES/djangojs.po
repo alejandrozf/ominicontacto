@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-09 15:26-0300\n"
+"POT-Creation-Date: 2022-06-28 18:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -413,64 +413,64 @@ msgstr ""
 msgid "Calculando estadísticas del agente ..."
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:89
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:85
 msgid "Salientes"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:90
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:86
 msgid "Entrantes"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:113
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:109
 msgid "Pausa"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:114
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:110
 msgid "Sesión"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:137
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:133
 msgid "Realizadas"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:138
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:134
 msgid "Observadas"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:153
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:149
 msgid "Llamadas conectadas"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:158
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:154
 msgid "Tiempos de pausa"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:168
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:164
 msgid "Número marcado"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:169
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:165
 msgid "Datos del contacto"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:170
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:166
 msgid "Gestionado"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:171
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:167
 msgid "Calificación"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:172
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:168
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:97
 msgid "Observaciones"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:173
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:169
 msgid "Auditoría"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:174
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:170
 msgid "Acciones"
 msgstr ""
 
@@ -604,11 +604,11 @@ msgstr ""
 msgid "Descargar Reporte de "
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:90
+#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:85
 msgid "Exportación completa"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:92
+#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:87
 msgid "La exportación a .csv del reporte de "
 msgstr ""
 

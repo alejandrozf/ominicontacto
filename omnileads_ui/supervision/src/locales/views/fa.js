@@ -29,5 +29,17 @@ export default {
     },
     audit: {
         title: 'حسابرسی اداری'
+    },
+    external_sites: {
+        list_title: 'سایت های خارجی',
+        show_hiddens: 'پنهان نشان دادن',
+        remove_hiddens: 'حذف پنهان',
+        hide: 'مبدل کردن',
+        show: 'پنهان کردن'
+    },
+    call_dispositions: {
+        list_title: 'رتبه بندی ها',
+        edit_title: 'امتیاز را ویرایش کنید',
+        new_title: 'رتبه بندی جدید'
     }
 };

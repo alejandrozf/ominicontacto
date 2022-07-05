@@ -66,6 +66,7 @@ $archivo_grabacion = $_TD->{new}{data5};
     'BTOUT-CONGESTION',
     'BTOUT-CHANUNAVAIL',
     'BTOUT-ABANDON',
+    'BTOUT-NONDIALPLAN',
     'CTOUT-TRY',
     'CTOUT-ANSWER',
     'CTOUT-ACCEPT',
@@ -75,6 +76,7 @@ $archivo_grabacion = $_TD->{new}{data5};
     'CTOUT-CANCEL',
     'CTOUT-CHANUNAVAIL',
     'CTOUT-CONGESTION',
+    'CTOUT-NONDIALPLAN',
     'COMPLETE-CTOUT',
     'COMPLETE-CT',
     'COMPLETE-BT',
@@ -135,7 +137,7 @@ sub procesar_datos_transferencias {
                                  'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON', 'CTOUT-ANSWER', 'CTOUT-ACCEPT',
                                  'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL',
                                  'CTOUT-CONGESTION', 'COMPLETE-BTOUT', 'COMPLETE-CTOUT',
-                                 'CTOUT-ABANDON')) {
+                                 'CTOUT-ABANDON', 'BTOUT-NONDIALPLAN', 'CTOUT-NONDIALPLAN')) {
         # el valor del campo 'agent' tiene un número de telefono
         $agente_id_modificado = -1;
         $numero_extra = $valor_transf_1;

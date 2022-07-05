@@ -36,7 +36,7 @@ class Command(BaseCommand):
             ],
             'api_app': [
                 'api_login', 'api',
-                'api_asterisk_queues_data,',
+                'api_asterisk_queues_data',
             ],
         }
 

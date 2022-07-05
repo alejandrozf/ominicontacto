@@ -205,22 +205,10 @@ class OminicontactoAppConfig(AppConfig):
                 'children': manuales
             })
         #  Calificaciones
-        calificaciones = []
         if 'calificacion_list' in permissions:
-            calificaciones.append({
-                'label': _('Listado de calificaciones'),
-                'url': reverse('calificacion_list')
-            })
-        if 'calificacion_nuevo' in permissions:
-            calificaciones.append({
-                'label': _('Nueva Calificación'),
-                'url': reverse('calificacion_nuevo')
-            })
-        if calificaciones:
             campanas.append({
                 'label': _('Calificaciones'),
-                'id': 'menuQualifications',
-                'children': calificaciones
+                'url': reverse('calificacion_list')
             })
         #  Formularios
         formularios = []
@@ -241,21 +229,10 @@ class OminicontactoAppConfig(AppConfig):
                 'children': formularios
             })
         #  Sitios Externos
-        sitios_externos = []
-        if 'sitio_externo_create' in permissions:
-            sitios_externos.append({
-                'label': _('Nuevo sitio'),
-                'url': reverse('sitio_externo_create')
-            })
         if 'sitio_externo_list' in permissions:
-            sitios_externos.append({
-                'label': _('Listado de sitios'),
-                'url': reverse('sitio_externo_list')
-            })
             campanas.append({
                 'label': _('Sitios Externos'),
-                'id': 'menuSites',
-                'children': sitios_externos
+                'url': reverse('sitio_externo_list')
             })
         #  Sistemas EXternos
         sistemas_externos = []
@@ -529,12 +506,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'calificacion_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_update',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificacion_delete',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_list_mostrar_ocultos',
@@ -708,18 +679,6 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'modificar_sistema_externo',
              'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_list',
-             'roles': ['Administrador', ]},
-            {'nombre': 'sitio_externo_create',
-             'roles': ['Administrador', ]},
-            {'nombre': 'oculta_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'desoculta_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'mostrar_sitios_externo_ocultos',
-             'roles': ['Administrador', ]},
-            {'nombre': 'modificar_sitio_externo',
-             'roles': ['Administrador', ]},
-            {'nombre': 'sitio_externo_delete',
              'roles': ['Administrador', ]},
             {'nombre': 'queue_member_add',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -972,12 +931,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Llamar por fuera de las campañas.'), 'version': '1.7.0'},
         'calificacion_list':
             {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.7.0'},
-        'calificacion_nuevo':
-            {'descripcion': _('Crear nueva Opción de calificación'), 'version': '1.7.0'},
-        'calificacion_update':
-            {'descripcion': _('Modificar Opción de calificación'), 'version': '1.7.0'},
-        'calificacion_delete':
-            {'descripcion': _('Borrar opción de calificación'), 'version': '1.7.0'},
         'formulario_list':
             {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.7.0'},
         'formulario_list_mostrar_ocultos':
@@ -1170,18 +1123,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.7.0'},
         'sitio_externo_list':
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
-        'sitio_externo_create':
-            {'descripcion': _('Crear un Sitio Externo'), 'version': '1.7.0'},
-        'oculta_sitio_externo':
-            {'descripcion': _('Ocultar un Sitio Externo'), 'version': '1.7.0'},
-        'desoculta_sitio_externo':
-            {'descripcion': _('Mostrar un Sitio Externo oculto'), 'version': '1.7.0'},
-        'mostrar_sitios_externo_ocultos':
-            {'descripcion': _('Mostrar los Sitios Externos ocultos'), 'version': '1.7.0'},
-        'modificar_sitio_externo':
-            {'descripcion': _('Modificar un Sitio Externo'), 'version': '1.7.0'},
-        'sitio_externo_delete':
-            {'descripcion': _('Borrar un Sitio Externo'), 'version': '1.7.0'},
         'queue_member_add':
             {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
         'queue_member_grupo_agente':

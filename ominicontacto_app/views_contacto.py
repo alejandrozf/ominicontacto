@@ -232,6 +232,11 @@ class ContactoBDContactoCreateView(CreateView):
         kwargs['base_datos'] = self.bd_contacto
         return kwargs
 
+    def _activate_preview_campaign(self):
+        if self.campana.estado == Campana.ESTADO_FINALIZADA and \
+                self.campana.type == Campana.TYPE_PREVIEW:
+            self.campana.activar()
+
     def form_valid(self, form):
         # TODO: Decidir si esto lo tiene que hacer el form o la vista
         self.object = form.save(commit=False)
@@ -246,7 +251,7 @@ class ContactoBDContactoCreateView(CreateView):
         # Si se agrega a una a una campaña Preview agregar AgenteEnContacto
         if self.campana is not None and self.campana.type == Campana.TYPE_PREVIEW:
             self.campana.adicionar_agente_en_contacto(self.object, -1)
-
+            self._activate_preview_campaign()
         message = _('Contacto creado satisfactoriamente.')
         messages.success(self.request, message)
 

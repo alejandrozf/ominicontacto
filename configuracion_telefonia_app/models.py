@@ -36,7 +36,7 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
-R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
+R_MATCH_PATTERN = r'^\+?[\*\w|\.|\[|\]|-]+$'
 R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
 R_PATRON_DISCADO = r'^(#|\d)+$'
 

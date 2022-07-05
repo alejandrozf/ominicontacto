@@ -29,5 +29,17 @@ export default {
     },
     audit: {
         title: 'Auditoria administrativa'
+    },
+    external_sites: {
+        list_title: 'Sites Externos',
+        show_hiddens: 'mostrar escondido',
+        remove_hiddens: 'remover oculto',
+        hide: 'Disfarce',
+        show: 'mostrar'
+    },
+    call_dispositions: {
+        list_title: 'Classificações',
+        edit_title: 'Editar a classificação',
+        new_title: 'nova classificação'
     }
 };

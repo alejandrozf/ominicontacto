@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-09 15:26-0300\n"
+"POT-Creation-Date: 2022-06-28 18:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -189,6 +189,8 @@ msgid ""
 "usuario.                            La sesión actual será suspendida. Por "
 "favor, contacte con su Administrador"
 msgstr ""
+"New session login detected with your username.                            "
+"The session will be suspended. Please contact your admin"
 
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:621
 msgid "Agente conectado"
@@ -314,7 +316,7 @@ msgstr "Connection error"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanas/campana_dialer/campana_list.js:148
 msgid "No fue posible refrescar."
-msgstr ""
+msgstr "Could not refresh."
 
 #: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:69
 #: ominicontacto_app/static/ominicontacto/JS/contactosList.js:159
@@ -416,64 +418,64 @@ msgstr "Send Email"
 msgid "Calculando estadísticas del agente ..."
 msgstr "Calculating agent statistics"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:89
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:85
 msgid "Salientes"
 msgstr "Outbound calls"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:90
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:86
 msgid "Entrantes"
 msgstr "Inbound calls"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:113
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:109
 msgid "Pausa"
 msgstr "Pause"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:114
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:110
 msgid "Sesión"
 msgstr "Session"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:137
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:133
 msgid "Realizadas"
 msgstr "Engaged"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:138
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:134
 msgid "Observadas"
 msgstr "Observed"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:153
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:149
 msgid "Llamadas conectadas"
 msgstr "Connected calls"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:158
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:154
 msgid "Tiempos de pausa"
 msgstr "Pause times"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:168
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:164
 msgid "Número marcado"
 msgstr "Phone number"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:169
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:165
 msgid "Datos del contacto"
 msgstr "Contact data"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:170
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:166
 msgid "Gestionado"
 msgstr "Engaged"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:171
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:167
 msgid "Calificación"
 msgstr "Disposition"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:172
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:168
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:97
 msgid "Observaciones"
 msgstr "Comments"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:173
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:169
 msgid "Auditoría"
 msgstr "Audit"
 
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:174
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:170
 msgid "Acciones"
 msgstr "Actions"
 
@@ -607,11 +609,11 @@ msgstr "Error getting contact data"
 msgid "Descargar Reporte de "
 msgstr "Download report for "
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:90
+#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:85
 msgid "Exportación completa"
 msgstr "Export completed"
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:92
+#: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:87
 msgid "La exportación a .csv del reporte de "
 msgstr "The export to .csv of the report for "
 

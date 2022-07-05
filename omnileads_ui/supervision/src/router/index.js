@@ -3,6 +3,8 @@ import DashboardSupervision from '../views/DashboardSupervision';
 import AuditSupervisor from '../views/AuditSupervisor';
 import AddAgentsToCampaign from '../views/AddAgentsToCampaign';
 import PauseSetRoutes from './pause_sets_routes';
+import ExternalSitesRoutes from './external_sites_routes';
+import CallDispositionRoutes from './call_dispositions_routes';
 
 const routes = [
     {
@@ -11,8 +13,8 @@ const routes = [
         component: DashboardSupervision
     },
     {
-        path: '/audit.html',
-        name: 'audit_supervisor',
+        path: '/security_audit.html',
+        name: 'security_audit',
         component: AuditSupervisor
     },
     {
@@ -20,7 +22,9 @@ const routes = [
         name: 'add_agents_to_campaign',
         component: AddAgentsToCampaign
     },
-    ...PauseSetRoutes
+    ...PauseSetRoutes,
+    ...ExternalSitesRoutes,
+    ...CallDispositionRoutes
 ];
 
 const router = createRouter({

@@ -27,6 +27,7 @@ from mock import patch
 from django.utils.translation import ugettext_lazy as _
 
 from django.urls import reverse
+from django.db import connections
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
                                                AgenteEnContactoFactory)
@@ -49,6 +50,14 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.contacto_2 = ContactoFactory.create(bd_contacto=self.campana_preview.bd_contacto)
         self.campana_preview.establecer_valores_iniciales_agente_contacto(False, False)
         self.client.login(username=self.agente_1.user.username, password=PASSWORD)
+        self.campana_preview.set_campos_ocultos("dni", guardar=True)
+
+        connections['replica']._orig_cursor = connections['replica'].cursor
+        connections['replica'].cursor = connections['default'].cursor
+
+    def tearDown(self):
+        connections['replica'].cursor = connections['replica']._orig_cursor
+        super(OMLBaseTest, self).tearDown()
 
     def test_valida_contacto_no_asignado_devuelve_false(self):
         # Contacto 1 no esta reservado
@@ -290,6 +299,8 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertNotEqual(entrega['contacto_id'], self.contacto_1.id)
         # En particular, al ser 2 contactos nada más, solo puede entregar el otro
         self.assertEqual(entrega['contacto_id'], self.contacto_2.id)
+        self.assertEqual(
+            self.campana_preview.get_campos_ocultos() not in entrega["datos_contacto"], True)
 
     def test_modificacion_contacto_desde_lista_de_contactos_actualiza_agente_en_contacto(self):
         contacto = ContactoFactory()
