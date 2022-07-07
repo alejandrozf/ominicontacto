@@ -1,17 +1,20 @@
 import { createStore } from 'vuex';
-import AgentsCampaignService from '../services/agentsCampaignService.js';
-import PauseSetActions from './pause_sets/actions';
-import PauseSetMutations from './pause_sets/mutations';
-import PauseSetState from './pause_sets/state';
-import ExternalSiteActions from './external_sites/actions';
-import ExternalSiteMutations from './external_sites/mutations';
-import ExternalSiteState from './external_sites/state';
+import AgentsCampaignService from '../services/agents_campaign_service.js';
+import PauseSetActions from './pause_set/actions';
+import PauseSetMutations from './pause_set/mutations';
+import PauseSetState from './pause_set/state';
+import ExternalSiteActions from './external_site/actions';
+import ExternalSiteMutations from './external_site/mutations';
+import ExternalSiteState from './external_site/state';
 import CallDispositionActions from './call_disposition/actions';
 import CallDispositionMutations from './call_disposition/mutations';
 import CallDispositionState from './call_disposition/state';
 import ExternalSystemActions from './external_system/actions';
 import ExternalSystemMutations from './external_system/mutations';
 import ExternalSystemState from './external_system/state';
+import FormActions from './form/actions';
+import FormMutations from './form/mutations';
+import FormState from './form/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -23,7 +26,8 @@ export default createStore({
         ...PauseSetState,
         ...ExternalSiteState,
         ...CallDispositionState,
-        ...ExternalSystemState
+        ...ExternalSystemState,
+        ...FormState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -52,7 +56,8 @@ export default createStore({
         ...PauseSetMutations,
         ...ExternalSiteMutations,
         ...CallDispositionMutations,
-        ...ExternalSystemMutations
+        ...ExternalSystemMutations,
+        ...FormMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -77,7 +82,8 @@ export default createStore({
         ...PauseSetActions,
         ...ExternalSiteActions,
         ...CallDispositionActions,
-        ...ExternalSystemActions
+        ...ExternalSystemActions,
+        ...FormActions
     },
     modules: {
     },

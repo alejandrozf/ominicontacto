@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 import DashboardSupervision from '../views/DashboardSupervision';
 import AuditSupervisor from '../views/AuditSupervisor';
 import AddAgentsToCampaign from '../views/AddAgentsToCampaign';
-import PauseSetRoutes from './pause_sets_routes';
-import ExternalSitesRoutes from './external_sites_routes';
-import CallDispositionRoutes from './call_dispositions_routes';
-import ExternalSystemRoutes from './external_systems_routes';
+import PauseSetRoutes from './pause_set_routes';
+import ExternalSiteRoutes from './external_site_routes';
+import CallDispositionRoutes from './call_disposition_routes';
+import ExternalSystemRoutes from './external_system_routes';
+import FormRoutes from './form_routes';
 
 const routes = [
     {
@@ -24,13 +25,14 @@ const routes = [
         component: AddAgentsToCampaign
     },
     ...PauseSetRoutes,
-    ...ExternalSitesRoutes,
+    ...ExternalSiteRoutes,
     ...CallDispositionRoutes,
-    ...ExternalSystemRoutes
+    ...ExternalSystemRoutes,
+    ...FormRoutes
 ];
 
 const router = createRouter({
-    history: createWebHistory('/static/omnileads-ui-supervision'),
+    history: createWebHistory('/static/omnileads-ui-supervision/'),
     routes
 });
 

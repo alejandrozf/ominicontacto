@@ -1,5 +1,5 @@
 <template>
-    <DashboardSupervision></DashboardSupervision>
+  <DashboardSupervision></DashboardSupervision>
 </template>
 <script>
 import DashboardSupervision from '@/components/supervision_dashboard/DashboardSupervision';

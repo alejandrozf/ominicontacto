@@ -1,7 +1,8 @@
-import PauseSetsURL from './pause_sets_urls';
-import ExternalSitesUrls from './external_sites_urls';
+import PauseSetsURL from './pause_set_urls';
+import ExternalSiteUrls from './external_site_urls';
 import CallDispositionUrls from './call_disposition_urls';
-import ExternalSystemsUrls from './external_systems_urls';
+import ExternalSystemUrls from './external_system_urls';
+import FormUrls from './form_urls';
 
 export default {
     DashboardSupervision: '/api/v1/dashboard_supervision',
@@ -10,7 +11,8 @@ export default {
     ActiveAgents: '/api/v1/active_agents',
     UpdateAgentsCampaign: '/api/v1/campaign/agents_update/',
     ...PauseSetsURL,
-    ...ExternalSitesUrls,
+    ...ExternalSiteUrls,
     ...CallDispositionUrls,
-    ...ExternalSystemsUrls
+    ...ExternalSystemUrls,
+    ...FormUrls
 };

@@ -1,5 +1,5 @@
 import urls from '../const/call_disposition_urls';
-import { HTTP, BaseService } from './apiBaseService';
+import { HTTP, BaseService } from './base_service';
 
 export default class CallDispositionService extends BaseService {
     async list () {

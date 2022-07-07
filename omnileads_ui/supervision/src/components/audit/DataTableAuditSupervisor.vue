@@ -26,19 +26,21 @@
     :globalFilterFields="['username', 'object', 'name', 'action', 'date']"
   >
     <template #header>
-      <div class="p-d-flex p-jc-between">
-        <Button
-          icon="pi pi-external-link"
-          class="p-button-info"
-          :label="$t('globals.export_type', { type: 'CSV' })"
-          @click="exportCSV($event)"
-        />
-        <div>
+      <div class="flex justify-content-between flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          <Button
+            icon="pi pi-external-link"
+            class="p-button-info"
+            :label="$t('globals.export_type', { type: 'CSV' })"
+            @click="exportCSV($event)"
+          />
+        </div>
+        <div class="flex align-items-center justify-content-center">
           <Button
             type="button"
             icon="pi pi-filter-slash"
             :label="$t('globals.clean_filter')"
-            class="p-button-outlined p-mr-2"
+            class="p-button-outlined mr-2"
             @click="clearFilter()"
           />
           <span class="p-input-icon-left">
@@ -74,7 +76,10 @@
       :header="$tc('models.audit.action')"
       :sortable="true"
     ></Column>
-    <Column field="additional_information" :header="$tc('models.audit.additional_information')"></Column>
+    <Column
+      field="additional_information"
+      :header="$tc('models.audit.additional_information')"
+    ></Column>
     <Column
       field="date"
       :header="$tc('models.audit.datetime')"

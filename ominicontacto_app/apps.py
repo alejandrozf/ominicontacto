@@ -211,22 +211,10 @@ class OminicontactoAppConfig(AppConfig):
                 'url': reverse('calificacion_list')
             })
         #  Formularios
-        formularios = []
-        if 'formulario_nuevo' in permissions:
-            formularios.append({
-                'label': _('Nuevo formulario'),
-                'url': reverse('formulario_nuevo')
-            })
         if 'formulario_list' in permissions:
-            formularios.append({
-                'label': _('Listado de formularios'),
-                'url': reverse('formulario_list')
-            })
-        if formularios:
             campanas.append({
                 'label': _('Formularios'),
-                'id': 'menuForms',
-                'children': formularios
+                'url': reverse('formulario_list')
             })
         #  Sitios Externos
         if 'sitio_externo_list' in permissions:
@@ -495,23 +483,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_list_mostrar_ocultos',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_field',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'campo_formulario_orden',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_field_delete',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_vista_previa',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_eliminar',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_mostrar_ocultar',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_vista',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'calificar_llamada',
              'roles': ['Agente', ]},
@@ -916,25 +888,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.7.0'},
         'formulario_list':
             {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.7.0'},
-        'formulario_list_mostrar_ocultos':
-            {'descripcion': _('Mostrar Formularios de gestión ocultos'), 'version': '1.7.0'},
-        'formulario_nuevo':
-            {'descripcion': _('Crear nuevo Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_field':
-            {'descripcion': _('Crear un campo para un formulario de gestión'), 'version': '1.7.0'},
-        'campo_formulario_orden':
-            {'descripcion': _('Modificar el orden de los campos de un formulario de gestión'),
-             'version': '1.7.0'},
-        'formulario_field_delete':
-            {'descripcion': _('Borrar un campo de un formulario de gestión'), 'version': '1.7.0'},
         'formulario_vista_previa':
             {'descripcion': _('Vista previa de un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_eliminar':
-            {'descripcion': _('Eliminar un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_mostrar_ocultar':
-            {'descripcion': _('Mostrar u ocultar un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_vista':
-            {'descripcion': _('Ver Formulario de gestión'), 'version': '1.7.0'},
         'calificar_llamada':
             {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'calificar_llamada_con_contacto':

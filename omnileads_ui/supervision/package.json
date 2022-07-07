@@ -18,7 +18,7 @@
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
-    "primeflex": "^2.0.0",
+    "primeflex": "^3.2.1",
     "primeicons": "^5.0.0",
     "primevue": "^3.10.0",
     "universal-cookie": "^4.0.4",

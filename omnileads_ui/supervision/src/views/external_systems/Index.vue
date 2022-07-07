@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar class="p-mb-4">
+    <Toolbar class="mb-4">
       <template #start>
         <h1>{{ $tc("globals.external_system", 2) }}</h1>
       </template>

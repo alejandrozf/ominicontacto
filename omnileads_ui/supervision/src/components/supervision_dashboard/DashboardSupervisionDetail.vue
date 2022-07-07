@@ -1,16 +1,31 @@
 <template>
- <div>
-    <div class="p-grid">
-        <div v-for="(item, index) in reportData.active_campaigns" :key="item" class="p-col-12 p-md-6 p-lg-3">
-            <CampaingActiveChart :chartName="index" :chartData="item"></CampaingActiveChart>
-        </div >
+  <div>
+    <div class="grid">
+      <div
+        v-for="(item, index) in reportData.active_campaigns"
+        :key="item"
+        class="col-12 md:col-6 lg:col-3"
+      >
+        <CampaingActiveChart
+          :chartName="index"
+          :chartData="item"
+        ></CampaingActiveChart>
+      </div>
     </div>
-    <br>
-    <div class="p-grid">
-        <StateAgentsChart :chartName="state_agents" :chartData="reportData.state_agents" class="p-col-12 p-md-6 p-lg-6" />
-        <ContactedCallsChart :chartName="contacted_calls" :chartData="reportData.contacted_calls" class="p-col-12 p-md-6 p-lg-3 p-lg-offset-2" />
+    <br />
+    <div class="grid">
+      <StateAgentsChart
+        :chartName="state_agents"
+        :chartData="reportData.state_agents"
+        class="col-12 md:col-6 lg:col-6"
+      />
+      <ContactedCallsChart
+        :chartName="contacted_calls"
+        :chartData="reportData.contacted_calls"
+        class="col-12 md:col-6 lg:col-3 p-lg-offset-2"
+      />
     </div>
-</div>
+  </div>
 </template>
 <script>
 import CampaingActiveChart from '@/components/DashboardSupervisionCharts/CampaingActiveChart.vue';
@@ -25,8 +40,6 @@ export default {
         StateAgentsChart,
         ContactedCallsChart
     },
-    setup () {
-
-    }
+    setup () {}
 };
 </script>

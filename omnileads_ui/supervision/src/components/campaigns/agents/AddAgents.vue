@@ -1,19 +1,22 @@
 <template>
   <div>
-    <div class="p-field p-col-12 p-md-12 p-lg-12">
+    <div class="field col-12">
       <Dropdown
         v-model="selectedAgent"
+        class="w-full"
         :options="agents"
         optionLabel="agent"
         :placeholder="
-            $t('globals.select_type', { type: $tc('globals.agent', 1) }, 2)
+          $t('globals.select_type', { type: $tc('globals.agent', 1) }, 2)
         "
         :emptyFilterMessage="$t('globals.without_data')"
         :filter="true"
-        v-bind:filterPlaceholder="$t('globals.find_by', { field: $tc('globals.name') }, 1)"
+        v-bind:filterPlaceholder="
+          $t('globals.find_by', { field: $tc('globals.name') }, 1)
+        "
       />
     </div>
-    <div class="p-field p-col-12 p-md-4 p-lg-4">
+    <div class="field col-4">
       <Button
         type="button"
         class="p-button"
@@ -37,8 +40,12 @@ export default {
     },
     methods: {
         updateAgentsDisplay () {
-            const agentsCampaignIds = this.agents_by_campaign.map((agent) => agent.agent_id);
-            const activeAgentsFilter = this.active_agents.filter((agent) => !agentsCampaignIds.includes(agent.agent_id));
+            const agentsCampaignIds = this.agents_by_campaign.map(
+                (agent) => agent.agent_id
+            );
+            const activeAgentsFilter = this.active_agents.filter(
+                (agent) => !agentsCampaignIds.includes(agent.agent_id)
+            );
             this.agents = activeAgentsFilter.map((agent) => {
                 return {
                     agent: agent.agent_full_name,

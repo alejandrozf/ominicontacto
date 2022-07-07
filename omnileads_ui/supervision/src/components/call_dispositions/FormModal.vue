@@ -10,8 +10,8 @@
       <h2 v-else>{{ $t("views.call_dispositions.edit_title") }}</h2>
     </template>
     <div class="card">
-      <div class="p-fluid p-grid p-formgrid">
-        <div class="field p-col-12">
+      <div class="fluid grid formgrid">
+        <div class="field col-12">
           <label
             id="call_disposition_name"
             :class="{
@@ -19,16 +19,17 @@
             }"
             >{{ $t("models.call_disposition.name") }}*</label
           >
-          <div class="p-inputgroup p-mt-2">
+          <div class="p-inputgroup mt-2">
             <span class="p-inputgroup-addon">
               <i class="pi pi-list"></i>
             </span>
             <InputText
               id="call_disposition_name"
               :class="{
-                'p-invalid': v$.callDispositionForm.nombre.$invalid && submitted,
+                'p-invalid':
+                  v$.callDispositionForm.nombre.$invalid && submitted,
               }"
-              :placeholder='$t("forms.call_disposition.enter_name")'
+              :placeholder="$t('forms.call_disposition.enter_name')"
               v-model="v$.callDispositionForm.nombre.$model"
             />
           </div>
@@ -47,18 +48,21 @@
           >
         </div>
       </div>
-      <div class="p-flex p-justify-content-end p-flex-wrap">
-        <Button
-          class="p-button-danger p-button-outlined p-mr-2"
-          :label="$t('globals.cancel')"
-          @click="closeModal"
-        />
-        <Button
-          :label="$t('globals.save')"
-          icon="pi pi-save"
-          class="p-mt-4"
-          @click="save(!v$.$invalid)"
-        />
+      <div class="flex justify-content-end flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          <Button
+            class="p-button-danger p-button-outlined mr-2"
+            :label="$t('globals.cancel')"
+            @click="closeModal"
+          />
+        </div>
+        <div class="flex align-items-center justify-content-center">
+          <Button
+            :label="$t('globals.save')"
+            icon="pi pi-save"
+            @click="save(!v$.$invalid)"
+          />
+        </div>
       </div>
     </div>
   </Dialog>

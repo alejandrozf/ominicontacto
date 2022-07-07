@@ -1,5 +1,5 @@
-import urls from '../const/external_systems_urls';
-import { HTTP, BaseService } from './apiBaseService';
+import urls from '../const/external_system_urls';
+import { HTTP, BaseService } from './base_service';
 
 export default class ExternalSystemService extends BaseService {
     async list () {

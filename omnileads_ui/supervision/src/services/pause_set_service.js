@@ -1,5 +1,5 @@
 import apiUrls from '../const';
-import { HTTP, BaseService } from './apiBaseService';
+import { HTTP, BaseService } from './base_service';
 
 export default class PauseSetService extends BaseService {
     async getPauses () {

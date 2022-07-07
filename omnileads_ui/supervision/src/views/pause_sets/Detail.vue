@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar class="p-mb-4">
+    <Toolbar class="mb-4">
       <template #start>
         <h1>{{ $t("globals.pause_set_info", { name: setName }) }}</h1>
       </template>
@@ -8,13 +8,13 @@
         <Button
           :label="$tc('globals.back_to', { type: $t('globals.pause_set') })"
           icon="pi pi-arrow-left"
-          class="p-button-info p-mr-2"
+          class="p-button-info mr-2"
           @click="backToPauseSetsList"
         />
       </template>
     </Toolbar>
     <br />
-    <hr class="p-mt-4" />
+    <hr class="mt-4" />
     <h2>{{ $t("views.pause_sets.configured_pauses") }}</h2>
     <PausesTable
       :pausas="pauseSetDetail.pausas"

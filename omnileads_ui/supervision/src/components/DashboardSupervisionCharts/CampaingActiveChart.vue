@@ -1,16 +1,30 @@
 <template>
-    <Card>
-        <template #title>
-            <h5 class='p-text-center'>
-                {{$t('views.dashboard_home_page.active_campaign_by_type', {type: titleize(chartName)})}}
-            </h5>
-        </template>
-        <template #content>
-            <div class="p-d-flex p-jc-center">
-                <Knob v-model="basicData" readonly :min="0" :max="500" :size="150" alueColor="#fffff" rangeColor="#8FC641"/>
-            </div>
-        </template>
-    </Card>
+  <Card>
+    <template #title>
+      <h5 class="text-center">
+        {{
+          $t("views.dashboard_home_page.active_campaign_by_type", {
+            type: titleize(chartName),
+          })
+        }}
+      </h5>
+    </template>
+    <template #content>
+      <div class="flex justify-content-center flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          <Knob
+            v-model="basicData"
+            readonly
+            :min="0"
+            :max="500"
+            :size="150"
+            alueColor="#fffff"
+            rangeColor="#8FC641"
+          />
+        </div>
+      </div>
+    </template>
+  </Card>
 </template>
 <script>
 import { ref, watch } from 'vue';

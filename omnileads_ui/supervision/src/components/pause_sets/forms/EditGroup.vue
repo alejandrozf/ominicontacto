@@ -6,20 +6,21 @@
     :closable="false"
     :header="$tc('globals.pause_set_info', { name: setToEdit.name })"
   >
-    <div class="p-fluid grid formgrid p-mt-4">
-      <div class="field col-12 md:col-4">
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <label
           for="grupo_nombre"
           :class="{ 'p-error': v$.set_name.$invalid && submitted }"
           >{{ $t("forms.pause_set.new.name") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
           <InputText
             id="grupo_nombre"
             @input="inputWatcher"
+            class="w-full"
             :placeholder="$t('forms.pause_set.new.enter_name')"
             :class="{ 'p-invalid': v$.set_name.$invalid && submitted }"
             v-model="v$.set_name.$model"

@@ -551,12 +551,20 @@ class NombreCalificacion(models.Model):
 
 
 class Formulario(models.Model):
-    nombre = models.CharField(max_length=64)
+    nombre = models.CharField(max_length=64, unique=True)
     descripcion = models.TextField()
     oculto = models.BooleanField(default=False)
 
-    def tiene_campana_asignada(self):
-        return self.campana_set.all().exists()
+    def se_puede_modificar(self):
+        return not self.opcioncalificacion_set.exists()
+
+    def ocultar(self):
+        self.oculto = True
+        self.save()
+
+    def desocultar(self):
+        self.oculto = False
+        self.save()
 
     def __str__(self):
         return self.nombre

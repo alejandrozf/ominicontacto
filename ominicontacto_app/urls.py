@@ -499,54 +499,16 @@ urlpatterns = [
             login_required(views_formulario.FormularioListView.as_view()),
             name='formulario_list',
             ),
-    re_path(r'^formulario/list/mostrar_ocultos/$',
-            login_required(
-                views_formulario.FormularioMostrarOcultosView.as_view()),
-            name='formulario_list_mostrar_ocultos',
-            ),
-    re_path(r'^formulario/nuevo/$',
-            login_required(views_formulario.FormularioCreateView.as_view()),
-            name='formulario_nuevo',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/field/$',
-            login_required(views_formulario.FieldFormularioCreateView.as_view()),
-            name='formulario_field',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/orden/$',
-            login_required(views_formulario.FieldFormularioOrdenView.as_view()),
-            name='campo_formulario_orden',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/delete/$',
-            login_required(views_formulario.FieldFormularioDeleteView.as_view()),
-            name='formulario_field_delete',
-            ),
     re_path(r'^formulario/(?P<pk_formulario>\d+)/vista_previa/$',
             login_required(views_formulario.FormularioPreviewFormView.as_view()),
             name='formulario_vista_previa',
             ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/eliminar/$',
-            login_required(views_formulario.FormularioDeleteView.as_view()),
-            name='formulario_eliminar',
-            ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/mostrar_ocultar/$',
-            login_required(
-                views_formulario.FormularioMostrarOcultarView.as_view()),
-            name='formulario_mostrar_ocultar',
-            ),
-
     # TODO: Verificar si se usa esta vista.
     # re_path(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
     #     r'/(?P<id_agente>\d+)/$',
     #     login_required(views_formulario.FormularioCreateFormView.as_view()),
     #     name='formulario_create',
     #     ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
-            login_required(views_formulario.FormularioVistaFormView.as_view()),
-            name='formulario_vista',
-            ),
     # ==========================================================================
     # Proceso de Calificación
     # CalificacionCliente / Formulario de Calif. de Gestión

@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar class="p-mb-4">
+    <Toolbar class="mb-4">
       <template #start>
         <h1>{{ $t("globals.new") }} {{ $tc("globals.pause_set") }}</h1>
       </template>
@@ -8,24 +8,25 @@
         <Button
           :label="$tc('globals.back_to', { type: $t('globals.pause_set') })"
           icon="pi pi-arrow-left"
-          class="p-button-info p-mr-2"
+          class="p-button-info mr-2"
           @click="backToPauseSetsList"
         />
       </template>
     </Toolbar>
-    <div class="p-fluid grid formgrid p-mt-4">
-      <div class="field col-12 md:col-4">
+    <div class="fluid grid formgrid mt-4">
+      <div class="field col-12">
         <label
           for="grupo_nombre"
           :class="{ 'p-error': v$.group_name.$invalid && submitted }"
           >{{ $t("forms.pause_set.new.name") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
           <InputText
             id="grupo_nombre"
+            class="w-full"
             :placeholder="$t('forms.pause_set.new.enter_name')"
             :class="{ 'p-invalid': v$.group_name.$invalid && submitted }"
             v-model="v$.group_name.$model"
@@ -47,11 +48,11 @@
       </div>
     </div>
     <br /><br />
-    <hr class="p-mt-4" />
+    <hr class="mt-4" />
     <h3>{{ $t("views.pause_sets.configured_pauses") }}</h3>
     <DataTable
       :value="newGroup.pausas"
-      class="p-datatable-sm p-mt-5 editable-cells-table"
+      class="p-datatable-sm mt-5 editable-cells-table"
       showGridlines
       :scrollable="true"
       scrollHeight="600px"
@@ -75,23 +76,25 @@
       :globalFilterFields="['pausa', 'representative.name']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter2()"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter2()"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <Button
               icon="pi pi-pencil"
-              class="p-button-warning p-mr-2 p-button-rounded p-button-outlined"
+              class="p-button-warning mr-2 p-button-rounded p-button-outlined"
               v-tooltip.top="$t('views.pause_sets.how_to_edit_pause_setting')"
             />
             <Button
               icon="pi pi-plus"
-              class="p-button-info p-button-rounded p-mr-2"
+              class="p-button-info p-button-rounded mr-2"
               @click="newPauseConfigModal"
               v-tooltip.top="title2"
             />
@@ -141,19 +144,19 @@
           <Button
             v-if="newGroup.pausas.length >= 2"
             icon="pi pi-trash"
-            class="p-button-danger p-ml-2"
+            class="p-button-danger ml-2"
             @click="removePauseConfig(slotProps.data.pauseId)"
             v-tooltip.top="$t('globals.delete')"
           />
         </template>
       </Column>
     </DataTable>
-    <div class="p-flex p-flex-row-reverse p-flex-wrap">
-      <div class="p-flex p-align-items-center">
+    <div class="flex justify-content-end flex-wrap">
+      <div class="flex align-items-center justify-content-center">
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
-          class="p-mt-4"
+          class="mt-4"
           @click="createGroup(!v$.$invalid)"
         />
       </div>

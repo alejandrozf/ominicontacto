@@ -1,7 +1,7 @@
 <template>
   <div class="card">
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="grid formgrid mt-4">
+      <div class="field col-6">
         <label
           id="external_site_name"
           :class="{
@@ -9,7 +9,7 @@
           }"
           >{{ $t("models.external_site.name") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
@@ -35,13 +35,13 @@
           }}</small
         >
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label
           id="external_site_url"
           :class="{ 'p-error': v$.externalSiteForm.url.$invalid && submitted }"
           >{{ $t("models.external_site.url") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-link"></i>
           </span>
@@ -69,11 +69,12 @@
         </small>
       </div>
     </div>
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="grid formgrid mt-4">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.trigger") }}</label>
         <Dropdown
           v-model="externalSiteForm.disparador"
+          class="w-full"
           :options="triggers"
           placeholder="Servidor"
           optionLabel="name"
@@ -86,10 +87,11 @@
           "
         />
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.method") }}</label>
         <Dropdown
           v-model="externalSiteForm.metodo"
+          class="w-full"
           :options="methods"
           optionLabel="name"
           placeholder="GET"
@@ -103,11 +105,12 @@
         />
       </div>
     </div>
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="fluid grid formgrid mt-4">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.format") }}</label>
         <Dropdown
           v-model="externalSiteForm.formato"
+          class="w-full"
           :options="formats"
           optionLabel="name"
           optionValue="value"
@@ -124,10 +127,11 @@
           Si el metodo es POST debe elegirse un formato valido
         </small>
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.objective") }}</label>
         <Dropdown
           v-model="externalSiteForm.objetivo"
+          class="w-full"
           :options="objectives"
           optionLabel="name"
           optionValue="value"
@@ -142,12 +146,12 @@
         />
       </div>
     </div>
-    <div class="p-flex p-flex-row-reverse p-flex-wrap">
-      <div class="p-flex p-align-items-center">
+    <div class="flex justify-content-end flex-wrap">
+      <div class="flex align-items-center">
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
-          class="p-mt-4"
+          class="mt-4"
           @click="saveExternalSite(!v$.$invalid)"
         />
       </div>
@@ -268,7 +272,10 @@ export default {
             };
         },
         triggerEvent () {
-            if ([3, 0].includes(this.externalSiteForm.disparador) || this.externalSiteForm.formato === 4) {
+            if (
+                [3, 0].includes(this.externalSiteForm.disparador) ||
+        this.externalSiteForm.formato === 4
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
             } else {
@@ -289,10 +296,16 @@ export default {
             }
         },
         formatEvent () {
-            if (this.externalSiteForm.formato !== 4 && [3, 0].includes(this.externalSiteForm.disparador)) {
+            if (
+                this.externalSiteForm.formato !== 4 &&
+        [3, 0].includes(this.externalSiteForm.disparador)
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
-            } else if (this.externalSiteForm.formato === 4 && ![3, 0].includes(this.externalSiteForm.disparador)) {
+            } else if (
+                this.externalSiteForm.formato === 4 &&
+        ![3, 0].includes(this.externalSiteForm.disparador)
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
             } else {

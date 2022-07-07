@@ -1,19 +1,22 @@
 <template>
   <div>
-    <div class="p-field p-col-12 p-md-12 p-lg-12">
+    <div class="field col-12">
       <Dropdown
         v-model="selectedGroup"
+        class="w-full"
         :options="groupsSelectize"
         optionLabel="group"
         :placeholder="
-            $t('globals.select_type', { type: $tc('globals.group', 1) }, 2)
+          $t('globals.select_type', { type: $tc('globals.group', 1) }, 2)
         "
         :emptyFilterMessage="$t('globals.without_data')"
         :filter="true"
-        v-bind:filterPlaceholder="$t('globals.find_by', { field: $tc('globals.name') }, 1)"
+        v-bind:filterPlaceholder="
+          $t('globals.find_by', { field: $tc('globals.name') }, 1)
+        "
       />
     </div>
-    <div class="p-field p-col-12 p-md-4 p-lg-4">
+    <div class="field col-4">
       <Button
         type="button"
         class="p-button"
@@ -39,15 +42,11 @@ export default {
         addGroup () {
             if (this.selectedGroup) {
                 const groupId = this.selectedGroup.value;
-                const group = this.groups.find(
-                    (group) => groupId === group.group.id
-                );
+                const group = this.groups.find((group) => groupId === group.group.id);
                 const existingAgents = [];
                 group.agents.forEach((agent) => {
                     if (
-                        this.agents_by_campaign.find(
-                            (a) => a.agent_id === agent.agent_id
-                        )
+                        this.agents_by_campaign.find((a) => a.agent_id === agent.agent_id)
                     ) {
                         existingAgents.push(agent.agent_username);
                     } else {

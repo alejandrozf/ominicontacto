@@ -53,6 +53,9 @@ from api_app.views.call_disposition import (
 from api_app.views.external_system import (
     AgentesSistemaExternoList, SistemaExternoCreate, SistemaExternoDetail,
     SistemaExternoList, SistemaExternoUpdate)
+from api_app.views.form import (
+    FormCreate, FormDelete, FormDetail,
+    FormHide, FormList, FormShow, FormUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -275,6 +278,30 @@ urlpatterns = [
     re_path(r'api/v1/agents_external_system/$',
             AgentesSistemaExternoList.as_view(),
             name='api_agents_external_system_list'),
+    # =========================
+    # Formularios
+    # =========================
+    re_path(r'api/v1/forms/$',
+            FormList.as_view(),
+            name='api_forms_list'),
+    re_path(r'api/v1/forms/create/$',
+            FormCreate.as_view(),
+            name='api_forms_create'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/update/$',
+            FormUpdate.as_view(),
+            name='api_forms_update'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/hide/$',
+            FormHide.as_view(),
+            name='api_forms_hide'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/show/$',
+            FormShow.as_view(),
+            name='api_forms_show'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/$',
+            FormDetail.as_view(),
+            name='api_forms_detail'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/delete/$',
+            FormDelete.as_view(),
+            name='api_forms_delete'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

@@ -1,12 +1,14 @@
 <template>
-    <Card>
-        <template #title>
-            <h5 class='p-text-center'>{{$t('views.dashboard_home_page.call_sumary')}}</h5>
-        </template>
-        <template #content>
-            <Chart type="pie" :data="basicData" :options="chartOptions" />
-        </template>
-    </Card>
+  <Card>
+    <template #title>
+      <h5 class="text-center">
+        {{ $t("views.dashboard_home_page.call_sumary") }}
+      </h5>
+    </template>
+    <template #content>
+      <Chart type="pie" :data="basicData" :options="chartOptions" />
+    </template>
+  </Card>
 </template>
 <script>
 import { ref, watch } from 'vue';
@@ -17,30 +19,25 @@ export default {
         chartName: String
     },
     setup (props) {
-        const chartOptions = ref(
-            {
-                plugins: {
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    legend: {
-                        labels: {
-                            color: '#495057'
-                        }
+        const chartOptions = ref({
+            plugins: {
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                legend: {
+                    labels: {
+                        color: '#495057'
                     }
                 }
             }
-        );
+        });
         const basicData = ref({
             labels: [''],
             datasets: [
                 {
                     data: [],
-                    backgroundColor: [
-                        '#8FC641',
-                        '#196F3D'
-                    ]
+                    backgroundColor: ['#8FC641', '#196F3D']
                 }
             ]
         });

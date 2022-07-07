@@ -1,5 +1,5 @@
-import urls from '../const/external_sites_urls';
-import { HTTP, BaseService } from './apiBaseService';
+import urls from '../const/external_site_urls';
+import { HTTP, BaseService } from './base_service';
 
 export default class ExternalSiteService extends BaseService {
     async list () {
