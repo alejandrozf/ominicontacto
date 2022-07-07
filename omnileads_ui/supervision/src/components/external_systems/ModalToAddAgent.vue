@@ -12,8 +12,8 @@
       <h2 v-else>{{ $t("views.external_system.edit_agent_on_system") }}</h2>
     </template>
     <div class="card">
-      <div class="p-fluid p-grid p-formgrid">
-        <div class="field p-col-6" v-if="modalToCreate">
+      <div class="grid formgrid">
+        <div class="field col-6" v-if="modalToCreate">
           <label
             id="agente"
             :class="{
@@ -29,7 +29,7 @@
             placeholder="--------"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
-            class="p-mt-2"
+            class="w-full mt-2"
             :class="{
               'p-invalid': v$.agenteEnSistemaForm.agente.$invalid && submitted,
             }"
@@ -51,7 +51,7 @@
             }}</small
           >
         </div>
-        <div class="field" :class="modalToCreate ? 'p-col-6' : 'p-col-12'">
+        <div class="field" :class="modalToCreate ? 'col-6' : 'col-12'">
           <label
             id="id_externo_agente"
             :class="{
@@ -60,7 +60,7 @@
             }"
             >{{ $t("models.agent_external_system.external_id") }}*</label
           >
-          <div class="p-inputgroup p-mt-2">
+          <div class="p-inputgroup mt-2">
             <span class="p-inputgroup-addon">
               <i class="pi pi-list"></i>
             </span>
@@ -91,24 +91,19 @@
           >
         </div>
       </div>
-      <div class="p-flex p-justify-content-end p-flex-wrap">
+      <div class="flex justify-content-end flex-wrap">
         <Button
-          class="p-button-danger p-button-outlined p-mr-2"
+          class="p-button-danger p-button-outlined mr-2"
           :label="$t('globals.cancel')"
           @click="closeModal"
         />
-        <Button
-          :label="$t('globals.save')"
-          class="p-mt-4"
-          @click="save(!v$.$invalid)"
-        />
+        <Button :label="$t('globals.save')" @click="save(!v$.$invalid)" />
       </div>
     </div>
   </Dialog>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
@@ -140,7 +135,7 @@ export default {
             default () {
                 return {
                     id_externo_agente: '',
-                    agente: -1
+                    agente: null
                 };
             }
         }
@@ -150,7 +145,7 @@ export default {
             submitted: false,
             agenteEnSistemaForm: {
                 id_externo_agente: '',
-                agente: -1
+                agente: null
             }
         };
     },
@@ -158,12 +153,11 @@ export default {
         this.initModalData();
     },
     methods: {
-        ...mapActions(['']),
         initModalData () {
             this.submitted = false;
             this.agenteEnSistemaForm = {
                 id_externo_agente: '',
-                agente: -1
+                agente: null
             };
         },
         initAgent () {
@@ -177,6 +171,7 @@ export default {
         },
         save (isFormValid) {
             this.submitted = true;
+            console.log(this.agenteEnSistemaForm);
             if (!isFormValid) {
                 return null;
             }

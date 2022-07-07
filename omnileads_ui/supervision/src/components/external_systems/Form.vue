@@ -1,7 +1,7 @@
 <template>
   <div class="card">
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-12">
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <label
           id="external_system_name"
           :class="{
@@ -9,7 +9,7 @@
           }"
           >{{ $t("models.external_system.name") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
@@ -43,12 +43,12 @@
       @removeAgentEvent="removeAgentOnSystem"
       @editAgentEvent="modalToEditAgentOnSystem"
     />
-    <div class="p-flex p-flex-row-reverse p-flex-wrap">
-      <div class="p-flex p-align-items-center">
+    <div class="flex justify-content-end flex-wrap">
+      <div class="flex align-items-center justify-content-center">
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
-          class="p-mt-4"
+          class="mt-4"
           @click="saveExternalSystem(!v$.$invalid)"
         />
       </div>

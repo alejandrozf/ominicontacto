@@ -24,19 +24,21 @@
       :globalFilterFields="['pausa', 'representative.name']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter()"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter()"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <Button
               :label="$tc('globals.new')"
               icon="pi pi-plus"
-              class="p-mr-2"
+              class="mr-2"
               @click="newPauseConfigModal"
               v-tooltip.top="'Nueva configuracion de pausa'"
             />
@@ -82,7 +84,7 @@
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
-            class="p-button-warning p-ml-2"
+            class="p-button-warning ml-2"
             @click="editPauseConfig(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
@@ -90,7 +92,7 @@
           <Button
             v-if="pausas.length >= 2"
             icon="pi pi-trash"
-            class="p-button-danger p-ml-2"
+            class="p-button-danger ml-2"
             @click="removePauseConfig(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
           />

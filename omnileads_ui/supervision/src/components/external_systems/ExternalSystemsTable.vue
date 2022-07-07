@@ -24,15 +24,17 @@
       :globalFilterFields="['nombre']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter()"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter()"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
@@ -61,13 +63,13 @@
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
-            class="p-button-warning p-ml-2"
+            class="p-button-warning ml-2"
             @click="edit(slotProps.data.id)"
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
             icon="pi pi-info-circle"
-            class="p-button-info p-ml-2"
+            class="p-button-info ml-2"
             @click="detail(slotProps.data.id)"
             v-tooltip.top="$t('globals.show')"
           />
@@ -118,62 +120,6 @@ export default {
                 params: { id: id }
             });
         },
-        // async remove (id) {
-        //     this.$swal({
-        //         title: this.$t('globals.sure_notification'),
-        //         icon: this.$t('globals.icon_warning'),
-        //         showCancelButton: true,
-        //         confirmButtonText: this.$t('globals.yes'),
-        //         cancelButtonText: this.$t('globals.no'),
-        //         backdrop: false,
-        //         reverseButtons: true
-        //     }).then(async (result) => {
-        //         if (result.isConfirmed) {
-        //             this.$swal.fire({
-        //                 title: this.$t('globals.processing_request'),
-        //                 timerProgressBar: true,
-        //                 allowOutsideClick: false,
-        //                 didOpen: () => {
-        //                     this.$swal.showLoading();
-        //                 }
-        //             });
-        //             const resp = await this.deleteExternalSite(id);
-        //             this.$swal.close();
-        //             if (resp) {
-        //                 this.initExternalSites();
-        //                 this.$swal(
-        //                     this.$helpers.getToasConfig(
-        //                         this.$t('globals.success_notification'),
-        //                         this.$tc('globals.success_deleted_type', {
-        //                             type: this.$tc('globals.external_site')
-        //                         }),
-        //                         this.$t('globals.icon_success')
-        //                     )
-        //                 );
-        //             } else {
-        //                 this.$swal(
-        //                     this.$helpers.getToasConfig(
-        //                         this.$t('globals.error_notification'),
-        //                         this.$tc('globals.error_to_deleted_type', {
-        //                             type: this.$tc('globals.external_site')
-        //                         }),
-        //                         this.$t('globals.icon_error')
-        //                     )
-        //                 );
-        //             }
-        //         } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-        //             this.$swal(
-        //                 this.$helpers.getToasConfig(
-        //                     this.$t('globals.cancelled'),
-        //                     this.$tc('globals.error_to_deleted_type', {
-        //                         type: this.$tc('globals.external_site')
-        //                     }),
-        //                     this.$t('globals.icon_error')
-        //                 )
-        //             );
-        //         }
-        //     });
-        // },
         ...mapActions(['deleteExternalSystem', 'initExternalSystems'])
     },
     watch: {

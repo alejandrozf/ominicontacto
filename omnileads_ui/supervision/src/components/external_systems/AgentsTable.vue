@@ -24,15 +24,17 @@
       :globalFilterFields="['id_externo_agente']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
@@ -50,7 +52,7 @@
               type="button"
               icon="pi pi-plus"
               :label="$t('globals.new')"
-              class="p-ml-2"
+              class="ml-2"
               @click="addAgentOnSystem"
             />
           </div>
@@ -81,13 +83,13 @@
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
-            class="p-button-warning p-ml-2"
+            class="p-button-warning ml-2"
             @click="edit(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
             icon="pi pi-trash"
-            class="p-button-danger p-ml-2"
+            class="p-button-danger ml-2"
             @click="remove(slotProps.data)"
             v-tooltip.top="$t('globals.delete')"
           />

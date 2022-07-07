@@ -40,7 +40,7 @@ from constance import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, ContactoBlacklist,
-    Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
+    Campana, Contacto, CalificacionCliente, Grupo, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm,
@@ -48,7 +48,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
+                                      validar_solo_ascii_y_sin_espacios,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from ominicontacto_app.parser import is_valid_length
@@ -1057,70 +1057,6 @@ class ReporteForm(forms.Form):
     resultado_auditoria = forms.ChoiceField(
         label=_('Auditoria'), widget=forms.Select(attrs={'class': 'form-control'}),
         choices=((TODOS_RESULTADOS, _('Todas')), ) + AuditoriaCalificacion.RESULTADO_CHOICES)
-
-
-class FormularioForm(forms.ModelForm):
-
-    class Meta:
-        model = Formulario
-        fields = ('nombre', 'descripcion')
-        widgets = {
-            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            "descripcion": forms.Textarea(attrs={'class': 'form-control'}),
-        }
-
-
-class FieldFormularioForm(forms.ModelForm):
-    list_values = forms.MultipleChoiceField(widget=forms.SelectMultiple(
-        attrs={'class': 'form-control', 'style': 'width:100%;',
-               'disabled': 'disabled'}), required=False)
-    value_item = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'disabled': 'disabled',
-               'placeholder': 'agregar item a la lista'}), required=False)
-
-    class Meta:
-        model = FieldFormulario
-        fields = ('formulario', 'nombre_campo', 'tipo', 'values_select',
-                  'is_required')
-        widgets = {
-            'formulario': forms.HiddenInput(),
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
-            "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
-            'values_select': forms.HiddenInput(),
-        }
-
-    def clean_nombre_campo(self):
-        formulario = self.cleaned_data.get('formulario')
-        nombre_campo = self.cleaned_data.get('nombre_campo')
-        nombre_campo = remplace_espacio_por_guion(nombre_campo)
-        if formulario.campos.filter(nombre_campo=nombre_campo).exists():
-            raise forms.ValidationError(_('No se puede crear un campo ya existente'))
-        return nombre_campo
-
-    def clean_values_select(self):
-        tipo = self.cleaned_data.get('tipo')
-        if not tipo == FieldFormulario.TIPO_LISTA:
-            return None
-        values_select = self.cleaned_data.get('values_select')
-        if values_select == '':
-            raise forms.ValidationError(_('La lista no puede estar vacía'))
-        try:
-            lista_values_select = json.loads(values_select)
-        except ValueError:
-            raise forms.ValidationError(_('Formato inválido'))
-        if type(lista_values_select) is not list:
-            raise forms.ValidationError(_('Formato inválido'))
-        if len(lista_values_select) == 0:
-            raise forms.ValidationError(_('La lista no puede estar vacía'))
-        return values_select
-
-
-class OrdenCamposForm(forms.Form):
-    sentido_orden = forms.CharField()
-
-    def __init__(self, *args, **kwargs):
-        super(OrdenCamposForm, self).__init__(*args, **kwargs)
-        self.fields['sentido_orden'].widget = forms.HiddenInput()
 
 
 class FormularioCRMForm(forms.Form):
