@@ -37,5 +37,30 @@ export default {
     call_disposition: {
         id: 'شناسه',
         name: 'نام'
+    },
+    external_system: {
+        id: 'برو',
+        name: 'نام',
+        agents: 'عامل'
+    },
+    agent_external_system: {
+        id: 'برو',
+        external_id: 'شناسه خارجی نماینده',
+        agent: 'عامل'
+    },
+    form: {
+        id: 'برو',
+        name: 'نام',
+        description: 'شرح',
+        fields: 'زمینه های',
+        status: 'وضعیت'
+    },
+    form_field: {
+        id: 'برو',
+        name: 'نام',
+        order: 'سفارش',
+        type: 'پسر',
+        required: 'اجباری است',
+        list_options: 'گزینه های لیست'
     }
 };

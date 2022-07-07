@@ -37,5 +37,30 @@ export default {
     call_disposition: {
         id: 'ID',
         name: 'Name'
+    },
+    external_system: {
+        id: 'ID',
+        name: 'Name',
+        agents: 'Agents'
+    },
+    agent_external_system: {
+        id: 'ID',
+        external_id: 'Id Externo Agente',
+        agent: 'Agent'
+    },
+    form: {
+        id: 'ID',
+        name: 'Name',
+        description: 'Description',
+        fields: 'Fields',
+        status: 'Status'
+    },
+    form_field: {
+        id: 'ID',
+        name: 'Name',
+        order: 'Order',
+        type: 'Type',
+        required: 'Required?',
+        list_options: 'List options'
     }
 };

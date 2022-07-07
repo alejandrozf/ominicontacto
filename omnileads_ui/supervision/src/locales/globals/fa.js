@@ -34,7 +34,7 @@ export default {
     select_type: 'یکی را انتخاب کن {type} | یکی را انتخاب کن {type}',
     select_type_of: 'یک نوع را انتخاب کنید {type}',
     select: 'انتخاب کنید',
-    not_select_type: 'No seleccionaste un {type} | No seleccionaste una {type}',
+    not_select_type: 'شما a را انتخاب نکردید {type} | شما یکی را انتخاب نکردید {type}',
     showing_datatable_info: 'نمایش {first} از {last} از {totalRecords}',
     pause_set: 'مجموعه مکث | مجموعه مکث',
     pause_set_info: 'مجموعه مکث: {name}',
@@ -42,7 +42,10 @@ export default {
     pause_config_info: 'تنظیمات مکث: {name}',
     pause_config_by_set: 'تنظیمات مکث گروه: {set}',
     infinite_pause: 'مکث بی نهایت',
+    external_site: 'سایت خارجی | سایت های خارجی',
     call_disposition: 'صلاحیت | صلاحیت',
+    external_system: 'سیستم خارجی | سیستم های خارجی',
+    form: 'فرم | تشکیل می دهد',
     // -------------
     // -- Actions --
     // -------------
@@ -63,6 +66,7 @@ export default {
     close: 'بستن',
     download: 'دانلود',
     back_to: 'بازگشت به {type}',
+    back: 'بازگشت',
     yes: 'آره',
     no: 'خیر',
     a: 'آ | Una',
@@ -79,10 +83,13 @@ export default {
     type_of: 'نوع {type}',
     export_type: 'صادرات {type}',
     filter: 'فیلتر کنید',
+    next: 'ذیل',
+    up: 'حرکت کردن',
+    down: 'حرکت به پایین',
     // ---------------------
     // --- Notifications ---
     // ---------------------
-    not_found_type: 'No se encontró {type} | No se encontraron {type}',
+    not_found_type: 'پیدا نشد {type} | پیدا نشدند {type}',
     load_info: 'در حال بارگیری اطلاعات',
     already_exist: 'از قبل وجود دارد',
     already_exist_in: 'در حال حاضر وجود دارد',

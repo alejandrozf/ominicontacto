@@ -41,5 +41,22 @@ export default {
         list_title: 'Call Dispositions',
         edit_title: 'Edit Call Disposition',
         new_title: 'New Call Disposition'
+    },
+    external_system: {
+        new_agent_on_system: 'New agent in system',
+        edit_agent_on_system: 'Edit agent in system'
+    },
+    form: {
+        step1: {
+            title: 'Form data'
+        },
+        step2: {
+            title: 'Form fields'
+        },
+        step3: {
+            title: 'Preview',
+            display_name: 'Name:',
+            display_description: 'Description:'
+        }
     }
 };

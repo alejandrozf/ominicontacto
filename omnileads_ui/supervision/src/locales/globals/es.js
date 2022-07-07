@@ -44,6 +44,8 @@ export default {
     infinite_pause: 'Pausa infinita',
     external_site: 'Sitio externo | Sitios externos',
     call_disposition: 'Calificacion | Calificaciones',
+    external_system: 'Sistema externo | Sistemas externos',
+    form: 'Formulario | Formularios',
     // -------------
     // -- Actions --
     // -------------
@@ -64,6 +66,7 @@ export default {
     close: 'Cerrar',
     download: 'Descarga | Descargar',
     back_to: 'De regreso a {type}',
+    back: 'Atras',
     yes: 'Si',
     no: 'No',
     a: 'Un | Una',
@@ -80,6 +83,9 @@ export default {
     type_of: 'Tipo de {type}',
     export_type: 'Exportar {type}',
     filter: 'Filtrar',
+    next: 'Siguiente',
+    up: 'Mover arriba',
+    down: 'Mover abajo',
     // ---------------------
     // --- Notifications ---
     // ---------------------

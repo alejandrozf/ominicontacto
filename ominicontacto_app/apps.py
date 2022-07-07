@@ -234,25 +234,12 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Sitios Externos'),
                 'url': reverse('sitio_externo_list')
             })
-        #  Sistemas EXternos
-        sistemas_externos = []
-        if 'sistema_externo_create' in permissions:
-            sistemas_externos.append({
-                'label': _('Nuevo sistema'),
-                'url': reverse('sistema_externo_create')
-            })
+        #  Sistemas Externos
         if 'sistema_externo_list' in permissions:
-            sistemas_externos.append({
-                'label': _('Listado de sistemas'),
-                'url': reverse('sistema_externo_list')
-            })
-        if sistemas_externos:
             campanas.append({
                 'label': _('Sistemas Externos'),
-                'id': 'menuSystems',
-                'children': sistemas_externos
+                'url': reverse('sistema_externo_list')
             })
-
         if campanas:
             items.append({'order': 200,
                           'label': _('Campañas'),
@@ -673,10 +660,6 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'nuevo_contacto_blacklist',
              'roles': ['Administrador', ]},
             {'nombre': 'sistema_externo_list',
-             'roles': ['Administrador', ]},
-            {'nombre': 'sistema_externo_create',
-             'roles': ['Administrador', ]},
-            {'nombre': 'modificar_sistema_externo',
              'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_list',
              'roles': ['Administrador', ]},
@@ -1117,10 +1100,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Agregar contacto a lista de Blacklists'), 'version': '1.7.0'},
         'sistema_externo_list':
             {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},
-        'sistema_externo_create':
-            {'descripcion': _('Crear un Sistema Externo'), 'version': '1.7.0'},
-        'modificar_sistema_externo':
-            {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.7.0'},
         'sitio_externo_list':
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
         'queue_member_add':

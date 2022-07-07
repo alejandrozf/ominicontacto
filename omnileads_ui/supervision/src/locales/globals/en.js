@@ -42,7 +42,10 @@ export default {
     pause_config_info: 'Pause setting: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Infinite pause',
+    external_site: 'External Site | External Sites',
     call_disposition: 'Call Disposition | Call Dispositions',
+    external_system: 'External System | External Systems',
+    form: 'Form | Forms',
     // -------------
     // -- Actions --
     // -------------
@@ -63,6 +66,7 @@ export default {
     close: 'Close',
     download: 'Download | Download',
     back_to: 'Back to {type}',
+    back: 'Back',
     yes: 'Yes',
     no: 'No',
     cancel: 'Cancel',
@@ -79,6 +83,9 @@ export default {
     type_of: 'Type of {type}',
     export_type: 'Export {type}',
     filter: 'Filter',
+    next: 'Next',
+    up: 'Up',
+    down: 'Down',
     // ---------------------
     // --- Notifications ---
     // ---------------------

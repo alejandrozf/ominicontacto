@@ -5,6 +5,7 @@ import AddAgentsToCampaign from '../views/AddAgentsToCampaign';
 import PauseSetRoutes from './pause_sets_routes';
 import ExternalSitesRoutes from './external_sites_routes';
 import CallDispositionRoutes from './call_dispositions_routes';
+import ExternalSystemRoutes from './external_systems_routes';
 
 const routes = [
     {
@@ -24,11 +25,12 @@ const routes = [
     },
     ...PauseSetRoutes,
     ...ExternalSitesRoutes,
-    ...CallDispositionRoutes
+    ...CallDispositionRoutes,
+    ...ExternalSystemRoutes
 ];
 
 const router = createRouter({
-    history: createWebHistory('/static/omnileads-ui-supervision/'),
+    history: createWebHistory('/static/omnileads-ui-supervision'),
     routes
 });
 

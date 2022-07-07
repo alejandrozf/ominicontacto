@@ -55,7 +55,6 @@ from api_app.serializers import (
     AuditSupervisorRequestEventSerializer, AgenteDeCampanaSerializer, AgenteActivoSerializer,
     ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer,
     GrupoSerializer, PausaSerializer)
-
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, ConfiguracionDePausa,
     ConjuntoDePausa, Pausa, QueueMember, Grupo,
