@@ -551,7 +551,7 @@ class NombreCalificacion(models.Model):
 
 
 class Formulario(models.Model):
-    nombre = models.CharField(max_length=64, unique=True)
+    nombre = models.CharField(max_length=64)
     descripcion = models.TextField()
     oculto = models.BooleanField(default=False)
 
