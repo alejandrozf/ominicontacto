@@ -50,6 +50,7 @@ from reportes_app.reportes.reporte_llamadas import (
 from reportes_app.reportes.reporte_resultados import (
     ReporteDeResultadosDeCampana
 )
+from utiles_globales import obtener_paginas
 
 
 class ReporteLlamadasFormView(FormView):
@@ -184,6 +185,8 @@ class ExportarZipReportesLlamadasFormView(FormView):
 
 
 class ReporteDeResultadosView(TemplateView):
+    page_kwarg = 'page'
+    paginate_by = 250
     template_name = 'reporte_de_resultados.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -203,7 +206,17 @@ class ReporteDeResultadosView(TemplateView):
             ReporteDeResultadosView,
             self
         ).get_context_data(**kwargs)
-        reporte = ReporteDeResultadosDeCampana(self.campana)
+        page_number = self.request.GET.get(self.page_kwarg, 1)
+        reporte = ReporteDeResultadosDeCampana(
+            self.campana,
+            page_number=page_number,
+            page_size=self.paginate_by,
+        )
+        if reporte.is_paginated:
+            context['is_paginated'] = True
+            context['paginator'] = reporte.paginator
+            context['page_obj'] = reporte.page
+            obtener_paginas(context, 7)
         context['campana'] = self.campana
         context['task_id'] = get_random_string(8)
         metadata = self.campana.bd_contacto.get_metadata()
