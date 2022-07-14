@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 from collections import OrderedDict
+from django.core.paginator import Paginator
 from django.utils.translation import ugettext_lazy as _
 from django.db import connection
 from ominicontacto_app.models import CalificacionCliente
@@ -32,18 +33,26 @@ class ReporteDeResultadosDeCampana(object):
     Reporte sobre los resultados de las contactaciones de los contactos ORIGINIARIOS.
     """
 
-    def __init__(self, campana, todos_contactos=False):
+    def __init__(self, campana, todos_contactos=False, page_number=None, page_size=10):
         self.campana = campana
 
         self.contactaciones = OrderedDict()
-        contactos = self.campana.bd_contacto.contactos.all()
+        contactos = self.campana.bd_contacto.contactos.order_by("id")
         if todos_contactos is False:
             contactos = contactos.filter(es_originario=True)
+        if page_number is not None:
+            self.paginator = Paginator(contactos, page_size)
+            self.page = self.paginator.page(page_number)
+            contactos = self.page.object_list
         contactos_ids = self._inicializar_datos_de_contactacion(contactos)
         # Si no hay contactos originarios el reporte quedará vacío.
         if len(contactos_ids) > 0:
             calificados_ids = self._registrar_calificaciones(contactos_ids)
             self._registrar_no_calificados(contactos_ids, calificados_ids)
+
+    @property
+    def is_paginated(self):
+        return hasattr(self, "paginator") and hasattr(self, "page")
 
     def _inicializar_datos_de_contactacion(self, contactos):
         ids = []
