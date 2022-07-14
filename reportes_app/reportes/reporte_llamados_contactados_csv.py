@@ -40,9 +40,7 @@ from django.utils.timezone import localtime, timedelta
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
-from ominicontacto_app.models import (
-    Campana, OpcionCalificacion, HistoricalCalificacionCliente, RespuestaFormularioGestion,
-    CalificacionCliente)
+from ominicontacto_app.models import Campana, OpcionCalificacion, HistoricalCalificacionCliente
 from ominicontacto_app.services.estadisticas_campana import EstadisticasBaseCampana
 
 from reportes_app.models import LlamadaLog
@@ -97,6 +95,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         self.fecha_desde = fecha_desde
         self.fecha_hasta = fecha_hasta
         self._inicializar_valores_estadisticas()
+        self._inicializar_respuestas_formulario_gestion_historicas()
         self.contactos_dict = {contacto.pk: contacto
                                for contacto in self.campana.bd_contacto.contactos.all()}
         self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas
@@ -227,25 +226,18 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         registro.append(datos_calificacion[1])
 
         if calificacion:
-            if hasattr(calificacion, 'es_gestion'):
-                es_gestion = calificacion.es_gestion()
-            else:
-                es_gestion = (calificacion.opcion_calificacion.tipo ==
-                              OpcionCalificacion.GESTION)
+            es_gestion = calificacion.opcion_calificacion.es_gestion()
             if es_gestion:
-                try:
-                    respuesta_formulario_gestion = RespuestaFormularioGestion.history.\
-                        get(history_change_reason=calificacion.history_id)
-                except Exception:
-                    pass
+                respuesta_formulario_gestion = self.respuestas_historicas_por_calificacion.get(
+                    calificacion.history_id, None)
             if respuesta_formulario_gestion:
                 datos = json.loads(respuesta_formulario_gestion.metadata)
                 if respuesta_formulario_gestion.history_change_reason is not None:
-                    calif = CalificacionCliente.history.get(
-                        pk=respuesta_formulario_gestion.history_change_reason)
-                    id_opcion = calif.opcion_calificacion_id
+                    id_opcion = calificacion.opcion_calificacion_id
                 else:
-                    id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                    logger.warn('Sin datos de gestion para calificacion_id:{}'.format(
+                        calificacion.history_id))
+                    return
                 try:
                     posicion = self.posiciones_opciones[id_opcion]
                 except Exception:
