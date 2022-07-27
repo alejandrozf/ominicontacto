@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <title>emsg-detail</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/superkube@3.2.1/dist/superkube.min.css">
+    <style>
+      iframe { border: 0; width: 100%; }
+      td { vertical-align: middle; }
+      td .highlight > pre { margin: -0.75em; }
+      .column > pre { white-space: break-spaces; word-wrap: break-word; }
+    </style>
+    <script>
+      function iwrite(selector, content) {
+        const iframe = document.querySelector(selector)
+        iframe.onload = function() {
+          iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + "px"
+        }
+        iframe.contentWindow.document.write(content)
+        iframe.contentWindow.document.close()
+      }
+    </script>
+  </head>
+  <body class="py-6">
+    <div class="container-full centered edges">
+      {% for msg in msgs %}
+      {% set bodies = msg.bodies %}
+      <div class="grid grid-auto">
+        <div class="column">
+          {{ yaml_repr(msg.meta) }}
+          {{ yaml_repr(msg.context) }}
+        </div>
+      </div>
+      <div class="grid grid-auto">
+        <div class="column">
+          <pre class="bg-light ml-auto mr-auto shadow-200">{{ bodies.text }}</pre>
+        </div>
+        <div class="column">
+          <iframe id="iframe-{{ loop.index }}" class="shadow-200" src="about:blank"></iframe>
+          <script>iwrite("#iframe-{{ loop.index }}", `{{ bodies["html"] | safe }}`)</script>
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if source %}
+      <div class="grid grid-auto">
+        <div class="column">
+          <table class="table-bordered">
+            <tbody>
+              {% for name, id, repr in source %}
+              <tr>
+                <td>
+                  <var>{{ name }}</var>
+                </td>
+                <td class="a-center">
+                  {% if id %}<kbd>{{ id }}</kbd>{% endif %}
+                </td>
+                <td class="w-100">
+                  {{ repr }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

@@ -103,6 +103,13 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['rol'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].queryset = roles_queryset
 
+    def clean(self):
+        cleaned_data = super().clean()
+        rol = cleaned_data.get('rol')
+        if rol and rol.name == User.AGENTE and not cleaned_data.get('email'):
+            self.add_error("email", _("Este campo es requerido para un usuario de tipo Agente."))
+        return cleaned_data
+
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -126,6 +133,11 @@ class UserChangeForm(forms.ModelForm):
         help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
         widget=forms.PasswordInput(),
         label=_('Contraseña (otra vez)'))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if kwargs["instance"].is_agente:
+            self.fields["email"].required = True
 
     def clean(self):
         cleaned_data = super(UserChangeForm, self).clean()

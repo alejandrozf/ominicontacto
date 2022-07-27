@@ -172,3 +172,19 @@ CONSTANCE_REDIS_CONNECTION = {
 SENDFILE_ROOT = "{0}/var/spool/asterisk/monitor".format(ASTERISK_LOCATION)
 SENDFILE_URL = '/grabaciones'
 SENDFILE_BACKEND = 'django_sendfile.backends.nginx'
+
+# email settings
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@{}".format(OML_OMNILEADS_HOSTNAME))
+# EMAIL_BACKEND = django.core.mail.backends.console.EmailBackend
+#   Used for development, email gets printed to console. Other EMAIL_ settings are ignored.
+# EMAIL_BACKEND = django.core.mail.backends.smtp.EmailBackend
+#   Used for real send using SMTP, requires EMAIL_* settings.
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 25))
+EMAIL_SSL_CERTFILE = os.getenv("EMAIL_SSL_CERTFILE", None)
+EMAIL_SSL_KEYFILE = os.getenv("EMAIL_SSL_KEYFILE", None)
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"

@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'reportes_app.apps.ReportesAppConfig',
     'supervision_app.apps.SupervisionAppConfig',
     'notification_app.apps.NotificationAppConfig',
+    'notification_app.message.apps.Config',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
@@ -123,6 +124,16 @@ TEMPLATES = [
                 'ominicontacto_app.context_processors.addon_menu_items',
             ],
         },
+    },
+    {
+        "BACKEND": "django.template.backends.jinja2.Jinja2",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "environment": "ominicontacto_app.template_backends_jinja2.environment",
+            "keep_trailing_newline": False,
+            "lstrip_blocks": True,
+            "trim_blocks": True,
+        }
     },
 ]
 
@@ -406,3 +417,5 @@ DJANGO_EASY_AUDIT_REGISTERED_URLS = [
     r'^/premium_reports/',
     r'^/grabacion/buscar/(\d+)/',
 ]
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

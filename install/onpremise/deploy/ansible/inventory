@@ -152,6 +152,22 @@ high_load=false
 #google_maps_api_key=
 #google_maps_center=
 
+#########################################
+#         SMTP external server          #
+#########################################
+
+email_smtp_relay=false
+#email_backend=
+#email_default_from=
+#email_host=
+#email_password=
+#email_user=
+#email_port=
+#email_ssl_certfile=
+#email_ssl_keyfile=
+#email_use_ssl=
+#email_use_tls=
+
 # Do not change the variables below or you will experience
 # bad things
 
