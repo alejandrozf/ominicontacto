@@ -14,7 +14,7 @@ RUN apk add --virtual .buildeps \
       cairo-dev \
       py3-flake8
 
-COPY requirements/requirements.txt ./
+COPY requirements.txt ./
 
 RUN mkdir -p $INSTALL_PREFIX/virtualenv \
   && pip3 install -r requirements.txt \

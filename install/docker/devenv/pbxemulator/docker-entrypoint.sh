@@ -5,7 +5,7 @@ ASTERISK_USER=${ASTERISK_USER:-asterisk}
 ASTERISK_GROUP=${ASTERISK_GROUP:-${ASTERISK_USER}}
 
 if [ "$1" = "" ]; then
-  COMMAND="/usr/sbin/asterisk -T -W -U ${ASTERISK_USER} -p -vvvdddf"
+  COMMAND="/usr/sbin/asterisk -U ${ASTERISK_USER} -p -vvvf"
 else
   COMMAND="$@"
 fi

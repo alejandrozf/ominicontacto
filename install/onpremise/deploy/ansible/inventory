@@ -20,9 +20,6 @@
 
 [everyone:vars]
 
-#oml_lan_ip=
-#oml_wan_ip=
-
 #####################################################################
 #                           Database                                #
 #   Set PostgreSQL password. If you have a PostgreSQL instance in a #
