@@ -46,6 +46,7 @@ urlpatterns = [
     re_path(r'^', include('reportes_app.urls')),
     re_path(r'^', include('configuracion_telefonia_app.urls')),
     re_path(r'^', include('supervision_app.urls')),
+    re_path(r'^notification/message/', include('notification_app.message.urls')),
     re_path(r'^', include('api_app.urls')),
     re_path(r'^accounts/logout/$', auth_views.LogoutView.as_view(next_page='/accounts/login/'),
             name="logout"),

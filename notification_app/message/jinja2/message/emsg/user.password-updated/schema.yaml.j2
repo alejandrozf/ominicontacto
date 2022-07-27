@@ -1,0 +1,59 @@
+---
+$id: user.password-updated
+properties:
+  context:
+    properties:
+      urls:
+        properties:
+          login:
+            type: string
+        required:
+          - login
+        type: object
+      user:
+        properties:
+          email:
+            type: string
+            minLength: 3
+          name:
+            type: string
+          password:
+            type: string
+          username:
+            type: string
+        required:
+          - email
+          - name
+          - password
+          - username
+        type: object
+    required:
+      - urls
+      - user
+    type: object
+  from:
+    type: string
+  to:
+    items:
+      type: string
+      minLength: 1
+    minItems: 1
+    type: array
+required:
+  - context
+  - from
+  - to
+type: object
+
+---
+default:
+  context:
+    urls:
+      login: https://example.com/login
+    user:
+      email: user@example.com
+      name: John Doe
+      password: password-raw
+      username: user
+  from: OMniLeads <webmaster@localhost>
+  to: John Doe <user@example.com>

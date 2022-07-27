@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <title>emsg-list</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/superkube@3.2.1/dist/superkube.min.css">
+    <style>
+      pre { white-space: break-spaces; }
+    </style>
+  </head>
+  <body>
+    <div class="container-large centered edges py-6">
+      <div class="table-scrollable">
+        <table class="table-bordered">
+          <tbody>
+            {% for item in items %}
+            <tr data-template="{{ item.template }}">
+              <td class="text-nowrap">
+                <div class="item flex flex-between">
+                  {% for template in item.template.split(".") %}
+                  <div class="item-column">
+                    <kbd>{{ template }}</kbd>
+                  </div>
+                  {% endfor %}
+                </div>
+              </td>
+              <td>
+                <ul class="list-unstyled">
+                  {% for text, href in item.urls %}
+                  <li>
+                    <a class="link-underline-off" href="{{ href }}" target="_blank">{{ text }}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </td>
+              <td style="padding: .3em;">
+                {% if item.document %}
+                <pre>{{ item.document }}</pre>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

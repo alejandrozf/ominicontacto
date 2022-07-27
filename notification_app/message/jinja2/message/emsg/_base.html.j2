@@ -1,0 +1,96 @@
+{% set css_font_family       = "font-family: 'Helvetica neue', Helvetica, Arial, Verdana, sans-serif;" %}
+{% set css_content_td        = "color: #42526E; " + css_font_family + " font-size: 16px; line-height: 22px; text-align: left;" %}
+{% set css_content_td_button = "color: #42526E; " + css_font_family + " font-size: 16px; line-height: 22px;" %}
+{% set css_content_a_button  = "border-radius: 3px; border: 1px solid #0052CC; color: #ffffff; display: inline-block; " + css_font_family + "font-size: 16px; padding:15px 40px; text-decoration: none;" %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--<![endif]-->
+    <!--[if gte mso 9]>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
+    <style type="text/css">
+      body {
+        height: 100% !important;
+        margin: 0 auto !important;
+        padding: 0;
+        width: 100% !important;
+      }
+      img, a img {
+        border: 0;
+        height: auto;
+        outline: none;
+        text-decoration: none;
+      }
+      table {
+        border-collapse: collapse;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+      }
+      #outlook a {
+        padding: 0;
+      }
+      table {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      .ExternalClass, .ReadMsgBody {
+        width: 100%;
+      }
+      a, p, td {
+        mso-line-height-rule: exactly;
+      }
+      a, body, p, table, td {
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      .ExternalClass, .ExternalClass div, .ExternalClass font, .ExternalClass p, .ExternalClass span, .ExternalClass td {
+        line-height: 100%;
+      }
+      a [x-apple-data-detectors] {
+        color: inherit !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+        text-decoration: none !important;
+      }
+    </style>
+  </head>
+  <body style="background-color: #ffffff; margin: 0; padding: 0;">
+    <table align="center" cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin: 0 auto; background-color: #ffffff;">
+      <tr>
+        <td style="font-size: 0;">&nbsp;</td>
+        <td align="center" style="width: 580px;" valign="top">
+          <table align="center" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+            <tr>
+              <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                  {% block content %}{% endblock %}
+                  {% block signature %}{% endblock %}
+                  {% block footer %}
+                  <tr>
+                    <td style="padding-bottom: 20px;"></td>
+                  </tr>
+                  {% endblock %}
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td style="font-size: 0;">&nbsp;</td>
+      </tr>
+    </table>
+  </body>
+</html>
