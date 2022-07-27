@@ -1,0 +1,480 @@
+version: '3.7'
+services:
+  acd:
+    container_name: omlacd
+    depends_on:
+      - postgresql
+      - redis
+      - haproxy
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    image: freetechsolutions/omlacd:${OMLACD_TAG}
+    networks:
+      - devenv
+    ports:
+      - 5130-5133:5160-5163/udp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlacd/source/astconf:/etc/asterisk/
+      - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
+      - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
+    working_dir: /etc/asterisk
+  
+  acd_01:
+    container_name: omlacd01
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    image: freetechsolutions/omlacd:${OMLACD_TAG}
+    networks:
+      - devenv
+    ports:
+      - 5230-5233:5160-5163/udp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlacd/source/astconf:/etc/asterisk/
+      - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
+      - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
+    working_dir: /etc/asterisk  
+  
+  app-builder:
+    container_name: omlappbuilder
+    dns: 8.8.8.8
+    image: freetechsolutions/omlapp-builder:${OMLAPPBUILDER_TAG}
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    volumes:
+      - requirements:/usr/local/lib/python3.7/
+      - pyst2:/root/requirements/src
+      - ../../../requirements:/root/requirements
+    working_dir: /root/requirements
+
+  app:
+    container_name: omlapp
+    depends_on:
+      - postgresql
+      - selenium
+    dns: 8.8.8.8
+    env_file:
+      - .env
+        # environment:
+    #     - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+    #     - AMI_USER=${AMI_USER}
+    #     - AMI_PASSWORD=${AMI_PASSWORD}
+    #     - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+    #     - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+    #     - PGHOST=${PGHOST}
+    #     - PGDATABASE=${PGDATABASE}
+    #     - PGUSER=${PGUSER}
+    #     - PGPASSWORD=${PGPASSWORD}
+    #     - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
+    #     - WOMBAT_USER=${WOMBAT_USER}
+    #     - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+    #     - WEBSOCKET_HOST=${WEBSOCKET_HOSTNAME}
+    #     - WEBSOCKET_PORT=${WEBSOCKET_PORT}
+    #     - CALIFICACION_REAGENDA=${CALIFICACION_REAGENDA}
+    #     - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+    #     - EPHEMERAL_USER_TTL=${EPHEMERAL_USER_TTL}
+    #     - INSTALL_PREFIX=${INSTALL_PREFIX}
+    #     - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
+    #     - SESSION_COOKIE_AGE=${SESSION_COOKIE_AGE}
+    #     - TZ=${TZ} 
+    #     - MONITORFORMAT=${MONITORFORMAT}
+    #     - CALLREC_DEVICE=${CALLREC_DEVICE}
+    #     - S3_STORAGE_ENABLED=${S3_STORAGE_ENABLED}
+    #     - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+    #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    #     - S3_ENDPOINT=${S3_ENDPOINT}
+    #     - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    #     - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+    #     - GOOGLE_MAPS_CENTER=${GOOGLE_MAPS_CENTER}
+    #     - OMNILEADS_HOSTNAME=nginx
+    #     - OML_BRANCH=${OML_BRANCH}
+    #     - OML_COMMIT=${OML_COMMIT}
+    #     - OML_BUILD_DATE=${OML_BUILD_DATE}  
+    image: freetechsolutions/omlapp:${OMLAPP_TAG}
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    volumes:
+      - requirements:/usr/local/lib/python3.7/
+      - pyst2:/src/pyst2/
+      - ../../../:/opt/omnileads/ominicontacto/
+    working_dir: /opt/omnileads/ominicontacto
+
+  wombat:
+    command: >
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+    container_name: omldialer
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/omldialer:21.06.2-7
+    networks:
+      - devenv
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    command:
+      - /bin/bash
+    container_name: omlkamailio
+    depends_on:
+      - redis
+      - acd
+    dns: 8.8.8.8
+    environment:
+      - AUTHEPH_SK=${AUTHEPH_SK}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - TZ=${TZ}
+      - SHM_SIZE=${SHM_SIZE}
+      - PKG_SIZE=${PKG_SIZE}
+      - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+    image: freetechsolutions/omlkam:${OMLKAM_TAG}
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlkamailio/source/conf:/etc/kamailio/
+
+  # siproxy:
+  #   command:
+  #     - /bin/bash
+  #   container_name: omlsipproxy
+  #   depends_on:
+  #     - redis
+  #     - acd
+  #   dns: 8.8.8.8
+  #   environment:
+  #     - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+  #     - ASTERISK01_HOSTNAME=${ASTERISK_HOSTNAME}
+  #     - KAMAILIOPSTN_HOSTNAME=${KAMAILIOPSTN_HOSTNAME}
+  #     - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+  #     - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+  #     - TZ=${TZ}
+  #     - SHM_SIZE=${SHM_SIZE}
+  #     - PKG_SIZE=${PKG_SIZE}
+  #     - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+  #   image: freetechsolutions/omlkam:{OMLKAM_TAG}
+  #   networks:
+  #     - devenv
+  #   ports:
+  #     - 5060:5060/udp      
+  #   privileged: true
+  #   restart: on-failure
+  #   stop_grace_period: 1m30s
+  #   volumes:
+  #     - ../../../../omlsipproxy/source/conf:/etc/kamailio/
+
+  mariadb:
+    container_name: omlmariadb
+    dns: 8.8.8.8
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+      - MARIADB_DATABASE=${WOMBAT_DB}
+      - MARIADB_USER=${WOMBAT_DB_USER}
+      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
+    image: bitnami/mariadb:latest
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+
+  nginx:
+    container_name: omlnginx
+    depends_on:
+      - app
+      - kamailio
+      - websockets
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ENV=devenv
+      - INFRA=docker
+    image: freetechsolutions/omlnginx:${OMLNGINX_TAG}
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlnginx/source/conf:/etc/nginx/
+
+  postgresql:
+    container_name: omlpostgresql
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    image: freetechsolutions/omlpgsql:${OMLPGSQL_TAG}
+    networks:
+      - devenv
+    ports:
+      - ${PG_EXT_PORT}:5432/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  pbxemulator:
+    container_name: omlpbxemulator
+    hostname: pbxemulator
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: freetechsolutions/omlpbxemulator:${OMLPSTNEMULATOR_TAG}
+    networks:
+      - devenv
+    ports:
+      - 5061:5060/udp
+      - 10000-10020:10000-10020/udp
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+
+  haproxy:
+    container_name: omlhaproxy
+    depends_on:
+      - redis
+      - redis_rep_01
+      - redis_rep_02
+      - app
+    dns: 8.8.8.8
+    image: freetechsolutions/omlhap:${OMLHAPROXY_TAG}
+    environment:
+      - TZ=${TZ}
+    networks:
+      - devenv
+    ports:
+      - ${NGINX_EXT_PORT}:443/tcp  
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../../omlhaproxy/build/docker/config/haproxy.conf:/etc/haproxy/
+
+  redis:
+    container_name: omlredis
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ROLE=main
+    networks:
+      - devenv
+    image: freetechsolutions/omlredis:${OMLREDIS_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - redis_data:/data
+
+  redis_rep_01:
+    container_name: omlredis_rep_01
+    depends_on:
+      - redis
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ROLE=replica
+    networks:
+      - devenv
+    image: freetechsolutions/omlredis:${OMLREDIS_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s  
+    volumes:
+      - redis_data_01:/data
+  
+  redis_rep_02:
+    container_name: omlredis_rep_02
+    depends_on:
+      - redis
+      - redis_rep_01
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ROLE=replica
+    networks:
+      - devenv
+    image: freetechsolutions/omlredis:${OMLREDIS_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - redis_data_02:/data
+
+  sentinel_01:
+    container_name: omlsentinel_01
+    depends_on:
+      - redis
+      - redis_rep_01
+      - redis_rep_02
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=3000
+      - SENTINEL_FAILOVER=6000      
+    networks:
+      - devenv
+    image: freetechsolutions/omlsentinel:${OMLSENTINEL_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  sentinel_02:
+    container_name: omlsentinel_02
+    depends_on:
+      - redis
+      - redis_rep_01
+      - redis_rep_02
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=3000
+      - SENTINEL_FAILOVER=6000      
+    networks:
+      - devenv
+    image: freetechsolutions/omlsentinel:${OMLSENTINEL_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  sentinel_03:
+    container_name: omlsentinel_03
+    depends_on:
+      - redis
+      - redis_rep_01
+      - redis_rep_02
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=3000
+      - SENTINEL_FAILOVER=6000      
+    networks:
+      - devenv
+    image: freetechsolutions/omlsentinel:${OMLSENTINEL_TAG}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  rtpengine:
+    container_name: omlrtpengine
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: drachtio/rtpengine:latest
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4445:4444"
+
+  websockets:
+    tty: true
+    container_name: omlwebsockets
+    image: freetechsolutions/oml-websockets:${OMLWS_TAG}
+    ports:
+      - "${WEBSOCKET_EXT_PORT}:8000"
+    networks:
+      - devenv
+    volumes:
+      - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
+
+  vue-cli:
+    tty: true
+    container_name: omlvuejscli
+    image: freetechsolutions/vue-cli:${OMLVUEJS_TAG}
+    ports:
+      - ${NODEJS_EXT_PORT}:8081
+    networks:
+      - devenv
+    volumes:
+      - ../../../omnileads_ui/:/home/app/
+
+  minio:
+    tty: true
+    container_name: omls3
+    image: quay.io/minio/minio
+    command: server --console-address ":9001" /data
+    environment:
+      - MINIO_ROOT_USER=${S3_HTTP_ADMIN_USER}
+      - MINIO_ROOT_PASSWORD=${S3_HTTP_ADMIN_PASS}
+    networks:
+      - devenv
+    expose:
+      - "9000"
+      - "9001"
+    ports:
+      - 9001:9001/tcp      
+    volumes:
+      - minio_data:/data
+      - ../ci-images/certs_minio:/root/.minio/certs/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+
+networks:
+  devenv:
+    ipam:
+      driver: default
+      config:
+        - subnet: "${SUBNET}"
+
+volumes:
+  mariadb_data:
+  postgresql_data:
+  redis_data:
+  redis_data_01:
+  redis_data_02:
+  requirements:
+  pyst2:
+  minio_data:

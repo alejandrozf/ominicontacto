@@ -218,7 +218,7 @@ class Command(BaseCommand):
                        "endpoint/context=from-pstn\n"
                        "remote_hosts=pbxemulator:5060\n"
                        "outbound_auth/username=01177660010\n"
-                       "outbound_auth/password=OMLtraining72\n")
+                       "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,
             caller_id='')

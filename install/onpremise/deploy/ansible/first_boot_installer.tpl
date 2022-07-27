@@ -26,7 +26,7 @@ export oml_app_release=master
 export oml_tenant_name=deployexample
 
 # ********** # Device for recordings
-# ********** # Values: local | s3 | s3-minio | s3-aws | nfs 
+# ********** # Values: local | s3 | s3-minio | s3-aws | nfs
 # local: if you want OMniLeads to consider storage data & recordings on local disk.
 # nfs: if you want OMniLeads to consider storage data & recordings on /opt/callrec (NFS mount point)
 # s3: if you want OMniLeads to consider storage data & recordings on generic S3 object storage.
@@ -361,9 +361,6 @@ fi
 if [[ "${oml_callrec_device}" != "NULL" ]];then
 sed -i "s/callrec_device=local/callrec_device=${oml_callrec_device}/g" $PATH_DEPLOY/inventory
 fi
-if [[ "${oml_backup_filename}" != "NULL" ]];then
-sed -i "s%\#backup_file_name=%backup_file_name=${oml_backup_filename}%g" $PATH_DEPLOY/inventory
-fi
 if [[ "${s3_access_key}" != "NULL" ]];then
 sed -i "s%\#s3_access_key=%s3_access_key=${s3_access_key}%g" $PATH_DEPLOY/inventory
 fi
@@ -378,9 +375,6 @@ sed -i "s%\#s3url=%s3url=${s3_endpoint_url}%g" $PATH_DEPLOY/inventory
 fi
 if [[ "${s3_region}" != "NULL" ]];then
 sed -i "s%\#s3_region=%s3_region=${s3_region}%g" $PATH_DEPLOY/inventory
-fi
-if [[ "${oml_auto_restore}" != "NULL" ]];then
-sed -i "s/auto_restore=false/auto_restore=${oml_auto_restore}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_high_load}" != "NULL" ]];then
 sed -i "s/high_load=false/high_load=${oml_high_load}/g" $PATH_DEPLOY/inventory
@@ -410,7 +404,7 @@ sed -i "s%\#email_user=%email_user=${oml_email_user}%g" $PATH_DEPLOY/inventory
 	if [[ "${oml_email_ssl_keyfile}" != "NULL" ]];then
 	sed -i "s%\#email_ssl_keyfile=%email_ssl_keyfile=${oml_email_ssl_keyfile}%g" $PATH_DEPLOY/inventory
 	fi
-else 
+else
 sed -i "s%\#email_backend=%email_backend=django.core.mail.backends.dummy.EmailBackend%g" $PATH_DEPLOY/inventory
 fi
 
