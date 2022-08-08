@@ -39,9 +39,9 @@
   when: rtpengine_host == "127.0.0.1"
 - import_playbook: modules/kamailio/deploy/kamailio.yml
   when: kamailio_host == omni_fqdn
-- import_playbook: modules/nginx/deploy/nginx.yml
 - import_playbook: modules/websockets/deploy/websockets.yml
-  when: websocket_host == "websockets"
+  when: websocket_host == "localhost"
+- import_playbook: modules/nginx/deploy/nginx.yml
 - import_playbook: modules/asterisk/deploy/asterisk.yml
   when: asterisk_host == omni_ip
 

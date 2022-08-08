@@ -1,11 +1,11 @@
 [submodule "modules/websockets"]
     path = modules/websockets
     url = https://gitlab.com/omnileads/omnileads-websockets.git
-    branch = 220606.01
+    branch = 220808.01
 [submodule "modules/nginx"]
     path = modules/nginx
     url = https://gitlab.com/omnileads/omlnginx.git
-    branch = 220614.01
+    branch = 220808.01
 [submodule "modules/kamailio"]
     path = modules/kamailio
     url = https://gitlab.com/omnileads/omlkamailio.git
