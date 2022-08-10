@@ -36,6 +36,11 @@ export default {
         hide: 'مبدل کردن',
         show: 'پنهان کردن'
     },
+    external_site_authentication: {
+        list_title: 'احراز هویت برای سایت های خارجی',
+        edit_title: 'ویرایش احراز هویت برای سایت خارجی',
+        new_title: 'احراز هویت جدید برای سایت خارجی'
+    },
     call_dispositions: {
         list_title: 'رتبه بندی ها',
         edit_title: 'امتیاز را ویرایش کنید',

@@ -39,6 +39,7 @@ import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import Textarea from 'primevue/textarea';
 import InlineMessage from 'primevue/inlinemessage';
+import Password from 'primevue/password';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -76,6 +77,7 @@ app.component('Steps', Steps);
 app.component('Toast', Toast);
 app.component('Textarea', Textarea);
 app.component('InlineMessage', InlineMessage);
+app.component('Password', Password);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

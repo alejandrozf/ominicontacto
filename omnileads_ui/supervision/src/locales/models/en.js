@@ -34,6 +34,18 @@ export default {
         trigger: 'Trigger',
         status: 'Status'
     },
+    external_site_authentication: {
+        id: 'ID',
+        name: 'Name',
+        url: 'Url',
+        username: 'Username',
+        password: 'Password',
+        campo_token: 'Token field',
+        duracion: 'Duration',
+        campo_duracion: 'Duration field',
+        token: 'Token',
+        expiracion_token: 'Token expiration'
+    },
     call_disposition: {
         id: 'ID',
         name: 'Name'

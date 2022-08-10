@@ -3155,6 +3155,9 @@ class AutenticacionSitioExterno(models.Model):
     def __str__(self):
         return "AutenticacionSitioExterno: {0}-{1}  ".format(self.id, self.nombre)
 
+    def tiene_sitios_externos(self):
+        return self.sitios_externos.all().count() > 0
+
 
 class SitioExterno(models.Model):
     """

@@ -76,5 +76,27 @@ export default {
     },
     dial_pattern: {
         enter_pattern: 'Ingresa el patron'
+    },
+    external_site_authentication: {
+        placeholders: {
+            name: 'Ingresa el nombre',
+            url: 'Ejemplo: https://www.omnileads.net/',
+            username: 'Ingresa el username',
+            campo_token: 'Ingresa el nombre del campo para el token',
+            campo_duracion: 'Ingresa el nombre del campo para la duracion',
+            duracion: 'Ingresa la duracion'
+        },
+        helpers: {
+            username: 'Sin espacios',
+            campo_token: 'Campo en el cual viene el token de acceso',
+            campo_duracion: 'Campo en el cual viene la duracion del token',
+            duracion: 'En segundos'
+        },
+        validations: {
+            name_already_exist: 'El nombre ya existe',
+            invalid_campo_duracion: 'Si no hay duracion debe existir el campo duracion',
+            invalid_name_campo_token: 'El nombre del campo token es invalido',
+            invalid_name_campo_duracion: 'El nombre del campo duracion es invalido'
+        }
     }
 };

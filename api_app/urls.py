@@ -48,6 +48,12 @@ from api_app.views.external_site import (
     SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
     SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
     SitioExternoUpdate)
+from api_app.views.external_site_authentication import (
+    ExternalSiteAuthenticationCreate,
+    ExternalSiteAuthenticationDelete,
+    ExternalSiteAuthenticationDetail,
+    ExternalSiteAuthenticationList,
+    ExternalSiteAuthenticationUpdate)
 from api_app.views.call_disposition import (
     CalificacionCreate, CalificacionDelete, CalificacionDetail,
     CalificacionList, CalificacionUpdate)
@@ -255,6 +261,24 @@ urlpatterns = [
     re_path(r'api/v1/external_sites/(?P<pk>\d+)/show/$',
             SitioExternoDesocultar.as_view(),
             name='api_external_sites_show'),
+    # ===================================
+    # Autenticacion de Sitios Externos
+    # ===================================
+    re_path(r'api/v1/external_site_authentications/$',
+            ExternalSiteAuthenticationList.as_view(),
+            name='api_external_site_authentications_list'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/$',
+            ExternalSiteAuthenticationDetail.as_view(),
+            name='api_external_site_authentications_detail'),
+    re_path(r'api/v1/external_site_authentications/create/$',
+            ExternalSiteAuthenticationCreate.as_view(),
+            name='api_external_site_authentications_create'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/update/$',
+            ExternalSiteAuthenticationUpdate.as_view(),
+            name='api_external_site_authentications_update'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/delete/$',
+            ExternalSiteAuthenticationDelete.as_view(),
+            name='api_external_site_authentications_delete'),
     # =========================
     # Calificaciones
     # =========================

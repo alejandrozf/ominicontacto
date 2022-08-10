@@ -36,6 +36,11 @@ export default {
         hide: 'Hide',
         show: 'Unhide'
     },
+    external_site_authentication: {
+        list_title: 'External site authentications',
+        edit_title: 'Edit external site authentication',
+        new_title: 'New external site authentication'
+    },
     call_dispositions: {
         list_title: 'Call Dispositions',
         edit_title: 'Edit Call Disposition',

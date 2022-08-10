@@ -163,6 +163,16 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_hide',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_show',
@@ -429,6 +439,21 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_external_sites_delete':
             {'descripcion': _('Elimina un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_list':
+            {'descripcion': _('Lista las autenticaciones para sitios externos'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_detail':
+            {'descripcion': _('Obtiene el detalle de una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_create':
+            {'descripcion': _('Crea una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_update':
+            {'descripcion': _('Actualiza una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_delete':
+            {'descripcion': _('Elimina una autenticacion para sitio externo'),
              'version': '1.23.0'},
         'api_external_sites_hide':
             {'descripcion': _('Oculta un sitio externo'),

@@ -222,6 +222,12 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Sitios Externos'),
                 'url': reverse('sitio_externo_list')
             })
+        #  Autenticacion Sitios Externos
+        if 'sitio_externo_autenticacion_list' in permissions:
+            campanas.append({
+                'label': _('Autenticación Sitios Externos'),
+                'url': reverse('sitio_externo_autenticacion_list')
+            })
         #  Sistemas Externos
         if 'sistema_externo_list' in permissions:
             campanas.append({
@@ -623,6 +629,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'sistema_externo_list',
              'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_list',
+             'roles': ['Administrador', ]},
+            {'nombre': 'sitio_externo_autenticacion_list',
              'roles': ['Administrador', ]},
             {'nombre': 'queue_member_add',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -1040,6 +1048,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},
         'sitio_externo_list':
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
+        'sitio_externo_autenticacion_list':
+            {'descripcion': _('Lista Autenticaciones de Sitios Externos'), 'version': '1.23.0'},
         'queue_member_add':
             {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
         'queue_member_grupo_agente':

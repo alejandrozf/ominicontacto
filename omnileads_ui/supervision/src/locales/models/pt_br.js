@@ -34,6 +34,18 @@ export default {
         trigger: 'Acionar',
         status: 'Doença'
     },
+    external_site_authentication: {
+        id: 'ID',
+        name: 'Nome',
+        url: 'Url',
+        username: 'Nome de usuário',
+        password: 'Senha',
+        campo_token: 'Campo token',
+        duracion: 'Duração',
+        campo_duracion: 'Campo de duração',
+        token: 'Token',
+        expiracion_token: 'expiração do token'
+    },
     call_disposition: {
         id: 'ID',
         name: 'Nome'
