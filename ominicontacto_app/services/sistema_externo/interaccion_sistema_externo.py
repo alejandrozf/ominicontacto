@@ -24,6 +24,7 @@ import logging
 import requests
 
 from django.utils.translation import ugettext as _
+from django.utils.timezone import now, timedelta
 from ominicontacto_app.models import SitioExterno
 
 logger = logging.getLogger(__name__)
@@ -47,5 +48,60 @@ class InteraccionConSistemaExterno(object):
             elif sitio_externo.formato == SitioExterno.JSON:
                 requests.post(url, json=parametros)
         except Exception as e:
+            # Si es invalido el token:
+            #     pido token de nuevo y reintento 1 vez
+            #     Si vuelve a fallar log error y aviso al agente.
             logger.exception(err_msg.format(e))
             return e
+
+    def obtener_token(self, autenticacion):
+        """ Devuelve (Token, False) o ("Mensaje de Error", True)"""
+        ahora = now()
+        if autenticacion.token and autenticacion.expiracion_token \
+                and autenticacion.expiracion_token > ahora:
+            return autenticacion.token, False
+        else:
+            return self.actualizar_token(autenticacion)
+
+    def actualizar_token(self, autenticacion, verify_ssl=True):
+        parametros = {
+            'username': autenticacion.username,
+            'password': autenticacion.password
+        }
+        err_msg = _('Error al actualizar token de AutenticacionSitioExterno: {0}')
+        try:
+            ahora = now()
+            response = requests.post(autenticacion.url, parametros, verify=verify_ssl)
+        except requests.exceptions.SSLError as e:
+            if verify_ssl:
+                # Si hay error de validación SSL intento nuevamente sin verificar.
+                # (debería configurarse en AutenticacionSitioExterno?)
+                self.actualizar_token(autenticacion, verify_ssl=False)
+                return autenticacion.token, False
+            else:
+                err_msg.format(e), True
+        except Exception as e:
+            logger.exception(err_msg.format(e))
+            return err_msg.format(e), True
+
+        if response.headers.get('Content-Type') == 'application/json':
+            response_json = response.json()
+            token = self.leer_campo(autenticacion.campo_token, response_json)
+            if token is None:
+                return err_msg.format('No se pudo obtener el token'), True
+            autenticacion.token = token
+
+            if autenticacion.duracion > 0:
+                autenticacion.expiracion_token = ahora + timedelta(seconds=autenticacion.duracion)
+            else:
+                duracion = self.leer_campo(autenticacion.campo_duracion, response_json)
+                duracion = int(float(duracion))
+                autenticacion.expiracion_token = ahora + timedelta(seconds=duracion)
+            autenticacion.save()
+            return autenticacion.token, False
+        else:
+            return err_msg.format('Content-Type inválido'), True
+
+    def leer_campo(self, campo, response_json):
+        # En principio se asume que el campo esta en el primer nivel del objeto response.
+        return response_json.get(campo, None)

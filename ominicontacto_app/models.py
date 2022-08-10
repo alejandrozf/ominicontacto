@@ -3137,6 +3137,25 @@ class ContactoBlacklist(models.Model):
         return "Telefono no llame {0}  ".format(self.telefono)
 
 
+class AutenticacionSitioExterno(models.Model):
+    """
+    Configuración para la autenticación a utilizar en las interacciones con un Sitio Externo
+    """
+    nombre = models.CharField(max_length=128, unique=True)
+    url = models.URLField(max_length=250)
+    username = models.CharField(max_length=128)
+    password = models.CharField(max_length=128)
+    campo_token = models.CharField(max_length=128, default='token')
+    duracion = models.PositiveIntegerField()  # Duracion en segundos. 0 Para
+    campo_duracion = models.CharField(max_length=128, blank=True)
+    ssl_estricto = models.BooleanField(default=True)
+    token = models.TextField(blank=True, null=True)
+    expiracion_token = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return "AutenticacionSitioExterno: {0}-{1}  ".format(self.id, self.nombre)
+
+
 class SitioExterno(models.Model):
     """
     sitio externo para embeber en el agente
@@ -3192,6 +3211,9 @@ class SitioExterno(models.Model):
                                           verbose_name='Content-Type')
     objetivo = models.PositiveIntegerField(choices=OBJETIVOS, default=EMBEBIDO,
                                            blank=True, null=True)
+    autenticacion = models.ForeignKey(
+        AutenticacionSitioExterno, related_name='sitios_externos', blank=True, null=True,
+        on_delete=models.SET_NULL)
 
     def __str__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
