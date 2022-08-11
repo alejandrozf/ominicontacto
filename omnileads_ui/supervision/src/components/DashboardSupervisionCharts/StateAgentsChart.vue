@@ -6,7 +6,7 @@
       </h5>
     </template>
     <template #content>
-      <Chart type="bar" :data="basicData" :options="chartOptions" />
+      <Chart type="bar" :data="basicData" :options="chartOptions"  :height="50"/>
     </template>
   </Card>
 </template>
@@ -25,6 +25,13 @@ export default {
                     labels: {
                         color: '#495057'
                     }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        stepSize: 1,
+                    },
                 }
             }
         });

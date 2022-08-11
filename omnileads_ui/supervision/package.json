@@ -13,6 +13,7 @@
   "dependencies": {
     "@vuelidate/core": "^2.0.0-alpha.38",
     "@vuelidate/validators": "^2.0.0-alpha.28",
+    "@vueuse/core": "^9.0.0",
     "bootstrap": "^4.0.0-beta",
     "chart.js": "^3.6.2",
     "core-js": "^3.6.5",

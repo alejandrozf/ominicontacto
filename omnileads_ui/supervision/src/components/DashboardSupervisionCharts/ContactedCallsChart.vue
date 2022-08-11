@@ -6,7 +6,7 @@
       </h5>
     </template>
     <template #content>
-      <Chart type="pie" :data="basicData" :options="chartOptions" />
+      <Chart type="pie" :data="basicData" :options="chartOptions"  :height="50" />
     </template>
   </Card>
 </template>

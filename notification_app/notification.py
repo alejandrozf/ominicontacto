@@ -1,6 +1,10 @@
+import datetime
+import time
+import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from notification_app.consumers import AgentConsole
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 
 class AgentNotifier:
@@ -23,3 +27,21 @@ class AgentNotifier:
                 "args": message
             }
         })
+
+
+class RedisStreamNotifier:
+
+    def __init__(self):
+        self.redis_stream = RedisStreams()
+
+    def send(self, type_event, user_id=None):
+        if type_event in ['login', 'logout']:
+            stream_name = 'auth_event_{}'.format(str(datetime.date.today()))
+        elif type_event == 'calification':
+            stream_name = 'calification_event_{}'.format(str(datetime.date.today()))
+        content = {
+            'event': type_event,
+            'timestamp': time.time(),
+            'agent': user_id
+        }
+        self.redis_stream.write_stream(stream_name, json.dumps(content))
