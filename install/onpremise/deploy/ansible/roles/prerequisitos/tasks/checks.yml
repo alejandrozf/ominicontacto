@@ -83,6 +83,12 @@
   changed_when: false
   when: rtpengine_host is not defined
 
+- name: Setting websockets as localhost
+  set_fact: websocket_host=localhost
+  tags: always
+  changed_when: false
+  when: websocket_host is not defined
+
 - name: Setting redis as localhost
   set_fact: redis_host=localhost
   tags: always
@@ -201,32 +207,6 @@
 
 - set_fact: ami_password="{{ assert_amipass.stdout }}"
   when: assert_amipass.rc == 0 and ami_password is not defined
-  tags: always
-
-- name: Check if $WEBSOCKET_HOST was defined previously
-  shell: bash -lc 'if [ -z $WEBSOCKET_HOST ]; then exit 1; else echo $WEBSOCKET_HOST; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_websockethost
-  tags: always
-
-- set_fact: websocket_host="{{ assert_websockethost.stdout }}"
-  when: assert_websockethost.rc == 0 and websocket_host == "websockets"
-  tags: always
-
-- name: Check if $WEBSOCKET_PORT was defined previously
-  shell: bash -lc 'if [ -z $WEBSOCKET_PORT ]; then exit 1; else echo $WEBSOCKET_PORT; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_websocketport
-  tags: always
-
-- set_fact: websocket_port="{{ assert_websocketport.stdout }}"
-  when: assert_websocketport.rc == 0 and websocket_port == 8000
   tags: always
 
 - name: Check if $WOMBAT_USER was defined previously

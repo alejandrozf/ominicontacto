@@ -30,11 +30,6 @@
     state: present
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
-      {% if websocket_host == "websockets" %}
-      {{ omni_ip }} websockets
-      {% else %}
-      {{ websocket_host }} websockets
-      {% endif %}
   tags: postinstall
 
 # Se setea el timezone
