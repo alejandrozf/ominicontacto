@@ -338,7 +338,7 @@ if [[ "${oml_websocket_host}" != "NULL" ]];then
 	sed -i "s/#websocket_host=/websocket_host=${oml_websocket_host}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_websocket_port}" != "NULL" ]];then
-	sed -i "s/#websocket_port=/websocket_port=${oml_websocket_port}/g" $PATH_DEPLOY/inventory
+	sed -i "s/websocket_port=8000/websocket_port=${oml_websocket_port}/g" $PATH_DEPLOY/inventory
 fi
 
 # Others App params *******
