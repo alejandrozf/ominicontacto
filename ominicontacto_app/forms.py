@@ -614,6 +614,9 @@ class GrabacionBusquedaForm(forms.Form):
                                              choices=([(10, 10), (25, 25), (50, 50), (100, 100)]),
                                              label=_('Grabaciones por página'),
                                              widget=forms.Select(attrs={'class': 'form-control'}),)
+    calificacion = forms.ChoiceField(required=False, label=_('Calificación'),
+                                     widget=forms.Select(attrs={'class': 'form-control'}),
+                                     choices=())
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
@@ -623,6 +626,12 @@ class GrabacionBusquedaForm(forms.Form):
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
 
+        calificaciones = OpcionCalificacion.objects.distinct(
+            'nombre').values_list('nombre', flat=True)
+        calificaciones_choices = [(opt, opt) for opt in calificaciones]
+        calificaciones_choices.insert(0, EMPTY_CHOICE)
+        self.fields['calificacion'].choices = calificaciones_choices
+
 
 class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
@@ -630,7 +639,7 @@ class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
 
     field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
                    'agente', 'campana', 'pagina', 'id_contacto_externo', 'duracion',
-                   'marcadas', 'gestion', 'grabaciones_x_pagina']
+                   'marcadas', 'gestion', 'grabaciones_x_pagina', 'calificacion']
 
 
 class AuditoriaBusquedaForm(forms.Form):
