@@ -3660,6 +3660,8 @@ class ParametrosCrm(models.Model):
     OPCIONES_LLAMADA = (
         ('call_id', _('ID de Llamada')),
         ('agent_id', _('ID de Agente')),
+        ('agent_username', _('Username de Agente')),
+        ('agent_name', _('Nombre de Agente')),
         ('telefono', _('Teléfono')),
         ('id_contacto', _('ID de Cliente')),
         ('rec_filename', _('Archivo de Grabación')),
@@ -3718,6 +3720,10 @@ class ParametrosCrm(models.Model):
         LlamadaLog = apps.get_model('reportes_app.LlamadaLog')
         if self.valor == 'agent_id':
             return agente.id
+        if self.valor == 'agent_username':
+            return agente.user.username
+        if self.valor == 'agent_name':
+            return agente.user.get_full_name()
         elif self.valor == 'datetime':
             callid = datos_de_llamada['call_id']
             llamada_log = LlamadaLog.objects.filter(callid=callid).first()
