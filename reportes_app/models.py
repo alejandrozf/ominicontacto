@@ -31,7 +31,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \
-    GrabacionMarca
+    GrabacionMarca, HistoricalCalificacionCliente
 
 
 class QueueLog(models.Model):
@@ -207,7 +207,7 @@ class LlamadaLogManager(models.Manager):
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
-                                      marcadas, duracion, gestion):
+                                      marcadas, duracion, gestion, calificaciones):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
                            'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
@@ -221,6 +221,10 @@ class LlamadaLogManager(models.Manager):
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
+        if calificaciones:
+            call_ids = HistoricalCalificacionCliente.objects.filter(
+                opcion_calificacion_id__in=calificaciones).values_list('callid', flat=True)
+            grabaciones = grabaciones.filter(callid__in=call_ids)
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)

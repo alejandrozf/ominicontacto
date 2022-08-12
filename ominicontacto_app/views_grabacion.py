@@ -35,7 +35,7 @@ from django.core.exceptions import PermissionDenied
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
-    GrabacionMarca, Campana, CalificacionCliente)
+    GrabacionMarca, Campana, CalificacionCliente, OpcionCalificacion)
 from .utiles import convert_fecha_datetime, fecha_local
 from reportes_app.models import LlamadaLog
 
@@ -133,13 +133,17 @@ class BusquedaGrabacionFormView(FormView):
         duracion = form.cleaned_data.get('duracion', 0)
         gestion = form.cleaned_data.get('gestion', False)
         campanas = self._get_campanas()
+        nombre_calificacion = form.cleaned_data.get('calificacion', None)
+        calificaciones = OpcionCalificacion.objects.filter(nombre=nombre_calificacion)\
+                                                   .values_list('id', flat=True)
         pagina = form.cleaned_data.get('pagina')
         grabaciones_x_pagina = form.cleaned_data.get('grabaciones_x_pagina')
         listado_de_grabaciones = self._get_grabaciones_por_filtro(fecha_desde, fecha_hasta,
                                                                   tipo_llamada, tel_cliente,
                                                                   callid, id_contacto_externo,
                                                                   agente, campana, campanas,
-                                                                  marcadas, duracion, gestion)
+                                                                  marcadas, duracion, gestion,
+                                                                  calificaciones)
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina,
@@ -147,10 +151,10 @@ class BusquedaGrabacionFormView(FormView):
 
     def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                     callid, id_contacto_externo, agente, campana, campanas,
-                                    marcadas, duracion, gestion):
+                                    marcadas, duracion, gestion, calificaciones):
         return LlamadaLog.objects.obtener_grabaciones_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
-            agente, campana, campanas, marcadas, duracion, gestion)
+            agente, campana, campanas, marcadas, duracion, gestion, calificaciones)
 
     def _get_calificaciones(self, grabaciones):
         try:
@@ -196,10 +200,10 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
 
     def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                     callid, id_contacto_externo, agente, campana, campanas,
-                                    marcadas, duracion, gestion):
+                                    marcadas, duracion, gestion, calificaciones):
         logs = LlamadaLog.objects.obtener_grabaciones_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
-            agente, campana, campanas, marcadas, duracion, gestion)
+            agente, campana, campanas, marcadas, duracion, gestion, calificaciones)
 
         return self._procesa_formato_transferencias(logs)
 
