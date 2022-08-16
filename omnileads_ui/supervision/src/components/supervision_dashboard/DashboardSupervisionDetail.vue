@@ -75,7 +75,7 @@ export default {
         StateAgentsChart,
         ContactedCallsChart,
         StateAgentsChartLine
-        
+
     },
     setup () {}
 };
