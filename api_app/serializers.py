@@ -22,9 +22,7 @@ from __future__ import unicode_literals
 import json
 
 from django.forms import ValidationError
-
 from rest_framework import serializers
-
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import (
     AgenteEnContacto, AgenteEnSistemaExterno, AgenteProfile, ArchivoDeAudio,
@@ -484,7 +482,7 @@ class ConfiguracionDePausaSerializer(serializers.ModelSerializer):
         return config.pausa.get_tipo()
 
 
-class PausaSerializer(serializers.ModelSerializer):
+class OpcionesDePausaParaConjuntoSerializer(serializers.ModelSerializer):
     es_productiva = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -647,3 +645,18 @@ class FormularioSerializer(serializers.ModelSerializer):
 
     def get_se_puede_modificar(self, formulario):
         return formulario.se_puede_modificar()
+
+
+class PausaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pausa
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return Pausa.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.tipo = validated_data.get('tipo', instance.tipo)
+        instance.save()
+        return instance

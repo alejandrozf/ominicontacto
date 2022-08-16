@@ -242,11 +242,6 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Listado de pausas'),
                 'url': reverse('pausa_list')
             })
-        if 'pausa_nuevo' in permissions:
-            pausas.append({
-                'label': _('Nueva pausa'),
-                'url': reverse('pausa_nuevo')
-            })
         if 'conjuntos_de_pausas_list' in permissions:
             pausas.append({
                 'label': _('Conjuntos de pausas'),
@@ -384,12 +379,6 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'grupo_detalle',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'pausa_list',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_update',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'grabacion_marcar',
              'roles': ['Agente', ]},
@@ -765,12 +754,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Detalle del Grupo'), 'version': '1.7.0'},
         'pausa_list':
             {'descripcion': _('Ver lista de Pausas'), 'version': '1.7.0'},
-        'pausa_nuevo':
-            {'descripcion': _('Crear Pausa'), 'version': '1.7.0'},
-        'pausa_update':
-            {'descripcion': _('Modificar Pausa'), 'version': '1.7.0'},
-        'pausa_delete':
-            {'descripcion': _('Borrar Pausa'), 'version': '1.7.0'},
         'grabacion_marcar':
             {'descripcion': _('Marcar la grabación en curso.'), 'version': '1.7.0'},
         'grabacion_descripcion':

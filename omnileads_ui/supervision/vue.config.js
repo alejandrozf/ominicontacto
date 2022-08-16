@@ -27,7 +27,8 @@ module.exports = {
         external_sites: getPageConfig('external_sites'),
         call_dispositions: getPageConfig('call_dispositions'),
         external_systems: getPageConfig('external_systems'),
-        forms: getPageConfig('forms')
+        forms: getPageConfig('forms'),
+        pauses: getPageConfig('pauses')
     },
     devServer: {
         proxy: {

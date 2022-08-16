@@ -4,35 +4,35 @@ const service = new PauseSetService();
 
 export default {
     async initPauseSets ({ commit }) {
-        const { pauseSets } = await service.getPauseSetsList();
+        const { pauseSets } = await service.list();
         commit('initPauseSets', pauseSets);
     },
-    async initPauseSetDetail ({ commit }, idPauseGroup) {
-        const { pauseSetDetail } = await service.getPauseSetDetail(idPauseGroup);
+    async initPauseSetDetail ({ commit }, id) {
+        const { pauseSetDetail } = await service.detail(id);
         commit('initPauseSetDetail', pauseSetDetail);
     },
     async deletePauseSet ({ commit }, id) {
-        const { status } = await service.deletePauseSet(id);
+        const { status } = await service.delete(id);
         if (status === 'SUCCESS') {
             return true;
         }
         return false;
     },
-    async initPauses ({ commit }) {
+    async initActivePauses ({ commit }) {
         const { pauses } = await service.getPauses();
-        commit('initPauses', pauses);
+        commit('initActivePauses', pauses);
     },
-    async createPauseSet ({ commit }, pauseGroupData) {
-        const { status } = await service.createPauseSet(pauseGroupData);
+    async createPauseSet ({ commit }, data) {
+        const { status } = await service.create(data);
         if (status === 'SUCCESS') {
-            const { pauseSets } = await service.getPauseSetsList();
+            const { pauseSets } = await service.list();
             commit('initPauseSets', pauseSets);
             return true;
         }
         return false;
     },
     async updatePauseSetName ({ commit }, { id, name }) {
-        const { status } = await service.updatePauseSetName(id, { nombre: name });
+        const { status } = await service.update(id, { nombre: name });
         if (status === 'SUCCESS') {
             return true;
         }

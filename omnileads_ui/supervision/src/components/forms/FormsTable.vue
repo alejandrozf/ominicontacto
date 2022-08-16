@@ -118,7 +118,7 @@
           <Button
             icon="pi pi-eye"
             v-if="slotProps.data.oculto == true"
-            class="p-button-success ml-2"
+            class="ml-2"
             @click="show(slotProps.data.id)"
             v-tooltip.top="$t('views.external_sites.show')"
           />

@@ -86,6 +86,7 @@ export default {
     next: 'Siguiente',
     up: 'Mover arriba',
     down: 'Mover abajo',
+    reactivate: 'Reactivar',
     // ---------------------
     // --- Notifications ---
     // ---------------------
@@ -102,6 +103,7 @@ export default {
     error_to_updated: 'Error al actualizar',
     error_to_hide_type: 'Error al ocultar {type}',
     error_to_show_type: 'Error al desocultar {type}',
+    error_to_reactivate_type: 'Error al reactivar {type}',
     success_updated_type: '{type} actualizado exitosamente | {type} actualizada exitosamente',
     success_updated: 'Actualizado exitosamente | Actualizada exitosamente | Actualizados exitosamente',
     success_added_type: '{type} agregado exitosamente | {type} agregada exitosamente',
@@ -110,6 +112,7 @@ export default {
     success_deleted: 'Eliminado exitosamente | Eliminada exitosamente',
     success_show_type: '{type} desocultado exitosamente | {type} desocultada exitosamente',
     success_hide_type: '{type} ocultado exitosamente | {type} ocultada exitosamente',
+    success_reactive_type: '{type} reactivado exitosamente | {type} reactivada exitosamente',
     confirm_to_delete: '¿Estás seguro de que quieres eliminar?',
     success_notification: '¡Operación exitosa!',
     error_notification: '¡Operación erronea!',

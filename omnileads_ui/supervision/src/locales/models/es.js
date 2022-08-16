@@ -62,5 +62,11 @@ export default {
         type: 'Tipo',
         required: 'Es obligatorio',
         list_options: 'Opciones de lista'
+    },
+    pause: {
+        id: 'ID',
+        name: 'Nombre',
+        type: 'Tipo',
+        status: 'Activa'
     }
 };

@@ -6,9 +6,7 @@
       </template>
       <template #end>
         <Button
-          :label="
-            $tc('globals.back_to', { type: $tc('globals.external_site', 2) })
-          "
+          :label="$t('globals.back')"
           icon="pi pi-arrow-left"
           class="p-button-info mr-2"
           @click="backToExternalSitesList"

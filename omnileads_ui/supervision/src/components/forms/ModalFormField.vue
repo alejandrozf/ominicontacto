@@ -3,7 +3,7 @@
     :visible="showModal"
     :style="{ width: '60vw' }"
     :closable="false"
-    :modal="true"
+    :modal="false"
   >
     <template #header>
       <h2>{{ $t("forms.form.new_field") }}</h2>

@@ -62,5 +62,11 @@ export default {
         type: 'پسر',
         required: 'اجباری است',
         list_options: 'گزینه های لیست'
+    },
+    pause: {
+        id: 'برو',
+        name: 'نام',
+        type: 'پسر',
+        status: 'وضعیت'
     }
 };

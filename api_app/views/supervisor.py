@@ -54,7 +54,7 @@ from api_app.serializers import (
     CampanaSerializer, AuditSupervisorCRUDEventSerializer, AuditSupervisorLoginEventSerializer,
     AuditSupervisorRequestEventSerializer, AgenteDeCampanaSerializer, AgenteActivoSerializer,
     ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer,
-    GrupoSerializer, PausaSerializer)
+    GrupoSerializer, OpcionesDePausaParaConjuntoSerializer)
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, ConfiguracionDePausa,
     ConjuntoDePausa, Pausa, QueueMember, Grupo,
@@ -1118,7 +1118,8 @@ class Pausas(APIView):
             'pauses': []}
         try:
             data['pauses'] = [
-                PausaSerializer(p).data for p in Pausa.objects.filter(
+                OpcionesDePausaParaConjuntoSerializer(p).data
+                for p in Pausa.objects.filter(
                     eliminada=False)]
             return Response(data=data, status=status.HTTP_200_OK)
         except Pausa.DoesNotExist:
@@ -1144,7 +1145,8 @@ class ConjuntoDePausaList(APIView):
         try:
             conjuntosDePausa = ConjuntoDePausa.objects.all()
             data['pauseSets'] = [
-                ConjuntoDePausaSerializer(conjunto).data for conjunto in conjuntosDePausa]
+                ConjuntoDePausaSerializer(conjunto).data
+                for conjunto in conjuntosDePausa]
             return Response(data=data, status=status.HTTP_200_OK)
         except ConjuntoDePausa.DoesNotExist:
             data['status'] = 'ERROR'

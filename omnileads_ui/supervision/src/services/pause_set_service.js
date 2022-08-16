@@ -1,80 +1,17 @@
-import apiUrls from '../const';
+import urls from '../const/pause_set_urls';
 import { HTTP, BaseService } from './base_service';
 
 export default class PauseSetService extends BaseService {
+    constructor () {
+        super(urls, 'Conjunto de Pausa');
+    }
+
     async getPauses () {
         try {
-            const resp = await fetch(apiUrls.ActivePauses, this.payload);
+            const resp = await fetch(urls.ActivePauses, this.payload);
             return await resp.json();
         } catch (error) {
             console.error('No se pudieron obtener las pausas');
-            return [];
-        }
-    }
-
-    async getPauseSetsList () {
-        try {
-            const resp = await fetch(apiUrls.PauseSetsList, this.payload);
-            return await resp.json();
-        } catch (error) {
-            console.error('No se pudieron obtener los conjuntos de pausas');
-            return [];
-        }
-    }
-
-    async getPauseSetDetail (id) {
-        try {
-            const resp = await fetch(apiUrls.PauseSetDetail(id), this.payload);
-            return await resp.json();
-        } catch (error) {
-            console.error('No se pudo obtener el detalle del conjunto de pausas');
-            return [];
-        }
-    }
-
-    async createPauseSet (pauseGroup) {
-        try {
-            this.setPayload(HTTP.POST, JSON.stringify(pauseGroup));
-            const resp = await fetch(
-                apiUrls.PauseSetCreate,
-                this.payload
-            );
-            this.initPayload();
-            return await resp.json();
-        } catch (error) {
-            console.error('No se pudo crear el conjunto de pausas');
-            console.error(error);
-            return {};
-        }
-    }
-
-    async updatePauseSetName (id, name) {
-        try {
-            this.setPayload(HTTP.PUT, JSON.stringify(name));
-            const resp = await fetch(
-                apiUrls.PauseSetUpdate(id),
-                this.payload
-            );
-            this.initPayload();
-            return await resp.json();
-        } catch (error) {
-            console.error('No se pudo actualizar el conjunto de pausas');
-            console.error(error);
-            return {};
-        }
-    }
-
-    async deletePauseSet (id) {
-        try {
-            this.setPayload(HTTP.DELETE);
-            const resp = await fetch(
-                apiUrls.PauseSetDelete(id),
-                this.payload
-            );
-            this.initPayload();
-            return await resp.json();
-        } catch (error) {
-            console.error('No se pudo eliminar el conjunto de pausas');
             return [];
         }
     }
@@ -83,15 +20,16 @@ export default class PauseSetService extends BaseService {
         try {
             this.setPayload(HTTP.POST, JSON.stringify(pauseConfig));
             const resp = await fetch(
-                apiUrls.PauseConfigCreate,
+                urls.PauseConfigCreate,
                 this.payload
             );
-            this.initPayload();
             return await resp.json();
         } catch (error) {
-            console.error('No se pudo crear la configuracion de pausa');
+            console.error('Error al crear < Configuracion de Pausa >');
             console.error(error);
             return {};
+        } finally {
+            this.initPayload();
         }
     }
 
@@ -99,15 +37,16 @@ export default class PauseSetService extends BaseService {
         try {
             this.setPayload(HTTP.PUT, JSON.stringify(pauseConfig));
             const resp = await fetch(
-                apiUrls.PauseConfigUpdate(id),
+                urls.PauseConfigUpdate(id),
                 this.payload
             );
-            this.initPayload();
             return await resp.json();
         } catch (error) {
-            console.error('No se pudo actualizar la configuracion de pausa');
+            console.error('Error al actualizar < Configuracion de Pausa >');
             console.error(error);
             return {};
+        } finally {
+            this.initPayload();
         }
     }
 
@@ -115,14 +54,15 @@ export default class PauseSetService extends BaseService {
         try {
             this.setPayload(HTTP.DELETE);
             const resp = await fetch(
-                apiUrls.PauseConfigDelete(id),
+                urls.PauseConfigDelete(id),
                 this.payload
             );
-            this.initPayload();
             return await resp.json();
         } catch (error) {
-            console.error('No se pudo eliminar la configuracion de pausa');
+            console.error('Error al eliminar < Configuracion de Pausa >');
             return [];
+        } finally {
+            this.initPayload();
         }
     }
 }

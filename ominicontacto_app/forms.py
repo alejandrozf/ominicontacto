@@ -40,7 +40,7 @@ from constance import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, ContactoBlacklist,
-    Campana, Contacto, CalificacionCliente, Grupo, FieldFormulario, Pausa,
+    Campana, Contacto, CalificacionCliente, Grupo, FieldFormulario,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm,
@@ -1368,21 +1368,6 @@ class UpdateBaseDatosForm(forms.ModelForm):
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
-
-
-class PausaForm(forms.ModelForm):
-
-    class Meta:
-        model = Pausa
-        fields = ('nombre', 'tipo')
-        widgets = {
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
 
 
 FormularioCalificacionFormSet = inlineformset_factory(

@@ -135,6 +135,11 @@ export default {
     },
     methods: {
         cleanNewPauseConfig () {
+            this.btnEditStatus = true;
+            this.maxTimeAllowed = false;
+            this.minTimeAllowed = false;
+            this.infinitePause = false;
+            this.pausesTypeSelected = 1;
             this.disableTime = false;
             this.newPauseConfig = {
                 pauseId: 0,

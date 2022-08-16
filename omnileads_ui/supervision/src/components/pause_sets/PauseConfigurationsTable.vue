@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="pauseSets"
+      :value="pausas"
       class="p-datatable-sm editable-cells-table"
       showGridlines
       :scrollable="true"
@@ -21,7 +21,7 @@
       "
       :filters="filters"
       filterDisplay="menu"
-      :globalFilterFields="['nombre', 'representative.name']"
+      :globalFilterFields="['pausa', 'representative.name']"
     >
       <template #header>
         <div class="flex justify-content-between flex-wrap">
@@ -35,6 +35,12 @@
             />
           </div>
           <div class="flex align-items-center justify-content-center">
+            <Button
+              icon="pi pi-plus"
+              class="mr-2"
+              @click="newPauseConfigModal"
+              v-tooltip.top="'Nueva configuracion de pausa'"
+            />
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
@@ -50,30 +56,43 @@
       </template>
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
-      <Column field="id" :header="$t('models.pause_set.id')"></Column>
       <Column
-        field="nombre"
+        field="pause_name"
         :sortable="true"
-        :header="$t('models.pause_set.name')"
+        :header="$t('models.pause_setting.pause')"
       ></Column>
-      <Column :header="$tc('globals.option', 2)" :exportable="false">
+      <Column
+        field="pause_type"
+        :sortable="true"
+        :header="$t('models.pause_setting.pause_type')"
+      ></Column>
+      <Column
+        field="time_to_end_pause"
+        :sortable="true"
+        :header="$t('models.pause_setting.time_to_end_pause')"
+      >
         <template #body="slotProps">
-          <Button
-            icon="pi pi-eye"
-            class="p-button-info ml-2"
-            @click="toPauseSetDetail(slotProps.data.id)"
-            v-tooltip.top="$t('globals.show')"
-          />
+          {{
+            slotProps.data.time_to_end_pause > 0
+              ? formatTime(slotProps.data.time_to_end_pause)
+              : $t("views.pause_sets.infinite_pause")
+          }}
+        </template>
+      </Column>
+      <Column :header="$tc('globals.option', 2)" style="max-width: 25rem">
+        <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
             class="p-button-warning ml-2"
-            @click="editGroup(slotProps.data)"
+            @click="editPauseConfig(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
+
           <Button
+            v-if="pausas.length >= 2"
             icon="pi pi-trash"
             class="p-button-danger ml-2"
-            @click="removePauseGroup(slotProps.data.id)"
+            @click="removePauseConfig(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
           />
         </template>
@@ -89,14 +108,15 @@ import { FilterMatchMode } from 'primevue/api';
 export default {
     inject: ['$helpers'],
     props: {
-        pauseSets: {
+        pausas: {
             type: Array,
             default: () => []
         }
     },
     data () {
         return {
-            filters: null
+            filters: null,
+            showModal: false
         };
     },
     created () {
@@ -111,16 +131,12 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        toPauseSetDetail (id) {
-            this.$router.push({ name: 'pause_sets_detail', params: { id: id } });
+        newPauseConfigModal () {
+            this.$emit('handleModal', true);
         },
-        editGroup (group) {
-            this.$emit('editGroupEvent', group);
-        },
-        async removePauseGroup (id) {
+        async removePauseConfig (id) {
             this.$swal({
                 title: this.$t('globals.sure_notification'),
-                text: this.$t('views.pause_sets.pause_settings_will_be_deleted'),
                 icon: this.$t('globals.icon_warning'),
                 showCancelButton: true,
                 confirmButtonText: this.$t('globals.yes'),
@@ -139,15 +155,15 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const resp = await this.deletePauseSet(id);
+                    const resp = await this.deletePauseConfig(id);
                     this.$swal.close();
                     if (resp) {
-                        this.initPauseSets();
+                        this.$emit('initDataEvent');
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
                                 this.$tc('globals.success_deleted_type', {
-                                    type: this.$tc('globals.pause_set')
+                                    type: this.$tc('globals.pause_config')
                                 }),
                                 this.$t('globals.icon_success')
                             )
@@ -157,7 +173,7 @@ export default {
                             this.$helpers.getToasConfig(
                                 this.$t('globals.error_notification'),
                                 this.$tc('globals.error_to_deleted_type', {
-                                    type: this.$tc('globals.pause_set')
+                                    type: this.$tc('globals.pause_config')
                                 }),
                                 this.$t('globals.icon_error')
                             )
@@ -167,14 +183,27 @@ export default {
                     this.$swal(
                         this.$helpers.getToasConfig(
                             this.$t('globals.cancelled'),
-                            this.$t('views.pause_sets.pause_sets_not_deleted'),
+                            this.$t('views.pause_sets.pause_config_not_deleted'),
                             this.$t('globals.icon_error')
                         )
                     );
                 }
             });
         },
-        ...mapActions(['deletePauseSet', 'initPauseSets'])
+        editPauseConfig (pauseConfig) {
+            this.$emit('editPauseConfigEvent', pauseConfig);
+        },
+        formatTime (sec) {
+            return this.$helpers.formatTime(sec);
+        },
+        ...mapActions(['deletePauseConfig'])
+    },
+    watch: {
+        pausas: {
+            handler () {},
+            deep: true,
+            immediate: true
+        }
     }
 };
 </script>

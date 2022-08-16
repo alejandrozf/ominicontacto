@@ -16,7 +16,7 @@ export default {
     campaign: 'Campaign | Campaigns',
     campaign_info: 'Campaign: {name}',
     route: 'Route | Routes',
-    pause: 'Pause | Breaks',
+    pause: 'Pause | Pauses',
     contact: 'Contact | Contacts',
     report: 'Report | Reports',
     help: 'Help',

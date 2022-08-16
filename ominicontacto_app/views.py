@@ -56,12 +56,10 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, Pausa, AgendaContacto,
     Chat, MensajeChat, ClienteWebPhoneProfile, ContactoListaRapida
 )
-from ominicontacto_app.forms import PausaForm, GrupoForm, RegistroForm
+from ominicontacto_app.forms import GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
 from ominicontacto_app.utiles import fecha_local
 from ominicontacto_app import version
-from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
-    RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
 from reportes_app.models import LlamadaLog
 
 from utiles_globales import AddSettingsContextMixin
@@ -247,14 +245,7 @@ class GrupoDetalleView(DetailView):
 ####################
 class PausaListView(TemplateView):
     """Vista para listar pausa"""
-    model = Pausa
     template_name = 'pausa_list.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PausaListView, self).get_context_data(**kwargs)
-        context['pausas_activas'] = Pausa.objects.activas()
-        context['pausas_eliminadas'] = Pausa.objects.eliminadas()
-        return context
 
 
 class ConjuntosDePausaListView(TemplateView):
@@ -262,86 +253,9 @@ class ConjuntosDePausaListView(TemplateView):
     template_name = 'conjuntos_de_pausas_list.html'
 
 
-class SincronizarPausaMixin(object):
-
-    def get_success_url(self):
-        return reverse('pausa_list')
-
-    def form_valid(self, form):
-        self.object = form.save()
-        self.sincronizar(self.object, self.request)
-        return super(SincronizarPausaMixin, self).form_valid(form)
-
-    def sincronizar(self, pausa, request, eliminar=False):
-        sincronizador = SincronizadorDeConfiguracionPausaAsterisk()
-        try:
-            if eliminar:
-                sincronizador.eliminar_y_regenerar_asterisk(pausa)
-                message = (_(u"La pausa se ha elimiado exitosamente."))
-            else:
-                sincronizador.regenerar_asterisk(pausa)
-                message = (_(u"La pausa se ha guardado exitosamente."))
-            messages.add_message(self.request, messages.SUCCESS, message)
-        except RestablecerConfiguracionTelefonicaError as e:
-            message = _("Operación Errónea! "
-                        "No se realizo de manera correcta la sincronización de los  "
-                        "datos en asterisk según el siguiente error: {0}".format(e))
-            messages.add_message(self.request, messages.WARNING, message)
-
-
-class PausaCreateView(SincronizarPausaMixin, CreateView):
-    """Vista para crear pausa"""
-    model = Pausa
-    template_name = 'base_create_update_form.html'
-    form_class = PausaForm
-
-
-class PausaUpdateView(SincronizarPausaMixin, UpdateView):
-    """Vista para modificar pausa"""
-    model = Pausa
-    template_name = 'base_create_update_form.html'
-    form_class = PausaForm
-
-
-class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
-    """
-    Esta vista se encarga de la eliminación/activación del
-    objeto pausa
-    """
-    template_name = 'delete_pausa.html'
-
-    def get(self, request, pk):
-        try:
-            pausa = Pausa.objects.get(pk=pk)
-        except Pausa.DoesNotExist:
-            return redirect('pausa_list')
-        return self.render_to_response({'object': pausa})
-
-    def post(self, request, *args, **kwargs):
-        operationType = int(request.POST.get('operationType'))
-        try:
-            pausa = Pausa.objects.get(pk=self.kwargs['pk'])
-        except Pausa.DoesNotExist:
-            return redirect('pausa_list')
-        if pausa.tiene_configuraciones() and operationType == 0:
-            message = ("No se puede eliminar la pausa "
-                       "porque tiene configuraciones creadas")
-            messages.warning(self.request, message)
-            return redirect('pausa_list')
-        else:
-            pausa.eliminada = not pausa.eliminada
-            pausa.save()
-            if pausa.eliminada:
-                self.sincronizar(pausa, request, True)
-            else:
-                self.sincronizar(pausa, request)
-            return redirect('pausa_list')
-
-
 ##################
 # Vista de Agente
 ##################
-
 class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
     template_name = "agente/base_agente.html"
 

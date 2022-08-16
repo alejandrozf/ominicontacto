@@ -1,10 +1,10 @@
 export default {
-    ActivePauses: '/api/v1/pauses',
-    PauseSetsList: '/api/v1/pause_sets',
-    PauseSetCreate: '/api/v1/pause_sets/create/',
-    PauseSetDetail: (id) => `/api/v1/pause_sets/${id}`,
-    PauseSetUpdate: (id) => `/api/v1/pause_sets/${id}/update/`,
-    PauseSetDelete: (id) => `/api/v1/pause_sets/${id}/delete`,
+    List: '/api/v1/pause_sets',
+    Create: '/api/v1/pause_sets/create/',
+    Detail: (id) => `/api/v1/pause_sets/${id}`,
+    Update: (id) => `/api/v1/pause_sets/${id}/update/`,
+    Delete: (id) => `/api/v1/pause_sets/${id}/delete`,
+    ActivePauses: '/api/v1/pause_sets/pause_options',
     PauseConfigCreate: '/api/v1/pause_config/create/',
     PauseConfigUpdate: (id) => `/api/v1/pause_config/${id}/update/`,
     PauseConfigDelete: (id) => `/api/v1/pause_config/${id}/delete`

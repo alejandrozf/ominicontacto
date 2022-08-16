@@ -15,6 +15,9 @@ import ExternalSystemState from './external_system/state';
 import FormActions from './form/actions';
 import FormMutations from './form/mutations';
 import FormState from './form/state';
+import PauseActions from './pause/actions';
+import PauseMutations from './pause/mutations';
+import PauseState from './pause/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -27,7 +30,8 @@ export default createStore({
         ...ExternalSiteState,
         ...CallDispositionState,
         ...ExternalSystemState,
-        ...FormState
+        ...FormState,
+        ...PauseState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -57,7 +61,8 @@ export default createStore({
         ...ExternalSiteMutations,
         ...CallDispositionMutations,
         ...ExternalSystemMutations,
-        ...FormMutations
+        ...FormMutations,
+        ...PauseMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -83,7 +88,8 @@ export default createStore({
         ...ExternalSiteActions,
         ...CallDispositionActions,
         ...ExternalSystemActions,
-        ...FormActions
+        ...FormActions,
+        ...PauseActions
     },
     modules: {
     },

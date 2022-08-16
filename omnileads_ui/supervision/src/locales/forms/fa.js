@@ -37,5 +37,10 @@ export default {
             option_already_in_list: 'این گزینه قبلاً در لیست موجود است',
             not_empty_form_field: 'حداقل باید یک فیلد در فرم وجود داشته باشد'
         }
+    },
+    pause: {
+        enter_name: 'نام را وارد کنید',
+        edit_pause: 'مکث را ویرایش کنید',
+        new_pause: 'مکث جدید'
     }
 };

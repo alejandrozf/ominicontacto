@@ -6,7 +6,7 @@
       </template>
       <template #end>
         <Button
-          :label="$tc('globals.back_to', { type: $t('globals.pause_set') })"
+          :label="$t('globals.back')"
           icon="pi pi-arrow-left"
           class="p-button-info mr-2"
           @click="backToPauseSetsList"
@@ -94,7 +94,7 @@
             />
             <Button
               icon="pi pi-plus"
-              class="p-button-info p-button-rounded mr-2"
+              class="mr-2"
               @click="newPauseConfigModal"
               v-tooltip.top="title2"
             />
@@ -139,7 +139,7 @@
           }}
         </template>
       </Column>
-      <Column :header="$tc('globals.option', 2)" :exportable="false">
+      <Column :header="$tc('globals.option', 2)" style="max-width: 25rem">
         <template #body="slotProps">
           <Button
             v-if="newGroup.pausas.length >= 2"
@@ -163,7 +163,7 @@
     </div>
     <NewConfigPause
       :showModal="showModal"
-      :pauses="filterPauses"
+      :pauses="filteredPauses"
       @handleModal="handleModal"
       @filterPausesEvent="changePauseType"
       @addConfigPauseEvent="addConfigPause"
@@ -198,6 +198,7 @@ export default {
                 nombre: '',
                 pausas: []
             },
+            filteredPauses: [],
             pausesTypeSelected: 1,
             title: this.$tc('globals.new') + ' ' + this.$tc('globals.pause_set'),
             title2: this.$tc('globals.new') + ' ' + this.$tc('globals.pause_config')
@@ -205,17 +206,18 @@ export default {
     },
     async created () {
         await this.initFilters();
-        await this.initPauses();
+        await this.initActivePauses();
     },
     components: {
         NewConfigPause
     },
     methods: {
-        ...mapActions(['createPauseSet', 'initPauses']),
+        ...mapActions(['createPauseSet', 'initActivePauses']),
         handleModal (show) {
             this.showModal = show;
         },
         newPauseConfigModal () {
+            this.filterPauses();
             this.showModal = true;
         },
         backToPauseSetsList () {
@@ -250,8 +252,18 @@ export default {
                 )
             );
         },
+        filterPauses () {
+            this.filteredPauses = this.activePauses.filter(
+                (p) => p.es_productiva === (this.pausesTypeSelected === 1)
+            );
+            if (this.newGroup.pausas.length > 0) {
+                const groupPausesId = this.newGroup.pausas.map((p) => p.pauseId);
+                this.filteredPauses = this.filteredPauses.filter((p) => !groupPausesId.includes(p.id));
+            }
+        },
         changePauseType (type) {
             this.pausesTypeSelected = type;
+            this.filterPauses();
         },
         removePauseConfig (id) {
             for (var i = 0; i < this.newGroup.pausas.length; i++) {
@@ -315,25 +327,8 @@ export default {
             return this.$helpers.formatTime(sec);
         }
     },
-    watch: {
-        pauses: {
-            handler () {},
-            deep: true,
-            immediate: true
-        }
-    },
     computed: {
-        ...mapState(['pauses']),
-        filterPauses () {
-            const pauses = this.pauses.filter(
-                (p) => p.es_productiva === (this.pausesTypeSelected === 1)
-            );
-            if (this.newGroup.pausas.length > 0) {
-                const groupPausesId = this.newGroup.pausas.map((p) => p.pauseId);
-                return pauses.filter((p) => !groupPausesId.includes(p.id));
-            }
-            return pauses;
-        }
+        ...mapState(['activePauses'])
     }
 };
 </script>

@@ -3,7 +3,7 @@
     :visible="showModal"
     :style="{ width: '30vw' }"
     :closable="false"
-    :modal="true"
+    :modal="false"
   >
     <template #header>
       <h2>Informacion del sitio externo</h2>
