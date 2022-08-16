@@ -8,7 +8,6 @@
         <Button
           :label="$tc('globals.new')"
           icon="pi pi-plus"
-          class="p-button-success"
           @click="newCallDisposition"
         />
       </template>

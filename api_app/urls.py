@@ -56,6 +56,9 @@ from api_app.views.external_system import (
 from api_app.views.form import (
     FormCreate, FormDelete, FormDetail,
     FormHide, FormList, FormShow, FormUpdate)
+from api_app.views.pause import (
+    PauseCreate, PauseDelete, PauseDetail, PauseList, PauseReactivate,
+    PauseUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -190,10 +193,12 @@ urlpatterns = [
     re_path(r'api/v1/active_agents/$',
             AgentesActivos.as_view(),
             name='api_active_agents'),
+    # =========================
     # Conjuntos de Pausas
-    re_path(r'api/v1/pauses/$',
+    # =========================
+    re_path(r'api/v1/pause_sets/pause_options/$',
             Pausas.as_view(),
-            name='api_pauses_list'),
+            name='api_pause_set_pause_options'),
     re_path(r'api/v1/pause_sets/$',
             ConjuntoDePausaList.as_view(),
             name='api_pause_set_list'),
@@ -302,6 +307,27 @@ urlpatterns = [
     re_path(r'api/v1/forms/(?P<pk>\d+)/delete/$',
             FormDelete.as_view(),
             name='api_forms_delete'),
+    # =========================
+    # Pausas
+    # =========================
+    re_path(r'api/v1/pauses/$',
+            PauseList.as_view(),
+            name='api_pauses_list'),
+    re_path(r'api/v1/pauses/create/$',
+            PauseCreate.as_view(),
+            name='api_pauses_create'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/update/$',
+            PauseUpdate.as_view(),
+            name='api_pauses_update'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/$',
+            PauseDetail.as_view(),
+            name='api_pauses_detail'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/reactivate/$',
+            PauseReactivate.as_view(),
+            name='api_pauses_reactivate'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/delete/$',
+            PauseDelete.as_view(),
+            name='api_pauses_delete'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

@@ -135,7 +135,7 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-            {'nombre': 'api_pauses_list',
+            {'nombre': 'api_pause_set_pause_options',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pause_set_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
@@ -190,6 +190,32 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_external_systems_detail',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_agents_external_system_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_hide',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_show',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_reactivate',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
@@ -334,7 +360,7 @@ class ApiAppConfig(AppConfig):
         'api_active_agents':
             {'descripcion': _('Obtiene todos los agentes activos'),
              'version': '1.19.0'},
-        'api_pauses_list':
+        'api_pause_set_pause_options':
             {'descripcion': _('Obtiene las pausas que no estan eliminadas'),
              'version': '1.21.0'},
         'api_pause_set_list':
@@ -417,5 +443,44 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_agents_external_system_list':
             {'descripcion': _('Obtiene los agentes para asignar a un sistema externo'),
+             'version': '1.23.0'},
+        'api_forms_list':
+            {'descripcion': _('Lista los formularios'),
+             'version': '1.23.0'},
+        'api_forms_create':
+            {'descripcion': _('Crea un formulario'),
+             'version': '1.23.0'},
+        'api_forms_update':
+            {'descripcion': _('Actualiza un formulario'),
+             'version': '1.23.0'},
+        'api_forms_detail':
+            {'descripcion': _('Obtiene detalle de un formulario'),
+             'version': '1.23.0'},
+        'api_forms_delete':
+            {'descripcion': _('Elimina un formulario'),
+             'version': '1.23.0'},
+        'api_forms_hide':
+            {'descripcion': _('Oculta un formulario'),
+             'version': '1.23.0'},
+        'api_forms_show':
+            {'descripcion': _('Desoculta un formulario'),
+             'version': '1.23.0'},
+        'api_pauses_list':
+            {'descripcion': _('Lista las pausas'),
+             'version': '1.23.0'},
+        'api_pauses_create':
+            {'descripcion': _('Crea una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_update':
+            {'descripcion': _('Actualiza una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_detail':
+            {'descripcion': _('Obtiene detalle de una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_delete':
+            {'descripcion': _('Elimina una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_reactivate':
+            {'descripcion': _('Reactiva una pausa'),
              'version': '1.23.0'},
     }

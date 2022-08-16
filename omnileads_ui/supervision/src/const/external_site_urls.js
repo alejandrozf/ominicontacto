@@ -1,9 +1,9 @@
 export default {
-    ExternalSitesList: '/api/v1/external_sites',
-    ExternalSitesCreate: '/api/v1/external_sites/create/',
-    ExternalSitesDetail: (id) => `/api/v1/external_sites/${id}`,
-    ExternalSitesUpdate: (id) => `/api/v1/external_sites/${id}/update/`,
-    ExternalSitesDelete: (id) => `/api/v1/external_sites/${id}/delete`,
-    ExternalSitesHide: (id) => `/api/v1/external_sites/${id}/hide/`,
-    ExternalSitesShow: (id) => `/api/v1/external_sites/${id}/show/`
+    List: '/api/v1/external_sites',
+    Create: '/api/v1/external_sites/create/',
+    Detail: (id) => `/api/v1/external_sites/${id}`,
+    Update: (id) => `/api/v1/external_sites/${id}/update/`,
+    Delete: (id) => `/api/v1/external_sites/${id}/delete`,
+    Hide: (id) => `/api/v1/external_sites/${id}/hide/`,
+    Show: (id) => `/api/v1/external_sites/${id}/show/`
 };

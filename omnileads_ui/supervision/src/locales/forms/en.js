@@ -37,5 +37,10 @@ export default {
             option_already_in_list: 'The option is already on the list',
             not_empty_form_field: 'There must be at least one field in the form'
         }
+    },
+    pause: {
+        enter_name: 'Enter the name',
+        edit_pause: 'Edit pause',
+        new_pause: 'New pause'
     }
 };

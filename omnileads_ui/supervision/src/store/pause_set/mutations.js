@@ -8,7 +8,7 @@ export default {
     initPauseSetDetail (state, pauseSetDetail) {
         state.pauseSetDetail = pauseSetDetail;
     },
-    initPauses (state, pauses) {
-        state.pauses = pauses;
+    initActivePauses (state, pauses) {
+        state.activePauses = pauses;
     }
 };

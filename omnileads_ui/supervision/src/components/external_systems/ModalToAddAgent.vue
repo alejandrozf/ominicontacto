@@ -3,7 +3,7 @@
     :visible="showModal"
     :style="{ width: '50vw' }"
     :closable="false"
-    :modal="true"
+    :modal="false"
   >
     <template #header>
       <h2 v-if="modalToCreate">

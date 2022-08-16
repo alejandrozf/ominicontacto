@@ -12,22 +12,22 @@
         />
       </template>
     </Toolbar>
-    <GroupsTable
+    <PauseSetsTable
       :pauseSets="pauseSets"
       @editGroupEvent="editGroup"
-    ></GroupsTable>
+    />
     <EditGroup
       :showModal="showModalEdit"
       :group="group"
       @handleModal="handleEditModal"
       @initDataEvent="initData"
-    ></EditGroup>
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import GroupsTable from '@/components/pause_sets/GroupsTable';
+import PauseSetsTable from '@/components/pause_sets/PauseSetsTable';
 import EditGroup from '@/components/pause_sets/forms/EditGroup';
 
 export default {
@@ -38,7 +38,7 @@ export default {
         };
     },
     components: {
-        GroupsTable,
+        PauseSetsTable,
         EditGroup
     },
     async created () {

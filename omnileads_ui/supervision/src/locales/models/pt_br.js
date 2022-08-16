@@ -62,5 +62,11 @@ export default {
         type: 'Cara',
         required: 'É obrigatório?',
         list_options: 'listar opções'
+    },
+    pause: {
+        id: 'ID',
+        name: 'Nome',
+        type: 'Cara',
+        status: 'Status'
     }
 };

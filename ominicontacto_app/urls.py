@@ -173,7 +173,6 @@ urlpatterns = [
     re_path(r'^grupo/(?P<pk>\d+)/detalle/$',
             login_required(views.GrupoDetalleView.as_view()),
             name="grupo_detalle"),
-
     # ==========================================================================
     # Pausas
     # ==========================================================================
@@ -181,19 +180,6 @@ urlpatterns = [
             login_required(views.PausaListView.as_view()),
             name='pausa_list',
             ),
-    re_path(r'^pausa/nuevo/$',
-            login_required(views.PausaCreateView.as_view()),
-            name='pausa_nuevo',
-            ),
-    re_path(r'^pausa/update/(?P<pk>\d+)/$',
-            login_required(views.PausaUpdateView.as_view()),
-            name='pausa_update',
-            ),
-    re_path(r'^pausa/delete/(?P<pk>\d+)/$',
-            login_required(views.PausaToggleDeleteView.as_view()),
-            name='pausa_delete',
-            ),
-
     # ==========================================================================
     # Conjuntos de Pausas
     # ==========================================================================
@@ -201,7 +187,6 @@ urlpatterns = [
             login_required(views.ConjuntosDePausaListView.as_view()),
             name='conjuntos_de_pausas_list',
             ),
-
     # ==========================================================================
     # Grabaciones
     # ==========================================================================

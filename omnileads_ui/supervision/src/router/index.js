@@ -7,6 +7,7 @@ import ExternalSiteRoutes from './external_site_routes';
 import CallDispositionRoutes from './call_disposition_routes';
 import ExternalSystemRoutes from './external_system_routes';
 import FormRoutes from './form_routes';
+import PauseRoutes from './pause_routes';
 
 const routes = [
     {
@@ -28,7 +29,8 @@ const routes = [
     ...ExternalSiteRoutes,
     ...CallDispositionRoutes,
     ...ExternalSystemRoutes,
-    ...FormRoutes
+    ...FormRoutes,
+    ...PauseRoutes
 ];
 
 const router = createRouter({

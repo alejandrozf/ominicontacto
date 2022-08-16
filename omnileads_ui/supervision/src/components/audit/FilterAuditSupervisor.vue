@@ -13,7 +13,7 @@
       <Button
         :label="$t('globals.filter')"
         icon="pi pi-search"
-        class="p-button-success mr-2"
+        class="mr-2"
         @click="applyFilter"
       />
     </template>

@@ -6,7 +6,7 @@
       </template>
       <template #end>
         <Button
-          :label="$tc('globals.back_to', { type: $t('globals.pause_set') })"
+          :label="$t('globals.back')"
           icon="pi pi-arrow-left"
           class="p-button-info mr-2"
           @click="backToPauseSetsList"
@@ -16,18 +16,18 @@
     <br />
     <hr class="mt-4" />
     <h2>{{ $t("views.pause_sets.configured_pauses") }}</h2>
-    <PausesTable
+    <PauseConfigurationsTable
       :pausas="pauseSetDetail.pausas"
       @editPauseConfigEvent="editPauseConfig"
       @handleModal="handleModalNewPause"
       @initDataEvent="initData"
-    ></PausesTable>
+    />
     <EditPause
       :showModal="showModal"
       :pauseConfig="pauseConfig"
       @handleModal="handleModal"
       @initDataEvent="initData"
-    ></EditPause>
+    />
     <NewConfigPauseDetail
       :showModal="showModalNewPause"
       :pauses="filterPauses"
@@ -40,7 +40,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import PausesTable from '@/components/pause_sets/PausesTable';
+import PauseConfigurationsTable from '@/components/pause_sets/PauseConfigurationsTable';
 import EditPause from '@/components/pause_sets/forms/EditPause';
 import NewConfigPauseDetail from '@/components/pause_sets/forms/NewConfigPauseDetail';
 
@@ -55,7 +55,7 @@ export default {
         };
     },
     components: {
-        PausesTable,
+        PauseConfigurationsTable,
         EditPause,
         NewConfigPauseDetail
     },
@@ -63,7 +63,7 @@ export default {
         await this.initData();
     },
     methods: {
-        ...mapActions(['initPauseSetDetail', 'initPauses']),
+        ...mapActions(['initPauseSetDetail', 'initActivePauses']),
         backToPauseSetsList () {
             this.$router.push({ name: 'pause_sets' });
         },
@@ -82,15 +82,15 @@ export default {
         },
         async initData () {
             const idPauseSet = this.$route.params.id;
-            await this.initPauses();
+            await this.initActivePauses();
             await this.initPauseSetDetail(idPauseSet);
             this.setName = this.pauseSetDetail.conjunto.nombre;
         }
     },
     computed: {
-        ...mapState(['pauseSetDetail', 'pauses']),
+        ...mapState(['pauseSetDetail', 'activePauses']),
         filterPauses () {
-            const pauses = this.pauses.filter(
+            const pauses = this.activePauses.filter(
                 (p) => p.es_productiva === (this.pausesTypeSelected === 1)
             );
             if (this.pauseSetDetail.pausas !== undefined) {

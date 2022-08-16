@@ -62,5 +62,11 @@ export default {
         type: 'Type',
         required: 'Required?',
         list_options: 'List options'
+    },
+    pause: {
+        id: 'ID',
+        name: 'Name',
+        type: 'Type',
+        status: 'Active'
     }
 };
