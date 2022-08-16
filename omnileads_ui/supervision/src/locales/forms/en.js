@@ -42,5 +42,24 @@ export default {
         enter_name: 'Enter the name',
         edit_pause: 'Edit pause',
         new_pause: 'New pause'
+    },
+    inbound_route: {
+        enter_name: 'Enter the name',
+        enter_phone: 'Enter DID number',
+        enter_caller_id: 'Enter the caller ID prefix',
+        edit_inbound_route: 'Inbound route edit',
+        new_inbound_route: 'Inbound route new',
+        languages: {
+            en: 'English',
+            es: 'Spanish'
+        },
+        destination_types: {
+            campaign: 'Inbound campaign',
+            validation_date: 'Date/time validation',
+            ivr: 'IVR',
+            hangup: 'HangUp',
+            id_client: 'Client ID',
+            custom_dst: 'Custom destination'
+        }
     }
 };

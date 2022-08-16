@@ -68,5 +68,14 @@ export default {
         name: 'نام',
         type: 'پسر',
         status: 'وضعیت'
+    },
+    inbound_route: {
+        id: 'برو',
+        name: 'نام',
+        phone: 'شماره DID',
+        caller_id: 'پیشوند',
+        idiom: 'اصطلاح',
+        destiny: 'سرنوشت',
+        destiny_type: 'نوع مقصد'
     }
 };

@@ -46,6 +46,7 @@ export default {
     call_disposition: 'Call Disposition | Call Dispositions',
     external_system: 'External System | External Systems',
     form: 'Form | Forms',
+    inbound_route: 'Inbound Route | Inbound Routes',
     // -------------
     // -- Actions --
     // -------------
@@ -86,6 +87,7 @@ export default {
     next: 'Next',
     up: 'Up',
     down: 'Down',
+    reactivate: 'Reactivate',
     // ---------------------
     // --- Notifications ---
     // ---------------------

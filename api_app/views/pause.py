@@ -209,7 +209,6 @@ class PauseDelete(APIView, SincronizarPausaMixin):
                     data['message'] = _('Error al sincronizar '
                                         'la pausa con asterisk')
                     return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         except Pausa.DoesNotExist:
             return Response(
                 data={

@@ -42,5 +42,24 @@ export default {
         enter_name: 'نام را وارد کنید',
         edit_pause: 'مکث را ویرایش کنید',
         new_pause: 'مکث جدید'
+    },
+    inbound_route: {
+        enter_name: 'نام را وارد کنید',
+        enter_phone: 'DID را وارد کنید',
+        enter_caller_id: 'پیشوند شناسه تماس گیرنده را وارد کنید',
+        edit_inbound_route: 'مسیر ورودی را ویرایش کنید',
+        new_inbound_route: 'مسیر ورودی جدید',
+        languages: {
+            en: 'انگلیسی',
+            es: 'اسپانیایی'
+        },
+        destination_types: {
+            campaign: 'کمپین ورودی',
+            validation_date: 'اعتبارسنجی تاریخ/زمان',
+            ivr: 'تلفن گویا',
+            hangup: 'قطع کن',
+            id_client: 'شناسه مشتری',
+            custom_dst: 'مقصد سفارشی'
+        }
     }
 };

@@ -59,6 +59,13 @@ from api_app.views.form import (
 from api_app.views.pause import (
     PauseCreate, PauseDelete, PauseDetail, PauseList, PauseReactivate,
     PauseUpdate)
+from api_app.views.inbound_route import (
+    InboundRouteCreate,
+    InboundRouteDelete,
+    InboundRouteDestinations,
+    InboundRouteDetail,
+    InboundRouteList,
+    InboundRouteUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -328,6 +335,27 @@ urlpatterns = [
     re_path(r'api/v1/pauses/(?P<pk>\d+)/delete/$',
             PauseDelete.as_view(),
             name='api_pauses_delete'),
+    # =========================
+    # Rutas Entrantes
+    # =========================
+    re_path(r'api/v1/inbound_routes/$',
+            InboundRouteList.as_view(),
+            name='api_inbound_routes_list'),
+    re_path(r'api/v1/inbound_routes/create/$',
+            InboundRouteCreate.as_view(),
+            name='api_inbound_routes_create'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/update/$',
+            InboundRouteUpdate.as_view(),
+            name='api_inbound_routes_update'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/$',
+            InboundRouteDetail.as_view(),
+            name='api_inbound_routes_detail'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/delete/$',
+            InboundRouteDelete.as_view(),
+            name='api_inbound_routes_delete'),
+    re_path(r'api/v1/inbound_routes/destinations_by_type/$',
+            InboundRouteDestinations.as_view(),
+            name='api_inbound_routes_destinations_by_type'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

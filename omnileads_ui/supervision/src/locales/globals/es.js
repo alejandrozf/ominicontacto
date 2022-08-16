@@ -46,6 +46,7 @@ export default {
     call_disposition: 'Calificacion | Calificaciones',
     external_system: 'Sistema externo | Sistemas externos',
     form: 'Formulario | Formularios',
+    inbound_route: 'Ruta entrante | Rutas entrantes',
     // -------------
     // -- Actions --
     // -------------

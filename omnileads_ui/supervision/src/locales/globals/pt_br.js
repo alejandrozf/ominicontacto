@@ -46,6 +46,7 @@ export default {
     call_disposition: 'Qualificação | Qualificação',
     external_system: 'Sistema externo | Sistemas externos',
     form: 'Formulário | Formulários',
+    inbound_route: 'Rota de entrada | Rotas de entrada',
     // -------------
     // -- Actions --
     // -------------
@@ -86,6 +87,7 @@ export default {
     next: 'Siguiente',
     up: 'Subir',
     down: 'Descer',
+    reactivate: 'Reativar',
     // ---------------------
     // --- Notifications ---
     // ---------------------

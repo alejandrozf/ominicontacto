@@ -36,7 +36,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_rutas_entrantes' in permissions:
             items.append({
                 'label': _('Rutas entrantes'),
-                'url': reverse('lista_rutas_entrantes', args=(1,)),
+                'url': reverse('lista_rutas_entrantes'),
             })
         if 'lista_rutas_salientes' in permissions:
             items.append({
@@ -147,12 +147,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'lista_rutas_entrantes',
              'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'crear_ruta_entrante',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'editar_ruta_entrante',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'eliminar_ruta_entrante',
-             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'obtener_destinos_tipo',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_ivrs',
@@ -234,12 +228,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
             {'descripcion': _('Eliminar una Ruta Saliente'), 'version': '1.7.0'},
         'lista_rutas_entrantes':
             {'descripcion': _('Ver la lista de Rutas Entrantes'), 'version': '1.7.0'},
-        'crear_ruta_entrante':
-            {'descripcion': _('Crear una Ruta Entrante'), 'version': '1.7.0'},
-        'editar_ruta_entrante':
-            {'descripcion': _('Editar una Ruta Entrante'), 'version': '1.7.0'},
-        'eliminar_ruta_entrante':
-            {'descripcion': _('Eliminar una Ruta Entrante'), 'version': '1.7.0'},
         'obtener_destinos_tipo':
             {'descripcion':
              _('Lista con posibles destinos. Usado en varios formularios de configuración.'),
