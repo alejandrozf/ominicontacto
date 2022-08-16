@@ -1,12 +1,11 @@
 <template>
     <div>
-        <Chart type="line" :data="basicData" :options="basicOptions" :height="50" />    
+        <Chart type="line" :data="basicData" :options="basicOptions" :height="50" />
     </div>
  </template>
 
 <script>
-import { computed } from 'vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export default {
     props: {
@@ -14,11 +13,11 @@ export default {
         chartNameAyer: String,
         chartLineInterval: Object,
         chartLineEventYesterdayData: Object,
-        chartLineEventTodayData: Object,
+        chartLineEventTodayData: Object
     },
-    setup(props) {
+    setup (props) {
         const basicData = computed(() => {
-            return {   
+            return {
                 labels: props.chartLineInterval,
                 datasets: [
                     {
@@ -34,14 +33,14 @@ export default {
                         borderColor: '#FFA726'
                     }
                 ]
-            }
-        })
+            };
+        });
 
         const basicOptions = ref(
             {
                 animation: {
                     duration: 0
-                },  
+                },
                 plugins: {
                     legend: {
                         labels: {
@@ -61,7 +60,7 @@ export default {
                     y: {
                         ticks: {
                             color: '#495057',
-                            stepSize: 1,
+                            stepSize: 1
                         },
                         grid: {
                             color: '#ebedef'
@@ -70,8 +69,8 @@ export default {
                 }
             }
         );
-        
-		return { basicData, basicOptions }
+
+        return { basicData, basicOptions };
     }
-}
+};
 </script>
