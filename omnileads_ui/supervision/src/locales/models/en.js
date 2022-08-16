@@ -68,5 +68,14 @@ export default {
         name: 'Name',
         type: 'Type',
         status: 'Active'
+    },
+    inbound_route: {
+        id: 'ID',
+        name: 'Name',
+        phone: 'Number DID',
+        caller_id: 'Caller Id',
+        idiom: 'Idiom',
+        destiny: 'Destiny',
+        destiny_type: 'Destiny type'
     }
 };

@@ -22,6 +22,9 @@ from __future__ import unicode_literals
 import json
 
 from django.forms import ValidationError
+from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
+from configuracion_telefonia_app.views.base import (
+    escribir_ruta_entrante_config, eliminar_ruta_entrante_config)
 from rest_framework import serializers
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import (
@@ -660,3 +663,43 @@ class PausaSerializer(serializers.ModelSerializer):
         instance.tipo = validated_data.get('tipo', instance.tipo)
         instance.save()
         return instance
+
+
+class DestinoEntranteSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = DestinoEntrante
+        fields = ('id', 'nombre', 'tipo')
+
+
+class RutaEntranteSerializer(serializers.ModelSerializer):
+    destino = DestinoEntranteSerializer()
+
+    def get_destino(self, validated_data):
+        destino = validated_data.pop('destino')
+        validated_data['destino'] = DestinoEntrante.objects.get(
+            pk=destino['id'])
+
+    def update(self, instance, validated_data):
+        eliminar_ruta_entrante_config(self, instance)
+        self.get_destino(validated_data)
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.telefono = validated_data.get('telefono', instance.telefono)
+        instance.prefijo_caller_id = validated_data.get(
+            'prefijo_caller_id', instance.prefijo_caller_id)
+        instance.idioma = validated_data.get('idioma', instance.idioma)
+        instance.destino = validated_data.get('destino', instance.destino)
+        instance.save()
+        escribir_ruta_entrante_config(self, instance)
+        return instance
+
+    def create(self, validated_data):
+        self.get_destino(validated_data)
+        ruta = RutaEntrante.objects.create(**validated_data)
+        escribir_ruta_entrante_config(self, ruta)
+        return ruta
+
+    class Meta:
+        model = RutaEntrante
+        fields = '__all__'

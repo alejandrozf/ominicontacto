@@ -18,6 +18,9 @@ import FormState from './form/state';
 import PauseActions from './pause/actions';
 import PauseMutations from './pause/mutations';
 import PauseState from './pause/state';
+import InboundRouteActions from './inbound_routes/actions';
+import InboundRouteMutations from './inbound_routes/mutations';
+import InboundRouteState from './inbound_routes/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -31,7 +34,8 @@ export default createStore({
         ...CallDispositionState,
         ...ExternalSystemState,
         ...FormState,
-        ...PauseState
+        ...PauseState,
+        ...InboundRouteState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -62,7 +66,8 @@ export default createStore({
         ...CallDispositionMutations,
         ...ExternalSystemMutations,
         ...FormMutations,
-        ...PauseMutations
+        ...PauseMutations,
+        ...InboundRouteMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -89,7 +94,8 @@ export default createStore({
         ...CallDispositionActions,
         ...ExternalSystemActions,
         ...FormActions,
-        ...PauseActions
+        ...PauseActions,
+        ...InboundRouteActions
     },
     modules: {
     },

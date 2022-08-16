@@ -99,65 +99,6 @@ class TestsRutasEntrantes(OMLBaseTest):
             'destino': self.destino_campana_entrante.pk
         }
 
-    def test_usuario_sin_administracion_no_puede_crear_ruta_entrante(self):
-        url = reverse('crear_ruta_entrante')
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ruta_entrante()
-        n_rutas_entrantes = RutaEntrante.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_ruta_entrante_config')
-    def test_usuario_administrador_puede_crear_ruta_entrante(self, escribir_ruta_entrante_config):
-        url = reverse('crear_ruta_entrante')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ruta_entrante()
-        n_rutas_entrantes = RutaEntrante.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes + 1)
-
-    def test_usuario_sin_administracion_no_puede_modificar_ruta_entrante(self):
-        nuevo_nombre = 'ruta_entrante_modificada'
-        url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ruta_entrante()
-        post_data['id'] = self.ruta_entrante.pk
-        post_data['nombre'] = nuevo_nombre
-        self.client.post(url, post_data, follow=True)
-        self.ruta_entrante.refresh_from_db()
-        self.assertNotEqual(self.ruta_entrante.nombre, nuevo_nombre)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_ruta_entrante_config')
-    @patch('configuracion_telefonia_app.views.base.eliminar_ruta_entrante_config')
-    def test_usuario_administrador_puede_modificar_ruta_entrante(
-            self, eliminar_ruta_entrante_config, escribir_ruta_entrante_config):
-        nuevo_nombre = 'ruta_entrante_modificada'
-        url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ruta_entrante()
-        post_data['id'] = self.ruta_entrante.pk
-        post_data['nombre'] = nuevo_nombre
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.ruta_entrante.refresh_from_db()
-        self.assertEqual(self.ruta_entrante.nombre, nuevo_nombre)
-
-    def test_usuario_sin_administracion_no_puede_eliminar_ruta_entrante(self):
-        url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        n_rutas_entrantes = RutaEntrante.objects.count()
-        self.client.post(url, follow=True)
-        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.RutaEntranteFamily.delete_family')
-    def test_usuario_administrador_puede_eliminar_ruta_entrante(
-            self, eliminar_ruta_entrante_config):
-        url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        n_rutas_entrantes = RutaEntrante.objects.count()
-        self.client.post(url, follow=True)
-        self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes - 1)
-
     def _obtener_post_data_ivr(self):
         return {
             'nombre': 'nombre',

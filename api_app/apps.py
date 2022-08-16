@@ -217,6 +217,18 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pauses_reactivate',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_destinations_by_type',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -482,5 +494,23 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_pauses_reactivate':
             {'descripcion': _('Reactiva una pausa'),
+             'version': '1.23.0'},
+        'api_inbound_routes_list':
+            {'descripcion': _('Lista las rutas entrantes'),
+             'version': '1.23.0'},
+        'api_inbound_routes_create':
+            {'descripcion': _('Crea una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_update':
+            {'descripcion': _('Actualiza una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_detail':
+            {'descripcion': _('Obtiene detalle de una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_delete':
+            {'descripcion': _('Elimina una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_destinations_by_type':
+            {'descripcion': _('Obtiene los destinos disponibles'),
              'version': '1.23.0'},
     }

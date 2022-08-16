@@ -42,5 +42,24 @@ export default {
         enter_name: 'Ingresa el nombre',
         edit_pause: 'Edita la pausa',
         new_pause: 'Nueva pausa'
+    },
+    inbound_route: {
+        enter_name: 'Ingresa el nombre',
+        enter_phone: 'Ingresa el DID',
+        enter_caller_id: 'Ingresa el prefijo caller ID',
+        edit_inbound_route: 'Edita la ruta entrante',
+        new_inbound_route: 'Nueva ruta entrante',
+        languages: {
+            en: 'Inglés',
+            es: 'Español'
+        },
+        destination_types: {
+            campaign: 'Campaña entrante',
+            validation_date: 'Validación de fecha/hora',
+            ivr: 'IVR',
+            hangup: 'HangUp',
+            id_client: 'Identificador cliente',
+            custom_dst: 'Destino personalizado'
+        }
     }
 };
