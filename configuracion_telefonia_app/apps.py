@@ -41,7 +41,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_rutas_salientes' in permissions:
             items.append({
                 'label': _('Rutas salientes'),
-                'url': reverse('lista_rutas_salientes', args=(1,))
+                'url': reverse('lista_rutas_salientes')
             })
         if 'lista_ivrs' in permissions:
             items.append({
@@ -137,14 +137,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'lista_rutas_salientes',
              'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'ordenar_rutas_salientes',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'crear_ruta_saliente',
-             'roles': ['Administrador', ]},
-            {'nombre': 'editar_ruta_saliente',
-             'roles': ['Administrador', ]},
-            {'nombre': 'eliminar_ruta_saliente',
-             'roles': ['Administrador', ]},
             {'nombre': 'lista_rutas_entrantes',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'obtener_destinos_tipo',
@@ -218,14 +210,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
             {'descripcion': _('Eliminar un Troncal SIP'), 'version': '1.7.0'},
         'lista_rutas_salientes':
             {'descripcion': _('Ver la lista de Rutas Salientes'), 'version': '1.7.0'},
-        'ordenar_rutas_salientes':
-            {'descripcion': _('Modificar el orden de las Rutas Salientes'), 'version': '1.7.0'},
-        'crear_ruta_saliente':
-            {'descripcion': _('Crear una Ruta Saliente'), 'version': '1.7.0'},
-        'editar_ruta_saliente':
-            {'descripcion': _('Editar una Ruta Saliente'), 'version': '1.7.0'},
-        'eliminar_ruta_saliente':
-            {'descripcion': _('Eliminar una Ruta Saliente'), 'version': '1.7.0'},
         'lista_rutas_entrantes':
             {'descripcion': _('Ver la lista de Rutas Entrantes'), 'version': '1.7.0'},
         'obtener_destinos_tipo':

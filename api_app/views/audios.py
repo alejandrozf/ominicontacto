@@ -22,7 +22,7 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework import viewsets
-from api_app.serializers import AudioSerializer
+from api_app.serializers.base import AudioSerializer
 from ominicontacto_app.models import ArchivoDeAudio
 
 

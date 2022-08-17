@@ -77,5 +77,22 @@ export default {
         idiom: 'Idioma',
         destiny: 'Destino',
         destiny_type: 'Tipo de destino'
+    },
+    outbound_route: {
+        id: 'ID',
+        name: 'Nombre',
+        ring_time: 'Tiempo de ring',
+        dial_options: 'Opciones de discado',
+        order: 'Orden'
+    },
+    dial_pattern: {
+        prepend: 'Prepend',
+        prefix: 'Prefijo',
+        pattern: 'Patron de discado',
+        order: 'Orden'
+    },
+    trunk: {
+        name: 'Nombre',
+        order: 'Orden'
     }
 };

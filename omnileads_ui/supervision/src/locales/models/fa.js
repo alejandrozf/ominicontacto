@@ -77,5 +77,24 @@ export default {
         idiom: 'اصطلاح',
         destiny: 'سرنوشت',
         destiny_type: 'نوع مقصد'
+    },
+    outbound_route: {
+        id: 'برو',
+        name: 'نام',
+        ring_time: 'زمان زنگ زدن',
+        dial_options: 'گزینه های شماره گیری',
+        order: 'سفارش'
+    },
+    dial_pattern: {
+        id: 'برو',
+        prepend: 'آماده کردن',
+        prefix: 'پیشوند',
+        pattern: 'الگوی شماره گیری',
+        order: 'سفارش'
+    },
+    trunk: {
+        id: 'برو',
+        name: 'نام',
+        order: 'سفارش'
     }
 };

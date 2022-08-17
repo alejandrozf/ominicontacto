@@ -105,8 +105,7 @@ class RutasEntrantesTest(APITest):
             _('Se obtuvo la informacion de la '
               'ruta entrante de forma exitosa'))
 
-    @patch('configuracion_telefonia_app.views.base'
-           '.escribir_ruta_entrante_config')
+    @patch('api_app.utils.routes.inbound.escribir_ruta_entrante_config')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
            '.regenerar_asterisk')
@@ -147,13 +146,11 @@ class RutasEntrantesTest(APITest):
             _('Se elimino la ruta entrante '
               'de forma exitosa'))
 
-    @patch('configuracion_telefonia_app.views.base'
-           '.eliminar_ruta_entrante_config')
+    @patch('api_app.utils.routes.inbound.eliminar_ruta_entrante_config')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
            '.eliminar_y_regenerar_asterisk')
-    @patch('configuracion_telefonia_app.views.base'
-           '.escribir_ruta_entrante_config')
+    @patch('api_app.utils.routes.inbound.escribir_ruta_entrante_config')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
            '.regenerar_asterisk')

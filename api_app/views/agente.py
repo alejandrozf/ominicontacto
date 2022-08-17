@@ -34,8 +34,9 @@ from rest_framework.views import APIView
 
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
-from api_app.serializers import (OpcionCalificacionSerializer, CalificacionClienteSerializer,
-                                 CalificacionClienteNuevoContactoSerializer)
+from api_app.serializers.base import (
+    OpcionCalificacionSerializer, CalificacionClienteSerializer,
+    CalificacionClienteNuevoContactoSerializer)
 from api_app.views.permissions import TienePermisoOML
 
 from ominicontacto_app.models import (

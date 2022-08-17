@@ -27,7 +27,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import NombreCalificacionSerializer
+from api_app.serializers.call_disposition import NombreCalificacionSerializer
 from ominicontacto_app.models import NombreCalificacion
 
 

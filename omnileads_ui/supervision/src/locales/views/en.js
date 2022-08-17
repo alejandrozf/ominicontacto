@@ -58,5 +58,16 @@ export default {
             display_name: 'Name:',
             display_description: 'Description:'
         }
+    },
+    outbound_route: {
+        detail_title: 'Outbound route information',
+        new_title: 'New Outbound route',
+        edit_title: 'Edit Outbound route'
+    },
+    dial_pattern: {
+        new_title: 'New dial pattern'
+    },
+    trunk: {
+        new_title: 'New trunk'
     }
 };

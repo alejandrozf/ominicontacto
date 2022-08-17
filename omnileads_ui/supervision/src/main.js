@@ -36,7 +36,9 @@ import Checkbox from 'primevue/checkbox';
 import Calendar from 'primevue/calendar';
 import Steps from 'primevue/steps';
 import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 import Textarea from 'primevue/textarea';
+import InlineMessage from 'primevue/inlinemessage';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -73,6 +75,7 @@ app.component('Calendar', Calendar);
 app.component('Steps', Steps);
 app.component('Toast', Toast);
 app.component('Textarea', Textarea);
+app.component('InlineMessage', InlineMessage);
 
 // Register Helpers
 app.provide('$helpers', Helpers);
@@ -82,4 +85,5 @@ app.use(i18n)
     .use(router)
     .use(VueSweetalert2)
     .use(PrimeVue)
+    .use(ToastService)
     .mount('#app');

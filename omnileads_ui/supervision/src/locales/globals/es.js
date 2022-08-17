@@ -47,6 +47,9 @@ export default {
     external_system: 'Sistema externo | Sistemas externos',
     form: 'Formulario | Formularios',
     inbound_route: 'Ruta entrante | Rutas entrantes',
+    outbound_route: 'Ruta saliente | Rutas salientes',
+    trunk: 'Troncal | Troncales',
+    dial_pattern: 'Patron de discado | Patrones de discado',
     // -------------
     // -- Actions --
     // -------------
@@ -88,6 +91,7 @@ export default {
     up: 'Mover arriba',
     down: 'Mover abajo',
     reactivate: 'Reactivar',
+    reorder: 'Reordenar',
     // ---------------------
     // --- Notifications ---
     // ---------------------

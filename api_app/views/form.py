@@ -26,8 +26,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import (
-    FormularioSerializer)
+from api_app.serializers.form import FormularioSerializer
 from ominicontacto_app.models import Formulario
 
 

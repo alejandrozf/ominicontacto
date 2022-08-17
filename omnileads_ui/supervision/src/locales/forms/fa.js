@@ -61,5 +61,19 @@ export default {
             id_client: 'شناسه مشتری',
             custom_dst: 'مقصد سفارشی'
         }
+    },
+    outbound_route: {
+        enter_name: 'نام را وارد کنید',
+        enter_ring_time: 'زمان زنگ را وارد کنید',
+        enter_dial_option: 'وارد گزینه شماره گیری شوید',
+        validations: {
+            not_empty_dial_patterns: 'باید حداقل یک الگوی شماره گیری وجود داشته باشد',
+            not_empty_trunks: 'باید حداقل یک تنه وجود داشته باشد',
+            repeated_route_name: 'مسیر خروجی با آن نام از قبل وجود دارد',
+            invalid_route_name: 'نام مسیر نامعتبر است'
+        }
+    },
+    dial_pattern: {
+        enter_pattern: 'الگو را وارد کنید'
     }
 };

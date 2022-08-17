@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
+from api_app.utils.routes.inbound import (
+    eliminar_ruta_entrante_config, escribir_ruta_entrante_config)
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,12 +28,9 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import (
+from api_app.serializers.inbound_route import (
     RutaEntranteSerializer, DestinoEntranteSerializer)
 from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
-from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
-    SincronizadorDeConfiguracionRutaEntranteAsterisk,
-    RestablecerConfiguracionTelefonicaError)
 
 
 class InboundRouteList(APIView):
@@ -76,6 +75,9 @@ class InboundRouteCreate(APIView):
             ruta_entrante = RutaEntranteSerializer(data=request.data)
             if ruta_entrante.is_valid():
                 ruta_entrante.save()
+                if not escribir_ruta_entrante_config(self, ruta_entrante):
+                    responseData['message'] = _('Se creo la ruta entrante pero no se pudo '
+                                                'cargar la configuración telefónica')
                 return Response(data=responseData, status=status.HTTP_200_OK)
             else:
                 responseData['status'] = 'ERROR'
@@ -110,7 +112,12 @@ class InboundRouteUpdate(APIView):
             serializer = RutaEntranteSerializer(
                 ruta_entrante, data=request.data)
             if serializer.is_valid():
+                delete_st = eliminar_ruta_entrante_config(self, ruta_entrante)
                 serializer.save()
+                create_st = escribir_ruta_entrante_config(self, ruta_entrante)
+                if not delete_st or not create_st:
+                    data['message'] = _('Se actualizo la ruta entrante pero no se pudo '
+                                        'cargar la configuración telefónica')
                 return Response(data=data, status=status.HTTP_200_OK)
             else:
                 data['status'] = 'ERROR'
@@ -186,19 +193,16 @@ class InboundRouteDelete(APIView):
                                     'que tiene una Ruta Saliente.')
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-                sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
+                if not eliminar_ruta_entrante_config(self, ruta_entrante):
+                    data['message'] = _('Se actualizo la ruta entrante pero no se pudo '
+                                        'cargar la configuración telefónica')
                 ruta_entrante.delete()
-            return Response(data=data, status=status.HTTP_200_OK)
+                return Response(data=data, status=status.HTTP_200_OK)
         except RutaEntrante.DoesNotExist:
             data['status'] = 'ERROR'
             data['message'] = _(u'No existe la ruta entrante')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except RestablecerConfiguracionTelefonicaError as e:
-            data['status'] = 'ERROR'
-            data['message'] = _('Error al eliminar la '
-                                'ruta entrante: {0}'.format(e))
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = _(u'Error al eliminar la ruta entrante')

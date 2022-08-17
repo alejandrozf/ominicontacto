@@ -32,7 +32,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP
 from rest_framework.views import APIView
 
 from api_app.authentication import token_expire_handler, expires_in, ExpiringTokenAuthentication
-from api_app.serializers import UserSigninSerializer, UserSerializer
+from api_app.serializers.base import UserSigninSerializer, UserSerializer
 from api_app.views.permissions import TienePermisoOML
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import SistemaExterno, Campana, BaseDatosContacto

@@ -21,48 +21,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
-{% block head_js %}
-<script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/jquery-ui.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/lista_rutas_salientes.js' %}"></script>
-{% endblock %}
-
 {% block content %}
-<h1>{% trans 'Rutas Salientes' %}</h1>
-
-<form id="form_ordenar" action="{% url 'ordenar_rutas_salientes' %}" method="post"> 
-    {% csrf_token %}
-    <input type="hidden" name="orden" id="orden">
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>{% trans 'ID' %}</th>
-            <th>{% trans 'Nombre' %}</th>
-            <th>{% trans 'Tiempo ring' %}</th>
-            <th colspan="2">{% trans 'Opciones de discado' %}</th>
-        </tr>
-    </thead>
-    <tbody id="rutas_salientes">
-    {% for ruta_saliente in rutas_salientes %}
-        <tr id="{{ ruta_saliente.id }}">
-            <td>{{ ruta_saliente.id }}</td>
-            <td><a href="{% url 'editar_ruta_saliente' ruta_saliente.id %}">{{ ruta_saliente.nombre }}</a></td>
-            <td>{{ ruta_saliente.ring_time }}</td>
-            <td>{{ ruta_saliente.dial_options }}</td>
-            <td>
-                <a class="dropdown-item" href="{% url 'eliminar_ruta_saliente' ruta_saliente.pk %}">
-                    <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                </a>
-            </td>
-        </tr>
-   {% empty %}
-    <tr>
-        <td>{% trans 'No hay rutas salientes configuradas' %}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<a class="btn btn-light btn-sm" href="{% url 'crear_ruta_saliente' %}" >{% trans 'Agregar ruta saliente' %}</a>
-<a class="btn btn-light btn-sm" href="javascript:;" onclick="guardarOrden();">{% trans 'Guardar Orden' %}</a>
+    <iframe src="{% static 'omnileads-ui-supervision/outbound_routes.html' %}" class="crm" name="crm"></iframe>
 {% endblock %}
