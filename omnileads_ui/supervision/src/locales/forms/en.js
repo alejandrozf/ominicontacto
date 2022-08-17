@@ -61,5 +61,19 @@ export default {
             id_client: 'Client ID',
             custom_dst: 'Custom destination'
         }
+    },
+    outbound_route: {
+        enter_name: 'Enter the name',
+        enter_ring_time: 'Enter the ring time',
+        enter_dial_option: 'Enter the dial option',
+        validations: {
+            not_empty_dial_patterns: 'There must be at least one dial pattern',
+            not_empty_trunks: 'There must be at least one trunk',
+            repeated_route_name: 'Outgoing route with that name already exists',
+            invalid_route_name: 'The path name is invalid'
+        }
+    },
+    dial_pattern: {
+        enter_pattern: 'Enter the pattern'
     }
 };

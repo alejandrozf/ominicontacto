@@ -34,7 +34,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api_app.authentication import ExpiringTokenAuthentication
-from api_app.serializers import AgenteProfileIDSerializer
+from api_app.serializers.base import AgenteProfileIDSerializer
 from api_app.views.permissions import TienePermisoOML
 from api_app.services.base_datos_contacto_service import BaseDatosContactoService
 from ominicontacto_app.models import AgenteProfile, User

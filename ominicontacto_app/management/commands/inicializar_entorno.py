@@ -21,6 +21,7 @@ import logging
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 
 from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion, QueueMember
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
@@ -38,7 +39,6 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk)
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from configuracion_telefonia_app.views.base import escribir_ruta_entrante_config
 
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService

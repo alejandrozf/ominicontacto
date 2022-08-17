@@ -47,6 +47,9 @@ export default {
     external_system: 'External System | External Systems',
     form: 'Form | Forms',
     inbound_route: 'Inbound Route | Inbound Routes',
+    outbound_route: 'Outbound Route | Outbound Routes',
+    trunk: 'Trunk | Trunks',
+    dial_pattern: 'Dial pattern | Dial patterns',
     // -------------
     // -- Actions --
     // -------------
@@ -88,6 +91,7 @@ export default {
     up: 'Up',
     down: 'Down',
     reactivate: 'Reactivate',
+    reorder: 'Reorder',
     // ---------------------
     // --- Notifications ---
     // ---------------------

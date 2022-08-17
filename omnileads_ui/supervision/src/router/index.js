@@ -9,6 +9,7 @@ import ExternalSystemRoutes from './external_system_routes';
 import FormRoutes from './form_routes';
 import PauseRoutes from './pause_routes';
 import InboundRoutes from './inbound_route_routes';
+import OutboundRoutes from './outbound_route_routes';
 
 const routes = [
     {
@@ -32,7 +33,8 @@ const routes = [
     ...ExternalSystemRoutes,
     ...FormRoutes,
     ...PauseRoutes,
-    ...InboundRoutes
+    ...InboundRoutes,
+    ...OutboundRoutes
 ];
 
 const router = createRouter({

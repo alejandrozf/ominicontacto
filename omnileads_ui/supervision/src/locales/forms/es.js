@@ -61,5 +61,20 @@ export default {
             id_client: 'Identificador cliente',
             custom_dst: 'Destino personalizado'
         }
+    },
+    outbound_route: {
+        enter_name: 'Ingresa el nombre',
+        enter_ring_time: 'Ingresa el tiempo de ring',
+        enter_dial_option: 'Ingresa la opcion de discado',
+        validations: {
+            not_empty_dial_patterns: 'Debe existir al menos un patron de discado',
+            not_empty_trunks: 'Debe existir al menos una troncal',
+            repeated_route_name: 'Ya existe ruta saliente con ese nombre',
+            invalid_route_name: 'El nombre de la ruta es invalido',
+            trunk_already_exists: 'Ya existe la troncal'
+        }
+    },
+    dial_pattern: {
+        enter_pattern: 'Ingresa el patron'
     }
 };

@@ -58,5 +58,18 @@ export default {
             display_name: 'Nombre:',
             display_description: 'Descripcion:'
         }
+    },
+    outbound_route: {
+        detail_title: 'Informacion de la ruta saliente',
+        new_title: 'Nueva ruta saliente',
+        edit_title: 'Edita la ruta saliente'
+    },
+    dial_pattern: {
+        new_title: 'Nuevo patron de discado',
+        edit_title: 'Edita patron de discado'
+    },
+    trunk: {
+        new_title: 'Nueva troncal',
+        edit_title: 'Edita troncal'
     }
 };

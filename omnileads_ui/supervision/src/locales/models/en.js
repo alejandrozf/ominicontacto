@@ -77,5 +77,22 @@ export default {
         idiom: 'Idiom',
         destiny: 'Destiny',
         destiny_type: 'Destiny type'
+    },
+    outbound_route: {
+        id: 'ID',
+        name: 'Name',
+        ring_time: 'Ring time',
+        dial_options: 'Dial options',
+        order: 'Order'
+    },
+    dial_pattern: {
+        prepend: 'Prepend',
+        prefix: 'Prefix',
+        pattern: 'Pattern',
+        order: 'Order'
+    },
+    trunk: {
+        name: 'Name',
+        order: 'Order'
     }
 };

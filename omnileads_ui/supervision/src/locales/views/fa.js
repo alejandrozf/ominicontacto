@@ -58,5 +58,16 @@ export default {
             display_name: 'نام:',
             display_description: 'شرح:'
         }
+    },
+    outbound_route: {
+        detail_title: 'اطلاعات مسیر خروجی',
+        new_title: 'مسیر خروجی جدید',
+        edit_title: 'ویرایش مسیر خروجی'
+    },
+    dial_pattern: {
+        new_title: 'الگوی شماره گیری جدید'
+    },
+    trunk: {
+        new_title: 'صندوق عقب جدید'
     }
 };

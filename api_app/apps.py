@@ -229,6 +229,22 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_inbound_routes_destinations_by_type',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_sip_trunks',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_orphan_trunks',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_reorder',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -512,5 +528,29 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_inbound_routes_destinations_by_type':
             {'descripcion': _('Obtiene los destinos disponibles'),
+             'version': '1.23.0'},
+        'api_outbound_routes_list':
+            {'descripcion': _('Lista las rutas salientes'),
+             'version': '1.23.0'},
+        'api_outbound_routes_create':
+            {'descripcion': _('Crea una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_update':
+            {'descripcion': _('Actualiza una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_detail':
+            {'descripcion': _('Obtiene detalle de una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_delete':
+            {'descripcion': _('Elimina una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_sip_trunks':
+            {'descripcion': _('Obtiene las troncales sip para rutas salientes'),
+             'version': '1.23.0'},
+        'api_outbound_routes_orphan_trunks':
+            {'descripcion': _('Obtiene las troncales huerfanas de una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_reorder':
+            {'descripcion': _('Reordena las rutas salientes'),
              'version': '1.23.0'},
     }
