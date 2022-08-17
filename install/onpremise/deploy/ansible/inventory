@@ -33,6 +33,11 @@ postgres_database=omnileads
 #postgres_host=
 #postgres_port=
 
+postgres_ha=false
+postgres_ro_host=
+
+postgres_ssl=false
+
 ##########################################################
 # Tell to OMniLeads Web App  the Asterisk ACD parameters #
 ##########################################################

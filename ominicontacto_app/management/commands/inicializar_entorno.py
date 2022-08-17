@@ -134,13 +134,13 @@ class Command(BaseCommand):
             retry=3,
             wrapuptime=5,
             servicelevel=30,
-            strategy='ringall',
+            strategy='rrmemory',
             eventmemberstatus=True,
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=120,
+            wait=60,
             auto_grabacion=True,
         )
 
@@ -152,7 +152,7 @@ class Command(BaseCommand):
         destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             campana_entrante)
         ruta_entrante = RutaEntranteFactory(
-            telefono='01177660011', destino=destino_campana_entrante, prefijo_caller_id='')
+            telefono='01177660010', destino=destino_campana_entrante, prefijo_caller_id='')
         escribir_ruta_entrante_config(self, ruta_entrante)
 
     def _crear_datos_entorno(self):
@@ -221,7 +221,7 @@ class Command(BaseCommand):
                        "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,
-            caller_id='')
+            caller_id='01177660010')
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)
         ruta_saliente = RutaSalienteFactory(ring_time=25, dial_options="Tt")

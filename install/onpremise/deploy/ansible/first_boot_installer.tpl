@@ -20,10 +20,10 @@
 export oml_infras_stage=onpremise
 
 # ********** # The GitLab branch
-export oml_app_release=master
+export oml_app_release=oml-2274-dev-pgsql-ro-rw-inicializar-entorno
 
 # ********** # OMniLeads tenant NAME
-export oml_tenant_name=deployexample
+export oml_tenant_name=example
 
 # ********** # Device for recordings
 # ********** # Values: local | s3 | s3-minio | s3-aws | nfs
@@ -43,7 +43,7 @@ export s3_secret_key=NULL
 # ********** # se bucket name | NULL
 export s3_bucket_name=NULL
 # ********** # s3 endpoint url Only when use non AWS S3 object | NULL
-export s3_enpoint_url=NULL
+export s3_endpoint_url=NULL
 # ********** # s3 bucket region | NULL
 export s3_region=NULL
 
@@ -52,18 +52,18 @@ export s3_region=NULL
 export nfs_host=NULL
 
 # ********** # Set your network interface
-export oml_nic=YOUR_NIC
+export oml_nic=eth0
 
 # ********** # ******* Variables for ACD Asterisk *******
 # ********** # AMI connection from OMLApp
 export oml_ami_user=omnileadsami
 export oml_ami_password=098098ZZZ
-# ********** # Values: NULL | IP address or FQDN
+# ********** # Values: NULL or IP address/FQDN in case of ACD isolate host
 export oml_acd_host=NULL
 
 # ********** # ******* Variables for PGSQL *******
 # ********** # POSTGRESQL network address and port
-# ********** # Values: NULL | IP address or FQDN
+# ********** # Values: NULL | IP address or FQDN  in case of ACD isolate host
 export oml_pgsql_host=NULL
 export oml_pgsql_port=5432
 # ********** # POSTGRESQL user, password and DB parameters
@@ -73,6 +73,14 @@ export oml_pgsql_password=098098ZZZ
 # ********** # If PGSQL runs on cloud cluster, set this parameter to true
 export oml_pgsql_cloud=NULL
 
+# ********** # If PGSQL runs on HA cluster, uncomment and set this parameter to "true"
+export oml_pgsql_cluster=false
+export oml_pgsql_read_only_host=
+
+# ********* # IF PGSQL engine require SSL
+export oml_pgsql_ssl=NULL
+
+
 # ********** ## ******* Variables for Dialer *******
 export api_dialer_user=demoadmin
 export api_dialer_password=demo
@@ -80,24 +88,27 @@ export api_dialer_password=demo
 export oml_dialer_host=NULL
 
 # ********** # ******* Variables for WebRTC bridge *******
-# ********** # Values: NULL | IP address or FQDN
+# ********** # Values: NULL | IP address or FQDN  in case of RTPengine isolate host
 export oml_rtpengine_host=NULL
-# ********** # Values: NULL | IP address or FQDN
+# ********** # Values: NULL | IP address or FQDN  in case of Kamailio isolate host
 export oml_kamailio_host=NULL
 
-# ********** # ******* Variables for Redis and Websocket *******
-# ********** # Values: NULL | IP address or FQDN
+# ********** # ******* Variables for Redis *******
+# ********** # Values: NULL | IP address or FQDN  in case of Websockets isolate host
 export oml_redis_host=NULL
 
-# ********** # Values: True or NULL
-export oml_redis_ha=NULL
-export oml_sentinel_host_01=NULL
-export oml_sentinel_host_02=NULL
-export oml_sentinel_host_03=NULL
-
+# ********** # ******* Variables for Websockets *******
 # ********** # Values: NULL | IP address or FQDN
 export oml_websocket_host=NULL
 export oml_websocket_port=NULL
+
+# ********** # In case of Redis HA Cluster deploy
+# ********** # Values: true or NULL
+export oml_redis_ha=NULL
+# ********** # Values: NULL or IP addr / FQDN
+export oml_sentinel_host_01=NULL
+export oml_sentinel_host_02=NULL
+export oml_sentinel_host_03=NULL
 
 # *********************** NAT voip webrtc setting ***************************************************************************************
 # External IP. This parameter will set the public IP for SIP and RTP traffic, on environments where calls go through a firewall.        #
@@ -131,7 +142,6 @@ export oml_high_load=NULL
 export oml_google_maps_api_key=NULL
 export oml_google_maps_center='{ "lat": -31.416668, "lng": -64.183334 }'
 
-# ******************** SET ENV VARS
 ###########################################################################
 # ------------------------ SMTP relay settings -------------------------- #
 # You can modify these parameters according to your own smtp relay server #
@@ -165,8 +175,17 @@ S3FS="/bin/s3fs"
 PATH_CERTS="$(cd "$(dirname "$BASH_SOURCE")" &> /dev/null && pwd)/certs"
 
 echo "******************** OML RELEASE = ${oml_app_release} ********************"
-
+echo ""
 sleep 5
+
+echo "******************** check vars ********************"
+if [ -z "$oml_nic" ]; then
+    echo "NIC variable is empty, you must to set oml_nic Network Interface parameter !!! "
+		exit
+fi
+
+echo "******************** clean up ********************"
+rm -rf $SRC/ominicontacto
 
 echo "******************** IPV4 address config ********************"
 
@@ -281,6 +300,14 @@ fi
 if [[ "${oml_pgsql_port}"  != "NULL" ]];then
 	sed -i "s/#postgres_port=/postgres_port=${oml_pgsql_port}/g" $PATH_DEPLOY/inventory
 fi
+if [[ "${oml_pgsql_cluster}"  == "true" ]];then
+	sed -i "s/postgres_ha=false/postgres_ha=True/g" $PATH_DEPLOY/inventory
+	sed -i "s/postgres_ro_host=/postgres_ro_host=${oml_pgsql_read_only_host}/g" $PATH_DEPLOY/inventory
+fi
+if [[ "${oml_pgsql_ssl}" != "NULL" ]];then
+sed -i "s/postgres_ssl=false/postgres_ssl=true/g" $PATH_DEPLOY/inventory
+fi
+
 
 # Asterisk ACD parameters *******
 
