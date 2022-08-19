@@ -70,7 +70,8 @@ export default {
             not_empty_dial_patterns: 'Deve haver pelo menos um padrão de discagem',
             not_empty_trunks: 'Deve haver pelo menos um tronco',
             repeated_route_name: 'A rota de saída com esse nome já existe',
-            invalid_route_name: 'O nome do caminho é inválido'
+            invalid_route_name: 'O nome do caminho é inválido',
+            trunk_already_exists: 'O tronco já existe'
         }
     },
     dial_pattern: {

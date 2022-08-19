@@ -86,12 +86,14 @@ export default {
         order: 'Order'
     },
     dial_pattern: {
+        id: 'ID',
         prepend: 'Prepend',
         prefix: 'Prefix',
         pattern: 'Pattern',
         order: 'Order'
     },
     trunk: {
+        id: 'ID',
         name: 'Name',
         order: 'Order'
     }

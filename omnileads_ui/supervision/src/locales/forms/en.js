@@ -70,7 +70,8 @@ export default {
             not_empty_dial_patterns: 'There must be at least one dial pattern',
             not_empty_trunks: 'There must be at least one trunk',
             repeated_route_name: 'Outgoing route with that name already exists',
-            invalid_route_name: 'The path name is invalid'
+            invalid_route_name: 'The path name is invalid',
+            trunk_already_exists: 'Trunk already exists'
         }
     },
     dial_pattern: {
