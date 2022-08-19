@@ -70,7 +70,8 @@ export default {
             not_empty_dial_patterns: 'باید حداقل یک الگوی شماره گیری وجود داشته باشد',
             not_empty_trunks: 'باید حداقل یک تنه وجود داشته باشد',
             repeated_route_name: 'مسیر خروجی با آن نام از قبل وجود دارد',
-            invalid_route_name: 'نام مسیر نامعتبر است'
+            invalid_route_name: 'نام مسیر نامعتبر است',
+            trunk_already_exists: 'تنه از قبل وجود دارد'
         }
     },
     dial_pattern: {

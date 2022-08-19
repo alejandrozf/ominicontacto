@@ -65,9 +65,11 @@ export default {
         edit_title: 'Editar rota de saída'
     },
     dial_pattern: {
-        new_title: 'Novo padrão de discagem'
+        new_title: 'Novo padrão de discagem',
+        edit_title: 'Editar padrão de discagem'
     },
     trunk: {
-        new_title: 'Novo tronco'
+        new_title: 'Novo tronco',
+        edit_title: 'Editar tronco'
     }
 };
