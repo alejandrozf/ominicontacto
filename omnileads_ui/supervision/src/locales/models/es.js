@@ -86,12 +86,14 @@ export default {
         order: 'Orden'
     },
     dial_pattern: {
+        id: 'ID',
         prepend: 'Prepend',
         prefix: 'Prefijo',
         pattern: 'Patron de discado',
         order: 'Orden'
     },
     trunk: {
+        id: 'ID',
         name: 'Nombre',
         order: 'Orden'
     }
