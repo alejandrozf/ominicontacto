@@ -108,7 +108,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% else %} 
                             {{ calificacion.opcion_calificacion.nombre }}
                         {% endif %}
-                    </a> {% endif %} {% with auditoria=calificacion.instance.obtener_auditoria %} {% if auditoria %} {% if auditoria.es_aprobada %}
+                    </a> <br> {% endif %} {% with auditoria=calificacion.instance.obtener_auditoria %} {% if auditoria %} {% if auditoria.es_aprobada %}
                     <button class="btn aprobada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
                         {% elif auditoria.es_rechazada %}
                         <button class="btn rechazada" type="button" data-toggle="modal"

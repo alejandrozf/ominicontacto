@@ -167,7 +167,7 @@ function extractRowData(row) {
         telefono_cliente: row.find('td').eq(4).text(),
         agente: row.find('td').eq(5).text(),
         campana: row.find('td').eq(6).text(),
-        calificacion: row.find('td').eq(8).text().replace('\n', ' ').trim(),
+        calificacion: row.find('td').eq(8).find('a').map(function(_, e) { return e.innerText.trim();}).toArray().join(', '),
         archivo: fileName,
         agente_username: row.find('td').eq(10).text(),
         contacto_id: row.find('td').eq(11).text(),
