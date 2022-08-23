@@ -96,5 +96,21 @@ export default {
         id: 'ID',
         name: 'Nome',
         order: 'Ordem'
+    },
+    group_of_hour: {
+        id: 'ID',
+        name: 'Nome',
+        time_validations: 'Condições do tempo'
+    },
+    time_validation: {
+        id: 'ID',
+        tiempo_inicial: 'Dora de início',
+        tiempo_final: 'Hora final',
+        dia_semana_inicial: 'Dia de início da semana',
+        dia_semana_final: 'Dia da última semana',
+        dia_mes_inicio: 'Dia de início do mês',
+        dia_mes_final: 'Dia final do mês',
+        mes_inicio: 'Mês de início',
+        mes_final: 'Fim do mês'
     }
 };

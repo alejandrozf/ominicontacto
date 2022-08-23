@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import JsonResponse
@@ -33,18 +33,16 @@ from django.views.generic import (
     View, ListView, CreateView, UpdateView,
     DeleteView, TemplateView)
 from configuracion_telefonia_app.forms import (
-    TroncalSIPForm,
-    OpcionDestinoIVRFormset, IVRForm, ValidacionTiempoFormset, IdentificadorClienteForm,
-    OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm, )
+    TroncalSIPForm, OpcionDestinoIVRFormset, IVRForm, IdentificadorClienteForm,
+    OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm)
 from configuracion_telefonia_app.models import (
     TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
-    OpcionDestino, GrupoHorario, ValidacionFechaHora, IdentificadorCliente,
+    OpcionDestino, ValidacionFechaHora, IdentificadorCliente,
     DestinoPersonalizado, )
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
     SincronizadorDeConfiguracionIVRAsterisk,
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
-    SincronizadorDeConfiguracionGrupoHorarioAsterisk,
     SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
     SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
@@ -344,102 +342,9 @@ class IVRUpdateView(IVRMixin, UpdateView):
             {'form': form, 'opcion_destino_formset': opcion_destino_formset})
 
 
-class GrupoHorarioListView(ListView):
+class GrupoHorarioListView(TemplateView):
     """Lista los grupos horarios existentes"""
-    model = GrupoHorario
     template_name = "lista_grupos_horarios.html"
-    context_object_name = 'grupos_horarios'
-    paginate_by = 40
-    ordering = ['id']
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioListView, self).get_context_data(**kwargs)
-        obtener_paginas(context, 7)
-        return context
-
-
-class GrupoHorarioMixin(object):
-
-    def form_valid(self, form):
-        validacion_tiempo_formset = ValidacionTiempoFormset(
-            self.request.POST, instance=form.instance, prefix='validacion_tiempo')
-        if form.is_valid() and validacion_tiempo_formset.is_valid():
-            grupo_horario = form.save()
-            validacion_tiempo_formset.save()
-
-            try:
-                sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
-                sincronizador.regenerar_asterisk(grupo_horario)
-            except RestablecerConfiguracionTelefonicaError as e:
-                message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
-                messages.add_message(self.request, messages.WARNING, message)
-
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect(self.success_url)
-        return render(
-            self.request, self.template_name,
-            {'form': form, 'validacion_tiempo_formset': validacion_tiempo_formset})
-
-
-class GrupoHorarioCreateView(GrupoHorarioMixin, CreateView):
-    """Crea un grupo horario"""
-    model = GrupoHorario
-    template_name = "crear_grupo_horario.html"
-    fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-    message = _('Se ha creado el grupo horario con éxito')
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioCreateView, self).get_context_data(**kwargs)
-        context['validacion_tiempo_formset'] = ValidacionTiempoFormset(prefix='validacion_tiempo')
-        return context
-
-
-class GrupoHorarioUpdateView(GrupoHorarioMixin, UpdateView):
-    """Edita un grupo horario"""
-    model = GrupoHorario
-    template_name = 'editar_grupo_horario.html'
-    fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-    message = _('Se ha modificado el grupo horario con éxito')
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioUpdateView, self).get_context_data(**kwargs)
-        grupo_horario = context['form'].instance
-        initial_data = grupo_horario.validaciones_tiempo.values()
-        context['validacion_tiempo_formset'] = ValidacionTiempoFormset(
-            initial=initial_data, instance=grupo_horario, prefix='validacion_tiempo')
-        return context
-
-
-class GrupoHorarioDeleteView(DeleteView):
-    """Elimina un grupo horario"""
-    model = GrupoHorario
-    template_name = 'eliminar_grupo_horario.html'
-    context_object_name = 'grupo_horario'
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        try:
-            sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
-            sincronizador.eliminar_y_regenerar_asterisk(self.object)
-        except RestablecerConfiguracionTelefonicaError as e:
-            message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
-            messages.add_message(self.request, messages.WARNING, message)
-        if self.object.validaciones_fecha_hora.count() > 0:
-            message = _(
-                'No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora')
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return redirect(self.get_success_url())
-
-        message = _(u"Se ha eliminado el Grupo Horario.")
-        messages.add_message(self.request, messages.SUCCESS, message)
-        return super(GrupoHorarioDeleteView, self).dispatch(request, *args, **kwargs)
 
 
 class ValidacionFechaHoraListView(ListView):

@@ -23,12 +23,12 @@ import re
 
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-from django.forms.models import (inlineformset_factory, modelformset_factory, BaseModelFormSet)
+from django.forms.models import (modelformset_factory, BaseModelFormSet)
 from django.utils.translation import ugettext_lazy as _
 
 from configuracion_telefonia_app.models import AmdConf, AudiosAsteriskConf, DestinoEntrante, \
-    EsquemaGrabaciones, GrupoHorario, IVR, IdentificadorCliente, MusicaDeEspera, OpcionDestino, \
-    Playlist, TroncalSIP, ValidacionTiempo
+    EsquemaGrabaciones, IVR, IdentificadorCliente, MusicaDeEspera, OpcionDestino, \
+    Playlist, TroncalSIP
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -304,13 +304,6 @@ class OpcionDestinoIVRForm(forms.ModelForm):
         return valor
 
 
-class ValidacionTiempoForm(forms.ModelForm):
-
-    class Meta:
-        model = ValidacionTiempo
-        exclude = ()
-
-
 class IdentificadorClienteForm(forms.ModelForm):
     class Meta:
         model = IdentificadorCliente
@@ -521,6 +514,3 @@ OpcionDestinoValidacionFechaHoraFormset = modelformset_factory(
     OpcionDestino, form=OpcionDestinoValidacionFechaHoraForm,
     formset=OpcionDestinoValidacionFechaHoraFormSet, can_delete=False, extra=0, min_num=2,
     max_num=2)
-
-ValidacionTiempoFormset = inlineformset_factory(
-    GrupoHorario, ValidacionTiempo, form=ValidacionTiempoForm, can_delete=True, extra=0, min_num=1)

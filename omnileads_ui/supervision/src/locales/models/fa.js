@@ -96,5 +96,21 @@ export default {
         id: 'برو',
         name: 'نام',
         order: 'سفارش'
+    },
+    group_of_hour: {
+        id: 'برو',
+        name: 'نام',
+        time_validations: 'شرایط آب و هوایی'
+    },
+    time_validation: {
+        id: 'برو',
+        tiempo_inicial: 'زمان شروع',
+        tiempo_final: 'زمان پایانی',
+        dia_semana_inicial: 'روز شروع هفته',
+        dia_semana_final: 'روز هفته آخر',
+        dia_mes_inicio: 'روز شروع ماه',
+        dia_mes_final: 'روز پایان ماه',
+        mes_inicio: 'ماه شروع',
+        mes_final: 'ماه پایانی'
     }
 };

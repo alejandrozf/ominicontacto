@@ -19,18 +19,14 @@
 
 from mock import patch
 from django.urls import reverse
-from django.utils.translation import ugettext as _
-
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import CampanaFactory
 from ominicontacto_app.models import Campana
 from ominicontacto_app.views_campana import CampanaDeleteView
-
 from configuracion_telefonia_app.tests.factories import (
-    RutaEntranteFactory, IVRFactory,
-    ValidacionFechaHoraFactory, GrupoHorarioFactory, ValidacionTiempoFactory, OpcionDestinoFactory)
+    RutaEntranteFactory, IVRFactory, ValidacionFechaHoraFactory, OpcionDestinoFactory)
 from configuracion_telefonia_app.models import (
-    GrupoHorario, ValidacionTiempo, IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
+    IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
 from configuracion_telefonia_app.views.base import IVRDeleteView, ValidacionFechaHoraDeleteView
 
 
@@ -49,38 +45,6 @@ class BaseTestRestriccionEliminacion(OMLBaseTest):
         self.camp_2 = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
         self.nodo_camp_1 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_1)
         self.nodo_camp_2 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_2)
-
-
-class TestRestriccionEliminacionGrupoHorario(BaseTestRestriccionEliminacion):
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionGrupoHorarioAsterisk.eliminar_y_regenerar_asterisk')
-    def test_elimina_grupo_horario_ok(self, mock_sincronizacion):
-        # Creo un Grupo Horario sin asignarlo a ninguna Validacion Fecha Hora
-        grupo_horario = GrupoHorarioFactory()
-        ValidacionTiempoFactory(grupo_horario=grupo_horario)
-        self.client.login(username=self.admin.username, password=self.PWD)
-        url = reverse('eliminar_grupo_horario', args=[grupo_horario.id])
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, _(u"Se ha eliminado el Grupo Horario."))
-        self.assertEqual(GrupoHorario.objects.count(), 0)
-        self.assertEqual(ValidacionTiempo.objects.count(), 0)
-
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionGrupoHorarioAsterisk.eliminar_y_regenerar_asterisk')
-    def test_no_elimina_grupo_horario_utilizado(self, mock_sincronizacion):
-        # Creo un Grupo Horario y lo asigno a una Validacion Fecha Hora
-        grupo_horario = GrupoHorarioFactory()
-        ValidacionTiempoFactory(grupo_horario=grupo_horario)
-        ValidacionFechaHoraFactory(grupo_horario=grupo_horario)
-        self.client.login(username=self.admin.username, password=self.PWD)
-        url = reverse('eliminar_grupo_horario', args=[grupo_horario.id])
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        message = _('No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora')
-        self.assertContains(response, message)
-        self.assertEqual(GrupoHorario.objects.count(), 1)
-        self.assertEqual(ValidacionTiempo.objects.count(), 1)
 
 
 class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):

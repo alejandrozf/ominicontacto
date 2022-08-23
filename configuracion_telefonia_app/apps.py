@@ -51,7 +51,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_grupos_horarios' in permissions:
             items.append({
                 'label': _('Grupos horarios'),
-                'url': reverse('lista_grupos_horarios', args=(1,))
+                'url': reverse('lista_grupos_horarios')
             })
         if 'lista_validaciones_fecha_hora' in permissions:
             items.append({
@@ -151,12 +151,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'lista_grupos_horarios',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'crear_grupo_horario',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'editar_grupo_horario',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'eliminar_grupo_horario',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_validaciones_fecha_hora',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'crear_validacion_fecha_hora',
@@ -226,12 +220,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
             {'descripcion': _('Eliminar IVR'), 'version': '1.7.0'},
         'lista_grupos_horarios':
             {'descripcion': _('Ver lista de Grupos Horarios'), 'version': '1.7.0'},
-        'crear_grupo_horario':
-            {'descripcion': _('Crear un Grupo Horario'), 'version': '1.7.0'},
-        'editar_grupo_horario':
-            {'descripcion': _('Editar un Grupo Horario'), 'version': '1.7.0'},
-        'eliminar_grupo_horario':
-            {'descripcion': _('Eliminar un Grupo Horario'), 'version': '1.7.0'},
         'lista_validaciones_fecha_hora':
             {'descripcion': _('Ver lista de Validaciones horarias'), 'version': '1.7.0'},
         'crear_validacion_fecha_hora':

@@ -245,6 +245,16 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_outbound_routes_reorder',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -552,5 +562,20 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_outbound_routes_reorder':
             {'descripcion': _('Reordena las rutas salientes'),
+             'version': '1.23.0'},
+        'api_group_of_hours_list':
+            {'descripcion': _('Lista los grupos horarios'),
+             'version': '1.23.0'},
+        'api_group_of_hours_create':
+            {'descripcion': _('Crea un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_update':
+            {'descripcion': _('Actualiza un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_detail':
+            {'descripcion': _('Obtiene detalle de un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_delete':
+            {'descripcion': _('Elimina un grupo horario'),
              'version': '1.23.0'},
     }
