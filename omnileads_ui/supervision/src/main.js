@@ -40,6 +40,9 @@ import ToastService from 'primevue/toastservice';
 import Textarea from 'primevue/textarea';
 import InlineMessage from 'primevue/inlinemessage';
 import Password from 'primevue/password';
+import FileUpload from 'primevue/fileupload';
+import RadioButton from 'primevue/radiobutton';
+import Fieldset from 'primevue/fieldset';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -78,6 +81,9 @@ app.component('Toast', Toast);
 app.component('Textarea', Textarea);
 app.component('InlineMessage', InlineMessage);
 app.component('Password', Password);
+app.component('FileUpload', FileUpload);
+app.component('RadioButton', RadioButton);
+app.component('Fieldset', Fieldset);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

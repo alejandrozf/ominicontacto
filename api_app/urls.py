@@ -75,14 +75,16 @@ from api_app.views.outbound_route import (
 from api_app.views.group_of_hour import (
     GroupOfHourCreate, GroupOfHourDelete, GroupOfHourList,
     GroupOfHourDetail, GroupOfHourUpdate)
-from api_app.views import agente
+from api_app.views.ivr import (
+    IVRAudioOptions, IVRCreate, IVRDelete, IVRDestinationTypes, IVRList,
+    IVRDetail, IVRUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
-    AgentRejectCallAsterisk
+    AgentRejectCallAsterisk, Click2CallOutsideCampaign
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
@@ -431,15 +433,39 @@ urlpatterns = [
     re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/delete/$',
             GroupOfHourDelete.as_view(),
             name='api_group_of_hours_delete'),
+    # =========================
+    # IVRs
+    # =========================
+    re_path(r'api/v1/ivrs/$',
+            IVRList.as_view(),
+            name='api_ivrs_list'),
+    re_path(r'api/v1/ivrs/create/$',
+            IVRCreate.as_view(),
+            name='api_ivrs_create'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/update/$',
+            IVRUpdate.as_view(),
+            name='api_ivrs_update'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/$',
+            IVRDetail.as_view(),
+            name='api_ivrs_detail'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/delete/$',
+            IVRDelete.as_view(),
+            name='api_ivrs_delete'),
+    re_path(r'api/v1/ivrs/audio_options/$',
+            IVRAudioOptions.as_view(),
+            name='api_ivrs_audio_options_list'),
+    re_path(r'api/v1/ivrs/destination_types/$',
+            IVRDestinationTypes.as_view(),
+            name='api_ivrs_destination_types_list'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
     re_path(r'api/v1/makeCall/$',
             Click2CallView.as_view(),
             name='api_click2call'),
-    path('api/v1/make_call_outside_campaign/',
-         agente.Click2CallOutsideCampaign.as_view(),
-         name='api_click2call_outside_campaign'),
+    re_path(r'api/v1/make_call_outside_campaign/',
+            Click2CallOutsideCampaign.as_view(),
+            name='api_click2call_outside_campaign'),
     re_path(r'^api/v1/asterisk_login/$',
             AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     re_path(r'^api/v1/asterisk_logout/$',

@@ -45,7 +45,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_ivrs' in permissions:
             items.append({
                 'label': _('IVR'),
-                'url': reverse('lista_ivrs', args=(1,))
+                'url': reverse('lista_ivrs')
             })
         if 'lista_grupos_horarios' in permissions:
             items.append({
@@ -142,12 +142,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_ivrs',
              'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'crear_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'editar_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'eliminar_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'lista_grupos_horarios',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_validaciones_fecha_hora',
@@ -211,12 +205,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'version': '1.7.0'},
         'lista_ivrs':
             {'descripcion': _('Ver la lista de IVRs'), 'version': '1.7.0'},
-        'crear_ivr':
-            {'descripcion': _('Crear un IVR'), 'version': '1.7.0'},
-        'editar_ivr':
-            {'descripcion': _('Editar IVR'), 'version': '1.7.0'},
-        'eliminar_ivr':
-            {'descripcion': _('Eliminar IVR'), 'version': '1.7.0'},
         'lista_grupos_horarios':
             {'descripcion': _('Ver lista de Grupos Horarios'), 'version': '1.7.0'},
         'lista_validaciones_fecha_hora':

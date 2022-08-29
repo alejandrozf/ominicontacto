@@ -12,6 +12,7 @@ import PauseRoutes from './pause_routes';
 import InboundRoutes from './inbound_route_routes';
 import OutboundRoutes from './outbound_route_routes';
 import GroupOfHourRoutes from './group_of_hour_routes';
+import IVRRoutes from './ivr_routes';
 
 const routes = [
     {
@@ -38,7 +39,8 @@ const routes = [
     ...PauseRoutes,
     ...InboundRoutes,
     ...OutboundRoutes,
-    ...GroupOfHourRoutes
+    ...GroupOfHourRoutes,
+    ...IVRRoutes
 ];
 
 const router = createRouter({

@@ -124,5 +124,31 @@ export default {
         dia_mes_final: 'Dia final do mês',
         mes_inicio: 'Mês de início',
         mes_final: 'Fim do mês'
+    },
+    ivr: {
+        id: 'ID',
+        name: 'Nome',
+        description: 'Descrição',
+        main_audio: 'áudio principal',
+        time_out_configuration: {
+            time_out: 'Tempo esgotado',
+            retries: 'Tentativas de tempo limite',
+            audio: 'Tempo limite de áudio',
+            destination: 'Tempo limite de destino',
+            destination_type: 'Tipo de destino para tempo limite'
+        },
+        invalid_destination_configuration: {
+            retries: 'Tentativas inválidas',
+            audio: 'Áudio de destino inválido',
+            destination: 'Destino inválido',
+            destination_type: 'Tipo de destino para destino inválido'
+        },
+        destination_options: 'Opções de destino'
+    },
+    destination_option: {
+        id: 'ID',
+        dtmf: 'DTMF',
+        destination_type: 'Tipo de destino',
+        destination: 'Destino'
     }
 };

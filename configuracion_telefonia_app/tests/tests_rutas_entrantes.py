@@ -19,12 +19,10 @@
 from __future__ import unicode_literals
 from django.utils.translation import gettext as _
 
-from io import BytesIO
 from mock import patch
 
 from django.urls import reverse
 
-from configuracion_telefonia_app.forms import IVRForm
 from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR,
                                                 ValidacionFechaHora)
 from configuracion_telefonia_app.tests.factories import (
@@ -131,63 +129,6 @@ class TestsRutasEntrantes(OMLBaseTest):
             'ivr-MIN_NUM_FORMS': 0,
             'ivr-MAX_NUM_FORMS': 1000
         }
-
-    def test_usuario_sin_administracion_no_puede_crear_ivr(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_ivrs = IVR.objects.count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(IVR.objects.count(), n_ivrs)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_ivrs = IVR.objects.count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(IVR.objects.count(), n_ivrs + 1)
-
-    def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
-        url = reverse('editar_ivr', args=[self.ivr.pk])
-        nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['nombre'] = nuevo_nombre
-        post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
-        post_data['ivr-1-id'] = self.opc_dest_ivr_ivr_2.pk
-        post_data['ivr-INITIAL_FORMS'] = 2
-        self.client.post(url, post_data, follow=True)
-        self.ivr.refresh_from_db()
-        self.assertNotEqual(self.ivr.nombre, nuevo_nombre)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_usuario_administrar_puede_modificar_ivr(self, escribir_nodo_entrante_config):
-        url = reverse('editar_ivr', args=[self.ivr.pk])
-        nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['nombre'] = nuevo_nombre
-        post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
-        post_data['ivr-1-id'] = self.opc_dest_ivr_ivr_2.pk
-        post_data['ivr-INITIAL_FORMS'] = 2
-        self.client.post(url, post_data, follow=True)
-        self.ivr.refresh_from_db()
-        self.assertEqual(self.ivr.nombre, nuevo_nombre)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_creacion_ivr_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_dests_ivrs = DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count(), n_dests_ivrs + 1)
 
     def _obtener_post_data_validacion_fecha_hora(self):
         return {
@@ -301,43 +242,6 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data['validacion_fecha_hora-1-destino_siguiente'] = self.destino_campana_entrante.pk,
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['validacion_fecha_hora_formset'].is_valid())
-
-    def test_form_ivr_escoger_audio_ppal_externo_no_coincide_tipo_audio_es_invalido(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['audio_ppal_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['audio_ppal_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
-
-    def test_form_ivr_escoger_audio_time_out_externo_no_coincide_tipo_audio_es_invalido(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['time_out_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['time_out_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
-
-    def test_form_ivr_escoger_audio_destino_invalido_externo_no_coincide_tipo_audio_es_invalido(
-            self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['invalid_destination_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['invalid_destination_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
 
     def test_no_se_permite_crear_destino_nombre_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')

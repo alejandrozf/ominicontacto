@@ -83,5 +83,40 @@ export default {
     time_validation: {
         new_title: 'اعتبار سنجی زمان جدید',
         edit_title: 'ویرایش اعتبار زمان'
+    },
+    ivr: {
+        new_title: 'تلفن گویا جدید',
+        edit_title: 'IVR را ویرایش کنید',
+        configuration_time_out: 'تنظیمات برای زمان پایان',
+        configuration_invalid_destination: 'تنظیم مقصد نامعتبر است',
+        destinations: {
+            time_out: 'مقصد برای وقت استراحت',
+            invalid: 'مقصد نامعتبر'
+        },
+        audios: {
+            types: {
+                internal: 'صدای داخلی',
+                external: 'صدای خارجی'
+            },
+            main: {
+                title: 'صوتی اصلی',
+                internal: 'صدای اصلی داخلی',
+                external: 'صدای اصلی خارجی'
+            },
+            time_out: {
+                title: 'مهلت زمانی صدا',
+                internal: 'مهلت زمانی صدای داخلی',
+                external: 'مهلت زمانی صدای خارجی'
+            },
+            invalid: {
+                title: 'صدای نامعتبر',
+                internal: 'صدای داخلی نامعتبر است',
+                external: 'صدای خارجی نامعتبر است'
+            }
+        }
+    },
+    destination_option: {
+        new_title: 'مقصد جدید',
+        edit_title: 'مقصد را ویرایش کنید'
     }
 };
