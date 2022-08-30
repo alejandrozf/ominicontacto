@@ -120,7 +120,7 @@ export default {
                 params: { id: id }
             });
         },
-        ...mapActions(['deleteExternalSystem', 'initExternalSystems'])
+        ...mapActions(['initExternalSystems'])
     },
     watch: {
         externalSystems: {

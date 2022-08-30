@@ -95,6 +95,7 @@ export default {
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'برای تداوم تغییرات روی دکمه "ذخیره" کلیک کنید',
     not_found_type: 'پیدا نشد {type} | پیدا نشدند {type}',
     load_info: 'در حال بارگیری اطلاعات',
     already_exist: 'از قبل وجود دارد',

@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'La campaña se quedará sin agentes',
         how_to_edit_penalty: 'Para modificar el penalty selecciona la columna',
         agents_campaign: 'Agentes de campaña',
-        agents_not_save: 'No se guardaron los agentes',
-        how_to_update: 'Haga click en el boton "Guardar" para persistir los cambios'
+        agents_not_save: 'No se guardaron los agentes'
     },
     pause_sets: {
         title: 'Conjuntos de pausas',

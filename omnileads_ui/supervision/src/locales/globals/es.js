@@ -95,6 +95,7 @@ export default {
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'Haga click en el boton "Guardar" para persistir los cambios',
     not_found_type: 'No se encontró {type} | No se encontraron {type}',
     load_info: 'Cargando información',
     already_exist: 'Ya existe',

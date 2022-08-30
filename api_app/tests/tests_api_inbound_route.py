@@ -117,6 +117,8 @@ class RutasEntrantesTest(APITest):
             URL, json.dumps(self.dataForm),
             format='json', content_type='application/json')
         numAfter = RutaEntrante.objects.all().count()
+        ruta = RutaEntrante.objects.last()
+        regenerar_asterisk.assert_called_with(ruta)
         response_json = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore + 1)
@@ -131,6 +133,7 @@ class RutasEntrantesTest(APITest):
            '.eliminar_y_regenerar_asterisk')
     def elimina_ruta_entrante(self, eliminar_y_regenerar_asterisks):
         pk = self.ruta_entrante.pk
+        ruta = RutaEntrante.objects.get(pk=pk)
         URL = reverse(
             self.urls_api['InboundRoutesDelete'],
             args=[pk, ])
@@ -138,6 +141,7 @@ class RutasEntrantesTest(APITest):
         response = self.client.delete(URL, follow=True)
         numAfter = RutaEntrante.objects.all().count()
         response_json = json.loads(response.content)
+        eliminar_y_regenerar_asterisks.assert_called_with(ruta)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore - 1)
         self.assertEqual(response_json['status'], 'SUCCESS')
@@ -177,6 +181,8 @@ class RutasEntrantesTest(APITest):
             format='json', content_type='application/json')
         ruta_entrante = RutaEntrante.objects.get(pk=pk)
         response_json = json.loads(response.content)
+        eliminar_y_regenerar_asterisk.assert_called_with(ruta_entrante)
+        regenerar_asterisk.assert_called_with(ruta_entrante)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ruta_entrante.nombre, request_data['nombre'])
         self.assertEqual(ruta_entrante.telefono, request_data['telefono'])
