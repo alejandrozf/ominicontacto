@@ -341,34 +341,21 @@ export default {
             }
             this.invalid_format = false;
             var response = null;
-            var successMsg = null;
-            var errorMsg = null;
             if (this.formToCreate) {
                 response = await this.createExternalSite(this.externalSiteForm);
-                successMsg = this.$tc('globals.success_added_type', {
-                    type: this.$tc('globals.external_site')
-                });
-                errorMsg = this.$tc('globals.error_to_created_type', {
-                    type: this.$tc('globals.external_site')
-                });
             } else {
                 response = await this.updateExternalSite({
                     id: this.externalSite.id,
                     data: this.externalSiteForm
                 });
-                successMsg = this.$tc('globals.success_updated_type', {
-                    type: this.$tc('globals.external_site')
-                });
-                errorMsg = this.$tc('globals.error_to_updated_type', {
-                    type: this.$tc('globals.external_site')
-                });
             }
-            if (response) {
+            const { status, message } = response;
+            if (status === 'SUCCESS') {
                 this.$router.push({ name: 'external_sites' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        successMsg,
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -376,7 +363,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        errorMsg,
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );

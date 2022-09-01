@@ -12,42 +12,30 @@ export default {
         commit('initExternalSiteDetail', externalSiteDetail);
     },
     async deleteExternalSite ({ commit }, id) {
-        const { status } = await service.delete(id);
-        if (status === 'SUCCESS') {
-            return true;
-        }
-        return false;
+        return await service.delete(id);
     },
     async hideExternalSite ({ commit }, id) {
-        const { status } = await service.hide(id);
-        if (status === 'SUCCESS') {
-            return true;
-        }
-        return false;
+        return await service.hide(id);
     },
     async showExternalSite ({ commit }, id) {
-        const { status } = await service.show(id);
-        if (status === 'SUCCESS') {
-            return true;
-        }
-        return false;
+        return await service.show(id);
     },
     async createExternalSite ({ commit }, data) {
-        const { status } = await service.create(data);
+        const response = await service.create(data);
+        const { status } = response;
         if (status === 'SUCCESS') {
             const { externalSites } = await service.list();
             commit('initExternalSites', externalSites);
-            return true;
         }
-        return false;
+        return response;
     },
     async updateExternalSite ({ commit }, { id, data }) {
-        const { status } = await service.update(id, data);
+        const response = await service.update(id, data);
+        const { status } = response;
         if (status === 'SUCCESS') {
             const { externalSites } = await service.list();
             commit('initExternalSites', externalSites);
-            return true;
         }
-        return false;
+        return response;
     }
 };

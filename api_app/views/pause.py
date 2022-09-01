@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+import json
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
@@ -87,28 +88,30 @@ class PauseCreate(APIView, SincronizarPausaMixin):
 
     def post(self, request):
         try:
-            responseData = {
+            data = {
                 'status': 'SUCCESS',
                 'message': _('Se creo la pausa '
                              'de forma exitosa')}
+            if not request.data['nombre']:
+                data['status'] = 'ERROR'
+                data['message'] = 'El nombre es un campo requerido'
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             validar_nombres_campanas(request.data['nombre'])
-            pausa = PausaSerializer(data=request.data)
-            if pausa.is_valid():
-                pausa.save()
+            serializer = PausaSerializer(data=request.data)
+            if serializer.is_valid():
+                pausa = serializer.save()
                 if self.sincronizar(pausa):
-                    return Response(data=responseData, status=status.HTTP_200_OK)
+                    return Response(data=data, status=status.HTTP_200_OK)
                 else:
-                    responseData['status'] = 'ERROR'
-                    responseData['message'] = _('Error al sincronizar '
-                                                'la pausa con asterisk')
-                    return Response(data=responseData, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    data['status'] = 'ERROR'
+                    data['message'] = _('Error al sincronizar '
+                                        'la pausa con asterisk')
+                    return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                responseData['status'] = 'ERROR'
-                responseData['message'] = [
-                    pausa.errors[key] for key in pausa.errors]
-                responseData['errors'] = pausa.errors
-                return Response(
-                    data=responseData, status=status.HTTP_400_BAD_REQUEST)
+                data['status'] = 'ERROR'
+                data['message'] = json.dumps(serializer.errors)
+                data['errors'] = serializer.errors
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
         except ValidationError as ve:
             return Response(
                 data={
@@ -117,10 +120,10 @@ class PauseCreate(APIView, SincronizarPausaMixin):
                 },
                 status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            responseData['status'] = 'ERROR'
-            responseData['message'] = _('Error al crear la pausa')
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al crear la pausa')
             return Response(
-                data=responseData,
+                data=data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -138,6 +141,10 @@ class PauseUpdate(APIView, SincronizarPausaMixin):
             'message': _('Se actualizo la pausa '
                          'de forma exitosa')}
         try:
+            if not request.data['nombre']:
+                data['status'] = 'ERROR'
+                data['message'] = 'El nombre es un campo requerido'
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             validar_nombres_campanas(request.data['nombre'])
             pausa = Pausa.objects.get(pk=pk)
             serializer = PausaSerializer(
@@ -153,8 +160,7 @@ class PauseUpdate(APIView, SincronizarPausaMixin):
                     return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 data['status'] = 'ERROR'
-                data['message'] = [
-                    serializer.errors[key] for key in serializer.errors]
+                data['message'] = json.dumps(serializer.errors)
                 data['errors'] = serializer.errors
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)

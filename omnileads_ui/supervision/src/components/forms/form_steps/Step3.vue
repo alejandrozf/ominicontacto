@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <h3>{{ $t("views.step3.display_name") }} {{ newForm.nombre }}</h3>
+    <h3>{{ $t("views.form.step3.display_name") }} {{ newForm.nombre }}</h3>
     <h3>
-      {{ $t("views.step3.display_description") }} {{ newForm.descripcion }}
+      {{ $t("views.form.step3.display_description") }} {{ newForm.descripcion }}
     </h3>
     <div class="grid formgrid mt-4">
       <div
@@ -97,34 +97,21 @@ export default {
                 return null;
             }
             var response = null;
-            var successMsg = null;
-            var errorMsg = null;
             if (this.isFormToCreate) {
                 response = await this.createForm(this.newForm);
-                successMsg = this.$tc('globals.success_added_type', {
-                    type: this.$tc('globals.form')
-                });
-                errorMsg = this.$tc('globals.error_to_created_type', {
-                    type: this.$tc('globals.form')
-                });
             } else {
                 response = await this.updateForm({
                     id: this.newForm.id,
                     data: this.newForm
                 });
-                successMsg = this.$tc('globals.success_updated_type', {
-                    type: this.$tc('globals.form')
-                });
-                errorMsg = this.$tc('globals.error_to_updated_type', {
-                    type: this.$tc('globals.form')
-                });
             }
-            if (response) {
+            const { status, message } = response;
+            if (status === 'SUCCESS') {
                 this.$router.push({ name: 'forms' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        successMsg,
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -132,7 +119,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        errorMsg,
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );

@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'The campaign will run out of agents',
         how_to_edit_penalty: 'To modify the penalty select the column',
         agents_campaign: 'Campaign agents',
-        agents_not_save: 'Agents not saved',
-        how_to_update: 'Click the "Save" button to persist the changes'
+        agents_not_save: 'Agents not saved'
     },
     pause_sets: {
         title: 'Pause sets',

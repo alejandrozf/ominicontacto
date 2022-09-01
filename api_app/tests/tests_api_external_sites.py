@@ -205,9 +205,6 @@ class SitiosExternosTest(APITest):
         self.assertEqual(response_json['status'], 'ERROR')
         self.assertGreater(len(response_json['errors']['formato']), 0)
         self.assertEqual(numAfter, numBefore)
-        self.assertEqual(
-            response_json['message'],
-            _('Error al hacer la peticion'))
 
     def test_crea_sitio_externo_valida_objetivo(self):
         URL = reverse(self.urls_api['ExternalSitesCreate'])
@@ -229,9 +226,6 @@ class SitiosExternosTest(APITest):
         self.assertEqual(response_json['status'], 'ERROR')
         self.assertGreater(len(response_json['errors']['objetivo']), 0)
         self.assertEqual(numAfter, numBefore)
-        self.assertEqual(
-            response_json['message'],
-            _('Error al hacer la peticion'))
 
     def test_actualiza_sitio_externo_valido(self):
         pk = self.sitio_externo2.pk
