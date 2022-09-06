@@ -64,9 +64,11 @@ export default {
         edit_title: 'ویرایش مسیر خروجی'
     },
     dial_pattern: {
-        new_title: 'الگوی شماره گیری جدید'
+        new_title: 'الگوی شماره گیری جدید',
+        edit_title: 'ویرایش الگوی شماره گیری'
     },
     trunk: {
-        new_title: 'صندوق عقب جدید'
+        new_title: 'صندوق عقب جدید',
+        edit_title: 'تنه را ویرایش کنید'
     }
 };

@@ -64,9 +64,11 @@ export default {
         edit_title: 'Edit Outbound route'
     },
     dial_pattern: {
-        new_title: 'New dial pattern'
+        new_title: 'New dial pattern',
+        edit_title: 'Edit dial pattern'
     },
     trunk: {
-        new_title: 'New trunk'
+        new_title: 'New trunk',
+        edit_title: 'Edit trunk'
     }
 };
