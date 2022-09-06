@@ -27,7 +27,8 @@ from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion, QueueMember,
                                       SupervisorProfile, ClienteWebPhoneProfile)
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
-                                               ArchivoDeAudioFactory, FormularioFactory,
+                                               # ArchivoDeAudioFactory,
+                                               FormularioFactory,
                                                FieldFormularioFactory, BaseDatosContactoFactory,
                                                ContactoFactory, CampanaFactory,
                                                NombreCalificacionFactory, PausaFactory,
@@ -296,7 +297,7 @@ class Command(BaseCommand):
         asterisk_sip_service.activar()
 
         # crear audio
-        ArchivoDeAudioFactory()
+        # ArchivoDeAudioFactory()
 
         # crear pausa
         PausaFactory()
