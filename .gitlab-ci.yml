@@ -1,29 +1,10 @@
-# Copyright (C) 2018 Freetech Solutions
-
-# This file is part of OMniLeads
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License version 3, as published by
-# the Free Software Foundation.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see http://www.gnu.org/licenses/.
-#
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/python
 stages:
   - test
   - build
-  - deploy
 
 test:
   stage: test
-  image: freetechsolutions/python-flake8:3.6
+  image: freetechsolutions/python-flake8:231206.01
   services:
     - name: freetechsolutions/omlpgsql:develop
       alias: plpython
@@ -31,10 +12,9 @@ test:
   cache:
     paths:
       - /root/.cache/pip/
-      - /usr/lib/python3.7/site-packages/
+      - /usr/lib/python3.9/site-packages/
   before_script:
     - mkdir -p /opt/omnileads/ominicontacto/
-    - touch /opt/omnileads/ominicontacto/django.log
     - mkdir -p /opt/omnileads/static
     - mkdir -p /opt/omnileads/media_root
     - pip install -r requirements/requirements.txt
@@ -49,206 +29,52 @@ test:
     - flake8
     - python manage.py test --failfast
     - python manage.py compilemessages
-  only:
-    - merge_requests
-    - schedules
-    - web
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop-2.0"'
+    - if: '$RUN_TEST == "true"'
 
-build-img:
-  stage: build
+container-image:
   services:
-    - name: docker:dind
-      entrypoint: ["env", "-u", "DOCKER_HOST"]
-      command: ["dockerd-entrypoint.sh"]
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-    # See https://github.com/docker-library/docker/pull/166
-    DOCKER_TLS_CERTDIR: ""
-  image: gitlab/dind
+    - docker:20.10.15-dind-alpine3.15
+  image: docker:20.10.15-alpine3.15
+  stage: build
+  before_script:
+    - apk add --no-cache docker-cli-buildx
   script:
-  script:
-    - cd install/docker && bash build_image.sh
-  only:
-    - merge_request
-    - web
-    - schedules
-    - /\[verificacion\]/
+    - >-
+      docker buildx build
+      --file=Dockerfile
+      --tag=dev
+      --target=dev
+      .
+    - >-
+      docker buildx build
+      --file=Dockerfile
+      --tag=run
+      --target=run
+      .
+    - |-
+      if [ -z "${DOCKER_USERNAME}" ] || [ -z "${DOCKER_SECRET}" ] || [ -z "${DOCKER_USER}" ] || [ -z "${DOCKER_PASSWORD}" ]; then
+        echo "Error: Una o más variables necesarias no están definidas."
+        exit 1
+      fi
 
-#build-rpm:
-#  stage: build
-#  variables:
-#  image: freetechsolutions/fpm-ansible:centos7.220224.01
-#  script:
-#    - cd install/onpremise/build/ && bash build_rpm.sh
-#  only:
-#    - /.*release-1.*$/
-#    - /.*pre-release.*$/
-#    - /.*build-all.*$/
-#    - /.*build-aio.*$/
-#    - schedules
-#    - web
+      if [ -z "$(cat .omnileads_version)" ]; then
+        echo "Error: El archivo .omnileads_version no existe o está vacío."
+        exit 1
+      fi
 
-# deploy-aio-self-hosted:
-#   stage: deploy
-#   environment: VAGRANT_CENTOS7
-#   script:
-#     - bash ~/git_cleanup.sh
-#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
-#     - cp .env_template .env
-#     - sed -i "s/develop/$CI_COMMIT_REF_NAME/g" .env
-#     - vagrant halt centos
-#     - vagrant destroy centos -f
-#     - vagrant up centos
-#     - sleep 120
-#     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=5 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
-#     - sleep 20 && vagrant halt centos
-#   tags:
-#     - deploy-aio
-#   only:
-#     - /.*test-de-integracion.*$/
-#     - /.*deploy.*$/
-#     - schedules
-#     - web
-
-deploy-aio-digitalocean:
-  stage: deploy
-  environment: DOCTL_DIGITALOCEAN_AIO
-  script:
-    - bash ~/git_cleanup.sh
-    - bash ~/.env_do
-    - sleep 30
-    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/onpremise/deploy/ansible/first_boot_installer.sh omlgitlab-cicd-aio.$CI_JOB_ID
-    - sleep 60
-    - IP=$(doctl compute droplet list |grep omlgitlab-cicd-aio.$CI_JOB_ID |awk '{print $3}') && echo "$IP 2 run tests"
-    - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-    - doctl compute droplet delete -f omlgitlab-cicd-aio.$CI_JOB_ID
-  tags:
-    - deploy-aio
-  only:
-    - /.*test-de-integracion.*$/
-    - /.*deploy.*$/
-    - schedules
-    - web
-
-# deploy-terra-digitalocean-aio:
-#   stage: deploy
-#   environment: TERRA_DIGITALOCEAN_AIO
-#   script:
-#     - bash ~/git_cleanup.sh
-#     - cd ~/terraform-digitalocean
-#     - DIGITALOCEAN_TOKEN=$DIGITALOCEAN_TOKEN TF_VAR_ssh_key_fingerprint=$TF_VAR_ssh_key_fingerprint TF_VAR_spaces_secret_key=$TF_VAR_spaces_secret_key TF_VAR_spaces_bucket_name=$TF_VAR_spaces_bucket_name TF_VAR_domain_name=$TF_VAR_domain_name TF_VAR_spaces_key=$TF_VAR_spaces_key make init ENV=cicd-$CI_JOB_ID RELEASE=$CI_COMMIT_REF_NAME TYPE=AIO DIALER=no
-#     - make plan ENV=cicd-$CI_JOB_ID
-#     - make apply ENV=cicd-$CI_JOB_ID AUTO=--auto-approve
-#     - until curl -sk --head  --request GET https://cicd-$CI_JOB_ID-omlapp.sefirot.cloud |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-# #    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=cicd-$CI_JOB_ID-omlapp.sefirot.cloud ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-#     - echo "deploy exitoso !!!"
-#     - sleep 60
-#     - make destroy ENV=cicd AUTO=--auto-approve
-#     - sleep 30
-#     - make destroy ENV=cicd AUTO=--auto-approve
-#     - sleep 30
-#     - make delete ENV=cicd
-#   tags:
-#     - deploy-aio
-#   only:
-#     - /.*test-de-integracion.*$/
-#     - /.*deploy.*$/
-#     - schedules
-#     - web
-
-# upgrade-aio:
-#   stage: deploy
-#   script:
-#     - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME RELEASE_TO_UPGRADE=$RELEASE_TO_UPGRADE
-#     - bash ~/git_cleanup.sh
-#     - cd ~/oml-boxes
-#     - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
-#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
-#     - vagrant halt
-#     - vagrant destroy -f
-#     - ./vagrantup.sh centos
-#     - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
-#     - cd ~/ominicontacto/install/onpremise/deploy/ansible
-#     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
-#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
-#     - vagrant halt centos
-#   tags:
-#     - deploy-aio
-#   only:
-#     - web
-#     - schedules
-#
-
-# deploy-docker-devenv:
-#   stage: deploy
-#   script:
-#     - bash ~/git_cleanup.sh
-#     - sed -i "s/\${omnileads_release}/$CI_COMMIT_REF_NAME/g" ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh
-#     - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh omlgitlab-cicd-devenv.$CI_JOB_ID
-#     - sleep 90
-#     - IP=$(doctl compute droplet list |grep omlgitlab-cicd-devenv.$CI_JOB_ID |awk '{print $3}') && echo "devenv-IP is $IP"
-#     - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-#     - sleep 180
-#     #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-#     - doctl compute droplet delete -f omlgitlab-cicd-devenv.$CI_JOB_ID
-#   tags:
-#     - deploy-docker
-#   only:
-#     - merge_requests
-#     - /.*test-de-integracion.*$/
-#     - /.*deploy.*$/
-#     - schedules
-#     - web
-
-# deploy-docker-prodenv:
-#   stage: deploy
-#   environment: DOCKER_PE_DIGITALOCEAN
-#   script:
-#     - bash ~/git_cleanup.sh
-#     - bash ~/.env_do_docker RTPENGINE
-#     - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/modules/rtpengine/deploy/first_boot_installer.sh omlgitlab-cicd-rtpengine.$CI_JOB_ID
-#     - sleep 90
-#     - IP_RTPENGINE=$(doctl compute droplet list |grep omlgitlab-cicd-rtpengine.$CI_JOB_ID |awk '{print $4}')
-#     - echo "******** RTPENGINE-IP is $IP_RTPENGINE"
-#     - bash ~/.env_do_docker PGSQL
-#     - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/modules/postgresql/deploy/first_boot_installer.sh omlgitlab-cicd-pgsql.$CI_JOB_ID
-#     - sleep 60
-#     - IP_PGSQL=$(doctl compute droplet list |grep omlgitlab-cicd-pgsql.$CI_JOB_ID |awk '{print $4}')
-#     - echo "******** PGSQL-IP is $IP_PGSQL"
-#     - bash ~/.env_do_docker OMLAPP $IP_PGSQL $IP_RTPENGINE
-#     - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/prodenv/first_boot_installer.tpl omlgitlab-cicd-prodenv.$CI_JOB_ID
-#     - sleep 180
-#     - IP=$(doctl compute droplet list |grep omlgitlab-cicd-prodenv.$CI_JOB_ID |awk '{print $3}')
-#     - echo "******** Docker Prod Env IP is $IP"
-#     - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-#     - sleep 120
-#     #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-#     - doctl compute droplet delete -f omlgitlab-cicd-rtpengine.$CI_JOB_ID
-#     - sleep 30
-#     - doctl compute droplet delete -f omlgitlab-cicd-pgsql.$CI_JOB_ID
-#     - sleep 30
-#     - doctl compute droplet delete -f omlgitlab-cicd-prodenv.$CI_JOB_ID
-#   tags:
-#     - deploy-docker
-#   only:
-#     - merge_requests
-#     - /.*test-de-integracion.*$/
-#     - /.*deploy.*$/
-#     - schedules
-#     - web
-
-#deploy-docker-prodenv:
-#  stage: deploy
-#  image: nodefactory/dind-with-compose
-#  script:
-#    - cd install/docker/prodenv
-#    - docker-compose up -d
-#    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-#  only:
-#    - merge_requests
-#    - /.*release.*$/
-#    - schedules
-#    - web
+      if [ "${CI_COMMIT_BRANCH}" == "master-2.0" ] || [[ "${CI_COMMIT_BRANCH}" == pre-release-* ]]; then
+        echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
+        IMAGE_VERSION=$(cat .omnileads_version)
+        docker tag run omnileads/omlapp:$IMAGE_VERSION
+        docker push docker.io/omnileads/omlapp:$IMAGE_VERSION
+      else
+        echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
+        IMAGE_VERSION=$(cat .omnileads_version)
+        docker tag run freetechsolutions/omlapp:$IMAGE_VERSION
+        docker push docker.io/freetechsolutions/omlapp:$IMAGE_VERSION
+      fi
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master-2.0"
+    - if: $CI_PIPELINE_SOURCE == "web"

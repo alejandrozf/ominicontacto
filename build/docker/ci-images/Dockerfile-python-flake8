@@ -1,0 +1,28 @@
+
+FROM python:3.9-alpine
+
+RUN apk add --virtual .buildeps \
+      build-base \
+      libffi-dev \
+      postgresql14-dev \
+      git \
+      curl \
+      bash \
+      zlib-dev \
+      jpeg-dev \
+      libxml2-dev \
+      libxslt-dev \
+      cairo-dev \
+      py3-flake8 \
+      cargo \
+      openssl-dev \
+      npm \
+      nodejs \
+      build-base \
+      openssl-dev \
+      libffi-dev \
+      python3-dev \
+    && pip3 install --upgrade pip \
+    && pip3 install flake8
+  
+CMD ["python"]
