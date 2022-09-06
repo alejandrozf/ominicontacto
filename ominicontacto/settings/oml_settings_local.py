@@ -217,7 +217,7 @@ CONSTANCE_REDIS_CONNECTION = {
 }
 
 # configuraciones de django_sendfile para grabaciones
-SENDFILE_ROOT = "{0}/var/spool/asterisk/monitor".format(ASTERISK_LOCATION)
+SENDFILE_ROOT = '/opt/omnileads/asterisk/var/spool/asterisk/monitor'
 SENDFILE_URL = '/grabaciones'
 SENDFILE_BACKEND = 'django_sendfile.backends.nginx'
 

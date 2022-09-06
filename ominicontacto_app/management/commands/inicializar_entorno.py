@@ -179,7 +179,7 @@ class Command(BaseCommand):
         asterisk_sip_service.activar()
 
         # crear audio
-        ArchivoDeAudioFactory()
+        #ArchivoDeAudioFactory()
 
         # crear pausa
         PausaFactory()
