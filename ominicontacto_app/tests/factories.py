@@ -29,7 +29,7 @@ from factory import (DjangoModelFactory, lazy_attribute, SubFactory, Sequence, p
 from django.utils import timezone
 
 from ominicontacto_app.models import (
-    AgenteProfile, BaseDatosContacto, Campana, GrabacionMarca,
+    AgenteProfile, AutenticacionSitioExterno, BaseDatosContacto, Campana, GrabacionMarca,
     ConfiguracionDePausa, ConjuntoDePausa, Grupo, Queue,
     NombreCalificacion, Formulario, FieldFormulario,
     SitioExterno, User, Contacto, SupervisorProfile,
@@ -91,6 +91,21 @@ class SitioExternoFactory(DjangoModelFactory):
     metodo = SitioExterno.GET
     formato = None
     objetivo = lazy_attribute(lambda a: faker.random_int(1, 2))
+    autenticacion = None
+
+
+class AutenticacionSitioExternoFactory(DjangoModelFactory):
+    class Meta:
+        model = AutenticacionSitioExterno
+
+    nombre = Sequence(lambda n: "Autenticacion_{0}".format(n))
+    url = lazy_attribute(lambda a: "https://{0}.com".format(a.nombre.replace(" ", "_")))
+    username = Sequence(lambda n: "usename_{0}".format(n))
+    password = Sequence(lambda n: "pwd_{0}".format(n))
+    campo_token = Sequence(lambda n: "campo_token_{0}".format(n))
+    campo_duracion = Sequence(lambda n: "campo_duracion_{0}".format(n))
+    duracion = 0
+    ssl_estricto = True
 
 
 class SistemaExternoFactory(DjangoModelFactory):

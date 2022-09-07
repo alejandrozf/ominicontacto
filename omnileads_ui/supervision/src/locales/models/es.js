@@ -34,6 +34,18 @@ export default {
         trigger: 'Disparador',
         status: 'Estado'
     },
+    external_site_authentication: {
+        id: 'ID',
+        name: 'Nombre',
+        url: 'Url',
+        username: 'Username',
+        password: 'Contrasena',
+        campo_token: 'Campo token',
+        duracion: 'Duracion',
+        campo_duracion: 'Campo duracion',
+        token: 'Token',
+        expiracion_token: 'Expiracion del token'
+    },
     call_disposition: {
         id: 'ID',
         name: 'Nombre'

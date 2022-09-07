@@ -272,7 +272,7 @@ class CalificacionClienteFormView(FormView):
             sitio_externo = self.campana.sitio_externo
             if calificacion_form.instance.opcion_calificacion.interaccion_crm and \
                     sitio_externo and sitio_externo.disparador == SitioExterno.CALIFICACION \
-                    and self.call_data:
+                    and self.call_data and sitio_externo.objetivo:
                 agente = self.request.user.get_agente_profile()
                 call_data = json.loads(self.kwargs['call_data_json']) \
                     if self.kwargs['call_data_json'] else {}
@@ -385,6 +385,7 @@ class CalificacionClienteFormView(FormView):
             message = _('Operación Exitosa! '
                         'Se llevó a cabo con éxito la calificación del cliente')
             messages.success(self.request, message)
+            self.disparar_interaccion_sitio_externo()
         if self.object_calificacion.es_agenda() and calificacion_nueva:
             return redirect(self.get_success_url_agenda())
         elif self.object_calificacion.es_agenda():
@@ -400,6 +401,26 @@ class CalificacionClienteFormView(FormView):
             return redirect(self.get_success_url_reporte())
         else:
             return redirect(self.get_success_url())
+
+    def disparar_interaccion_sitio_externo(self):
+        # Disparar InteraccionSitioExterno si corresponde
+        calificacion = self.object_calificacion
+        sitio_externo = calificacion.opcion_calificacion.campana.sitio_externo
+        if calificacion.opcion_calificacion.interaccion_crm and sitio_externo and \
+                sitio_externo.disparador == SitioExterno.CALIFICACION and self.call_data and \
+                sitio_externo.objetivo is None:
+            servicio = InteraccionConSistemaExterno()
+            self.call_data['formulario'] = ''  # No es de gestión, no tiene formulario
+            self.call_data['id_calificacion'] = calificacion.id
+            self.call_data['nombre_opcion_calificacion'] = \
+                calificacion.opcion_calificacion.nombre
+            servicio.ejecutar_interaccion(
+                sitio_externo,
+                self.agente,
+                calificacion.opcion_calificacion.campana,
+                self.contacto,
+                self.call_data
+            )
 
     def form_valid(self, contacto_form, calificacion_form=None):
         try:
@@ -578,7 +599,7 @@ class RespuestaFormularioDetailView(DetailView):
 
         sitio_externo = respuesta.calificacion.opcion_calificacion.campana.sitio_externo
         if respuesta.calificacion.opcion_calificacion.interaccion_crm and sitio_externo and \
-                sitio_externo.disparador == SitioExterno.CALIFICACION:
+                sitio_externo.disparador == SitioExterno.CALIFICACION and sitio_externo.objetivo:
             campana = respuesta.calificacion.opcion_calificacion.campana
             agente = self.request.user.get_agente_profile()
             if self.request.method == 'GET' and self.call_data:
@@ -679,7 +700,12 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
                     'Se llevó a cabo con éxito el llenado del formulario del'
                     ' cliente')
         messages.success(self.request, message)
+        self.disparar_interaccion_sitio_externo()
         return HttpResponseRedirect(self.get_success_url())
+
+    def disparar_interaccion_sitio_externo(self):
+        # Sólo La respuesta creada por agente debe dispararla
+        return
 
     def post(self, request, *args, **kwargs):
         """
@@ -729,11 +755,31 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
         return CalificacionCliente.objects.get(id=self.kwargs['pk_calificacion'])
 
     def _usuario_esta_asignado_a_campana(self):
-        agente = self.request.user.get_agente_profile()
-        return agente.esta_asignado_a_campana(self.calificacion.opcion_calificacion.campana)
+        self.agente = self.request.user.get_agente_profile()
+        return self.agente.esta_asignado_a_campana(self.calificacion.opcion_calificacion.campana)
 
     def _get_redireccion_campana_erronea(self):
         return redirect('view_blanco')
+
+    def disparar_interaccion_sitio_externo(self):
+        # Disparar InteraccionSitioExterno si corresponde
+        sitio_externo = self.calificacion.opcion_calificacion.campana.sitio_externo
+        if self.calificacion.opcion_calificacion.interaccion_crm and sitio_externo and \
+                sitio_externo.disparador == SitioExterno.CALIFICACION and self.call_data and \
+                sitio_externo.objetivo is None:
+            servicio = InteraccionConSistemaExterno()
+            call_data = json.loads(self.call_data)
+            call_data['formulario'] = self.object.metadata
+            call_data['id_calificacion'] = self.calificacion.id
+            call_data['nombre_opcion_calificacion'] = \
+                self.calificacion.opcion_calificacion.nombre
+            servicio.ejecutar_interaccion(
+                sitio_externo,
+                self.agente,
+                self.calificacion.opcion_calificacion.campana,
+                self.contacto,
+                call_data
+            )
 
 
 class RespuestaFormularioCreateUpdateSupervisorFormView(RespuestaFormularioCreateUpdateFormView):

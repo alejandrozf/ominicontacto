@@ -60,12 +60,17 @@
           "
           class="p-error"
         >
-          {{
-            v$.externalSiteForm.url.required.$message.replace(
-              "Value",
-              $t("models.external_site.url")
-            )
-          }}
+          <span
+            v-for="error of v$.externalSiteForm.url.$errors"
+            :key="error.$uid"
+          >
+            {{
+              error.$message.replace(
+                "Value",
+                $t("models.external_site.url")
+              )
+            }}
+          </span>
         </small>
       </div>
     </div>
@@ -146,6 +151,24 @@
         />
       </div>
     </div>
+    <div class="fluid grid formgrid mt-4">
+      <div class="field col-6">
+        <label>{{ $t("globals.external_site_authentication") }}</label>
+        <Dropdown
+          v-model="externalSiteForm.autenticacion"
+          class="w-full"
+          :options="externalSiteAuthentications"
+          optionLabel="nombre"
+          optionValue="id"
+          placeholder="-------"
+          :emptyFilterMessage="$t('globals.without_data')"
+          :filter="true"
+          v-bind:filterPlaceholder="
+            $t('globals.find_by', { field: $tc('globals.name') }, 1)
+          "
+        />
+      </div>
+    </div>
     <div class="flex justify-content-end flex-wrap">
       <div class="flex align-items-center">
         <Button
@@ -163,7 +186,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -190,7 +213,8 @@ export default {
                     metodo: 0,
                     disparador: 0,
                     formato: null,
-                    objetivo: null
+                    objetivo: null,
+                    autenticacion: null
                 };
             }
         }
@@ -203,7 +227,8 @@ export default {
                 metodo: 0,
                 disparador: 0,
                 formato: null,
-                objetivo: null
+                objetivo: null,
+                autenticacion: null
             },
             submitted: false,
             filters: null,
@@ -234,12 +259,17 @@ export default {
             ]
         };
     },
-    created () {
-        this.initializeData();
+    async created () {
+        await this.initExternalSiteAuthentications();
+        await this.initializeData();
+    },
+    computed: {
+        ...mapState(['externalSiteAuthentications'])
     },
     methods: {
-        ...mapActions(['createExternalSite', 'updateExternalSite']),
+        ...mapActions(['createExternalSite', 'updateExternalSite', 'initExternalSiteAuthentications']),
         initializeData () {
+            this.externalSiteAuthentications.splice(0, 0, { id: null, nombre: '------' });
             this.initFormData();
             this.submitted = false;
         },
@@ -250,6 +280,7 @@ export default {
             this.externalSiteForm.disparador = this.externalSite.disparador;
             this.externalSiteForm.formato = this.externalSite.formato;
             this.externalSiteForm.objetivo = this.externalSite.objetivo;
+            this.externalSiteForm.autenticacion = this.externalSite.autenticacion;
             if ([1, 0].includes(this.externalSite.metodo)) {
                 this.externalSiteForm.formato = null;
                 this.status_format = true;
@@ -271,28 +302,47 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        triggerEvent () {
+        handleObjetiveStatus () {
             if (
                 [3, 0].includes(this.externalSiteForm.disparador) ||
         this.externalSiteForm.formato === 4
             ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
+            } else if (this.externalSiteForm.disparador === 4 && [1, 0].includes(this.externalSiteForm.metodo)) {
+                this.status_objective = false;
+                this.externalSiteForm.objetivo = 1;
+                this.objectives = [
+                    { name: 'Embebido', value: 1 },
+                    { name: 'Nueva pestaña', value: 2 }
+                ];
+            } else if (this.externalSiteForm.disparador === 4 && this.externalSiteForm.metodo === 2) {
+                this.status_objective = false;
+                this.externalSiteForm.objetivo = null;
+                this.objectives = [
+                    { name: '-------', value: null },
+                    { name: 'Embebido', value: 1 },
+                    { name: 'Nueva pestaña', value: 2 }
+                ];
             } else {
                 this.status_objective = false;
                 this.externalSiteForm.objetivo = 1;
             }
         },
+        triggerEvent () {
+            this.handleObjetiveStatus();
+        },
         methodEvent () {
+            // Manejamos el objetivo
+            this.handleObjetiveStatus();
+
+            // Manejamos el formato
             if ([1, 0].includes(this.externalSiteForm.metodo)) {
                 this.status_format = true;
                 this.externalSiteForm.formato = null;
             } else {
                 this.status_format = false;
                 this.externalSiteForm.formato = 1;
-                if (this.externalSiteForm.disparador === 3) {
-                    this.status_objective = true;
-                }
             }
         },
         formatEvent () {

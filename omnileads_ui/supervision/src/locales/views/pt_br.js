@@ -36,6 +36,11 @@ export default {
         hide: 'Disfarce',
         show: 'mostrar'
     },
+    external_site_authentication: {
+        list_title: 'Autenticação para sites externos',
+        edit_title: 'Editar autenticação para site externo',
+        new_title: 'Nova autenticação para site externo'
+    },
     call_dispositions: {
         list_title: 'Classificações',
         edit_title: 'Editar a classificação',
