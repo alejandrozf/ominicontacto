@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
@@ -81,7 +81,9 @@ from api_app.views.agente import (
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk
 )
-from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
+from api_app.views.grabaciones import (
+    ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
+)
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
@@ -441,6 +443,8 @@ urlpatterns = [
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     re_path(r'^api/v1/grabacion/descarga_masiva',
             ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
+    path(r'api/v1/call_record/<str:callid>/',
+         ObtenerUrlGrabacionView.as_view(), name='api_call_record_url'),
     # ###########  AUDIOS ASTERISK    ############ #
     re_path(r'^api/v1/audio/list',
             ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),

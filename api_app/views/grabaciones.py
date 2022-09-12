@@ -20,22 +20,26 @@
 from __future__ import unicode_literals
 
 import os
+import threading
+import json
 
 from django.conf import settings
-from api_app.services.storage_service import StorageService
 from django_sendfile import sendfile
 from django.utils.translation import ugettext as _
+from django.http import HttpResponseRedirect
+from reportes_app.models import LlamadaLog
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework import status
+
+from api_app.services.storage_service import StorageService
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
-from rest_framework.response import Response
-from django.http import HttpResponseRedirect
-import threading
 from ominicontacto_app.services.grabaciones.generacion_zip_grabaciones \
     import GeneracionZipGrabaciones
-import json
 
 
 class ObtenerArchivoGrabacionView(APIView):
@@ -90,3 +94,24 @@ class ObtenerArchivosGrabacionView(APIView):
             'status': 'OK',
             'msg': _('Exportación de grabaciones Zip en proceso'),
         })
+
+
+class ObtenerUrlGrabacionView(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    http_method_names = ['get']
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, callid):
+        log = LlamadaLog.objects.filter(callid=callid, archivo_grabacion__isnull=False).exclude(
+            archivo_grabacion='-1').first()
+        if log:
+            return Response(data={
+                'status': 'OK',
+                'record': log.url_archivo_grabacion
+            })
+        else:
+            return Response(
+                data={'status': 'ERROR'},
+                status=status.HTTP_404_NOT_FOUND
+            )
