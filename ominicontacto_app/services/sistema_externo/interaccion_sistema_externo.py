@@ -44,6 +44,7 @@ class InteraccionConSistemaExterno(object):
             logger.exception(err_msg.format(headers))
             return headers
         try:
+            logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
             if sitio_externo.metodo == SitioExterno.GET:
                 requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.TEXT_PLAIN:
