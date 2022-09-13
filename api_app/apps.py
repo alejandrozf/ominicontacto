@@ -109,6 +109,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_descarga_masiva',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_call_record_url',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
@@ -359,6 +361,9 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_descarga_masiva':
             {'descripcion': _('Retorna Zip con archivos de grabación especificados'),
              'version': '1.14.0'},
+        'api_call_record_url':
+            {'descripcion': _('Retorna URL del archivos de grabación asociado al callid'),
+             'version': '1.25.0'},
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},
