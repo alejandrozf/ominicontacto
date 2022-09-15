@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 import json
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db.models import Case, When, Max, Min
 from api_app.utils.routes.outbound import (
     eliminar_ruta_saliente_config, escribir_ruta_saliente_config,

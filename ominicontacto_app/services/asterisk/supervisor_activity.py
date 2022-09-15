@@ -24,7 +24,7 @@ import redis
 from time import time
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager

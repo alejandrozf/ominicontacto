@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status

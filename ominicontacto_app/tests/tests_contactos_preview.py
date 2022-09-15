@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 
 import json
 from mock import patch
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django.urls import reverse
 from django.db import connections

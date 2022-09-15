@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import json
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.base_de_datos_contactos import \
     CreacionBaseDatosServiceIdExternoError, PredictorMetadataService

@@ -33,7 +33,7 @@ import base64
 from pathlib import Path
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from api_app.services.storage_service import StorageService
 
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist

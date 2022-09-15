@@ -31,7 +31,7 @@ import redis
 
 from django.conf import settings
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 logger = logging.getLogger(__name__)

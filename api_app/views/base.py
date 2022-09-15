@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate
 
 from rest_framework.authtoken.models import Token

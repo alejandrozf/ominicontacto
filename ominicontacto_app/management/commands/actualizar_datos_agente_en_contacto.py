@@ -23,7 +23,7 @@ import json
 from ast import literal_eval
 
 from django.core.management.base import BaseCommand
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from ominicontacto_app.models import AgenteEnContacto, Campana
 
 logger = logging.getLogger(__name__)

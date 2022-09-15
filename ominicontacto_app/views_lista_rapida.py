@@ -20,7 +20,7 @@
 """Views para generar listas rapidas"""
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.urls import reverse
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView

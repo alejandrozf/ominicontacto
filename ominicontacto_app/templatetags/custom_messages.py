@@ -18,7 +18,7 @@
 #
 from django.template import Library
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.utiles import get_oml_last_release
 from ominicontacto_app import version

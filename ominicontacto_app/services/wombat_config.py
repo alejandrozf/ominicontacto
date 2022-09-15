@@ -28,7 +28,7 @@ import logging
 import json
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
 

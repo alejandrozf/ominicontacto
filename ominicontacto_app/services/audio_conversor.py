@@ -29,7 +29,7 @@ import tempfile
 
 from django.conf import settings
 from django.core.files.storage import default_storage
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.models import ArchivoDeAudio
 from configuracion_telefonia_app.models import MusicaDeEspera

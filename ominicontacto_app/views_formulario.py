@@ -27,7 +27,7 @@ from django.shortcuts import redirect
 from django.views.generic import (
     FormView, TemplateView
 )
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from ominicontacto_app.models import Formulario
 from ominicontacto_app.forms import (FormularioCRMForm)
 import logging as logging_

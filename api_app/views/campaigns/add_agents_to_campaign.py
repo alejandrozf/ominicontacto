@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 import logging as _logging
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db import transaction
 from api_app.serializers.base import CampanaSerializer, GrupoSerializer
 from api_app.serializers.campaigns.add_agents_to_campaign import (

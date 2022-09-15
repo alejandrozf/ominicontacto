@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 import json
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from api_app.utils.routes.inbound import (
     eliminar_ruta_entrante_config, escribir_ruta_entrante_config)
 from rest_framework.renderers import JSONRenderer

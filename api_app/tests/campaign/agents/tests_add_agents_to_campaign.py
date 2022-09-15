@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import json
 from mock import patch
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.urls import reverse
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (

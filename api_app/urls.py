@@ -103,20 +103,20 @@ router = routers.DefaultRouter()
 # ###########  ADMINISTRADOR  ############ #
 router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
-    base_name='api_agentes_activos_de_grupo')
+    basename='api_agentes_activos_de_grupo')
 
 
 # ###########     AGENTE      ############ #
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions/(?P<externalSystem>\w+)',
-    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion')
+    OpcionesCalificacionViewSet, basename='api_campana_opciones_calificacion')
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions',
-    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion_intern')
-router.register(r'api/v1/disposition', ApiCalificacionClienteView, base_name='api_disposition')
+    OpcionesCalificacionViewSet, basename='api_campana_opciones_calificacion_intern')
+router.register(r'api/v1/disposition', ApiCalificacionClienteView, basename='api_disposition')
 router.register(
     r'api/v1/new_contact/disposition', ApiCalificacionClienteCreateView,
-    base_name='api_disposition_new_contact')
+    basename='api_disposition_new_contact')
 
 
 urlpatterns = [

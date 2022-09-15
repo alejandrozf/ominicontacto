@@ -28,7 +28,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.db import transaction
 from django.views.generic import FormView, TemplateView
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile

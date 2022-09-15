@@ -28,7 +28,7 @@ import os
 
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle

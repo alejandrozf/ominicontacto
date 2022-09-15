@@ -23,7 +23,7 @@ Tests busqueda y reasignacion de Agendas de contacto
 
 # from mock import patch
 
-# from django.utils.translation import ugettext as _
+# from django.utils.translation import gettext as _
 from django.conf import settings
 from django.urls import reverse
 

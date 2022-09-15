@@ -24,7 +24,7 @@ import re
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import (modelformset_factory, BaseModelFormSet)
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from configuracion_telefonia_app.models import AmdConf, AudiosAsteriskConf, DestinoEntrante, \
     EsquemaGrabaciones, IVR, IdentificadorCliente, MusicaDeEspera, OpcionDestino, \

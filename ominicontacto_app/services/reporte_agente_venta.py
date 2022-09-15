@@ -34,7 +34,7 @@ from ominicontacto_app.utiles import crear_archivo_en_media_root
 from ominicontacto_app.models import RespuestaFormularioGestion
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.encoding import force_text
 
 

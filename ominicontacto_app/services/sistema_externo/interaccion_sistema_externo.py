@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 import logging
 import requests
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now, timedelta
 from ominicontacto_app.models import SitioExterno
 

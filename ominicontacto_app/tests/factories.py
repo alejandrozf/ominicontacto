@@ -23,8 +23,8 @@ import faker
 
 from uuid import uuid4
 import random
-from factory import (DjangoModelFactory, lazy_attribute, SubFactory, Sequence, post_generation,
-                     django)
+from factory import (lazy_attribute, SubFactory, Sequence, post_generation)
+from factory.django import DjangoModelFactory, FileField
 
 from django.utils import timezone
 
@@ -329,8 +329,8 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
         model = ArchivoDeAudio
 
     descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
-    audio_original = django.FileField(filename='audio_original_file.wav')
-    audio_asterisk = django.FileField(filename='audio_asterisk_file.wav')
+    audio_original = FileField(filename='audio_original_file.wav')
+    audio_asterisk = FileField(filename='audio_asterisk_file.wav')
 
 
 class ParametrosCrmFactory(DjangoModelFactory):

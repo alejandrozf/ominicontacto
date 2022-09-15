@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 from django.core.paginator import Paginator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db import connection
 from ominicontacto_app.models import CalificacionCliente
 from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION

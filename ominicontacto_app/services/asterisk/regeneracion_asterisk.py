@@ -36,7 +36,7 @@ import sys
 from crontab import CronTab
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfigFile, \

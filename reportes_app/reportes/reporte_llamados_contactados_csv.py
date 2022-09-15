@@ -35,7 +35,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.core.paginator import Paginator
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import localtime, timedelta
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root

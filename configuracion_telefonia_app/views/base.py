@@ -28,7 +28,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     View, ListView, CreateView, UpdateView,
     DeleteView, TemplateView)

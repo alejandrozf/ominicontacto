@@ -23,7 +23,7 @@ from django.views.generic import TemplateView
 from django.contrib import messages
 from django.core import paginator as django_paginator
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
 from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm

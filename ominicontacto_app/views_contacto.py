@@ -33,7 +33,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import (ListView, CreateView, UpdateView, FormView, DeleteView,
                                   TemplateView)
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db.models import Q
 from utiles_globales import obtener_paginas
 

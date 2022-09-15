@@ -57,7 +57,9 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
 
     @patch('redis.Redis.hset')
     @patch('redis.Redis.expire')
-    def test_api_create_family(self, expire, hset):
+    @patch('notification_app.notification.AgentNotifier.send_message')
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_api_create_family(self, send, send_message, expire, hset):
         service = CalificacionLLamada()
         call_data = self.get_call_data()
         json_call_data = json.dumps(call_data)
@@ -77,6 +79,7 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
         }
         expire.assert_called_with(nombre_family, 3600 * 24 * 4)
         hset.assert_called_with(nombre_family, mapping=variables)
+        send.assert_called_with('calification', self.agente.id)
 
     @patch('redis.Redis.hget')
     def test_api_get_value(self, hget):

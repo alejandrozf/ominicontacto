@@ -29,7 +29,7 @@ import logging
 import requests
 import json
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now, datetime, make_aware
 from django.http import JsonResponse
 from django.shortcuts import redirect

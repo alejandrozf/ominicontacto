@@ -34,7 +34,7 @@ from django.core.exceptions import (
     PermissionDenied, ValidationError)
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView

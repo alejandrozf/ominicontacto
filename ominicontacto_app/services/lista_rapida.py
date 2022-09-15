@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.utils.encoding import smart_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 
 from ominicontacto_app.errors import (OmlArchivoImportacionInvalidoError, OmlError,

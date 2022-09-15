@@ -28,7 +28,7 @@ import json
 
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.services.reporte_campana_csv import ReporteCSV
 

@@ -23,7 +23,7 @@ import json
 import sys
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.models import (
     AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana)

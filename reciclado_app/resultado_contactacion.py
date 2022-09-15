@@ -24,7 +24,7 @@ contactados(RS_BUSY, RS_NOANSWER, etc)
 contactados(hoy en dia por las calificaciones(calificacioncliente))
 """
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db import connection
 from django.db.models import Count
 from ominicontacto_app.models import Campana, CalificacionCliente

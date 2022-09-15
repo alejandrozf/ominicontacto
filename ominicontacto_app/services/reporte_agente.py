@@ -29,7 +29,7 @@ import pygal
 from pygal.style import Style
 
 from django.db.models import Count, Q
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now, timedelta
 
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia

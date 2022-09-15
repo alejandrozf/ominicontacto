@@ -20,7 +20,8 @@ from __future__ import unicode_literals
 
 import faker
 
-from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence
+from factory import lazy_attribute, SubFactory, Sequence
+from factory.django import DjangoModelFactory
 
 from django.utils import timezone
 

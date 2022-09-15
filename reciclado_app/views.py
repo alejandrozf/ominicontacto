@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from ominicontacto_app.errors import OmlRecicladoCampanaError
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana

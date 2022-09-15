@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now, timedelta
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog

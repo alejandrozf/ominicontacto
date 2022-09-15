@@ -27,7 +27,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import (ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.forms import CampanaSupervisorUpdateForm, ConfiguracionDeAgentesDeCampanaForm
 from ominicontacto_app.models import Campana, SupervisorProfile, ConfiguracionDeAgentesDeCampana

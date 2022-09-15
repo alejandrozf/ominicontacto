@@ -18,7 +18,7 @@
 #
 
 from __future__ import unicode_literals
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from api_app.serializers.pause_set import (
     ConfiguracionDePausaSerializer, ConjuntoDePausaSerializer,
     OpcionesDePausaParaConjuntoSerializer)

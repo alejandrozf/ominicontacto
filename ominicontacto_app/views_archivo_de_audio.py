@@ -27,7 +27,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from api_app.services.storage_service import StorageService
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError

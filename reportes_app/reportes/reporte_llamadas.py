@@ -20,7 +20,7 @@ from __future__ import unicode_literals, division
 
 import pygal
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.encoding import force_text
 
 from ominicontacto_app.models import Campana

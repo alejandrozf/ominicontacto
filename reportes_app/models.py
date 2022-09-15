@@ -27,7 +27,7 @@ from django.db import models, connection
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.conf import settings
 
 from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \

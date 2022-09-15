@@ -22,7 +22,7 @@ import datetime
 import json
 
 from django.utils.timezone import now, localtime, timedelta
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_agentes import ReporteAgentes

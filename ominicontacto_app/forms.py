@@ -30,7 +30,7 @@ from django.contrib.auth.forms import (
 )
 from django.db.models import Count, Q
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField

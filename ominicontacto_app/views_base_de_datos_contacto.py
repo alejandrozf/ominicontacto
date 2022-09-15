@@ -30,7 +30,7 @@ from django.views.generic.edit import (
 )
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db.models import Q
 
 from ominicontacto_app.errors import (

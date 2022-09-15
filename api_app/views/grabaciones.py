@@ -25,7 +25,7 @@ import json
 
 from django.conf import settings
 from django_sendfile import sendfile
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.http import HttpResponseRedirect
 from reportes_app.models import LlamadaLog
 

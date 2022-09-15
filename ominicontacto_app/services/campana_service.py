@@ -26,7 +26,7 @@ import unicodedata
 
 import requests
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_comillas, remplace_espacio_por_guion

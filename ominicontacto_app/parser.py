@@ -29,7 +29,7 @@ import logging
 import re
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.encoding import smart_text
 from ominicontacto_app.errors import\
     (OmlParserMinRowError, OmlParserMaxRowError,

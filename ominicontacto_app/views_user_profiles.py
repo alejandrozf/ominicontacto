@@ -27,7 +27,7 @@ from formtools.wizard.views import SessionWizardView
 from import_export import resources
 from import_export.fields import Field
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.auth import login

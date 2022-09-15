@@ -30,7 +30,7 @@ import logging
 import os
 
 from django.utils.encoding import smart_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError

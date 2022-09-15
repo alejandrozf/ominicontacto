@@ -30,7 +30,7 @@ import redis
 
 from collections import OrderedDict
 from django.views.generic import View
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now
 from django.http import JsonResponse
 from django.db.models import Count

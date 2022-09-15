@@ -43,7 +43,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.forms.models import model_to_dict
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now, timedelta
 from django.utils.http import urlsafe_base64_encode
 
@@ -1665,7 +1665,7 @@ class Queue(models.Model):
     # ivr break down
     ivr_breakdown = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
                                       related_name='campanas_ivr_breakdown', blank=True,
-                                      null=True, on_delete=True)
+                                      null=True, on_delete=models.SET_NULL)
 
     musiconhold = models.ForeignKey('configuracion_telefonia_app.Playlist',
                                     related_name='campanas', blank=True, null=True,

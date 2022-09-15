@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import json
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django import forms
 
 from ominicontacto_app.utiles import convert_fecha_datetime

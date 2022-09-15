@@ -24,7 +24,7 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now
 from django.contrib import messages
 from django.urls import reverse
