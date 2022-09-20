@@ -11,5 +11,5 @@ fi
 
 for Addon in "${ADDONS_INSTALLED[@]}";do
     cd ${INSTALL_PREFIX}/addons/${Addon}
-    ./install.sh
+    ./install.sh --accept-eula
 done
