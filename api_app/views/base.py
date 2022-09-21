@@ -143,6 +143,9 @@ class ContactoCreateView(APIView):
         if metadata.nombre_campo_id_externo and metadata.nombre_campo_id_externo in request.data:
             request.data['id_externo'] = request.data.pop(metadata.nombre_campo_id_externo)
         control_de_duplicados = campana.control_de_duplicados if campana else None
+        # Permito duplicar sin enviar confirmación por API
+        if control_de_duplicados == Campana.PERMITIR_DUPLICADOS:
+            request.data['confirmar_duplicado'] = True
         form = FormularioNuevoContacto(base_datos=campana.bd_contacto, data=request.data,
                                        control_de_duplicados=control_de_duplicados)
         if form.is_valid():
