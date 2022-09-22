@@ -102,7 +102,7 @@ class AddAgentsToCampaignTest(APITest):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
     @patch('asterisk.manager.Manager.send_action')
-    @patch('api_app.views.supervisor.obtener_sip_agentes_sesiones_activas')
+    @patch('api_app.views.campaigns.add_agents_to_campaign.obtener_sip_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_actualizar_agentes_de_campana(
             self, connect, obtener_sip_agentes_sesiones_activas,
