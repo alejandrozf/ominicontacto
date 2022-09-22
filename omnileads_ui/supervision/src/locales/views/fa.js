@@ -71,5 +71,13 @@ export default {
     trunk: {
         new_title: 'صندوق عقب جدید',
         edit_title: 'تنه را ویرایش کنید'
+    },
+    group_of_hour: {
+        new_title: 'گروه زمان جدید',
+        edit_title: 'ویرایش گروه زمان'
+    },
+    time_validation: {
+        new_title: 'اعتبار سنجی زمان جدید',
+        edit_title: 'ویرایش اعتبار زمان'
     }
 };

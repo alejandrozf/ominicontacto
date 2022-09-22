@@ -15,25 +15,35 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
-from .outbound import set_logger_message
+
+import logging
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
-    RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionRutaEntranteAsterisk)
+    RestablecerConfiguracionTelefonicaError,
+    SincronizadorDeConfiguracionGrupoHorarioAsterisk)
+logger = logging.getLogger(__name__)
 
 
-def escribir_ruta_entrante_config(self, ruta_entrante):
+def set_logger_message(self, msg):
+    logger.error("RestablecerConfiguracionTelefonicaError!: \n"
+                 "No se realizo de manera correcta "
+                 "la regeneracion de datos en asterisk "
+                 "según el siguiente error: {0}".format(msg))
+
+
+def escribir_grupo_horario_config(self, grupo_horario):
     try:
-        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-        sincronizador.regenerar_asterisk(ruta_entrante)
+        sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
+        sincronizador.regenerar_asterisk(grupo_horario)
         return True
     except RestablecerConfiguracionTelefonicaError as e:
         set_logger_message(self, e)
         return False
 
 
-def eliminar_ruta_entrante_config(self, ruta_entrante):
+def eliminar_grupo_horario_config(self, grupo_horario):
     try:
-        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-        sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
+        sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
+        sincronizador.eliminar_y_regenerar_asterisk(grupo_horario)
         return True
     except RestablecerConfiguracionTelefonicaError as e:
         set_logger_message(self, e)

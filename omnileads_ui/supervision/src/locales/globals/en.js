@@ -50,6 +50,8 @@ export default {
     outbound_route: 'Outbound Route | Outbound Routes',
     trunk: 'Trunk | Trunks',
     dial_pattern: 'Dial pattern | Dial patterns',
+    group_of_hour: 'Group of hour | Group of hours',
+    time_validation: 'Time validation | Time validations',
     // -------------
     // -- Actions --
     // -------------
@@ -92,6 +94,31 @@ export default {
     down: 'Down',
     reactivate: 'Reactivate',
     reorder: 'Reorder',
+    // ----------------
+    // --- weekdays ---
+    // ----------------
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday',
+    // --------------
+    // --- months ---
+    // --------------
+    january: 'January',
+    february: 'February',
+    march: 'March',
+    april: 'April',
+    may: 'May',
+    june: 'June',
+    july: 'July',
+    august: 'August',
+    september: 'September',
+    october: 'October',
+    november: 'November',
+    december: 'December',
     // ---------------------
     // --- Notifications ---
     // ---------------------

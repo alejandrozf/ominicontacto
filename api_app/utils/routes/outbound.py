@@ -36,7 +36,7 @@ def escribir_ruta_saliente_config(self, ruta_saliente):
         sincronizador.regenerar_asterisk(ruta_saliente)
         return True
     except RestablecerConfiguracionTelefonicaError as e:
-        set_logger_message(e)
+        set_logger_message(self, e)
         return False
 
 
@@ -46,7 +46,7 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
         sincronizador.eliminar_y_regenerar_asterisk(ruta_saliente)
         return True
     except RestablecerConfiguracionTelefonicaError as e:
-        set_logger_message(e)
+        set_logger_message(self, e)
         return False
 
 

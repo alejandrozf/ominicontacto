@@ -71,5 +71,13 @@ export default {
     trunk: {
         new_title: 'Novo tronco',
         edit_title: 'Editar tronco'
+    },
+    group_of_hour: {
+        new_title: 'Novo grupo de tempo',
+        edit_title: 'Editar grupo de tempo'
+    },
+    time_validation: {
+        new_title: 'Nova validação de horário',
+        edit_title: 'Editar validação de tempo'
     }
 };

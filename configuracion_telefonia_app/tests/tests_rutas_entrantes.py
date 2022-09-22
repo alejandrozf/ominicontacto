@@ -26,7 +26,7 @@ from mock import patch
 from django.urls import reverse
 
 from configuracion_telefonia_app.forms import IVRForm
-from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
+from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR,
                                                 ValidacionFechaHora)
 from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory, IVRFactory, OpcionDestinoFactory, ValidacionTiempoFactory,
@@ -189,91 +189,6 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count(), n_dests_ivrs + 1)
-
-    def _obtener_post_data_grupo_horario(self):
-        return {
-            'nombre': 'grupo_horario',
-            'validacion_tiempo-0-tiempo_inicial': '15:45',
-            'validacion_tiempo-0-tiempo_final': '15:45',
-            'validacion_tiempo-0-dia_semana_inicial': '1',
-            'validacion_tiempo-0-dia_semana_final': '0',
-            'validacion_tiempo-0-dia_mes_inicio': '14',
-            'validacion_tiempo-0-dia_mes_final': '17',
-            'validacion_tiempo-0-mes_inicio': '10',
-            'validacion_tiempo-0-mes_final': '12',
-            'validacion_tiempo-0-id': '',
-            'validacion_tiempo-TOTAL_FORMS': '1',
-            'validacion_tiempo-INITIAL_FORMS': '0',
-            'validacion_tiempo-MIN_NUM_FORMS': '1',
-            'validacion_tiempo-MAX_NUM_FORMS': '1000',
-        }
-
-    def test_usuario_customer_no_puede_crear_grupo_horario(self):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_referente.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_supervisor_puede_crear_grupo_horario(self, regenerar_family):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_referente.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        self.client.post(url, post_data, follow=True)
-        self.grupo_horario.refresh_from_db()
-        self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.grupo_horario.refresh_from_db()
-        self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.grupo_horario.refresh_from_db()
-        self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
 
     def _obtener_post_data_validacion_fecha_hora(self):
         return {

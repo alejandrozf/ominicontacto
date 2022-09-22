@@ -19,8 +19,9 @@
 
 from __future__ import unicode_literals
 from django.utils.translation import ugettext as _
-from api_app.utils.routes.inbound import (
-    eliminar_ruta_entrante_config, escribir_ruta_entrante_config)
+from api_app.utils.group_of_hours import (
+    eliminar_grupo_horario_config, escribir_grupo_horario_config
+)
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,12 +29,12 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers.inbound_route import (
-    RutaEntranteSerializer, DestinoEntranteSerializer)
-from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
+from api_app.serializers.group_of_hour import (
+    GrupoHorarioSerializer)
+from configuracion_telefonia_app.models import GrupoHorario
 
 
-class InboundRouteList(APIView):
+class GroupOfHourList(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (
         SessionAuthentication, ExpiringTokenAuthentication, )
@@ -43,22 +44,22 @@ class InboundRouteList(APIView):
     def get(self, request):
         data = {
             'status': 'SUCCESS',
-            'message': _('Se obtuvieron las rutas entrantes '
+            'message': _('Se obtuvieron los grupos horarios '
                          'de forma exitosa'),
-            'inboundRoutes': []}
+            'groupOfHours': []}
         try:
-            rutas_entrantes = RutaEntrante.objects.all().order_by('id')
-            data['inboundRoutes'] = [
-                RutaEntranteSerializer(r).data for r in rutas_entrantes]
+            grupos_horarios = GrupoHorario.objects.all().order_by('id')
+            data['groupOfHours'] = [
+                GrupoHorarioSerializer(gh).data for gh in grupos_horarios]
             return Response(data=data, status=status.HTTP_200_OK)
         except Exception:
             data['status'] = 'ERROR'
-            data['message'] = _(u'Error al obtener las rutas entrantes')
+            data['message'] = _(u'Error al obtener los grupos horarios')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class InboundRouteCreate(APIView):
+class GroupOfHourCreate(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (
         SessionAuthentication, ExpiringTokenAuthentication, )
@@ -70,31 +71,31 @@ class InboundRouteCreate(APIView):
             responseData = {
                 'status': 'SUCCESS',
                 'errors': {},
-                'message': _('Se creo la ruta entrante '
+                'message': _('Se creo el grupo horario '
                              'de forma exitosa')}
-            serializador = RutaEntranteSerializer(data=request.data)
-            if serializador.is_valid():
-                ruta_entrante = serializador.save()
-                if not escribir_ruta_entrante_config(self, ruta_entrante):
-                    responseData['message'] = _('Se creo la ruta entrante pero no se pudo '
+            serializer = GrupoHorarioSerializer(data=request.data)
+            if serializer.is_valid():
+                grupo_horario = serializer.save()
+                if not escribir_grupo_horario_config(self, grupo_horario):
+                    responseData['message'] = _('Se creo el grupo horario pero no se pudo '
                                                 'cargar la configuración telefónica')
                 return Response(data=responseData, status=status.HTTP_200_OK)
             else:
                 responseData['status'] = 'ERROR'
                 responseData['message'] = [
-                    serializador.errors[key] for key in serializador.errors]
-                responseData['errors'] = serializador.errors
+                    serializer.errors[key] for key in serializer.errors]
+                responseData['errors'] = serializer.errors
                 return Response(
                     data=responseData, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             responseData['status'] = 'ERROR'
-            responseData['message'] = _('Error al crear la ruta entrante')
+            responseData['message'] = _('Error al crear el grupo horario')
             return Response(
                 data=responseData,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class InboundRouteUpdate(APIView):
+class GroupOfHourUpdate(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (
         SessionAuthentication, ExpiringTokenAuthentication, )
@@ -105,18 +106,16 @@ class InboundRouteUpdate(APIView):
         data = {
             'status': 'SUCCESS',
             'errors': {},
-            'message': _('Se actualizo la ruta entrante '
+            'message': _('Se actualizo el grupo horario '
                          'de forma exitosa')}
         try:
-            ruta_entrante = RutaEntrante.objects.get(pk=pk)
-            serializer = RutaEntranteSerializer(
-                ruta_entrante, data=request.data)
+            grupo_horario = GrupoHorario.objects.get(pk=pk)
+            serializer = GrupoHorarioSerializer(
+                grupo_horario, data=request.data)
             if serializer.is_valid():
-                delete_st = eliminar_ruta_entrante_config(self, ruta_entrante)
                 serializer.save()
-                create_st = escribir_ruta_entrante_config(self, ruta_entrante)
-                if not delete_st or not create_st:
-                    data['message'] = _('Se actualizo la ruta entrante pero no se pudo '
+                if not escribir_grupo_horario_config(self, grupo_horario):
+                    data['message'] = _('Se actualizo el grupo horario pero no se pudo '
                                         'cargar la configuración telefónica')
                 return Response(data=data, status=status.HTTP_200_OK)
             else:
@@ -126,21 +125,20 @@ class InboundRouteUpdate(APIView):
                 data['errors'] = serializer.errors
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)
-        except RutaEntrante.DoesNotExist:
+        except GrupoHorario.DoesNotExist:
             data['status'] = 'ERROR'
-            data['message'] = _('No existe la ruta entrante '
-                                'que se quiere actualizar')
+            data['message'] = 'No existe el grupo horario'
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = _('Error al actualizar '
-                                'la ruta entrante')
+                                'el grupo horario')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class InboundRouteDetail(APIView):
+class GroupOfHourDetail(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (
         SessionAuthentication, ExpiringTokenAuthentication, )
@@ -150,28 +148,27 @@ class InboundRouteDetail(APIView):
     def get(self, request, pk):
         data = {
             'status': 'SUCCESS',
-            'message': _('Se obtuvo la informacion de la '
-                         'ruta entrante de forma exitosa'),
-            'inboundRoute': None}
+            'message': _('Se obtuvo la informacion el grupo horario '
+                         'de forma exitosa'),
+            'groupOfHour': None}
         try:
-            ruta_entrante = RutaEntrante.objects.get(pk=pk)
-            data['inboundRoute'] = RutaEntranteSerializer(ruta_entrante).data
+            grupo_horario = GrupoHorario.objects.get(pk=pk)
+            data['groupOfHour'] = GrupoHorarioSerializer(grupo_horario).data
             return Response(data=data, status=status.HTTP_200_OK)
-        except RutaEntrante.DoesNotExist:
+        except GrupoHorario.DoesNotExist:
             data['status'] = 'ERROR'
-            data['message'] = _('No existe la ruta entrante '
-                                'para obtener el detalle')
+            data['message'] = 'No existe el grupo horario'
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = _('Error al obtener el detalle '
-                                'de la ruta entrante')
+                                'del grupo horario')
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class InboundRouteDelete(APIView):
+class GroupOfHourDelete(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (
         SessionAuthentication, ExpiringTokenAuthentication, )
@@ -181,65 +178,28 @@ class InboundRouteDelete(APIView):
     def delete(self, request, pk):
         data = {
             'status': 'SUCCESS',
-            'message': _('Se elimino la ruta entrante '
+            'message': _('Se elimino el grupo horario '
                          'de forma exitosa')}
         try:
-            ruta_entrante = RutaEntrante.objects.get(pk=pk)
-            if ruta_entrante.destino.tipo == 1 \
-                    and ruta_entrante.destino.content_object.outr:
+            grupo_horario = GrupoHorario.objects.get(pk=pk)
+            if grupo_horario.validaciones_fecha_hora.count() > 0:
                 data['status'] = 'ERROR'
-                data['message'] = _('No está permitido eliminar una '
-                                    'Ruta Entrante asociada con una campaña '
-                                    'que tiene una Ruta Saliente.')
+                data['message'] = _('No está permitido eliminar un '
+                                    'grupo horario asociado a Validacion Fecha Hora')
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                if not eliminar_ruta_entrante_config(self, ruta_entrante):
-                    data['message'] = _('Se actualizo la ruta entrante pero no se pudo '
+                if not eliminar_grupo_horario_config(self, grupo_horario):
+                    data['message'] = _('Se elimino el grupo horario pero no se pudo '
                                         'cargar la configuración telefónica')
-                ruta_entrante.delete()
-                return Response(data=data, status=status.HTTP_200_OK)
-        except RutaEntrante.DoesNotExist:
-            data['status'] = 'ERROR'
-            data['message'] = _(u'No existe la ruta entrante')
-            return Response(
-                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception:
-            data['status'] = 'ERROR'
-            data['message'] = _(u'Error al eliminar la ruta entrante')
-            return Response(
-                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class InboundRouteDestinations(APIView):
-    permission_classes = (TienePermisoOML, )
-    authentication_classes = (
-        SessionAuthentication, ExpiringTokenAuthentication, )
-    renderer_classes = (JSONRenderer, )
-    http_method_names = ['get']
-
-    def get(self, request):
-        data = {
-            'status': 'SUCCESS',
-            'message': _('Se obtuvo la informacion de los '
-                         'destinos de forma exitosa'),
-            'inboundRoutesDestinations': {
-                '1': None,
-                '2': None,
-                '3': None,
-                '5': None,
-                '9': None,
-                '7': None
-            }
-        }
-        try:
-            for k, v in DestinoEntrante.TIPOS_DESTINOS:
-                destinos = DestinoEntrante.get_destinos_por_tipo(k)
-                data['inboundRoutesDestinations'][str(k)] = [
-                    DestinoEntranteSerializer(d).data for d in destinos]
+                grupo_horario.delete()
             return Response(data=data, status=status.HTTP_200_OK)
+        except GrupoHorario.DoesNotExist:
+            data['status'] = 'ERROR'
+            data['message'] = 'No existe el grupo horario'
+            return Response(
+                data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception:
             data['status'] = 'ERROR'
-            data['message'] = _('Error al obtener los destinos '
-                                'de las rutas entrantes')
+            data['message'] = 'Error al eliminar el grupo horario'
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

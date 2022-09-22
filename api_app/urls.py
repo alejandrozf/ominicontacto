@@ -67,6 +67,9 @@ from api_app.views.outbound_route import (
     OutboundRouteCreate, OutboundRouteDelete, OutboundRouteList,
     OutboundRouteDetail, OutboundRouteOrphanTrunks, OutboundRouteReorder,
     OutboundRouteSIPTrunksList, OutboundRouteUpdate)
+from api_app.views.group_of_hour import (
+    GroupOfHourCreate, GroupOfHourDelete, GroupOfHourList,
+    GroupOfHourDetail, GroupOfHourUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -384,6 +387,24 @@ urlpatterns = [
     re_path(r'api/v1/outbound_routes/reorder/$',
             OutboundRouteReorder.as_view(),
             name='api_outbound_routes_reorder'),
+    # =========================
+    # Grupos Horarios
+    # =========================
+    re_path(r'api/v1/group_of_hours/$',
+            GroupOfHourList.as_view(),
+            name='api_group_of_hours_list'),
+    re_path(r'api/v1/group_of_hours/create/$',
+            GroupOfHourCreate.as_view(),
+            name='api_group_of_hours_create'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/update/$',
+            GroupOfHourUpdate.as_view(),
+            name='api_group_of_hours_update'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/$',
+            GroupOfHourDetail.as_view(),
+            name='api_group_of_hours_detail'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/delete/$',
+            GroupOfHourDelete.as_view(),
+            name='api_group_of_hours_delete'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

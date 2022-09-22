@@ -75,9 +75,9 @@ class OutboundRouteCreate(APIView):
                 'errors': {},
                 'message': _('Se creo la ruta saliente '
                              'de forma exitosa')}
-            ruta_saliente = RutaSalienteSerializer(data=request.data)
-            if ruta_saliente.is_valid():
-                ruta_saliente.save()
+            serializer = RutaSalienteSerializer(data=request.data)
+            if serializer.is_valid():
+                ruta_saliente = serializer.save()
                 if not escribir_ruta_saliente_config(self, ruta_saliente):
                     responseData['message'] = _('Se creo la ruta saliente pero no se pudo '
                                                 'cargar la configuración telefónica')
@@ -85,8 +85,8 @@ class OutboundRouteCreate(APIView):
             else:
                 responseData['status'] = 'ERROR'
                 responseData['message'] = [
-                    ruta_saliente.errors[key] for key in ruta_saliente.errors]
-                responseData['errors'] = ruta_saliente.errors
+                    serializer.errors[key] for key in serializer.errors]
+                responseData['errors'] = serializer.errors
                 return Response(
                     data=responseData, status=status.HTTP_400_BAD_REQUEST)
         except Exception:

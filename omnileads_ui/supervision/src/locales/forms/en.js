@@ -76,5 +76,13 @@ export default {
     },
     dial_pattern: {
         enter_pattern: 'Enter the pattern'
+    },
+    group_of_hour: {
+        enter_name: 'Enter the name',
+        validations: {
+            not_empty_time_validations: 'There must be at least one time validation',
+            repeated_group_name: 'There is already a time group with that name',
+            time_validation_already_exists: 'The time validation already exists'
+        }
     }
 };
