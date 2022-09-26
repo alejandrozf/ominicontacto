@@ -55,7 +55,7 @@ class APITest(OMLBaseTest):
 
 
 class PausasTest(APITest):
-    def listar_pausas(self):
+    def test_listar_pausas(self):
         URL = reverse(self.urls_api['PausesList'])
         response = self.client.get(URL, follow=True)
         response_json = json.loads(response.content)
@@ -66,7 +66,7 @@ class PausasTest(APITest):
             _('Se obtuvieron las pausas '
               'de forma exitosa'))
 
-    def detalle_pausa(self):
+    def test_detalle_pausa(self):
         URL = reverse(
             self.urls_api['PausesDetail'],
             args=[self.pausa.pk, ])
@@ -86,7 +86,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def crear_pausa(self, regenerar_asterisk):
+    def test_crear_pausa(self, regenerar_asterisk):
         URL = reverse(self.urls_api['PausesCreate'])
         numBefore = Pausa.objects.all().count()
         response = self.client.post(
@@ -106,7 +106,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.eliminar_y_regenerar_asterisk')
-    def elimina_pausa(self, eliminar_y_regenerar_asterisk):
+    def test_elimina_pausa(self, eliminar_y_regenerar_asterisk):
         pk = self.pausa.pk
         self.pausa.eliminada = False
         self.pausa.save()
@@ -125,7 +125,7 @@ class PausasTest(APITest):
             _('Se elimino la pausa '
               'de forma exitosa'))
 
-    def elimina_pausa_con_configuraciones(self):
+    def test_elimina_pausa_con_configuraciones(self):
         pk = self.pausaConConfiguracion.pk
         URL = reverse(
             self.urls_api['PausesDelete'],
@@ -141,7 +141,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def actualiza_pausa(self, regenerar_asterisk):
+    def test_actualiza_pausa(self, regenerar_asterisk):
         pk = self.pausa.pk
         URL = reverse(
             self.urls_api['PausesUpdate'],
@@ -165,7 +165,7 @@ class PausasTest(APITest):
             _('Se actualizo la pausa '
               'de forma exitosa'))
 
-    def actualiza_pausa_con_nombre_repetido(self):
+    def test_actualiza_pausa_con_nombre_repetido(self):
         pk = self.pausa.pk
         URL = reverse(
             self.urls_api['PausesUpdate'],
@@ -183,7 +183,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def reactiva_pausa(self, regenerar_asterisk):
+    def test_reactiva_pausa(self, regenerar_asterisk):
         pk = self.pausa.pk
         self.pausa.eliminada = True
         self.pausa.save()

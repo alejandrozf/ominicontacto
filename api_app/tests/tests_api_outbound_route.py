@@ -104,7 +104,7 @@ class APITest(OMLBaseTest):
 
 
 class RutasSalientesTest(APITest):
-    def listar_rutas_salientes(self):
+    def test_listar_rutas_salientes(self):
         URL = reverse(self.urls_api['OutboundRoutesList'])
         response = self.client.get(URL, follow=True)
         response_json = json.loads(response.content)
@@ -115,7 +115,7 @@ class RutasSalientesTest(APITest):
             _('Se obtuvieron las rutas entrantes '
               'de forma exitosa'))
 
-    def detalle_ruta_saliente(self):
+    def test_detalle_ruta_saliente(self):
         URL = reverse(
             self.urls_api['OutboundRoutesDetail'],
             args=[self.ruta_saliente.pk, ])
@@ -143,7 +143,7 @@ class RutasSalientesTest(APITest):
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk'
            '.regenerar_asterisk')
-    def crear_ruta_saliente(self, regenerar_asterisk, escribir_ruta_saliente_config):
+    def test_crear_ruta_saliente(self, regenerar_asterisk, escribir_ruta_saliente_config):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         numBefore = RutaSaliente.objects.all().count()
         response = self.client.post(
@@ -161,20 +161,18 @@ class RutasSalientesTest(APITest):
             _('Se creo la ruta saliente '
               'de forma exitosa'))
 
-    @patch('api_app.utils.routes.outbound.eliminar_ruta_saliente_config')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk'
            '.eliminar_y_regenerar_asterisk')
-    def elimina_ruta_saliente(self, eliminar_y_regenerar_asterisks, eliminar_ruta_saliente_config):
+    def test_elimina_ruta_saliente(self, eliminar_y_regenerar_asterisk):
         pk = self.ruta_saliente.pk
-        ruta = RutaSaliente.objects.get(pk=pk)
         URL = reverse(
             self.urls_api['OutboundRoutesDelete'],
             args=[pk, ])
         numBefore = RutaSaliente.objects.all().count()
         response = self.client.delete(URL, follow=True)
         numAfter = RutaSaliente.objects.all().count()
-        eliminar_y_regenerar_asterisks.assert_called_with(ruta)
+        eliminar_y_regenerar_asterisk.assert_called()
         response_json = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore - 1)
@@ -184,7 +182,7 @@ class RutasSalientesTest(APITest):
             _('Se elimino la ruta saliente '
               'de forma exitosa'))
 
-    def elimina_ruta_saliente_con_campana(self):
+    def test_elimina_ruta_saliente_con_campana(self):
         pk = self.ruta_saliente_con_campana.pk
         URL = reverse(
             self.urls_api['OutboundRoutesDelete'],
@@ -198,7 +196,7 @@ class RutasSalientesTest(APITest):
             _('No está permitido eliminar una '
               'ruta saliente asociada a una campaña'))
 
-    def validar_orden_de_troncales_nulas(self):
+    def test_validar_orden_de_troncales_nulas(self):
         self.dataSinTroncal['troncales'] = [
             {
                 "id": None,
@@ -216,15 +214,15 @@ class RutasSalientesTest(APITest):
             response_json['errors']['troncales'],
             [{"troncal": ["Este campo no puede ser nulo."]}])
 
-    def validar_orden_de_troncales_repetidas(self):
+    def test_validar_orden_de_troncales_repetidas(self):
         self.dataSinTroncal['troncales'] = [
             {
                 "id": None,
-                "troncal": 1
+                "troncal": self.troncal1.id
             },
             {
                 "id": None,
-                "troncal": 1
+                "troncal": self.troncal1.id
             }
         ]
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
@@ -236,9 +234,9 @@ class RutasSalientesTest(APITest):
         self.assertEqual(response_json['status'], 'ERROR')
         self.assertEqual(
             response_json['errors']['troncales'],
-            ["Las troncales deben ser diferentes"])
+            ['Las troncales deben ser diferentes'])
 
-    def validar_troncales_nulas(self):
+    def test_validar_troncales_nulas(self):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         self.dataSinTroncal['troncales'] = None
         response = self.client.post(
@@ -251,7 +249,7 @@ class RutasSalientesTest(APITest):
             response_json['errors']['troncales'],
             ["Este campo no puede ser nulo."])
 
-    def validar_troncales_minimas(self):
+    def test_validar_troncales_minimas(self):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         self.dataSinTroncal['troncales'] = []
         response = self.client.post(
@@ -264,7 +262,7 @@ class RutasSalientesTest(APITest):
             response_json['errors']['troncales'],
             ["Debe existir al menos una troncal"])
 
-    def validar_patrones_de_discado_nulos(self):
+    def test_validar_patrones_de_discado_nulos(self):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         self.dataSinPatronesDeDiscado['patrones_de_discado'] = None
         response = self.client.post(
@@ -277,7 +275,7 @@ class RutasSalientesTest(APITest):
             response_json['errors']['patrones_de_discado'],
             ["Este campo no puede ser nulo."])
 
-    def validar_patrones_de_discado_minimos(self):
+    def test_validar_patrones_de_discado_minimos(self):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         self.dataSinPatronesDeDiscado['patrones_de_discado'] = []
         response = self.client.post(
@@ -290,7 +288,7 @@ class RutasSalientesTest(APITest):
             response_json['errors']['patrones_de_discado'],
             ["Debe existir al menos un patron de discado"])
 
-    def validar_patrones_de_discado_repetidos(self):
+    def test_validar_patrones_de_discado_repetidos(self):
         URL = reverse(self.urls_api['OutboundRoutesCreate'])
         self.dataSinPatronesDeDiscado['patrones_de_discado'] = [
             {
@@ -320,7 +318,7 @@ class RutasSalientesTest(APITest):
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk'
            '.regenerar_asterisk')
-    def actualiza_ruta_saliente(self, regenerar_asterisk, escribir_ruta_saliente_config):
+    def test_actualiza_ruta_saliente(self, regenerar_asterisk, escribir_ruta_saliente_config):
         pk = self.ruta_saliente.pk
         URL = reverse(
             self.urls_api['OutboundRoutesUpdate'],
