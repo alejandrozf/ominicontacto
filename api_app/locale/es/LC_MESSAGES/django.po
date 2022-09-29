@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-17 00:15-0300\n"
+"POT-Creation-Date: 2022-09-29 16:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -514,14 +514,14 @@ msgstr ""
 
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:90
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:100
-#: api_app/views/campaigns/add_agents_to_campaign.py:55
-#: api_app/views/campaigns/add_agents_to_campaign.py:217
+#: api_app/views/campaigns/add_agents_to_campaign.py:52
+#: api_app/views/campaigns/add_agents_to_campaign.py:208
 #: api_app/views/external_system.py:174
 msgid "Se obtuvieron los agentes de forma exitosa"
 msgstr ""
 
 #: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:119
-#: api_app/views/campaigns/add_agents_to_campaign.py:147
+#: api_app/views/campaigns/add_agents_to_campaign.py:143
 msgid "Se agregaron los agentes de forma exitosa a la campaña"
 msgstr ""
 
@@ -623,11 +623,11 @@ msgstr ""
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
 #: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:221
-#: api_app/views/base.py:87 api_app/views/base.py:216
+#: api_app/views/base.py:87 api_app/views/base.py:219
 msgid "Sistema externo inexistente."
 msgstr ""
 
-#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:173
+#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:176
 msgid "Contacto agregado"
 msgstr ""
 
@@ -635,7 +635,7 @@ msgstr ""
 #: api_app/tests/tests_api_contactos.py:160
 #: api_app/tests/tests_api_contactos.py:229
 #: api_app/tests/tests_api_contactos.py:252 api_app/views/base.py:118
-#: api_app/views/base.py:248
+#: api_app/views/base.py:251
 msgid "No tiene permiso para editar la campaña."
 msgstr ""
 
@@ -643,13 +643,13 @@ msgstr ""
 #: api_app/tests/tests_api_contactos.py:195
 #: api_app/tests/tests_api_contactos.py:272
 #: api_app/tests/tests_api_contactos.py:292 api_app/views/base.py:111
-#: api_app/views/base.py:241
+#: api_app/views/base.py:244
 msgid "Campaña inexistente."
 msgstr ""
 
 #: api_app/tests/tests_api_contactos.py:186
 #: api_app/tests/tests_api_contactos.py:282 api_app/views/base.py:99
-#: api_app/views/base.py:228
+#: api_app/views/base.py:231
 msgid "Debe indicar un idCampaign válido."
 msgstr ""
 
@@ -799,12 +799,12 @@ msgstr ""
 msgid "Se creo la ruta entrante de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:150
+#: api_app/tests/tests_api_inbound_route.py:147
 #: api_app/views/inbound_route.py:183
 msgid "Se elimino la ruta entrante de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:196
+#: api_app/tests/tests_api_inbound_route.py:193
 #: api_app/views/inbound_route.py:108
 msgid "Se actualizo la ruta entrante de forma exitosa"
 msgstr ""
@@ -819,17 +819,17 @@ msgstr ""
 msgid "Se creo la ruta saliente de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_outbound_route.py:184
+#: api_app/tests/tests_api_outbound_route.py:182
 #: api_app/views/outbound_route.py:185
 msgid "Se elimino la ruta saliente de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_outbound_route.py:198
+#: api_app/tests/tests_api_outbound_route.py:196
 #: api_app/views/outbound_route.py:191
 msgid "No está permitido eliminar una ruta saliente asociada a una campaña"
 msgstr ""
 
-#: api_app/tests/tests_api_outbound_route.py:360
+#: api_app/tests/tests_api_outbound_route.py:358
 #: api_app/views/outbound_route.py:111
 msgid "Se actualizo la ruta saliente de forma exitosa"
 msgstr ""
@@ -949,7 +949,7 @@ msgid "Error al generar sip password"
 msgstr ""
 
 #: api_app/views/agente.py:220 api_app/views/agente.py:255
-#: api_app/views/base.py:76 api_app/views/base.py:205
+#: api_app/views/base.py:76 api_app/views/base.py:208
 msgid "Hubo errores en los datos recibidos"
 msgstr ""
 
@@ -1001,54 +1001,46 @@ msgstr ""
 msgid "Error al eliminar la calificacion"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:68
-msgid "La campaña no está activa"
-msgstr ""
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:72
+#: api_app/views/campaigns/add_agents_to_campaign.py:64
 #: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
 msgid "No existe la campaña"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:96
+#: api_app/views/campaigns/add_agents_to_campaign.py:88
 #, python-brace-format
 msgid "QueueAdd failed - agente: {0} de la campana: {1} "
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:121
+#: api_app/views/campaigns/add_agents_to_campaign.py:117
 #, python-brace-format
 msgid "QueueRemove failed - agente: {0} de la campana: {1}"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:132
+#: api_app/views/campaigns/add_agents_to_campaign.py:128
 msgid "No existe el agente en cola"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:154
+#: api_app/views/campaigns/add_agents_to_campaign.py:150
 msgid "No existe la campaña, no se pueden agregar agentes"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:171
+#: api_app/views/campaigns/add_agents_to_campaign.py:166
 msgid ""
-"No existe el agente,                                            no se puede "
+"No existe el agente,                                        no se puede "
 "eliminar de la member queue"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:182
+#: api_app/views/campaigns/add_agents_to_campaign.py:178
 msgid ""
-"No existe el agente,                                            no se puede "
+"No existe el agente,                                        no se puede "
 "crear la member queue"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:200
+#: api_app/views/campaigns/add_agents_to_campaign.py:195
 msgid "No se pudo confirmar la creación del dialplan"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:204
-msgid "La campaña no está activa, no se pueden agregar agentes"
-msgstr ""
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:236
+#: api_app/views/campaigns/add_agents_to_campaign.py:227
 msgid "Error al obtener los agentes activos"
 msgstr ""
 
@@ -1543,12 +1535,4 @@ msgstr ""
 
 #: api_app/views/wombat_dialer.py:48 api_app/views/wombat_dialer.py:92
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
-msgstr ""
-
-#: notification_app/message/apps.py:29
-msgid "Lista de los mensajes de correos que el sistema soporta"
-msgstr ""
-
-#: notification_app/message/apps.py:33
-msgid "Obtiene detalle de un mensaje de correo"
 msgstr ""
