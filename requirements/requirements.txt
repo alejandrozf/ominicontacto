@@ -45,7 +45,7 @@ pygal==2.3.0
 -e git+https://github.com/SrMoreno/pyst2@master#egg=pyst2
 python-crontab==2.4.0
 Pygments==2.5.2
-reportlab==3.5.34
+reportlab==3.5.55
 requests==2.12.5
 redis==3.5.3
 simplegeneric==0.8.1
