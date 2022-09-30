@@ -4,37 +4,33 @@ const service = new ExternalSystemService();
 
 export default {
     async initAgentsExternalSystems ({ commit }) {
-        const { agents } = await service.getAgents();
-        commit('initAgentsExternalSystems', agents);
+        const { status, agents } = await service.getAgents();
+        commit('initAgentsExternalSystems', status === 'SUCCESS' ? agents : []);
     },
     async initExternalSystems ({ commit }) {
-        const { externalSystems } = await service.list();
-        commit('initExternalSystems', externalSystems);
+        const { status, externalSystems } = await service.list();
+        commit('initExternalSystems', status === 'SUCCESS' ? externalSystems : []);
     },
     async initExternalSystemDetail ({ commit }, id) {
         const { status, externalSystem } = await service.detail(id);
-        if (status === 'SUCCESS') {
-            commit('initExternalSystemDetail', externalSystem);
-        } else {
-            commit('initExternalSystemDetail', {});
-        }
+        commit('initExternalSystemDetail', status === 'SUCCESS' ? externalSystem : {});
     },
     async createExternalSystem ({ commit }, data) {
-        const { status } = await service.create(data);
+        const response = await service.create(data);
+        const { status } = response;
         if (status === 'SUCCESS') {
-            const { externalSystems } = await service.list();
-            commit('initExternalSystems', externalSystems);
-            return true;
+            const { status, externalSystems } = await service.list();
+            commit('initExternalSystems', status === 'SUCCESS' ? externalSystems : []);
         }
-        return false;
+        return response;
     },
     async updateExternalSystem ({ commit }, { id, data }) {
-        const { status } = await service.update(id, data);
+        const response = await service.update(id, data);
+        const { status } = response;
         if (status === 'SUCCESS') {
-            const { externalSystems } = await service.list();
-            commit('initExternalSystems', externalSystems);
-            return true;
+            const { status, externalSystems } = await service.list();
+            commit('initExternalSystems', status === 'SUCCESS' ? externalSystems : []);
         }
-        return false;
+        return response;
     }
 };

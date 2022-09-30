@@ -27,7 +27,7 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_black_list, views_sitio_externo, views_queue_member,
+    views_black_list, views_sitio_externo, views_sitio_externo_autenticacion, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
     views_auditorias, views_lista_rapida
@@ -875,6 +875,13 @@ urlpatterns = [
     re_path(r'^sitio_externo/list/$',
             login_required(views_sitio_externo.SitioExternoListView.as_view()),
             name="sitio_externo_list"),
+    # ==========================================================================
+    # Autenticacion Sitio Externo
+    # ==========================================================================
+    re_path(r'^sitio_externo_autenticacion/list/$',
+            login_required(
+                views_sitio_externo_autenticacion.SitioExternoAutenticacionListView.as_view()),
+            name="sitio_externo_autenticacion_list"),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

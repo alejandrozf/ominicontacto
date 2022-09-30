@@ -99,7 +99,7 @@ class APITest(OMLBaseTest):
 
 
 class FormulariosTest(APITest):
-    def lista_formularios(self):
+    def test_lista_formularios(self):
         URL = reverse(self.urls_api['FormsList'])
         response = self.client.get(URL, follow=True)
         response_json = json.loads(response.content)
@@ -110,7 +110,7 @@ class FormulariosTest(APITest):
             _('Se obtuvieron los formularios '
               'de forma exitosa'))
 
-    def detalle_formulario(self):
+    def test_detalle_formulario(self):
         URL = reverse(
             self.urls_api['FormsDetail'],
             args=[self.formulario.pk, ])
@@ -131,7 +131,7 @@ class FormulariosTest(APITest):
             _('Se obtuvo la informacion del '
               'formulario de forma exitosa'))
 
-    def crea_formulario(self):
+    def test_crea_formulario(self):
         URL = reverse(self.urls_api['FormsCreate'])
         numBefore = Formulario.objects.all().count()
         response = self.client.post(
@@ -147,7 +147,7 @@ class FormulariosTest(APITest):
             _('Se creo el formulario '
               'de forma exitosa'))
 
-    def elimina_formulario(self):
+    def test_elimina_formulario(self):
         pk = self.formulario.pk
         URL = reverse(
             self.urls_api['FormsDelete'],
@@ -163,7 +163,7 @@ class FormulariosTest(APITest):
             _('Se elimino el formulario '
               'de forma exitosa'))
 
-    def elimina_formulario_con_calificacion(self):
+    def test_elimina_formulario_con_calificacion(self):
         pk = self.formularioConCalificacion.pk
         URL = reverse(
             self.urls_api['FormsDelete'],
@@ -177,7 +177,7 @@ class FormulariosTest(APITest):
             _('No está permitido eliminar un '
               'formulario con calificaciones'))
 
-    def oculta_formulario(self):
+    def test_oculta_formulario(self):
         pk = self.formulario.pk
         URL = reverse(
             self.urls_api['FormsHide'],
@@ -193,7 +193,7 @@ class FormulariosTest(APITest):
             _('Se oculto el formulario '
               'de forma exitosa'))
 
-    def desoculta_formulario(self):
+    def test_desoculta_formulario(self):
         pk = self.formulario.pk
         URL = reverse(
             self.urls_api['FormsShow'],
@@ -209,7 +209,7 @@ class FormulariosTest(APITest):
             _('Se desoculto el formulario '
               'de forma exitosa'))
 
-    def actualiza_formulario(self):
+    def test_actualiza_formulario(self):
         pk = self.formulario.pk
         URL = reverse(
             self.urls_api['FormsUpdate'],
@@ -235,7 +235,7 @@ class FormulariosTest(APITest):
             _('Se actualizo el formulario '
               'de forma exitosa'))
 
-    def actualiza_formulario_con_calificacion(self):
+    def test_actualiza_formulario_con_calificacion(self):
         pk = self.formularioConCalificacion.pk
         URL = reverse(
             self.urls_api['FormsUpdate'],

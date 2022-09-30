@@ -55,7 +55,7 @@ class APITest(OMLBaseTest):
 
 
 class PausasTest(APITest):
-    def listar_pausas(self):
+    def test_listar_pausas(self):
         URL = reverse(self.urls_api['PausesList'])
         response = self.client.get(URL, follow=True)
         response_json = json.loads(response.content)
@@ -66,7 +66,7 @@ class PausasTest(APITest):
             _('Se obtuvieron las pausas '
               'de forma exitosa'))
 
-    def detalle_pausa(self):
+    def test_detalle_pausa(self):
         URL = reverse(
             self.urls_api['PausesDetail'],
             args=[self.pausa.pk, ])
@@ -86,14 +86,16 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def crear_pausa(self, regenerar_asterisk):
+    def test_crear_pausa(self, regenerar_asterisk):
         URL = reverse(self.urls_api['PausesCreate'])
         numBefore = Pausa.objects.all().count()
         response = self.client.post(
             URL, json.dumps(self.dataForm),
             format='json', content_type='application/json')
         numAfter = Pausa.objects.all().count()
+        pausa = Pausa.objects.last()
         response_json = json.loads(response.content)
+        regenerar_asterisk.assert_called_with(pausa)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore + 1)
         self.assertEqual(response_json['status'], 'SUCCESS')
@@ -104,7 +106,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.eliminar_y_regenerar_asterisk')
-    def elimina_pausa(self, eliminar_y_regenerar_asterisk):
+    def test_elimina_pausa(self, eliminar_y_regenerar_asterisk):
         pk = self.pausa.pk
         self.pausa.eliminada = False
         self.pausa.save()
@@ -114,6 +116,7 @@ class PausasTest(APITest):
         response = self.client.delete(URL, follow=True)
         pausa = Pausa.objects.get(pk=pk)
         response_json = json.loads(response.content)
+        eliminar_y_regenerar_asterisk.assert_called_with(pausa)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(pausa.eliminada, True)
         self.assertEqual(response_json['status'], 'SUCCESS')
@@ -122,7 +125,7 @@ class PausasTest(APITest):
             _('Se elimino la pausa '
               'de forma exitosa'))
 
-    def elimina_pausa_con_configuraciones(self):
+    def test_elimina_pausa_con_configuraciones(self):
         pk = self.pausaConConfiguracion.pk
         URL = reverse(
             self.urls_api['PausesDelete'],
@@ -138,7 +141,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def actualiza_pausa(self, regenerar_asterisk):
+    def test_actualiza_pausa(self, regenerar_asterisk):
         pk = self.pausa.pk
         URL = reverse(
             self.urls_api['PausesUpdate'],
@@ -152,6 +155,7 @@ class PausasTest(APITest):
             format='json', content_type='application/json')
         pausa = Pausa.objects.get(pk=pk)
         response_json = json.loads(response.content)
+        regenerar_asterisk.assert_called_with(pausa)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(pausa.nombre, request_data['nombre'])
         self.assertEqual(pausa.tipo, request_data['tipo'])
@@ -161,7 +165,7 @@ class PausasTest(APITest):
             _('Se actualizo la pausa '
               'de forma exitosa'))
 
-    def actualiza_pausa_con_nombre_repetido(self):
+    def test_actualiza_pausa_con_nombre_repetido(self):
         pk = self.pausa.pk
         URL = reverse(
             self.urls_api['PausesUpdate'],
@@ -179,7 +183,7 @@ class PausasTest(APITest):
 
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionPausaAsterisk.regenerar_asterisk')
-    def reactiva_pausa(self, regenerar_asterisk):
+    def test_reactiva_pausa(self, regenerar_asterisk):
         pk = self.pausa.pk
         self.pausa.eliminada = True
         self.pausa.save()
@@ -190,6 +194,7 @@ class PausasTest(APITest):
             URL, follow=True)
         pausa = Pausa.objects.get(pk=pk)
         response_json = json.loads(response.content)
+        regenerar_asterisk.assert_called_with(pausa)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(pausa.eliminada, False)
         self.assertEqual(response_json['status'], 'SUCCESS')

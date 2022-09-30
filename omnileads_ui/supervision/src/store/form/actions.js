@@ -4,57 +4,45 @@ const service = new FormService();
 
 export default {
     async initForms ({ commit }) {
-        const { forms } = await service.list();
-        commit('initForms', forms);
+        const { status, forms } = await service.list();
+        commit('initForms', status === 'SUCCESS' ? forms : []);
     },
     async initFormDetail ({ commit }, id) {
         const { status, form } = await service.detail(id);
-        if (status === 'SUCCESS') {
-            commit('initFormDetail', form);
-        } else {
-            commit('initFormDetail', {});
-        }
+        commit('initFormDetail', status === 'SUCCESS' ? form : {});
     },
     async createForm ({ commit }, data) {
-        const { status } = await service.create(data);
+        const response = await service.create(data);
+        const { status } = response;
         if (status === 'SUCCESS') {
-            const { forms } = await service.list();
-            commit('initForms', forms);
-            return true;
+            const { status, forms } = await service.list();
+            commit('initForms', status === 'SUCCESS' ? forms : []);
         }
-        return false;
+        return response;
     },
     async updateForm ({ commit }, { id, data }) {
-        const { status } = await service.update(id, data);
+        const response = await service.update(id, data);
+        const { status } = response;
         if (status === 'SUCCESS') {
-            const { forms } = await service.list();
-            commit('initForms', forms);
-            return true;
+            const { status, forms } = await service.list();
+            commit('initForms', status === 'SUCCESS' ? forms : []);
         }
-        return false;
+        return response;
     },
     async deleteForm ({ commit }, id) {
-        const { status } = await service.delete(id);
+        const response = await service.delete(id);
+        const { status } = response;
         if (status === 'SUCCESS') {
-            const { forms } = await service.list();
-            commit('initForms', forms);
-            return true;
+            const { status, forms } = await service.list();
+            commit('initForms', status === 'SUCCESS' ? forms : []);
         }
-        return false;
+        return response;
     },
     async hideForm ({ commit }, id) {
-        const { status } = await service.hide(id);
-        if (status === 'SUCCESS') {
-            return true;
-        }
-        return false;
+        return await service.hide(id);
     },
     async showForm ({ commit }, id) {
-        const { status } = await service.show(id);
-        if (status === 'SUCCESS') {
-            return true;
-        }
-        return false;
+        return await service.show(id);
     },
     initNewForm ({ commit }, data = null) {
         commit('initNewForm', data);

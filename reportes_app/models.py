@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
     datetime_hora_minima_dia, fecha_local
 import urllib.parse
@@ -445,10 +445,18 @@ class LlamadaLog(models.Model):
                                                        self.agente_id, self.event,
                                                        self.duracion_llamada)
 
+    def delta_inicio(self):
+        delta = 0
+        if self.duracion_llamada > 0:
+            delta += self.duracion_llamada
+        if self.bridge_wait_time > 0:
+            delta += self.bridge_wait_time
+        return delta
+
     @property
     def url_archivo_grabacion(self):
         hoy = fecha_local(now())
-        dia_grabacion = fecha_local(self.time)
+        dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              self.archivo_grabacion])
@@ -461,7 +469,7 @@ class LlamadaLog(models.Model):
     def url_archivo_grabacion_url_encoded(self):
         # TODO: Refactorizar junto con url_archivo_grabacion para eliminar duplicidad de código
         hoy = fecha_local(now())
-        dia_grabacion = fecha_local(self.time)
+        dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              urllib.parse.quote(self.archivo_grabacion)])

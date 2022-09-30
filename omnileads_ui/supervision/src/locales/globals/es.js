@@ -43,6 +43,7 @@ export default {
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
     external_site: 'Sitio externo | Sitios externos',
+    external_site_authentication: 'Autenticacion de sitio externo | Autenticaciones de sitios externos',
     call_disposition: 'Calificacion | Calificaciones',
     external_system: 'Sistema externo | Sistemas externos',
     form: 'Formulario | Formularios',
@@ -122,6 +123,7 @@ export default {
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'Haga click en el boton "Guardar" para persistir los cambios',
     not_found_type: 'No se encontró {type} | No se encontraron {type}',
     load_info: 'Cargando información',
     already_exist: 'Ya existe',

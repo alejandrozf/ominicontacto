@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
@@ -48,6 +48,12 @@ from api_app.views.external_site import (
     SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
     SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
     SitioExternoUpdate)
+from api_app.views.external_site_authentication import (
+    ExternalSiteAuthenticationCreate,
+    ExternalSiteAuthenticationDelete,
+    ExternalSiteAuthenticationDetail,
+    ExternalSiteAuthenticationList,
+    ExternalSiteAuthenticationUpdate)
 from api_app.views.call_disposition import (
     CalificacionCreate, CalificacionDelete, CalificacionDetail,
     CalificacionList, CalificacionUpdate)
@@ -78,7 +84,9 @@ from api_app.views.agente import (
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk
 )
-from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
+from api_app.views.grabaciones import (
+    ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
+)
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
@@ -258,6 +266,24 @@ urlpatterns = [
     re_path(r'api/v1/external_sites/(?P<pk>\d+)/show/$',
             SitioExternoDesocultar.as_view(),
             name='api_external_sites_show'),
+    # ===================================
+    # Autenticacion de Sitios Externos
+    # ===================================
+    re_path(r'api/v1/external_site_authentications/$',
+            ExternalSiteAuthenticationList.as_view(),
+            name='api_external_site_authentications_list'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/$',
+            ExternalSiteAuthenticationDetail.as_view(),
+            name='api_external_site_authentications_detail'),
+    re_path(r'api/v1/external_site_authentications/create/$',
+            ExternalSiteAuthenticationCreate.as_view(),
+            name='api_external_site_authentications_create'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/update/$',
+            ExternalSiteAuthenticationUpdate.as_view(),
+            name='api_external_site_authentications_update'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/delete/$',
+            ExternalSiteAuthenticationDelete.as_view(),
+            name='api_external_site_authentications_delete'),
     # =========================
     # Calificaciones
     # =========================
@@ -438,6 +464,8 @@ urlpatterns = [
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     re_path(r'^api/v1/grabacion/descarga_masiva',
             ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
+    path(r'api/v1/call_record/<str:callid>/',
+         ObtenerUrlGrabacionView.as_view(), name='api_call_record_url'),
     # ###########  AUDIOS ASTERISK    ############ #
     re_path(r'^api/v1/audio/list',
             ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),

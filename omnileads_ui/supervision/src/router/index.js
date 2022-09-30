@@ -4,6 +4,7 @@ import AuditSupervisor from '../views/AuditSupervisor';
 import AddAgentsToCampaign from '../views/AddAgentsToCampaign';
 import PauseSetRoutes from './pause_set_routes';
 import ExternalSiteRoutes from './external_site_routes';
+import ExternalSiteAuthenticationRoutes from './external_site_authentication_routes';
 import CallDispositionRoutes from './call_disposition_routes';
 import ExternalSystemRoutes from './external_system_routes';
 import FormRoutes from './form_routes';
@@ -30,6 +31,7 @@ const routes = [
     },
     ...PauseSetRoutes,
     ...ExternalSiteRoutes,
+    ...ExternalSiteAuthenticationRoutes,
     ...CallDispositionRoutes,
     ...ExternalSystemRoutes,
     ...FormRoutes,

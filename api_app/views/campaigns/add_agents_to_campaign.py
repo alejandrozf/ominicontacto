@@ -46,9 +46,6 @@ class AgentesCampana(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
-    def _is_valid_campaign(self, campana):
-        return True if campana.estado is Campana.ESTADO_ACTIVA else False
-
     def get(self, request, pk_campana):
         data = {
             'status': 'SUCCESS',
@@ -57,16 +54,11 @@ class AgentesCampana(APIView):
             'campaign': {}}
         try:
             campana = Campana.objects.get(pk=pk_campana)
-            if self._is_valid_campaign(campana):
-                queue_members = campana.queue_campana.queuemember.all()
-                data['agentsCampaign'] = [
-                    AgenteDeCampanaSerializer(qm).data for qm in queue_members]
-                data['campaign'] = CampanaSerializer(campana).data
-                return Response(data=data, status=status.HTTP_200_OK)
-            else:
-                data['status'] = 'ERROR'
-                data['message'] = _(u'La campaña no está activa')
-                return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            queue_members = campana.queue_campana.queuemember.all()
+            data['agentsCampaign'] = [
+                AgenteDeCampanaSerializer(qm).data for qm in queue_members]
+            data['campaign'] = CampanaSerializer(campana).data
+            return Response(data=data, status=status.HTTP_200_OK)
         except Campana.DoesNotExist:
             data['status'] = 'ERROR'
             data['message'] = _(u'No existe la campaña')
@@ -107,7 +99,11 @@ class ActualizaAgentesCampana(APIView):
             self.adicionar_agente_cola(agente, queue_member, campana, client)
 
     def _is_valid_campaign(self, campana):
-        return True if campana.estado is Campana.ESTADO_ACTIVA else False
+        return campana.estado in [
+            Campana.ESTADO_ACTIVA,
+            Campana.ESTADO_INACTIVA,
+            Campana.ESTADO_PAUSADA
+        ]
 
     def remover_agente_cola_asterisk(self, campana, agente, client):
         queue = campana.get_queue_id_name()
@@ -153,55 +149,50 @@ class ActualizaAgentesCampana(APIView):
             data['status'] = 'ERROR'
             data['message'] = _(u'No existe la campaña, no se pueden agregar agentes')
             return Response(data=data, status=status.HTTP_404_NOT_FOUND)
-        if self._is_valid_campaign(campaign):
-            try:
-                client = AmiManagerClient()
-                client.connect()
+        try:
+            client = AmiManagerClient()
+            client.connect()
 
-                # De los agentes actuales en campaña, eliminamos los que
-                # ya no estan en los agentes nuevos (por agregar)
-                current_agent_ids = self._get_current_agent_ids(campaign)
-                new_agent_ids = self._get_new_agent_ids(agents)
-                agent_ids_to_delete = set(current_agent_ids) - set(new_agent_ids)
-                for agent_id in agent_ids_to_delete:
-                    try:
-                        agent = AgenteProfile.objects.get(pk=agent_id)
-                    except AgenteProfile.DoesNotExist:
-                        data['status'] = 'ERROR'
-                        data['message'] = _(u'No existe el agente,\
-                                            no se puede eliminar de la member queue')
-                        return Response(data=data, status=status.HTTP_404_NOT_FOUND)
-                    self._delete_queue_member(campaign, agent, client)
-                for agent in agents:
-                    agent_id = int(agent["agent_id"])
-                    agent_penalty = int(agent["agent_penalty"])
-                    try:
-                        agent = AgenteProfile.objects.get(pk=agent_id)
-                    except AgenteProfile.DoesNotExist:
-                        data['status'] = 'ERROR'
-                        data['message'] = _(u'No existe el agente,\
-                                            no se puede crear la member queue')
-                        return Response(data=data, status=status.HTTP_404_NOT_FOUND)
-                    with transaction.atomic():
-                        queue_member, created = QueueMember.objects.get_or_create(
-                            member=agent,
-                            queue_name=campaign.queue_campana,
-                            defaults=QueueMember.get_defaults(agent, campaign))
-                        queue_member.penalty = agent_penalty
-                        queue_member.save()
-                        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-                        self.adicionar_agente_activo_cola(
-                            queue_member, campaign, sip_agentes_logueados, client)
-                self.activar_cola()
-                client.disconnect()
-                return Response(data=data, status=status.HTTP_200_OK)
-            except Exception:
-                data['status'] = 'ERROR'
-                data['message'] = _(u'No se pudo confirmar la creación del dialplan')
-                return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
+            # De los agentes actuales en campaña, eliminamos los que
+            # ya no estan en los agentes nuevos (por agregar)
+            current_agent_ids = self._get_current_agent_ids(campaign)
+            new_agent_ids = self._get_new_agent_ids(agents)
+            agent_ids_to_delete = set(current_agent_ids) - set(new_agent_ids)
+            for agent_id in agent_ids_to_delete:
+                try:
+                    agent = AgenteProfile.objects.get(pk=agent_id)
+                except AgenteProfile.DoesNotExist:
+                    data['status'] = 'ERROR'
+                    data['message'] = _(u'No existe el agente,\
+                                        no se puede eliminar de la member queue')
+                    return Response(data=data, status=status.HTTP_404_NOT_FOUND)
+                self._delete_queue_member(campaign, agent, client)
+            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
+            for agent in agents:
+                agent_id = int(agent["agent_id"])
+                agent_penalty = int(agent["agent_penalty"])
+                try:
+                    agent = AgenteProfile.objects.get(pk=agent_id)
+                except AgenteProfile.DoesNotExist:
+                    data['status'] = 'ERROR'
+                    data['message'] = _(u'No existe el agente,\
+                                        no se puede crear la member queue')
+                    return Response(data=data, status=status.HTTP_404_NOT_FOUND)
+                with transaction.atomic():
+                    queue_member, created = QueueMember.objects.get_or_create(
+                        member=agent,
+                        queue_name=campaign.queue_campana,
+                        defaults=QueueMember.get_defaults(agent, campaign))
+                    queue_member.penalty = agent_penalty
+                    queue_member.save()
+                    self.adicionar_agente_activo_cola(
+                        queue_member, campaign, sip_agentes_logueados, client)
+            self.activar_cola()
+            client.disconnect()
+            return Response(data=data, status=status.HTTP_200_OK)
+        except Exception:
             data['status'] = 'ERROR'
-            data['message'] = _(u'La campaña no está activa, no se pueden agregar agentes')
+            data['message'] = _(u'No se pudo confirmar la creación del dialplan')
             return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

@@ -34,6 +34,18 @@ export default {
         trigger: 'ماشه',
         status: 'شرایط. شرط'
     },
+    external_site_authentication: {
+        id: 'برو',
+        name: 'نام',
+        url: 'URL',
+        username: 'نام کاربری',
+        password: 'کلمه عبور',
+        campo_token: 'فیلد نشانه',
+        duracion: 'مدت زمان',
+        campo_duracion: 'فیلد مدت',
+        token: 'توکن ها',
+        expiracion_token: 'انقضای توکن'
+    },
     call_disposition: {
         id: 'شناسه',
         name: 'نام'

@@ -181,34 +181,21 @@ export default {
                 return null;
             }
             var response = null;
-            var successMsg = null;
-            var errorMsg = null;
             if (this.formToCreate) {
                 response = await this.createExternalSystem(this.externalSystemForm);
-                successMsg = this.$tc('globals.success_added_type', {
-                    type: this.$tc('globals.external_system')
-                });
-                errorMsg = this.$tc('globals.error_to_created_type', {
-                    type: this.$tc('globals.external_system')
-                });
             } else {
                 response = await this.updateExternalSystem({
                     id: this.externalSystem.id,
                     data: this.externalSystemForm
                 });
-                successMsg = this.$tc('globals.success_updated_type', {
-                    type: this.$tc('globals.external_system')
-                });
-                errorMsg = this.$tc('globals.error_to_updated_type', {
-                    type: this.$tc('globals.external_system')
-                });
             }
-            if (response) {
+            const { status, message } = response;
+            if (status === 'SUCCESS') {
                 this.$router.push({ name: 'external_systems' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        successMsg,
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -216,7 +203,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        errorMsg,
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );

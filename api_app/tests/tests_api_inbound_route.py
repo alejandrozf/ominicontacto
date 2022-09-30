@@ -67,7 +67,7 @@ class APITest(OMLBaseTest):
 
 
 class RutasEntrantesTest(APITest):
-    def listar_rutas_entrantes(self):
+    def test_listar_rutas_entrantes(self):
         URL = reverse(self.urls_api['InboundRoutesList'])
         response = self.client.get(URL, follow=True)
         response_json = json.loads(response.content)
@@ -78,7 +78,7 @@ class RutasEntrantesTest(APITest):
             _('Se obtuvieron las rutas entrantes '
               'de forma exitosa'))
 
-    def detalle_ruta_entrante(self):
+    def test_detalle_ruta_entrante(self):
         URL = reverse(
             self.urls_api['InboundRoutesDetail'],
             args=[self.ruta_entrante.pk, ])
@@ -109,7 +109,7 @@ class RutasEntrantesTest(APITest):
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
            '.regenerar_asterisk')
-    def crear_ruta_entrante(
+    def test_crear_ruta_entrante(
             self, regenerar_asterisk, escribir_ruta_entrante_config):
         URL = reverse(self.urls_api['InboundRoutesCreate'])
         numBefore = RutaEntrante.objects.all().count()
@@ -117,6 +117,8 @@ class RutasEntrantesTest(APITest):
             URL, json.dumps(self.dataForm),
             format='json', content_type='application/json')
         numAfter = RutaEntrante.objects.all().count()
+        ruta = RutaEntrante.objects.last()
+        regenerar_asterisk.assert_called_with(ruta)
         response_json = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore + 1)
@@ -126,10 +128,8 @@ class RutasEntrantesTest(APITest):
             _('Se creo la ruta entrante '
               'de forma exitosa'))
 
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
-           '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
-           '.eliminar_y_regenerar_asterisk')
-    def elimina_ruta_entrante(self, eliminar_y_regenerar_asterisks):
+    @patch('redis.Redis.delete')
+    def test_elimina_ruta_entrante(self, delete):
         pk = self.ruta_entrante.pk
         URL = reverse(
             self.urls_api['InboundRoutesDelete'],
@@ -138,6 +138,7 @@ class RutasEntrantesTest(APITest):
         response = self.client.delete(URL, follow=True)
         numAfter = RutaEntrante.objects.all().count()
         response_json = json.loads(response.content)
+        delete.assert_called_with(f'OML:INR:{self.ruta_entrante.telefono}')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(numAfter, numBefore - 1)
         self.assertEqual(response_json['status'], 'SUCCESS')
@@ -154,7 +155,7 @@ class RutasEntrantesTest(APITest):
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
            '.SincronizadorDeConfiguracionRutaEntranteAsterisk'
            '.regenerar_asterisk')
-    def actualiza_ruta_entrante(
+    def test_actualiza_ruta_entrante(
             self, regenerar_asterisk, escribir_ruta_entrante_config,
             eliminar_y_regenerar_asterisk, eliminar_ruta_entrante_config):
         pk = self.ruta_entrante.pk
@@ -177,6 +178,8 @@ class RutasEntrantesTest(APITest):
             format='json', content_type='application/json')
         ruta_entrante = RutaEntrante.objects.get(pk=pk)
         response_json = json.loads(response.content)
+        eliminar_y_regenerar_asterisk.assert_called_with(ruta_entrante)
+        regenerar_asterisk.assert_called_with(ruta_entrante)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ruta_entrante.nombre, request_data['nombre'])
         self.assertEqual(ruta_entrante.telefono, request_data['telefono'])

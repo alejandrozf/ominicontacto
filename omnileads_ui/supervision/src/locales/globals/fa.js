@@ -43,6 +43,7 @@ export default {
     pause_config_by_set: 'تنظیمات مکث گروه: {set}',
     infinite_pause: 'مکث بی نهایت',
     external_site: 'سایت خارجی | سایت های خارجی',
+    external_site_authentication: 'احراز هویت خارجی سایت | احراز هویت خارجی سایت',
     call_disposition: 'صلاحیت | صلاحیت',
     external_system: 'سیستم خارجی | سیستم های خارجی',
     form: 'فرم | تشکیل می دهد',
@@ -122,6 +123,7 @@ export default {
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'برای تداوم تغییرات روی دکمه "ذخیره" کلیک کنید',
     not_found_type: 'پیدا نشد {type} | پیدا نشدند {type}',
     load_info: 'در حال بارگیری اطلاعات',
     already_exist: 'از قبل وجود دارد',

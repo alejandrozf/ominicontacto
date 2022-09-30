@@ -109,6 +109,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_descarga_masiva',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_call_record_url',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
@@ -162,6 +164,16 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_external_sites_update',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_hide',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
@@ -359,6 +371,9 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_descarga_masiva':
             {'descripcion': _('Retorna Zip con archivos de grabación especificados'),
              'version': '1.14.0'},
+        'api_call_record_url':
+            {'descripcion': _('Retorna URL del archivos de grabación asociado al callid'),
+             'version': '1.25.0'},
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},
@@ -439,6 +454,21 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_external_sites_delete':
             {'descripcion': _('Elimina un sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_list':
+            {'descripcion': _('Lista las autenticaciones para sitios externos'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_detail':
+            {'descripcion': _('Obtiene el detalle de una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_create':
+            {'descripcion': _('Crea una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_update':
+            {'descripcion': _('Actualiza una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_delete':
+            {'descripcion': _('Elimina una autenticacion para sitio externo'),
              'version': '1.23.0'},
         'api_external_sites_hide':
             {'descripcion': _('Oculta un sitio externo'),

@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+import json
 from django.utils.translation import ugettext as _
 from api_app.utils.routes.inbound import (
     eliminar_ruta_entrante_config, escribir_ruta_entrante_config)
@@ -67,7 +68,7 @@ class InboundRouteCreate(APIView):
 
     def post(self, request):
         try:
-            responseData = {
+            data = {
                 'status': 'SUCCESS',
                 'errors': {},
                 'message': _('Se creo la ruta entrante '
@@ -76,21 +77,20 @@ class InboundRouteCreate(APIView):
             if serializador.is_valid():
                 ruta_entrante = serializador.save()
                 if not escribir_ruta_entrante_config(self, ruta_entrante):
-                    responseData['message'] = _('Se creo la ruta entrante pero no se pudo '
-                                                'cargar la configuración telefónica')
-                return Response(data=responseData, status=status.HTTP_200_OK)
+                    data['message'] = _('Se creo la ruta entrante pero no se pudo '
+                                        'cargar la configuración telefónica')
+                return Response(data=data, status=status.HTTP_200_OK)
             else:
-                responseData['status'] = 'ERROR'
-                responseData['message'] = [
-                    serializador.errors[key] for key in serializador.errors]
-                responseData['errors'] = serializador.errors
+                data['status'] = 'ERROR'
+                data['message'] = json.dumps(serializador.errors)
+                data['errors'] = serializador.errors
                 return Response(
-                    data=responseData, status=status.HTTP_400_BAD_REQUEST)
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            responseData['status'] = 'ERROR'
-            responseData['message'] = _('Error al crear la ruta entrante')
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al crear la ruta entrante')
             return Response(
-                data=responseData,
+                data=data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -121,8 +121,7 @@ class InboundRouteUpdate(APIView):
                 return Response(data=data, status=status.HTTP_200_OK)
             else:
                 data['status'] = 'ERROR'
-                data['message'] = [
-                    serializer.errors[key] for key in serializer.errors]
+                data['message'] = json.dumps(serializer.errors)
                 data['errors'] = serializer.errors
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)

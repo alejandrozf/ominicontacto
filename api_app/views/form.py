@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+import json
 from django.utils.translation import ugettext as _
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -64,28 +65,26 @@ class FormCreate(APIView):
 
     def post(self, request):
         try:
-            responseData = {
+            data = {
                 'status': 'SUCCESS',
                 'errors': {},
                 'message': _('Se creo el formulario '
                              'de forma exitosa')}
-            formulario = FormularioSerializer(data=request.data)
-            if formulario.is_valid():
-                formulario.save()
-                return Response(data=responseData, status=status.HTTP_200_OK)
+            serializer = FormularioSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=data, status=status.HTTP_200_OK)
             else:
-                responseData['status'] = 'ERROR'
-                responseData['message'] = _('Error al hacer la peticion '
-                                            'para crear el formulario')
-                responseData['errors'] = formulario.errors
+                data['status'] = 'ERROR'
+                data['message'] = json.dumps(serializer.errors)
+                data['errors'] = serializer.errors
                 return Response(
-                    data=responseData, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(e)
-            responseData['status'] = 'ERROR'
-            responseData['message'] = _('Error al crear el formulario')
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al crear el formulario')
             return Response(
-                data=responseData,
+                data=data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -117,7 +116,7 @@ class FormUpdate(APIView):
                     return Response(data=data, status=status.HTTP_200_OK)
                 else:
                     data['status'] = 'ERROR'
-                    data['message'] = _('Error al hacer la peticion')
+                    data['message'] = json.dumps(serializer.errors)
                     data['errors'] = serializer.errors
                     return Response(
                         data=data, status=status.HTTP_400_BAD_REQUEST)

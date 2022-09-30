@@ -155,16 +155,14 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const resp = await this.deleteInboundRoute(id);
+                    const { status, message } = await this.deleteInboundRoute(id);
                     this.$swal.close();
-                    if (resp) {
+                    if (status === 'SUCCESS') {
                         this.initInboundRoutes();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
-                                this.$tc('globals.success_deleted_type', {
-                                    type: this.$tc('globals.inbound_route')
-                                }),
+                                message,
                                 this.$t('globals.icon_success')
                             )
                         );
@@ -172,9 +170,7 @@ export default {
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.error_notification'),
-                                this.$tc('globals.error_to_deleted_type', {
-                                    type: this.$tc('globals.inbound_route')
-                                }),
+                                message,
                                 this.$t('globals.icon_error')
                             )
                         );

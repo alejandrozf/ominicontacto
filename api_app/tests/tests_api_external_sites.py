@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 from django.urls import reverse
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
-    CampanaFactory, SitioExternoFactory)
+    AutenticacionSitioExternoFactory, CampanaFactory, SitioExternoFactory)
 from ominicontacto_app.models import Campana, SitioExterno, User
 
 
@@ -36,6 +36,7 @@ class APITest(OMLBaseTest):
         self.crear_supervisor_profile(user=usr_supervisor, rol=User.SUPERVISOR)
         self.client.login(username=usr_supervisor.username, password=PASSWORD)
 
+        self.autenticacion = AutenticacionSitioExternoFactory()
         self.sitio_externo = SitioExternoFactory()
         self.sitio_externo2 = SitioExternoFactory()
         self.campana = CampanaFactory(
@@ -88,7 +89,8 @@ class SitiosExternosTest(APITest):
                 'disparador': self.sitio_externo.disparador,
                 'metodo': self.sitio_externo.metodo,
                 'formato': self.sitio_externo.formato,
-                'objetivo': self.sitio_externo.objetivo
+                'objetivo': self.sitio_externo.objetivo,
+                'autenticacion': self.sitio_externo.autenticacion
             })
 
     def test_elimina_sitio_externo(self):
@@ -163,7 +165,8 @@ class SitiosExternosTest(APITest):
             'disparador': SitioExterno.AUTOMATICO,
             'metodo': SitioExterno.GET,
             'objetivo': SitioExterno.EMBEBIDO,
-            'formato': None
+            'formato': None,
+            'autenticacion': self.autenticacion.pk
         }
         numBefore = SitioExterno.objects.all().count()
         response = self.client.post(
@@ -184,6 +187,7 @@ class SitiosExternosTest(APITest):
         self.assertEqual(sitio.disparador, data['disparador'])
         self.assertEqual(sitio.metodo, data['metodo'])
         self.assertEqual(sitio.objetivo, data['objetivo'])
+        self.assertEqual(sitio.autenticacion.pk, data['autenticacion'])
 
     def test_crea_sitio_externo_valida_formato(self):
         URL = reverse(self.urls_api['ExternalSitesCreate'])
@@ -193,7 +197,8 @@ class SitiosExternosTest(APITest):
             'disparador': SitioExterno.AUTOMATICO,
             'metodo': SitioExterno.GET,
             'objetivo': SitioExterno.EMBEBIDO,
-            'formato': SitioExterno.JSON
+            'formato': SitioExterno.JSON,
+            'autenticacion': self.autenticacion.pk
         }
         numBefore = SitioExterno.objects.all().count()
         response = self.client.post(
@@ -203,11 +208,10 @@ class SitiosExternosTest(APITest):
         response_json = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['status'], 'ERROR')
-        self.assertGreater(len(response_json['errors']['formato']), 0)
         self.assertEqual(numAfter, numBefore)
-        self.assertEqual(
-            response_json['message'],
-            _('Error al hacer la peticion'))
+        self.assertIn('formato', response_json['errors'])
+        self.assertEqual(response_json['errors']['formato'],
+                         ['Si el método es GET, no debe indicarse formato'])
 
     def test_crea_sitio_externo_valida_objetivo(self):
         URL = reverse(self.urls_api['ExternalSitesCreate'])
@@ -217,7 +221,8 @@ class SitiosExternosTest(APITest):
             'disparador': SitioExterno.SERVER,
             'metodo': SitioExterno.GET,
             'objetivo': SitioExterno.EMBEBIDO,
-            'formato': None
+            'formato': None,
+            'autenticacion': self.autenticacion.pk
         }
         numBefore = SitioExterno.objects.all().count()
         response = self.client.post(
@@ -227,11 +232,10 @@ class SitiosExternosTest(APITest):
         response_json = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_json['status'], 'ERROR')
-        self.assertGreater(len(response_json['errors']['objetivo']), 0)
         self.assertEqual(numAfter, numBefore)
-        self.assertEqual(
-            response_json['message'],
-            _('Error al hacer la peticion'))
+        self.assertIn('objetivo', response_json['errors'])
+        self.assertEqual(response_json['errors']['objetivo'],
+                         ['Si el disparador es el servidor, no puede haber un objetivo.'])
 
     def test_actualiza_sitio_externo_valido(self):
         pk = self.sitio_externo2.pk
@@ -244,7 +248,8 @@ class SitiosExternosTest(APITest):
             'disparador': SitioExterno.SERVER,
             'metodo': SitioExterno.GET,
             'objetivo': None,
-            'formato': None
+            'formato': None,
+            'autenticacion': None
         }
         response = self.client.put(
             URL, json.dumps(data), format='json',
@@ -255,3 +260,4 @@ class SitiosExternosTest(APITest):
         self.assertEqual(response_json['status'], 'SUCCESS')
         self.assertEqual(sitio.nombre, data['nombre'])
         self.assertEqual(sitio.url, data['url'])
+        self.assertEqual(sitio.autenticacion, data['autenticacion'])

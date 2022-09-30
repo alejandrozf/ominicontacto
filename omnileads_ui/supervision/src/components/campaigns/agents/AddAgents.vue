@@ -79,7 +79,7 @@ export default {
                                 type: this.$tc('globals.agent')
                             }),
                             this.$t('globals.icon_success'),
-                            this.$t('views.add_agents_to_campaign.how_to_update')
+                            this.$t('globals.how_to_save_changes')
                         )
                     );
                 }

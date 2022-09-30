@@ -6,6 +6,9 @@ import PauseSetState from './pause_set/state';
 import ExternalSiteActions from './external_site/actions';
 import ExternalSiteMutations from './external_site/mutations';
 import ExternalSiteState from './external_site/state';
+import ExternalSiteAuthenticationActions from './external_site_authentication/actions';
+import ExternalSiteAuthenticationMutations from './external_site_authentication/mutations';
+import ExternalSiteAuthenticationState from './external_site_authentication/state';
 import CallDispositionActions from './call_disposition/actions';
 import CallDispositionMutations from './call_disposition/mutations';
 import CallDispositionState from './call_disposition/state';
@@ -37,6 +40,7 @@ export default createStore({
         groups: [],
         ...PauseSetState,
         ...ExternalSiteState,
+        ...ExternalSiteAuthenticationState,
         ...CallDispositionState,
         ...ExternalSystemState,
         ...FormState,
@@ -71,6 +75,7 @@ export default createStore({
         },
         ...PauseSetMutations,
         ...ExternalSiteMutations,
+        ...ExternalSiteAuthenticationMutations,
         ...CallDispositionMutations,
         ...ExternalSystemMutations,
         ...FormMutations,
@@ -101,6 +106,7 @@ export default createStore({
         },
         ...PauseSetActions,
         ...ExternalSiteActions,
+        ...ExternalSiteAuthenticationActions,
         ...CallDispositionActions,
         ...ExternalSystemActions,
         ...FormActions,

@@ -83,6 +83,28 @@ export default {
             not_empty_time_validations: 'Deve haver pelo menos uma validação de tempo',
             repeated_group_name: 'Já existe um grupo de tempo com esse nome',
             time_validation_already_exists: 'A validação de tempo já existe'
+        },
+    },
+    external_site_authentication: {
+        placeholders: {
+            url: 'Ejemplo: https://www.omnileads.net/',
+            name: 'Digite o nome',
+            username: 'Insira nome de usuário',
+            campo_token: 'Digite o nome do campo para o token',
+            campo_duracion: 'Digite o nome do campo para a duração',
+            duracion: 'Insira a duração'
+        },
+        helpers: {
+            username: 'Sem espaços',
+            campo_token: 'Campo em que vem o token de acesso',
+            campo_duracion: 'Campo em que vem a duração do token',
+            duracion: 'Em segundos'
+        },
+        validations: {
+            name_already_exist: 'Nome já existe',
+            invalid_campo_duracion: 'Se não houver duração, o campo de duração deve existir.',
+            invalid_name_campo_token: 'O nome do campo de token é inválido',
+            invalid_name_campo_duracion: 'O nome do campo de duração é inválido'
         }
     }
 };

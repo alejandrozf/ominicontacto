@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'The campaign will run out of agents',
         how_to_edit_penalty: 'To modify the penalty select the column',
         agents_campaign: 'Campaign agents',
-        agents_not_save: 'Agents not saved',
-        how_to_update: 'Click the "Save" button to persist the changes'
+        agents_not_save: 'Agents not saved'
     },
     pause_sets: {
         title: 'Pause sets',
@@ -36,6 +35,11 @@ export default {
         remove_hiddens: 'Remove hidden',
         hide: 'Hide',
         show: 'Unhide'
+    },
+    external_site_authentication: {
+        list_title: 'External site authentications',
+        edit_title: 'Edit external site authentication',
+        new_title: 'New external site authentication'
     },
     call_dispositions: {
         list_title: 'Call Dispositions',

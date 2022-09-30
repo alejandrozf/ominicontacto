@@ -83,6 +83,28 @@ export default {
             not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
             repeated_group_name: 'در حال حاضر یک گروه زمانی با آن نام وجود دارد',
             time_validation_already_exists: 'اعتبار زمانی از قبل وجود دارد'
+        },
+    },
+    external_site_authentication: {
+        placeholders: {
+            url: 'مثال: https://www.omnileads.net/',
+            name: 'نام را وارد کنید',
+            username: 'نام کاربری را وارد کنید',
+            campo_token: 'نام فیلد نشانه را وارد کنید',
+            campo_duracion: 'نام فیلد را برای مدت زمان وارد کنید',
+            duracion: 'مدت زمان را وارد کنید'
+        },
+        helpers: {
+            username: 'بدون فاصله',
+            campo_token: 'فیلدی که توکن دسترسی در آن می آید',
+            campo_duracion: 'فیلدی که مدت زمان توکن در آن می آید',
+            duracion: 'در چند ثانیه'
+        },
+        validations: {
+            name_already_exist: 'نام از قبل وجود دارد',
+            invalid_campo_duracion: 'اگر مدت زمان وجود نداشته باشد، قسمت duration باید وجود داشته باشد.',
+            invalid_name_campo_token: 'نام فیلد نشانه نامعتبر است',
+            invalid_name_campo_duracion: 'نام فیلد مدت نامعتبر است'
         }
     }
 };

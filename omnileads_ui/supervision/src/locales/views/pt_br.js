@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'A campanha ficará sem agentes',
         how_to_edit_penalty: 'Para modificar a penalidade selecione a coluna',
         agents_campaign: 'Agentes de campainha',
-        agents_not_save: 'Agentes não salvos',
-        how_to_update: 'Clique no botão "Salvar" para persistir as alterações'
+        agents_not_save: 'Agentes não salvos'
     },
     pause_sets: {
         title: 'Conjuntos de pausas',
@@ -36,6 +35,11 @@ export default {
         remove_hiddens: 'remover oculto',
         hide: 'Disfarce',
         show: 'mostrar'
+    },
+    external_site_authentication: {
+        list_title: 'Autenticação para sites externos',
+        edit_title: 'Editar autenticação para site externo',
+        new_title: 'Nova autenticação para site externo'
     },
     call_dispositions: {
         list_title: 'Classificações',

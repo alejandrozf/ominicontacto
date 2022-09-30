@@ -216,15 +216,13 @@ export default {
             });
         },
         async hide (id) {
-            const resp = await this.hideExternalSite(id);
-            if (resp) {
+            const { status, message } = await this.hideExternalSite(id);
+            if (status === 'SUCCESS') {
                 await this.initExternalSites();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        this.$tc('globals.success_hide_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -232,24 +230,20 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        this.$tc('globals.error_to_hide_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );
             }
         },
         async show (id) {
-            const resp = await this.showExternalSite(id);
-            if (resp) {
+            const { status, message } = await this.showExternalSite(id);
+            if (status === 'SUCCESS') {
                 await this.initExternalSites();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        this.$tc('globals.success_show_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -257,9 +251,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        this.$tc('globals.error_to_show_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );
@@ -286,16 +278,14 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const resp = await this.deleteExternalSite(id);
+                    const { status, message } = await this.deleteExternalSite(id);
                     this.$swal.close();
-                    if (resp) {
+                    if (status === 'SUCCESS') {
                         this.initExternalSites();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
-                                this.$tc('globals.success_deleted_type', {
-                                    type: this.$tc('globals.external_site')
-                                }),
+                                message,
                                 this.$t('globals.icon_success')
                             )
                         );
@@ -303,9 +293,7 @@ export default {
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.error_notification'),
-                                this.$tc('globals.error_to_deleted_type', {
-                                    type: this.$tc('globals.external_site')
-                                }),
+                                message,
                                 this.$t('globals.icon_error')
                             )
                         );

@@ -73,7 +73,7 @@
         :header="$t('models.dial_pattern.pattern')"
       ></Column>
       <Column
-        v-if="showOptions && dialPatterns.length > 1"
+        v-if="showOptions"
         :header="$tc('globals.option', 2)"
         style="max-width: 25rem"
         :exportable="false"
@@ -86,9 +86,10 @@
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
+            v-if="dialPatterns.length > 1"
+            @click="remove(slotProps.data)"
             icon="pi pi-trash"
             class="p-button-danger ml-2"
-            @click="remove(slotProps.data)"
             v-tooltip.top="$t('globals.delete')"
           />
         </template>
