@@ -23,14 +23,12 @@ import re
 
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-from django.forms.models import (inlineformset_factory, modelformset_factory, BaseInlineFormSet,
-                                 BaseModelFormSet)
+from django.forms.models import (inlineformset_factory, modelformset_factory, BaseModelFormSet)
 from django.utils.translation import ugettext_lazy as _
 
 from configuracion_telefonia_app.models import AmdConf, AudiosAsteriskConf, DestinoEntrante, \
     EsquemaGrabaciones, GrupoHorario, IVR, IdentificadorCliente, MusicaDeEspera, OpcionDestino, \
-    OrdenTroncal, PatronDeDiscado, Playlist, RutaEntrante, RutaSaliente, TroncalSIP, \
-    ValidacionTiempo
+    Playlist, TroncalSIP, ValidacionTiempo
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -58,174 +56,6 @@ class TroncalSIPForm(forms.ModelForm):
             'text_config': _('Parámetros SIP'),
             'register_string': _('Cadena de registración')
         }
-
-
-class PatronDeDiscadoForm(forms.ModelForm):
-
-    class Meta:
-        model = PatronDeDiscado
-        exclude = ('orden',)
-        labels = {
-            'match_pattern': _('Patrón de discado'),
-            'prefix': _('Prefijo'),
-        }
-
-
-class RutaSalienteForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super(RutaSalienteForm, self).__init__(*args, **kwargs)
-        self.fields['ring_time'].help_text = _('En segundos')
-
-    class Meta:
-        model = RutaSaliente
-        exclude = ('orden', )
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'ring_time': forms.NumberInput(attrs={'class': 'form-control'}),
-            'dial_options': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'nombre': _('Nombre'),
-            'ring_time': _('Ring time'),
-            'dial_options': _('Dial options'),
-        }
-
-
-class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
-
-    def clean(self):
-        """
-        Realiza los validaciones relacionadas con los patrones de discado asignados a una ruta
-        saliente
-        """
-        if any(self.errors):
-            return
-        deleted_forms = self.deleted_forms
-        save_candidates_forms = set(self.forms) - set(deleted_forms)
-        if len(save_candidates_forms) == 0:
-            raise forms.ValidationError(
-                _('Debe ingresar al menos un patrón de discado'), code='invalid')
-
-        patrones_discado = []
-        for form in save_candidates_forms:
-            prefix = form.cleaned_data.get('prefix', False)
-            patron_discado = form.cleaned_data.get('match_pattern', False)
-            if (prefix, patron_discado) in patrones_discado:
-                raise forms.ValidationError(
-                    _('Los patrones de discado deben ser diferentes'), code='invalid')
-            patrones_discado.append((prefix, patron_discado))
-
-    def save(self):
-        """
-        Salva el formset de los troncales actualizando el orden de acuerdo a los
-        cambios realizados en la interfaz
-        """
-        if not self.instance.patrones_de_discado.exists():
-            max_orden = 0
-        else:
-            max_orden = self.instance.patrones_de_discado.last().orden
-        forms = self.forms
-        for i, form in enumerate(forms, max_orden + 1):
-            # asignamos nuevos ordenes a partir del máximo número de orden para
-            # evitar clashes de integridad al salvar los formsets
-            form.instance.orden = i
-            if (form.instance.pk is not None) and not form.has_changed():
-                # si algun patrón no ha sufrido cambios en una edición se fuerza
-                # el salvado del numero de orden desde la instancia para evitar
-                # problemas de orden
-                form.instance.save()
-        super(PatronDeDiscadoBaseFormset, self).save()
-
-
-class OrdenTroncalBaseFormset(BaseInlineFormSet):
-
-    def clean(self):
-        """
-        Realiza los validaciones relacionadas con los troncales asignados a
-        una ruta saliente
-        """
-        if any(self.errors):
-            return
-
-        deleted_forms = self.deleted_forms
-        save_candidates_forms = set(self.forms) - set(deleted_forms)
-        if len(save_candidates_forms) == 0:
-            raise forms.ValidationError(
-                _('Debe ingresar al menos un troncal'), code='invalid')
-
-        troncales = []
-        for form in save_candidates_forms:
-            troncal = form.cleaned_data.get('troncal', None)
-            if troncal in troncales:
-                raise forms.ValidationError(_('Los troncales deben ser distintos'), code='invalid')
-            troncales.append(troncal)
-
-    def save(self):
-        """
-        Salva el formset de los troncales actualizando el orden de acuerdo a los
-        cambios realizados en la interfaz
-        """
-        if not self.instance.secuencia_troncales.exists():
-            max_orden = 0
-        else:
-            max_orden = self.instance.secuencia_troncales.last().orden
-        forms = self.forms
-        for i, form in enumerate(forms, max_orden + 1):
-            # asignamos nuevos ordenes a partir del máximo número de orden para
-            # evitar clashes de integridad al salvar los formsets
-            form.instance.orden = i
-            if (form.instance.pk is not None) and not form.has_changed():
-                # si alguna asociación con un troncal no ha sufrido cambios en una edición se fuerza
-                # el salvado del numero de orden desde la instancia para evitar
-                # problemas de orden
-                form.instance.save()
-        super(OrdenTroncalBaseFormset, self).save()
-
-
-class RutaEntranteForm(forms.ModelForm):
-
-    tipo_destino = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}),
-        label=_('Tipo de destino')
-    )
-
-    field_order = ('nombre', 'telefono', 'prefijo_caller_id', 'idioma', 'tipo_destino',
-                   'destino')
-
-    class Meta:
-        model = RutaEntrante
-        exclude = ()
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
-            'prefijo_caller_id': forms.TextInput(attrs={'class': 'form-control'}),
-            'idioma': forms.Select(attrs={'class': 'form-control'}),
-            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
-        }
-        labels = {
-            'telefono': _('Número DID'),
-            'nombre': _('Nombre'),
-            'prefijo_caller_id': _('Prefijo caller id'),
-            'idioma': _('Idioma'),
-            'destino': _('Destino')
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(RutaEntranteForm, self).__init__(*args, **kwargs)
-        tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
-        self.fields['tipo_destino'].choices = tipo_destino_choices
-        instance = getattr(self, 'instance', None)
-        if instance.pk is not None:
-            tipo = instance.destino.tipo
-            self.initial['tipo_destino'] = tipo
-            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
-                                                         for dest_entr in destinos_qs]
-            self.fields['destino'].choices = destino_entrante_choices
-        else:
-            self.fields['destino'].choices = ()
 
 
 class IVRForm(forms.ModelForm):
@@ -682,14 +512,6 @@ class MusicaDeEsperaForm(forms.ModelForm):
             validar_extension_archivo_audio(audio_original)
         return audio_original
 
-
-PatronDeDiscadoFormset = inlineformset_factory(
-    RutaSaliente, PatronDeDiscado, form=PatronDeDiscadoForm,
-    formset=PatronDeDiscadoBaseFormset, can_delete=True, extra=0, min_num=1)
-
-OrdenTroncalFormset = inlineformset_factory(
-    RutaSaliente, OrdenTroncal, fields=('troncal',), formset=OrdenTroncalBaseFormset,
-    can_delete=True, extra=0, min_num=1)
 
 OpcionDestinoIVRFormset = modelformset_factory(
     OpcionDestino, form=OpcionDestinoIVRForm, formset=OpcionDestinoIVRBaseFormset, can_delete=True,

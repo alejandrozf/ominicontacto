@@ -34,8 +34,79 @@ export default {
         trigger: 'Acionar',
         status: 'Doença'
     },
+    external_site_authentication: {
+        id: 'ID',
+        name: 'Nome',
+        url: 'Url',
+        username: 'Nome de usuário',
+        password: 'Senha',
+        campo_token: 'Campo token',
+        duracion: 'Duração',
+        campo_duracion: 'Campo de duração',
+        token: 'Token',
+        expiracion_token: 'expiração do token'
+    },
     call_disposition: {
         id: 'ID',
         name: 'Nome'
+    },
+    external_system: {
+        id: 'ID',
+        name: 'Name',
+        agents: 'Agents'
+    },
+    agent_external_system: {
+        id: 'ID',
+        external_id: 'ID externo do agente',
+        agent: 'Agente'
+    },
+    form: {
+        id: 'ID',
+        name: 'Nome',
+        description: 'Descrição',
+        fields: 'Campos',
+        status: 'Doença'
+    },
+    form_field: {
+        id: 'ID',
+        name: 'Nome',
+        order: 'Ordem',
+        type: 'Cara',
+        required: 'É obrigatório?',
+        list_options: 'listar opções'
+    },
+    pause: {
+        id: 'ID',
+        name: 'Nome',
+        type: 'Cara',
+        status: 'Status'
+    },
+    inbound_route: {
+        id: 'ID',
+        name: 'Nome',
+        phone: 'Número DID',
+        caller_id: 'Prefixo',
+        idiom: 'Idioma',
+        destiny: 'Destino',
+        destiny_type: 'Tipo de destino'
+    },
+    outbound_route: {
+        id: 'ID',
+        name: 'Nome',
+        ring_time: 'hora do toque',
+        dial_options: 'opções de discagem',
+        order: 'Ordem'
+    },
+    dial_pattern: {
+        id: 'ID',
+        prepend: 'Anexar',
+        prefix: 'Prefixo',
+        pattern: 'padrão de discagem',
+        order: 'Ordem'
+    },
+    trunk: {
+        id: 'ID',
+        name: 'Nome',
+        order: 'Ordem'
     }
 };

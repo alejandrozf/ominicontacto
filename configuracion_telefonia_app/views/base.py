@@ -21,30 +21,27 @@
 
 from __future__ import unicode_literals
 
-import json
 import logging
 
 from django.urls import reverse, reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
-from django.db.models import Case, When, Max, Min, Q
-
+from django.views.generic import (
+    View, ListView, CreateView, UpdateView,
+    DeleteView, TemplateView)
 from configuracion_telefonia_app.forms import (
-    RutaSalienteForm, TroncalSIPForm, RutaEntranteForm, PatronDeDiscadoFormset, OrdenTroncalFormset,
+    TroncalSIPForm,
     OpcionDestinoIVRFormset, IVRForm, ValidacionTiempoFormset, IdentificadorClienteForm,
     OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm, )
 from configuracion_telefonia_app.models import (
-    RutaSaliente, RutaEntrante, TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
+    TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
     OpcionDestino, GrupoHorario, ValidacionFechaHora, IdentificadorCliente,
     DestinoPersonalizado, )
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
-    SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
-    SincronizadorDeConfiguracionRutaEntranteAsterisk,
     SincronizadorDeConfiguracionIVRAsterisk,
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
     SincronizadorDeConfiguracionGrupoHorarioAsterisk,
@@ -73,63 +70,6 @@ def _asignar_destino_anterior(opcion_destino_formset, nodo_entrante):
     for opcion_destino_form in opcion_destino_formset.forms:
         opcion_destino_form.instance.destino_anterior = nodo_entrante
     return opcion_destino_formset
-
-
-def escribir_ruta_saliente_config(self, ruta_saliente):
-    try:
-        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador.regenerar_asterisk(ruta_saliente)
-    except RestablecerConfiguracionTelefonicaError as e:
-        message = _("<strong>¡Cuidado!</strong> "
-                    "con el siguiente error: {0} .".format(e))
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-
-def eliminar_ruta_saliente_config(self, ruta_saliente):
-    """Elimina las ruta en asterisk"""
-    try:
-        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador.eliminar_y_regenerar_asterisk(ruta_saliente)
-    except RestablecerConfiguracionTelefonicaError as e:
-        message = _("<strong>¡Cuidado!</strong> "
-                    "con el siguiente error: {0} .".format(e))
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-
-def escribir_ruta_entrante_config(self, ruta_entrante):
-    try:
-        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-        sincronizador.regenerar_asterisk(ruta_entrante)
-    except RestablecerConfiguracionTelefonicaError as e:
-        message = _("<strong>¡Cuidado!</strong> "
-                    "con el siguiente error: {0} .".format(e))
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-
-
-def eliminar_ruta_entrante_config(self, ruta_entrante):
-    try:
-        sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-        sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
-    except RestablecerConfiguracionTelefonicaError as e:
-        message = _("<strong>¡Cuidado!</strong> "
-                    "con el siguiente error: {0} .".format(e))
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
 
 
 def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
@@ -251,240 +191,14 @@ class TroncalSIPDeleteView(DeleteView):
         return TroncalSIP.objects.get(pk=self.kwargs['pk'])
 
 
-class RutaSalienteListView(ListView):
-    """Vista para listar las rutas salientes"""
-    model = RutaSaliente
-    context_object_name = 'rutas_salientes'
-    template_name = 'lista_rutas_salientes.html'
-    ordering = ['orden']
+class RutaSalienteListView(TemplateView):
+    """Lista todas las rutas salientes"""
+    template_name = "lista_rutas_salientes.html"
 
 
-class OrdenarRutasSalientesView(View):
-    http_method_names = ['post', ]
-
-    def post(self, request):
-        orden = request.POST.get('orden', '')
-        if not orden:
-            messages.warning(request, _(u'No se pudo guardar el orden'))
-            return redirect('lista_rutas_salientes', page=1)
-
-        orden = json.loads(orden)
-        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(orden)])
-        rutas_ordenadas = RutaSaliente.objects.filter(pk__in=orden).order_by(preserved)
-
-        cantidad = rutas_ordenadas.count()
-        mayor = RutaSaliente.objects.aggregate(Max('orden'))['orden__max']
-        menor = RutaSaliente.objects.aggregate(Min('orden'))['orden__min']
-        # Con esto aseguro no repetir ordenes en la base
-        i = mayor + 1
-        # Para que el valor no se vaya muy alto vuelvo a empezar desde el 1
-        if cantidad < (menor - 1):
-            i = 1
-        # TODO: Ver la manera de utilizar un bulk_update para no hacer 1 query por cada Ruta
-        for ruta in rutas_ordenadas:
-            ruta.orden = i
-            ruta.save()
-            i += 1
-
-        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador._generar_y_recargar_archivos_conf_asterisk()
-        messages.success(request, _(u'Orden guardado satisfactoriamente'))
-        return redirect('lista_rutas_salientes', page=1)
-
-
-class RutaSalienteMixin(object):
-
-    def form_valid(self, form):
-        ruta_saliente = form.save(commit=False)
-        patrondiscado_formset = PatronDeDiscadoFormset(
-            self.request.POST, instance=ruta_saliente, prefix='patron_discado')
-        ordentroncal_formset = OrdenTroncalFormset(
-            self.request.POST, instance=ruta_saliente, prefix='orden_troncal')
-        if patrondiscado_formset.is_valid() and ordentroncal_formset.is_valid():
-            form.save()
-            patrondiscado_formset.save()
-            ordentroncal_formset.save()
-            # muestra mensaje de éxito
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            # inserta la configuración de la ruta saliente en asterisk
-            escribir_ruta_saliente_config(self, ruta_saliente)
-            return redirect('lista_rutas_salientes', page=1)
-        return render(self.request, 'ruta_saliente.html',
-                      {'form': form, 'patrondiscado_formset': patrondiscado_formset,
-                       'ordentroncal_formset': ordentroncal_formset})
-
-
-class RutaSalienteCreateView(RutaSalienteMixin, CreateView):
-    model = RutaSaliente
-    template_name = 'crear_ruta_saliente.html'
-    form_class = RutaSalienteForm
-    message = _('Ruta saliente creada con éxito')
-
-    def get_context_data(self, **kwargs):
-        context = super(RutaSalienteCreateView, self).get_context_data()
-        context['patrondiscado_formset'] = PatronDeDiscadoFormset(prefix='patron_discado')
-        context['ordentroncal_formset'] = OrdenTroncalFormset(prefix='orden_troncal')
-        return context
-
-
-class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
-    model = RutaSaliente
-    template_name = 'editar_ruta_saliente.html'
-    form_class = RutaSalienteForm
-    message = _('Ruta saliente modificada con éxito')
-
-    def _inicializar_patrones_discado(self, ruta_saliente):
-        initial_data = ruta_saliente.patrones_de_discado.values()
-        patrondiscado_formset = PatronDeDiscadoFormset(
-            initial=initial_data, instance=ruta_saliente, prefix='patron_discado')
-        return patrondiscado_formset
-
-    def _inicializar_troncales(self, ruta_saliente):
-        initial_data = ruta_saliente.secuencia_troncales.values()
-        ordentroncal_formset = OrdenTroncalFormset(
-            initial=initial_data, instance=ruta_saliente, prefix='orden_troncal')
-        return ordentroncal_formset
-
-    def get_context_data(self, **kwargs):
-        pk_ruta_saliente = self.kwargs.get('pk')
-        ruta_saliente = get_object_or_404(RutaSaliente, pk=pk_ruta_saliente)
-        patrondiscado_formset = self._inicializar_patrones_discado(ruta_saliente)
-        ordentroncal_formset = self._inicializar_troncales(ruta_saliente)
-        context = super(RutaSalienteUpdateView, self).get_context_data()
-        context['patrondiscado_formset'] = patrondiscado_formset
-        context['ordentroncal_formset'] = ordentroncal_formset
-        return context
-
-
-class EliminarRutaSaliente(DeleteView):
-    model = RutaSaliente
-    success_url = reverse_lazy('lista_rutas_salientes', args=(1,))
-    template_name = 'eliminar_ruta_saliente.html'
-    context_object_name = 'ruta_saliente'
-
-    def dispatch(self, request, *args, **kwargs):
-        ruta_saliente = RutaSaliente.objects.get(pk=self.kwargs['pk'])
-        if ruta_saliente.campana_set.exists():
-            message = _("No está permitido eliminar una Ruta Saliente asociado a una campaña")
-            messages.warning(self.request, message)
-            return HttpResponseRedirect(reverse('lista_rutas_salientes', args=(1,)))
-        return super(EliminarRutaSaliente, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(EliminarRutaSaliente, self).get_context_data(**kwargs)
-        huerfanos = []
-        ruta_saliente = self.object
-        for orden in ruta_saliente.secuencia_troncales.all():
-            troncal = orden.troncal
-            if troncal.ordenes_en_rutas_salientes.count() <= 1:
-                huerfanos.append(orden.troncal)
-        context['troncales_huerfanos'] = huerfanos
-        return context
-
-    def delete(self, request, *args, **kwargs):
-        try:
-            eliminar_ruta_saliente_config(self, self.get_object())
-        except Exception:
-            messages.error(request, _(u'No se ha podido eliminar la Ruta Saliente.'))
-            return redirect('eliminar_ruta_saliente', pk=kwargs['pk'])
-
-        messages.success(request, _(u'Se ha eliminado la Ruta Saliente.'))
-        return super(EliminarRutaSaliente, self).delete(request, *args, **kwargs)
-
-
-class RutaEntranteListView(ListView):
+class RutaEntranteListView(TemplateView):
     """Lista todas las rutas entrantes"""
     template_name = "lista_rutas_entrantes.html"
-    model = RutaEntrante
-    paginate_by = 40
-    context_object_name = 'rutas_entrantes'
-
-    def get_context_data(self, **kwargs):
-        context = super(RutaEntranteListView, self).get_context_data(**kwargs)
-        context['search_url'] = self.search_url
-
-        obtener_paginas(context, 7)
-        return context
-
-    def get_queryset(self):
-        """Returns rutas_entrantes ordernado por id"""
-        rutas_entrantes = RutaEntrante.objects.all().order_by('id')
-        self.search_url = ''
-        if 'search' in self.request.GET:
-            search = self.request.GET.get('search')
-            self.search_url = '?search=' + search
-            rutas_entrantes = rutas_entrantes.filter(Q(nombre__contains=search) |
-                                                     Q(telefono__contains=search) |
-                                                     Q(id__contains=search))
-        return rutas_entrantes
-
-
-class RutaEntranteMixin(object):
-
-    def get_success_url(self):
-        return reverse('lista_rutas_entrantes', args=(1,))
-
-    def form_valid(self, form):
-        form.save()
-        # escribe ruta entrante en asterisk
-        escribir_ruta_entrante_config(self, form.instance)
-        return super(RutaEntranteMixin, self).form_valid(form)
-
-
-class RutaEntranteCreateView(RutaEntranteMixin, CreateView):
-    """Vista para crear una ruta entrante"""
-    template_name = "crear_ruta_entrante.html"
-    model = RutaEntrante
-    form_class = RutaEntranteForm
-
-
-class RutaEntranteUpdateView(RutaEntranteMixin, UpdateView):
-    """Vista para modificar una ruta entrante"""
-    template_name = "editar_ruta_entrante.html"
-    model = RutaEntrante
-    form_class = RutaEntranteForm
-
-    def form_valid(self, form):
-        # Antes de escribir los nuevos datos de la ruta entrante, borro los viejos.
-        eliminar_ruta_entrante_config(self, self.get_object())
-        return super(RutaEntranteUpdateView, self).form_valid(form)
-
-
-class RutaEntranteDeleteView(DeleteView):
-    """Vista para eliminar una ruta entrante"""
-    model = RutaEntrante
-    success_url = reverse_lazy('lista_rutas_entrantes', args=(1,))
-    template_name = 'eliminar_ruta_entrante.html'
-    context_object_name = 'ruta_entrante'
-
-    def dispatch(self, request, *args, **kwargs):
-        ruta_entrante = RutaEntrante.objects.get(pk=self.kwargs['pk'])
-        if ruta_entrante.destino.tipo == 1:
-            if ruta_entrante.destino.content_object.outr:
-                message = _("No está permitido eliminar una Ruta Entrante asociada"
-                            "con una campaña que tiene una Ruta Saliente.")
-                messages.warning(self.request, message)
-                return HttpResponseRedirect(reverse('lista_rutas_entrantes', args=(1,)))
-        return super(RutaEntranteDeleteView, self).dispatch(request, *args, **kwargs)
-
-    def get_object(self, queryset=None):
-        return RutaEntrante.objects.get(pk=self.kwargs['pk'])
-
-    def delete(self, request, *args, **kwargs):
-        try:
-            sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-            sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
-        except RestablecerConfiguracionTelefonicaError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error: {0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-
-        messages.success(request, _(u'Se ha eliminado la Ruta Entrante.'))
-        return super(RutaEntranteDeleteView, self).delete(request, *args, **kwargs)
 
 
 class ApiObtenerDestinosEntrantes(View):

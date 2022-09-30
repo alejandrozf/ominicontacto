@@ -25,7 +25,13 @@ module.exports = {
         add_agents_to_campaign: getPageConfig('add_agents_to_campaign'),
         pause_sets: getPageConfig('pause_sets'),
         external_sites: getPageConfig('external_sites'),
-        call_dispositions: getPageConfig('call_dispositions')
+        external_site_authentications: getPageConfig('external_site_authentications'),
+        call_dispositions: getPageConfig('call_dispositions'),
+        external_systems: getPageConfig('external_systems'),
+        forms: getPageConfig('forms'),
+        pauses: getPageConfig('pauses'),
+        inbound_routes: getPageConfig('inbound_routes'),
+        outbound_routes: getPageConfig('outbound_routes')
     },
     devServer: {
         proxy: {

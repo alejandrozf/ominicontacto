@@ -27,7 +27,7 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_black_list, views_sitio_externo, views_queue_member,
+    views_black_list, views_sitio_externo, views_sitio_externo_autenticacion, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
     views_auditorias, views_lista_rapida
@@ -173,7 +173,6 @@ urlpatterns = [
     re_path(r'^grupo/(?P<pk>\d+)/detalle/$',
             login_required(views.GrupoDetalleView.as_view()),
             name="grupo_detalle"),
-
     # ==========================================================================
     # Pausas
     # ==========================================================================
@@ -181,19 +180,6 @@ urlpatterns = [
             login_required(views.PausaListView.as_view()),
             name='pausa_list',
             ),
-    re_path(r'^pausa/nuevo/$',
-            login_required(views.PausaCreateView.as_view()),
-            name='pausa_nuevo',
-            ),
-    re_path(r'^pausa/update/(?P<pk>\d+)/$',
-            login_required(views.PausaUpdateView.as_view()),
-            name='pausa_update',
-            ),
-    re_path(r'^pausa/delete/(?P<pk>\d+)/$',
-            login_required(views.PausaToggleDeleteView.as_view()),
-            name='pausa_delete',
-            ),
-
     # ==========================================================================
     # Conjuntos de Pausas
     # ==========================================================================
@@ -201,7 +187,6 @@ urlpatterns = [
             login_required(views.ConjuntosDePausaListView.as_view()),
             name='conjuntos_de_pausas_list',
             ),
-
     # ==========================================================================
     # Grabaciones
     # ==========================================================================
@@ -499,54 +484,16 @@ urlpatterns = [
             login_required(views_formulario.FormularioListView.as_view()),
             name='formulario_list',
             ),
-    re_path(r'^formulario/list/mostrar_ocultos/$',
-            login_required(
-                views_formulario.FormularioMostrarOcultosView.as_view()),
-            name='formulario_list_mostrar_ocultos',
-            ),
-    re_path(r'^formulario/nuevo/$',
-            login_required(views_formulario.FormularioCreateView.as_view()),
-            name='formulario_nuevo',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/field/$',
-            login_required(views_formulario.FieldFormularioCreateView.as_view()),
-            name='formulario_field',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/orden/$',
-            login_required(views_formulario.FieldFormularioOrdenView.as_view()),
-            name='campo_formulario_orden',
-            ),
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/campo/(?P<pk>\d+)/delete/$',
-            login_required(views_formulario.FieldFormularioDeleteView.as_view()),
-            name='formulario_field_delete',
-            ),
     re_path(r'^formulario/(?P<pk_formulario>\d+)/vista_previa/$',
             login_required(views_formulario.FormularioPreviewFormView.as_view()),
             name='formulario_vista_previa',
             ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/eliminar/$',
-            login_required(views_formulario.FormularioDeleteView.as_view()),
-            name='formulario_eliminar',
-            ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/mostrar_ocultar/$',
-            login_required(
-                views_formulario.FormularioMostrarOcultarView.as_view()),
-            name='formulario_mostrar_ocultar',
-            ),
-
     # TODO: Verificar si se usa esta vista.
     # re_path(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
     #     r'/(?P<id_agente>\d+)/$',
     #     login_required(views_formulario.FormularioCreateFormView.as_view()),
     #     name='formulario_create',
     #     ),
-
-    re_path(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
-            login_required(views_formulario.FormularioVistaFormView.as_view()),
-            name='formulario_vista',
-            ),
     # ==========================================================================
     # Proceso de Calificación
     # CalificacionCliente / Formulario de Calif. de Gestión
@@ -922,18 +869,19 @@ urlpatterns = [
     re_path(r'^sistema_externo/list/$',
             login_required(views_sistema_externo.SistemaExternoListView.as_view()),
             name="sistema_externo_list"),
-    re_path(r'^sistema_externo/nuevo/$',
-            login_required(views_sistema_externo.SistemaExternoCreateView.as_view()),
-            name="sistema_externo_create"),
-    re_path(r'^sistema_externo/(?P<pk>\d+)/update/$',
-            login_required(views_sistema_externo.SistemaExternoUpdateView.as_view()),
-            name='modificar_sistema_externo', ),
     # ==========================================================================
     # Sitio Externo
     # ==========================================================================
     re_path(r'^sitio_externo/list/$',
             login_required(views_sitio_externo.SitioExternoListView.as_view()),
             name="sitio_externo_list"),
+    # ==========================================================================
+    # Autenticacion Sitio Externo
+    # ==========================================================================
+    re_path(r'^sitio_externo_autenticacion/list/$',
+            login_required(
+                views_sitio_externo_autenticacion.SitioExternoAutenticacionListView.as_view()),
+            name="sitio_externo_autenticacion_list"),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

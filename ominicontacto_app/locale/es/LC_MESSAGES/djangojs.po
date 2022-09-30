@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-28 18:33-0300\n"
+"POT-Creation-Date: 2022-09-17 00:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -472,14 +472,6 @@ msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:170
 msgid "Acciones"
-msgstr ""
-
-#: ominicontacto_app/static/ominicontacto/JS/formularios.js:40
-msgid "Ocultar"
-msgstr ""
-
-#: ominicontacto_app/static/ominicontacto/JS/formularios.js:47
-msgid "Mostrar"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:1

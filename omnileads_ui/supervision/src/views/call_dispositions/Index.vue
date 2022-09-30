@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar class="p-mb-4">
+    <Toolbar class="mb-4">
       <template #start>
         <h1>{{ $t("views.call_dispositions.list_title") }}</h1>
       </template>
@@ -8,20 +8,19 @@
         <Button
           :label="$tc('globals.new')"
           icon="pi pi-plus"
-          class="p-button-success"
           @click="newCallDisposition"
         />
       </template>
     </Toolbar>
     <ListTable
       :callDispositions="callDispositions"
-      @handleModalEvent='handleModal'
+      @handleModalEvent="handleModal"
     />
     <FormModal
-      :showModal='showModal'
-      :formToCreate='formToCreate'
+      :showModal="showModal"
+      :formToCreate="formToCreate"
       :callDisposition="callDisposition"
-      @handleModalEvent='handleModal'
+      @handleModalEvent="handleModal"
     />
   </div>
 </template>

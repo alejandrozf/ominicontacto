@@ -34,8 +34,79 @@ export default {
         trigger: 'ماشه',
         status: 'شرایط. شرط'
     },
+    external_site_authentication: {
+        id: 'برو',
+        name: 'نام',
+        url: 'URL',
+        username: 'نام کاربری',
+        password: 'کلمه عبور',
+        campo_token: 'فیلد نشانه',
+        duracion: 'مدت زمان',
+        campo_duracion: 'فیلد مدت',
+        token: 'توکن ها',
+        expiracion_token: 'انقضای توکن'
+    },
     call_disposition: {
         id: 'شناسه',
         name: 'نام'
+    },
+    external_system: {
+        id: 'برو',
+        name: 'نام',
+        agents: 'عامل'
+    },
+    agent_external_system: {
+        id: 'برو',
+        external_id: 'شناسه خارجی نماینده',
+        agent: 'عامل'
+    },
+    form: {
+        id: 'برو',
+        name: 'نام',
+        description: 'شرح',
+        fields: 'زمینه های',
+        status: 'وضعیت'
+    },
+    form_field: {
+        id: 'برو',
+        name: 'نام',
+        order: 'سفارش',
+        type: 'پسر',
+        required: 'اجباری است',
+        list_options: 'گزینه های لیست'
+    },
+    pause: {
+        id: 'برو',
+        name: 'نام',
+        type: 'پسر',
+        status: 'وضعیت'
+    },
+    inbound_route: {
+        id: 'برو',
+        name: 'نام',
+        phone: 'شماره DID',
+        caller_id: 'پیشوند',
+        idiom: 'اصطلاح',
+        destiny: 'سرنوشت',
+        destiny_type: 'نوع مقصد'
+    },
+    outbound_route: {
+        id: 'برو',
+        name: 'نام',
+        ring_time: 'زمان زنگ زدن',
+        dial_options: 'گزینه های شماره گیری',
+        order: 'سفارش'
+    },
+    dial_pattern: {
+        id: 'برو',
+        prepend: 'آماده کردن',
+        prefix: 'پیشوند',
+        pattern: 'الگوی شماره گیری',
+        order: 'سفارش'
+    },
+    trunk: {
+        id: 'برو',
+        name: 'نام',
+        order: 'سفارش'
     }
 };

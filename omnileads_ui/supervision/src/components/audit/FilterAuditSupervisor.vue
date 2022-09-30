@@ -1,5 +1,5 @@
 <template>
-  <Toolbar class="p-mb-4">
+  <Toolbar class="mb-4">
     <template #start>
       <Calendar
         id="range"
@@ -13,7 +13,7 @@
       <Button
         :label="$t('globals.filter')"
         icon="pi pi-search"
-        class="p-button-success p-mr-2"
+        class="mr-2"
         @click="applyFilter"
       />
     </template>

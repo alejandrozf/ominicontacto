@@ -37,4 +37,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block form_render %}
 	{% include "base_form_fields.html" with form=form %}
+    {% if AGENTE_ROL_ID %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/userCreateForm.js' %}"
+        data-agente-rol-id="{{ AGENTE_ROL_ID }}">
+    </script>
+    {% endif %}
 {% endblock %}

@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'A campanha ficará sem agentes',
         how_to_edit_penalty: 'Para modificar a penalidade selecione a coluna',
         agents_campaign: 'Agentes de campainha',
-        agents_not_save: 'Agentes não salvos',
-        how_to_update: 'Clique no botão "Salvar" para persistir as alterações'
+        agents_not_save: 'Agentes não salvos'
     },
     pause_sets: {
         title: 'Conjuntos de pausas',
@@ -37,9 +36,44 @@ export default {
         hide: 'Disfarce',
         show: 'mostrar'
     },
+    external_site_authentication: {
+        list_title: 'Autenticação para sites externos',
+        edit_title: 'Editar autenticação para site externo',
+        new_title: 'Nova autenticação para site externo'
+    },
     call_dispositions: {
         list_title: 'Classificações',
         edit_title: 'Editar a classificação',
         new_title: 'nova classificação'
+    },
+    external_system: {
+        new_agent_on_system: 'Novo agente no sistema',
+        edit_agent_on_system: 'Editar agente no sistema'
+    },
+    form: {
+        step1: {
+            title: 'Dados do formulário'
+        },
+        step2: {
+            title: 'Campos do Formulario'
+        },
+        step3: {
+            title: 'Vista previa',
+            display_name: 'Nome:',
+            display_description: 'Descrição:'
+        }
+    },
+    outbound_route: {
+        detail_title: 'Informações da rota de saída',
+        new_title: 'Nova rota de saída',
+        edit_title: 'Editar rota de saída'
+    },
+    dial_pattern: {
+        new_title: 'Novo padrão de discagem',
+        edit_title: 'Editar padrão de discagem'
+    },
+    trunk: {
+        new_title: 'Novo tronco',
+        edit_title: 'Editar tronco'
     }
 };

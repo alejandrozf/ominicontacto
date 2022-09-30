@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+import json
 from django.utils.translation import ugettext as _
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -26,7 +27,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from api_app.serializers import SitioExternoSerializer
+from api_app.serializers.external_site import SitioExternoSerializer
 from ominicontacto_app.models import SitioExterno
 
 
@@ -64,26 +65,26 @@ class SitioExternoCreate(APIView):
 
     def post(self, request):
         try:
-            responseData = {
+            data = {
                 'status': 'SUCCESS',
                 'errors': {},
                 'message': _('Se creo el sitio externo '
                              'de forma exitosa')}
-            sitio = SitioExternoSerializer(data=request.data)
-            if sitio.is_valid():
-                sitio.save()
-                return Response(data=responseData, status=status.HTTP_200_OK)
+            serializer = SitioExternoSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=data, status=status.HTTP_200_OK)
             else:
-                responseData['status'] = 'ERROR'
-                responseData['message'] = _('Error al hacer la peticion')
-                responseData['errors'] = sitio.errors
+                data['status'] = 'ERROR'
+                data['message'] = json.dumps(serializer.errors)
+                data['errors'] = serializer.errors
                 return Response(
-                    data=responseData, status=status.HTTP_400_BAD_REQUEST)
+                    data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            responseData['status'] = 'ERROR'
-            responseData['message'] = _('Error al crear el sitio externo')
+            data['status'] = 'ERROR'
+            data['message'] = _('Error al crear el sitio externo')
             return Response(
-                data=responseData,
+                data=data,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -109,7 +110,7 @@ class SitioExternoUpdate(APIView):
                 return Response(data=data, status=status.HTTP_200_OK)
             else:
                 data['status'] = 'ERROR'
-                data['message'] = _('Error al hacer la peticion')
+                data['message'] = json.dumps(serializer.errors)
                 data['errors'] = serializer.errors
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)

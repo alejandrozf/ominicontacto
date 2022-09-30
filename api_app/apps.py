@@ -109,6 +109,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_descarga_masiva',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_call_record_url',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
@@ -135,7 +137,7 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-            {'nombre': 'api_pauses_list',
+            {'nombre': 'api_pause_set_pause_options',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pause_set_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
@@ -163,6 +165,16 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_hide',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_sites_show',
@@ -180,6 +192,70 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_inbound_destinations',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_inbound_destinations_types',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_systems_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_systems_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_systems_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_systems_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_agents_external_system_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_hide',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_forms_show',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_pauses_reactivate',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_inbound_routes_destinations_by_type',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_sip_trunks',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_orphan_trunks',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_outbound_routes_reorder',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
@@ -285,6 +361,9 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_descarga_masiva':
             {'descripcion': _('Retorna Zip con archivos de grabación especificados'),
              'version': '1.14.0'},
+        'api_call_record_url':
+            {'descripcion': _('Retorna URL del archivos de grabación asociado al callid'),
+             'version': '1.25.0'},
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},
@@ -324,7 +403,7 @@ class ApiAppConfig(AppConfig):
         'api_active_agents':
             {'descripcion': _('Obtiene todos los agentes activos'),
              'version': '1.19.0'},
-        'api_pauses_list':
+        'api_pause_set_pause_options':
             {'descripcion': _('Obtiene las pausas que no estan eliminadas'),
              'version': '1.21.0'},
         'api_pause_set_list':
@@ -366,6 +445,21 @@ class ApiAppConfig(AppConfig):
         'api_external_sites_delete':
             {'descripcion': _('Elimina un sitio externo'),
              'version': '1.23.0'},
+        'api_external_site_authentications_list':
+            {'descripcion': _('Lista las autenticaciones para sitios externos'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_detail':
+            {'descripcion': _('Obtiene el detalle de una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_create':
+            {'descripcion': _('Crea una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_update':
+            {'descripcion': _('Actualiza una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_delete':
+            {'descripcion': _('Elimina una autenticacion para sitio externo'),
+             'version': '1.23.0'},
         'api_external_sites_hide':
             {'descripcion': _('Oculta un sitio externo'),
              'version': '1.23.0'},
@@ -393,4 +487,100 @@ class ApiAppConfig(AppConfig):
         'api_inbound_destinations_types':
             {'descripcion': _('Lista tipos de destinos entrantes'),
              'version': '1.21.0'},
+        'api_external_systems_list':
+            {'descripcion': _('Lista los sistemas externos'),
+             'version': '1.23.0'},
+        'api_external_systems_create':
+            {'descripcion': _('Crea un sistema externo'),
+             'version': '1.23.0'},
+        'api_external_systems_update':
+            {'descripcion': _('Actualiza un sistema externo'),
+             'version': '1.23.0'},
+        'api_external_systems_detail':
+            {'descripcion': _('Obtiene detalle de un sistema externo'),
+             'version': '1.23.0'},
+        'api_agents_external_system_list':
+            {'descripcion': _('Obtiene los agentes para asignar a un sistema externo'),
+             'version': '1.23.0'},
+        'api_forms_list':
+            {'descripcion': _('Lista los formularios'),
+             'version': '1.23.0'},
+        'api_forms_create':
+            {'descripcion': _('Crea un formulario'),
+             'version': '1.23.0'},
+        'api_forms_update':
+            {'descripcion': _('Actualiza un formulario'),
+             'version': '1.23.0'},
+        'api_forms_detail':
+            {'descripcion': _('Obtiene detalle de un formulario'),
+             'version': '1.23.0'},
+        'api_forms_delete':
+            {'descripcion': _('Elimina un formulario'),
+             'version': '1.23.0'},
+        'api_forms_hide':
+            {'descripcion': _('Oculta un formulario'),
+             'version': '1.23.0'},
+        'api_forms_show':
+            {'descripcion': _('Desoculta un formulario'),
+             'version': '1.23.0'},
+        'api_pauses_list':
+            {'descripcion': _('Lista las pausas'),
+             'version': '1.23.0'},
+        'api_pauses_create':
+            {'descripcion': _('Crea una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_update':
+            {'descripcion': _('Actualiza una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_detail':
+            {'descripcion': _('Obtiene detalle de una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_delete':
+            {'descripcion': _('Elimina una pausa'),
+             'version': '1.23.0'},
+        'api_pauses_reactivate':
+            {'descripcion': _('Reactiva una pausa'),
+             'version': '1.23.0'},
+        'api_inbound_routes_list':
+            {'descripcion': _('Lista las rutas entrantes'),
+             'version': '1.23.0'},
+        'api_inbound_routes_create':
+            {'descripcion': _('Crea una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_update':
+            {'descripcion': _('Actualiza una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_detail':
+            {'descripcion': _('Obtiene detalle de una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_delete':
+            {'descripcion': _('Elimina una ruta entrante'),
+             'version': '1.23.0'},
+        'api_inbound_routes_destinations_by_type':
+            {'descripcion': _('Obtiene los destinos disponibles'),
+             'version': '1.23.0'},
+        'api_outbound_routes_list':
+            {'descripcion': _('Lista las rutas salientes'),
+             'version': '1.23.0'},
+        'api_outbound_routes_create':
+            {'descripcion': _('Crea una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_update':
+            {'descripcion': _('Actualiza una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_detail':
+            {'descripcion': _('Obtiene detalle de una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_delete':
+            {'descripcion': _('Elimina una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_sip_trunks':
+            {'descripcion': _('Obtiene las troncales sip para rutas salientes'),
+             'version': '1.23.0'},
+        'api_outbound_routes_orphan_trunks':
+            {'descripcion': _('Obtiene las troncales huerfanas de una ruta saliente'),
+             'version': '1.23.0'},
+        'api_outbound_routes_reorder':
+            {'descripcion': _('Reordena las rutas salientes'),
+             'version': '1.23.0'},
     }

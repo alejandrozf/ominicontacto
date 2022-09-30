@@ -36,6 +36,7 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
                                       AgenteProfile, HistoricalCalificacionCliente,
+                                      HistoricalRespuestaFormularioGestion,
                                       RespuestaFormularioGestion)
 from ominicontacto_app.services.campana_service import CampanaService
 from reportes_app.models import LlamadaLog
@@ -109,6 +110,8 @@ class EstadisticasBaseCampana:
 
         self.calificaciones_historicas_dict = {calificacion.callid: calificacion for calificacion
                                                in calificaciones_historicas_qs}
+        self.calificaciones_historicas_por_history_id = {
+            calificacion.history_id: calificacion for calificacion in calificaciones_historicas_qs}
 
     def _inicializar_respuestas_formulario_gestion(self):
         respuestas_formulario_gestion_qs = RespuestaFormularioGestion.objects.filter(
@@ -116,6 +119,12 @@ class EstadisticasBaseCampana:
                 'calificacion')
         for respuesta in respuestas_formulario_gestion_qs:
             self.respuestas_formulario_gestion_dict[respuesta.calificacion.pk] = respuesta
+
+    def _inicializar_respuestas_formulario_gestion_historicas(self):
+        respuestas_historicas = HistoricalRespuestaFormularioGestion.objects.filter(
+            history_change_reason__in=self.calificaciones_historicas_por_history_id.keys())
+        self.respuestas_historicas_por_calificacion = {
+            int(respuesta.history_change_reason): respuesta for respuesta in respuestas_historicas}
 
     def _inicializar_valores_agentes(self):
         # se crean un diccionario de los agentes de la campaña

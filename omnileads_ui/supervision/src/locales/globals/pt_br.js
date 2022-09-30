@@ -42,7 +42,15 @@ export default {
     pause_config_info: 'Pausar configurações: {name}',
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
+    external_site: 'Autenticação de site externo | Autenticação de sites externos',
+    external_site_authentication: 'External Site Autheticacion | External Site Autheticacions',
     call_disposition: 'Qualificação | Qualificação',
+    external_system: 'Sistema externo | Sistemas externos',
+    form: 'Formulário | Formulários',
+    inbound_route: 'Rota de entrada | Rotas de entrada',
+    outbound_route: 'Rota de saída | Rotas de saída',
+    trunk: 'Troncal | roupa de baixo',
+    dial_pattern: 'Padrão de discagem | Padrões de discagem',
     // -------------
     // -- Actions --
     // -------------
@@ -63,6 +71,7 @@ export default {
     close: 'Fechar',
     download: 'Download',
     back_to: 'De volta a {type}',
+    back: 'De volta',
     yes: 'Sim',
     no: 'Não',
     a: 'Um | Uma',
@@ -79,9 +88,15 @@ export default {
     type_of: 'Tipo de {type}',
     export_type: 'Exportar {type}',
     filter: 'Filtro',
+    next: 'Siguiente',
+    up: 'Subir',
+    down: 'Descer',
+    reactivate: 'Reativar',
+    reorder: 'Reordenar',
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'Clique no botão "Salvar" para persistir as alterações',
     not_found_type: 'Não foi encontrado {type} | Eles não foram encontrados {type}',
     load_info: 'Carregando informações',
     already_exist: 'Já existe',
@@ -95,6 +110,7 @@ export default {
     error_to_updated: 'Falha ao atualizar',
     error_to_hide_type: 'Falha ao ocultar {type}',
     error_to_show_type: 'Falha ao exibir {type}',
+    error_to_reactivate_type: 'Falha ao reativar {type}',
     success_updated_type: '{type} atualizado com sucesso | {type} atualizado com sucesso',
     success_updated: 'Atualizado com sucesso | Atualizado com sucesso',
     success_added_type: '{type} Adicionado com sucesso | {type} adicionado com sucesso',
@@ -103,6 +119,7 @@ export default {
     success_deleted: 'Removido com sucesso | removido com sucesso',
     success_show_type: '{type} eexibido com sucesso | {type} eexibido com sucesso',
     success_hide_type: '{type} oculto com sucesso | {type} oculto com sucesso',
+    success_reactive_type: '{type} reativado com sucesso | {type} reativado com sucesso',
     confirm_to_delete: 'Tem certeza de que deseja excluir?',
     success_notification: '¡Operação bem-sucedida!',
     error_notification: '¡Operação errada!',

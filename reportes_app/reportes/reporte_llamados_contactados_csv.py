@@ -41,8 +41,7 @@ from django.utils.timezone import localtime, timedelta
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 from ominicontacto_app.models import (
-    Campana, OpcionCalificacion, HistoricalCalificacionCliente, RespuestaFormularioGestion,
-    CalificacionCliente)
+    BaseDatosContacto, Campana, Contacto, OpcionCalificacion, HistoricalCalificacionCliente)
 from ominicontacto_app.services.estadisticas_campana import EstadisticasBaseCampana
 
 from reportes_app.models import LlamadaLog
@@ -97,6 +96,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         self.fecha_desde = fecha_desde
         self.fecha_hasta = fecha_hasta
         self._inicializar_valores_estadisticas()
+        self._inicializar_respuestas_formulario_gestion_historicas()
         self.contactos_dict = {contacto.pk: contacto
                                for contacto in self.campana.bd_contacto.contactos.all()}
         self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas
@@ -227,25 +227,18 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         registro.append(datos_calificacion[1])
 
         if calificacion:
-            if hasattr(calificacion, 'es_gestion'):
-                es_gestion = calificacion.es_gestion()
-            else:
-                es_gestion = (calificacion.opcion_calificacion.tipo ==
-                              OpcionCalificacion.GESTION)
+            es_gestion = calificacion.opcion_calificacion.es_gestion()
             if es_gestion:
-                try:
-                    respuesta_formulario_gestion = RespuestaFormularioGestion.history.\
-                        get(history_change_reason=calificacion.history_id)
-                except Exception:
-                    pass
+                respuesta_formulario_gestion = self.respuestas_historicas_por_calificacion.get(
+                    calificacion.history_id, None)
             if respuesta_formulario_gestion:
                 datos = json.loads(respuesta_formulario_gestion.metadata)
                 if respuesta_formulario_gestion.history_change_reason is not None:
-                    calif = CalificacionCliente.history.get(
-                        pk=respuesta_formulario_gestion.history_change_reason)
-                    id_opcion = calif.opcion_calificacion_id
+                    id_opcion = calificacion.opcion_calificacion_id
                 else:
-                    id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                    logger.warn('Sin datos de gestion para calificacion_id:{}'.format(
+                        calificacion.history_id))
+                    return
                 try:
                     posicion = self.posiciones_opciones[id_opcion]
                 except Exception:
@@ -411,6 +404,8 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
         self._escribir_encabezado()
         logs_llamadas = self._obtener_logs_de_llamadas()
 
+        self.inicializar_datos_contacto_base_anterior(logs_llamadas)
+
         numero_logs_llamadas = logs_llamadas.count()
         if numero_logs_llamadas == 0:
             porcentaje_inicial = 100
@@ -445,8 +440,15 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
         if estado:
             lista_opciones.append(log_no_contactado.numero_marcado)
             contacto_id = log_no_contactado.contacto_id
-            datos_contacto = self._obtener_datos_contacto(
-                contacto_id, self.campos_contacto, contactos_dict)
+            if contacto_id in self.contactos_anteriores:
+                datos_contacto, bd_contacto_id, bd_contacto = \
+                    self._obtener_datos_contacto_anterior(contacto_id)
+            else:
+                datos_contacto = self._obtener_datos_contacto(
+                    contacto_id, self.campos_contacto, contactos_dict)
+                bd_contacto_id = self.campana.bd_contacto.id
+                bd_contacto = self.campana.bd_contacto
+
             lista_opciones.extend(datos_contacto)
             lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
             lista_opciones.append(estado)
@@ -460,12 +462,29 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
             lista_opciones.append(agente_info)
             lista_opciones.append(log_no_contactado.callid)
             lista_opciones.append(log_no_contactado.tipo_llamada)
-            lista_opciones.append(self.campana.bd_contacto.id)
-            lista_opciones.append(self.campana.bd_contacto)
+            lista_opciones.append(bd_contacto_id)
+            lista_opciones.append(bd_contacto)
 
             # --- Finalmente, escribimos la linea
             lista_datos_utf8 = [force_text(item) for item in lista_opciones]
             self.datos.append(lista_datos_utf8)
+
+    def inicializar_datos_contacto_base_anterior(self, logs_llamadas):
+        id_contactos_anteriores = set(logs_llamadas.values_list('contacto_id', flat=True))
+        id_contactos_anteriores.difference_update(self.contactos_dict.keys())
+        contactos_anteriores = Contacto.objects.filter(id__in=id_contactos_anteriores)
+        self.contactos_anteriores = {
+            contacto.pk: contacto for contacto in contactos_anteriores}
+
+        self.nombres_bases = {base.id: str(base) for base in BaseDatosContacto.objects.all()}
+
+    def _obtener_datos_contacto_anterior(self, contacto_id):
+        contacto = self.contactos_anteriores.get(contacto_id, -1)
+        return (
+            contacto.lista_de_datos_completa(),
+            contacto.bd_contacto_id,
+            self.nombres_bases[contacto.bd_contacto_id]
+        )
 
 
 class ArchivoDeReporteCsv(object):

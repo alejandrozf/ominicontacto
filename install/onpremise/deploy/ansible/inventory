@@ -20,9 +20,6 @@
 
 [everyone:vars]
 
-#oml_lan_ip=
-#oml_wan_ip=
-
 #####################################################################
 #                           Database                                #
 #   Set PostgreSQL password. If you have a PostgreSQL instance in a #
@@ -35,6 +32,11 @@ postgres_database=omnileads
 #postgres_password=my_very_strong_pass
 #postgres_host=
 #postgres_port=
+
+postgres_ha=false
+postgres_ro_host=
+
+postgres_ssl=false
 
 ##########################################################
 # Tell to OMniLeads Web App  the Asterisk ACD parameters #
@@ -151,6 +153,22 @@ high_load=false
 ###################
 #google_maps_api_key=
 #google_maps_center=
+
+#########################################
+#         SMTP external server          #
+#########################################
+
+email_smtp_relay=false
+#email_backend=
+#email_default_from=
+#email_host=
+#email_password=
+#email_user=
+#email_port=
+#email_ssl_certfile=
+#email_ssl_keyfile=
+#email_use_ssl=
+#email_use_tls=
 
 # Do not change the variables below or you will experience
 # bad things

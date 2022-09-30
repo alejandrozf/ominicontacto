@@ -3,7 +3,7 @@
     :visible="showModal"
     :style="{ width: '30vw' }"
     :closable="false"
-    :modal="true"
+    :modal="false"
   >
     <template #header>
       <h2>Informacion del sitio externo</h2>
@@ -36,6 +36,10 @@
       <b>{{ $t("models.external_site.status") }}: </b>
       {{ getStatus(externalSite.oculto) }}
     </p>
+    <p>
+      <b>{{ $t("globals.external_site_authentication") }}: </b>
+      {{ externalSite.autenticacion ? getAutenticacion(externalSite.autenticacion) : '-----' }}
+    </p>
     <template #footer>
       <Button label="ok" @click="closeModal" />
     </template>
@@ -43,6 +47,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 export default {
     props: {
         showModal: {
@@ -63,9 +68,17 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapState(['externalSiteAuthentication'])
+    },
     methods: {
+        ...mapActions(['initExternalSiteAuthentication']),
         closeModal () {
             this.$emit('handleModal', false);
+        },
+        getAutenticacion (id) {
+            this.initExternalSiteAuthentication(id);
+            return this.externalSiteAuthentication.nombre;
         },
         getMethod (option) {
             if (option === 1) {

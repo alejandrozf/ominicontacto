@@ -6,10 +6,10 @@
     :closable="false"
     :header="$tc('globals.pause_config_info', { name: pauseConfigToEdit.name })"
   >
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-12">
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <div class="field-checkbox">
-          <label>{{ $t("forms.pause_setting.infinite_time") }}  </label>
+          <label>{{ $t("forms.pause_setting.infinite_time") }} </label>
           <Checkbox
             v-model="infinitePause"
             :binary="true"
@@ -20,17 +20,18 @@
       </div>
     </div>
 
-    <div class="p-fluid grid p-mt-4">
-      <div class="field col-12 md:col-4">
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <label for="pause_time_to_end">{{
           $t("models.pause_setting.time_to_end_pause")
         }}</label>
-        <div class="p-inputgroup p-mt-3">
+        <div class="p-inputgroup mt-3">
           <span class="p-inputgroup-addon">
             <i class="pi pi-clock"></i>
           </span>
           <InputNumber
             id="pause_time_to_end"
+            class="w-full"
             v-model="pauseConfigToEdit.timeToEndPause"
             :min="0"
             :max="28800"
@@ -151,7 +152,7 @@ export default {
             this.pauseConfigToEdit.id = parseInt(this.pauseConfig.id);
             const value = this.pauseConfigToEdit.timeToEndPause;
             this.limitNotifications(value);
-            this.infinitePause = (value === 0 || value === null);
+            this.infinitePause = value === 0 || value === null;
         },
         limitNotifications (value) {
             if (value >= 28800) {
@@ -167,7 +168,7 @@ export default {
         },
         inputWatcher ({ value }) {
             this.btnEditStatus = value === this.pauseConfigToEdit.timeToEndPause;
-            this.infinitePause = (value === 0 || value === null);
+            this.infinitePause = value === 0 || value === null;
             this.limitNotifications(value);
         },
         setInfinitPause () {
@@ -184,7 +185,9 @@ export default {
             const value = this.pauseConfigToEdit.timeToEndPause;
             this.limitNotifications(value);
 
-            this.btnEditStatus = (this.pauseConfig.time_to_end_pause === this.pauseConfigToEdit.timeToEndPause);
+            this.btnEditStatus =
+        this.pauseConfig.time_to_end_pause ===
+        this.pauseConfigToEdit.timeToEndPause;
         }
     },
     watch: {

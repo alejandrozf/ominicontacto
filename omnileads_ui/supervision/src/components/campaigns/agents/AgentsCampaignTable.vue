@@ -30,24 +30,28 @@
       editMode="cell"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter()"
-          />
-          <span class="p-input-icon-left">
-            <i class="pi pi-search" />
-            <InputText
-              v-model="filters['global'].value"
-              icon="pi pi-check"
-              :placeholder="
-                $t('globals.find_by', { field: $tc('globals.name', 1) })
-              "
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter()"
             />
-          </span>
+          </div>
+          <div class="flex align-items-center justify-content-center">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText
+                v-model="filters['global'].value"
+                icon="pi pi-check"
+                :placeholder="
+                  $t('globals.find_by', { field: $tc('globals.name', 1) })
+                "
+              />
+            </span>
+          </div>
         </div>
       </template>
       <template #empty> {{ $t("globals.without_data") }} </template>
@@ -74,7 +78,7 @@
           <Dropdown
             v-model="data[field]"
             :options="penalties"
-            @change='changePenalty(data)'
+            @change="changePenalty(data)"
             optionLabel="label"
             optionValue="value"
             :placeholder="
@@ -145,7 +149,7 @@ export default {
                         type: this.$tc('globals.agent')
                     }),
                     this.$t('globals.icon_success'),
-                    this.$t('views.add_agents_to_campaign.how_to_update')
+                    this.$t('globals.how_to_save_changes')
                 )
             );
         },
@@ -161,7 +165,7 @@ export default {
                         type: this.$t('globals.penalty')
                     }),
                     this.$t('globals.icon_success'),
-                    this.$t('views.add_agents_to_campaign.how_to_update')
+                    this.$t('globals.how_to_save_changes')
                 )
             );
         },

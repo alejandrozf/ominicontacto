@@ -10,15 +10,17 @@ echo ""
 
 CICD=$1
 
+
+
 cd ../../../..
 echo "***[OML devenv] Cloning the repositories of modules"
-repositories=("acd" "kamailio" "nginx" "pgsql" "redis" "rtpengine")
+repositories=("acd" "kamailio" "nginx" "pgsql" "redis" "rtpengine" "hap")
 for i in "${repositories[@]}"; do
   if [ ! -d "oml${i}" ]; then
     if [ "$CICD" == "True" ]; then
-      git clone --branch develop https://gitlab.com/omnileads/oml$i.git
+      git clone https://gitlab.com/omnileads/oml$i.git
     else
-      git clone --branch develop git@gitlab.com:omnileads/oml$i.git
+      git clone git@gitlab.com:omnileads/oml$i.git
     fi
   else
     echo "***[OML devenv] $i repository already cloned"
@@ -27,10 +29,10 @@ done
 if [ ! -d "omlwebsockets" ]; then
   echo "***[OML devenv] Cloning the omlwebsockets module"
   if [ "$CICD" == "True" ]; then
-    git clone --branch develop \
+    git clone \
     https://gitlab.com/omnileads/omnileads-websockets.git omlwebsockets
   else
-    git clone --branch develop \
+    git clone \
     git@gitlab.com:omnileads/omnileads-websockets.git omlwebsockets
   fi
 else

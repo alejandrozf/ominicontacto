@@ -1,0 +1,65 @@
+{% extends "message/emsg/_base.html.j2" %}
+
+{% block content %}
+<tr>
+  <td style="{{ css_content_td }} padding-top: 20px;">
+    <strong>{{ _("Estimado") }} {{ user.name or user.username }},</strong>
+  </td>
+</tr>
+
+<tr>
+  <td style="{{ css_content_td }} padding-top: 20px;">
+    {{ _("Su password ha sido reseteado exitosamente:") }}
+  </td>
+</tr>
+
+<tr>
+  <td align="center" style="padding-top: 20px;">
+    <table border="0" cellpadding="0" cellspacing="0" style="width: 95%;">
+      <tr>
+        <td style="{{ css_content_td }} width: 20px;" valign="top">
+          &bull;
+        </td>
+        <td style="{{ css_content_td }}" valign="top">
+          {{ _("Nombre de usuario") }}:
+          <code>{{ user.username }}</code>
+        </td>
+      </tr>
+      <tr><td colspan="2" height="10" style="font-size:0; height: 10px; line-height: 10px;"></td></tr>
+      <tr>
+        <td style="{{ css_content_td }} width: 20px;" valign="top">
+          &bull;
+        </td>
+        <td style="{{ css_content_td }}" valign="top">
+          {{ _("Contraseña") }}:
+          <code>{{ user.password }}</code>
+        </td>
+      </tr>
+      <tr><td colspan="2" height="10" style="font-size:0; height: 10px; line-height: 10px;"></td></tr>
+      <tr>
+        <td style="{{ css_content_td }} width: 20px;" valign="top">
+          &bull;
+        </td>
+        <td style="{{ css_content_td }}" valign="top">
+          {{ _("URL de Acceso") }}:
+          <a href="{{ urls['login'] }}" style="text-decoration: none;">{{ urls["login"] }}</a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+<tr>
+  <td style="{{ css_content_td }} padding-top: 20px;">
+    {{ _("Durante el ingreso, asegúrese de cambiar la contraseña nuevamente.") }}
+  </td>
+</tr>
+{% endblock %}
+
+{% block signature %}
+<tr>
+  <td style="{{ css_content_td }} padding-top: 20px;">
+    {{ _("Cualquier duda, contáctese con su Administrador") }}
+  </td>
+</tr>
+{% endblock %}

@@ -5,7 +5,6 @@ import store from '@/store';
 import router from '@/router';
 import App from './App.vue';
 import Helpers from '@/helpers';
-// import { formatTime } from '@/helpers/time_format_helper';
 
 // Primevue
 import PrimeVue from 'primevue/config';
@@ -35,6 +34,12 @@ import Dialog from 'primevue/dialog';
 import InputNumber from 'primevue/inputnumber';
 import Checkbox from 'primevue/checkbox';
 import Calendar from 'primevue/calendar';
+import Steps from 'primevue/steps';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+import Textarea from 'primevue/textarea';
+import InlineMessage from 'primevue/inlinemessage';
+import Password from 'primevue/password';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -68,6 +73,11 @@ app.component('Dialog', Dialog);
 app.component('InputNumber', InputNumber);
 app.component('Checkbox', Checkbox);
 app.component('Calendar', Calendar);
+app.component('Steps', Steps);
+app.component('Toast', Toast);
+app.component('Textarea', Textarea);
+app.component('InlineMessage', InlineMessage);
+app.component('Password', Password);
 
 // Register Helpers
 app.provide('$helpers', Helpers);
@@ -77,4 +87,5 @@ app.use(i18n)
     .use(router)
     .use(VueSweetalert2)
     .use(PrimeVue)
+    .use(ToastService)
     .mount('#app');

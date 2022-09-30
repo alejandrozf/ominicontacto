@@ -43,7 +43,14 @@ export default {
     pause_config_by_set: 'Configuraciones de pausas del conjunto: {set}',
     infinite_pause: 'Pausa infinita',
     external_site: 'Sitio externo | Sitios externos',
+    external_site_authentication: 'Autenticacion de sitio externo | Autenticaciones de sitios externos',
     call_disposition: 'Calificacion | Calificaciones',
+    external_system: 'Sistema externo | Sistemas externos',
+    form: 'Formulario | Formularios',
+    inbound_route: 'Ruta entrante | Rutas entrantes',
+    outbound_route: 'Ruta saliente | Rutas salientes',
+    trunk: 'Troncal | Troncales',
+    dial_pattern: 'Patron de discado | Patrones de discado',
     // -------------
     // -- Actions --
     // -------------
@@ -64,6 +71,7 @@ export default {
     close: 'Cerrar',
     download: 'Descarga | Descargar',
     back_to: 'De regreso a {type}',
+    back: 'Atras',
     yes: 'Si',
     no: 'No',
     a: 'Un | Una',
@@ -80,9 +88,15 @@ export default {
     type_of: 'Tipo de {type}',
     export_type: 'Exportar {type}',
     filter: 'Filtrar',
+    next: 'Siguiente',
+    up: 'Mover arriba',
+    down: 'Mover abajo',
+    reactivate: 'Reactivar',
+    reorder: 'Reordenar',
     // ---------------------
     // --- Notifications ---
     // ---------------------
+    how_to_save_changes: 'Haga click en el boton "Guardar" para persistir los cambios',
     not_found_type: 'No se encontró {type} | No se encontraron {type}',
     load_info: 'Cargando información',
     already_exist: 'Ya existe',
@@ -96,6 +110,7 @@ export default {
     error_to_updated: 'Error al actualizar',
     error_to_hide_type: 'Error al ocultar {type}',
     error_to_show_type: 'Error al desocultar {type}',
+    error_to_reactivate_type: 'Error al reactivar {type}',
     success_updated_type: '{type} actualizado exitosamente | {type} actualizada exitosamente',
     success_updated: 'Actualizado exitosamente | Actualizada exitosamente | Actualizados exitosamente',
     success_added_type: '{type} agregado exitosamente | {type} agregada exitosamente',
@@ -104,6 +119,7 @@ export default {
     success_deleted: 'Eliminado exitosamente | Eliminada exitosamente',
     success_show_type: '{type} desocultado exitosamente | {type} desocultada exitosamente',
     success_hide_type: '{type} ocultado exitosamente | {type} ocultada exitosamente',
+    success_reactive_type: '{type} reactivado exitosamente | {type} reactivada exitosamente',
     confirm_to_delete: '¿Estás seguro de que quieres eliminar?',
     success_notification: '¡Operación exitosa!',
     error_notification: '¡Operación erronea!',

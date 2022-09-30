@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
@@ -35,21 +35,44 @@ from api_app.views.supervisor import (
     LlamadasDeCampanaView, CalificacionesDeCampanaView,
     ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
-    StatusCampanasEntrantesView, Pausas,
-    ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
-    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
-    DashboardSupervision, AuditSupervisor,
-    AgentesCampana, ActualizaAgentesCampana, AgentesActivos,
+    StatusCampanasEntrantesView, ContactosAsignadosCampanaPreviewView,
+    ExportarCSVCalificacionesCampana, ExportarCSVFormularioGestionCampana,
+    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor)
+from api_app.views.campaigns.add_agents_to_campaign import (
+    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
+from api_app.views.pause_set import (
     ConjuntoDePausaCreate, ConjuntoDePausaDelete, ConjuntoDePausaDetalle,
     ConjuntoDePausaList, ConjuntoDePausaUpdate, ConfiguracionDePausaCreate,
-    ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate)
+    ConfiguracionDePausaDelete, ConfiguracionDePausaUpdate, Pausas)
 from api_app.views.external_site import (
     SitioExternoCreate, SitioExternoDelete, SitioExternoDesocultar,
     SitioExternoDetalle, SitioExternoList, SitioExternoOcultar,
     SitioExternoUpdate)
+from api_app.views.external_site_authentication import (
+    ExternalSiteAuthenticationCreate,
+    ExternalSiteAuthenticationDelete,
+    ExternalSiteAuthenticationDetail,
+    ExternalSiteAuthenticationList,
+    ExternalSiteAuthenticationUpdate)
 from api_app.views.call_disposition import (
     CalificacionCreate, CalificacionDelete, CalificacionDetail,
     CalificacionList, CalificacionUpdate)
+from api_app.views.external_system import (
+    AgentesSistemaExternoList, SistemaExternoCreate, SistemaExternoDetail,
+    SistemaExternoList, SistemaExternoUpdate)
+from api_app.views.form import (
+    FormCreate, FormDelete, FormDetail,
+    FormHide, FormList, FormShow, FormUpdate)
+from api_app.views.pause import (
+    PauseCreate, PauseDelete, PauseDetail, PauseList, PauseReactivate,
+    PauseUpdate)
+from api_app.views.inbound_route import (
+    InboundRouteCreate, InboundRouteDelete, InboundRouteDestinations,
+    InboundRouteDetail, InboundRouteList, InboundRouteUpdate)
+from api_app.views.outbound_route import (
+    OutboundRouteCreate, OutboundRouteDelete, OutboundRouteList,
+    OutboundRouteDetail, OutboundRouteOrphanTrunks, OutboundRouteReorder,
+    OutboundRouteSIPTrunksList, OutboundRouteUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -58,7 +81,9 @@ from api_app.views.agente import (
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk
 )
-from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
+from api_app.views.grabaciones import (
+    ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
+)
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
@@ -184,10 +209,12 @@ urlpatterns = [
     re_path(r'api/v1/active_agents/$',
             AgentesActivos.as_view(),
             name='api_active_agents'),
+    # =========================
     # Conjuntos de Pausas
-    re_path(r'api/v1/pauses/$',
+    # =========================
+    re_path(r'api/v1/pause_sets/pause_options/$',
             Pausas.as_view(),
-            name='api_pauses_list'),
+            name='api_pause_set_pause_options'),
     re_path(r'api/v1/pause_sets/$',
             ConjuntoDePausaList.as_view(),
             name='api_pause_set_list'),
@@ -236,6 +263,24 @@ urlpatterns = [
     re_path(r'api/v1/external_sites/(?P<pk>\d+)/show/$',
             SitioExternoDesocultar.as_view(),
             name='api_external_sites_show'),
+    # ===================================
+    # Autenticacion de Sitios Externos
+    # ===================================
+    re_path(r'api/v1/external_site_authentications/$',
+            ExternalSiteAuthenticationList.as_view(),
+            name='api_external_site_authentications_list'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/$',
+            ExternalSiteAuthenticationDetail.as_view(),
+            name='api_external_site_authentications_detail'),
+    re_path(r'api/v1/external_site_authentications/create/$',
+            ExternalSiteAuthenticationCreate.as_view(),
+            name='api_external_site_authentications_create'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/update/$',
+            ExternalSiteAuthenticationUpdate.as_view(),
+            name='api_external_site_authentications_update'),
+    re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/delete/$',
+            ExternalSiteAuthenticationDelete.as_view(),
+            name='api_external_site_authentications_delete'),
     # =========================
     # Calificaciones
     # =========================
@@ -254,6 +299,117 @@ urlpatterns = [
     re_path(r'api/v1/call_dispositions/(?P<pk>\d+)/delete/$',
             CalificacionDelete.as_view(),
             name='api_call_dispositions_delete'),
+    # =========================
+    # Sistemas Externos
+    # =========================
+    re_path(r'api/v1/external_systems/$',
+            SistemaExternoList.as_view(),
+            name='api_external_systems_list'),
+    re_path(r'api/v1/external_systems/create/$',
+            SistemaExternoCreate.as_view(),
+            name='api_external_systems_create'),
+    re_path(r'api/v1/external_systems/(?P<pk>\d+)/update/$',
+            SistemaExternoUpdate.as_view(),
+            name='api_external_systems_update'),
+    re_path(r'api/v1/external_systems/(?P<pk>\d+)/$',
+            SistemaExternoDetail.as_view(),
+            name='api_external_systems_detail'),
+    re_path(r'api/v1/agents_external_system/$',
+            AgentesSistemaExternoList.as_view(),
+            name='api_agents_external_system_list'),
+    # =========================
+    # Formularios
+    # =========================
+    re_path(r'api/v1/forms/$',
+            FormList.as_view(),
+            name='api_forms_list'),
+    re_path(r'api/v1/forms/create/$',
+            FormCreate.as_view(),
+            name='api_forms_create'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/update/$',
+            FormUpdate.as_view(),
+            name='api_forms_update'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/hide/$',
+            FormHide.as_view(),
+            name='api_forms_hide'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/show/$',
+            FormShow.as_view(),
+            name='api_forms_show'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/$',
+            FormDetail.as_view(),
+            name='api_forms_detail'),
+    re_path(r'api/v1/forms/(?P<pk>\d+)/delete/$',
+            FormDelete.as_view(),
+            name='api_forms_delete'),
+    # =========================
+    # Pausas
+    # =========================
+    re_path(r'api/v1/pauses/$',
+            PauseList.as_view(),
+            name='api_pauses_list'),
+    re_path(r'api/v1/pauses/create/$',
+            PauseCreate.as_view(),
+            name='api_pauses_create'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/update/$',
+            PauseUpdate.as_view(),
+            name='api_pauses_update'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/$',
+            PauseDetail.as_view(),
+            name='api_pauses_detail'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/reactivate/$',
+            PauseReactivate.as_view(),
+            name='api_pauses_reactivate'),
+    re_path(r'api/v1/pauses/(?P<pk>\d+)/delete/$',
+            PauseDelete.as_view(),
+            name='api_pauses_delete'),
+    # =========================
+    # Rutas Entrantes
+    # =========================
+    re_path(r'api/v1/inbound_routes/$',
+            InboundRouteList.as_view(),
+            name='api_inbound_routes_list'),
+    re_path(r'api/v1/inbound_routes/create/$',
+            InboundRouteCreate.as_view(),
+            name='api_inbound_routes_create'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/update/$',
+            InboundRouteUpdate.as_view(),
+            name='api_inbound_routes_update'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/$',
+            InboundRouteDetail.as_view(),
+            name='api_inbound_routes_detail'),
+    re_path(r'api/v1/inbound_routes/(?P<pk>\d+)/delete/$',
+            InboundRouteDelete.as_view(),
+            name='api_inbound_routes_delete'),
+    re_path(r'api/v1/inbound_routes/destinations_by_type/$',
+            InboundRouteDestinations.as_view(),
+            name='api_inbound_routes_destinations_by_type'),
+    # =========================
+    # Rutas Salientes
+    # =========================
+    re_path(r'api/v1/outbound_routes/$',
+            OutboundRouteList.as_view(),
+            name='api_outbound_routes_list'),
+    re_path(r'api/v1/outbound_routes/create/$',
+            OutboundRouteCreate.as_view(),
+            name='api_outbound_routes_create'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/update/$',
+            OutboundRouteUpdate.as_view(),
+            name='api_outbound_routes_update'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/$',
+            OutboundRouteDetail.as_view(),
+            name='api_outbound_routes_detail'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/delete/$',
+            OutboundRouteDelete.as_view(),
+            name='api_outbound_routes_delete'),
+    re_path(r'api/v1/outbound_routes/sip_trunks/$',
+            OutboundRouteSIPTrunksList.as_view(),
+            name='api_outbound_routes_sip_trunks'),
+    re_path(r'api/v1/outbound_routes/(?P<pk>\d+)/orphan_trunks$',
+            OutboundRouteOrphanTrunks.as_view(),
+            name='api_outbound_routes_orphan_trunks'),
+    re_path(r'api/v1/outbound_routes/reorder/$',
+            OutboundRouteReorder.as_view(),
+            name='api_outbound_routes_reorder'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
@@ -287,6 +443,8 @@ urlpatterns = [
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     re_path(r'^api/v1/grabacion/descarga_masiva',
             ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
+    path(r'api/v1/call_record/<str:callid>/',
+         ObtenerUrlGrabacionView.as_view(), name='api_call_record_url'),
     # ###########  AUDIOS ASTERISK    ############ #
     re_path(r'^api/v1/audio/list',
             ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),

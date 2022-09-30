@@ -1,26 +1,26 @@
 <template>
   <div class="card">
     <h1>{{ $t("globals.campaign_info", { name: campaign["nombre"] }) }}</h1>
-    <div class="p-fluid p-formgrid p-grid">
-      <div class="p-field p-sm-12 p-md-6 p-lg-6 p-xl-6">
+    <div class="formgrid grid">
+      <div class="field col-6">
         <h2>{{ $tc("globals.agent", 2) }}</h2>
         <AddAgents />
       </div>
-      <div class="p-sm-12 p-md-6 p-lg-6 p-xl-6">
+      <div class="field col-6">
         <h2>{{ $tc("globals.group", 2) }}</h2>
         <AddGroupAgents />
       </div>
     </div>
     <hr />
-    <div class="p-grid p-mt-5">
-      <div class="p-sm-12 p-md-12 p-lg-12 p-xl-12">
-        <div class="p-d-flex p-jc-between p-ai-center">
-          <div>
+    <div class="grid mt-5">
+      <div class="field col-12">
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
             <h2>{{ $t("views.add_agents_to_campaign.agents_campaign") }}</h2>
           </div>
-          <div class="p-grid">
+          <div class="flex align-items-center justify-content-center">
             <Button
-              class="p-mr-2 p-button-info p-button-rounded"
+              class="mr-2 p-button-info p-button-rounded"
               icon="pi pi-info-circle"
               v-tooltip.left="
                 $t('views.add_agents_to_campaign.how_to_edit_penalty')
@@ -29,7 +29,7 @@
             <Button
               type="button"
               :label="$t('globals.save')"
-              class="p-mr-2 p-button"
+              class="mr-2 p-button"
               :disabled="btnStatusSave"
               icon="pi pi-save"
               @click="updateAgents()"
@@ -47,7 +47,7 @@ import { mapActions, mapState } from 'vuex';
 import AddAgents from '@/components/campaigns/agents/AddAgents.vue';
 import AddGroupAgents from '@/components/campaigns/agents/AddGroupAgents.vue';
 import AgentsCampaignTable from '@/components/campaigns/agents/AgentsCampaignTable.vue';
-import AgentsCampaignService from '@/services/agentsCampaignService';
+import AgentsCampaignService from '@/services/agents_campaign_service';
 
 export default {
     name: 'AddAgentsToCampaign',
@@ -103,10 +103,11 @@ export default {
                                 this.$swal.showLoading();
                             }
                         });
-                        const { status, ok } = await this.agentsCampaignService.updateAgentsByCampaign({
-                            campaign_id: this.campaignId,
-                            agents
-                        });
+                        const { status, ok } =
+              await this.agentsCampaignService.updateAgentsByCampaign({
+                  campaign_id: this.campaignId,
+                  agents
+              });
                         this.$swal.close();
                         if (status === 200 && ok === true) {
                             await this.initAgentsCampaign(this.campaignId);
@@ -152,10 +153,11 @@ export default {
                         this.$swal.showLoading();
                     }
                 });
-                const { status, ok } = await this.agentsCampaignService.updateAgentsByCampaign({
-                    campaign_id: this.campaignId,
-                    agents
-                });
+                const { status, ok } =
+          await this.agentsCampaignService.updateAgentsByCampaign({
+              campaign_id: this.campaignId,
+              agents
+          });
                 this.$swal.close();
                 if (status === 200 && ok === true) {
                     await this.initAgentsCampaign(this.campaignId);

@@ -1,6 +1,6 @@
 # DevEnv. Omnileads Docker environment for developers
 
-This environment can be deployed in any linux distro. Linux distro tested by our team is Ubuntu 18.04.
+This environment can be deployed in any linux distro. Linux distro tested by our team is Ubuntu 20.04.
 
 ## Prerequisites
 
@@ -8,6 +8,7 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 2. Install docker-compose
     As docker CE follow the installation steps: https://docs.docker.com/compose/install/
 3. Follow docker post-installations steps: https://docs.docker.com/install/linux/linux-postinstall/
+4. Install MinIO command line client: https://docs.min.io/minio/baremetal/reference/minio-mc.html 
 
 ## Deploy of stack
 
@@ -15,8 +16,6 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 ```sh
   $ cp .env.template .env
 ```
-
-**Note:** Check your workstation IPADDR and change with it the *DOCKER_IP* parameter of the .env file. 
 
 2. Run the get_modules.sh script in order to downloads all componentes repositories
 ```sh
@@ -32,14 +31,25 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 This will take some time while it download the docker images. Once finished you can use **docker ps** to see that you have 10 containers up and running.
 
 ## Setting minIO user, pass and Bucket for DevEnv
-**http://YOUR_HOSTNAME:9001**
 
-You can access to admin interface with:
+1. Use the mc alias set command to add an Amazon S3-compatible service to the mc configuration.
 
-*admin*
-*admin123*
+```
+mc alias set MINIO http://localhost:9000 minio s3minio123
+```
 
-You must to create a user with *readwrite* permission and then create a bucket.
+2. Create bucket
+
+```
+mc mb MINIO/S3_BUCKET_NAME
+```
+
+3. Add KEY_ID & SECRET_KEY in order to interact from APP
+
+```
+mc admin user add MINIO AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+mc admin policy set MINIO readwrite user=AWS_ACCESS_KEY_ID
+```
 
 the username, password and bucket name must be similar than .env file AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & S3_BUCKET_NAME.
 
@@ -54,9 +64,10 @@ This will set the admin password to default value: 'admin'. So you can login usi
 
 ## Initializing environment
 
-You can also use the command inicializar_entorno to have some data written in your environment.
+You can also use the command inicializar_entorno to have some data written in your environment and 
+set a VoIP SIP Trunk in order to emulate telephone conectivity with PSTN.
 
-```sh
+```
   $ docker exec -it omlapp python3 manage.py inicializar_entorno
 ```
 You will have a SIP trunk with the pstn-emulator and an agent with this credentials:
@@ -113,13 +124,14 @@ From **docker ps** command you can take the container name that is assigned for 
 * To clean the database, do this after turning down the environment:
 ```sh
   $ docker volume rm devenv_postgresql_data
+  $ docker volume rm devenv_redis_data
 ```
 
 ## Adding a package to project requirements
 
 1. Add package to requirements.txt file
 2. Go to omlappbuilder container and install the requirements packages:
-```sh
+```
   $ docker exec -it omlappbuilder sh
   $ pip3 install -r requirements.txt
 ```  
@@ -138,7 +150,7 @@ Adittionally with omnileads container is the pbx-emulator, this an emulation of 
   - Any number dialed finished with 0: PSTN is going to send you a BUSY signal
   - Any number dialed finished with 1: PSTN is going to answer your call and playback audios
   - Any number dialed finished with 2: PSTN will anwer your call, play short audio then hangup. This will emulate a calle hangup
-  -  Any number dialed finished with 3: PSTN will answer your call after 35 seconds
+  - Any number dialed finished with 3: PSTN will answer your call after 35 seconds
   - Any number dialed finished with 5: PSTN will make you wait 120 seconds and then hangup. This will emulate a NO_ANSWER
   - Any number dialed finished with 9: PSTN will simulate a congestion
 
@@ -146,13 +158,13 @@ Adittionally with omnileads container is the pbx-emulator, this an emulation of 
 
 You can simulate inbound calls:
 
-A) Registering an extension from the pbx-emulator. You can use the softphone you want. This are the extensions credentials:
+A) Registering an SIP telephone on the omlpbxemulator container. You can use the softphone you want. This are the extensions credentials:
 
-  username: 01155001122
-  secret: OMLtraining72
+  username: 1234567
+  secret: omnileads
   domain: YOUR_HOSTNAME
 
-(Change "YOUR_HOSTNAME" with the hostname or your machine)
+(Change "YOUR_HOSTNAME" with the hostname or localhost)
 
 B) With sipp utility, this option permit to execute many inbound calls from pbx-emulator to OMniLeads. Here we can to perform a stress test also:
 
@@ -172,3 +184,22 @@ You can call this numbers for receiving the call to a Omnileads inbound campaign
   0117766002[1-9] => you will receive the call with the word “unknown” as CID
 
 Also you will have these two numbers to call from Omnileads to your softphone: 01155001122, 01155001133
+
+
+## Deploy High Availability 
+
+You can also use the *docker-compose-ha.yml* to raise up an High Availability environment with redis sentinel & haproxy. 
+
+You must to change only three vars in the .env file:
+
+1. WEBSOCKET_REDIS_HOSTNAME=redis+sentinel://master/sentinel_01,sentinel_02,sentinel_03
+2. OMNILEADS_HOSTNAME=app_lb
+3. REDIS_HOSTNAME=redis_lb
+
+Then just run (in the devenv path):
+
+```
+docker-compose down
+docker volume rm devenv_redis_data
+docker-compose -f docker-compose-ha.yml up -d
+```

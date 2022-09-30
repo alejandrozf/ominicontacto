@@ -21,6 +21,7 @@ import logging
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 
 from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion, QueueMember
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
@@ -38,7 +39,6 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk)
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from configuracion_telefonia_app.views.base import escribir_ruta_entrante_config
 
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
@@ -134,13 +134,13 @@ class Command(BaseCommand):
             retry=3,
             wrapuptime=5,
             servicelevel=30,
-            strategy='ringall',
+            strategy='rrmemory',
             eventmemberstatus=True,
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=120,
+            wait=60,
             auto_grabacion=True,
         )
 
@@ -152,7 +152,7 @@ class Command(BaseCommand):
         destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             campana_entrante)
         ruta_entrante = RutaEntranteFactory(
-            telefono='01177660011', destino=destino_campana_entrante, prefijo_caller_id='')
+            telefono='01177660010', destino=destino_campana_entrante, prefijo_caller_id='')
         escribir_ruta_entrante_config(self, ruta_entrante)
 
     def _crear_datos_entorno(self):
@@ -218,10 +218,10 @@ class Command(BaseCommand):
                        "endpoint/context=from-pstn\n"
                        "remote_hosts=pbxemulator:5060\n"
                        "outbound_auth/username=01177660010\n"
-                       "outbound_auth/password=OMLtraining72\n")
+                       "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,
-            caller_id='')
+            caller_id='01177660010')
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)
         ruta_saliente = RutaSalienteFactory(ring_time=25, dial_options="Tt")

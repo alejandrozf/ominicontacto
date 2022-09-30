@@ -1,0 +1,17 @@
+{% extends "message/emsg/_base.text.j2" %}
+
+{% block content %}
+{{ _("Estimado") }} {{ user.name or user.username }},
+
+{{ _("Se ha creado exitosamente su cuenta:") }}
+
+- {{ _("Nombre de usuario") }}: {{ user.username }}
+- {{ _("Contraseña") }}: {{ user.password }}
+- {{ _("URL de Acceso") }}: {{ urls["login"] }}
+
+{{ _("Durante el ingreso, se le pedirá que setee su contraseña nuevamente.") }}
+{% endblock %}
+
+{% block signature %}
+{{ _("Cualquier duda, contáctese con su Administrador") }}
+{% endblock %}

@@ -489,7 +489,8 @@ class CalificacionTests(OMLBaseTest):
                                                   self.campana,
                                                   self.contacto,
                                                   call_data)
-        request_get.assert_called_with(sitio_externo.url, params=parametros)
+        request_get.assert_called_with(
+            sitio_externo.url, headers={}, params=parametros, verify=True)
 
     def test_se_muestra_historico_calificaciones_contacto_llamada_entrante(self):
         self.campana.type = Campana.TYPE_ENTRANTE

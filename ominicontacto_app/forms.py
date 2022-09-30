@@ -40,15 +40,15 @@ from constance import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, ContactoBlacklist,
-    Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
+    Campana, Contacto, CalificacionCliente, Grupo, FieldFormulario,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
-    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm,
     AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
+                                      validar_solo_ascii_y_sin_espacios,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from ominicontacto_app.parser import is_valid_length
@@ -103,6 +103,13 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['rol'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].queryset = roles_queryset
 
+    def clean(self):
+        cleaned_data = super().clean()
+        rol = cleaned_data.get('rol')
+        if rol and rol.name == User.AGENTE and not cleaned_data.get('email'):
+            self.add_error("email", _("Este campo es requerido para un usuario de tipo Agente."))
+        return cleaned_data
+
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -126,6 +133,11 @@ class UserChangeForm(forms.ModelForm):
         help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
         widget=forms.PasswordInput(),
         label=_('Contraseña (otra vez)'))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if kwargs["instance"].is_agente:
+            self.fields["email"].required = True
 
     def clean(self):
         cleaned_data = super(UserChangeForm, self).clean()
@@ -602,6 +614,9 @@ class GrabacionBusquedaForm(forms.Form):
                                              choices=([(10, 10), (25, 25), (50, 50), (100, 100)]),
                                              label=_('Grabaciones por página'),
                                              widget=forms.Select(attrs={'class': 'form-control'}),)
+    calificacion = forms.ChoiceField(required=False, label=_('Calificación'),
+                                     widget=forms.Select(attrs={'class': 'form-control'}),
+                                     choices=())
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
@@ -611,6 +626,12 @@ class GrabacionBusquedaForm(forms.Form):
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
 
+        calificaciones = OpcionCalificacion.objects.distinct(
+            'nombre').values_list('nombre', flat=True)
+        calificaciones_choices = [(opt, opt) for opt in calificaciones]
+        calificaciones_choices.insert(0, EMPTY_CHOICE)
+        self.fields['calificacion'].choices = calificaciones_choices
+
 
 class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
@@ -618,7 +639,7 @@ class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
 
     field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
                    'agente', 'campana', 'pagina', 'id_contacto_externo', 'duracion',
-                   'marcadas', 'gestion', 'grabaciones_x_pagina']
+                   'marcadas', 'gestion', 'grabaciones_x_pagina', 'calificacion']
 
 
 class AuditoriaBusquedaForm(forms.Form):
@@ -1059,70 +1080,6 @@ class ReporteForm(forms.Form):
         choices=((TODOS_RESULTADOS, _('Todas')), ) + AuditoriaCalificacion.RESULTADO_CHOICES)
 
 
-class FormularioForm(forms.ModelForm):
-
-    class Meta:
-        model = Formulario
-        fields = ('nombre', 'descripcion')
-        widgets = {
-            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
-            "descripcion": forms.Textarea(attrs={'class': 'form-control'}),
-        }
-
-
-class FieldFormularioForm(forms.ModelForm):
-    list_values = forms.MultipleChoiceField(widget=forms.SelectMultiple(
-        attrs={'class': 'form-control', 'style': 'width:100%;',
-               'disabled': 'disabled'}), required=False)
-    value_item = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'disabled': 'disabled',
-               'placeholder': 'agregar item a la lista'}), required=False)
-
-    class Meta:
-        model = FieldFormulario
-        fields = ('formulario', 'nombre_campo', 'tipo', 'values_select',
-                  'is_required')
-        widgets = {
-            'formulario': forms.HiddenInput(),
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
-            "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
-            'values_select': forms.HiddenInput(),
-        }
-
-    def clean_nombre_campo(self):
-        formulario = self.cleaned_data.get('formulario')
-        nombre_campo = self.cleaned_data.get('nombre_campo')
-        nombre_campo = remplace_espacio_por_guion(nombre_campo)
-        if formulario.campos.filter(nombre_campo=nombre_campo).exists():
-            raise forms.ValidationError(_('No se puede crear un campo ya existente'))
-        return nombre_campo
-
-    def clean_values_select(self):
-        tipo = self.cleaned_data.get('tipo')
-        if not tipo == FieldFormulario.TIPO_LISTA:
-            return None
-        values_select = self.cleaned_data.get('values_select')
-        if values_select == '':
-            raise forms.ValidationError(_('La lista no puede estar vacía'))
-        try:
-            lista_values_select = json.loads(values_select)
-        except ValueError:
-            raise forms.ValidationError(_('Formato inválido'))
-        if type(lista_values_select) is not list:
-            raise forms.ValidationError(_('Formato inválido'))
-        if len(lista_values_select) == 0:
-            raise forms.ValidationError(_('La lista no puede estar vacía'))
-        return values_select
-
-
-class OrdenCamposForm(forms.Form):
-    sentido_orden = forms.CharField()
-
-    def __init__(self, *args, **kwargs):
-        super(OrdenCamposForm, self).__init__(*args, **kwargs)
-        self.fields['sentido_orden'].widget = forms.HiddenInput()
-
-
 class FormularioCRMForm(forms.Form):
 
     def __init__(self, campos, *args, **kwargs):
@@ -1411,21 +1368,6 @@ class UpdateBaseDatosForm(forms.ModelForm):
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
         }
-
-
-class PausaForm(forms.ModelForm):
-
-    class Meta:
-        model = Pausa
-        fields = ('nombre', 'tipo')
-        widgets = {
-            'tipo': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data['nombre']
-        validar_nombres_campanas(nombre)
-        return nombre
 
 
 FormularioCalificacionFormSet = inlineformset_factory(
@@ -2133,10 +2075,6 @@ ParametrosCrmFormSet = inlineformset_factory(
 QueueMemberFormset = inlineformset_factory(
     Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
     can_delete=True, min_num=0)
-
-AgenteEnSistemaExternoFormset = inlineformset_factory(
-    SistemaExterno, AgenteEnSistemaExterno, fields=('agente', 'id_externo_agente'),
-    extra=1, can_delete=True, min_num=0)
 
 
 class RegistroForm(forms.Form):

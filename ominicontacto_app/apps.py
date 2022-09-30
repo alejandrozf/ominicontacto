@@ -211,22 +211,10 @@ class OminicontactoAppConfig(AppConfig):
                 'url': reverse('calificacion_list')
             })
         #  Formularios
-        formularios = []
-        if 'formulario_nuevo' in permissions:
-            formularios.append({
-                'label': _('Nuevo formulario'),
-                'url': reverse('formulario_nuevo')
-            })
         if 'formulario_list' in permissions:
-            formularios.append({
-                'label': _('Listado de formularios'),
-                'url': reverse('formulario_list')
-            })
-        if formularios:
             campanas.append({
                 'label': _('Formularios'),
-                'id': 'menuForms',
-                'children': formularios
+                'url': reverse('formulario_list')
             })
         #  Sitios Externos
         if 'sitio_externo_list' in permissions:
@@ -234,25 +222,18 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Sitios Externos'),
                 'url': reverse('sitio_externo_list')
             })
-        #  Sistemas EXternos
-        sistemas_externos = []
-        if 'sistema_externo_create' in permissions:
-            sistemas_externos.append({
-                'label': _('Nuevo sistema'),
-                'url': reverse('sistema_externo_create')
+        #  Autenticacion Sitios Externos
+        if 'sitio_externo_autenticacion_list' in permissions:
+            campanas.append({
+                'label': _('Autenticación Sitios Externos'),
+                'url': reverse('sitio_externo_autenticacion_list')
             })
+        #  Sistemas Externos
         if 'sistema_externo_list' in permissions:
-            sistemas_externos.append({
-                'label': _('Listado de sistemas'),
-                'url': reverse('sistema_externo_list')
-            })
-        if sistemas_externos:
             campanas.append({
                 'label': _('Sistemas Externos'),
-                'id': 'menuSystems',
-                'children': sistemas_externos
+                'url': reverse('sistema_externo_list')
             })
-
         if campanas:
             items.append({'order': 200,
                           'label': _('Campañas'),
@@ -266,11 +247,6 @@ class OminicontactoAppConfig(AppConfig):
             pausas.append({
                 'label': _('Listado de pausas'),
                 'url': reverse('pausa_list')
-            })
-        if 'pausa_nuevo' in permissions:
-            pausas.append({
-                'label': _('Nueva pausa'),
-                'url': reverse('pausa_nuevo')
             })
         if 'conjuntos_de_pausas_list' in permissions:
             pausas.append({
@@ -410,12 +386,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'pausa_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_update',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'pausa_delete',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'grabacion_marcar',
              'roles': ['Agente', ]},
             {'nombre': 'grabacion_descripcion',
@@ -508,23 +478,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_list_mostrar_ocultos',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_field',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'campo_formulario_orden',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_field_delete',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'formulario_vista_previa',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_eliminar',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_mostrar_ocultar',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'formulario_vista',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'calificar_llamada',
              'roles': ['Agente', ]},
@@ -674,11 +628,9 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'sistema_externo_list',
              'roles': ['Administrador', ]},
-            {'nombre': 'sistema_externo_create',
-             'roles': ['Administrador', ]},
-            {'nombre': 'modificar_sistema_externo',
-             'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_list',
+             'roles': ['Administrador', ]},
+            {'nombre': 'sitio_externo_autenticacion_list',
              'roles': ['Administrador', ]},
             {'nombre': 'queue_member_add',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -810,12 +762,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Detalle del Grupo'), 'version': '1.7.0'},
         'pausa_list':
             {'descripcion': _('Ver lista de Pausas'), 'version': '1.7.0'},
-        'pausa_nuevo':
-            {'descripcion': _('Crear Pausa'), 'version': '1.7.0'},
-        'pausa_update':
-            {'descripcion': _('Modificar Pausa'), 'version': '1.7.0'},
-        'pausa_delete':
-            {'descripcion': _('Borrar Pausa'), 'version': '1.7.0'},
         'grabacion_marcar':
             {'descripcion': _('Marcar la grabación en curso.'), 'version': '1.7.0'},
         'grabacion_descripcion':
@@ -933,25 +879,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.7.0'},
         'formulario_list':
             {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.7.0'},
-        'formulario_list_mostrar_ocultos':
-            {'descripcion': _('Mostrar Formularios de gestión ocultos'), 'version': '1.7.0'},
-        'formulario_nuevo':
-            {'descripcion': _('Crear nuevo Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_field':
-            {'descripcion': _('Crear un campo para un formulario de gestión'), 'version': '1.7.0'},
-        'campo_formulario_orden':
-            {'descripcion': _('Modificar el orden de los campos de un formulario de gestión'),
-             'version': '1.7.0'},
-        'formulario_field_delete':
-            {'descripcion': _('Borrar un campo de un formulario de gestión'), 'version': '1.7.0'},
         'formulario_vista_previa':
             {'descripcion': _('Vista previa de un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_eliminar':
-            {'descripcion': _('Eliminar un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_mostrar_ocultar':
-            {'descripcion': _('Mostrar u ocultar un Formulario de gestión'), 'version': '1.7.0'},
-        'formulario_vista':
-            {'descripcion': _('Ver Formulario de gestión'), 'version': '1.7.0'},
         'calificar_llamada':
             {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'calificar_llamada_con_contacto':
@@ -1117,12 +1046,10 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Agregar contacto a lista de Blacklists'), 'version': '1.7.0'},
         'sistema_externo_list':
             {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},
-        'sistema_externo_create':
-            {'descripcion': _('Crear un Sistema Externo'), 'version': '1.7.0'},
-        'modificar_sistema_externo':
-            {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.7.0'},
         'sitio_externo_list':
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
+        'sitio_externo_autenticacion_list':
+            {'descripcion': _('Lista Autenticaciones de Sitios Externos'), 'version': '1.23.0'},
         'queue_member_add':
             {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
         'queue_member_grupo_agente':

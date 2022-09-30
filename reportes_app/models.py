@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
     datetime_hora_minima_dia, fecha_local
 import urllib.parse
@@ -31,7 +31,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \
-    GrabacionMarca
+    GrabacionMarca, HistoricalCalificacionCliente
 
 
 class QueueLog(models.Model):
@@ -207,7 +207,7 @@ class LlamadaLogManager(models.Manager):
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
-                                      marcadas, duracion, gestion):
+                                      marcadas, duracion, gestion, calificaciones):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
                            'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
@@ -221,6 +221,10 @@ class LlamadaLogManager(models.Manager):
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
+        if calificaciones:
+            call_ids = HistoricalCalificacionCliente.objects.filter(
+                opcion_calificacion_id__in=calificaciones).values_list('callid', flat=True)
+            grabaciones = grabaciones.filter(callid__in=call_ids)
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
@@ -441,10 +445,18 @@ class LlamadaLog(models.Model):
                                                        self.agente_id, self.event,
                                                        self.duracion_llamada)
 
+    def delta_inicio(self):
+        delta = 0
+        if self.duracion_llamada > 0:
+            delta += self.duracion_llamada
+        if self.bridge_wait_time > 0:
+            delta += self.bridge_wait_time
+        return delta
+
     @property
     def url_archivo_grabacion(self):
         hoy = fecha_local(now())
-        dia_grabacion = fecha_local(self.time)
+        dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              self.archivo_grabacion])
@@ -457,7 +469,7 @@ class LlamadaLog(models.Model):
     def url_archivo_grabacion_url_encoded(self):
         # TODO: Refactorizar junto con url_archivo_grabacion para eliminar duplicidad de código
         hoy = fecha_local(now())
-        dia_grabacion = fecha_local(self.time)
+        dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              urllib.parse.quote(self.archivo_grabacion)])

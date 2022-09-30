@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'The campaign will run out of agents',
         how_to_edit_penalty: 'To modify the penalty select the column',
         agents_campaign: 'Campaign agents',
-        agents_not_save: 'Agents not saved',
-        how_to_update: 'Click the "Save" button to persist the changes'
+        agents_not_save: 'Agents not saved'
     },
     pause_sets: {
         title: 'Pause sets',
@@ -37,9 +36,44 @@ export default {
         hide: 'Hide',
         show: 'Unhide'
     },
+    external_site_authentication: {
+        list_title: 'External site authentications',
+        edit_title: 'Edit external site authentication',
+        new_title: 'New external site authentication'
+    },
     call_dispositions: {
         list_title: 'Call Dispositions',
         edit_title: 'Edit Call Disposition',
         new_title: 'New Call Disposition'
+    },
+    external_system: {
+        new_agent_on_system: 'New agent in system',
+        edit_agent_on_system: 'Edit agent in system'
+    },
+    form: {
+        step1: {
+            title: 'Form data'
+        },
+        step2: {
+            title: 'Form fields'
+        },
+        step3: {
+            title: 'Preview',
+            display_name: 'Name:',
+            display_description: 'Description:'
+        }
+    },
+    outbound_route: {
+        detail_title: 'Outbound route information',
+        new_title: 'New Outbound route',
+        edit_title: 'Edit Outbound route'
+    },
+    dial_pattern: {
+        new_title: 'New dial pattern',
+        edit_title: 'Edit dial pattern'
+    },
+    trunk: {
+        new_title: 'New trunk',
+        edit_title: 'Edit trunk'
     }
 };

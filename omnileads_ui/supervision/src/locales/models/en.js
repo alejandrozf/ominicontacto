@@ -34,8 +34,79 @@ export default {
         trigger: 'Trigger',
         status: 'Status'
     },
+    external_site_authentication: {
+        id: 'ID',
+        name: 'Name',
+        url: 'Url',
+        username: 'Username',
+        password: 'Password',
+        campo_token: 'Token field',
+        duracion: 'Duration',
+        campo_duracion: 'Duration field',
+        token: 'Token',
+        expiracion_token: 'Token expiration'
+    },
     call_disposition: {
         id: 'ID',
         name: 'Name'
+    },
+    external_system: {
+        id: 'ID',
+        name: 'Name',
+        agents: 'Agents'
+    },
+    agent_external_system: {
+        id: 'ID',
+        external_id: 'Id Externo Agente',
+        agent: 'Agent'
+    },
+    form: {
+        id: 'ID',
+        name: 'Name',
+        description: 'Description',
+        fields: 'Fields',
+        status: 'Status'
+    },
+    form_field: {
+        id: 'ID',
+        name: 'Name',
+        order: 'Order',
+        type: 'Type',
+        required: 'Required?',
+        list_options: 'List options'
+    },
+    pause: {
+        id: 'ID',
+        name: 'Name',
+        type: 'Type',
+        status: 'Active'
+    },
+    inbound_route: {
+        id: 'ID',
+        name: 'Name',
+        phone: 'Number DID',
+        caller_id: 'Caller Id',
+        idiom: 'Idiom',
+        destiny: 'Destiny',
+        destiny_type: 'Destiny type'
+    },
+    outbound_route: {
+        id: 'ID',
+        name: 'Name',
+        ring_time: 'Ring time',
+        dial_options: 'Dial options',
+        order: 'Order'
+    },
+    dial_pattern: {
+        id: 'ID',
+        prepend: 'Prepend',
+        prefix: 'Prefix',
+        pattern: 'Pattern',
+        order: 'Order'
+    },
+    trunk: {
+        id: 'ID',
+        name: 'Name',
+        order: 'Order'
     }
 };

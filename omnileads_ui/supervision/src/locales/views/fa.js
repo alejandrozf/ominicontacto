@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'کارگزاران کمپین تمام خواهد شد',
         how_to_edit_penalty: 'برای تغییر مجازات، ستون را انتخاب کنید',
         agents_campaign: 'عوامل کمپین',
-        agents_not_save: 'عوامل ذخیره نشدند',
-        how_to_update: 'برای تداوم تغییرات روی دکمه "ذخیره" کلیک کنید'
+        agents_not_save: 'عوامل ذخیره نشدند'
     },
     pause_sets: {
         title: 'مجموعه های مکث',
@@ -37,9 +36,44 @@ export default {
         hide: 'مبدل کردن',
         show: 'پنهان کردن'
     },
+    external_site_authentication: {
+        list_title: 'احراز هویت برای سایت های خارجی',
+        edit_title: 'ویرایش احراز هویت برای سایت خارجی',
+        new_title: 'احراز هویت جدید برای سایت خارجی'
+    },
     call_dispositions: {
         list_title: 'رتبه بندی ها',
         edit_title: 'امتیاز را ویرایش کنید',
         new_title: 'رتبه بندی جدید'
+    },
+    external_system: {
+        new_agent_on_system: 'عامل جدید در سیستم',
+        edit_agent_on_system: 'ویرایش عامل در سیستم'
+    },
+    form: {
+        step1: {
+            title: 'داده های فرم'
+        },
+        step2: {
+            title: 'فیلدهای فرم'
+        },
+        step3: {
+            title: 'پیش نمایش',
+            display_name: 'نام:',
+            display_description: 'شرح:'
+        }
+    },
+    outbound_route: {
+        detail_title: 'اطلاعات مسیر خروجی',
+        new_title: 'مسیر خروجی جدید',
+        edit_title: 'ویرایش مسیر خروجی'
+    },
+    dial_pattern: {
+        new_title: 'الگوی شماره گیری جدید',
+        edit_title: 'ویرایش الگوی شماره گیری'
+    },
+    trunk: {
+        new_title: 'صندوق عقب جدید',
+        edit_title: 'تنه را ویرایش کنید'
     }
 };

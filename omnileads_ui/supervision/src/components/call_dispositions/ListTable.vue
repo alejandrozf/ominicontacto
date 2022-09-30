@@ -23,15 +23,17 @@
       :globalFilterFields="['nombre']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter()"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter()"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
               <InputText
@@ -52,17 +54,21 @@
         :sortable="true"
         :header="$t('models.call_disposition.name')"
       ></Column>
-      <Column :header="$tc('globals.option', 2)" style="max-width: 20rem" :exportable="false">
+      <Column
+        :header="$tc('globals.option', 2)"
+        style="max-width: 20rem"
+        :exportable="false"
+      >
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"
-            class="p-button-warning p-ml-2"
+            class="p-button-warning ml-2"
             @click="edit(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
             icon="pi pi-trash"
-            class="p-button-danger p-ml-2"
+            class="p-button-danger ml-2"
             @click="remove(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
           />
@@ -102,9 +108,11 @@ export default {
             };
         },
         edit (callDisposition) {
-            this.$emit(
-                'handleModalEvent',
-                { showModal: true, toCreate: false, callDisposition });
+            this.$emit('handleModalEvent', {
+                showModal: true,
+                toCreate: false,
+                callDisposition
+            });
         },
         async remove (id) {
             this.$swal({
@@ -113,6 +121,8 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: this.$t('globals.yes'),
                 cancelButtonText: this.$t('globals.no'),
+                confirmButtonColor: '#4CAF50',
+                cancelButtonColor: '#D32F2F',
                 backdrop: false,
                 reverseButtons: true
             }).then(async (result) => {
@@ -162,10 +172,7 @@ export default {
                 }
             });
         },
-        ...mapActions([
-            'deleteCallDisposition',
-            'initCallDispositions'
-        ])
+        ...mapActions(['deleteCallDisposition', 'initCallDispositions'])
     },
     watch: {
         callDispositions: {

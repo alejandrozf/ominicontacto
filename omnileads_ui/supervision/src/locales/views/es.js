@@ -10,8 +10,7 @@ export default {
         empty_campaign_notice: 'La campaña se quedará sin agentes',
         how_to_edit_penalty: 'Para modificar el penalty selecciona la columna',
         agents_campaign: 'Agentes de campaña',
-        agents_not_save: 'No se guardaron los agentes',
-        how_to_update: 'Haga click en el boton "Guardar" para persistir los cambios'
+        agents_not_save: 'No se guardaron los agentes'
     },
     pause_sets: {
         title: 'Conjuntos de pausas',
@@ -37,9 +36,44 @@ export default {
         hide: 'Ocultar',
         show: 'Desocultar'
     },
+    external_site_authentication: {
+        list_title: 'Autenticaciones para sitios externos',
+        edit_title: 'Editar autenticacion para sitio externo',
+        new_title: 'Nueva autenticacion para sitio externo'
+    },
     call_dispositions: {
         list_title: 'Calificaciones',
         edit_title: 'Edita la calificacion',
         new_title: 'Nueva calificacion'
+    },
+    external_system: {
+        new_agent_on_system: 'Nuevo agente en sistema',
+        edit_agent_on_system: 'Edita agente en sistema'
+    },
+    form: {
+        step1: {
+            title: 'Datos del Formulario'
+        },
+        step2: {
+            title: 'Campos del Formulario'
+        },
+        step3: {
+            title: 'Vista previa',
+            display_name: 'Nombre:',
+            display_description: 'Descripcion:'
+        }
+    },
+    outbound_route: {
+        detail_title: 'Informacion de la ruta saliente',
+        new_title: 'Nueva ruta saliente',
+        edit_title: 'Edita la ruta saliente'
+    },
+    dial_pattern: {
+        new_title: 'Nuevo patron de discado',
+        edit_title: 'Edita patron de discado'
+    },
+    trunk: {
+        new_title: 'Nueva troncal',
+        edit_title: 'Edita troncal'
     }
 };

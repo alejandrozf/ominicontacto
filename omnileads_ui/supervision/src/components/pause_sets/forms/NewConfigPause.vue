@@ -6,8 +6,8 @@
     :closable="false"
     :header="title"
   >
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-12">
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <div class="field-checkbox">
           <label>{{ $t("forms.pause_setting.infinite_time") }} </label>
           <Checkbox
@@ -19,14 +19,14 @@
         <small>{{ $t("views.pause_setting.min_time_allowed") }}</small>
       </div>
     </div>
-    <div class="p-fluid p-grid p-formgrid p-mt-6">
-      <div class="field p-col-4">
+    <div class="grid formgrid mt-6">
+      <div class="field col-4">
         <label for="grupo_pausa_type">{{
           $t("globals.type_of", { type: $t("globals.pause") })
         }}</label>
         <Dropdown
           id="grupo_pausa_type"
-          class="p-mt-2"
+          class="w-full mt-2"
           v-model="pausesTypeSelected"
           @change="changePauseType"
           :options="pausesType"
@@ -35,11 +35,11 @@
           :placeholder="$t('globals.filter_by_type', { type: 'tipo' })"
         />
       </div>
-      <div class="field p-col-4">
+      <div class="field col-4">
         <label for="grupo_pausa">{{ $t("globals.pause") }}</label>
         <Dropdown
           id="grupo_pausa"
-          class="p-mt-2"
+          class="w-full mt-2"
           v-model="newPauseConfig.pauseId"
           :options="pauses"
           optionLabel="nombre"
@@ -50,16 +50,17 @@
           "
         />
       </div>
-      <div class="field p-col-4">
+      <div class="field col-4">
         <label for="pause_time_to_end">{{
           $t("models.pause_setting.time_to_end_pause")
         }}</label>
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-clock"></i>
           </span>
           <InputNumber
             id="pause_time_to_end"
+            class="w-full"
             v-model="newPauseConfig.timeToEndPause"
             @input="inputWatcher"
             :min="0"
@@ -134,6 +135,11 @@ export default {
     },
     methods: {
         cleanNewPauseConfig () {
+            this.btnEditStatus = true;
+            this.maxTimeAllowed = false;
+            this.minTimeAllowed = false;
+            this.infinitePause = false;
+            this.pausesTypeSelected = 1;
             this.disableTime = false;
             this.newPauseConfig = {
                 pauseId: 0,
@@ -143,7 +149,7 @@ export default {
             };
             const value = this.newPauseConfig.timeToEndPause;
             this.limitNotifications(value);
-            this.infinitePause = (value === 0 || value === null);
+            this.infinitePause = value === 0 || value === null;
         },
         openModal () {
             this.cleanNewPauseConfig();
@@ -174,7 +180,7 @@ export default {
         },
         inputWatcher ({ value }) {
             this.limitNotifications(value);
-            this.infinitePause = (value === 0 || value === null);
+            this.infinitePause = value === 0 || value === null;
         },
         limitNotifications (value) {
             if (value >= 28800) {

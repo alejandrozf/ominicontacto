@@ -1,7 +1,7 @@
 <template>
   <div class="card">
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="grid formgrid mt-4">
+      <div class="field col-6">
         <label
           id="external_site_name"
           :class="{
@@ -9,7 +9,7 @@
           }"
           >{{ $t("models.external_site.name") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
@@ -35,13 +35,13 @@
           }}</small
         >
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label
           id="external_site_url"
           :class="{ 'p-error': v$.externalSiteForm.url.$invalid && submitted }"
           >{{ $t("models.external_site.url") }}*</label
         >
-        <div class="p-inputgroup p-mt-2">
+        <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-link"></i>
           </span>
@@ -60,20 +60,26 @@
           "
           class="p-error"
         >
-          {{
-            v$.externalSiteForm.url.required.$message.replace(
-              "Value",
-              $t("models.external_site.url")
-            )
-          }}
+          <span
+            v-for="error of v$.externalSiteForm.url.$errors"
+            :key="error.$uid"
+          >
+            {{
+              error.$message.replace(
+                "Value",
+                $t("models.external_site.url")
+              )
+            }}
+          </span>
         </small>
       </div>
     </div>
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="grid formgrid mt-4">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.trigger") }}</label>
         <Dropdown
           v-model="externalSiteForm.disparador"
+          class="w-full"
           :options="triggers"
           placeholder="Servidor"
           optionLabel="name"
@@ -86,10 +92,11 @@
           "
         />
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.method") }}</label>
         <Dropdown
           v-model="externalSiteForm.metodo"
+          class="w-full"
           :options="methods"
           optionLabel="name"
           placeholder="GET"
@@ -103,11 +110,12 @@
         />
       </div>
     </div>
-    <div class="p-fluid p-grid p-formgrid p-mt-4">
-      <div class="field p-col-6">
+    <div class="fluid grid formgrid mt-4">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.format") }}</label>
         <Dropdown
           v-model="externalSiteForm.formato"
+          class="w-full"
           :options="formats"
           optionLabel="name"
           optionValue="value"
@@ -124,10 +132,11 @@
           Si el metodo es POST debe elegirse un formato valido
         </small>
       </div>
-      <div class="field p-col-6">
+      <div class="field col-6">
         <label>{{ $t("models.external_site.objective") }}</label>
         <Dropdown
           v-model="externalSiteForm.objetivo"
+          class="w-full"
           :options="objectives"
           optionLabel="name"
           optionValue="value"
@@ -142,12 +151,30 @@
         />
       </div>
     </div>
-    <div class="p-flex p-flex-row-reverse p-flex-wrap">
-      <div class="p-flex p-align-items-center">
+    <div class="fluid grid formgrid mt-4">
+      <div class="field col-6">
+        <label>{{ $t("globals.external_site_authentication") }}</label>
+        <Dropdown
+          v-model="externalSiteForm.autenticacion"
+          class="w-full"
+          :options="externalSiteAuthentications"
+          optionLabel="nombre"
+          optionValue="id"
+          placeholder="-------"
+          :emptyFilterMessage="$t('globals.without_data')"
+          :filter="true"
+          v-bind:filterPlaceholder="
+            $t('globals.find_by', { field: $tc('globals.name') }, 1)
+          "
+        />
+      </div>
+    </div>
+    <div class="flex justify-content-end flex-wrap">
+      <div class="flex align-items-center">
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
-          class="p-mt-4"
+          class="mt-4"
           @click="saveExternalSite(!v$.$invalid)"
         />
       </div>
@@ -159,7 +186,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -186,7 +213,8 @@ export default {
                     metodo: 0,
                     disparador: 0,
                     formato: null,
-                    objetivo: null
+                    objetivo: null,
+                    autenticacion: null
                 };
             }
         }
@@ -199,7 +227,8 @@ export default {
                 metodo: 0,
                 disparador: 0,
                 formato: null,
-                objetivo: null
+                objetivo: null,
+                autenticacion: null
             },
             submitted: false,
             filters: null,
@@ -230,12 +259,17 @@ export default {
             ]
         };
     },
-    created () {
-        this.initializeData();
+    async created () {
+        await this.initExternalSiteAuthentications();
+        await this.initializeData();
+    },
+    computed: {
+        ...mapState(['externalSiteAuthentications'])
     },
     methods: {
-        ...mapActions(['createExternalSite', 'updateExternalSite']),
+        ...mapActions(['createExternalSite', 'updateExternalSite', 'initExternalSiteAuthentications']),
         initializeData () {
+            this.externalSiteAuthentications.splice(0, 0, { id: null, nombre: '------' });
             this.initFormData();
             this.submitted = false;
         },
@@ -246,6 +280,7 @@ export default {
             this.externalSiteForm.disparador = this.externalSite.disparador;
             this.externalSiteForm.formato = this.externalSite.formato;
             this.externalSiteForm.objetivo = this.externalSite.objetivo;
+            this.externalSiteForm.autenticacion = this.externalSite.autenticacion;
             if ([1, 0].includes(this.externalSite.metodo)) {
                 this.externalSiteForm.formato = null;
                 this.status_format = true;
@@ -267,32 +302,60 @@ export default {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             };
         },
-        triggerEvent () {
-            if ([3, 0].includes(this.externalSiteForm.disparador) || this.externalSiteForm.formato === 4) {
+        handleObjetiveStatus () {
+            if (
+                [3, 0].includes(this.externalSiteForm.disparador) ||
+        this.externalSiteForm.formato === 4
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
+            } else if (this.externalSiteForm.disparador === 4 && [1, 0].includes(this.externalSiteForm.metodo)) {
+                this.status_objective = false;
+                this.externalSiteForm.objetivo = 1;
+                this.objectives = [
+                    { name: 'Embebido', value: 1 },
+                    { name: 'Nueva pestaña', value: 2 }
+                ];
+            } else if (this.externalSiteForm.disparador === 4 && this.externalSiteForm.metodo === 2) {
+                this.status_objective = false;
+                this.externalSiteForm.objetivo = null;
+                this.objectives = [
+                    { name: '-------', value: null },
+                    { name: 'Embebido', value: 1 },
+                    { name: 'Nueva pestaña', value: 2 }
+                ];
             } else {
                 this.status_objective = false;
                 this.externalSiteForm.objetivo = 1;
             }
         },
+        triggerEvent () {
+            this.handleObjetiveStatus();
+        },
         methodEvent () {
+            // Manejamos el objetivo
+            this.handleObjetiveStatus();
+
+            // Manejamos el formato
             if ([1, 0].includes(this.externalSiteForm.metodo)) {
                 this.status_format = true;
                 this.externalSiteForm.formato = null;
             } else {
                 this.status_format = false;
                 this.externalSiteForm.formato = 1;
-                if (this.externalSiteForm.disparador === 3) {
-                    this.status_objective = true;
-                }
             }
         },
         formatEvent () {
-            if (this.externalSiteForm.formato !== 4 && [3, 0].includes(this.externalSiteForm.disparador)) {
+            if (
+                this.externalSiteForm.formato !== 4 &&
+        [3, 0].includes(this.externalSiteForm.disparador)
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
-            } else if (this.externalSiteForm.formato === 4 && ![3, 0].includes(this.externalSiteForm.disparador)) {
+            } else if (
+                this.externalSiteForm.formato === 4 &&
+        ![3, 0].includes(this.externalSiteForm.disparador)
+            ) {
                 this.status_objective = true;
                 this.externalSiteForm.objetivo = null;
             } else {
@@ -328,34 +391,21 @@ export default {
             }
             this.invalid_format = false;
             var response = null;
-            var successMsg = null;
-            var errorMsg = null;
             if (this.formToCreate) {
                 response = await this.createExternalSite(this.externalSiteForm);
-                successMsg = this.$tc('globals.success_added_type', {
-                    type: this.$tc('globals.external_site')
-                });
-                errorMsg = this.$tc('globals.error_to_created_type', {
-                    type: this.$tc('globals.external_site')
-                });
             } else {
                 response = await this.updateExternalSite({
                     id: this.externalSite.id,
                     data: this.externalSiteForm
                 });
-                successMsg = this.$tc('globals.success_updated_type', {
-                    type: this.$tc('globals.external_site')
-                });
-                errorMsg = this.$tc('globals.error_to_updated_type', {
-                    type: this.$tc('globals.external_site')
-                });
             }
-            if (response) {
+            const { status, message } = response;
+            if (status === 'SUCCESS') {
                 this.$router.push({ name: 'external_sites' });
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        successMsg,
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -363,7 +413,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        errorMsg,
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );

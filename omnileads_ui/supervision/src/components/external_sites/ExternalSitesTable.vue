@@ -23,26 +23,28 @@
       :globalFilterFields="['nombre']"
     >
       <template #header>
-        <div class="p-d-flex p-jc-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            :label="$t('globals.clean_filter')"
-            class="p-button-outlined"
-            @click="clearFilter()"
-          />
-          <div>
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <Button
+              type="button"
+              icon="pi pi-filter-slash"
+              :label="$t('globals.clean_filter')"
+              class="p-button-outlined"
+              @click="clearFilter()"
+            />
+          </div>
+          <div class="flex align-items-center justify-content-center">
             <Button
               v-if="!showAllInfo"
               type="button"
-              class="p-mr-2"
+              class="mr-2"
               :label="$t('views.external_sites.show_hiddens')"
               @click="handleShowData(true)"
             />
             <Button
               v-else
               type="button"
-              class="p-mr-2 p-button-secondary"
+              class="mr-2 p-button-secondary"
               :label="$t('views.external_sites.remove_hiddens')"
               @click="handleShowData(false)"
             />
@@ -105,32 +107,32 @@
           <Button
             icon="pi pi-eye"
             v-if="slotProps.data.oculto == true"
-            class="p-button-success p-ml-2"
+            class="ml-2"
             @click="show(slotProps.data.id)"
             v-tooltip.top="$t('views.external_sites.show')"
           />
           <Button
             icon="pi pi-eye-slash"
             v-if="slotProps.data.oculto == false"
-            class="p-button-secondary p-ml-2"
+            class="p-button-secondary ml-2"
             @click="hide(slotProps.data.id)"
             v-tooltip.top="$t('views.external_sites.hide')"
           />
           <Button
             icon="pi pi-pencil"
-            class="p-button-warning p-ml-2"
+            class="p-button-warning ml-2"
             @click="toEditExternalSite(slotProps.data)"
             v-tooltip.top="$t('globals.edit')"
           />
           <Button
             icon="pi pi-trash"
-            class="p-button-danger p-ml-2"
+            class="p-button-danger ml-2"
             @click="remove(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
           />
           <Button
             icon="pi pi-info-circle"
-            class="p-button-info p-ml-2"
+            class="p-button-info ml-2"
             @click="showExternalSiteDetail(slotProps.data)"
             v-tooltip.top="$t('globals.show')"
           />
@@ -214,15 +216,13 @@ export default {
             });
         },
         async hide (id) {
-            const resp = await this.hideExternalSite(id);
-            if (resp) {
+            const { status, message } = await this.hideExternalSite(id);
+            if (status === 'SUCCESS') {
                 await this.initExternalSites();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        this.$tc('globals.success_hide_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -230,24 +230,20 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        this.$tc('globals.error_to_hide_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );
             }
         },
         async show (id) {
-            const resp = await this.showExternalSite(id);
-            if (resp) {
+            const { status, message } = await this.showExternalSite(id);
+            if (status === 'SUCCESS') {
                 await this.initExternalSites();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
-                        this.$tc('globals.success_show_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_success')
                     )
                 );
@@ -255,9 +251,7 @@ export default {
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
-                        this.$tc('globals.error_to_show_type', {
-                            type: this.$tc('globals.external_site')
-                        }),
+                        message,
                         this.$t('globals.icon_error')
                     )
                 );
@@ -270,6 +264,8 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: this.$t('globals.yes'),
                 cancelButtonText: this.$t('globals.no'),
+                confirmButtonColor: '#4CAF50',
+                cancelButtonColor: '#D32F2F',
                 backdrop: false,
                 reverseButtons: true
             }).then(async (result) => {
@@ -282,16 +278,14 @@ export default {
                             this.$swal.showLoading();
                         }
                     });
-                    const resp = await this.deleteExternalSite(id);
+                    const { status, message } = await this.deleteExternalSite(id);
                     this.$swal.close();
-                    if (resp) {
+                    if (status === 'SUCCESS') {
                         this.initExternalSites();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
-                                this.$tc('globals.success_deleted_type', {
-                                    type: this.$tc('globals.external_site')
-                                }),
+                                message,
                                 this.$t('globals.icon_success')
                             )
                         );
@@ -299,9 +293,7 @@ export default {
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.error_notification'),
-                                this.$tc('globals.error_to_deleted_type', {
-                                    type: this.$tc('globals.external_site')
-                                }),
+                                message,
                                 this.$t('globals.icon_error')
                             )
                         );

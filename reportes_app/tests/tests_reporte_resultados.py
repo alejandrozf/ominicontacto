@@ -103,6 +103,15 @@ class ReporteDeResultadosTests(APITest, BaseTestDeReportes):
         self.assertEqual(
             contactacion['contactacion'], NO_CONECTADO_DESCRIPCION['NOANSWER'])
 
+    def test_contactos_en_reporte_de_resultados_paginado(self):
+        reporte_1 = ReporteDeResultadosDeCampana(self.campana_activa, page_number=1, page_size=1)
+        self.assertTrue(reporte_1.is_paginated)
+        self.assertEqual(1, len(reporte_1.contactaciones.values()))
+        reporte_2 = ReporteDeResultadosDeCampana(self.campana_activa, page_number=1, page_size=2)
+        self.assertEqual(2, len(reporte_2.contactaciones.values()))
+        reporte_5 = ReporteDeResultadosDeCampana(self.campana_activa, page_number=1, page_size=5)
+        self.assertGreaterEqual(5, len(reporte_5.contactaciones.values()))
+
     @patch('threading.Thread')
     def test_generar_resultados_de_base_csv(self, Thread):
         self.client.login(username='sup1', password=PASSWORD)

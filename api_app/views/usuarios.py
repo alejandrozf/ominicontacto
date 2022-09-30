@@ -20,7 +20,7 @@
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
-from api_app.serializers import AgenteProfileNameSerializer, GrupoSerializer
+from api_app.serializers.base import AgenteProfileNameSerializer, GrupoSerializer
 from ominicontacto_app.models import AgenteProfile, Grupo
 
 from api_app.views.permissions import TienePermisoOML
