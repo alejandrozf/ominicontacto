@@ -591,15 +591,41 @@ class PhoneJSController {
     subscribeToAgentNotificationEvents() {
         var self = this;
         this.notification_agent.eventsCallbacks.onNotificationForzarDespausa.add(function(args){
-            if (args['calificada'])
-                if (self.phone_fsm.state == 'Paused')
-                    self.leavePause();
+            if (Object.prototype.hasOwnProperty.call(args, 'dispositioned')){
+                if (args['dispositioned'])
+                    if (self.phone_fsm.state == 'Paused')
+                        self.leavePause();
+                    else
+                        self.llamada_calificada = true;
                 else
-                    self.llamada_calificada = true;
-            else
-                self.llamada_calificada = false;
+                    self.llamada_calificada = false;
+            }
+            else {
+                clearTimeout(self.ACW_pause_timeout_handler);
+                clearTimeout(self.pause_timeout_handler);
+                self.pause_manager.leavePause();
+                self.view.setCallStatus(gettext('Disponible'), 'black');
+                self.timers.pausa.stop();
+                self.timers.toEndPause.hide_element();
+                self.timers.toEndPause.reset();
+                self.timers.operacion.start();
+                self.phone_fsm.unpause();
+                self.view.setCallStatus(gettext('Pausa liberada'), 'yellowgreen');
+            }
         });
-        
+        this.notification_agent.eventsCallbacks.onNotificationForzarPausa.add(function(args){
+            const pause_id = args['id'];
+            const pause_name = args['name'];
+            self.phone_fsm.startPause();
+            self.pause_manager.setPause(pause_id, pause_name, 0);
+            self.timers.toEndPause.hide_element();
+            self.timers.toEndPause.reset();
+            self.timers.pausa.start();
+            self.timers.operacion.stop();
+            self.phone_fsm.pauseSet();
+            self.view.setCallStatus(gettext('El supervisor le ha forzado la pausa'), 'red');
+        });
+
         this.notification_agent.eventsCallbacks.onNotificationPhoneJsLogout.add(function(args){
             self.phone.logout();
             self.view.setSipStatus('UNREGISTERED');
