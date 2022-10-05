@@ -18,7 +18,7 @@ pip3 install -r ../../../requirements/requirements.txt --exists-action 'w'
 echo "Creating additional folders"
 mkdir -p $INSTALL_PREFIX/{wombat-json,backup,bin,media_root/reporte_campana,static,log,run,addons,ominicontacto}
 echo "Copying src code"
-cp -a ../../../{api_app,configuracion_telefonia_app,manage.py,ominicontacto,ominicontacto_app,reciclado_app,reportes_app,requirements,supervision_app,test,tests,utiles_globales.py,omnileads_ui,notification_app} $INSTALL_PREFIX/ominicontacto
+cp -a ../../../{api_app,configuracion_telefonia_app,manage.py,ominicontacto,ominicontacto_app,reciclado_app,reportes_app,requirements,slowsql,supervision_app,test,tests,utiles_globales.py,omnileads_ui,notification_app} $INSTALL_PREFIX/ominicontacto
 echo "Copying scripts used by system"
 cp -a scripts/bin/* ${INSTALL_PREFIX}/bin
 cp -a scripts/oml_uwsgi.ini ${INSTALL_PREFIX}/run
