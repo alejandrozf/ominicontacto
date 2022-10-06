@@ -3409,7 +3409,7 @@ msgstr "There are no events for today"
 
 #: ominicontacto_app/templates/agente/base_agente.html:28
 msgid "OmniLeads"
-msgstr "Omnileads"
+msgstr "OmniLeads"
 
 #: ominicontacto_app/templates/agente/base_agente.html:89
 msgid "Tomar Pausa"
