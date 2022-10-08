@@ -6,12 +6,12 @@
       </h5>
     </template>
     <template #content>
-      <Chart type="bar" :data="basicData" :options="chartOptions"  :height="50"/>
+      <Chart type="bar" :data="basicData" :options="chartOptions"  :height="150"/>
     </template>
   </Card>
 </template>
 <script>
-import { ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 export default {
     props: {
@@ -20,6 +20,9 @@ export default {
     },
     setup (props) {
         const chartOptions = ref({
+            animation: {
+                duration: 0
+            },
             plugins: {
                 legend: {
                     labels: {
@@ -35,36 +38,27 @@ export default {
                 }
             }
         });
-
-        const basicData = ref({
-            labels: ['Ready', 'Oncall', 'Pause'],
-            datasets: [
+        const basicData = computed(() => {
+            const colors = ['#42A5F5', '#66BB6A', '#FFA726'];
+            return Object.entries(props.chartData).reduce(
+                function (prev, [key, val], currIdx) {
+                    prev.labels.push(key);
+                    prev.datasets[0].data.push(val);
+                    prev.datasets[0].backgroundColor.push(colors[currIdx % 3]);
+                    return prev;
+                },
                 {
-                    data: [],
-                    backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726']
+                    labels: [],
+                    datasets: [
+                        {
+                            data: [],
+                            backgroundColor: [],
+                            label: 'Ready'
+                        }
+                    ]
                 }
-            ]
+            );
         });
-
-        watch(props.chartData, (newValue) => {
-            updateBasicData(newValue);
-        });
-
-        const updateBasicData = (newData) => {
-            const labels = [];
-            const dataSets = [];
-
-            for (const key in newData) {
-                labels.push(key);
-                dataSets.push(newData[key]);
-            }
-            basicData.value.labels = labels;
-            basicData.value.datasets[0].data = dataSets;
-            basicData.value.datasets[0].label = labels[0];
-        };
-
-        updateBasicData(props.chartData);
-
         return {
             chartOptions,
             basicData

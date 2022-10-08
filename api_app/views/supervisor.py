@@ -74,6 +74,7 @@ from ominicontacto_app.services.reporte_campana_calificacion import ReporteCalif
 from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
 from ominicontacto_app.utiles import (
     datetime_hora_minima_dia, datetime_hora_maxima_dia, convert_fecha_datetime)
+from notification_app.notification import RedisStreamNotifier
 
 
 logger = _logging.getLogger(__name__)
@@ -833,14 +834,22 @@ class DashboardSupervision(APIView):
             host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
             decode_responses=True)
         keys_agentes = redis_connection.keys('OML:AGENT*')
+        cant_agentes_actives = 0
         for key in keys_agentes:
             agente_info = redis_connection.hgetall(key)
             if agente_info['STATUS'].startswith('PAUSE'):
                 data['pause'] += 1
+                cant_agentes_actives += 1
             if agente_info['STATUS'] == 'ONCALL':
                 data['oncall'] += 1
+                cant_agentes_actives += 1
             if agente_info['STATUS'] == 'READY':
                 data['ready'] += 1
+                cant_agentes_actives += 1
+            if agente_info['STATUS'] == 'RINGING':
+                cant_agentes_actives += 1
+        redis_stream_notifier = RedisStreamNotifier()
+        redis_stream_notifier.send('auth_event', cant_agentes_actives)
         return data
 
     def _llamadas_contactadas(self):

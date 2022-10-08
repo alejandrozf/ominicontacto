@@ -34,14 +34,14 @@ class RedisStreamNotifier:
     def __init__(self):
         self.redis_stream = RedisStreams()
 
-    def send(self, type_event, user_id=None):
-        if type_event in ['login', 'logout']:
+    def send(self, type_event, actives=None):
+        if type_event == 'auth_event':
             stream_name = 'auth_event_{}'.format(str(datetime.date.today()))
         elif type_event == 'calification':
             stream_name = 'calification_event_{}'.format(str(datetime.date.today()))
         content = {
             'event': type_event,
             'timestamp': time.time(),
-            'agent': user_id
+            'actives': actives
         }
-        self.redis_stream.write_stream(stream_name, json.dumps(content))
+        self.redis_stream.write_stream(stream_name, json.dumps(content), max_stream_length=100000)
