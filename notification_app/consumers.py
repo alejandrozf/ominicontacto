@@ -21,7 +21,7 @@ class AgentConsole(AsyncJsonWebsocketConsumer):
                 "type": "logout",
             }})
 
-        if self.user.is_agente:
+        if self.user.is_authenticated and self.user.is_agente:
             for group in self.GROUPS:
                 await self.channel_layer.group_add(
                     group.format(user_id=self.user.id), self.channel_name)
