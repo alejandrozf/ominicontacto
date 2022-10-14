@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-17 00:15-0300\n"
+"POT-Creation-Date: 2022-10-14 20:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3408,6 +3408,9 @@ msgid "No existen eventos para el día de hoy"
 msgstr "There are no events for today"
 
 #: ominicontacto_app/templates/agente/base_agente.html:28
+#: ominicontacto_app/templates/agente/update_agent_password.html:29
+#: ominicontacto_app/templates/base.html:29
+#: ominicontacto_app/templates/user/force_password_change.html:29
 msgid "OmniLeads"
 msgstr "OmniLeads"
 
@@ -4108,12 +4111,6 @@ msgstr "Audit Result: "
 #: ominicontacto_app/templates/formulario/calificacion_create_update_supervisor.html:83
 msgid "Observaciones: "
 msgstr "Comments: "
-
-#: ominicontacto_app/templates/agente/update_agent_password.html:29
-#: ominicontacto_app/templates/base.html:29
-#: ominicontacto_app/templates/user/force_password_change.html:29
-msgid "Omnileads"
-msgstr "Omnileads"
 
 #: ominicontacto_app/templates/agente/update_agent_password.html:74
 #: ominicontacto_app/templates/base.html:87
@@ -6474,8 +6471,8 @@ msgid "No tiene permiso para agregar contactos a la Campaña."
 msgstr "You don't have permission to add contacts to this campaign."
 
 #: ominicontacto_app/tests/tests_calificacion.py:139
-#: ominicontacto_app/views_calificacion_cliente.py:133
-#: ominicontacto_app/views_calificacion_cliente.py:636
+#: ominicontacto_app/views_calificacion_cliente.py:134
+#: ominicontacto_app/views_calificacion_cliente.py:639
 msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgstr "You don't have permission to disposition calls for this campaign."
 
@@ -6782,16 +6779,16 @@ msgid ""
 "del contacto."
 msgstr "Sucess! Contact created."
 
-#: ominicontacto_app/views_calificacion_cliente.py:385
+#: ominicontacto_app/views_calificacion_cliente.py:388
 msgid ""
 "Operación Exitosa! Se llevó a cabo con éxito la calificación del cliente"
 msgstr "Sucess! Client disposition registered."
 
-#: ominicontacto_app/views_calificacion_cliente.py:464
+#: ominicontacto_app/views_calificacion_cliente.py:467
 msgid "Operación Exitosa! Se llevó a cabo con éxito la creación del contacto"
 msgstr "Sucess! Contact created."
 
-#: ominicontacto_app/views_calificacion_cliente.py:699
+#: ominicontacto_app/views_calificacion_cliente.py:702
 msgid ""
 "Operación Exitosa!Se llevó a cabo con éxito el llenado del formulario del "
 "cliente"
