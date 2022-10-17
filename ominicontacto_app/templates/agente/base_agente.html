@@ -32,15 +32,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/bootstrap-datetimepicker.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.growl.css' %}">
     <!-- Fonts -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-solid.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-regular.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
@@ -48,17 +48,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
     {% endcompress %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
-        <script src="{% static 'ominicontacto/JS/html5shiv-3.7.0.js' %}"></script>
-        <script src="{% static 'ominicontacto/JS/respond-1.4.2.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/ext/html5shiv-3.7.0.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/ext/respond-1.4.2.min.js' %}"></script>
     <![endif]-->
 
 </head>
@@ -953,8 +953,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% compress js %}
 <!-- JsSIP -->
 <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}" ></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jssip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/state-machine-min.js' %}" ></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/constantes.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsFSM.js' %}" ></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/omlAPI.js' %}" ></script>
@@ -973,16 +973,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <!-- webChat -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/JQueryWebChat.js' %}"></script-->
 <!-- autobahn -->
-<!-- <script type="text/javascript" src="{% static 'ominicontacto/JS/autobahn.min.js' %}"></script> -->
+<!-- <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/autobahn.min.js' %}"></script> -->
 <!-- smschat -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/textMessages.js' %}"></script-->
 <!-- Socket.IO -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/socket.io.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/socket.io.js' %}"></script>
 <!-- FacebookMessenger -->
 <!--script type="text/javascript" src="{% static 'ominicontacto/JS/facebookMessenger.js' %}"></script-->
 <!-- Calendar -->
-<script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/bootstrap-datetimepicker.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
 {% endcompress %}
 <script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>

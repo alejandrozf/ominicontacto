@@ -29,11 +29,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}" > <!-- TODO: cambiar a version 4 apenas se puedan portar o reemplazar los glyphicons (ver OML-297) -->
 
         <!-- JQuery & Datatables -->
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}" >
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}" >
         <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
         {% compress js %}
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-        <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/agente/omlAPI.js' %}"></script>
         <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>

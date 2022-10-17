@@ -22,19 +22,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select.dataTables.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/reservar-liberar-contactos-preview.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}"></link>
 {% endblock %}
 
 {% block head_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'JS/ext/dataTables.select.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_preview/contactos_asignados.js' %}"></script>
 {% endblock %}
 {% block extra_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
     <script>
      /* se activa en todos los campos de selección un plugin para
         JQuery que permite una mejor búsqueda */

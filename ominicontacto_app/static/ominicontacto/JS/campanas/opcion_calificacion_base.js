@@ -17,7 +17,7 @@
 
 */
   var wizard = $('#wizard').val();
-     /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
+     /* adiciona plugin 'ext/jquery.formset.js' para generar forms dinamicamente
         en un formset  */
      $('.linkFormset').formset({
        addText: AGREGAR_CAMPO,
