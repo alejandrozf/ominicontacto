@@ -83,7 +83,7 @@ export default {
             not_empty_time_validations: 'There must be at least one time validation',
             repeated_group_name: 'There is already a time group with that name',
             time_validation_already_exists: 'The time validation already exists'
-        },
+        }
     },
     external_site_authentication: {
         placeholders: {

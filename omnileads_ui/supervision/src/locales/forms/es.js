@@ -83,7 +83,7 @@ export default {
             not_empty_time_validations: 'Debe existir al menos una validacion de tiempo',
             repeated_group_name: 'Ya existe grupo horario con ese nombre',
             time_validation_already_exists: 'Ya existe la validacion de tiempo'
-        },
+        }
     },
     external_site_authentication: {
         placeholders: {

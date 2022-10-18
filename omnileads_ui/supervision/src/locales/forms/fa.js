@@ -83,7 +83,7 @@ export default {
             not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
             repeated_group_name: 'در حال حاضر یک گروه زمانی با آن نام وجود دارد',
             time_validation_already_exists: 'اعتبار زمانی از قبل وجود دارد'
-        },
+        }
     },
     external_site_authentication: {
         placeholders: {
