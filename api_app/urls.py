@@ -73,6 +73,7 @@ from api_app.views.outbound_route import (
     OutboundRouteCreate, OutboundRouteDelete, OutboundRouteList,
     OutboundRouteDetail, OutboundRouteOrphanTrunks, OutboundRouteReorder,
     OutboundRouteSIPTrunksList, OutboundRouteUpdate)
+from api_app.views import agente
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -416,6 +417,9 @@ urlpatterns = [
     re_path(r'api/v1/makeCall/$',
             Click2CallView.as_view(),
             name='api_click2call'),
+    path('api/v1/make_call_outside_campaign/',
+         agente.Click2CallOutsideCampaign.as_view(),
+         name='api_click2call_outside_campaign'),
     re_path(r'^api/v1/asterisk_login/$',
             AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     re_path(r'^api/v1/asterisk_logout/$',

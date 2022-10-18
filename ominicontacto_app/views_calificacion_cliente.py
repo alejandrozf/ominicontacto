@@ -46,6 +46,7 @@ from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo impo
     InteraccionConSistemaExterno)
 from ominicontacto_app.services.campana_service import CampanaService
 from api_app.services.calificacion_llamada import CalificacionLLamada
+from notification_app.notification import RedisStreamNotifier
 
 from reportes_app.models import LlamadaLog
 
@@ -344,6 +345,8 @@ class CalificacionClienteFormView(FormView):
             self.object_calificacion.es_calificacion_manual = es_calificacion_manual
 
         self.object_calificacion.save()
+        redis_stream_notifier = RedisStreamNotifier()
+        redis_stream_notifier.send('calification', self.agente.id)
         # modificamos la entrada de la modificación en la instancia para así diferenciar
         # cambios realizados directamente desde una llamada de las otras modificaciones
         update_change_reason(self.object_calificacion, self.kwargs.get('from'))
