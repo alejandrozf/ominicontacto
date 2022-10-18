@@ -48,11 +48,7 @@ export default {
                     if (date < eventTime) { break; } // no analizar eventos con mayor fecha del rango que estoy analizando
                     const difMinutes = Math.floor((date - eventTime) / 60000);
                     if (difMinutes <= interval) {
-                        if (eventCurrent.event === 'login') {
-                            eventCount = eventCount + 1;
-                        } else {
-                            eventCount = eventCount - 1;
-                        }
+                        eventCount = eventCurrent.actives;
                     }
                     eventListIndex++;
                 }
@@ -94,15 +90,6 @@ export default {
             }
             return { ranges, data };
         }
-
-        const loadingData = ref(false);
-        const reportData = ref({ data: null });
-        const { loading, response } = apiCall(apiUrls.DashboardSupervision);
-        watch(loading, () => {
-            loadingData.value = loading.value;
-            reportData.value = response.value;
-        });
-
         var today = new Date();
         var yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
@@ -128,7 +115,14 @@ export default {
         const chartLineCalificationEventTodayData = ref([]);
         const chartLineIntervalCalification = ref([]);
 
-        const { close } = useWebSocket(urlYesterdayAuth, {
+        const loadingData = ref(false);
+        const reportData = ref({ data: null });
+        const { loading, response } = apiCall(apiUrls.DashboardSupervision);
+        watch(loading, () => {
+            loadingData.value = loading.value;
+            reportData.value = response.value;
+        });
+        useWebSocket(urlYesterdayAuth, {
             autoReconnect: true,
             onMessage (ws, event) {
                 if (event.data !== 'Stream subscribed!') {
@@ -139,7 +133,7 @@ export default {
                     const getEventDataResponse = getAuthEventData(5, authEventYesterdayList, 'yesterday');
                     chartLineIntervalAuth.value = getEventDataResponse.ranges;
                     chartLineAuthEventYesterdayData.value = getEventDataResponse.data;
-                    close();
+                    // close();
                 }
             }
         });
@@ -160,7 +154,7 @@ export default {
             }
         });
 
-        const { close2 = close } = useWebSocket(urlYesterdayCalification, {
+        useWebSocket(urlYesterdayCalification, {
             autoReconnect: true,
             onMessage (ws, event) {
                 if (event.data !== 'Stream subscribed!') {
@@ -171,7 +165,7 @@ export default {
                     const getEventDataResponse = getCalificationEventData(60, calificationEventYesterdayList, 'yesterday');
                     chartLineIntervalCalification.value = getEventDataResponse.ranges;
                     chartLineCalificationEventYesterdayData.value = getEventDataResponse.data;
-                    close2();
+                    // close2();
                 }
             }
         });
@@ -191,7 +185,18 @@ export default {
                 }
             }
         });
-
+        setInterval(function () {
+            const { loading, response } = apiCall(apiUrls.DashboardSupervision);
+            watch(loading, () => {
+                loadingData.value = loading.value;
+                reportData.value = response.value;
+            });
+            const getEventDataResponse = getCalificationEventData(60, calificationTodayList, 'today');
+            if (chartLineIntervalCalification.value.length === 0) {
+                chartLineIntervalCalification.value = getEventDataResponse.ranges;
+            }
+            chartLineCalificationEventTodayData.value = getEventDataResponse.data;
+        }, 60000);
         return {
             chartLineIntervalAuth,
             chartLineAuthEventYesterdayData,

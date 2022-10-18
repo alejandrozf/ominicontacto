@@ -11,7 +11,7 @@
   </Card>
 </template>
 <script>
-import { ref, watch } from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
     props: {
@@ -20,6 +20,9 @@ export default {
     },
     setup (props) {
         const chartOptions = ref({
+            animation: {
+                duration: 0
+            },
             plugins: {
                 tooltips: {
                     mode: 'index',
@@ -32,33 +35,26 @@ export default {
                 }
             }
         });
-        const basicData = ref({
-            labels: [''],
-            datasets: [
+        const basicData = computed(() => {
+            const colors = ['#8FC641', '#196F3D'];
+            return Object.entries(props.chartData).reduce(
+                function (prev, [key, val], currIdx) {
+                    prev.labels.push(key);
+                    prev.datasets[0].data.push(val);
+                    prev.datasets[0].backgroundColor.push(colors[currIdx % 2]);
+                    return prev;
+                },
                 {
-                    data: [],
-                    backgroundColor: ['#8FC641', '#196F3D']
+                    labels: [],
+                    datasets: [
+                        {
+                            data: [],
+                            backgroundColor: []
+                        }
+                    ]
                 }
-            ]
+            );
         });
-
-        watch(props.chartData, (newValue) => {
-            updateBasicData(newValue);
-        });
-
-        const updateBasicData = (newData) => {
-            const labels = [];
-            const dataSets = [];
-
-            for (const key in newData) {
-                labels.push(key);
-                dataSets.push(newData[key]);
-            }
-            basicData.value.labels = labels;
-            basicData.value.datasets[0].data = dataSets;
-        };
-        updateBasicData(props.chartData);
-
         return {
             chartOptions,
             basicData

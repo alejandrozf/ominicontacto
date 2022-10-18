@@ -13,7 +13,7 @@
       <div class="flex justify-content-center flex-wrap">
         <div class="flex align-items-center justify-content-center">
           <Knob
-            v-model="basicData"
+            v-model="basicData.value"
             readonly
             :min="0"
             :max="500"
@@ -27,7 +27,7 @@
   </Card>
 </template>
 <script>
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 
 export default {
     props: {
@@ -40,20 +40,11 @@ export default {
         }
     },
     setup (props) {
-        const basicData = ref({
-            value: 0
+        const basicData = computed(() => {
+            return {
+                value: props.chartData
+            };
         });
-
-        watch(props.chartData, (newValue) => {
-            updateBasicData(newValue);
-        });
-
-        const updateBasicData = (newData) => {
-            basicData.value = newData;
-        };
-
-        updateBasicData(props.chartData);
-
         return {
             basicData
         };

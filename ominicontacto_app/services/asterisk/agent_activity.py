@@ -50,8 +50,6 @@ class AgentActivityAmiManager(object):
             error = self._queue_add_remove(agente_profile, 'QueueAdd')
         if not error:
             error = self._set_agent_redis_status(agente_profile, 'login')
-            if not error:
-                self.redis_stream_notifier.send('login', agente_profile.id)
         if manage_connection:
             self.disconnect_manager()
         return error
@@ -63,8 +61,6 @@ class AgentActivityAmiManager(object):
         if manage_connection:
             self.disconnect_manager()
         insert_redis_error = self._set_agent_redis_status(agente_profile, 'logout')
-        if not insert_redis_error:
-            self.redis_stream_notifier.send('logout', agente_profile.id)
         return queue_remove_error, insert_redis_error
 
     def set_agent_ringing(self, agente_profile, ringing, manage_connection=False):

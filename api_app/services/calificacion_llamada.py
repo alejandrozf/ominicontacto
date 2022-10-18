@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 
 from notification_app.notification import AgentNotifier
-from notification_app.notification import RedisStreamNotifier
+
 
 import logging as _logging
 import redis
@@ -51,8 +51,6 @@ class CalificacionLLamada(object):
         family = self._get_nombre_family(agente)
         if calificado is True:
             llamada_calificada = 'TRUE'
-            redis_stream_notifier = RedisStreamNotifier()
-            redis_stream_notifier.send('calification', agente.id)
         else:
             llamada_calificada = 'FALSE'
         if gestion is True:
