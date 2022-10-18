@@ -83,6 +83,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
              'roles': ['Agente', ]},
+            {'nombre': 'api_click2call_outside_campaign',
+             'roles': ['Agente', ]},
             {'nombre': 'api_agent_asterisk_login',
              'roles': ['Agente', ]},
             {'nombre': 'api_agent_asterisk_logout',
@@ -110,7 +112,7 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_grabacion_descarga_masiva',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_call_record_url',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
@@ -327,7 +329,9 @@ class ApiAppConfig(AppConfig):
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':
-            {'descripcion': _('Ejecuta un click 2 call'), 'version': '1.7.0'},
+            {'descripcion': _('Ejecuta un click 2 call a una campaña'), 'version': '1.7.0'},
+        'api_click2call_outside_campaign':
+            {'descripcion': _('Ejecuta un click 2 call fuera de campaña'), 'version': '1.25.0'},
         'api_agent_asterisk_login':
             {'descripcion': _('Ejecuta el login del agente en Asterisk.'), 'version': '1.7.0'},
         'api_agent_asterisk_logout':

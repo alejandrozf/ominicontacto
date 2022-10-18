@@ -31,6 +31,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
@@ -40,7 +41,7 @@ from api_app.serializers.base import (
 from api_app.views.permissions import TienePermisoOML
 
 from ominicontacto_app.models import (
-    Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion)
+    Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion, AgenteProfile)
 from reportes_app.models import LlamadaLog
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
@@ -255,6 +256,53 @@ class Click2CallView(APIView):
                 'message': _('Hubo errores en los datos recibidos'),
                 'errors': form.errors
             })
+
+
+class Click2CallOutsideCampaign(APIView):
+    """
+        Ejecutar un click2call fuera de campaña
+        Params:
+        - destination_type [AGENT o EXTERNAL]
+        - destination, idAgent, idContact, phone
+    """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request):
+        agente = self.request.user.get_agente_profile()
+        if not agente or not agente.grupo.call_off_camp:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Usted no tiene permiso para realizar esta acción'),
+            }, status=HTTP_403_FORBIDDEN)
+
+        tipo_destino = request.data.get('destination_type')
+        destino = request.data.get('destination', '')
+
+        originator = Click2CallOriginator()
+        if tipo_destino == Click2CallOriginator.AGENT:
+            try:
+                agente_destino = AgenteProfile.objects.get(id=destino)
+            except AgenteProfile.DoesNotExist:
+                return Response(data={
+                    'status': 'ERROR',
+                    'message': _('Valor de destination inválido'),
+                }, status=HTTP_400_BAD_REQUEST)
+            else:
+                originator.call_agent(agente, agente_destino)
+        elif tipo_destino == Click2CallOriginator.EXTERNAL:
+            # TODO: Validar destino como un numero valido?
+            originator.call_external(agente, destino)
+        else:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Valor de destination_type inválido'),
+            }, status=HTTP_400_BAD_REQUEST)
+        return Response(data={
+            'status': 'OK',
+            'message': _('Llamada fuera de campaña iniciada'),
+        })
 
 
 class AgentLoginAsterisk(APIView):
