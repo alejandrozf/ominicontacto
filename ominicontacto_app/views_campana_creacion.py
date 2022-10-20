@@ -166,21 +166,18 @@ class CampanaTemplateCreateCampanaMixin(object):
                     'tipo', 'valor', 'nombre')
                 bd_contacto = campana_template.bd_contacto
                 columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+                # Calculo form Kwargs
+                form_kwargs = {'columnas_bd': columnas_bd}
+                if campana_template.sitio_externo:
+                    disparador = campana_template.sitio_externo.disparador
+                    con_crm_calificacion = disparador == SitioExterno.CALIFICACION
+                    form_kwargs['con_crm_calificacion'] = con_crm_calificacion
                 param_crms_formset = ParametrosCrmFormSet(
-                    initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
+                    initial=initial_data, form_kwargs=form_kwargs)
                 param_crms_formset.extra = max(len(initial_data), 1)
                 param_crms_formset.prefix = params_crm_init_formset.prefix
                 context['wizard']['form'] = param_crms_formset
         return context
-
-    def get_form_kwargs(self, step):
-        kwargs = super(CampanaTemplateCreateCampanaMixin, self).get_form_kwargs(step)
-        if step == self.OPCIONES_CALIFICACION:
-            cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            con_formulario = cleaned_data.get('tipo_interaccion') \
-                in [Campana.FORMULARIO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
-            return {'form_kwargs': {'con_formulario': con_formulario}}
-        return kwargs
 
 
 class CampanaTemplateDeleteMixin(object):
