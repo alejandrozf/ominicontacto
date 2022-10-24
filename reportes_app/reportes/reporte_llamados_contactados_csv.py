@@ -183,7 +183,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Observaciones"))
 
         # agrego el encabezado para los campos de los formularios
-        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+        if self.campana.tiene_formulario:
             for opcion in self.campana.opciones_calificacion.filter(
                     tipo=OpcionCalificacion.GESTION).select_related(
                         'formulario').prefetch_related('formulario__campos'):
@@ -310,7 +310,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Callid"))
         encabezado.append(_("Tipo llamada"))
         # agrego el encabezado para los campos de los formularios
-        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+        if self.campana.tiene_formulario:
             for opcion in self.opciones_calificacion_campana.values():
                 if opcion.id not in self.posiciones_opciones and \
                    opcion.tipo == OpcionCalificacion.GESTION:
@@ -367,7 +367,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
                 calificacion_id)
         if (calificacion.opcion_calificacion.es_gestion() and
-            self.campana.tipo_interaccion is Campana.FORMULARIO and
+            self.campana.tiene_formulario and
                 respuesta_formulario_gestion is not None):
             datos = json.loads(respuesta_formulario_gestion.metadata)
 
