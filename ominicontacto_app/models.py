@@ -1488,6 +1488,10 @@ class Campana(models.Model):
         return self.tipo_interaccion in [self.SITIO_EXTERNO, self.FORMULARIO_Y_SITIO_EXTERNO]
 
     @property
+    def tiene_formulario(self):
+        return self.tipo_interaccion in [self.FORMULARIO, self.FORMULARIO_Y_SITIO_EXTERNO]
+
+    @property
     def es_entrante(self):
         return self.type == self.TYPE_ENTRANTE
 
