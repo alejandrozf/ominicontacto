@@ -71,7 +71,8 @@ export default {
             not_empty_trunks: 'Debe existir al menos una troncal',
             repeated_route_name: 'Ya existe ruta saliente con ese nombre',
             invalid_route_name: 'El nombre de la ruta es invalido',
-            trunk_already_exists: 'Ya existe la troncal'
+            trunk_already_exists: 'Ya existe la troncal',
+            orphan_trunks: 'Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser usados por rutas Salientes'
         }
     },
     dial_pattern: {

@@ -71,7 +71,8 @@ export default {
             not_empty_trunks: 'باید حداقل یک تنه وجود داشته باشد',
             repeated_route_name: 'مسیر خروجی با آن نام از قبل وجود دارد',
             invalid_route_name: 'نام مسیر نامعتبر است',
-            trunk_already_exists: 'تنه از قبل وجود دارد'
+            trunk_already_exists: 'تنه از قبل وجود دارد',
+            orphan_trunks: 'با حذف مسیر خروجی، سیپ ترانک های زیر توسط مسیرهای خروجی بلااستفاده می مانند'
         }
     },
     dial_pattern: {

@@ -71,7 +71,8 @@ export default {
             not_empty_trunks: 'There must be at least one trunk',
             repeated_route_name: 'Outgoing route with that name already exists',
             invalid_route_name: 'The path name is invalid',
-            trunk_already_exists: 'Trunk already exists'
+            trunk_already_exists: 'Trunk already exists',
+            orphan_trunks: 'By eliminating the outgoing route the following Sip Trunks will remain unused by Outgoing routes'
         }
     },
     dial_pattern: {
