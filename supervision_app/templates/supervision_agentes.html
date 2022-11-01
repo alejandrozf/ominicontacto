@@ -22,20 +22,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}">
 <link rel="stylesheet" href="{% static 'supervision_app/CSS/supervision.css' %}">
 {% endblock %}
 
 {% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
 <script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'supervision_app/JS/supervision.js' %}"></script>
 {% include 'config.html' %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jssip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/state-machine-min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsFSM.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsSip.js' %}"></script>
 

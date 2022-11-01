@@ -23,12 +23,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+  <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.growl.css' %}">
 {% endblock extra_css %}
 
 {% block head_js %}
   <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
-  <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
   <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/reasignarAgendas.js' %}"></script>
 {% endblock head_js %}
 <h1>{% trans 'Gestionar Agendas' %}</h1>
