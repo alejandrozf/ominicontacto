@@ -1168,6 +1168,7 @@ class Campana(models.Model):
     # Listas en formato JSON con los nombres de los campos
     campos_bd_no_editables = models.CharField(max_length=2052, default='')
     campos_bd_ocultos = models.CharField(max_length=2052, default='')
+    campos_bd_obligatorios = models.CharField(max_length=2052, default='')
 
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
@@ -1479,6 +1480,18 @@ class Campana(models.Model):
         self.campos_bd_ocultos = ""
         if campos_ocultos:
             self.campos_bd_ocultos = json.dumps(campos_ocultos, separators=(',', ':'))
+        if guardar:
+            self.save()
+
+    def get_campos_obligatorios(self):
+        if self.campos_bd_obligatorios:
+            return json.loads(self.campos_bd_obligatorios)
+        return []
+
+    def set_campos_obligatorios(self, campos_obligatorios, guardar=False):
+        self.campos_bd_obligatorios = ""
+        if campos_obligatorios:
+            self.campos_bd_obligatorios = json.dumps(campos_obligatorios, separators=(',', ':'))
         if guardar:
             self.save()
 

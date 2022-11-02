@@ -1130,6 +1130,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         }
 
     def __init__(self, base_datos=None, campos_bloqueados=[], campos_ocultos=[],
+                 campos_obligatorios=[],
                  control_de_duplicados=None, *args, **kwargs):
         campos_a_bloquear = []  # Son los campos a bloquear para la edicion.
         campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
@@ -1157,6 +1158,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         for campo in bd_metadata.nombres_de_columnas:
             bloquear_campo = campo in campos_a_bloquear
             ocultar_campo = campo in campos_a_ocultar
+            campo_obligatorio = campo in campos_obligatorios
             if campo == nombre_campo_telefono:
                 if ocultar_campo:
                     self.fields.pop('telefono')
@@ -1182,6 +1184,8 @@ class FormularioNuevoContacto(forms.ModelForm):
                         attrs={'class': 'form-control'}))
                 if bloquear_campo:
                     self.fields[nombre_campo].disabled = True
+            if campo_obligatorio:
+                self.fields[nombre_campo].required = True
 
         if nombre_campo_id_externo is None:
             self.fields.pop('id_externo')
@@ -1299,6 +1303,7 @@ class BloquearCamposParaAgenteForm(forms.Form):
 
     PREFIJO_BLOQUEAR = 'bloquear_'
     PREFIJO_OCULTAR = 'ocultar_'
+    PREFIJO_OBLIGATORIO = 'obligatorio_'
 
     def __init__(self, campos, campo_telefono, lang, *args, **kwargs):
         super(BloquearCamposParaAgenteForm, self).__init__(*args, **kwargs)
@@ -1310,28 +1315,44 @@ class BloquearCamposParaAgenteForm(forms.Form):
                 self.fields['ocultar_' + campo] = forms.BooleanField(
                     required=False, label=lang['ocultar'].format(campo),
                     widget=forms.CheckboxInput(attrs={'class': 'form-control'}))
+            if campo != campo_telefono:
+                self.fields['obligatorio_' + campo] = forms.BooleanField(
+                    required=False, label=lang['obligatorio'].format(campo),
+                    widget=forms.CheckboxInput(attrs={'class': 'form-control'}))
 
     def clean(self):
         bloqueados = set()
         ocultos = set()
+        obligatorios = set()
         for nombre, seleccionado in self.cleaned_data.items():
             if nombre.startswith(self.PREFIJO_BLOQUEAR) and seleccionado:
                 bloqueados.add(nombre[9:])
             if nombre.startswith(self.PREFIJO_OCULTAR) and seleccionado:
                 ocultos.add(nombre[8:])
+            if nombre.startswith(self.PREFIJO_OBLIGATORIO) and seleccionado:
+                obligatorios.add(nombre[12:])
 
         if not ocultos.issubset(bloqueados):
             msg = _('Todos los campos ocultos deben marcarse como bloqueados')
             raise forms.ValidationError(msg)
+        if obligatorios.intersection(bloqueados):
+            msg = _('Los campos obligatorios no pueden estar bloqueados')
+            raise forms.ValidationError(msg)
 
         self.lista_campos_bloqueados = list(bloqueados)
         self.lista_campos_ocultos = list(ocultos)
+        self.lista_campos_obligatorios = list(obligatorios)
 
         if self.lista_campos_bloqueados:
             str_a_persistir = json.dumps(self.lista_campos_bloqueados, separators=(',', ':'))
             # Verifico que no se pase del limite de caracteres del campo
             if len(str_a_persistir) > 2052:
                 raise forms.ValidationError(_('Demasiados campos bloqueados seleccionados.'))
+        if self.lista_campos_obligatorios:
+            str_a_persistir = json.dumps(self.lista_campos_obligatorios, separators=(',', ':'))
+            # Verifico que no se pase del limite de caracteres del campo
+            if len(str_a_persistir) > 2052:
+                raise forms.ValidationError(_('Demasiados campos obligatorios seleccionados.'))
         return super(BloquearCamposParaAgenteForm, self).clean()
 
 

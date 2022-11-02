@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0098_autenticacion_sitio_externo'),
+        ('ominicontacto_app', '0099_campana_campos_bd_obligatorios'),
     ]
 
     operations = [
