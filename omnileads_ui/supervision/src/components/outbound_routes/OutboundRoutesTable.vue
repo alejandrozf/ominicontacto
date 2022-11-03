@@ -185,13 +185,15 @@ export default {
         handleModalDetail (showModal) {
             this.showModalDetail = showModal;
         },
-        getOrphanTrunksMessage () {
+        async getOrphanTrunksMessage (id) {
+            await this.initOutboundRouteOrphanTrunks(id);
             if (this.orphanTrunks.length > 0) {
-                var message = '<p>Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser usados por rutas Salientes</p>';
+                var message = `<p>${this.$t('forms.outbound_route.validations.orphan_trunks')}</p>`;
                 message += '<ul>';
-                this.orphanTrunsks.forEach(trunk => {
+                for (let i = 0; i < this.orphanTrunks.length; i++) {
+                    const trunk = this.orphanTrunks[i];
                     message += `<li>${trunk.nombre}</li>`;
-                });
+                }
                 message += '</ul>';
                 return message;
             } else {
@@ -199,12 +201,11 @@ export default {
             }
         },
         async remove (id) {
-            await this.initOutboundRouteOrphanTrunks(id);
             this.$swal({
                 title: this.$t('globals.sure_notification'),
                 icon: this.$t('globals.icon_warning'),
                 showCancelButton: true,
-                html: this.getOrphanTrunksMessage(),
+                html: await this.getOrphanTrunksMessage(id),
                 confirmButtonText: this.$t('globals.yes'),
                 cancelButtonText: this.$t('globals.no'),
                 confirmButtonColor: '#4CAF50',
@@ -225,7 +226,7 @@ export default {
                     this.$swal.close();
                     const { status, message } = response;
                     if (status === 'SUCCESS') {
-                        this.initOutboundRoutes();
+                        await this.initOutboundRoutes();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
@@ -261,6 +262,11 @@ export default {
             handler () {
                 this.orderedOutboundRoutes = this.outboundRoutes;
             },
+            deep: true,
+            immediate: true
+        },
+        orphanTrunks: {
+            handler () {},
             deep: true,
             immediate: true
         }
