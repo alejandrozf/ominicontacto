@@ -91,9 +91,11 @@ class SupervisorActivityAmiManager(object):
             agente_profile.force_logout()
             self.agent_activity.logout_agent(agente_profile, manage_connection=True)
         elif exten == "AGENTPAUSE":
-            self.agent_activity.pause_agent(agente_profile, '00', manage_connection=True)
+            self.agent_activity.pause_agent(
+                agente_profile, '00', manage_connection=True, supervisor=True)
         elif exten == "AGENTUNPAUSE":
-            self.agent_activity.unpause_agent(agente_profile, '00', manage_connection=True)
+            self.agent_activity.unpause_agent(
+                agente_profile, '00', manage_connection=True, supervisor=True)
         else:
             self._originate_call(originate_data)
 

@@ -74,13 +74,9 @@ class CalificacionLLamada(object):
         }
 
         if agente.forzar_despausa() and not es_agenda:
-            notification = AgentNotifier()
-            message = {
-                "id": call_data['call_id'],
-                "calificada": llamada_calificada == 'TRUE'
-            }
-            notification.send_message(
-                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message, user_id=agente.user_id)
+            dispositioned = llamada_calificada == 'TRUE'
+            call_id = call_data['call_id']
+            AgentNotifier().notify_dispositioned(agente.user_id, call_id, dispositioned)
 
         try:
             redis_connection.hset(family, mapping=variables)

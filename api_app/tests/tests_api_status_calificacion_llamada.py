@@ -35,6 +35,7 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
         user = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(user)
         self.agente.grupo.obligar_calificacion = True
+        self.agente.grupo.obligar_despausa = True
         self.client.login(username=user.username, password=PASSWORD)
 
         self.campana = CampanaFactory.create()
@@ -56,9 +57,8 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
 
     @patch('redis.Redis.hset')
     @patch('redis.Redis.expire')
-    @patch('notification_app.notification.AgentNotifier.send_message')
-    @patch('notification_app.notification.RedisStreamNotifier.send')
-    def test_api_create_family(self, send, send_message, expire, hset):
+    @patch('notification_app.notification.AgentNotifier.notify_dispositioned')
+    def test_api_create_family(self, notify_dispositioned, expire, hset):
         service = CalificacionLLamada()
         call_data = self.get_call_data()
         json_call_data = json.dumps(call_data)
@@ -78,7 +78,7 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
         }
         expire.assert_called_with(nombre_family, 3600 * 24 * 4)
         hset.assert_called_with(nombre_family, mapping=variables)
-        send.assert_called_with('calification', self.agente.id)
+        notify_dispositioned.assert_called_with(self.agente.user.id, call_data['call_id'], True)
 
     @patch('redis.Redis.hget')
     def test_api_get_value(self, hget):

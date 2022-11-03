@@ -136,15 +136,7 @@ class AgendaContactoCreateView(CreateView):
 
     def get_success_url(self):
         if self.object.agente.forzar_despausa():
-            notification = AgentNotifier()
-            message = {
-                "id": "create_agenda_contacto",
-                "calificada": True
-            }
-            notification.send_message(
-                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message,
-                user_id=self.object.agente.user_id)
-
+            AgentNotifier().notify_dispositioned(self.object.agente.user_id, None, True)
         return reverse(
             'agenda_contacto_detalle', kwargs={'pk': self.object.pk})
 

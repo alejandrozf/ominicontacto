@@ -26,7 +26,8 @@ from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 class AgentNotifier:
 
-    TYPE_UNPAUSE_CALL = 'unpause-call'
+    TYPE_UNPAUSE = 'unpause'
+    TYPE_PAUSE = 'pause'
 
     def get_group_name(self, user_id=None):
         if user_id is not None:
@@ -34,9 +35,28 @@ class AgentNotifier:
         else:
             return AgentConsole.GROUP_USER_CLS
 
+    def notify_pause(self, user_id, pause_id, pause_name):
+        message = {
+            "id": pause_id,
+            "name": pause_name
+        }
+        self.send_message(self.TYPE_PAUSE, message, user_id=user_id)
+
+    def notify_unpause(self, user_id, pause_id):
+        message = {
+            "id": pause_id,
+        }
+        self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
+
+    def notify_dispositioned(self, user_id, call_id, dispositioned):
+        message = {
+            "id": call_id,
+            "dispositioned": dispositioned
+        }
+        self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
+
     def send_message(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados
-
         async_to_sync(get_channel_layer().group_send)(self.get_group_name(user_id), {
             "type": "broadcast",
             "payload": {
