@@ -46,6 +46,7 @@ from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo impo
 from ominicontacto_app.services.campana_service import CampanaService
 from api_app.services.calificacion_llamada import CalificacionLLamada
 from notification_app.notification import RedisStreamNotifier
+from configuracion_telefonia_app.models import DestinoEntrante
 
 from reportes_app.models import LlamadaLog
 
@@ -71,10 +72,30 @@ class CalificacionClienteFormView(FormView):
         contactos_info = list(self.campana.bd_contacto.contactos.filter(telefono=telefono))
         return contactos_info
 
+    def campana_es_entrante_con_identificador_de_cliente(self):
+        if not self.campana.es_entrante:
+            return False
+        destino_campana = DestinoEntrante.get_nodo_ruta_entrante(self.campana)
+        for anterior in destino_campana.destinos_anteriores.all():
+            if anterior.destino_anterior.tipo == DestinoEntrante.IDENTIFICADOR_CLIENTE:
+                return True
+        return False
+
     def get_contacto(self, id_contacto):
         if id_contacto is None or id_contacto == '-1':
             return None
-        return get_object_or_404(Contacto, pk=id_contacto)
+
+        # Patch para poder atender ids de contacto erroneos de campañas entrantes con CallID
+        try:
+            contacto = Contacto.objects.get(pk=id_contacto)
+        except Contacto.DoesNotExist:
+            if self.campana_es_entrante_con_identificador_de_cliente():
+                message = _('El Identificador de contacto recibido no permite '
+                            f'definir al contacto: { id_contacto }')
+                messages.warning(self.request, message)
+                return None
+            return get_object_or_404(Contacto, pk=id_contacto)
+        return contacto
 
     def get_object(self):
         if self.contacto is not None:
