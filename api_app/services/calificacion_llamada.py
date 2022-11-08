@@ -73,7 +73,7 @@ class CalificacionLLamada(object):
             'IDCALIFICACION': id_calificacion,
         }
 
-        if agente.forzar_despausa() and not es_agenda:
+        if agente.forzar_despausa() and not es_agenda and not gestion:
             dispositioned = llamada_calificada == 'TRUE'
             call_id = call_data['call_id']
             AgentNotifier().notify_dispositioned(agente.user_id, call_id, dispositioned)
