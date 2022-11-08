@@ -465,20 +465,25 @@ class CalificacionClienteFormView(FormView):
                 if llamadalog:
                     llamadalog.update(contacto_id=self.contacto.id)
 
-            force_disposition = False
-            if self.call_data:
-                force_disposition = self.agente.grupo.obligar_calificacion
-                if 'force_disposition' in self.call_data:
-                    force_disposition = self.call_data['force_disposition']
-            es_agenda = False
-            if calificacion_form is not None:
-                es_agenda = calificacion_form.instance.es_agenda()
-            if force_disposition:
-                calificacion_llamada = CalificacionLLamada()
-                calificacion_llamada.create_family(self.agente, self.call_data,
-                                                   self.kwargs['call_data_json'], calificado=True,
-                                                   gestion=False, id_calificacion=None,
-                                                   es_agenda=es_agenda)
+            # TODO: Pasar esto dentro de _calificar_form() ?
+            if not calificacion_form or not calificacion_form.instance.es_gestion():
+                force_disposition = False  # No debería ser =self.agente.grupo.obligar_calificacion?
+                if self.call_data:
+                    force_disposition = self.agente.grupo.obligar_calificacion
+                    if 'force_disposition' in self.call_data:
+                        force_disposition = self.call_data['force_disposition']
+                es_agenda = False
+                if calificacion_form is not None:
+                    es_agenda = calificacion_form.instance.es_agenda()
+                if force_disposition:
+                    calificacion_llamada = CalificacionLLamada()
+                    calificacion_llamada.create_family(self.agente, self.call_data,
+                                                       self.kwargs['call_data_json'],
+                                                       calificado=True,
+                                                       gestion=False,
+                                                       id_calificacion=None,
+                                                       es_agenda=es_agenda)
+
             if calificacion_form is not None:
                 # el formulario de calificación no es generado por una llamada entrante
                 return self._calificar_form(calificacion_form)
