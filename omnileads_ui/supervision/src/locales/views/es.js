@@ -83,5 +83,40 @@ export default {
     time_validation: {
         new_title: 'Nueva validacion de tiempo',
         edit_title: 'Edita validacion de tiempo'
+    },
+    ivr: {
+        new_title: 'Nuevo IVR',
+        edit_title: 'Edita el IVR',
+        configuration_time_out: 'Configuracion para Time Out',
+        configuration_invalid_destination: 'Configuracion para Destino Invalido',
+        destinations: {
+            time_out: 'Destino para time out',
+            invalid: 'Destino invalido'
+        },
+        audios: {
+            types: {
+                internal: 'Audio interno',
+                external: 'Audio externo'
+            },
+            main: {
+                title: 'Audio principal',
+                internal: 'Audio principal interno',
+                external: 'Audio principal externo'
+            },
+            time_out: {
+                title: 'Audio timeout',
+                internal: 'Audio timeout interno',
+                external: 'Audio timeout externo'
+            },
+            invalid: {
+                title: 'Audio invalido',
+                internal: 'Audio invalido interno',
+                external: 'Audio invalido externo'
+            }
+        }
+    },
+    destination_option: {
+        new_title: 'Nuevo destino',
+        edit_title: 'Edita el destino'
     }
 };

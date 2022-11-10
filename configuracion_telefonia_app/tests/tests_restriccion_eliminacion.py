@@ -25,8 +25,8 @@ from ominicontacto_app.views_campana import CampanaDeleteView
 from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory, IVRFactory, ValidacionFechaHoraFactory, OpcionDestinoFactory)
 from configuracion_telefonia_app.models import (
-    IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
-from configuracion_telefonia_app.views.base import IVRDeleteView, ValidacionFechaHoraDeleteView
+    ValidacionFechaHora, DestinoEntrante, OpcionDestino)
+from configuracion_telefonia_app.views.base import ValidacionFechaHoraDeleteView
 
 
 class BaseTestRestriccionEliminacion(OMLBaseTest):
@@ -44,67 +44,6 @@ class BaseTestRestriccionEliminacion(OMLBaseTest):
         self.camp_2 = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
         self.nodo_camp_1 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_1)
         self.nodo_camp_2 = DestinoEntrante.crear_nodo_ruta_entrante(self.camp_2)
-
-
-class TestRestriccionEliminacionIVR(BaseTestRestriccionEliminacion):
-
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionIVRAsterisk.eliminar_y_regenerar_asterisk')
-    def test_elimina_ivr_ok(self, mock_sincronizacion):
-        # Creo un IVR que no es destino
-        destinos_iniciales = DestinoEntrante.objects.count()
-        ivr = IVRFactory()
-        DestinoEntrante.crear_nodo_ruta_entrante(ivr)
-        self.client.login(username=self.admin.username, password=self.PWD)
-        url = reverse('eliminar_ivr', args=[ivr.id])
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, IVRDeleteView.nodo_eliminado)
-        self.assertEqual(IVR.objects.count(), 0)
-        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
-
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionIVRAsterisk.eliminar_y_regenerar_asterisk')
-    def test_no_elimina_ivr_utilizado_en_ruta_entrante(self, mock_sincronizacion):
-        # Creo un IVR y lo pongo como destino de una Ruta Entrante
-        destinos_iniciales = DestinoEntrante.objects.count()
-        ivr = IVRFactory()
-        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
-        RutaEntranteFactory(destino=nodo_ivr)
-        self.client.login(username=self.admin.username, password=self.PWD)
-        url = reverse('eliminar_ivr', args=[ivr.id])
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        list_url = reverse('lista_ivrs', args=(1,))
-        self.assertRedirects(response, list_url)
-        self.assertContains(response, IVRDeleteView.imposible_eliminar)
-        self.assertEqual(IVR.objects.count(), 1)
-        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales + 1)
-
-    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
-           'SincronizadorDeConfiguracionIVRAsterisk.eliminar_y_regenerar_asterisk')
-    def test_no_elimina_ivr_destino_de_otro_nodo(self, mock_sincronizacion):
-        # Creo un IVR y lo pongo como destino de una Validacion Fecha Hora
-        ivr = IVRFactory()
-        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
-        validacion_fh = ValidacionFechaHoraFactory()
-        nodo_validacion = DestinoEntrante.crear_nodo_ruta_entrante(validacion_fh)
-        OpcionDestinoFactory(valor='True',
-                             destino_anterior=nodo_validacion,
-                             destino_siguiente=nodo_ivr)
-        OpcionDestinoFactory(valor='False',
-                             destino_anterior=nodo_validacion,
-                             destino_siguiente=self.nodo_camp_1)
-        destinos_iniciales = DestinoEntrante.objects.count()
-        self.client.login(username=self.admin.username, password=self.PWD)
-        url = reverse('eliminar_ivr', args=[ivr.id])
-        response = self.client.post(url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        list_url = reverse('lista_ivrs', args=(1,))
-        self.assertRedirects(response, list_url)
-        self.assertContains(response, IVRDeleteView.imposible_eliminar)
-        self.assertEqual(IVR.objects.count(), 1)
-        self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
 
 
 class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminacion):

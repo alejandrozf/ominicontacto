@@ -7,14 +7,20 @@ export const HTTP = {
     DELETE: 'DELETE'
 };
 
+export const HEADER_TYPES = {
+    JSON: 'application/json',
+    FORM_DATA: 'multipart/form-data'
+};
+
 export class BaseService {
     constructor (urls, model) {
         this.urls = urls;
         this.model = model;
         this.cookies = new Cookies();
+        this.formData = null;
         this.headers = {
             'X-CSRFToken': this.cookies.get('csrftoken'),
-            'Content-Type': 'application/json'
+            'Content-Type': HEADER_TYPES.JSON
         };
         this.initPayload();
     }

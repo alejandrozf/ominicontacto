@@ -268,6 +268,20 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_group_of_hours_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_audio_options_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_destination_types_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -611,4 +625,25 @@ class ApiAppConfig(AppConfig):
         'api_group_of_hours_delete':
             {'descripcion': _('Elimina un grupo horario'),
              'version': '1.23.0'},
+        'api_ivrs_list':
+            {'descripcion': _('Lista los ivrs'),
+             'version': '1.26.0'},
+        'api_ivrs_create':
+            {'descripcion': _('Crea un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_update':
+            {'descripcion': _('Actualiza un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_detail':
+            {'descripcion': _('Obtiene detalle de un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_delete':
+            {'descripcion': _('Elimina un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_audio_options_list':
+            {'descripcion': _('Obtiene los audios disponibles para ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_destination_types_list':
+            {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
+             'version': '1.26.0'},
     }

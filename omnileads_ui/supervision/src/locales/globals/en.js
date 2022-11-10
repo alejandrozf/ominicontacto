@@ -53,6 +53,7 @@ export default {
     dial_pattern: 'Dial pattern | Dial patterns',
     group_of_hour: 'Group of hour | Group of hours',
     time_validation: 'Time validation | Time validations',
+    ivr: 'IVR | IVRs',
     // -------------
     // -- Actions --
     // -------------

@@ -107,5 +107,37 @@ export default {
             invalid_name_campo_token: 'The token field name is invalid',
             invalid_name_campo_duracion: 'The duration field name is invalid'
         }
+    },
+    ivr: {
+        enter_name: 'Enter the name',
+        enter_description: 'Enter the description',
+        validations: {
+            not_empty_time_validations: 'There must be at least one time validation',
+            repeated_ivr_name: 'IVR with that name already exists',
+            destination_option_already_exists: 'Destination option already exists'
+        },
+        destination_types: {
+            campaign: 'Inbound campaign',
+            validation_date: 'Date/time validation',
+            ivr: 'IVR',
+            hangup: 'Hang Up',
+            id_client: 'Client identifier',
+            custom_dst: 'Custom destination'
+        },
+        audios: {
+            external: {
+                drag_and_drop: 'Drag and drop files here to upload'
+            },
+            validations: {
+                required_internal_file: 'Internal file is required',
+                required_external_file: 'External file is required'
+            }
+        }
+    },
+    destination_option: {
+        validations: {
+            repeated_dtmf: 'There is already a destination option with that DTMF',
+            invalid_dtmf: 'The DTMF value must be a digit (0-9) or a character (#, -, *)'
+        }
     }
 };

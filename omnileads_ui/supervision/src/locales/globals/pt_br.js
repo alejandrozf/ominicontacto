@@ -53,6 +53,7 @@ export default {
     dial_pattern: 'Padrão de discagem | Padrões de discagem',
     group_of_hour: 'Grupo de tempo | Grupos de tempo',
     time_validation: 'Validação de tempo | Validações de tempo',
+    ivr: 'IVR | IVRs',
     // -------------
     // -- Actions --
     // -------------
