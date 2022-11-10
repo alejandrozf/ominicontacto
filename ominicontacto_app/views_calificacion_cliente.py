@@ -129,6 +129,11 @@ class CalificacionClienteFormView(FormView):
             return self.campana.get_campos_ocultos()
         return []
 
+    def _get_campos_obligatorios(self):
+        if self.contacto:
+            return self.campana.get_campos_obligatorios()
+        return []
+
     def dispatch(self, *args, **kwargs):
         id_contacto = None
         self.call_data = None
@@ -177,6 +182,7 @@ class CalificacionClienteFormView(FormView):
 
         self.campos_bloqueados = self._get_campos_bloqueados()
         self.campos_ocultos = self._get_campos_ocultos()
+        self.campos_obligatorios = self._get_campos_obligatorios()
 
         self.configuracion_sitio_externo = None
         # Si no hay call data no puedo interactuar con el sitio_externo
@@ -248,6 +254,7 @@ class CalificacionClienteFormView(FormView):
                 initial['telefono'] = self.kwargs['telefono']
 
         kwargs['campos_ocultos'] = self.campos_ocultos
+        kwargs['campos_obligatorios'] = self.campos_obligatorios
         kwargs['initial'] = initial
 
         if self.request.method == 'POST':
@@ -576,6 +583,9 @@ class AuditarCalificacionClienteFormView(CalificacionClienteFormView):
     def _get_campos_ocultos(self):
         return []
 
+    def _get_campos_obligatorios(self):
+        return []
+
     def get_success_url_venta(self):
         return reverse('auditar_formulario_venta',
                        kwargs={"pk_calificacion": self.object_calificacion.id})
@@ -777,6 +787,7 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
         campana = self.calificacion.opcion_calificacion.campana
         kwargs['campos_bloqueados'] = campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = campana.get_campos_ocultos()
+        kwargs['campos_obligatorios'] = campana.get_campos_obligatorios()
         return kwargs
 
     def _get_calificacion(self):

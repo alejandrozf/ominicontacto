@@ -81,6 +81,8 @@ class ContactoUpdateView(UpdateView):
         kwargs = super(ContactoUpdateView, self).get_form_kwargs()
         kwargs['campos_bloqueados'] = self.campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = self.campana.get_campos_ocultos()
+        kwargs['campos_obligatorios'] = self.campana.get_campos_obligatorios()
+
         return kwargs
 
     # TODO: Cuando cada base de datos solo pueda tener una campaña, se podrán mostrar
@@ -366,7 +368,9 @@ class BloquearCamposParaAgenteFormView(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(BloquearCamposParaAgenteFormView, self).get_form_kwargs()
-        kwargs['lang'] = {'bloquear': _('Bloquear {0}'), 'ocultar': _('Ocultar {0}')}
+        kwargs['lang'] = {'bloquear': _('Bloquear {0}'),
+                          'ocultar': _('Ocultar {0}'),
+                          'obligatorio': _('{0} obligatorio')}
         bd_metadata = self.campana.bd_contacto.get_metadata()
         kwargs['campos'] = bd_metadata.nombres_de_columnas
         kwargs['campo_telefono'] = bd_metadata.nombre_campo_telefono
@@ -378,6 +382,10 @@ class BloquearCamposParaAgenteFormView(FormView):
         prefijo = BloquearCamposParaAgenteForm.PREFIJO_OCULTAR
         for campo in campos_ocultos:
             kwargs['initial'][prefijo + campo] = True
+        campos_obligatorios = self.campana.get_campos_obligatorios()
+        prefijo = BloquearCamposParaAgenteForm.PREFIJO_OBLIGATORIO
+        for campo in campos_obligatorios:
+            kwargs['initial'][prefijo + campo] = True
         return kwargs
 
     def form_valid(self, form):
@@ -385,12 +393,22 @@ class BloquearCamposParaAgenteFormView(FormView):
         self.campana.set_campos_no_editables(campos_bloqueados)
         campos_ocultos = form.lista_campos_ocultos
         self.campana.set_campos_ocultos(campos_ocultos)
+        campos_obligatorios = form.lista_campos_obligatorios
+        self.campana.set_campos_obligatorios(campos_obligatorios)
         self.campana.save()
+        if campos_obligatorios:
+            msg_obligatorio = _("Campos obligatorios: {0}").format(', '.join(campos_obligatorios))
         message = _('Ningún campo ha quedado restringido ni oculto.')
         if campos_bloqueados:
             message = _("Campos restringidos: {0}").format(', '.join(campos_bloqueados))
             if campos_ocultos:
                 message += _("<br> Campos ocultos: {0}").format(', '.join(campos_ocultos))
+            if campos_obligatorios:
+                message += "<br> " + msg_obligatorio
+        else:
+            if campos_obligatorios:
+                message = msg_obligatorio
+
         messages.success(self.request, message)
         return redirect(URL_LISTA_CAMPANAS_POR_TIPO[self.campana.type])
 
@@ -498,6 +516,7 @@ class FormularioNuevoContactoFormView(FormView):
         kwargs['base_datos'] = self.campana.bd_contacto
         kwargs['campos_bloqueados'] = self.campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = self.campana.get_campos_ocultos()
+        kwargs['campos_obligatorios'] = self.campana.get_campos_obligatorios()
         kwargs['control_de_duplicados'] = self.campana.control_de_duplicados
 
         return kwargs
