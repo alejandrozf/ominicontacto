@@ -212,23 +212,38 @@ class LlamadaLogManager(models.Manager):
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
-        campanas_id = [campana.id for campana in campanas]
+        # Campañas a Filtrar:
+        campanas_id = set([campana.id for campana in campanas])
+        if campana:
+            if campana != 'activas' and campana != 'borradas':
+                campanas_id = [campana]
+            else:
+                for camp in campanas:
+                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
+                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
+                        campanas_id.remove(camp.id)
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
                                   event__in=INCLUDED_EVENTS)
+
         grabaciones = grabaciones.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
-        if calificaciones:
-            call_ids = HistoricalCalificacionCliente.objects.filter(
-                opcion_calificacion_id__in=calificaciones).values_list('callid', flat=True)
-            grabaciones = grabaciones.filter(callid__in=call_ids)
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
-            grabaciones = grabaciones.filter(time__range=(fecha_desde,
-                                                          fecha_hasta))
+            grabaciones = grabaciones.filter(time__range=(fecha_desde, fecha_hasta))
+
+        if calificaciones:
+            historicals = HistoricalCalificacionCliente.objects.filter(
+                opcion_calificacion_id__in=calificaciones)
+            # Optimizo filtro calificaciones historicas por fecha
+            if fecha_desde and fecha_hasta:
+                historicals.filter(modified__range=(fecha_desde, fecha_hasta))
+            call_ids = historicals.values_list('callid', flat=True)
+            grabaciones = grabaciones.filter(callid__in=call_ids)
+
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
@@ -238,19 +253,6 @@ class LlamadaLogManager(models.Manager):
             grabaciones = grabaciones.filter(callid=callid)
         if agente:
             grabaciones = grabaciones.filter(agente_id=agente.id)
-        if campana:
-            if campana != 'activas' and campana != 'borradas':
-                grabaciones = grabaciones.filter(campana_id=campana)
-
-            else:
-                campanas_excluidas_id = []
-                for camp in campanas:
-                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
-                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
-                        campanas_excluidas_id.append(camp.pk)
-
-                grabaciones = grabaciones.exclude(
-                    campana_id__in=campanas_excluidas_id)
 
         if duracion and duracion > 0:
             grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
