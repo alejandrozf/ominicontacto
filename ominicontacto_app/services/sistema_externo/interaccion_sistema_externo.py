@@ -43,24 +43,26 @@ class InteraccionConSistemaExterno(object):
             logger.exception(err_msg.format(headers))
             return headers
         try:
-            logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
             if sitio_externo.metodo == SitioExterno.GET:
-                requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
+                response = requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.TEXT_PLAIN:
                 headers['content_type'] = 'text/plain'
-                requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.WWW_FORM:
-                requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.MULTIPART:
-                requests.post(url, files=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, files=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.JSON:
-                requests.post(url, json=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, json=parametros, headers=headers, verify=verify_ssl)
         except Exception as e:
             # Si es invalido el token:
             #     pido token de nuevo y reintento 1 vez
             #     Si vuelve a fallar log error y aviso al agente.
+            logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
             logger.exception(err_msg.format(e))
             return e
+        logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
+        logger.info(response.status_code)
 
     def obtener_headers(self, sitio_externo):
         if sitio_externo.autenticacion:
