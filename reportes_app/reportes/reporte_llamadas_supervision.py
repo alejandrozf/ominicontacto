@@ -101,7 +101,7 @@ class ReporteDeLlamadasDeSupervision(object):
         for cantidad in calificaciones:
             campana_id = cantidad['opcion_calificacion__campana_id']
             if campana_id not in self.estadisticas:
-                self._inicializar_conteo_de_campana(self.campanas[campana_id])
+                self._inicializar_conteo_de_campana(campana_id)
             if self.campanas[campana_id].objetivo == 0:
                 self.estadisticas[campana_id]['porcentaje_objetivo'] = 0
             else:
