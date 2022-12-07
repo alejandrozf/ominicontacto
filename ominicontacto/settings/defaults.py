@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api_app.apps.ApiAppConfig',
+    'whatsapp_app.apps.WhatsappAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',
@@ -384,6 +385,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'reportes_app/locale'),
     os.path.join(BASE_DIR, 'reciclado_app/locale'),
     os.path.join(BASE_DIR, 'supervision_app/locale'),
+    os.path.join(BASE_DIR, 'whatsapp_app/locale'),
 )
 
 LANGUAGES = (

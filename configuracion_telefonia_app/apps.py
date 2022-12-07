@@ -26,68 +26,73 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
     name = 'configuracion_telefonia_app'
 
     def supervision_menu_items(self, request, permissions):
-        items = []
+        conexiones = []
+        telefonia = []
         if 'lista_troncal_sip' in permissions:
-            items.append({
+            telefonia.append({
                 'label': _('Troncales SIP'),
                 'url': reverse('lista_troncal_sip', args=(1,)),
             })
         if 'lista_rutas_entrantes' in permissions:
-            items.append({
+            telefonia.append({
                 'label': _('Rutas entrantes'),
                 'url': reverse('lista_rutas_entrantes'),
             })
         if 'lista_rutas_salientes' in permissions:
-            items.append({
+            telefonia.append({
                 'label': _('Rutas salientes'),
                 'url': reverse('lista_rutas_salientes')
             })
-        if 'lista_ivrs' in permissions:
-            items.append({
-                'label': _('IVR'),
-                'url': reverse('lista_ivrs')
-            })
-        if 'lista_grupos_horarios' in permissions:
-            items.append({
-                'label': _('Grupos horarios'),
-                'url': reverse('lista_grupos_horarios')
-            })
-        if 'lista_validaciones_fecha_hora' in permissions:
-            items.append({
-                'label': _('Validaciones Horarias'),
-                'url': reverse('lista_validaciones_fecha_hora', args=(1,))
-            })
-        if 'lista_identificador_cliente' in permissions:
-            items.append({
-                'label': _('Identificación de Clientes'),
-                'url': reverse('lista_identificador_cliente', args=(1,))
-            })
         if 'lista_destinos_personalizados' in permissions:
-            items.append({
+            telefonia.append({
                 'label': _('Destinos personalizados'),
                 'url': reverse('lista_destinos_personalizados', args=(1,))
             })
-
-        opciones_avanzadas = []
+        if 'lista_ivrs' in permissions:
+            telefonia.append({
+                'label': _('IVR'),
+                'url': reverse('lista_ivrs')
+            })
         if ('ajustar_configuracion_amd' in permissions):
-            opciones_avanzadas.append({
+            telefonia.append({
                 'label': _('AMD'),
                 'url': reverse('ajustar_configuracion_amd', args=(1,))
             })
-
         if ('ajustar_formato_grabaciones' in permissions):
-            opciones_avanzadas.append({
+            telefonia.append({
                 'label': _('Esquema grabaciones'),
                 'url': reverse('ajustar_formato_grabaciones', args=(1,))
             })
-        if opciones_avanzadas:
-            items.append({
-                'label': _('Configuración avanzada'),
+
+        if telefonia:
+            conexiones.append({
+                'label': _('Telefonía'),
                 'icon': 'icon-audio-file',
-                'id': 'menuConfiguracionAvanzada',
-                'children': opciones_avanzadas
+                'id': 'menuTelefonia',
+                'children': telefonia
             })
 
+        whatsapp = []
+        if 'whatsapp_providers_configuration' in permissions:
+            whatsapp.append({
+                'label': _('Proveedores'),
+                'url': reverse('whatsapp_providers_configuration')
+            })
+        if 'whatsapp_lines_configuration' in permissions:
+            whatsapp.append({
+                'label': _('Lineas'),
+                'url': reverse('whatsapp_lines_configuration')
+            })
+
+        if whatsapp:
+            conexiones.append({
+                'label': _('WhatsApp'),
+                'icon': 'icon-audio-file',
+                'id': 'menuWhatsapp',
+                'children': whatsapp
+            })
+
+        recursos = []
         audios = []
         if 'adicionar_audios_asterisk' in permissions:
             audios.append({
@@ -105,23 +110,64 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'url': reverse('lista_playlist', args=(1, ))
             })
         if audios:
-            items.append({
+            recursos.append({
                 'label': _('Audios'),
                 'icon': 'icon-audio-file',
                 'id': 'menuAllAudios',
                 'children': audios
             })
 
-        if items:
-            return [
+        # MUSICAS DE ESPERA ?
+        if 'lista_validaciones_fecha_hora' in permissions:
+            recursos.append({
+                'label': _('Validaciones Horarias'),
+                'url': reverse('lista_validaciones_fecha_hora', args=(1,))
+            })
+        if 'lista_grupos_horarios' in permissions:
+            recursos.append({
+                'label': _('Grupos horarios'),
+                'url': reverse('lista_grupos_horarios')
+            })
+        if 'lista_identificador_cliente' in permissions:
+            recursos.append({
+                'label': _('Identificación de Clientes'),
+                'url': reverse('lista_identificador_cliente', args=(1,))
+            })
+
+        if 'whatsapp_templates_configuration' in permissions:
+            recursos.append({
+                'label': _('Templates de WhatsApp'),
+                'url': reverse('whatsapp_templates_configuration')
+            })
+        if 'message_templates_configuration' in permissions:
+            recursos.append({
+                'label': _('Plantillas de mensajes'),
+                'url': reverse('message_templates_configuration')
+            })
+
+        items = []
+        if conexiones:
+            items.append(
                 {
                     'order': 700,
-                    'label': _('Telefonía'),
+                    'label': _('Conexiones'),
                     'icon': 'icon-phone',
-                    'id': 'menuTelefonia',
-                    'children': items,
+                    'id': 'menuConexiones',
+                    'children': conexiones,
                 },
-            ]
+            )
+        if recursos:
+            items.append(
+                {
+                    'order': 750,
+                    'label': _('Recursos'),
+                    'icon': 'icon-phone',
+                    'id': 'menuRecursos',
+                    'children': recursos,
+                },
+            )
+        if items:
+            return items
         return None
 
     def configuraciones_de_permisos(self):
