@@ -30,6 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/bootstrap-datetimepicker.min.css' %}">
@@ -52,6 +53,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
@@ -182,7 +184,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </div>
 
 <!-- Modal que se despliega al dar clic en Marcar Llamada Fuera de Campaña -->
-<div id="modalCallOffCamp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div id="modalCallOffCamp" class="modal">
     <div class="modal-dialog modal-sm" style="max-width:400px">
         <div class="modal-content">
             <div class="modal-header">
@@ -989,7 +991,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript">
 
  $(document).ready(function () {
-
+    $('select.form-control').each(function() {
+        $(this).select2({
+            width: '100%',
+            placeholder: '----------'
+        });
+    });
    /* Toggle sidebar */
    $('#sidebarCollapse').on('click',function(){
      $('#navBar').toggleClass('active');
