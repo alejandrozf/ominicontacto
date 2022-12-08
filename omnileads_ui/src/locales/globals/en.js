@@ -57,7 +57,8 @@ export default {
     whatsapp: {
         title: 'Whatsapp',
         provider: 'Whatsapp provider | Whatsapp providers',
-        line: 'Whatsapp line | Whatsapp lines'
+        line: 'Whatsapp line | Whatsapp lines',
+        message_template: 'Message template | Message templates'
     },
     // -------------
     // -- Actions --

@@ -176,6 +176,11 @@ export default {
             tipo_de_destino: 'Tipo de destino',
             mensaje_bienvenida: 'Mensaje de bienvenida',
             mensaje_despedida: 'Mensaje de despedida'
+        },
+        message_template: {
+            nombre: 'Nombre',
+            tipo: 'Tipo',
+            configuracion: 'Configuracion'
         }
     }
 };

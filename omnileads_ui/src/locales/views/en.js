@@ -162,6 +162,10 @@ export default {
         provider: {
             new_title: 'New provider',
             edit_title: 'Edit the provider'
+        },
+        message_template: {
+            new_title: 'New message template',
+            edit_title: 'Edit message template'
         }
     }
 };

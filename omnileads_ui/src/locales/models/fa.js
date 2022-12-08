@@ -176,6 +176,11 @@ export default {
             tipo_de_destino: 'نوع مقصد',
             mensaje_bienvenida: 'پیام خوش امد گویی',
             mensaje_despedida: 'پیام خداحافظی'
+        },
+        message_template: {
+            nombre: 'نام',
+            tipo: 'نوع',
+            configuracion: 'تنظیمات'
         }
     }
 };

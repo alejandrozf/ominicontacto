@@ -153,6 +153,10 @@ export default {
         provider: {
             new_title: 'Novo provedor',
             edit_title: 'Editar provedor'
+        },
+        message_template: {
+            new_title: 'Novo modelo de mensagem',
+            edit_title: 'Editar modelo de mensagem'
         }
     }
 };

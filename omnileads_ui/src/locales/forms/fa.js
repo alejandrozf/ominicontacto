@@ -189,6 +189,50 @@ export default {
                 meta: 'هدف',
                 gupshup: 'GupShup'
             }
+        },
+        message_template: {
+            types: {
+                text: 'متن',
+                image: 'تصویر',
+                file: 'بایگانی',
+                audio: 'سمعی',
+                video: 'ویدئو',
+                sticker: 'برچسب ها',
+                location: 'محل',
+                contact: 'مخاطب'
+            },
+            fields: {
+                text: 'متن',
+                url: 'آدرس های اینترنتی',
+                preview_url: 'URL قبلی',
+                caption: 'عنوان',
+                filename: 'نام فایل',
+                longitude: 'طول',
+                latitude: 'عرض جغرافیایی',
+                name: 'نام',
+                address: 'جهت'
+            },
+            help_text: {
+                audio: {
+                    url: 'آدرس عمومی فایل صوتی'
+                },
+                image: {
+                    original_url: 'URL عمومی تصویر میزبان',
+                    preview_url: 'URL عمومی تصویر کوچک تصویر',
+                    caption: 'شرح تصویر'
+                },
+                file: {
+                    url: 'URL عمومی فایل میزبانی شده',
+                    filename: 'نام فایل'
+                },
+                video: {
+                    url: 'آدرس عمومی فایل ویدیویی',
+                    caption: 'کپشن ویدیو'
+                },
+                sticker: {
+                    url: 'URL عمومی فایل استیکر'
+                }
+            }
         }
     }
 };

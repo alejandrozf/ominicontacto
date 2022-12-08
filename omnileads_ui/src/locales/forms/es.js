@@ -189,6 +189,50 @@ export default {
                 meta: 'Meta',
                 gupshup: 'GupShup'
             }
+        },
+        message_template: {
+            types: {
+                text: 'Texto',
+                image: 'Imagen',
+                file: 'Archivo',
+                audio: 'Audio',
+                video: 'Video',
+                sticker: 'Sticker',
+                location: 'Ubicacion',
+                contact: 'Contacto'
+            },
+            fields: {
+                text: 'Texto',
+                url: 'Url',
+                preview_url: 'URL Previa',
+                caption: 'Subtitulo',
+                filename: 'Nombre del archivo',
+                longitude: 'Longitud',
+                latitude: 'Latitud',
+                name: 'Nombre',
+                address: 'Direccion'
+            },
+            help_text: {
+                audio: {
+                    url: 'URL pública del archivo de audio'
+                },
+                image: {
+                    original_url: 'URL pública de la imagen alojada',
+                    preview_url: 'URL pública de la miniatura de la imagen',
+                    caption: 'Título de la imagen'
+                },
+                file: {
+                    url: 'URL pública del archivo alojado',
+                    filename: 'Nombre del archivo'
+                },
+                video: {
+                    url: 'URL pública del archivo de video',
+                    caption: 'Subtitulo del video'
+                },
+                sticker: {
+                    url: 'URL pública del archivo de sticker'
+                }
+            }
         }
     }
 };

@@ -153,6 +153,10 @@ export default {
         provider: {
             new_title: 'تامین کننده جدید',
             edit_title: 'ارائه دهنده را ویرایش کنید'
+        },
+        message_template: {
+            new_title: 'ایجاد الگوی پیام',
+            edit_title: 'ویرایش قالب پیام'
         }
     }
 };
