@@ -181,5 +181,14 @@ export default {
         validations: {
             forbidden: 'Você não tem permissões para registrar a instância. Entre em contato com seu administrador'
         }
+    },
+    whatsapp: {
+        provider: {
+            types: {
+                twilio: 'Twilio',
+                meta: 'Meta',
+                gupshup: 'GupShup'
+            }
+        }
     }
 };

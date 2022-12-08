@@ -153,5 +153,15 @@ export default {
                 res3: 'Los datos enviados desde la instancia no son correctos'
             }
         }
+    },
+    whatsapp: {
+        line: {
+            new_title: 'Crea linea de whatsapp',
+            edit_title: 'Edita linea de whatsapp'
+        },
+        provider: {
+            new_title: 'Nuevo proveedor',
+            edit_title: 'Edita proveedor'
+        }
     }
 };

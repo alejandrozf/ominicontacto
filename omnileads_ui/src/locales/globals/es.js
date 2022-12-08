@@ -54,6 +54,11 @@ export default {
     group_of_hour: 'Grupo horario | Grupos horarios',
     time_validation: 'Validacion de tiempo | Validaciones de tiempo',
     ivr: 'IVR | IVRs',
+    whatsapp: {
+        title: 'Whatsapp',
+        provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp',
+        line: 'Linea de Whatsapp | Lineas de Whatsapp'
+    },
     // -------------
     // -- Actions --
     // -------------

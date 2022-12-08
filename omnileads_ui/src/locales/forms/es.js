@@ -181,5 +181,14 @@ export default {
         validations: {
             forbidden: 'No tiene permisos para registrar la instancia. Por favor contacte con su Administrador'
         }
+    },
+    whatsapp: {
+        provider: {
+            types: {
+                twilio: 'Twilio',
+                meta: 'Meta',
+                gupshup: 'GupShup'
+            }
+        }
     }
 };

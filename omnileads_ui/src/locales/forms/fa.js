@@ -181,5 +181,14 @@ export default {
         validations: {
             forbidden: 'شما مجوز ثبت نمونه را ندارید. لطفا با مدیر خود تماس بگیرید'
         }
+    },
+    whatsapp: {
+        provider: {
+            types: {
+                twilio: 'تویلیو',
+                meta: 'هدف',
+                gupshup: 'GupShup'
+            }
+        }
     }
 };

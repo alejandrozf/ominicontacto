@@ -181,5 +181,14 @@ export default {
         validations: {
             forbidden: 'You do not have permissions to register the instance. Please contact your Administrator'
         }
+    },
+    whatsapp: {
+        provider: {
+            types: {
+                twilio: 'Twilio',
+                meta: 'Meta',
+                gupshup: 'GupShup'
+            }
+        }
     }
 };

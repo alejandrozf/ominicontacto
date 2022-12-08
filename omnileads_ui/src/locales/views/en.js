@@ -153,5 +153,15 @@ export default {
                 res3: 'The data sent from the instance is not correct'
             }
         }
+    },
+    whatsapp: {
+        line: {
+            new_title: 'create whatsapp line',
+            edit_title: 'edit whatsapp line'
+        },
+        provider: {
+            new_title: 'New provider',
+            edit_title: 'Edit the provider'
+        }
     }
 };

@@ -47,6 +47,7 @@ import Tag from 'primevue/tag';
 import ProgressSpinner from 'primevue/progressspinner';
 import Avatar from 'primevue/avatar';
 import Image from 'primevue/image';
+import InputMask from 'primevue/inputmask';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -93,6 +94,7 @@ app.component('Tag', Tag);
 app.component('ProgressSpinner', ProgressSpinner);
 app.component('Avatar', Avatar);
 app.component('Image', Image);
+app.component('InputMask', InputMask);
 
 // Register Helpers
 app.provide('$helpers', Helpers);
