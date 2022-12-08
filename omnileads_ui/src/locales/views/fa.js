@@ -146,17 +146,36 @@ export default {
         }
     },
     whatsapp: {
-        line: {
-            new_title: 'خط واتساپ ایجاد کنید',
-            edit_title: 'خط واتساپ را ویرایش کنید'
+        message_template: {
+            new_title: 'ایجاد الگوی پیام',
+            edit_title: 'ویرایش قالب پیام'
         },
         provider: {
             new_title: 'تامین کننده جدید',
             edit_title: 'ارائه دهنده را ویرایش کنید'
         },
-        message_template: {
-            new_title: 'ایجاد الگوی پیام',
-            edit_title: 'ویرایش قالب پیام'
+        line: {
+            new_title: 'خط واتساپ ایجاد کنید',
+            edit_title: 'خط واتساپ را ویرایش کنید',
+            tipos_de_destino: {
+                campana: 'پویش',
+                interactivo: 'در ارتباط بودن'
+            },
+            step1: {
+                title: 'داده های پایه'
+            },
+            step2: {
+                title: 'داده های حامل',
+                sender: 'فرستنده',
+                app_info: 'اطلاعات برنامه'
+            },
+            step3: {
+                title: 'داده های اتصال',
+                display_name: 'نام:',
+                display_description: 'شرح:',
+                message: 'پیام ها',
+                destination: 'مقصد'
+            }
         }
     }
 };

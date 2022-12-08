@@ -155,17 +155,36 @@ export default {
         }
     },
     whatsapp: {
-        line: {
-            new_title: 'create whatsapp line',
-            edit_title: 'edit whatsapp line'
+        message_template: {
+            new_title: 'New message template',
+            edit_title: 'Edit message template'
         },
         provider: {
             new_title: 'New provider',
             edit_title: 'Edit the provider'
         },
-        message_template: {
-            new_title: 'New message template',
-            edit_title: 'Edit message template'
+        line: {
+            new_title: 'create whatsapp line',
+            edit_title: 'edit whatsapp line',
+            tipos_de_destino: {
+                campana: 'Campaign',
+                interactivo: 'Interactive'
+            },
+            step1: {
+                title: 'Basic data'
+            },
+            step2: {
+                title: 'Carrier data',
+                sender: 'Sender',
+                app_info: 'Info app'
+            },
+            step3: {
+                title: 'Conection data',
+                display_name: 'Name:',
+                display_description: 'Description:',
+                message: 'Messages',
+                destination: 'Destination'
+            }
         }
     }
 };

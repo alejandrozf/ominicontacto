@@ -39,10 +39,11 @@ from whatsapp_app.models import ConfiguracionProveedor
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nombre = serializers.CharField()
+    numero = serializers.CharField()
     proveedor = serializers.IntegerField(source='proveedor.id')
     configuracion = serializers.JSONField()
     destino = serializers.IntegerField(source='destino.id', required=False)
-    horario = serializers.CharField(source='horario.nombre', required=False)
+    horario = serializers.IntegerField(source='horario.id', required=False)
     tipo_de_destino = serializers.IntegerField(source='destino.tipo', required=False)
     mensaje_bienvenida = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     mensaje_despedida = serializers.IntegerField(source='mensaje_despedida.id', required=False)
@@ -56,6 +57,7 @@ class CreateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'nombre',
+            'numero',
             'proveedor',
             'configuracion',
             'destino',
@@ -84,10 +86,11 @@ class CreateSerializer(serializers.ModelSerializer):
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nombre = serializers.CharField()
+    numero = serializers.CharField()
     proveedor = serializers.IntegerField(source='proveedor.id')
     configuracion = serializers.JSONField()
     destino = serializers.IntegerField(source='destino.id', required=False)
-    horario = serializers.CharField(source='horario.nombre', required=False)
+    horario = serializers.IntegerField(source='horario.id', required=False)
     mensaje_bienvenida = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     mensaje_despedida = serializers.IntegerField(source='mensaje_despedida.id', required=False)
     mensaje_fueradehora = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
@@ -100,6 +103,7 @@ class UpdateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'nombre',
+            'numero',
             'proveedor',
             'configuracion',
             'destino',

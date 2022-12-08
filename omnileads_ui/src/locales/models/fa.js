@@ -157,6 +157,14 @@ export default {
         password: 'رمز دسترسی',
         phone: 'تلفن'
     },
+    campaign: {
+        types: {
+            inbound: 'ورودی',
+            manual: 'کتابچه راهنمای',
+            dialer: 'شماره گیر',
+            preview: 'پیش نمایش'
+        }
+    },
     whatsapp: {
         provider: {
             nombre: 'نام',
@@ -169,9 +177,12 @@ export default {
             nombre: 'نام',
             proveedor: 'تامین کنندگان',
             numero: 'عدد',
-            identificador: 'مشخص کننده',
-            es_verificado: 'تایید شده است',
-            token_validacion: 'نشانه اعتبارسنجی',
+            configuracion: {
+                app_name: 'نام برنامه',
+                app_id: 'شناسه برنامه'
+            },
+            horario: 'گروه زمانی',
+            mensaje_fueradehora: 'پیام بعد از ساعت کاری',
             destino: 'سرنوشت',
             tipo_de_destino: 'نوع مقصد',
             mensaje_bienvenida: 'پیام خوش امد گویی',

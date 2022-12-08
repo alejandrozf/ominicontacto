@@ -157,6 +157,14 @@ export default {
         password: 'senha de acesso',
         phone: 'Telefone'
     },
+    campaign: {
+        types: {
+            inbound: 'Entrante',
+            manual: 'Manual',
+            dialer: 'Dialer',
+            preview: 'Preview'
+        }
+    },
     whatsapp: {
         provider: {
             nombre: 'Nome',
@@ -169,9 +177,12 @@ export default {
             nombre: 'Nome',
             proveedor: 'Fornecedores',
             numero: 'Número',
-            identificador: 'Identificador',
-            es_verificado: 'Verificado',
-            token_validacion: 'Token de validação',
+            configuracion: {
+                app_name: 'nome do aplicativo',
+                app_id: 'ID do aplicativo'
+            },
+            horario: 'Grupo de tempo',
+            mensaje_fueradehora: 'Mensagem Fora do Horário',
             destino: 'Destino',
             tipo_de_destino: 'Tipo de destino',
             mensaje_bienvenida: 'Mensagem de boas-vindas',
