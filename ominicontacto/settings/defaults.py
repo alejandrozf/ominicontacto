@@ -197,7 +197,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
-    ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
+    ("omnileads-frontend", os.path.join(BASE_DIR, "omnileads_ui/dist")),
 ]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
