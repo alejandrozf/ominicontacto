@@ -138,6 +138,11 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'label': _('Plantillas de mensajes'),
                 'url': reverse('message_templates_configuration')
             })
+        if 'whatsapp_message_template_groups' in permissions:
+            recursos.append({
+                'label': _('Grupos de plantillas de mensaje'),
+                'url': reverse('whatsapp_message_template_groups')
+            })
 
         items = []
         if conexiones:

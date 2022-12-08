@@ -59,7 +59,8 @@ export default {
         provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp',
         line: 'Linea de Whatsapp | Lineas de Whatsapp',
         message_template: 'Template de mensaje | Templates de mensajes',
-        whatsapp_template: 'Template de whatsapp | Templates de whatsapp'
+        whatsapp_template: 'Template de whatsapp | Templates de whatsapp',
+        group_of_message_template: 'Grupo de plantillas de mensaje | Grupos de plantillas de mensaje'
     },
     // -------------
     // -- Actions --

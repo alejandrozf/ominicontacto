@@ -233,6 +233,11 @@ export default {
                     url: 'URL عمومی فایل استیکر'
                 }
             }
+        },
+        group_of_message_template: {
+            validations: {
+                not_empty_templates: 'حداقل باید یک الگو وجود داشته باشد'
+            }
         }
     }
 };

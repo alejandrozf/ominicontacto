@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supWhatsappMessageTemplates"
+      :value="templates"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -45,10 +45,10 @@
               />
             </span>
             <Button
-              class="ml-2"
+              class="p-button-secondary ml-2"
               icon="pi pi-plus"
               v-tooltip.top="$t('globals.new')"
-              @click="newMessageTemplate"
+              @click="add"
             />
           </div>
         </div>
@@ -72,12 +72,6 @@
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">
         <template #body="slotProps">
           <Button
-            icon="pi pi-pencil"
-            class="p-button-warning ml-2"
-            @click="edit(slotProps.data)"
-            v-tooltip.top="$t('globals.edit')"
-          />
-          <Button
             icon="pi pi-trash"
             class="p-button-danger ml-2"
             @click="remove(slotProps.data.id)"
@@ -93,7 +87,6 @@
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
-import { HTTP_STATUS, CONFIRM_BTN_COLOR, CANCEL_BTN_COLOR } from '@/globals';
 
 export default {
     inject: ['$helpers'],
@@ -133,14 +126,15 @@ export default {
                     name: this.$t('forms.whatsapp.message_template.types.contact'),
                     value: TEMPLATE_TYPES.CONTACT
                 }
-            ]
+            ],
+            templates: []
         };
     },
     created () {
         this.initFilters();
     },
     computed: {
-        ...mapState(['supWhatsappMessageTemplates'])
+        ...mapState(['supWhatsappMessageTemplates', 'supMessageTemplatesOfGroup'])
     },
     methods: {
         clearFilter () {
@@ -154,83 +148,50 @@ export default {
         getType (type) {
             return this.templateTypes.find((t) => t.value === type).name;
         },
-        edit (messageTemplate) {
-            this.$emit('handleModalEvent', {
-                showModal: true,
-                formToCreate: false,
-                messageTemplate
-            });
-        },
-        newMessageTemplate () {
+        add () {
             this.$emit('handleModalEvent', {
                 showModal: true
             });
         },
-        async remove (id) {
-            this.$swal({
-                title: this.$t('globals.sure_notification'),
-                icon: this.$t('globals.icon_warning'),
-                showCancelButton: true,
-                confirmButtonText: this.$t('globals.yes'),
-                cancelButtonText: this.$t('globals.no'),
-                confirmButtonColor: CONFIRM_BTN_COLOR,
-                cancelButtonColor: CANCEL_BTN_COLOR,
-                backdrop: false,
-                reverseButtons: true
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    this.$swal.fire({
-                        title: this.$t('globals.processing_request'),
-                        timerProgressBar: true,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            this.$swal.showLoading();
-                        }
-                    });
-                    const { status, message } = await this.deleteWhatsappMessageTemplate(
-                        id
-                    );
-                    this.$swal.close();
-                    if (status === HTTP_STATUS.SUCCESS) {
-                        this.initWhatsappMessageTemplates();
-                        this.$swal(
-                            this.$helpers.getToasConfig(
-                                this.$t('globals.success_notification'),
-                                message,
-                                this.$t('globals.icon_success')
-                            )
-                        );
-                    } else {
-                        this.$swal(
-                            this.$helpers.getToasConfig(
-                                this.$t('globals.error_notification'),
-                                message,
-                                this.$t('globals.icon_error')
-                            )
-                        );
-                    }
-                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-                    this.$swal(
-                        this.$helpers.getToasConfig(
-                            this.$t('globals.cancelled'),
-                            this.$tc('globals.error_to_deleted_type', {
-                                type: this.$tc('globals.whatsapp.message_template')
-                            }),
-                            this.$t('globals.icon_error')
-                        )
-                    );
-                }
-            });
+        remove (id) {
+            this.removeMessageTemplateOfGroup(id);
+            this.$swal(
+                this.$helpers.getToasConfig(
+                    this.$t('globals.success_notification'),
+                    this.$tc('globals.success_deleted_type', {
+                        type: this.$tc('globals.whatsapp.message_template')
+                    }),
+                    this.$t('globals.icon_success'),
+                    this.$t('globals.how_to_save_changes')
+                )
+            );
         },
-        ...mapActions([
-            'deleteWhatsappMessageTemplate',
-            'initWhatsappMessageTemplates',
-            'initWhatsappMessageTemplate'
-        ])
+        setTemplates () {
+            if (
+                this.supMessageTemplatesOfGroup &&
+        this.supMessageTemplatesOfGroup.length > 0
+            ) {
+                this.templates = this.supWhatsappMessageTemplates.filter((t) =>
+                    this.supMessageTemplatesOfGroup.includes(t.id)
+                );
+            } else {
+                this.templates = [];
+            }
+        },
+        ...mapActions(['removeMessageTemplateOfGroup'])
     },
     watch: {
+        supMessageTemplatesOfGroup: {
+            handler () {
+                this.setTemplates();
+            },
+            deep: true,
+            immediate: true
+        },
         supWhatsappMessageTemplates: {
-            handler () {},
+            handler () {
+                this.setTemplates();
+            },
             deep: true,
             immediate: true
         }

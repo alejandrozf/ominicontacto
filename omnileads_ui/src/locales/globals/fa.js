@@ -59,7 +59,8 @@ export default {
         provider: 'ارائه دهنده واتساپ | ارائه دهندگان واتساپ',
         line: 'واتساپ لاین | خطوط واتساپ',
         message_template: 'قالب پیام | الگوهای پیام',
-        whatsapp_template: 'قالب واتس اپ | قالب واتساپ'
+        whatsapp_template: 'قالب واتس اپ | قالب واتساپ',
+        group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام'
     },
     // -------------
     // -- Actions --

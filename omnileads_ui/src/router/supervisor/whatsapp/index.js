@@ -2,6 +2,7 @@ import Index from '@/views/supervisor/whatsapp/Index';
 import ProviderRoutes from './provider_routes';
 import LineRoutes from './line_routes';
 import MessageTemlateRoutes from './message_template_routes';
+import GroupOfMessageTemlateRoutes from './group_of_message_template_routes';
 import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
 
 export default [
@@ -12,5 +13,6 @@ export default [
     },
     ...ProviderRoutes,
     ...LineRoutes,
-    ...MessageTemlateRoutes
+    ...MessageTemlateRoutes,
+    ...GroupOfMessageTemlateRoutes
 ];

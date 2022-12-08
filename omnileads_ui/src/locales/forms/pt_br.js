@@ -233,6 +233,11 @@ export default {
                     url: 'URL pública do arquivo de figurinhas'
                 }
             }
+        },
+        group_of_message_template: {
+            validations: {
+                not_empty_templates: 'Deve haver pelo menos um modelo'
+            }
         }
     }
 };

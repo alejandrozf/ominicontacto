@@ -10,24 +10,30 @@ import MessageTemplateState from './message_templates/state';
 import WhatsappTemplateActions from './whatsapp_templates/actions';
 import WhatsappTemplateMutations from './whatsapp_templates/mutations';
 import WhatsappTemplateState from './whatsapp_templates/state';
+import GroupOfMessageTemplateActions from './group_of_message_templates/actions';
+import GroupOfMessageTemplateMutations from './group_of_message_templates/mutations';
+import GroupOfMessageTemplateState from './group_of_message_templates/state';
 
 export const SupervisorWhatsappState = {
     ...ProvidersState,
     ...LinesState,
     ...MessageTemplateState,
-    ...WhatsappTemplateState
+    ...WhatsappTemplateState,
+    ...GroupOfMessageTemplateState
 };
 
 export const SupervisorWhatsappMutations = {
     ...ProvidersMutations,
     ...LinesMutations,
     ...MessageTemplateMutations,
-    ...WhatsappTemplateMutations
+    ...WhatsappTemplateMutations,
+    ...GroupOfMessageTemplateMutations
 };
 
 export const SupervisorWhatsappActions = {
     ...ProvidersActions,
     ...LinesActions,
     ...MessageTemplateActions,
-    ...WhatsappTemplateActions
+    ...WhatsappTemplateActions,
+    ...GroupOfMessageTemplateActions
 };

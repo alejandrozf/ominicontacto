@@ -233,6 +233,11 @@ export default {
                     url: 'Public URL of the sticker file'
                 }
             }
+        },
+        group_of_message_template: {
+            validations: {
+                not_empty_templates: 'There must be at least one template'
+            }
         }
     }
 };

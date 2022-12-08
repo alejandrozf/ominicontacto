@@ -203,6 +203,11 @@ export default {
             modificado: 'Modificado',
             tipo: 'Cara',
             categoria: 'Categoria'
+        },
+        group_of_message_template: {
+            nombre: 'Nome',
+            plantillas: 'Plantillas',
+            status: 'Estado'
         }
     }
 };

@@ -45,7 +45,8 @@ module.exports = {
         supervisor_whatsapp_providers: getPageConfig('supervisor_whatsapp_providers'),
         supervisor_whatsapp_lines: getPageConfig('supervisor_whatsapp_lines'),
         supervisor_whatsapp_message_templates: getPageConfig('supervisor_whatsapp_message_templates'),
-        supervisor_whatsapp_templates: getPageConfig('supervisor_whatsapp_templates')
+        supervisor_whatsapp_templates: getPageConfig('supervisor_whatsapp_templates'),
+        supervisor_whatsapp_group_of_message_templates: getPageConfig('supervisor_whatsapp_group_of_message_templates')
     },
     devServer: {
         contentBase: './src/assets',

@@ -185,6 +185,10 @@ export default {
                 message: 'Mensajes',
                 destination: 'Destino'
             }
+        },
+        group_of_message_template: {
+            new_title: 'Nuevo grupo',
+            edit_title: 'Edita grupo'
         }
     }
 };

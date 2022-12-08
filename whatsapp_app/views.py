@@ -32,3 +32,8 @@ class WhatsappLinesConfigurationView(TemplateView):
 class MessageTemplatesConfigurationView(TemplateView):
     """Configuración plantillas de mensaje"""
     template_name = "message_templates_configuration.html"
+
+
+class MessageTemplateGroupView(TemplateView):
+    """Configuración para grupos de plantillas de mensajes"""
+    template_name = "message_template_groups.html"

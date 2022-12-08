@@ -238,6 +238,11 @@ export default {
             validations: {
                 field_is_required: '{field} es requerido'
             }
+        },
+        group_of_message_template: {
+            validations: {
+                not_empty_templates: 'Debe existir al menos un template'
+            }
         }
     }
 };

@@ -137,7 +137,7 @@ export default {
         supWhatsappTemplates: {
             handler () {
                 if (this.supWhatsappTemplates && this.supWhatsappTemplates.length > 0) {
-                    this.templates =  this.supWhatsappTemplates.filter(wt => wt.linea === this.id);
+                    this.templates = this.supWhatsappTemplates.filter(wt => wt.linea === this.id);
                 }
             },
             deep: true,
