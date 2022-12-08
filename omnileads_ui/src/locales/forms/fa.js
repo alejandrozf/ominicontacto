@@ -238,6 +238,11 @@ export default {
             validations: {
                 not_empty_templates: 'حداقل باید یک الگو وجود داشته باشد'
             }
+        },
+        group_of_whatsapp_template: {
+            validations: {
+                not_empty_templates: 'حداقل باید یک الگو وجود داشته باشد'
+            }
         }
     }
 };

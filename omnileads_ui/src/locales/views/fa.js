@@ -150,6 +150,10 @@ export default {
             new_title: 'ایجاد الگوی پیام',
             edit_title: 'ویرایش قالب پیام'
         },
+        whatsapp_template: {
+            new_title: 'قالب جدید واتساپ',
+            edit_title: 'ویرایش قالب واتساپ'
+        },
         provider: {
             new_title: 'تامین کننده جدید',
             edit_title: 'ارائه دهنده را ویرایش کنید'

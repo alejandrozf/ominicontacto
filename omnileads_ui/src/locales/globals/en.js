@@ -60,7 +60,8 @@ export default {
         line: 'Whatsapp line | Whatsapp lines',
         message_template: 'Message template | Message templates',
         whatsapp_template: 'WhatsApp template | Whatsapp template',
-        group_of_message_template: 'Group of message templates | Message template groups'
+        group_of_message_template: 'Group of message templates | Message template groups',
+        group_of_whatsapp_template: 'Whatsapp template group | Whatsapp template groups'
     },
     // -------------
     // -- Actions --

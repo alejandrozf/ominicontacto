@@ -208,6 +208,11 @@ export default {
             nombre: 'نام',
             plantillas: 'قالب ها',
             status: 'حالت'
+        },
+        group_of_whatsapp_template: {
+            nombre: 'نام',
+            plantillas: 'قالب ها',
+            status: 'حالت'
         }
     }
 };

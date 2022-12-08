@@ -159,6 +159,10 @@ export default {
             new_title: 'Nuevo template de mensaje',
             edit_title: 'Edita template de mensaje'
         },
+        whatsapp_template: {
+            new_title: 'Nuevo template de whatsapp',
+            edit_title: 'Edita template de whatsapp'
+        },
         provider: {
             new_title: 'Nuevo proveedor',
             edit_title: 'Edita proveedor'
@@ -187,6 +191,10 @@ export default {
             }
         },
         group_of_message_template: {
+            new_title: 'Nuevo grupo',
+            edit_title: 'Edita grupo'
+        },
+        group_of_whatsapp_template: {
             new_title: 'Nuevo grupo',
             edit_title: 'Edita grupo'
         }

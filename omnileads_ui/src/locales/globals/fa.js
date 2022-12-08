@@ -60,7 +60,8 @@ export default {
         line: 'واتساپ لاین | خطوط واتساپ',
         message_template: 'قالب پیام | الگوهای پیام',
         whatsapp_template: 'قالب واتس اپ | قالب واتساپ',
-        group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام'
+        group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام',
+        group_of_whatsapp_template: 'گروه قالب واتساپ | گروه های قالب واتساپ'
     },
     // -------------
     // -- Actions --

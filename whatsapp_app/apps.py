@@ -37,7 +37,9 @@ class WhatsappAppConfig(AppConfig):
             {'nombre': 'proveedor-detail',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'whatsapp_message_template_groups',
-             'roles': ['Administrador', 'Gerente', ]},
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'whatsapp_template_groups',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -58,5 +60,8 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'whatsapp_message_template_groups':
             {'descripcion': _('Configuración de grupos de templates de mensaje'),
+             'version': '1.26.0'},
+        'whatsapp_template_groups':
+            {'descripcion': _('Configuración de grupos de templates de whatsapp'),
              'version': '1.26.0'},
     }

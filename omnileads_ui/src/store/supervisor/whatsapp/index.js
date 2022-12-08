@@ -13,13 +13,17 @@ import WhatsappTemplateState from './whatsapp_templates/state';
 import GroupOfMessageTemplateActions from './group_of_message_templates/actions';
 import GroupOfMessageTemplateMutations from './group_of_message_templates/mutations';
 import GroupOfMessageTemplateState from './group_of_message_templates/state';
+import GroupOfWhatsappTemplateActions from './group_of_whatsapp_templates/actions';
+import GroupOfWhatsappTemplateMutations from './group_of_whatsapp_templates/mutations';
+import GroupOfWhatsappTemplateState from './group_of_whatsapp_templates/state';
 
 export const SupervisorWhatsappState = {
     ...ProvidersState,
     ...LinesState,
     ...MessageTemplateState,
     ...WhatsappTemplateState,
-    ...GroupOfMessageTemplateState
+    ...GroupOfMessageTemplateState,
+    ...GroupOfWhatsappTemplateState
 };
 
 export const SupervisorWhatsappMutations = {
@@ -27,7 +31,8 @@ export const SupervisorWhatsappMutations = {
     ...LinesMutations,
     ...MessageTemplateMutations,
     ...WhatsappTemplateMutations,
-    ...GroupOfMessageTemplateMutations
+    ...GroupOfMessageTemplateMutations,
+    ...GroupOfWhatsappTemplateMutations
 };
 
 export const SupervisorWhatsappActions = {
@@ -35,5 +40,6 @@ export const SupervisorWhatsappActions = {
     ...LinesActions,
     ...MessageTemplateActions,
     ...WhatsappTemplateActions,
-    ...GroupOfMessageTemplateActions
+    ...GroupOfMessageTemplateActions,
+    ...GroupOfWhatsappTemplateActions
 };

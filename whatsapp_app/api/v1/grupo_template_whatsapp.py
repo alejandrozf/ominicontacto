@@ -34,7 +34,7 @@ from whatsapp_app.models import GrupoTemplateWhatsapp
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nombre = serializers.CharField()
-    plantillas = TemplateWhatsappListSerializer(read_only=True, many=True)
+    templates = TemplateWhatsappListSerializer(read_only=True, many=True)
 
 
 class CreateSerializer(serializers.ModelSerializer):

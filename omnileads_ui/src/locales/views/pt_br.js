@@ -150,6 +150,10 @@ export default {
             new_title: 'Novo modelo de mensagem',
             edit_title: 'Editar modelo de mensagem'
         },
+        whatsapp_template: {
+            new_title: 'Novo modelo de whatsapp',
+            edit_title: 'Editar modelo do whatsapp'
+        },
         provider: {
             new_title: 'Novo provedor',
             edit_title: 'Editar provedor'

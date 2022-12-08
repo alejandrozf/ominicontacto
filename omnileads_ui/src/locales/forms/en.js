@@ -238,6 +238,11 @@ export default {
             validations: {
                 not_empty_templates: 'There must be at least one template'
             }
+        },
+        group_of_whatsapp_template: {
+            validations: {
+                not_empty_templates: 'There must be at least one template'
+            }
         }
     }
 };

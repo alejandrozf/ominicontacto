@@ -22,7 +22,7 @@ from django.conf.urls import include
 
 from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
-    MessageTemplatesConfigurationView, MessageTemplateGroupView)
+    MessageTemplatesConfigurationView, MessageTemplateGroupView, WhatsappTemplateGroupView)
 from whatsapp_app.api.urls import api_urls_v1
 from whatsapp_app.webhook_meta import WebhookMetaView
 from whatsapp_app.webhook_gupshup import WebhookGupshupView
@@ -43,6 +43,10 @@ urlpatterns = [
     path('resources/message_template_groups/',
          login_required(MessageTemplateGroupView.as_view()),
          name='whatsapp_message_template_groups',
+         ),
+    path('resources/whatsapp_template_groups/',
+         login_required(WhatsappTemplateGroupView.as_view()),
+         name='whatsapp_template_groups',
          ),
     path('webhookmeta/<int:identificador>/', WebhookMetaView.as_view(),
          name='webhook-meta',
