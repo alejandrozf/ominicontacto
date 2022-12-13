@@ -289,12 +289,25 @@ function filtro_campana() {
 
 function subcribeFilterChange() {
 
+    // Seleccionar filtro viejo de grupos.
+    let old_filter = table_agentes.column(1).search();
+    if (old_filter) {
+        $('#filter_group').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+    }
+
     $('#filter_group').change(function() {
         var selection = $('#filter_group').find('option:selected');
         $('#filter_group option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
         table_agentes.columns(1).search(selection.html()).draw();
     });
+
+    // Seleccionar filtro viejo de campañas.
+    old_filter = table_agentes.column(2).search();
+    old_filter = old_filter.slice(2,-2); // Elimino los valores '\\b\\b'
+    if (old_filter) {
+        $('#filter_campana').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+    }
 
     $('#filter_campana').change(function() {
         var selection = $('#filter_campana').find('option:selected');
