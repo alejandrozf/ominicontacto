@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import os
 import django
 import notification_app.routing
 
@@ -22,10 +23,15 @@ from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
 from channels.auth import AuthMiddlewareStack
 
+if not os.getenv('WALLBOARD_VERSION', '') == '':
+    import wallboard_app.routing
+
 django.setup()
 
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(notification_app.routing.websocket_urlpatterns)
+if not os.getenv('WALLBOARD_VERSION', '') == '':
+    websocket_urlpatterns.extend(wallboard_app.routing.websocket_urlpatterns)
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),

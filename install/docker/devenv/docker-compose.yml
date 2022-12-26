@@ -269,7 +269,8 @@ services:
       - devenv
     volumes:
       - ../../../omnileads_ui/:/home/app/
-      #- ../../../survey_app/:/home/survey/
+      - ../../../survey_app/:/home/survey/
+      - ../../../wallboard_app/:/home/wallboard/
       - nodejs_data:/home/app/supervision/node_modules/
 
   minio:
