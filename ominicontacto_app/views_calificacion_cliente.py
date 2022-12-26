@@ -130,9 +130,7 @@ class CalificacionClienteFormView(FormView):
         return []
 
     def _get_campos_obligatorios(self):
-        if self.contacto:
-            return self.campana.get_campos_obligatorios()
-        return []
+        return self.campana.get_campos_obligatorios()
 
     def dispatch(self, *args, **kwargs):
         id_contacto = None
