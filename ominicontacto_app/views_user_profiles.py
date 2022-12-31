@@ -538,23 +538,6 @@ class AgenteProfileUpdateView(UpdateView):
         kwargs['grupos_queryset'] = Grupo.objects.all()
         return kwargs
 
-    def form_valid(self, form):
-        self.object = form.save()
-
-        asterisk_sip_service = ActivacionAgenteService()
-        try:
-            # Como solo puede cambiar el grupo no impacta en AstDB
-            asterisk_sip_service.activar(regenerar_families=False)
-        except RestablecerConfigSipError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error{0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        return super(AgenteProfileUpdateView, self).form_valid(form)
-
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})
 
