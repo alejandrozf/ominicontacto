@@ -53,7 +53,7 @@ from simple_history.utils import update_change_reason
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+    datetime_hora_minima_dia, reemplazar_no_alfanumericos_por_guion, dividir_lista)
 from ominicontacto_app.permisos import PermisoOML
 PermisoOML
 
@@ -389,7 +389,7 @@ class AgenteProfile(models.Model):
         return self.campana_member.filter(queue_name__campana_id=campana.id).exists()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
     def desactivar(self):
@@ -462,7 +462,7 @@ class SupervisorProfile(models.Model):
         self.save()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
     def campanas_asignadas_actuales(self):
@@ -525,7 +525,7 @@ class ClienteWebPhoneProfile(models.Model):
         self.save()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
 
