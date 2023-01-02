@@ -75,13 +75,15 @@ class RegeneracionAsteriskService(object):
 
         # parámetros de script que desloguea agentes inactivos
         self.tareas_programadas_ids = [
-            'asterisk_logout_script',
-            'queue_log_clean_job',
-            'actualizar_reportes_de_entrantes_job',
-            'actualizar_reporte_supervisores',
-            'actualizar_reporte_dia_actual_agentes',
-            'actualizar_reportes_salientes',
-            'actualizar_reportes_dialers']
+            'asterisk_logout_script',                 # [0]
+            'queue_log_clean_job',                    # [1]
+            'actualizar_reportes_de_entrantes_job',   # [2]
+            'actualizar_reporte_supervisores',        # [3]
+            'actualizar_reporte_dia_actual_agentes',  # [4]
+            'actualizar_reportes_salientes',          # [5]
+            'actualizar_reportes_dialers',            # [6]
+            'calcular_datos_wallboards',              # [7]
+        ]
 
         self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
         self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES = 1
@@ -89,6 +91,7 @@ class RegeneracionAsteriskService(object):
         self.TIEMPO_ACTUALIZAR_DASHBOARD_AGENTES = 1
         self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_SALIENTES = 1
         self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_DIALERS = 1
+        self.TIEMPO_ACTUALIZAR_REPORTES_WALLBOARD = 1
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -138,18 +141,19 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[0])
+        id_tarea = self.tareas_programadas_ids[0]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(settings.INSTALL_PREFIX,
                                           'ominicontacto/manage.py logout_unavailable_agents')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[0])
-        crontab.remove_all(comment=self.tareas_programadas_ids[0])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
-                comment=self.tareas_programadas_ids[0])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
             crontab.write_to_user(user=getpass.getuser())
@@ -162,8 +166,9 @@ class RegeneracionAsteriskService(object):
         crontab = CronTab(user=getpass.getuser())
         ruta_psql = os.popen('which psql').read()[:-1]
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[1])
-        crontab.remove_all(comment=self.tareas_programadas_ids[1])
+        id_tarea = self.tareas_programadas_ids[1]
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             postgres_user = settings.POSTGRES_USER
             postgres_host = settings.POSTGRES_HOST
@@ -173,7 +178,7 @@ class RegeneracionAsteriskService(object):
                 command='{0} {1} -U {2} -h {3} -d {4} -c \'DELETE FROM queue_log\''.format(
                     postgres_password, ruta_psql, postgres_user, postgres_host,
                     postgres_database),
-                comment=self.tareas_programadas_ids[1])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.hour.on(2)
             crontab.write_to_user(user=getpass.getuser())
@@ -185,19 +190,20 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[2])
+        id_tarea = self.tareas_programadas_ids[2]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
             'ominicontacto/manage.py actualizar_reportes_llamadas_entrantes')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[2])
-        crontab.remove_all(comment=self.tareas_programadas_ids[2])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
-                comment=self.tareas_programadas_ids[2])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES)
             crontab.write_to_user(user=getpass.getuser())
@@ -209,19 +215,20 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[3])
+        id_tarea = self.tareas_programadas_ids[3]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script = os.path.join(
             settings.INSTALL_PREFIX,
             'ominicontacto/manage.py actualizar_reporte_supervisores')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[3])
-        crontab.remove_all(comment=self.tareas_programadas_ids[3])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script),
-                comment=self.tareas_programadas_ids[3])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTE_SUPERVISORES)
             crontab.write_to_user(user=getpass.getuser())
@@ -233,19 +240,20 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[4])
+        id_tarea = self.tareas_programadas_ids[4]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script = os.path.join(
             settings.INSTALL_PREFIX,
             'ominicontacto/manage.py actualizar_reporte_dia_actual_agentes')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[4])
-        crontab.remove_all(comment=self.tareas_programadas_ids[4])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script),
-                comment=self.tareas_programadas_ids[4])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_DASHBOARD_AGENTES)
             crontab.write_to_user(user=getpass.getuser())
@@ -257,20 +265,21 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[5])
+        id_tarea = self.tareas_programadas_ids[5]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
             'ominicontacto/manage.py actualizar_reportes_llamadas_salientes')
 
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[5])
-        crontab.remove_all(comment=self.tareas_programadas_ids[5])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
-                comment=self.tareas_programadas_ids[5])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_SALIENTES)
             crontab.write_to_user(user=getpass.getuser())
@@ -282,23 +291,48 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        flock = flock_template.format(self.tareas_programadas_ids[6])
+        id_tarea = self.tareas_programadas_ids[6]
+        flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
             settings.INSTALL_PREFIX,
             'ominicontacto/manage.py actualizar_reportes_llamadas_dialers')
 
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tareas_programadas_ids[6])
-        crontab.remove_all(comment=self.tareas_programadas_ids[6])
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
         if list(job) == []:
             job = crontab.new(
                 command='{0} {1} {2} {3}'.format(
                     ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
-                comment=self.tareas_programadas_ids[6])
+                comment=id_tarea)
             # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_DIALERS)
             crontab.write_to_user(user=getpass.getuser())
+
+    def _generar_tarea_script_calcular_datos_wallboards(self):
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        id_tarea = self.tareas_programadas_ids[7]
+        flock = flock_template.format(id_tarea)
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
+        ruta_script_logout = os.path.join(settings.INSTALL_PREFIX,
+                                          'ominicontacto/manage.py calcular_datos_wallboards')
+        # Eliminar cualquier cron job de la tarea anterior
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
+        # Si está habilitado el addon en Envars
+        if not os.getenv('WALLBOARD_VERSION', '') == '':
+            # adicionar nuevo cron job para esta tarea si no existe anteriormente
+            if list(job) == []:
+                job = crontab.new(
+                    command='{0} {1} {2} {3}'.format(
+                        ruta_source_envars, flock, ruta_python_virtualenv, ruta_script_logout),
+                    comment=id_tarea)
+                # adicionar tiempo de periodicidad al cron job
+                job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_WALLBOARD)
+                crontab.write_to_user(user=getpass.getuser())
 
     def _reenviar_archivos_playlist_asterisk(self):
         playlists = Playlist.objects.all()
@@ -352,3 +386,4 @@ class RegeneracionAsteriskService(object):
         self._generar_tarea_script_actualizar_reportes_llamadas_dialers()
         self._generar_tarea_script_actualizar_reporte_datos_supervisores()
         self._generar_tarea_script_actualizar_reporte_agentes_dia_actual()
+        self._generar_tarea_script_calcular_datos_wallboards()
