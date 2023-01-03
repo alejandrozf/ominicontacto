@@ -26,7 +26,6 @@ from api_app.serializers.campaigns.add_agents_to_campaign import (
 from ominicontacto_app.models import AgenteProfile, Campana, Grupo, QueueMember
 from ominicontacto_app.services.asterisk.asterisk_ami import (
     AMIManagerConnectorError, AmiManagerClient)
-from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -69,10 +68,6 @@ class ActualizaAgentesCampana(APIView):
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
-
-    def activar_cola(self):
-        activacion_queue_service = ActivacionQueueService()
-        activacion_queue_service.activar()
 
     def adicionar_agente_cola(self, agente, queue_member, campana, client):
         """Adiciona agente a la cola de su respectiva campaña"""
@@ -186,7 +181,6 @@ class ActualizaAgentesCampana(APIView):
                     queue_member.save()
                     self.adicionar_agente_activo_cola(
                         queue_member, campaign, sip_agentes_logueados, client)
-            self.activar_cola()
             client.disconnect()
             return Response(data=data, status=status.HTTP_200_OK)
         except Exception:
