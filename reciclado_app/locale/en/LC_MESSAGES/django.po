@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-06 14:58-0300\n"
+"POT-Creation-Date: 2023-01-05 16:30-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,87 +16,87 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reciclado_app/apps.py:36
+#: reciclado_app/apps.py:35
 msgid "Reciclado de campañas Dialer"
 msgstr "Dialer Campaings recycling"
 
-#: reciclado_app/apps.py:38
+#: reciclado_app/apps.py:37
 msgid "Reciclado de campañas Preview"
 msgstr "Preview Campaings recycling"
 
-#: reciclado_app/resultado_contactacion.py:52
+#: reciclado_app/resultado_contactacion.py:51
 msgid "No Contesta"
 msgstr "No answer"
 
-#: reciclado_app/resultado_contactacion.py:53
+#: reciclado_app/resultado_contactacion.py:52
 msgid "Cancelado"
 msgstr "Canceled"
 
-#: reciclado_app/resultado_contactacion.py:54
+#: reciclado_app/resultado_contactacion.py:53
 msgid "Ocupado"
 msgstr "Busy"
 
-#: reciclado_app/resultado_contactacion.py:55
+#: reciclado_app/resultado_contactacion.py:54
 msgid "Canal no disponible"
 msgstr "Channel no available"
 
-#: reciclado_app/resultado_contactacion.py:56
+#: reciclado_app/resultado_contactacion.py:55
 msgid "Otro"
 msgstr "Other"
 
-#: reciclado_app/resultado_contactacion.py:57
+#: reciclado_app/resultado_contactacion.py:56
 msgid "Falla"
 msgstr "Fails"
 
-#: reciclado_app/resultado_contactacion.py:58
+#: reciclado_app/resultado_contactacion.py:57
 msgid "Contestador"
 msgstr "Answering machine detected"
 
-#: reciclado_app/resultado_contactacion.py:59
+#: reciclado_app/resultado_contactacion.py:58
 msgid "Blacklist"
 msgstr "Blacklist"
 
-#: reciclado_app/resultado_contactacion.py:60
+#: reciclado_app/resultado_contactacion.py:59
 msgid "Expiradas"
 msgstr "Expired"
 
-#: reciclado_app/resultado_contactacion.py:61
+#: reciclado_app/resultado_contactacion.py:60
 msgid "Abandono"
 msgstr "Abandon"
 
-#: reciclado_app/resultado_contactacion.py:62
+#: reciclado_app/resultado_contactacion.py:61
 msgid "Congestion"
 msgstr "Congestion"
 
-#: reciclado_app/resultado_contactacion.py:63
+#: reciclado_app/resultado_contactacion.py:62
 msgid "Problema de enrutamiento"
 msgstr "Routing problem"
 
-#: reciclado_app/resultado_contactacion.py:74
+#: reciclado_app/resultado_contactacion.py:73
 msgid "Agente no califico"
 msgstr "Agent doesn't qualified"
 
-#: reciclado_app/templates/nuevo_reciclado.html:33
+#: reciclado_app/templates/nuevo_reciclado.html:32
 msgid "Nombre"
 msgstr "Name"
 
-#: reciclado_app/templates/nuevo_reciclado.html:34
+#: reciclado_app/templates/nuevo_reciclado.html:33
 msgid "Cantidad"
 msgstr "Ammount"
 
-#: reciclado_app/templates/nuevo_reciclado.html:35
+#: reciclado_app/templates/nuevo_reciclado.html:34
 msgid "Seleccionar"
 msgstr "Select"
 
-#: reciclado_app/templates/nuevo_reciclado.html:58
+#: reciclado_app/templates/nuevo_reciclado.html:57
 msgid "Como desea reciclar esta campana"
 msgstr "How do you want to recycle this campaign?"
 
-#: reciclado_app/templates/nuevo_reciclado.html:67
+#: reciclado_app/templates/nuevo_reciclado.html:66
 msgid "Reciclar"
 msgstr "Recycle"
 
-#: reciclado_app/views.py:68
+#: reciclado_app/views.py:67
 msgid ""
 "<strong>Operación Errónea!</strong>                         Debe seleccionar "
 "al menos una opcion para reciclar "
@@ -104,7 +104,7 @@ msgstr ""
 "<strong>Errr!</strong>                         You must select at least one "
 "option to recycle"
 
-#: reciclado_app/views.py:90
+#: reciclado_app/views.py:89
 msgid ""
 "<strong>Operación Errónea!</strong>                No se pudo reciclar la "
 "Campana."
@@ -112,10 +112,10 @@ msgstr ""
 "<strong>Error!</strong>                         Campaign could not be "
 "recycled "
 
-#: reciclado_app/views.py:133
+#: reciclado_app/views.py:132
 msgid "Solo se pueden reciclar campañas activas o pausadas."
 msgstr "Only Active or Paused campaigns can be recycled."
 
-#: reciclado_app/views.py:137
+#: reciclado_app/views.py:136
 msgid "Esta campaña no se puede reciclar."
 msgstr "This campaign cannot be recycled."

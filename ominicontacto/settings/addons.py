@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -45,7 +44,9 @@ CONSTANCE_CONFIG = {
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
     'WEBPHONE_CLIENT_TTL': (1200, 'WEBPHONE_CLIENT_TTL', int),
     'WEBPHONE_VIDEO_DOMAIN': ('meet.jit.si', 'WEBPHONE_VIDEO_DOMAIN', str),
+    'LIMIT_USERS_ACTIVE': (False, 'LIMIT_USERS_ACTIVE', bool),
     'LIMIT_USERS_TO': (2, 'LIMIT_USERS_TO', int),
+    'LIMIT_AGENTS_CONCURRENT_ACTIVE': (False, 'LIMIT_AGENTS_CONCURRENT_ACTIVE', bool),
     'LIMIT_AGENTS_CONCURRENT_NUMBER': (1, 'LIMIT_AGENTS_CONCURRENT_NUMBER', int),
 }
 
@@ -59,7 +60,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     },
     'Addons Options': {
         'fields': ('WEBPHONE_CLIENT_ENABLED', 'WEBPHONE_CLIENT_TTL', 'WEBPHONE_VIDEO_DOMAIN',
-                   'LIMIT_USERS_TO', 'LIMIT_AGENTS_CONCURRENT_NUMBER',
+                   'LIMIT_USERS_ACTIVE', 'LIMIT_USERS_TO',
+                   'LIMIT_AGENTS_CONCURRENT_ACTIVE', 'LIMIT_AGENTS_CONCURRENT_NUMBER',
                    ),
         'collapse': False
     },
@@ -76,9 +78,24 @@ MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
 
-ADDON_URLPATTERNS = [
-    # (r'^', 'my_addon_app.urls'),
-]
+ADDON_URLPATTERNS = []
 
-
-# A partir de aquí se deben adicionar los settings que necesita cada addon
+if not os.getenv('LIMIT_USERS_VERSION', '') == '':
+    ADDONS_APPS.append('limit_users_app.apps.LimitUsersAppConfig')
+    MIDDLEWARE_APPEND.append('limit_users_app.middleware.limits.LimitUsersMiddleware')
+if not os.getenv('PREMIUM_REPORTS_VERSION', '') == '':
+    ADDONS_APPS.append('premium_reports_app.apps.PremiumReportsAppConfig')
+    ADDON_URLPATTERNS.append((r'^', 'premium_reports_app.urls'))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'premium_reports_app/locale'), )
+if not os.getenv('SURVEY_VERSION', '') == '':
+    ADDONS_APPS.append('survey_app.apps.SurveyAppConfig')
+    ADDON_URLPATTERNS.append((r'^', 'survey_app.urls'))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'survey_app/locale'), )
+if not os.getenv('WALLBOARD_VERSION', '') == '':
+    ADDONS_APPS.append('wallboard_app.apps.WallboardAppConfig')
+    ADDON_URLPATTERNS.append((r'^', 'wallboard_app.urls'))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'wallboard_app/locale'), )
+if not os.getenv('WEBPHONE_CLIENT_VERSION', '') == '':
+    ADDONS_APPS.append('webphone_client_app.apps.WebphoneClientAppConfig')
+    ADDON_URLPATTERNS.append((r'^', 'webphone_client_app.urls'))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'webphone_client_app/locale'), )

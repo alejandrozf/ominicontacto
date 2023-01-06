@@ -75,5 +75,48 @@ export default {
     trunk: {
         new_title: 'New trunk',
         edit_title: 'Edit trunk'
+    },
+    group_of_hour: {
+        new_title: 'New group of hour',
+        edit_title: 'Edit group of hour'
+    },
+    time_validation: {
+        new_title: 'New time validation',
+        edit_title: 'Edit time validation'
+    },
+    ivr: {
+        new_title: 'New IVR',
+        edit_title: 'Edit IVR',
+        configuration_time_out: 'Time Out Configuration',
+        configuration_invalid_destination: 'Invalid destination Configuration',
+        destinations: {
+            time_out: 'Time out destination',
+            invalid: 'Invalid destination'
+        },
+        audios: {
+            types: {
+                internal: 'Internal File',
+                external: 'External File'
+            },
+            main: {
+                title: 'Main audio',
+                internal: 'Internal main audio',
+                external: 'External main audio'
+            },
+            time_out: {
+                title: 'Time out audio',
+                internal: 'Internal time out audio',
+                external: 'External time out audio'
+            },
+            invalid: {
+                title: 'Invalid audio',
+                internal: 'Internal invalid audio',
+                external: 'External invalid audio'
+            }
+        }
+    },
+    destination_option: {
+        new_title: 'New destination',
+        edit_title: 'Edit destination'
     }
 };

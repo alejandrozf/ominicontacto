@@ -4,22 +4,21 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
 from __future__ import unicode_literals
 import json
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from api_app.utils.routes.inbound import (
     eliminar_ruta_entrante_config, escribir_ruta_entrante_config)
 from rest_framework.renderers import JSONRenderer
@@ -73,17 +72,17 @@ class InboundRouteCreate(APIView):
                 'errors': {},
                 'message': _('Se creo la ruta entrante '
                              'de forma exitosa')}
-            serializer = RutaEntranteSerializer(data=request.data)
-            if serializer.is_valid():
-                ruta_entrante = serializer.save()
+            serializador = RutaEntranteSerializer(data=request.data)
+            if serializador.is_valid():
+                ruta_entrante = serializador.save()
                 if not escribir_ruta_entrante_config(self, ruta_entrante):
                     data['message'] = _('Se creo la ruta entrante pero no se pudo '
                                         'cargar la configuración telefónica')
                 return Response(data=data, status=status.HTTP_200_OK)
             else:
                 data['status'] = 'ERROR'
-                data['message'] = json.dumps(serializer.errors)
-                data['errors'] = serializer.errors
+                data['message'] = json.dumps(serializador.errors)
+                data['errors'] = serializador.errors
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)
         except Exception:

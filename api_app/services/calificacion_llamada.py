@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -74,14 +73,10 @@ class CalificacionLLamada(object):
             'IDCALIFICACION': id_calificacion,
         }
 
-        if agente.forzar_despausa() and not es_agenda:
-            notification = AgentNotifier()
-            message = {
-                "id": call_data['call_id'],
-                "calificada": llamada_calificada == 'TRUE'
-            }
-            notification.send_message(
-                type=AgentNotifier.TYPE_UNPAUSE_CALL, message=message, user_id=agente.user_id)
+        if agente.forzar_despausa() and not es_agenda and not gestion:
+            dispositioned = llamada_calificada == 'TRUE'
+            call_id = call_data['call_id']
+            AgentNotifier().notify_dispositioned(agente.user_id, call_id, dispositioned)
 
         try:
             redis_connection.hset(family, mapping=variables)

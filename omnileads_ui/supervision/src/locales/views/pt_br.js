@@ -75,5 +75,48 @@ export default {
     trunk: {
         new_title: 'Novo tronco',
         edit_title: 'Editar tronco'
+    },
+    group_of_hour: {
+        new_title: 'Novo grupo de tempo',
+        edit_title: 'Editar grupo de tempo'
+    },
+    time_validation: {
+        new_title: 'Nova validação de horário',
+        edit_title: 'Editar validação de tempo'
+    },
+    ivr: {
+        new_title: 'Nova URA',
+        edit_title: 'Edite o IVR',
+        configuration_time_out: 'Configurações de tempo limite',
+        configuration_invalid_destination: 'Configuração de destino inválida',
+        destinations: {
+            time_out: 'Destino para tempo limite',
+            invalid: 'destino inválido'
+        },
+        audios: {
+            types: {
+                internal: 'áudio interno',
+                external: 'áudio externo'
+            },
+            main: {
+                title: 'áudio principal',
+                internal: 'Áudio principal interno',
+                external: 'Áudio principal externo'
+            },
+            time_out: {
+                title: 'Tempo limite de áudio',
+                internal: 'Tempo limite de áudio interno',
+                external: 'Tempo limite de áudio externo'
+            },
+            invalid: {
+                title: 'áudio inválido',
+                internal: 'Áudio interno inválido',
+                external: 'Áudio externo inválido'
+            }
+        }
+    },
+    destination_option: {
+        new_title: 'Novo destino',
+        edit_title: 'Editar o destino'
     }
 };

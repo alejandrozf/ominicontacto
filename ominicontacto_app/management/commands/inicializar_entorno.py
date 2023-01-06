@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 import logging
@@ -148,14 +147,17 @@ class Command(BaseCommand):
 
         return campana
 
-    def _crear_ruta_entrante(self, campana_entrante):
+    def _crear_ruta_entrante(self, campana_entrante, qa_devops):
+        telefono = '01177660010'
+        if qa_devops:
+            telefono = '99999999'
         destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             campana_entrante)
         ruta_entrante = RutaEntranteFactory(
-            telefono='01177660010', destino=destino_campana_entrante, prefijo_caller_id='')
+            telefono=telefono, destino=destino_campana_entrante, prefijo_caller_id='')
         escribir_ruta_entrante_config(self, ruta_entrante)
 
-    def _crear_datos_entorno(self):
+    def _crear_datos_entorno(self, qa_devops):
 
         self.admin = User.objects.filter(is_staff=True).first()
 
@@ -201,6 +203,12 @@ class Command(BaseCommand):
         activacion_queue_service = ActivacionQueueService()
         activacion_queue_service.activar()
 
+        caller_id = '01177660010'
+        remote_host = 'pbxemulator:5060'
+        if qa_devops:
+            caller_id = '99999999'
+            remote_host = '190.19.150.8:6066'
+
         # crea un troncal y con este una ruta entrante hacia el pbx-emulator
         text_config = ("type=wizard\n"
                        "transport=trunk-transport\n"
@@ -216,12 +224,12 @@ class Command(BaseCommand):
                        "endpoint/allow=alaw,ulaw\n"
                        "endpoint/dtmf_mode=rfc4733\n"
                        "endpoint/context=from-pstn\n"
-                       "remote_hosts=pbxemulator:5060\n"
-                       "outbound_auth/username=01177660010\n"
+                       "remote_hosts=" + remote_host + "\n"
+                       "outbound_auth/username=" + caller_id + "\n"
                        "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,
-            caller_id='01177660010')
+            caller_id=caller_id)
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)
         ruta_saliente = RutaSalienteFactory(ring_time=25, dial_options="Tt")
@@ -231,13 +239,23 @@ class Command(BaseCommand):
         sincronizador_ruta_saliente.regenerar_asterisk(ruta_saliente)
 
         # crear ruta entrante
-        self._crear_ruta_entrante(campana_entrante)
+        self._crear_ruta_entrante(campana_entrante, qa_devops)
         self._asignar_agente_a_campana(agente, campana_manual)
         self._asignar_agente_a_campana(agente, campana_entrante)
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--qa-devops',
+            action='store_true',
+            help='Initializes with QA DEVOPS configuration',
+        )
+
     def handle(self, *args, **options):
+        qa_devops = options['qa_devops']
+        if qa_devops:
+            print('Initializing with QA DEVOPS configuration')
         try:
-            self._crear_datos_entorno()
+            self._crear_datos_entorno(qa_devops)
             print("Some initial data created for the OML fresh installation")
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e))

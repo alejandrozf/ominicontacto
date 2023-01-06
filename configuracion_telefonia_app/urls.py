@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -52,37 +51,13 @@ urlpatterns = [
             login_required(base.ApiObtenerDestinosEntrantes.as_view()),
             name='obtener_destinos_tipo',
             ),
-    re_path(r'^configuracion_telefonia/ivr/lista/page(?P<page>[0-9]+)/$',
+    re_path(r'^configuracion_telefonia/ivr/lista/$',
             login_required(base.IVRListView.as_view()),
             name='lista_ivrs',
             ),
-    re_path(r'^configuracion_telefonia/ivr/crear/$',
-            login_required(base.IVRCreateView.as_view()),
-            name='crear_ivr',
-            ),
-    re_path(r'^configuracion_telefonia/ivr/(?P<pk>\d+)/editar/$',
-            login_required(base.IVRUpdateView.as_view()),
-            name='editar_ivr',
-            ),
-    re_path(r'^configuracion_telefonia/ivr/(?P<pk>\d+)/eliminar/$',
-            login_required(base.IVRDeleteView.as_view()),
-            name='eliminar_ivr',
-            ),
-    re_path(r'^configuracion_telefonia/grupo_horario/lista/page(?P<page>[0-9]+)/$',
+    re_path(r'^configuracion_telefonia/grupo_horario/lista/$',
             login_required(base.GrupoHorarioListView.as_view()),
             name='lista_grupos_horarios',
-            ),
-    re_path(r'^configuracion_telefonia/grupo_horario/crear/$',
-            login_required(base.GrupoHorarioCreateView.as_view()),
-            name='crear_grupo_horario',
-            ),
-    re_path(r'^configuracion_telefonia/grupo_horario/(?P<pk>\d+)/editar/$',
-            login_required(base.GrupoHorarioUpdateView.as_view()),
-            name='editar_grupo_horario',
-            ),
-    re_path(r'^configuracion_telefonia/grupo_horario/(?P<pk>\d+)/eliminar/$',
-            login_required(base.GrupoHorarioDeleteView.as_view()),
-            name='eliminar_grupo_horario',
             ),
     re_path(r'^configuracion_telefonia/validacion_fecha_hora/lista/page(?P<page>[0-9]+)/$',
             login_required(base.ValidacionFechaHoraListView.as_view()),

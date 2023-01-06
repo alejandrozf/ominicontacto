@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
@@ -23,8 +22,8 @@ import faker
 
 from uuid import uuid4
 import random
-from factory import (DjangoModelFactory, lazy_attribute, SubFactory, Sequence, post_generation,
-                     django)
+from factory import (lazy_attribute, SubFactory, Sequence, post_generation)
+from factory.django import DjangoModelFactory, FileField
 
 from django.utils import timezone
 
@@ -329,8 +328,8 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
         model = ArchivoDeAudio
 
     descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
-    audio_original = django.FileField(filename='audio_original_file.wav')
-    audio_asterisk = django.FileField(filename='audio_asterisk_file.wav')
+    audio_original = FileField(filename='audio_original_file.wav')
+    audio_asterisk = FileField(filename='audio_asterisk_file.wav')
 
 
 class ParametrosCrmFactory(DjangoModelFactory):

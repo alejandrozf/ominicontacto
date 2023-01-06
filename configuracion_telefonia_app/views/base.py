@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -23,28 +22,25 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     View, ListView, CreateView, UpdateView,
     DeleteView, TemplateView)
 from configuracion_telefonia_app.forms import (
-    TroncalSIPForm,
-    OpcionDestinoIVRFormset, IVRForm, ValidacionTiempoFormset, IdentificadorClienteForm,
-    OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm, )
+    TroncalSIPForm, IdentificadorClienteForm,
+    OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm)
 from configuracion_telefonia_app.models import (
-    TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
-    OpcionDestino, GrupoHorario, ValidacionFechaHora, IdentificadorCliente,
-    DestinoPersonalizado, )
+    TroncalSIP, OrdenTroncal, DestinoEntrante,
+    OpcionDestino, ValidacionFechaHora, IdentificadorCliente,
+    DestinoPersonalizado)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
-    SincronizadorDeConfiguracionIVRAsterisk,
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
-    SincronizadorDeConfiguracionGrupoHorarioAsterisk,
     SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
     SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
@@ -214,232 +210,14 @@ class ApiObtenerDestinosEntrantes(View):
         return JsonResponse(data, safe=False)
 
 
-class IVRMixin(object):
-    def get_success_url(self):
-        return reverse('lista_ivrs', args=(1,))
-
-    def get_sincronizador_de_configuracion(self):
-        sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
-        return sincronizador
-
-
-class IVRListView(ListView):
+class IVRListView(TemplateView):
     """Lista todos los nodos de tipo IVR"""
     template_name = "lista_ivrs.html"
-    model = IVR
-    paginate_by = 40
-    context_object_name = 'ivrs'
-
-    def get_context_data(self, **kwargs):
-        context = super(IVRListView, self).get_context_data(**kwargs)
-        obtener_paginas(context, 7)
-        return context
 
 
-class IVRCreateView(IVRMixin, CreateView):
-    """Vista para crear un nodo de tipo IVR"""
-    template_name = "crear_ivr.html"
-    model = IVR
-    form_class = IVRForm
-    message = _('Se ha creado el IVR con éxito')
-
-    def get_context_data(self, **kwargs):
-        empty_queryset = OpcionDestino.objects.none()
-        ivr_formset = OpcionDestinoIVRFormset(prefix='ivr', queryset=empty_queryset)
-        context = super(IVRCreateView, self).get_context_data(**kwargs)
-        context['opcion_destino_formset'] = ivr_formset
-        return context
-
-    def _crear_destinos_fijos(self, form, nodo_ivr):
-        time_out_destination = form.cleaned_data['time_out_destination']
-        invalid_destination = form.cleaned_data['invalid_destination']
-        OpcionDestino.crear_opcion_destino(nodo_ivr, time_out_destination, IVR.VALOR_TIME_OUT)
-        OpcionDestino.crear_opcion_destino(
-            nodo_ivr, invalid_destination, IVR.VALOR_DESTINO_INVALIDO)
-
-    def form_valid(self, form):
-        ivr = form.save(commit=False)
-        nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr, commit=False)
-        opcion_destino_formset = OpcionDestinoIVRFormset(self.request.POST, prefix='ivr')
-        opcion_destino_formset = _asignar_destino_anterior(opcion_destino_formset, nodo_ivr)
-        if form.is_valid() and opcion_destino_formset.is_valid():
-            ivr.save()
-            nodo_ivr.content_object = ivr
-            nodo_ivr.save()
-            opcion_destino_formset = _asignar_destino_anterior(
-                opcion_destino_formset, nodo_ivr)
-            opcion_destino_formset.save()
-            # crea opciones de destino fijas para los valores de los campos 'time_out_destination'
-            # e 'invalid_destination'
-            self._crear_destinos_fijos(form, nodo_ivr)
-            # inserta la configuración de la ruta saliente en asterisk
-            sincronizador = self.get_sincronizador_de_configuracion()
-            escribir_nodo_entrante_config(self, ivr, sincronizador)
-            # muestra mensaje de éxito
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect('lista_ivrs', page=1)
-        return render(
-            self.request, 'crear_ivr.html',
-            {'form': form, 'opcion_destino_formset': opcion_destino_formset})
-
-
-class IVRUpdateView(IVRMixin, UpdateView):
-    """Vista para modificar un nodo de tipo IVR"""
-    template_name = "editar_ivr.html"
-    model = IVR
-    form_class = IVRForm
-    message = _('Se ha modificado el IVR con éxito')
-
-    def _inicializar_opciones_destino(self, nodo_ivr):
-        valores_fijos_ivr = (
-            IVR.VALOR_TIME_OUT, IVR.VALOR_DESTINO_INVALIDO)
-        queryset = nodo_ivr.destinos_siguientes.exclude(valor__in=valores_fijos_ivr)
-        opcion_destino_formset = OpcionDestinoIVRFormset(queryset=queryset, prefix='ivr')
-        return opcion_destino_formset
-
-    def get_context_data(self, **kwargs):
-        context = super(IVRUpdateView, self).get_context_data(**kwargs)
-        ivr = context['form'].instance
-        nodo_ivr = DestinoEntrante.objects.get(
-            object_id=ivr.pk, content_type=ContentType.objects.get_for_model(ivr))
-        ordentroncal_formset = self._inicializar_opciones_destino(nodo_ivr)
-        context['opcion_destino_formset'] = ordentroncal_formset
-        return context
-
-    def _modificar_opciones_destino_fijas(self, form, nodo_ivr):
-        # se modifican los valores de las opciones destino fijas si han sufrido cambios
-        # TODO: refactorizar los bloques de código hacia un sólo método
-        if 'time_out_destination' in form.changed_data:
-            new_time_out_destination = form.cleaned_data['time_out_destination']
-            opcion_destino_time_out = nodo_ivr.destinos_siguientes.get(valor=IVR.VALOR_TIME_OUT)
-            opcion_destino_time_out.destino_siguiente = new_time_out_destination
-            opcion_destino_time_out.save()
-        if 'invalid_destination' in form.changed_data:
-            new_invalid_destination = form.cleaned_data['invalid_destination']
-            opcion_destino_invalid_destination = nodo_ivr.destinos_siguientes.get(
-                valor=IVR.VALOR_DESTINO_INVALIDO)
-            opcion_destino_invalid_destination.destino_siguiente = new_invalid_destination
-            opcion_destino_invalid_destination.save()
-
-    def form_valid(self, form):
-        ivr = form.instance
-        nodo_ivr = DestinoEntrante.objects.get(
-            object_id=ivr.pk, content_type=ContentType.objects.get_for_model(ivr))
-        opcion_destino_formset = OpcionDestinoIVRFormset(self.request.POST, prefix='ivr')
-        opcion_destino_formset = _asignar_destino_anterior(opcion_destino_formset, nodo_ivr)
-        if form.is_valid() and opcion_destino_formset.is_valid():
-            form.save()
-            opcion_destino_formset.save()
-            # modifica las opciones de destino fijas para los valores de los campos
-            # 'time_out_destination' e 'invalid_destination'
-            self._modificar_opciones_destino_fijas(form, nodo_ivr)
-            # inserta la configuración de la ruta saliente en asterisk
-            sincronizador = self.get_sincronizador_de_configuracion()
-            escribir_nodo_entrante_config(self, ivr, sincronizador)
-            # muestra mensaje de éxito
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect('lista_ivrs', page=1)
-        return render(
-            self.request, 'editar_ivr.html',
-            {'form': form, 'opcion_destino_formset': opcion_destino_formset})
-
-
-class GrupoHorarioListView(ListView):
+class GrupoHorarioListView(TemplateView):
     """Lista los grupos horarios existentes"""
-    model = GrupoHorario
     template_name = "lista_grupos_horarios.html"
-    context_object_name = 'grupos_horarios'
-    paginate_by = 40
-    ordering = ['id']
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioListView, self).get_context_data(**kwargs)
-        obtener_paginas(context, 7)
-        return context
-
-
-class GrupoHorarioMixin(object):
-
-    def form_valid(self, form):
-        validacion_tiempo_formset = ValidacionTiempoFormset(
-            self.request.POST, instance=form.instance, prefix='validacion_tiempo')
-        if form.is_valid() and validacion_tiempo_formset.is_valid():
-            grupo_horario = form.save()
-            validacion_tiempo_formset.save()
-
-            try:
-                sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
-                sincronizador.regenerar_asterisk(grupo_horario)
-            except RestablecerConfiguracionTelefonicaError as e:
-                message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
-                messages.add_message(self.request, messages.WARNING, message)
-
-            messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect(self.success_url)
-        return render(
-            self.request, self.template_name,
-            {'form': form, 'validacion_tiempo_formset': validacion_tiempo_formset})
-
-
-class GrupoHorarioCreateView(GrupoHorarioMixin, CreateView):
-    """Crea un grupo horario"""
-    model = GrupoHorario
-    template_name = "crear_grupo_horario.html"
-    fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-    message = _('Se ha creado el grupo horario con éxito')
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioCreateView, self).get_context_data(**kwargs)
-        context['validacion_tiempo_formset'] = ValidacionTiempoFormset(prefix='validacion_tiempo')
-        return context
-
-
-class GrupoHorarioUpdateView(GrupoHorarioMixin, UpdateView):
-    """Edita un grupo horario"""
-    model = GrupoHorario
-    template_name = 'editar_grupo_horario.html'
-    fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-    message = _('Se ha modificado el grupo horario con éxito')
-
-    def get_context_data(self, **kwargs):
-        context = super(GrupoHorarioUpdateView, self).get_context_data(**kwargs)
-        grupo_horario = context['form'].instance
-        initial_data = grupo_horario.validaciones_tiempo.values()
-        context['validacion_tiempo_formset'] = ValidacionTiempoFormset(
-            initial=initial_data, instance=grupo_horario, prefix='validacion_tiempo')
-        return context
-
-
-class GrupoHorarioDeleteView(DeleteView):
-    """Elimina un grupo horario"""
-    model = GrupoHorario
-    template_name = 'eliminar_grupo_horario.html'
-    context_object_name = 'grupo_horario'
-    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        try:
-            sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
-            sincronizador.eliminar_y_regenerar_asterisk(self.object)
-        except RestablecerConfiguracionTelefonicaError as e:
-            message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
-            messages.add_message(self.request, messages.WARNING, message)
-        if self.object.validaciones_fecha_hora.count() > 0:
-            message = _(
-                'No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora')
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return redirect(self.get_success_url())
-
-        message = _(u"Se ha eliminado el Grupo Horario.")
-        messages.add_message(self.request, messages.SUCCESS, message)
-        return super(GrupoHorarioDeleteView, self).dispatch(request, *args, **kwargs)
 
 
 class ValidacionFechaHoraListView(ListView):
@@ -624,14 +402,6 @@ class DeleteNodoDestinoMixin(object):
             # las vistas de eliminación de campañas muestran su propio mensaje satisfactorio
             messages.success(request, self.nodo_eliminado)
         return super(DeleteNodoDestinoMixin, self).delete(request, *args, **kwargs)
-
-
-class IVRDeleteView(IVRMixin, DeleteNodoDestinoMixin, DeleteView):
-    model = IVR
-    template_name = 'eliminar_ivr.html'
-    url_eliminar_name = 'eliminar_ivr'
-    imposible_eliminar = _('No se puede eliminar un IVR que es destino en un flujo de llamada.')
-    nodo_eliminado = _(u'Se ha eliminado el IVR.')
 
 
 class ValidacionFechaHoraDeleteView(ValidacionFechaHoraMixin, DeleteNodoDestinoMixin, DeleteView):

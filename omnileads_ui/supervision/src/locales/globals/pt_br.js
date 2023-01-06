@@ -51,6 +51,9 @@ export default {
     outbound_route: 'Rota de saída | Rotas de saída',
     trunk: 'Troncal | roupa de baixo',
     dial_pattern: 'Padrão de discagem | Padrões de discagem',
+    group_of_hour: 'Grupo de tempo | Grupos de tempo',
+    time_validation: 'Validação de tempo | Validações de tempo',
+    ivr: 'IVR | IVRs',
     // -------------
     // -- Actions --
     // -------------
@@ -93,6 +96,31 @@ export default {
     down: 'Descer',
     reactivate: 'Reativar',
     reorder: 'Reordenar',
+    // ----------------
+    // --- weekdays ---
+    // ----------------
+    monday: 'Segunda-feira',
+    tuesday: 'Terça-feira',
+    wednesday: 'Quarta-feira',
+    thursday: 'Quinta-feira',
+    friday: 'Sexta-feira',
+    saturday: 'Sábado',
+    sunday: 'Domingo',
+    // --------------
+    // --- months ---
+    // --------------
+    january: 'Janeiro',
+    february: 'Fevereiro',
+    march: 'Marchar',
+    april: 'abril',
+    may: 'Poderia',
+    june: 'Junho',
+    july: 'Julho',
+    august: 'Agosto',
+    september: 'Setembro',
+    october: 'Outubro',
+    november: 'Novembro',
+    december: 'Dezembro',
     // ---------------------
     // --- Notifications ---
     // ---------------------

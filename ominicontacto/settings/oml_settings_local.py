@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
 
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 import os
 
 AMI_USER = os.getenv('AMI_USER')
@@ -100,16 +115,34 @@ _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\
     "La variable de entorno OML_LOGFILE solo debe contener " +\
     "el nombre del archivo, SIN directorios."
+
+LOGGING_SLOWSQL_OUTPUT = os.getenv("OML_LOGGING_SLOWSQL_OUTPUT", "-")
+LOGGING_SLOWSQL_DURATION = float(os.getenv("OML_LOGGING_SLOWSQL_DURATION", "1"))
+LOGGING_SLOWSQL_ENABLED = bool(os.getenv("OML_LOGGING_SLOWSQL_ENABLED", False))
+LOGGING_SLOWSQL_FORMAT = os.getenv("OML_LOGGING_SLOWSQL_FORMAT", "text")
+
+if LOGGING_SLOWSQL_ENABLED:
+    for backend in DATABASES:
+        DATABASES[backend]["ENGINE"] = "slowsql.postgresql"
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
+        'slowsql': {
+            '()': 'slowsql.LoggingFormatter',
+            'format': LOGGING_SLOWSQL_FORMAT,
+        },
         'verbose': {
             'format': ('%(asctime)-15s [%(levelname)7s] '
                        '%(name)20s - %(message)s')
         },
     },
     'filters': {
+        'slowsql': {
+            '()': 'slowsql.LoggingFilter',
+            'duration': LOGGING_SLOWSQL_DURATION,
+        },
     },
     'handlers': {
         'null': {
@@ -127,8 +160,23 @@ LOGGING = {
             'filename': '{0}/log/{1}'.format(INSTALL_PREFIX, _logging_output_file),
             'formatter': 'verbose'
         },
+        'slowsql': {
+            'class': 'logging.StreamHandler',
+            'filters': ['slowsql'],
+            'formatter': 'slowsql',
+        } if LOGGING_SLOWSQL_OUTPUT == '-' else {
+            'class': 'logging.FileHandler',
+            'filename': '{0}/log/{1}.slowsql'.format(INSTALL_PREFIX, LOGGING_SLOWSQL_OUTPUT),
+            'filters': ['slowsql'],
+            'formatter': 'slowsql',
+        },
     },
     'loggers': {
+        'django.db.backends': {
+            'handlers': ['slowsql'],
+            'level': "DEBUG" if LOGGING_SLOWSQL_ENABLED else "NOTSET",
+            'propagate': False,
+        },
         '': {
             'handlers': ['console', 'file'],
             'level': 'INFO',

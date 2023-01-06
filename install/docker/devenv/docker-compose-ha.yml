@@ -209,6 +209,7 @@ services:
     volumes:
       - ../../../omnileads_ui/:/home/app/
       - ../../../survey_app/:/home/survey/
+      - ../../../wallboard_app/:/home/wallboard/
       
   minio:
     tty: true

@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -28,7 +27,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, DeleteView
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
 from formtools.wizard.views import SessionWizardView
@@ -166,21 +165,18 @@ class CampanaTemplateCreateCampanaMixin(object):
                     'tipo', 'valor', 'nombre')
                 bd_contacto = campana_template.bd_contacto
                 columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+                # Calculo form Kwargs
+                form_kwargs = {'columnas_bd': columnas_bd}
+                if campana_template.sitio_externo:
+                    disparador = campana_template.sitio_externo.disparador
+                    con_crm_calificacion = disparador == SitioExterno.CALIFICACION
+                    form_kwargs['con_crm_calificacion'] = con_crm_calificacion
                 param_crms_formset = ParametrosCrmFormSet(
-                    initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
+                    initial=initial_data, form_kwargs=form_kwargs)
                 param_crms_formset.extra = max(len(initial_data), 1)
                 param_crms_formset.prefix = params_crm_init_formset.prefix
                 context['wizard']['form'] = param_crms_formset
         return context
-
-    def get_form_kwargs(self, step):
-        kwargs = super(CampanaTemplateCreateCampanaMixin, self).get_form_kwargs(step)
-        if step == self.OPCIONES_CALIFICACION:
-            cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
-            con_formulario = cleaned_data.get('tipo_interaccion') \
-                in [Campana.FORMULARIO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
-            return {'form_kwargs': {'con_formulario': con_formulario}}
-        return kwargs
 
 
 class CampanaTemplateDeleteMixin(object):

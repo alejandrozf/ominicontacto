@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -43,7 +42,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.forms.models import model_to_dict
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now, timedelta
 from django.utils.http import urlsafe_base64_encode
 
@@ -54,7 +53,7 @@ from simple_history.utils import update_change_reason
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+    datetime_hora_minima_dia, reemplazar_no_alfanumericos_por_guion, dividir_lista)
 from ominicontacto_app.permisos import PermisoOML
 PermisoOML
 
@@ -390,7 +389,7 @@ class AgenteProfile(models.Model):
         return self.campana_member.filter(queue_name__campana_id=campana.id).exists()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
     def desactivar(self):
@@ -463,7 +462,7 @@ class SupervisorProfile(models.Model):
         self.save()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
     def campanas_asignadas_actuales(self):
@@ -526,7 +525,7 @@ class ClienteWebPhoneProfile(models.Model):
         self.save()
 
     def get_asterisk_caller_id(self):
-        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
 
@@ -1169,6 +1168,7 @@ class Campana(models.Model):
     # Listas en formato JSON con los nombres de los campos
     campos_bd_no_editables = models.CharField(max_length=2052, default='')
     campos_bd_ocultos = models.CharField(max_length=2052, default='')
+    campos_bd_obligatorios = models.CharField(max_length=2052, default='')
 
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
@@ -1483,9 +1483,25 @@ class Campana(models.Model):
         if guardar:
             self.save()
 
+    def get_campos_obligatorios(self):
+        if self.campos_bd_obligatorios:
+            return json.loads(self.campos_bd_obligatorios)
+        return []
+
+    def set_campos_obligatorios(self, campos_obligatorios, guardar=False):
+        self.campos_bd_obligatorios = ""
+        if campos_obligatorios:
+            self.campos_bd_obligatorios = json.dumps(campos_obligatorios, separators=(',', ':'))
+        if guardar:
+            self.save()
+
     @property
     def tiene_interaccion_con_sitio_externo(self):
         return self.tipo_interaccion in [self.SITIO_EXTERNO, self.FORMULARIO_Y_SITIO_EXTERNO]
+
+    @property
+    def tiene_formulario(self):
+        return self.tipo_interaccion in [self.FORMULARIO, self.FORMULARIO_Y_SITIO_EXTERNO]
 
     @property
     def es_entrante(self):
@@ -1665,7 +1681,7 @@ class Queue(models.Model):
     # ivr break down
     ivr_breakdown = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
                                       related_name='campanas_ivr_breakdown', blank=True,
-                                      null=True, on_delete=True)
+                                      null=True, on_delete=models.SET_NULL)
 
     musiconhold = models.ForeignKey('configuracion_telefonia_app.Playlist',
                                     related_name='campanas', blank=True, null=True,

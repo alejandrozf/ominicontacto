@@ -108,5 +108,47 @@ export default {
         id: 'برو',
         name: 'نام',
         order: 'سفارش'
+    },
+    group_of_hour: {
+        id: 'برو',
+        name: 'نام',
+        time_validations: 'شرایط آب و هوایی'
+    },
+    time_validation: {
+        id: 'برو',
+        tiempo_inicial: 'زمان شروع',
+        tiempo_final: 'زمان پایانی',
+        dia_semana_inicial: 'روز شروع هفته',
+        dia_semana_final: 'روز هفته آخر',
+        dia_mes_inicio: 'روز شروع ماه',
+        dia_mes_final: 'روز پایان ماه',
+        mes_inicio: 'ماه شروع',
+        mes_final: 'ماه پایانی'
+    },
+    ivr: {
+        id: 'شناسه',
+        name: 'نام',
+        description: 'شرح',
+        main_audio: 'صوتی اصلی',
+        time_out_configuration: {
+            time_out: 'تایم اوت',
+            retries: 'تلاش می کند تایم اوت کند',
+            audio: 'زمان پایان صدا',
+            destination: 'زمان پایان مقصد',
+            destination_type: 'نوع مقصد برای زمان استراحت'
+        },
+        invalid_destination_configuration: {
+            retries: 'تلاش های نامعتبر',
+            audio: 'صدای مقصد نامعتبر است',
+            destination: 'مقصد نامعتبر',
+            destination_type: 'نوع مقصد برای مقصد نامعتبر'
+        },
+        destination_options: 'گزینه های مقصد'
+    },
+    destination_option: {
+        id: 'ID',
+        dtmf: 'DTMF',
+        destination_type: 'نوع مقصد',
+        destination: 'سرنوشت'
     }
 };

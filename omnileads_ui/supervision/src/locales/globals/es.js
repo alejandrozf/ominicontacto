@@ -51,6 +51,9 @@ export default {
     outbound_route: 'Ruta saliente | Rutas salientes',
     trunk: 'Troncal | Troncales',
     dial_pattern: 'Patron de discado | Patrones de discado',
+    group_of_hour: 'Grupo horario | Grupos horarios',
+    time_validation: 'Validacion de tiempo | Validaciones de tiempo',
+    ivr: 'IVR | IVRs',
     // -------------
     // -- Actions --
     // -------------
@@ -93,6 +96,31 @@ export default {
     down: 'Mover abajo',
     reactivate: 'Reactivar',
     reorder: 'Reordenar',
+    // ----------------
+    // --- weekdays ---
+    // ----------------
+    monday: 'Lunes',
+    tuesday: 'Martes',
+    wednesday: 'Miércoles',
+    thursday: 'Jueves',
+    friday: 'Viernes',
+    saturday: 'Sábado',
+    sunday: 'Domingo',
+    // --------------
+    // --- months ---
+    // --------------
+    january: 'Enero',
+    february: 'Febrero',
+    march: 'Marzo',
+    april: 'Abril',
+    may: 'Mayo',
+    june: 'Junio',
+    july: 'Julio',
+    august: 'Agosto',
+    september: 'Septiembre',
+    october: 'Octubre',
+    november: 'Noviembre',
+    december: 'Diciembre',
     // ---------------------
     // --- Notifications ---
     // ---------------------

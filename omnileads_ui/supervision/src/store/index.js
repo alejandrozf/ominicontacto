@@ -27,6 +27,12 @@ import InboundRouteState from './inbound_routes/state';
 import OutboundRouteActions from './outbound_routes/actions';
 import OutboundRouteMutations from './outbound_routes/mutations';
 import OutboundRouteState from './outbound_routes/state';
+import GroupOfHourActions from './group_of_hours/actions';
+import GroupOfHourMutations from './group_of_hours/mutations';
+import GroupOfHourState from './group_of_hours/state';
+import IVRActions from './ivrs/actions';
+import IVRMutations from './ivrs/mutations';
+import IVRState from './ivrs/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -43,7 +49,9 @@ export default createStore({
         ...FormState,
         ...PauseState,
         ...InboundRouteState,
-        ...OutboundRouteState
+        ...OutboundRouteState,
+        ...GroupOfHourState,
+        ...IVRState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -77,7 +85,9 @@ export default createStore({
         ...FormMutations,
         ...PauseMutations,
         ...InboundRouteMutations,
-        ...OutboundRouteMutations
+        ...OutboundRouteMutations,
+        ...GroupOfHourMutations,
+        ...IVRMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -107,7 +117,9 @@ export default createStore({
         ...FormActions,
         ...PauseActions,
         ...InboundRouteActions,
-        ...OutboundRouteActions
+        ...OutboundRouteActions,
+        ...GroupOfHourActions,
+        ...IVRActions
     },
     modules: {
     },

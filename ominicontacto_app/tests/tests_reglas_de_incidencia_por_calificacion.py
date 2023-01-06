@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -168,9 +167,10 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         self.assertFalse(ReglaIncidenciaPorCalificacion.objects.filter(
             opcion_calificacion=self.opcion_calificacion_1).exists())
 
+    @patch('notification_app.notification.RedisStreamNotifier.send')
     @patch('ominicontacto_app.services.wombat_service.WombatService.set_call_ext_status')
     def test_calificar_usando_opcion_con_regla_de_incidencia_impacta_wombat(
-            self, set_call_ext_status):
+            self, set_call_ext_status, send):
         agente = self.crear_agente_profile()
         self.client.logout()
         self.client.login(username=agente.user.username, password=PASSWORD)
@@ -199,6 +199,7 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         }
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
+        send.assert_called_with('calification', agente.id)
 
         url_notify = '/api/calls/?op=extstatus&wombatid={0}&status={1}'.format(
             dialer_call_id, regla.wombat_id)

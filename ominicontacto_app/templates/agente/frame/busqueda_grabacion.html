@@ -4,24 +4,23 @@ Copyright (C) 2018 Freetech Solutions
 This file is part of OMniLeads
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends "agente/frame/base_frame.html" %} {% load compress %} {% load static %} {% load i18n %} {% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/busqueda_grabacion.js' %}"></script>
-<link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}">
 </link>
 {% endblock head_js %} {% block content %}
 <div class="container-fluid">

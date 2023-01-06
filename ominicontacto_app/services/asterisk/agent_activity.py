@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
@@ -25,7 +24,7 @@ from django.conf import settings
 from ominicontacto_app.models import QueueMember, Pausa
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
-from notification_app.notification import RedisStreamNotifier
+from notification_app.notification import RedisStreamNotifier, AgentNotifier
 
 
 class AgentActivityAmiManager(object):
@@ -72,7 +71,7 @@ class AgentActivityAmiManager(object):
             insert_redis_error = self._set_agent_redis_status(agente_profile, 'READY')
         return insert_redis_error
 
-    def pause_agent(self, agente_profile, pause_id, manage_connection=False):
+    def pause_agent(self, agente_profile, pause_id, manage_connection=False, supervisor=False):
         pause_name = ''
         if pause_id == '0':
             pause_name = 'ACW'
@@ -90,9 +89,11 @@ class AgentActivityAmiManager(object):
         insert_redis_error = self._set_agent_pause_redis_status(
             agente_profile, pause_name, pause_id)
 
+        if not insert_redis_error and supervisor:
+            AgentNotifier().notify_pause(agente_profile.user.id, pause_id, pause_name)
         return queue_pause_error, insert_redis_error
 
-    def unpause_agent(self, agente_profile, pause_id, manage_connection=False):
+    def unpause_agent(self, agente_profile, pause_id, manage_connection=False, supervisor=False):
         # Me aseguro q exista la pausa activa:
         if pause_id not in ('0', '00'):
             pause_id = Pausa.objects.activa_by_pauseid(pause_id).id
@@ -103,6 +104,8 @@ class AgentActivityAmiManager(object):
         if manage_connection:
             self.disconnect_manager()
         insert_redis_error = self._set_agent_redis_status(agente_profile, 'unpause')
+        if not insert_redis_error and supervisor:
+            AgentNotifier().notify_unpause(agente_profile.user.id, pause_id)
         return queue_unpause_error, insert_redis_error
 
     def set_agent_as_unavailable(self, agente_profile):

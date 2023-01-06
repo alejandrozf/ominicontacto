@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -23,7 +22,7 @@ from __future__ import unicode_literals
 import logging
 import requests
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import now, timedelta
 from ominicontacto_app.models import SitioExterno
 
@@ -44,24 +43,26 @@ class InteraccionConSistemaExterno(object):
             logger.exception(err_msg.format(headers))
             return headers
         try:
-            logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
             if sitio_externo.metodo == SitioExterno.GET:
-                requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
+                response = requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.TEXT_PLAIN:
                 headers['content_type'] = 'text/plain'
-                requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.WWW_FORM:
-                requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.MULTIPART:
-                requests.post(url, files=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, files=parametros, headers=headers, verify=verify_ssl)
             elif sitio_externo.formato == SitioExterno.JSON:
-                requests.post(url, json=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, json=parametros, headers=headers, verify=verify_ssl)
         except Exception as e:
             # Si es invalido el token:
             #     pido token de nuevo y reintento 1 vez
             #     Si vuelve a fallar log error y aviso al agente.
+            logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
             logger.exception(err_msg.format(e))
             return e
+        logger.info([url, sitio_externo.get_formato_display(), headers, verify_ssl, parametros])
+        logger.info(response.status_code)
 
     def obtener_headers(self, sitio_externo):
         if sitio_externo.autenticacion:

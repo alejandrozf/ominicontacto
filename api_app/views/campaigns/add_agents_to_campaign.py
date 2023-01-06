@@ -4,22 +4,21 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
 from __future__ import unicode_literals
 import logging as _logging
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db import transaction
 from api_app.serializers.base import CampanaSerializer, GrupoSerializer
 from api_app.serializers.campaigns.add_agents_to_campaign import (
@@ -27,7 +26,6 @@ from api_app.serializers.campaigns.add_agents_to_campaign import (
 from ominicontacto_app.models import AgenteProfile, Campana, Grupo, QueueMember
 from ominicontacto_app.services.asterisk.asterisk_ami import (
     AMIManagerConnectorError, AmiManagerClient)
-from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -70,10 +68,6 @@ class ActualizaAgentesCampana(APIView):
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
-
-    def activar_cola(self):
-        activacion_queue_service = ActivacionQueueService()
-        activacion_queue_service.activar()
 
     def adicionar_agente_cola(self, agente, queue_member, campana, client):
         """Adiciona agente a la cola de su respectiva campaña"""
@@ -187,7 +181,6 @@ class ActualizaAgentesCampana(APIView):
                     queue_member.save()
                     self.adicionar_agente_activo_cola(
                         queue_member, campaign, sip_agentes_logueados, client)
-            self.activar_cola()
             client.disconnect()
             return Response(data=data, status=status.HTTP_200_OK)
         except Exception:

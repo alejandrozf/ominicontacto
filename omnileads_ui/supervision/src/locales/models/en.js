@@ -108,5 +108,47 @@ export default {
         id: 'ID',
         name: 'Name',
         order: 'Order'
+    },
+    group_of_hour: {
+        id: 'ID',
+        name: 'Name',
+        time_validations: 'Time validations'
+    },
+    time_validation: {
+        id: 'ID',
+        tiempo_inicial: 'Start time',
+        tiempo_final: 'End time',
+        dia_semana_inicial: 'Start day of the week',
+        dia_semana_final: 'End day of the week',
+        dia_mes_inicio: 'Start day of the month',
+        dia_mes_final: 'End day of the month',
+        mes_inicio: 'Start month',
+        mes_final: 'End month'
+    },
+    ivr: {
+        id: 'ID',
+        name: 'Name',
+        description: 'Description',
+        main_audio: 'Main audio',
+        time_out_configuration: {
+            time_out: 'Time out',
+            retries: 'Time out retries',
+            audio: 'Time out audio',
+            destination: 'Time out destination',
+            destination_type: 'Time out destination'
+        },
+        invalid_destination_configuration: {
+            retries: 'Invalid retries',
+            audio: 'Invalid audio',
+            destination: 'Invalid destination',
+            destination_type: 'Invalid destination type'
+        },
+        destination_options: 'Destination Options'
+    },
+    destination_option: {
+        id: 'ID',
+        dtmf: 'DTMF',
+        destination_type: 'Destination type',
+        destination: 'Destination'
     }
 };

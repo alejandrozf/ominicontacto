@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -25,7 +24,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
@@ -47,7 +46,6 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_troncales = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         self.sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         self.sincronizador_ruta_entrante = SincronizadorDeConfiguracionRutaEntranteAsterisk()
-        self.sincronizador_grupo_horario = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
         self.sincronizador_validacion_fh = SincronizadorDeConfiguracionValidacionFechaHoraAsterisk()
         self.sincronizador_ivr = SincronizadorDeConfiguracionIVRAsterisk()
         self.sincronizador_amd = SincronizadorDeConfiguracionAmdConfAsterisk()
@@ -57,7 +55,6 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_troncales.regenerar_troncales()
         self.sincronizador_ruta_saliente.regenerar_asterisk()
         self.sincronizador_ruta_entrante.regenerar_asterisk()
-        self.sincronizador_grupo_horario.regenerar_asterisk()
         self.sincronizador_validacion_fh.regenerar_asterisk()
         self.sincronizador_ivr.regenerar_asterisk()
         self.sincronizador_amd.regenerar_asterisk()
@@ -79,13 +76,13 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
-    def _generar_y_recargar_archivos_conf_asterisk(self, trunk_exclude=None):
+    def _generar_y_recargar_archivos_conf_asterisk(self, trunk=None, trunk_exclude=None):
         proceso_ok = True
         mensaje_error = ""
 
         try:
             self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk(
-                trunk_exclude=trunk_exclude)
+                trunk=trunk, trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
                 e)) + _("intentar create_config_asterisk()")
@@ -96,7 +93,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
 
         try:
             self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk(
-                trunk_exclude=trunk_exclude)
+                trunk=trunk, trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
                 e)) + _("intentar create_config_asterisk()")
@@ -140,7 +137,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
     def regenerar_troncales(self, trunk=None):
-        self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_y_recargar_archivos_conf_asterisk(trunk=trunk)
         self._generar_e_insertar_en_astdb(trunk)
 
     def eliminar_troncal_y_regenerar_asterisk(self, trunk):

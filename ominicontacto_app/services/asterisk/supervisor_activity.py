@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -24,7 +23,7 @@ import redis
 from time import time
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
@@ -92,9 +91,11 @@ class SupervisorActivityAmiManager(object):
             agente_profile.force_logout()
             self.agent_activity.logout_agent(agente_profile, manage_connection=True)
         elif exten == "AGENTPAUSE":
-            self.agent_activity.pause_agent(agente_profile, '00', manage_connection=True)
+            self.agent_activity.pause_agent(
+                agente_profile, '00', manage_connection=True, supervisor=True)
         elif exten == "AGENTUNPAUSE":
-            self.agent_activity.unpause_agent(agente_profile, '00', manage_connection=True)
+            self.agent_activity.unpause_agent(
+                agente_profile, '00', manage_connection=True, supervisor=True)
         else:
             self._originate_call(originate_data)
 

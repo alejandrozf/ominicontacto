@@ -71,11 +71,20 @@ export default {
             not_empty_trunks: 'There must be at least one trunk',
             repeated_route_name: 'Outgoing route with that name already exists',
             invalid_route_name: 'The path name is invalid',
-            trunk_already_exists: 'Trunk already exists'
+            trunk_already_exists: 'Trunk already exists',
+            orphan_trunks: 'By eliminating the outgoing route the following Sip Trunks will remain unused by Outgoing routes'
         }
     },
     dial_pattern: {
         enter_pattern: 'Enter the pattern'
+    },
+    group_of_hour: {
+        enter_name: 'Enter the name',
+        validations: {
+            not_empty_time_validations: 'There must be at least one time validation',
+            repeated_group_name: 'There is already a time group with that name',
+            time_validation_already_exists: 'The time validation already exists'
+        }
     },
     external_site_authentication: {
         placeholders: {
@@ -97,6 +106,38 @@ export default {
             invalid_campo_duracion: 'If there is no duration, the duration field must exist.',
             invalid_name_campo_token: 'The token field name is invalid',
             invalid_name_campo_duracion: 'The duration field name is invalid'
+        }
+    },
+    ivr: {
+        enter_name: 'Enter the name',
+        enter_description: 'Enter the description',
+        validations: {
+            not_empty_time_validations: 'There must be at least one time validation',
+            repeated_ivr_name: 'IVR with that name already exists',
+            destination_option_already_exists: 'Destination option already exists'
+        },
+        destination_types: {
+            campaign: 'Inbound campaign',
+            validation_date: 'Date/time validation',
+            ivr: 'IVR',
+            hangup: 'Hang Up',
+            id_client: 'Client identifier',
+            custom_dst: 'Custom destination'
+        },
+        audios: {
+            external: {
+                drag_and_drop: 'Drag and drop files here to upload'
+            },
+            validations: {
+                required_internal_file: 'Internal file is required',
+                required_external_file: 'External file is required'
+            }
+        }
+    },
+    destination_option: {
+        validations: {
+            repeated_dtmf: 'There is already a destination option with that DTMF',
+            invalid_dtmf: 'The DTMF value must be a digit (0-9) or a character (#, -, *)'
         }
     }
 };

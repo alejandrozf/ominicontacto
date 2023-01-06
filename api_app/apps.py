@@ -4,22 +4,21 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
 
 from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class ApiAppConfig(AppConfig):
@@ -258,6 +257,30 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_outbound_routes_orphan_trunks',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_outbound_routes_reorder',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_group_of_hours_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_audio_options_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_ivrs_destination_types_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
@@ -587,4 +610,40 @@ class ApiAppConfig(AppConfig):
         'api_outbound_routes_reorder':
             {'descripcion': _('Reordena las rutas salientes'),
              'version': '1.23.0'},
+        'api_group_of_hours_list':
+            {'descripcion': _('Lista los grupos horarios'),
+             'version': '1.23.0'},
+        'api_group_of_hours_create':
+            {'descripcion': _('Crea un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_update':
+            {'descripcion': _('Actualiza un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_detail':
+            {'descripcion': _('Obtiene detalle de un grupo horario'),
+             'version': '1.23.0'},
+        'api_group_of_hours_delete':
+            {'descripcion': _('Elimina un grupo horario'),
+             'version': '1.23.0'},
+        'api_ivrs_list':
+            {'descripcion': _('Lista los ivrs'),
+             'version': '1.26.0'},
+        'api_ivrs_create':
+            {'descripcion': _('Crea un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_update':
+            {'descripcion': _('Actualiza un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_detail':
+            {'descripcion': _('Obtiene detalle de un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_delete':
+            {'descripcion': _('Elimina un ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_audio_options_list':
+            {'descripcion': _('Obtiene los audios disponibles para ivr'),
+             'version': '1.26.0'},
+        'api_ivrs_destination_types_list':
+            {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
+             'version': '1.26.0'},
     }

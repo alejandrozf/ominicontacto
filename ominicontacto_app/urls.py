@@ -4,26 +4,25 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
 from django.conf import settings
-from django.urls import include, re_path
+from django.urls import include, re_path, path
 from django.views.static import serve
 from django.contrib.auth.decorators import login_required
 
 from ominicontacto_app import (
-    views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
+    views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
@@ -32,6 +31,8 @@ from ominicontacto_app import (
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
     views_auditorias, views_lista_rapida
 )
+
+from ominicontacto_app.views import base, grupos, instancia
 
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -49,31 +50,30 @@ urlpatterns = [
     # ==========================================================================
     # Base
     # ==========================================================================
-    re_path(r'^$', views.index_view, name='index'),
+    path('', base.index_view, name='index'),
+    path('accounts/login/', base.login_view, name='login'),
+    path('consola/',
+         login_required(base.ConsolaAgenteView.as_view()),
+         name='consola_de_agente'),
+    path('blanco/',
+         login_required(base.BlancoView.as_view()),
+         name='view_blanco'),
 
-    re_path(r'^accounts/login/$', views.login_view, name='login'),
-
-    re_path(r'^consola/$',
-            login_required(views.ConsolaAgenteView.as_view()),
-            name='consola_de_agente'),
-
-    re_path(r'^acerca/$',
-            login_required(views.AcercaTemplateView.as_view()),
-            name='acerca',
-            ),
-    re_path(r'^addons/$',
-            login_required(views.AddonsInfoView.as_view()),
-            name='addons_disponibles',
-            ),
-
-    re_path(r'^blanco/$',
-            login_required(views.BlancoView.as_view()),
-            name='view_blanco'),
-
-    re_path(r'^registro/$',
-            login_required(views.RegistroFormView.as_view()),
-            name='registrar_usuario',
-            ),
+    # ==========================================================================
+    # Instancia
+    # ==========================================================================
+    path('acerca/',
+         login_required(instancia.AcercaTemplateView.as_view()),
+         name='acerca',
+         ),
+    path('addons/',
+         login_required(instancia.AddonsInfoView.as_view()),
+         name='addons_disponibles',
+         ),
+    path('registro/',
+         login_required(instancia.RegistroFormView.as_view()),
+         name='registrar_usuario',
+         ),
 
     # ==========================================================================
     # Usuarios, Perfiles y Roles
@@ -156,37 +156,34 @@ urlpatterns = [
     # ==========================================================================
     # Grupos
     # ==========================================================================
-    re_path(r'^grupo/list/$',
-            login_required(views.GrupoListView.as_view()), name='grupo_list',
-            ),
-    re_path(r'^grupo/nuevo/$',
-            login_required(views.GrupoCreateView.as_view()), name='grupo_nuevo',
-            ),
-    re_path(r'^grupo/update/(?P<pk>\d+)/$',
-            login_required(views.GrupoUpdateView.as_view()),
-            name='grupo_update',
-            ),
-    re_path(r'^grupo/delete/(?P<pk>\d+)/$',
-            login_required(views.GrupoDeleteView.as_view()),
-            name='grupo_delete',
-            ),
-    re_path(r'^grupo/(?P<pk>\d+)/detalle/$',
-            login_required(views.GrupoDetalleView.as_view()),
-            name="grupo_detalle"),
+    path('grupo/list/',
+         login_required(grupos.GrupoListView.as_view()), name='grupo_list',
+         ),
+    path('grupo/nuevo/',
+         login_required(grupos.GrupoCreateView.as_view()), name='grupo_nuevo',
+         ),
+    path('grupo/update/<int:pk>/',
+         login_required(grupos.GrupoUpdateView.as_view()),
+         name='grupo_update',
+         ),
+    path('grupo/delete/<int:pk>/',
+         login_required(grupos.GrupoDeleteView.as_view()),
+         name='grupo_delete',
+         ),
+    path('grupo/<int:pk>/detalle/',
+         login_required(grupos.GrupoDetalleView.as_view()),
+         name="grupo_detalle"),
     # ==========================================================================
     # Pausas
     # ==========================================================================
-    re_path(r'^pausa/list/$',
-            login_required(views.PausaListView.as_view()),
-            name='pausa_list',
-            ),
-    # ==========================================================================
-    # Conjuntos de Pausas
-    # ==========================================================================
-    re_path(r'^conjuntos_de_pausa/list/$',
-            login_required(views.ConjuntosDePausaListView.as_view()),
-            name='conjuntos_de_pausas_list',
-            ),
+    path('pausa/list/',
+         login_required(base.PausaListView.as_view()),
+         name='pausa_list',
+         ),
+    path('conjuntos_de_pausa/list/',
+         login_required(base.ConjuntosDePausaListView.as_view()),
+         name='conjuntos_de_pausas_list',
+         ),
     # ==========================================================================
     # Grabaciones
     # ==========================================================================
@@ -1002,29 +999,6 @@ urlpatterns = [
                 views_campana.ConfiguracionDeAgentesDeCampanaView.as_view()),
             name='configurar_agentes_en_campana',
             ),
-
-
-
-
-    re_path(r'^chat/mensaje/$',
-            login_required(views.mensaje_chat_view),
-            name='nueva_mensaje_chat',
-            ),
-    re_path(r'^chat/create/$',
-            login_required(views.crear_chat_view),
-            name='chat_create',
-            ),
-    # re_path(r'^ajax/mensaje_recibidos/',
-    #     views.mensajes_recibidos_view,
-    #     name='ajax_mensaje_recibidos'),
-    # re_path(r'^smsThread/$',
-    #     login_required(views.mensajes_recibidos_enviado_remitente_view),
-    #     name='view_sms_thread'),
-    # re_path(r'^sms/getAll/$',
-    #     login_required(views.mensajes_recibidos_view),
-    #     name='view_sms_get_all'),
-    # re_path(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
-
 
 ]
 

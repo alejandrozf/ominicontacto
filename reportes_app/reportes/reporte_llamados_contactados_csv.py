@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -35,7 +34,7 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.core.paginator import Paginator
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import localtime, timedelta
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -183,7 +182,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Observaciones"))
 
         # agrego el encabezado para los campos de los formularios
-        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+        if self.campana.tiene_formulario:
             for opcion in self.campana.opciones_calificacion.filter(
                     tipo=OpcionCalificacion.GESTION).select_related(
                         'formulario').prefetch_related('formulario__campos'):
@@ -310,7 +309,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Callid"))
         encabezado.append(_("Tipo llamada"))
         # agrego el encabezado para los campos de los formularios
-        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+        if self.campana.tiene_formulario:
             for opcion in self.opciones_calificacion_campana.values():
                 if opcion.id not in self.posiciones_opciones and \
                    opcion.tipo == OpcionCalificacion.GESTION:
@@ -367,7 +366,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
                 calificacion_id)
         if (calificacion.opcion_calificacion.es_gestion() and
-            self.campana.tipo_interaccion is Campana.FORMULARIO and
+            self.campana.tiene_formulario and
                 respuesta_formulario_gestion is not None):
             datos = json.loads(respuesta_formulario_gestion.metadata)
 

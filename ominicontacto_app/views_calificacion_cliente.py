@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -27,7 +26,7 @@ import json
 import logging as logging_
 from django.core.exceptions import ValidationError
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
@@ -47,6 +46,7 @@ from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo impo
 from ominicontacto_app.services.campana_service import CampanaService
 from api_app.services.calificacion_llamada import CalificacionLLamada
 from notification_app.notification import RedisStreamNotifier
+from configuracion_telefonia_app.models import DestinoEntrante
 
 from reportes_app.models import LlamadaLog
 
@@ -72,10 +72,30 @@ class CalificacionClienteFormView(FormView):
         contactos_info = list(self.campana.bd_contacto.contactos.filter(telefono=telefono))
         return contactos_info
 
+    def campana_es_entrante_con_identificador_de_cliente(self):
+        if not self.campana.es_entrante:
+            return False
+        destino_campana = DestinoEntrante.get_nodo_ruta_entrante(self.campana)
+        for anterior in destino_campana.destinos_anteriores.all():
+            if anterior.destino_anterior.tipo == DestinoEntrante.IDENTIFICADOR_CLIENTE:
+                return True
+        return False
+
     def get_contacto(self, id_contacto):
         if id_contacto is None or id_contacto == '-1':
             return None
-        return get_object_or_404(Contacto, pk=id_contacto)
+
+        # Patch para poder atender ids de contacto erroneos de campañas entrantes con CallID
+        try:
+            contacto = Contacto.objects.get(pk=id_contacto)
+        except Contacto.DoesNotExist:
+            if self.campana_es_entrante_con_identificador_de_cliente():
+                message = _('El Identificador de contacto recibido no permite '
+                            'definir al contacto: {0}'.format(id_contacto))
+                messages.warning(self.request, message)
+                return None
+            return get_object_or_404(Contacto, pk=id_contacto)
+        return contacto
 
     def get_object(self):
         if self.contacto is not None:
@@ -108,6 +128,9 @@ class CalificacionClienteFormView(FormView):
         if self.contacto:
             return self.campana.get_campos_ocultos()
         return []
+
+    def _get_campos_obligatorios(self):
+        return self.campana.get_campos_obligatorios()
 
     def dispatch(self, *args, **kwargs):
         id_contacto = None
@@ -157,6 +180,7 @@ class CalificacionClienteFormView(FormView):
 
         self.campos_bloqueados = self._get_campos_bloqueados()
         self.campos_ocultos = self._get_campos_ocultos()
+        self.campos_obligatorios = self._get_campos_obligatorios()
 
         self.configuracion_sitio_externo = None
         # Si no hay call data no puedo interactuar con el sitio_externo
@@ -228,6 +252,7 @@ class CalificacionClienteFormView(FormView):
                 initial['telefono'] = self.kwargs['telefono']
 
         kwargs['campos_ocultos'] = self.campos_ocultos
+        kwargs['campos_obligatorios'] = self.campos_obligatorios
         kwargs['initial'] = initial
 
         if self.request.method == 'POST':
@@ -445,20 +470,25 @@ class CalificacionClienteFormView(FormView):
                 if llamadalog:
                     llamadalog.update(contacto_id=self.contacto.id)
 
-            force_disposition = False
-            if self.call_data:
-                force_disposition = self.agente.grupo.obligar_calificacion
-                if 'force_disposition' in self.call_data:
-                    force_disposition = self.call_data['force_disposition']
-            es_agenda = False
-            if calificacion_form is not None:
-                es_agenda = calificacion_form.instance.es_agenda()
-            if force_disposition:
-                calificacion_llamada = CalificacionLLamada()
-                calificacion_llamada.create_family(self.agente, self.call_data,
-                                                   self.kwargs['call_data_json'], calificado=True,
-                                                   gestion=False, id_calificacion=None,
-                                                   es_agenda=es_agenda)
+            # TODO: Pasar esto dentro de _calificar_form() ?
+            if not calificacion_form or not calificacion_form.instance.es_gestion():
+                force_disposition = False  # No debería ser =self.agente.grupo.obligar_calificacion?
+                if self.call_data:
+                    force_disposition = self.agente.grupo.obligar_calificacion
+                    if 'force_disposition' in self.call_data:
+                        force_disposition = self.call_data['force_disposition']
+                es_agenda = False
+                if calificacion_form is not None:
+                    es_agenda = calificacion_form.instance.es_agenda()
+                if force_disposition:
+                    calificacion_llamada = CalificacionLLamada()
+                    calificacion_llamada.create_family(self.agente, self.call_data,
+                                                       self.kwargs['call_data_json'],
+                                                       calificado=True,
+                                                       gestion=False,
+                                                       id_calificacion=None,
+                                                       es_agenda=es_agenda)
+
             if calificacion_form is not None:
                 # el formulario de calificación no es generado por una llamada entrante
                 return self._calificar_form(calificacion_form)
@@ -549,6 +579,9 @@ class AuditarCalificacionClienteFormView(CalificacionClienteFormView):
         return []
 
     def _get_campos_ocultos(self):
+        return []
+
+    def _get_campos_obligatorios(self):
         return []
 
     def get_success_url_venta(self):
@@ -752,6 +785,7 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
         campana = self.calificacion.opcion_calificacion.campana
         kwargs['campos_bloqueados'] = campana.get_campos_no_editables()
         kwargs['campos_ocultos'] = campana.get_campos_ocultos()
+        kwargs['campos_obligatorios'] = campana.get_campos_obligatorios()
         return kwargs
 
     def _get_calificacion(self):

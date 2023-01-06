@@ -4,22 +4,21 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
 
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.apps import AppConfig
 
 
@@ -46,12 +45,12 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_ivrs' in permissions:
             items.append({
                 'label': _('IVR'),
-                'url': reverse('lista_ivrs', args=(1,))
+                'url': reverse('lista_ivrs')
             })
         if 'lista_grupos_horarios' in permissions:
             items.append({
                 'label': _('Grupos horarios'),
-                'url': reverse('lista_grupos_horarios', args=(1,))
+                'url': reverse('lista_grupos_horarios')
             })
         if 'lista_validaciones_fecha_hora' in permissions:
             items.append({
@@ -143,19 +142,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_ivrs',
              'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'crear_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'editar_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
-            {'nombre': 'eliminar_ivr',
-             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'lista_grupos_horarios',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'crear_grupo_horario',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'editar_grupo_horario',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'eliminar_grupo_horario',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'lista_validaciones_fecha_hora',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -218,20 +205,8 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'version': '1.7.0'},
         'lista_ivrs':
             {'descripcion': _('Ver la lista de IVRs'), 'version': '1.7.0'},
-        'crear_ivr':
-            {'descripcion': _('Crear un IVR'), 'version': '1.7.0'},
-        'editar_ivr':
-            {'descripcion': _('Editar IVR'), 'version': '1.7.0'},
-        'eliminar_ivr':
-            {'descripcion': _('Eliminar IVR'), 'version': '1.7.0'},
         'lista_grupos_horarios':
             {'descripcion': _('Ver lista de Grupos Horarios'), 'version': '1.7.0'},
-        'crear_grupo_horario':
-            {'descripcion': _('Crear un Grupo Horario'), 'version': '1.7.0'},
-        'editar_grupo_horario':
-            {'descripcion': _('Editar un Grupo Horario'), 'version': '1.7.0'},
-        'eliminar_grupo_horario':
-            {'descripcion': _('Eliminar un Grupo Horario'), 'version': '1.7.0'},
         'lista_validaciones_fecha_hora':
             {'descripcion': _('Ver lista de Validaciones horarias'), 'version': '1.7.0'},
         'crear_validacion_fecha_hora':

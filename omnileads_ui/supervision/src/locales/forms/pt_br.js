@@ -71,11 +71,20 @@ export default {
             not_empty_trunks: 'Deve haver pelo menos um tronco',
             repeated_route_name: 'A rota de saída com esse nome já existe',
             invalid_route_name: 'O nome do caminho é inválido',
-            trunk_already_exists: 'O tronco já existe'
+            trunk_already_exists: 'O tronco já existe',
+            orphan_trunks: 'Ao eliminar a rota de saída, os seguintes Sip Trunks permanecerão sem uso pelas rotas de saída'
         }
     },
     dial_pattern: {
         enter_pattern: 'Digite o padrão'
+    },
+    group_of_hour: {
+        enter_name: 'Digite o nome',
+        validations: {
+            not_empty_time_validations: 'Deve haver pelo menos uma validação de tempo',
+            repeated_group_name: 'Já existe um grupo de tempo com esse nome',
+            time_validation_already_exists: 'A validação de tempo já existe'
+        }
     },
     external_site_authentication: {
         placeholders: {
@@ -97,6 +106,38 @@ export default {
             invalid_campo_duracion: 'Se não houver duração, o campo de duração deve existir.',
             invalid_name_campo_token: 'O nome do campo de token é inválido',
             invalid_name_campo_duracion: 'O nome do campo de duração é inválido'
+        }
+    },
+    ivr: {
+        enter_name: 'Digite o nome',
+        enter_description: 'Digite a descrição',
+        validations: {
+            not_empty_time_validations: 'Deve haver pelo menos uma validação de tempo',
+            repeated_ivr_name: 'IVR com esse nome já existe',
+            destination_option_already_exists: 'A opção de destino já existe'
+        },
+        destination_types: {
+            campaign: 'Campanha de entrada',
+            validation_date: 'Validação de data/hora',
+            ivr: 'IVR',
+            hangup: 'desligar',
+            id_client: 'Identificador do cliente',
+            custom_dst: 'Destino personalizado'
+        },
+        audios: {
+            external: {
+                drag_and_drop: 'Arraste e solte os arquivos aqui para fazer upload'
+            },
+            validations: {
+                required_internal_file: 'O arquivo interno é obrigatório',
+                required_external_file: 'O arquivo externo é obrigatório'
+            }
+        }
+    },
+    destination_option: {
+        validations: {
+            repeated_dtmf: 'Já existe uma opção de destino com esse DTMF',
+            invalid_dtmf: 'O valor DTMF deve ser um dígito (0-9) ou um caractere (#, -, *)'
         }
     }
 };

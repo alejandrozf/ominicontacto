@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -27,7 +26,7 @@ from django.db import models, connection
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.conf import settings
 
 from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \
@@ -213,23 +212,38 @@ class LlamadaLogManager(models.Manager):
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
-        campanas_id = [campana.id for campana in campanas]
+        # Campañas a Filtrar:
+        campanas_id = set([campana.id for campana in campanas])
+        if campana:
+            if campana != 'activas' and campana != 'borradas':
+                campanas_id = [campana]
+            else:
+                for camp in campanas:
+                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
+                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
+                        campanas_id.remove(camp.id)
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
                                   event__in=INCLUDED_EVENTS)
+
         grabaciones = grabaciones.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
-        if calificaciones:
-            call_ids = HistoricalCalificacionCliente.objects.filter(
-                opcion_calificacion_id__in=calificaciones).values_list('callid', flat=True)
-            grabaciones = grabaciones.filter(callid__in=call_ids)
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
-            grabaciones = grabaciones.filter(time__range=(fecha_desde,
-                                                          fecha_hasta))
+            grabaciones = grabaciones.filter(time__range=(fecha_desde, fecha_hasta))
+
+        if calificaciones:
+            historicals = HistoricalCalificacionCliente.objects.filter(
+                opcion_calificacion_id__in=calificaciones)
+            # Optimizo filtro calificaciones historicas por fecha
+            if fecha_desde and fecha_hasta:
+                historicals.filter(modified__range=(fecha_desde, fecha_hasta))
+            call_ids = historicals.values_list('callid', flat=True)
+            grabaciones = grabaciones.filter(callid__in=call_ids)
+
         if tipo_llamada:
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
@@ -239,19 +253,6 @@ class LlamadaLogManager(models.Manager):
             grabaciones = grabaciones.filter(callid=callid)
         if agente:
             grabaciones = grabaciones.filter(agente_id=agente.id)
-        if campana:
-            if campana != 'activas' and campana != 'borradas':
-                grabaciones = grabaciones.filter(campana_id=campana)
-
-            else:
-                campanas_excluidas_id = []
-                for camp in campanas:
-                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
-                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
-                        campanas_excluidas_id.append(camp.pk)
-
-                grabaciones = grabaciones.exclude(
-                    campana_id__in=campanas_excluidas_id)
 
         if duracion and duracion > 0:
             grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)

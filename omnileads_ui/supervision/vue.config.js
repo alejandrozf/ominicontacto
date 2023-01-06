@@ -31,7 +31,9 @@ module.exports = {
         forms: getPageConfig('forms'),
         pauses: getPageConfig('pauses'),
         inbound_routes: getPageConfig('inbound_routes'),
-        outbound_routes: getPageConfig('outbound_routes')
+        outbound_routes: getPageConfig('outbound_routes'),
+        group_of_hours: getPageConfig('group_of_hours'),
+        ivrs: getPageConfig('ivrs')
     },
     devServer: {
         proxy: {

@@ -4,20 +4,19 @@ Copyright (C) 2018 Freetech Solutions
 This file is part of OMniLeads
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% load staticfiles %}
+{% load static %}
 {% load compress %}
 {% load i18n %}
 {% load util_tags %}
@@ -31,10 +30,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
         <!-- Fonts -->
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-solid.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-regular.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fontawesome.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
         <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
         {% compress js %}

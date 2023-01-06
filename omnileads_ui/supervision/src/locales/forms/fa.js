@@ -71,11 +71,20 @@ export default {
             not_empty_trunks: 'باید حداقل یک تنه وجود داشته باشد',
             repeated_route_name: 'مسیر خروجی با آن نام از قبل وجود دارد',
             invalid_route_name: 'نام مسیر نامعتبر است',
-            trunk_already_exists: 'تنه از قبل وجود دارد'
+            trunk_already_exists: 'تنه از قبل وجود دارد',
+            orphan_trunks: 'با حذف مسیر خروجی، سیپ ترانک های زیر توسط مسیرهای خروجی بلااستفاده می مانند'
         }
     },
     dial_pattern: {
         enter_pattern: 'الگو را وارد کنید'
+    },
+    group_of_hour: {
+        enter_name: 'نام را وارد کنید',
+        validations: {
+            not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
+            repeated_group_name: 'در حال حاضر یک گروه زمانی با آن نام وجود دارد',
+            time_validation_already_exists: 'اعتبار زمانی از قبل وجود دارد'
+        }
     },
     external_site_authentication: {
         placeholders: {
@@ -97,6 +106,38 @@ export default {
             invalid_campo_duracion: 'اگر مدت زمان وجود نداشته باشد، قسمت duration باید وجود داشته باشد.',
             invalid_name_campo_token: 'نام فیلد نشانه نامعتبر است',
             invalid_name_campo_duracion: 'نام فیلد مدت نامعتبر است'
+        }
+    },
+    ivr: {
+        enter_name: 'نام را وارد کنید',
+        enter_description: 'توضیحات را وارد کنید',
+        validations: {
+            not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
+            repeated_ivr_name: 'تلفن گویا با این نام از قبل وجود دارد',
+            destination_option_already_exists: 'گزینه مقصد از قبل وجود دارد'
+        },
+        destination_types: {
+            campaign: 'کمپین ورودی',
+            validation_date: 'اعتبارسنجی تاریخ/زمان',
+            ivr: 'تلفن گویا',
+            hangup: 'قطع کن',
+            id_client: 'شناسه مشتری',
+            custom_dst: 'مقصد سفارشی'
+        },
+        audios: {
+            external: {
+                drag_and_drop: 'برای آپلود فایل ها را به اینجا بکشید و رها کنید'
+            },
+            validations: {
+                required_internal_file: 'فایل داخلی مورد نیاز است',
+                required_external_file: 'فایل خارجی مورد نیاز است'
+            }
+        }
+    },
+    destination_option: {
+        validations: {
+            repeated_dtmf: 'در حال حاضر یک گزینه مقصد با آن DTMF وجود دارد',
+            invalid_dtmf: 'مقدار DTMF باید یک رقم (0-9) یا یک کاراکتر (#، -، *) باشد.'
         }
     }
 };

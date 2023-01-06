@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -27,7 +26,7 @@ from formtools.wizard.views import SessionWizardView
 from import_export import resources
 from import_export.fields import Field
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.auth import login
@@ -538,23 +537,6 @@ class AgenteProfileUpdateView(UpdateView):
         kwargs = super(AgenteProfileUpdateView, self).get_form_kwargs()
         kwargs['grupos_queryset'] = Grupo.objects.all()
         return kwargs
-
-    def form_valid(self, form):
-        self.object = form.save()
-
-        asterisk_sip_service = ActivacionAgenteService()
-        try:
-            # Como solo puede cambiar el grupo no impacta en AstDB
-            asterisk_sip_service.activar(regenerar_families=False)
-        except RestablecerConfigSipError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error{0} .".format(e))
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        return super(AgenteProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('user_list', kwargs={"page": 1})

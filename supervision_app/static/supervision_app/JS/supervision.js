@@ -3,16 +3,15 @@
  This file is part of OMniLeads
 
  This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+ it under the terms of the GNU Lesser General Public License version 3, as published by
+ the Free Software Foundation.
 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ GNU Lesser General Public License for more details.
 
- You should have received a copy of the GNU General Public License
+ You should have received a copy of the GNU Lesser General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
@@ -290,12 +289,25 @@ function filtro_campana() {
 
 function subcribeFilterChange() {
 
+    // Seleccionar filtro viejo de grupos.
+    let old_filter = table_agentes.column(1).search();
+    if (old_filter) {
+        $('#filter_group').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+    }
+
     $('#filter_group').change(function() {
         var selection = $('#filter_group').find('option:selected');
         $('#filter_group option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
         table_agentes.columns(1).search(selection.html()).draw();
     });
+
+    // Seleccionar filtro viejo de campañas.
+    old_filter = table_agentes.column(2).search();
+    old_filter = old_filter.slice(2,-2); // Elimino los valores '\\b\\b'
+    if (old_filter) {
+        $('#filter_campana').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+    }
 
     $('#filter_campana').change(function() {
         var selection = $('#filter_campana').find('option:selected');

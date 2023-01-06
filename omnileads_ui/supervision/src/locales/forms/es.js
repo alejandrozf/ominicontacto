@@ -71,11 +71,20 @@ export default {
             not_empty_trunks: 'Debe existir al menos una troncal',
             repeated_route_name: 'Ya existe ruta saliente con ese nombre',
             invalid_route_name: 'El nombre de la ruta es invalido',
-            trunk_already_exists: 'Ya existe la troncal'
+            trunk_already_exists: 'Ya existe la troncal',
+            orphan_trunks: 'Al eliminar la ruta saliente los siguientes Troncales Sip quedarán sin ser usados por rutas Salientes'
         }
     },
     dial_pattern: {
         enter_pattern: 'Ingresa el patron'
+    },
+    group_of_hour: {
+        enter_name: 'Ingresa el nombre',
+        validations: {
+            not_empty_time_validations: 'Debe existir al menos una validacion de tiempo',
+            repeated_group_name: 'Ya existe grupo horario con ese nombre',
+            time_validation_already_exists: 'Ya existe la validacion de tiempo'
+        }
     },
     external_site_authentication: {
         placeholders: {
@@ -97,6 +106,38 @@ export default {
             invalid_campo_duracion: 'Si no hay duracion debe existir el campo duracion',
             invalid_name_campo_token: 'El nombre del campo token es invalido',
             invalid_name_campo_duracion: 'El nombre del campo duracion es invalido'
+        }
+    },
+    ivr: {
+        enter_name: 'Ingresa el nombre',
+        enter_description: 'Ingresa la descripcion',
+        validations: {
+            not_empty_time_validations: 'Debe existir al menos una validacion de tiempo',
+            repeated_ivr_name: 'Ya existe IVR con ese nombre',
+            destination_option_already_exists: 'Ya existe la opcion de destino'
+        },
+        destination_types: {
+            campaign: 'Campaña entrante',
+            validation_date: 'Validación de fecha/hora',
+            ivr: 'IVR',
+            hangup: 'HangUp',
+            id_client: 'Identificador cliente',
+            custom_dst: 'Destino personalizado'
+        },
+        audios: {
+            external: {
+                drag_and_drop: 'Arrastre y suelte los archivos aquí para cargarlos'
+            },
+            validations: {
+                required_internal_file: 'Archivo interno es requerido',
+                required_external_file: 'Archivo externo es requerido'
+            }
+        }
+    },
+    destination_option: {
+        validations: {
+            repeated_dtmf: 'Ya existe opcion de destino con ese DTMF',
+            invalid_dtmf: 'El valor del DTMF debe ser un dígito(0-9) o un caracter (#, -, *)'
         }
     }
 };

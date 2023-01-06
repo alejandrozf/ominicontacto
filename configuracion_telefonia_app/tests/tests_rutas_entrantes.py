@@ -4,29 +4,26 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
 from __future__ import unicode_literals
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
-from io import BytesIO
 from mock import patch
 
 from django.urls import reverse
 
-from configuracion_telefonia_app.forms import IVRForm
-from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
+from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR,
                                                 ValidacionFechaHora)
 from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory, IVRFactory, OpcionDestinoFactory, ValidacionTiempoFactory,
@@ -132,148 +129,6 @@ class TestsRutasEntrantes(OMLBaseTest):
             'ivr-MIN_NUM_FORMS': 0,
             'ivr-MAX_NUM_FORMS': 1000
         }
-
-    def test_usuario_sin_administracion_no_puede_crear_ivr(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_ivrs = IVR.objects.count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(IVR.objects.count(), n_ivrs)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_ivrs = IVR.objects.count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(IVR.objects.count(), n_ivrs + 1)
-
-    def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
-        url = reverse('editar_ivr', args=[self.ivr.pk])
-        nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['nombre'] = nuevo_nombre
-        post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
-        post_data['ivr-1-id'] = self.opc_dest_ivr_ivr_2.pk
-        post_data['ivr-INITIAL_FORMS'] = 2
-        self.client.post(url, post_data, follow=True)
-        self.ivr.refresh_from_db()
-        self.assertNotEqual(self.ivr.nombre, nuevo_nombre)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_usuario_administrar_puede_modificar_ivr(self, escribir_nodo_entrante_config):
-        url = reverse('editar_ivr', args=[self.ivr.pk])
-        nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['nombre'] = nuevo_nombre
-        post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
-        post_data['ivr-1-id'] = self.opc_dest_ivr_ivr_2.pk
-        post_data['ivr-INITIAL_FORMS'] = 2
-        self.client.post(url, post_data, follow=True)
-        self.ivr.refresh_from_db()
-        self.assertEqual(self.ivr.nombre, nuevo_nombre)
-
-    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
-    def test_creacion_ivr_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        n_dests_ivrs = DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count()
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count(), n_dests_ivrs + 1)
-
-    def _obtener_post_data_grupo_horario(self):
-        return {
-            'nombre': 'grupo_horario',
-            'validacion_tiempo-0-tiempo_inicial': '15:45',
-            'validacion_tiempo-0-tiempo_final': '15:45',
-            'validacion_tiempo-0-dia_semana_inicial': '1',
-            'validacion_tiempo-0-dia_semana_final': '0',
-            'validacion_tiempo-0-dia_mes_inicio': '14',
-            'validacion_tiempo-0-dia_mes_final': '17',
-            'validacion_tiempo-0-mes_inicio': '10',
-            'validacion_tiempo-0-mes_final': '12',
-            'validacion_tiempo-0-id': '',
-            'validacion_tiempo-TOTAL_FORMS': '1',
-            'validacion_tiempo-INITIAL_FORMS': '0',
-            'validacion_tiempo-MIN_NUM_FORMS': '1',
-            'validacion_tiempo-MAX_NUM_FORMS': '1000',
-        }
-
-    def test_usuario_customer_no_puede_crear_grupo_horario(self):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_referente.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_supervisor_puede_crear_grupo_horario(self, regenerar_family):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
-        url = reverse('crear_grupo_horario')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        n_grupos_horarios = GrupoHorario.objects.count()
-        self.client.post(url, post_data, follow=True)
-        self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_referente.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        self.client.post(url, post_data, follow=True)
-        self.grupo_horario.refresh_from_db()
-        self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_sup.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.grupo_horario.refresh_from_db()
-        self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
-
-    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
-    def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
-        url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
-        nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_grupo_horario()
-        post_data['nombre'] = nuevo_nombre
-        post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
-        post_data['validacion_tiempo-INITIAL_FORMS'] = 1
-        response = self.client.post(url, post_data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.grupo_horario.refresh_from_db()
-        self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
 
     def _obtener_post_data_validacion_fecha_hora(self):
         return {
@@ -387,43 +242,6 @@ class TestsRutasEntrantes(OMLBaseTest):
         post_data['validacion_fecha_hora-1-destino_siguiente'] = self.destino_campana_entrante.pk,
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['validacion_fecha_hora_formset'].is_valid())
-
-    def test_form_ivr_escoger_audio_ppal_externo_no_coincide_tipo_audio_es_invalido(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['audio_ppal_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['audio_ppal_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
-
-    def test_form_ivr_escoger_audio_time_out_externo_no_coincide_tipo_audio_es_invalido(self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['time_out_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['time_out_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
-
-    def test_form_ivr_escoger_audio_destino_invalido_externo_no_coincide_tipo_audio_es_invalido(
-            self):
-        url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=PASSWORD)
-        post_data = self._obtener_post_data_ivr()
-        post_data['invalid_destination_audio_escoger'] = IVRForm.AUDIO_EXTERNO
-        img = BytesIO(b'mybinarydata')
-        img.name = 'myimage.jpg'
-        post_data['invalid_destination_ext_audio'] = img
-        response = self.client.post(url, post_data, follow=True)
-        self.assertFalse(response.context['form'].is_valid())
-        self.assertContains(response, _('Archivos permitidos: .wav'))
 
     def test_no_se_permite_crear_destino_nombre_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')

@@ -4,16 +4,15 @@
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
@@ -73,14 +72,19 @@ from api_app.views.outbound_route import (
     OutboundRouteCreate, OutboundRouteDelete, OutboundRouteList,
     OutboundRouteDetail, OutboundRouteOrphanTrunks, OutboundRouteReorder,
     OutboundRouteSIPTrunksList, OutboundRouteUpdate)
-from api_app.views import agente
+from api_app.views.group_of_hour import (
+    GroupOfHourCreate, GroupOfHourDelete, GroupOfHourList,
+    GroupOfHourDetail, GroupOfHourUpdate)
+from api_app.views.ivr import (
+    IVRAudioOptions, IVRCreate, IVRDelete, IVRDestinationTypes, IVRList,
+    IVRDetail, IVRUpdate)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
-    AgentRejectCallAsterisk
+    AgentRejectCallAsterisk, Click2CallOutsideCampaign
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
@@ -101,20 +105,20 @@ router = routers.DefaultRouter()
 # ###########  ADMINISTRADOR  ############ #
 router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
-    base_name='api_agentes_activos_de_grupo')
+    basename='api_agentes_activos_de_grupo')
 
 
 # ###########     AGENTE      ############ #
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions/(?P<externalSystem>\w+)',
-    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion')
+    OpcionesCalificacionViewSet, basename='api_campana_opciones_calificacion')
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions',
-    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion_intern')
-router.register(r'api/v1/disposition', ApiCalificacionClienteView, base_name='api_disposition')
+    OpcionesCalificacionViewSet, basename='api_campana_opciones_calificacion_intern')
+router.register(r'api/v1/disposition', ApiCalificacionClienteView, basename='api_disposition')
 router.register(
     r'api/v1/new_contact/disposition', ApiCalificacionClienteCreateView,
-    base_name='api_disposition_new_contact')
+    basename='api_disposition_new_contact')
 
 
 urlpatterns = [
@@ -411,15 +415,57 @@ urlpatterns = [
     re_path(r'api/v1/outbound_routes/reorder/$',
             OutboundRouteReorder.as_view(),
             name='api_outbound_routes_reorder'),
+    # =========================
+    # Grupos Horarios
+    # =========================
+    re_path(r'api/v1/group_of_hours/$',
+            GroupOfHourList.as_view(),
+            name='api_group_of_hours_list'),
+    re_path(r'api/v1/group_of_hours/create/$',
+            GroupOfHourCreate.as_view(),
+            name='api_group_of_hours_create'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/update/$',
+            GroupOfHourUpdate.as_view(),
+            name='api_group_of_hours_update'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/$',
+            GroupOfHourDetail.as_view(),
+            name='api_group_of_hours_detail'),
+    re_path(r'api/v1/group_of_hours/(?P<pk>\d+)/delete/$',
+            GroupOfHourDelete.as_view(),
+            name='api_group_of_hours_delete'),
+    # =========================
+    # IVRs
+    # =========================
+    re_path(r'api/v1/ivrs/$',
+            IVRList.as_view(),
+            name='api_ivrs_list'),
+    re_path(r'api/v1/ivrs/create/$',
+            IVRCreate.as_view(),
+            name='api_ivrs_create'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/update/$',
+            IVRUpdate.as_view(),
+            name='api_ivrs_update'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/$',
+            IVRDetail.as_view(),
+            name='api_ivrs_detail'),
+    re_path(r'api/v1/ivrs/(?P<pk>\d+)/delete/$',
+            IVRDelete.as_view(),
+            name='api_ivrs_delete'),
+    re_path(r'api/v1/ivrs/audio_options/$',
+            IVRAudioOptions.as_view(),
+            name='api_ivrs_audio_options_list'),
+    re_path(r'api/v1/ivrs/destination_types/$',
+            IVRDestinationTypes.as_view(),
+            name='api_ivrs_destination_types_list'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
     re_path(r'api/v1/makeCall/$',
             Click2CallView.as_view(),
             name='api_click2call'),
-    path('api/v1/make_call_outside_campaign/',
-         agente.Click2CallOutsideCampaign.as_view(),
-         name='api_click2call_outside_campaign'),
+    re_path(r'api/v1/make_call_outside_campaign/',
+            Click2CallOutsideCampaign.as_view(),
+            name='api_click2call_outside_campaign'),
     re_path(r'^api/v1/asterisk_login/$',
             AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     re_path(r'^api/v1/asterisk_logout/$',
