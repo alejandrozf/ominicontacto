@@ -41,6 +41,7 @@ from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfigFile, \
     PlaylistsConfigCreator, QueuesCreator, SipConfigCreator
 from configuracion_telefonia_app.models import AudiosAsteriskConf
+from ominicontacto_app.models import ArchivoDeAudio
 import requests
 import tempfile
 import base64
@@ -343,6 +344,13 @@ class RegeneracionAsteriskService(object):
                 audio_file_asterisk = AudioConfigFile(musica)
                 audio_file_asterisk.copy_asterisk()
 
+    def _reenviar_archivos_audio_asterisk(self):
+        audios = ArchivoDeAudio.objects.all()
+        print(list(audios))
+        for audio in audios:
+            audio_file_asterisk = AudioConfigFile(audio)
+            audio_file_asterisk.copy_asterisk()
+
     def _reenviar_paquetes_idioma(self):
         ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
         audios_asterisk_conf_list = AudiosAsteriskConf.objects.filter(esta_instalado=True)
@@ -378,6 +386,7 @@ class RegeneracionAsteriskService(object):
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._reenviar_archivos_playlist_asterisk()
+        self._reenviar_archivos_audio_asterisk()
         self._reenviar_paquetes_idioma()
         self._generar_tarea_script_logout_agentes_inactivos()
         self._generar_tarea_limpieza_diaria_queuelog()
