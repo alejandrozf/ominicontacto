@@ -366,8 +366,8 @@ class AgenteCampanaTests(CampanasTests):
 
         return values, url, post_data
 
-    @patch('requests.post')
-    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, send):
         AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
@@ -375,9 +375,10 @@ class AgenteCampanaTests(CampanasTests):
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
         del values['datos_contacto']
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
+        send.assert_called_with('calification', self.agente_profile.id)
 
-    @patch('requests.post')
-    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(self, send):
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
         base_datos = self.contacto.bd_contacto
@@ -388,6 +389,7 @@ class AgenteCampanaTests(CampanasTests):
         self.client.post(url, post_data)
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
+        send.assert_called_with('calification', self.agente_profile.id)
 
 
 class SupervisorCampanaTests(CampanasTests):

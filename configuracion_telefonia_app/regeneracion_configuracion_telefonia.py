@@ -76,13 +76,13 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
-    def _generar_y_recargar_archivos_conf_asterisk(self, trunk_exclude=None):
+    def _generar_y_recargar_archivos_conf_asterisk(self, trunk=None, trunk_exclude=None):
         proceso_ok = True
         mensaje_error = ""
 
         try:
             self.generador_trunk_sip_en_asterisk_conf.create_config_asterisk(
-                trunk_exclude=trunk_exclude)
+                trunk=trunk, trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
                 e)) + _("intentar create_config_asterisk()")
@@ -93,7 +93,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
 
         try:
             self.generador_trunks_registration_en_asterisk_conf.create_config_asterisk(
-                trunk_exclude=trunk_exclude)
+                trunk=trunk, trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
                 e)) + _("intentar create_config_asterisk()")
@@ -137,7 +137,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
     def regenerar_troncales(self, trunk=None):
-        self._generar_y_recargar_archivos_conf_asterisk()
+        self._generar_y_recargar_archivos_conf_asterisk(trunk=trunk)
         self._generar_e_insertar_en_astdb(trunk)
 
     def eliminar_troncal_y_regenerar_asterisk(self, trunk):

@@ -545,9 +545,11 @@ class SipTrunksConfigCreator(object):
         self._chansip_trunks_config_file = ChanSipTrunksConfigFile()
         self._pjsip_trunks_config_file = PJSipTrunksConfigFile()
 
-    def _obtener_todas_para_generar_config_rutas(self):
-        """Devuelve todas para config troncales
+    def _obtener_todas_para_generar_config_rutas(self, tecnologia=None):
+        """Devuelve todas para config troncales filtrando por tecnologia si corresponde
         """
+        if tecnologia is not None:
+            return TroncalSIP.objects.filter(tecnologia=tecnologia)
         return TroncalSIP.objects.all()
 
     def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
@@ -555,34 +557,41 @@ class SipTrunksConfigCreator(object):
         """
         return TroncalSIP.objects.exclude(pk=trunk.id)
 
-    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
-        """Crea el archivo de dialplan para queue existentes
-        (si `queue` es None). Si `trunk` es pasada por parametro,
-        se genera solo para dicha trunk.
+    def create_config_asterisk(self, trunk=None, trunk_exclude=None):
+        """Actualiza los archivos oml_sip_trunks.conf o oml_pjsip_trunks.conf
+        Si corresponde.
         """
 
-        if trunks:
-            pass
-        elif trunk:
-            trunks = [trunk]
-        elif trunk_exclude:
+        modifica_chan = False
+        modifica_pjsip = False
+
+        if trunk_exclude:
+            modifica_chan = trunk_exclude.tecnologia == TroncalSIP.CHANSIP
+            modifica_pjsip = trunk_exclude.tecnologia == TroncalSIP.PJSIP
             trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
                 trunk_exclude)
         else:
-            trunks = self._obtener_todas_para_generar_config_rutas()
+            tecnologia = None
+            if trunk:
+                tecnologia = trunk.tecnologia
+            trunks = self._obtener_todas_para_generar_config_rutas(tecnologia=tecnologia)
         chansip_trunk_file = []
         pjsip_trunk_file = []
 
         for trunk in trunks:
             logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
             if trunk.tecnologia == TroncalSIP.CHANSIP:
+                modifica_chan = True
                 chansip_trunk_file.append("\n[{0}]\n{1}\n".format(
                     trunk.nombre, trunk.text_config.replace("\r", "")))
             elif trunk.tecnologia == TroncalSIP.PJSIP:
+                modifica_pjsip = True
                 pjsip_trunk_file.append("\n[{0}]\n{1}\n".format(
                     trunk.nombre, trunk.text_config.replace("\r", "")))
-        self._chansip_trunks_config_file.write(chansip_trunk_file)
-        self._pjsip_trunks_config_file.write(pjsip_trunk_file)
+        if modifica_chan:
+            self._chansip_trunks_config_file.write(chansip_trunk_file)
+        if modifica_pjsip:
+            self._pjsip_trunks_config_file.write(pjsip_trunk_file)
 
 
 class SipRegistrationsConfigCreator(object):
@@ -590,9 +599,11 @@ class SipRegistrationsConfigCreator(object):
     def __init__(self):
         self._sip_registrations_config_file = SipRegistrationsConfigFile()
 
-    def _obtener_todas_para_generar_config_rutas(self):
-        """Devuelve todas para config troncales
+    def _obtener_todas_para_generar_config_rutas(self, tecnologia=None):
+        """Devuelve todas para config troncales filtrando por tecnologia si corresponde
         """
+        if tecnologia is not None:
+            return TroncalSIP.objects.filter(tecnologia=tecnologia)
         return TroncalSIP.objects.all()
 
     def _obtener_todas_menos_un_troncal_para_generar_config_troncales(self, trunk):
@@ -600,28 +611,36 @@ class SipRegistrationsConfigCreator(object):
         """
         return TroncalSIP.objects.exclude(pk=trunk.id)
 
-    def create_config_asterisk(self, trunk=None, trunks=None, trunk_exclude=None):
-        """Crea el archivo de dialplan para queue existentes
-        (si `queue` es None). Si `trunk` es pasada por parametro,
-        se genera solo para dicha trunk.
+    def create_config_asterisk(self, trunk=None, trunk_exclude=None):
+        """Actualiza el archivo oml_sip_registrations.conf si corresponde.
         """
 
-        if trunks:
-            pass
-        elif trunk:
-            trunks = [trunk]
-        elif trunk_exclude:
+        modifica_chan = False
+
+        if trunk_exclude:
+            modifica_chan = trunk_exclude.tecnologia == TroncalSIP.CHANSIP
             trunks = self._obtener_todas_menos_un_troncal_para_generar_config_troncales(
                 trunk_exclude)
         else:
-            trunks = self._obtener_todas_para_generar_config_rutas()
+            tecnologia = None
+            if trunk:
+                tecnologia = trunk.tecnologia
+            trunks = self._obtener_todas_para_generar_config_rutas(tecnologia=tecnologia)
         trunk_file = []
 
         for trunk in trunks:
-            logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
-            trunk_file.append("register=>{0}\n".format(trunk.register_string))
+            if trunk.tecnologia == TroncalSIP.CHANSIP:
+                modifica_chan = True
+                logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
+                if trunk.register_string:
+                    trunk_file.append("register=>{0}\n".format(trunk.register_string))
 
-        self._sip_registrations_config_file.write(trunk_file)
+        if modifica_chan and not trunk_file:
+            # Contenido default del archivo si no hay register_strings
+            trunk_file.append("register=>None\n")
+
+        if trunk_file:
+            self._sip_registrations_config_file.write(trunk_file)
 
 
 class PlaylistsConfigCreator(object):

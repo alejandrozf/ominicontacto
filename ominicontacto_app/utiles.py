@@ -50,6 +50,7 @@ import logging as _logging
 logger = _logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
+REGEX_NO_ALFANUMERICOS = re.compile(r'([^.a-zA-Z0-9])')
 
 
 def _upload_to(prefix, max_length, instance, filename):
@@ -93,6 +94,15 @@ def remplace_espacio_por_guion(cadena):
     """
     assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
     return re.sub(r"\s+", "_", cadena)
+
+
+def reemplazar_no_alfanumericos_por_guion(cadena):
+    """
+    Remplaza caracteres no alfanuméricos por guion en cadena recibida por parametro
+    La cadena debe ser una instancia de unicode
+    """
+    assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
+    return re.sub(REGEX_NO_ALFANUMERICOS, "_", cadena)
 
 
 def elimina_coma(cadena):

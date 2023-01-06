@@ -24,7 +24,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 
-from ominicontacto_app.utiles import remplace_espacio_por_guion
+from ominicontacto_app.utiles import reemplazar_no_alfanumericos_por_guion
 from ominicontacto_app.models import AgenteProfile, QueueMember
 
 
@@ -49,7 +49,7 @@ class AsteriskQueuesData(APIView):
             if status and not status == 'OFFLINE':
                 sip_extension = agent_data[0]
                 member_name = agent_data[1]
-                member_name = remplace_espacio_por_guion(member_name)
+                member_name = reemplazar_no_alfanumericos_por_guion(member_name)
                 member_name = "{0}_{1}".format(agent_id, member_name)
                 if status.startswith('PAUSE'):
                     pause = '1'

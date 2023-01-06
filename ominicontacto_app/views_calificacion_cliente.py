@@ -91,7 +91,7 @@ class CalificacionClienteFormView(FormView):
         except Contacto.DoesNotExist:
             if self.campana_es_entrante_con_identificador_de_cliente():
                 message = _('El Identificador de contacto recibido no permite '
-                            f'definir al contacto: { id_contacto }')
+                            'definir al contacto: {0}'.format(id_contacto))
                 messages.warning(self.request, message)
                 return None
             return get_object_or_404(Contacto, pk=id_contacto)
@@ -130,9 +130,7 @@ class CalificacionClienteFormView(FormView):
         return []
 
     def _get_campos_obligatorios(self):
-        if self.contacto:
-            return self.campana.get_campos_obligatorios()
-        return []
+        return self.campana.get_campos_obligatorios()
 
     def dispatch(self, *args, **kwargs):
         id_contacto = None
