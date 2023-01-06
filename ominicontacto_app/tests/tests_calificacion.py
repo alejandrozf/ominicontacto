@@ -137,8 +137,8 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, _("No tiene permiso para calificar llamadas de esa campaña."))
 
-    @patch('requests.post')
-    def test_calificacion_cliente_creacion_redirecciona_formulario_gestion(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_calificacion_cliente_creacion_redirecciona_formulario_gestion(self, send):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
@@ -147,9 +147,10 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
         self.assertTrue(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
+        send.assert_called_with('calification', self.agente_profile.id)
 
-    @patch('requests.post')
-    def test_calificacion_cliente_creacion_redirecciona_a_otro_formulario_gestion(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_calificacion_cliente_creacion_redirecciona_a_otro_formulario_gestion(self, send):
         nuevo_formulario = FormularioFactory()
         campo_formulario = FieldFormularioFactory(
             formulario=nuevo_formulario, nombre_campo='otro_campo')
@@ -166,9 +167,10 @@ class CalificacionTests(OMLBaseTest):
         self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
         self.assertTrue(campo_formulario.nombre_campo in response.context_data['form'].fields)
         self.assertFalse(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
+        send.assert_called_with('calification', self.agente_profile.id)
 
-    @patch('requests.post')
-    def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, send):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
@@ -176,9 +178,10 @@ class CalificacionTests(OMLBaseTest):
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
+        send.assert_called_with('calification', self.agente_profile.id)
 
-    @patch('requests.post')
-    def test_calificacion_cliente_modificacion_gestion_por_no_accion(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_calificacion_cliente_modificacion_gestion_por_no_accion(self, send):
         contacto_califica = ContactoFactory.create()
         self.campana.bd_contacto.contactos.add(contacto_califica)
         calificacion = CalificacionClienteFactory(
@@ -196,6 +199,7 @@ class CalificacionTests(OMLBaseTest):
         self.assertIsNone(
             CalificacionCliente.objects.get(opcion_calificacion__campana=self.campana,
                                             contacto_id=contacto_califica.id).get_venta())
+        send.assert_called_with('calification', self.agente_profile.id)
 
     def test_existe_calificacion_especial_agenda(self):
         self.assertTrue(NombreCalificacion.objects.filter(nombre=settings.CALIFICACION_REAGENDA))
@@ -211,8 +215,8 @@ class CalificacionTests(OMLBaseTest):
         }
         return post_data
 
-    @patch('requests.post')
-    def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_escoger_calificacion_agenda_redirecciona_formulario_agenda(self, send):
         url = reverse('calificacion_formulario_update_or_create',
                       kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
@@ -221,9 +225,10 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response,
                                 'agente/frame/agenda_contacto/create_agenda_contacto.html')
+        send.assert_called_with('calification', self.agente_profile.id)
 
-    @patch('requests.post')
-    def test_calificacion_agenda_modificacion_redirecciona_update_agenda(self, post):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_calificacion_agenda_modificacion_redirecciona_update_agenda(self, send):
         self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
         self.calificacion_cliente.agendado = False
         self.calificacion_cliente.save()
@@ -236,6 +241,7 @@ class CalificacionTests(OMLBaseTest):
         post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'agenda_contacto/update_agenda_contacto.html')
+        send.assert_called_with('calification', self.agente_profile.id)
 
     @patch('requests.post')
     def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self, post):
@@ -308,7 +314,8 @@ class CalificacionTests(OMLBaseTest):
         agenda_contacto = AgendaContacto.objects.first()
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
 
-    def test_llamada_manual_telefono_no_contacto_crea_contacto(self):
+    @patch('notification_app.notification.RedisStreamNotifier.send')
+    def test_llamada_manual_telefono_no_contacto_crea_contacto(self, send):
         # garantizamos un número distinto al existente en la campaña
         contactos_ids = self.campana.bd_contacto.contactos.values_list('id', flat=True)
         contactos_ids = list(contactos_ids)
@@ -331,6 +338,7 @@ class CalificacionTests(OMLBaseTest):
             self.assertEqual(nuevo_contacto.telefono, telefono)
         self.assertIn('Nuevo Contacto', nuevo_contacto.datos)
         self.assertFalse(nuevo_contacto.es_originario)
+        send.assert_called_with('calification', self.agente_profile.id)
 
     def test_llamada_manual_telefono_no_contacto_muestra_formulario_calificacion_blanco(self):
         # garantizamos un número distinto al existente en la campaña
@@ -602,8 +610,9 @@ class CalificacionTests(OMLBaseTest):
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
                                          calificado=False, gestion=False, id_calificacion=None)
 
+    @patch('notification_app.notification.RedisStreamNotifier.send')
     @patch('api_app.services.calificacion_llamada.CalificacionLLamada.create_family')
-    def test_campana_fuerza_calificar_llamada_impacta_en_redis_post(self, create_family):
+    def test_campana_fuerza_calificar_llamada_impacta_en_redis_post(self, create_family, send):
         self.campana.type = Campana.TYPE_MANUAL
         call_data = self.get_call_data()
         call_data['force_disposition'] = True
@@ -620,3 +629,4 @@ class CalificacionTests(OMLBaseTest):
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
                                          calificado=True, es_agenda=False,
                                          gestion=False, id_calificacion=None)
+        send.assert_called_with('calification', self.agente_profile.id)

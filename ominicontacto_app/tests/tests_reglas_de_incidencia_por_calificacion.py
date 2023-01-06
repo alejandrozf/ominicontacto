@@ -167,9 +167,10 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         self.assertFalse(ReglaIncidenciaPorCalificacion.objects.filter(
             opcion_calificacion=self.opcion_calificacion_1).exists())
 
+    @patch('notification_app.notification.RedisStreamNotifier.send')
     @patch('ominicontacto_app.services.wombat_service.WombatService.set_call_ext_status')
     def test_calificar_usando_opcion_con_regla_de_incidencia_impacta_wombat(
-            self, set_call_ext_status):
+            self, set_call_ext_status, send):
         agente = self.crear_agente_profile()
         self.client.logout()
         self.client.login(username=agente.user.username, password=PASSWORD)
@@ -198,6 +199,7 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         }
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
+        send.assert_called_with('calification', agente.id)
 
         url_notify = '/api/calls/?op=extstatus&wombatid={0}&status={1}'.format(
             dialer_call_id, regla.wombat_id)
