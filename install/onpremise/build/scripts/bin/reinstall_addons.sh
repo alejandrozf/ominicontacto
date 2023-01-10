@@ -10,6 +10,11 @@ else
 fi
 
 for Addon in "${ADDONS_INSTALLED[@]}";do
-    cd ${INSTALL_PREFIX}/addons/${Addon}
+    rm -rf ${INSTALL_PREFIX}/addons/${Addon}
+    cd ${INSTALL_PREFIX}/addons/
+    wget https://fts-public-packages.s3-sa-east-1.amazonaws.com/${Addon}/${Addon}-latest.tar.gz
+    tar -xvzf ${Addon}-latest.tar.gz
+    rm -rf ${Addon}-latest.tar.gz
+    cd ${Addon}
     ./install.sh --accept-eula
 done
