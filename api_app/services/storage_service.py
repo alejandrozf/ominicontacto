@@ -33,6 +33,7 @@ class StorageService(object):
         self.secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
         self.bucket_name = os.getenv('S3_BUCKET_NAME')
         self.url = os.getenv('S3_ENDPOINT') or None
+        self.internal_url = os.getenv('S3_ENDPOINT_MINIO') or 'https://minio:9000'
         self.region_name = os.getenv('S3_REGION_NAME') or 'us-east-1'
         self.storage_type = os.getenv('CALLREC_DEVICE')
 
@@ -46,21 +47,31 @@ class StorageService(object):
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
                                        config=Config(signature_version='s3v4'),
-                                       endpoint_url=self.url,
+                                       endpoint_url=self.internal_url,
                                        region_name=self.region_name,
                                        verify=False)
+            self.url_client = boto3.client("s3",
+                                           aws_access_key_id=self.access_key_id,
+                                           aws_secret_access_key=self.secret_access_key,
+                                           config=Config(signature_version='s3v4'),
+                                           endpoint_url=self.url,
+                                           region_name=self.region_name,
+                                           verify=False)
         else:
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
-                                       endpoint_url=self.url,
+                                       endpoint_url=self.internal_url,
                                        region_name=self.region_name)
 
     def get_file_url(self, filename):
-        return self.client.generate_presigned_url('get_object',
-                                                  Params={'Bucket': self.bucket_name,
-                                                          'Key': filename[1:]},
-                                                  ExpiresIn=3600)
+        client = self.client
+        if self.storage_type == 's3-minio':
+            client = self.url_client
+        return client.generate_presigned_url('get_object',
+                                             Params={'Bucket': self.bucket_name,
+                                                     'Key': filename[1:]},
+                                             ExpiresIn=3600)
 
     def download_file(self, file_name, local_destination, root_s3_folder=None):
         file_dest = os.path.join(local_destination, file_name)
