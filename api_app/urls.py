@@ -94,6 +94,7 @@ from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
 
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
+from api_app.views.reportes import TransferenciaAEncuestaLogCreateView
 
 
 router = routers.DefaultRouter()
@@ -493,31 +494,36 @@ urlpatterns = [
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     re_path(r'^api/v1/grabacion/descarga_masiva',
             ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
-    path(r'api/v1/call_record/<str:callid>/',
+    path('api/v1/call_record/<str:callid>/',
          ObtenerUrlGrabacionView.as_view(), name='api_call_record_url'),
     # ###########  AUDIOS ASTERISK    ############ #
-    re_path(r'^api/v1/audio/list',
-            ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
+    path('api/v1/audio/list/',
+         ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
     # ###########  USUARIOS    ############ #
-    re_path(r'^api/v1/group/list',
-            ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),
-    re_path(r'^api/v1/agent/list',
-            ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
-    re_path(r'^api/v1/audit_supervisor',
-            AuditSupervisor.as_view(), name='api_audit_supervisor'),
+    path('api/v1/group/list/',
+         ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),
+    path('api/v1/agent/list/',
+         ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
+    path('api/v1/audit_supervisor/',
+         AuditSupervisor.as_view(), name='api_audit_supervisor'),
     # ###########  WOMBAT DIALER    ############ #
-    re_path(r'^api/v1/womabat_dialer/restart',
-            ReiniciarWombat.as_view(), name='api_restart_wombat'),
-    re_path(r'^api/v1/womabat_dialer/status',
-            WombatState.as_view(), name='api_wombat_state'),
+    path('api/v1/womabat_dialer/restart/',
+         ReiniciarWombat.as_view(), name='api_restart_wombat'),
+    path('api/v1/womabat_dialer/status/',
+         WombatState.as_view(), name='api_wombat_state'),
 
     # ###########  ASTERISK    ############ #
-    re_path(r'^api/v1/asterisk/queues_data/',
-            AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
+    path('api/v1/asterisk/queues_data/',
+         AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
 
     # ###########  Inbound Destinations    ############ #
     re_path(r'^api/v1/inbound_destinations/(?P<type>\d+)/list/',
             DestinoEntranteView.as_view(), name='api_inbound_destinations'),
-    re_path(r'^api/v1/inbound_destinations_types/list/',
-            DestinoEntranteTiposView.as_view(), name='api_inbound_destinations_types'),
+    path('api/v1/inbound_destinations_types/list/',
+         DestinoEntranteTiposView.as_view(), name='api_inbound_destinations_types'),
+
+    # ###########  Inbound Destinations    ############ #
+    path('api/v1/reportes/survey_transfer/',
+         TransferenciaAEncuestaLogCreateView.as_view(), name='api_log_survey_transfer'),
+
 ]

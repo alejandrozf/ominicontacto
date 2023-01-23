@@ -31,6 +31,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 .modal-lg {
     max-width: 80% !important;
 }
+.cxtooltip{
+	padding: 0px 6px;
+	margin: 5px;
+}
+.btn-primary:disabled{
+	background-color: #9FD84E;
+    border-color: #8FC641;
+    opacity: 100;
+}
 </style>
 
 {% endblock %}
@@ -267,11 +276,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans "MANUAL" %}</th>
                 <th>{% trans "TRANSFERIDAS A AGENTE" %}</th>
                 <th>{% trans "TRANSFERIDAS A CAMPAÑA" %}</th>
+                <th>
+                    {% trans "TRANSFERIDAS CX SURVEY" %}
+                    {% if not survey_app_activado %}
+                        <button id="tooltip" type="button" class="btn btn-primary cxtooltip" data-bs-toggle="tooltip" title="{% trans 'Requiere del Addon CX Survey' %}" disabled>?</button>
+                    {% endif %}
+                </th>
                 <th>{% trans "FUERA DE CAMPAÑA" %}</th>
             </tr>
             </thead>
             <tbody>
-                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas_agente, total_transferidas_campana, total_fuera_campana in graficos_estadisticas.dict_agente_counter %}
+                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas_agente, total_transferidas_campana, total_transferidas_encuesta, total_fuera_campana in graficos_estadisticas.dict_agente_counter %}
                     <tr>
                         <td>{{ agente }}</td>
                         <td>{{ total_campana }}</td>
@@ -281,6 +296,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td>{{ total_manual }}</td>
                         <td>{{ total_transferidas_agente }}</td>
                         <td>{{ total_transferidas_campana }}</td>
+                        <td>{{ total_transferidas_encuesta}}</td>
                         <td>{{ total_fuera_campana }}</td>
                     </tr>
                 {% endfor %}
