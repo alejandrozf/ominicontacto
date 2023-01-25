@@ -56,7 +56,7 @@ class CreateSerializer(serializers.ModelSerializer):
     def validate_configuracion(self, configuracion):
         tipo_proveedor = self.initial_data.get('tipo_proveedor')
         if tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'apikey' not in configuracion:
+            if 'api_key' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:
@@ -96,7 +96,7 @@ class UpdateSerializer(serializers.ModelSerializer):
         else:
             tipo_proveedor = self.instance.tipo_proveedor
         if tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'apikey' not in configuracion:
+            if 'api_key' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:

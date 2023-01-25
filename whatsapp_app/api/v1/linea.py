@@ -71,12 +71,12 @@ class CreateSerializer(serializers.ModelSerializer):
         proveedor_id = self.initial_data.get('proveedor')
         proveedor = ConfiguracionProveedor.objects.get(pk=proveedor_id)
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'appname' not in configuracion\
-                    or 'appid' not in configuracion:
+            if 'app_name' not in configuracion\
+                    or 'app_id' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'appid' not in configuracion\
+            if 'app_id' not in configuracion\
                     or 'token_de_verificacion' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
@@ -125,12 +125,12 @@ class UpdateSerializer(serializers.ModelSerializer):
         else:
             proveedor = self.instance.proveedor
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'appname' not in configuracion\
-                    or 'appid' not in configuracion:
+            if 'app_name' not in configuracion\
+                    or 'app_id' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'appid' not in configuracion\
+            if 'app_id' not in configuracion\
                     or 'token_de_verificacion' not in configuracion:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
