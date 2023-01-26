@@ -34,6 +34,10 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'message_templates_configuration',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'proveedor-list',
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'proveedor-detail',
+             'roles': ['Administrador', 'Gerente', ]},
         ]
 
     informacion_de_permisos = {
@@ -48,5 +52,11 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'message_templates_configuration':
             {'descripcion': _('Configuración de plantillas de mensaje'),
+             'version': '1.26.0'},
+        'proveedor-list':
+            {'descripcion': _('Configuración de proveedores'),
+             'version': '1.26.0'},
+        'proveedor-detail':
+            {'descripcion': _('Detalles de configuración de proveedores'),
              'version': '1.26.0'},
     }
