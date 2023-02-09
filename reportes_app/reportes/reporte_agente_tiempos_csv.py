@@ -222,6 +222,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("MANUAL"))
             encabezado.append(_("TRANSFERIDAS A AGENTE"))
             encabezado.append(_("TRANSFERIDAS A CAMPAÑA"))
+            encabezado.append(_("TRANSFERIDAS A CX SURVEY"))
             encabezado.append(_("FUERA DE CAMPAÑA"))
 
             # Creamos csvwriter
@@ -234,7 +235,7 @@ class ArchivoDeReporteCsv(object):
             # Iteramos cada uno de las metadata de la gestion del formulario
             for (agente, total_campana, total_ics, total_dialer, total_inbound,
                  total_manual, total_transferidas_agente, total_transferidas_campana,
-                 total_fuera_campana
+                 total_transferidas_encuesta, total_fuera_campana
                  ) in estadisticas["dict_agente_counter"]:
                 lista_opciones = []
 
@@ -248,6 +249,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(total_manual)
                 lista_opciones.append(total_transferidas_agente)
                 lista_opciones.append(total_transferidas_campana)
+                lista_opciones.append(total_transferidas_encuesta)
                 lista_opciones.append(total_fuera_campana)
 
                 # --- Finalmente, escribimos la linea

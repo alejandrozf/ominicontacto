@@ -21,9 +21,11 @@ import pygal
 from pygal.style import Style
 from django.utils.translation import gettext as _
 from django.utils.timezone import now, timedelta
+from django.db.models import Count
+
 from ominicontacto_app.models import Campana, Pausa
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
-from reportes_app.models import ActividadAgenteLog, LlamadaLog
+from reportes_app.models import ActividadAgenteLog, LlamadaLog, TransferenciaAEncuestaLog
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.reportes.reporte_llamadas import LLAMADA_TRANSF_INTERNA
 from collections import OrderedDict
@@ -76,6 +78,7 @@ class ReporteAgentes(object):
                                             dict_agentes_llamadas['total_agente_manual'],
                                             dict_agentes_llamadas['total_transferidas_agente'],
                                             dict_agentes_llamadas['total_transferidas_campana'],
+                                            dict_agentes_llamadas['total_transferidas_encuesta'],
                                             dict_agentes_llamadas['total_agente_fuera_campana'])),
             'barra_agente_total': self._generar_grafico_agentes_llamadas(dict_agentes_llamadas),
 
@@ -252,6 +255,8 @@ class ReporteAgentes(object):
         dict_agentes_llamadas['total_agente_fuera_campana'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas.filter(campana_id=0), agente_ids, Campana.TYPE_MANUAL)
+        dict_agentes_llamadas['total_transferidas_encuesta'] = self. \
+            _obtener_transferidas_a_encuesta(agente_ids, fecha_inicio, fecha_fin)
 
         return dict_agentes_llamadas
 
@@ -299,6 +304,17 @@ class ReporteAgentes(object):
         for llamada in llamadas:
             total = llamada['cantidad']
         return total
+
+    def _obtener_transferidas_a_encuesta(self, agente_ids, fecha_inicio, fecha_fin):
+        transferencias = TransferenciaAEncuestaLog.objects.filter(agente_id__in=agente_ids,
+                                                                  time__gte=fecha_inicio,
+                                                                  time__lte=fecha_fin)
+        transferencias_por_agente = dict(transferencias.values_list('agente_id').annotate(
+            cantidad=Count('agente_id')).order_by('agente_id'))
+        transferidas_a_encuesta = []
+        for agente_id in transferencias_por_agente:
+            transferidas_a_encuesta.append(transferencias_por_agente[agente_id])
+        return transferidas_a_encuesta
 
 
 class ActividadAgente(object):

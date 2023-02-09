@@ -553,3 +553,14 @@ class ActividadAgenteLog(models.Model):
         return "Log de actividad agente con fecha {0} para agente de id {1} con el evento {2} " \
                "con id de pausa {3}".format(self.time, self.agente_id,
                                             self.event, self.pausa_id)
+
+
+class TransferenciaAEncuestaLog(models.Model):
+    """
+    Registro de transferencia a una encuesta
+    """
+    time = models.DateTimeField(db_index=True, auto_now_add=True)
+    agente_id = models.IntegerField(db_index=True, blank=True, null=True)
+    campana_id = models.IntegerField(db_index=True, blank=True, null=True)
+    encuesta_id = models.IntegerField(db_index=True, blank=True, null=True)
+    callid = models.CharField(db_index=True, max_length=32, blank=True, null=True)

@@ -290,4 +290,24 @@ class OMLAPI {
             }
         });
     }
+
+    logSurveyTransfer(campaign_id, survey_id, callid){
+        var URL = Urls.api_log_survey_transfer();
+        var post_data = {
+            'callid': callid,
+            'campaign_id': campaign_id,
+            'survey_id': survey_id,
+        };
+        console.log(post_data);
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: post_data,
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
 }

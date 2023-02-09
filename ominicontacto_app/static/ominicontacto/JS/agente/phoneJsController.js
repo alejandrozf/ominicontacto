@@ -234,6 +234,12 @@ class PhoneJSController {
         });
 
         this.view.makeTransferToSurveyButton.click(function() {
+            // Log Survey Trasnfer attempt
+            var campaign_id = self.phone.session_data.remote_call.id_campana;
+            var callid = self.phone.session_data.remote_call.call_id;
+            var survey_id = self.phone.session_data.survey;
+            self.oml_api.logSurveyTransfer(campaign_id, survey_id, callid);
+
             self.phone_fsm.dialTransfer();
             self.phone.dialTransfer(new SurveyTransferData());
         });
