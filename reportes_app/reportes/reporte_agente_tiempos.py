@@ -358,7 +358,7 @@ class TiemposAgente(object):
                                           agente_fecha))
             inicio_hold = log.time
             callid = log.callid
-            fecha_desde = datetime_hora_minima_dia(fecha_actual)
+            holdid = log.id
             fecha_hasta = datetime_hora_maxima_dia(fecha_actual)
             unhold_fecha = LlamadaLog.objects.using('replica')\
                 .filter(agente_id=agente.id, callid=callid,
@@ -371,7 +371,8 @@ class TiemposAgente(object):
                 # Si se corta la llamada sin haber podido hacer unhold o por otro motivo
                 log_llamada = LlamadaLog.objects.using('replica')\
                     .filter(agente_id=agente.id, callid=callid,
-                            time__range=(fecha_desde, fecha_hasta)).last()
+                            time__range=(log.time, fecha_hasta))\
+                    .exclude(id=holdid).order_by('time').first()
                 if log_llamada and log_llamada.event != 'HOLD':
                     fin_hold = log_llamada.time
                 else:
