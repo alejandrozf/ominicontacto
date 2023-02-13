@@ -50,6 +50,9 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_ivr = SincronizadorDeConfiguracionIVRAsterisk()
         self.sincronizador_amd = SincronizadorDeConfiguracionAmdConfAsterisk()
         self.sincronzador_esquema_grabaciones = SincronizadorDeEsquemaGrabacionesAsterisk()
+        self.sincronizador_grupos_horarios = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
+        self.sincronizador_destino_personalizado = \
+            SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk()
 
     def sincronizar_en_asterisk(self):
         self.sincronizador_troncales.regenerar_troncales()
@@ -59,6 +62,8 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_ivr.regenerar_asterisk()
         self.sincronizador_amd.regenerar_asterisk()
         self.sincronzador_esquema_grabaciones.regenerar_asterisk()
+        self.sincronizador_grupos_horarios.regenerar_asterisk()
+        self.sincronizador_destino_personalizado.regenerar_asterisk()
 
 
 class RestablecerConfiguracionTelefonicaError(OmlError):
