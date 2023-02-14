@@ -28,7 +28,7 @@ import requests
 from django.utils.translation import gettext as _
 
 from django.conf import settings
-from ominicontacto_app.utiles import elimina_comillas, remplace_espacio_por_guion
+from ominicontacto_app.utiles import elimina_comillas, reemplazar_no_alfanumericos_por_guion
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
@@ -72,7 +72,7 @@ class CampanaService():
 
     def obtener_nombre_lista_ascii(self, campana):
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
+                                reemplazar_no_alfanumericos_por_guion(campana.bd_contacto.nombre)])
         nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
         return nombre_lista_ascii[:45]
 
