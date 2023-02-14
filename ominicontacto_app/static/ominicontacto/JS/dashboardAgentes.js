@@ -105,7 +105,8 @@ rws.addEventListener('message', function(e) {
                 center: ['50%', '50%'],
                 selectedMode: 'single',
                 data: [
-                    { value: pausaData.pausa, name: gettext('Pausa') },
+                    { value: pausaData.pausa_productiva, name: gettext('Productiva') },
+                    { value: pausaData.pausa_recreativa, name: gettext('Recreativa') },
                     { value: pausaData.sesion, name: gettext('Sesión') },
                 ],
                 emphasis: {
