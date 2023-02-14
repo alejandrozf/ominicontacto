@@ -252,7 +252,9 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
             Count('musicas')).filter(musicas__count__gte=1)
         tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        tipo_destino = tuple(
+            item for item in DestinoEntrante.TIPOS_DESTINOS if item[0] != DestinoEntrante.HANGUP)
+        tipo_destino_choices.extend(tipo_destino)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
         # inicializa valores de destino failover
@@ -1768,7 +1770,9 @@ class QueueDialerForm(forms.ModelForm):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
         tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        tipo_destino = tuple(
+            item for item in DestinoEntrante.TIPOS_DESTINOS if item[0] != DestinoEntrante.HANGUP)
+        tipo_destino_choices.extend(tipo_destino)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
