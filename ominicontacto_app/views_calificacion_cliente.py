@@ -722,7 +722,12 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
         self.object.calificacion = self.calificacion
         self.object.save()
         self.agente = self.request.user.get_agente_profile()
-        if self.agente.grupo.obligar_calificacion:
+        force_disposition = self.agente.grupo.obligar_calificacion
+        if self.call_data:
+            call_data = json.loads(self.call_data)
+            if 'force_disposition' in call_data:
+                force_disposition = call_data['force_disposition']
+        if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             call_data = {}
             call_data['call_id'] = self.calificacion.callid
