@@ -30,92 +30,22 @@ function set_url_parameters(url, parameters){
 
 var peticion_preview_en_curso = false;
 
-$(document).ready(function(){
+var $errorAsignacionContacto;
+var $panelContacto;
+var $contactoTelefono;
+var $contactoOtrosDatos;
+var $inputAgente;
+var $inputContacto;
+var $inputCampana;
+var $inputCampanaNombre;
 
-    var $errorAsignacionContacto = $('#errorAsignacionContacto');
+function informarError(data, $button) {
+    $button.addClass('disabled');
+    $button.attr('title', data['data']);
+}
 
-    $('#campanasPreviewTable').DataTable( {
-    // Convierte a datatable la tabla de campañas preview
-        language: {
-            search: gettext('Buscar:'),
-            paginate: {
-                first: gettext('Primero'),
-                previous: gettext('Anterior'),
-                next: gettext('Siguiente'),
-                last: gettext('Último')
-            },
-            lengthMenu: gettext('Mostrar _MENU_ entradas'),
-            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
-        }
-    } );
-
+function suscribirAObtenerContacto() {
     // asocia el click en la campaña preview a obtener los datos de un contacto
-    var $panelContacto = $('#panel-contacto');
-    var $contactoTelefono = $panelContacto.find('#contacto-telefono');
-    var $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
-    var $inputAgente = $('#pk_agente');
-    var $inputContacto = $('#pk_contacto');
-    var $inputCampana = $('#pk_campana');
-    var $inputCampanaNombre = $('#campana_nombre');
-
-    function informarError(data, $button) {
-        $button.addClass('disabled');
-        $button.attr('title', data['data']);
-    }
-
-    function validarContacto() {
-        if (peticion_preview_en_curso)
-            return;
-
-        var url = Urls.validar_contacto_asignado();
-        var data = {
-            'pk_agente': $inputAgente.val(),
-            'pk_campana': $inputCampana.val(),
-            'pk_contacto': $inputContacto.val(),
-        };
-        peticion_preview_en_curso = true;
-        $.post(url, data).success(function(data) {
-            // comprobamos si el contacto todavía sigue asignado al agente
-            // antes de llamar
-            if (data['contacto_asignado'] == true) {
-                // hacemos click en el botón del form para iniciar la
-                // llamada
-                if (data['obligar_calificacion'] == true){
-                    var oml_api = new OMLAPI();
-                    oml_api.llamadaCalificada(
-                        function(){
-                            $('#llamar_contacto').trigger('click');
-                        },
-                        function(call_data){
-                            var click2call = window.parent.click2call;
-                            click2call.make_disposition(call_data);
-                        },
-                        function(idcalificacion){
-                            var click2call = window.parent.click2call;
-                            click2call.make_sales_form(idcalificacion);
-                        },
-                        function(){
-                            alert(gettext('Error al intentar ejecutar el llamado.'));
-                        }
-                    );
-                }
-                else {
-                    $('#llamar_contacto').trigger('click');
-                }
-            }
-            else {
-                // se muestra modal con mensaje de error
-                var errorMessage = gettext('OPS, se venció el tiempo de asignación de este contacto.\
-Por favor intente solicitar uno nuevo');
-                $errorAsignacionContacto.html(errorMessage);
-            }
-        }).always(function () {
-            peticion_preview_en_curso = false;
-        });
-    }
-
-    $('#validar_contacto').on('click', validarContacto);
-
     $('.obtener-contacto').each(function() {
         $(this).on('click', function() {
             if (peticion_preview_en_curso){
@@ -190,6 +120,89 @@ Por favor intente solicitar uno nuevo');
                 });
         });
     });
+}
+
+$(document).ready(function(){
+
+    $errorAsignacionContacto = $('#errorAsignacionContacto');
+    $panelContacto = $('#panel-contacto');
+    $contactoTelefono = $panelContacto.find('#contacto-telefono');
+    $contactoOtrosDatos = $panelContacto.find('#contacto-datos');
+    $inputAgente = $('#pk_agente');
+    $inputContacto = $('#pk_contacto');
+    $inputCampana = $('#pk_campana');
+    $inputCampanaNombre = $('#campana_nombre');
+
+    $('#campanasPreviewTable').DataTable( {
+    // Convierte a datatable la tabla de campañas preview
+        language: {
+            search: gettext('Buscar:'),
+            paginate: {
+                first: gettext('Primero'),
+                previous: gettext('Anterior'),
+                next: gettext('Siguiente'),
+                last: gettext('Último')
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        },
+        'drawCallback': function() {
+            suscribirAObtenerContacto();
+        }
+    } );
+
+    function validarContacto() {
+        if (peticion_preview_en_curso)
+            return;
+
+        var url = Urls.validar_contacto_asignado();
+        var data = {
+            'pk_agente': $inputAgente.val(),
+            'pk_campana': $inputCampana.val(),
+            'pk_contacto': $inputContacto.val(),
+        };
+        peticion_preview_en_curso = true;
+        $.post(url, data).success(function(data) {
+            // comprobamos si el contacto todavía sigue asignado al agente
+            // antes de llamar
+            if (data['contacto_asignado'] == true) {
+                // hacemos click en el botón del form para iniciar la
+                // llamada
+                if (data['obligar_calificacion'] == true){
+                    var oml_api = new OMLAPI();
+                    oml_api.llamadaCalificada(
+                        function(){
+                            $('#llamar_contacto').trigger('click');
+                        },
+                        function(call_data){
+                            var click2call = window.parent.click2call;
+                            click2call.make_disposition(call_data);
+                        },
+                        function(idcalificacion){
+                            var click2call = window.parent.click2call;
+                            click2call.make_sales_form(idcalificacion);
+                        },
+                        function(){
+                            alert(gettext('Error al intentar ejecutar el llamado.'));
+                        }
+                    );
+                }
+                else {
+                    $('#llamar_contacto').trigger('click');
+                }
+            }
+            else {
+                // se muestra modal con mensaje de error
+                var errorMessage = gettext('OPS, se venció el tiempo de asignación de este contacto.\
+Por favor intente solicitar uno nuevo');
+                $errorAsignacionContacto.html(errorMessage);
+            }
+        }).always(function () {
+            peticion_preview_en_curso = false;
+        });
+    }
+
+    $('#validar_contacto').on('click', validarContacto);
 
     $('#liberar_contacto').on('click', function(){
         if (peticion_preview_en_curso){
