@@ -395,4 +395,9 @@ class RegeneracionAsteriskService(object):
         self._generar_tarea_script_actualizar_reportes_llamadas_dialers()
         self._generar_tarea_script_actualizar_reporte_datos_supervisores()
         self._generar_tarea_script_actualizar_reporte_agentes_dia_actual()
+        if not os.getenv('WALLBOARD_VERSION', '') == '':
+            from wallboard_app.redis_families import WallboardFamily
+            from wallboard_app.models import Wallboard
+            wallboard_family = WallboardFamily(objects=Wallboard.objects)
+            wallboard_family.regenerar_families()
         self._generar_tarea_script_calcular_datos_wallboards()
