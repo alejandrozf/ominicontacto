@@ -7,21 +7,27 @@ import LinesState from './lines/state';
 import MessageTemplateActions from './message_templates/actions';
 import MessageTemplateMutations from './message_templates/mutations';
 import MessageTemplateState from './message_templates/state';
+import WhatsappTemplateActions from './whatsapp_templates/actions';
+import WhatsappTemplateMutations from './whatsapp_templates/mutations';
+import WhatsappTemplateState from './whatsapp_templates/state';
 
 export const SupervisorWhatsappState = {
     ...ProvidersState,
     ...LinesState,
-    ...MessageTemplateState
+    ...MessageTemplateState,
+    ...WhatsappTemplateState
 };
 
 export const SupervisorWhatsappMutations = {
     ...ProvidersMutations,
     ...LinesMutations,
-    ...MessageTemplateMutations
+    ...MessageTemplateMutations,
+    ...WhatsappTemplateMutations
 };
 
 export const SupervisorWhatsappActions = {
     ...ProvidersActions,
     ...LinesActions,
-    ...MessageTemplateActions
+    ...MessageTemplateActions,
+    ...WhatsappTemplateActions
 };

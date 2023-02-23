@@ -81,6 +81,12 @@
             @click="remove(slotProps.data.id)"
             v-tooltip.top="$t('globals.delete')"
           />
+          <Button
+            icon="pi pi-whatsapp"
+            class="p-button-success ml-2"
+            @click="whatsappTemplates(slotProps.data)"
+            v-tooltip.top="$tc('globals.whatsapp.whatsapp_template', 2)"
+          />
         </template>
       </Column>
     </DataTable>
@@ -136,6 +142,12 @@ export default {
         edit (line) {
             this.$router.push({
                 name: 'supervisor_whatsapp_lines_edit_step1',
+                params: { id: line.id }
+            });
+        },
+        whatsappTemplates (line) {
+            this.$router.push({
+                name: 'supervisor_whatsapp_lines_whatsapp_templates',
                 params: { id: line.id }
             });
         },
@@ -196,7 +208,8 @@ export default {
         ...mapActions([
             'deleteWhatsappLine',
             'initWhatsappLines',
-            'initWhatsappLine'
+            'initWhatsappLine',
+            'sycnupWhatsappTemplates'
         ])
     },
     watch: {

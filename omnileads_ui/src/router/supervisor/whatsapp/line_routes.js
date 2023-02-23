@@ -1,6 +1,7 @@
 import Index from '@/views/supervisor/whatsapp/lines/Index';
 import New from '@/views/supervisor/whatsapp/lines/New';
 import Edit from '@/views/supervisor/whatsapp/lines/Edit';
+import WhatsappTemplateIndex from '@/views/supervisor/whatsapp/whatsapp_templates/Index';
 import Step1 from '@/components/supervisor/whatsapp/lines/form_steps/Step1';
 import Step2 from '@/components/supervisor/whatsapp/lines/form_steps/Step2';
 import Step3 from '@/components/supervisor/whatsapp/lines/form_steps/Step3';
@@ -55,5 +56,10 @@ export default [
                 component: Step3
             }
         ]
+    },
+    {
+        path: `/${WHATSAPP_URL_NAME}_lines/:id/whatsapp_templates`,
+        name: `${WHATSAPP_URL_NAME}_lines_whatsapp_templates`,
+        component: WhatsappTemplateIndex
     }
 ];

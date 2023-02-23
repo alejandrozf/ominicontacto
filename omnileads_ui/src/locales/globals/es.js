@@ -58,7 +58,8 @@ export default {
         title: 'Whatsapp',
         provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp',
         line: 'Linea de Whatsapp | Lineas de Whatsapp',
-        message_template: 'Template de mensaje | Templates de mensajes'
+        message_template: 'Template de mensaje | Templates de mensajes',
+        whatsapp_template: 'Template de whatsapp | Templates de whatsapp'
     },
     // -------------
     // -- Actions --
@@ -104,6 +105,7 @@ export default {
     reactivate: 'Reactivar',
     reorder: 'Reordenar',
     register: 'Registrar',
+    sync: 'Sincronizar',
     // ----------------
     // --- weekdays ---
     // ----------------

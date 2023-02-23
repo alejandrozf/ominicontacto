@@ -29,11 +29,6 @@ class WhatsappLinesConfigurationView(TemplateView):
     template_name = "whatsapp_lines_configuration.html"
 
 
-class WhatsappTemplatesConfigurationView(TemplateView):
-    """Configuración de Templates de Whatsapp"""
-    template_name = "whatsapp_templates_configuration.html"
-
-
 class MessageTemplatesConfigurationView(TemplateView):
     """Configuración plantillas de mensaje"""
     template_name = "message_templates_configuration.html"

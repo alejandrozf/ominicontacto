@@ -192,6 +192,17 @@ export default {
             nombre: 'نام',
             tipo: 'نوع',
             configuracion: 'تنظیمات'
+        },
+        whatsapp_template: {
+            nombre: 'نام',
+            identificador: 'مشخص کننده',
+            texto: 'متن',
+            idioma: 'زبان',
+            status: 'حالت',
+            creado: 'ایجاد شده',
+            modificado: 'اصلاح شده',
+            tipo: 'پسر',
+            categoria: 'دسته بندی'
         }
     }
 };

@@ -133,12 +133,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'label': _('Identificación de Clientes'),
                 'url': reverse('lista_identificador_cliente', args=(1,))
             })
-
-        if 'whatsapp_templates_configuration' in permissions:
-            recursos.append({
-                'label': _('Templates de WhatsApp'),
-                'url': reverse('whatsapp_templates_configuration')
-            })
         if 'message_templates_configuration' in permissions:
             recursos.append({
                 'label': _('Plantillas de mensajes'),

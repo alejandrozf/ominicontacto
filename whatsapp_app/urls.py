@@ -22,7 +22,7 @@ from django.conf.urls import include
 
 from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
-    WhatsappTemplatesConfigurationView, MessageTemplatesConfigurationView)
+    MessageTemplatesConfigurationView)
 from whatsapp_app.api.urls import api_urls_v1
 from whatsapp_app.webhook_meta import WebhookMetaView
 from whatsapp_app.webhook_gupshup import WebhookGupshupView
@@ -35,10 +35,6 @@ urlpatterns = [
     path('connections/whatsapp/lines/',
          login_required(WhatsappLinesConfigurationView.as_view()),
          name='whatsapp_lines_configuration',
-         ),
-    path('resources/whatsapp_templates/',
-         login_required(WhatsappTemplatesConfigurationView.as_view()),
-         name='whatsapp_templates_configuration',
          ),
     path('resources/message_templates/',
          login_required(MessageTemplatesConfigurationView.as_view()),
