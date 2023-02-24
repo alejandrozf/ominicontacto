@@ -87,9 +87,6 @@ class EstadisticasContactacion():
         filtro_contactos = "AND contacto_id in ('"
         filtro_contactos += "','".join([str(x) for x in contactos_ids])
         filtro_contactos += "')"
-        filtro_contactos_r1 = "AND r1.contacto_id in ('"
-        filtro_contactos_r1 += "','".join([str(x) for x in contactos_ids])
-        filtro_contactos_r1 += "')"
         if campana.type == Campana.TYPE_DIALER:
             campana_tipo = Campana.TYPE_DIALER
         if campana.type == Campana.TYPE_PREVIEW:
@@ -98,8 +95,7 @@ class EstadisticasContactacion():
         params = {'campana_id': campana.id,
                   'fecha_alta': campana.bd_contacto.fecha_alta,
                   'tipo_campana': campana_tipo,
-                  'filtro_contactos': filtro_contactos,
-                  'filtro_contactos_r1': filtro_contactos_r1, }
+                  'filtro_contactos': filtro_contactos, }
         sql = """
         SELECT r1.event, COUNT(r1.event)
             FROM "reportes_app_llamadalog" r1
@@ -113,10 +109,6 @@ class EstadisticasContactacion():
                 GROUP BY contacto_id
             ) r2
             ON r1.id = r2.id__max
-            WHERE r1.campana_id = {campana_id} AND
-                  r1.time >= '{fecha_alta}' AND
-                  r1.tipo_llamada = {tipo_campana} AND
-                  r1.tipo_campana = {tipo_campana} {filtro_contactos_r1}
             GROUP BY r1.event
         """.format(**params)
 
@@ -148,13 +140,10 @@ class EstadisticasContactacion():
             campana_tipo = Campana.TYPE_PREVIEW
 
         ids_contactos_base_actual = campana.bd_contacto.contactos.values_list('id', flat=True)
-        # Al filtrar logs con fecha superior a la del alta de la base de datos me aseguro que sean
-        # sólo contactos de esa base
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
                                                 tipo_campana=campana_tipo,
                                                 tipo_llamada=campana_tipo,
-                                                #  contacto_id__in=ids_contactos_base_actual,
-                                                time__gte=campana.bd_contacto.fecha_alta,
+                                                contacto_id__in=ids_contactos_base_actual,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
 
@@ -293,7 +282,7 @@ class RecicladorContactosCampanaDIALER():
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
                                                 tipo_campana=campana_tipo,
                                                 tipo_llamada=campana_tipo,
-                                                # contacto_id__in=ids_contactos_base_actual,
+                                                contacto_id__in=ids_contactos_base_actual,
                                                 time__gte=campana.bd_contacto.fecha_alta,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
@@ -311,18 +300,14 @@ class RecicladorContactosCampanaDIALER():
             contactos_no_contactados = set(ids_contactos_base_actual).difference(set(contactados))
             if len(contactos_no_contactados) < 1:
                 return []
-            filtro_contactos = "AND contacto_id NOT IN ('"
+            filtro_contactos = "AND contacto_id IN ('"
             filtro_contactos += "','".join([str(x) for x in contactos_no_contactados])
             filtro_contactos += "')"
-            filtro_contactos_r1 = "AND r1.contacto_id NOT IN ('"
-            filtro_contactos_r1 += "','".join([str(x) for x in contactos_no_contactados])
-            filtro_contactos_r1 += "')"
 
             params = {'campana_id': campana.id,
                       'fecha_alta': campana.bd_contacto.fecha_alta,
                       'tipo_campana': campana_tipo,
                       'filtro_contactos': filtro_contactos,
-                      'filtro_contactos_r1': filtro_contactos_r1,
                       'filtro_eventos': filtro_eventos}
             sql = """
             SELECT r1.contacto_id
@@ -337,11 +322,7 @@ class RecicladorContactosCampanaDIALER():
                     GROUP BY contacto_id
                 ) r2
                 ON r1.id = r2.id__max
-                WHERE r1.campana_id = {campana_id} AND
-                      r1.time > '{fecha_alta}' AND
-                      r1.tipo_llamada = {tipo_campana} AND
-                      r1.tipo_campana = {tipo_campana} {filtro_contactos_r1}
-                      AND event IN ({filtro_eventos})
+                WHERE event IN ({filtro_eventos})
             """.format(**params)
 
             cursor = connection.cursor()
