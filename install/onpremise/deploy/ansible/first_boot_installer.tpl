@@ -20,7 +20,7 @@
 export oml_infras_stage=onpremise
 
 # ********** # The GitLab branch
-export oml_app_release=develop
+export oml_app_release=release-1.27.0
 
 # ********** # OMniLeads tenant NAME
 export oml_tenant_name=example
