@@ -56,7 +56,7 @@ class Command(BaseCommand):
         grabaciones = grabaciones.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
-        file_name = '/opt/omnileads/log/metadata_{}'
+        file_name = '/opt/omnileads/log/metadata_{}.csv'
         with open(file_name.format(date.strftime('%d-%m-%Y')), 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Audio_name', 'Timestamp', 'Operador', 'Codification',
@@ -66,14 +66,16 @@ class Command(BaseCommand):
                 calificacion = CalificacionCliente.objects.filter(callid=grabacion.callid).last()
                 row.append(grabacion.archivo_grabacion)
                 grabacion_time = grabacion.time.astimezone(timezone.get_current_timezone())
-                row.append(grabacion_time.strftime('%d/%m/%Y %H:%M:%S'))  # fecha hms
-                row.append(grabacion.agente.user.username)  # username
+                row.append(grabacion_time.strftime('%Y-%m-%d %H:%M:%S'))  # fecha hms
+                row.append(
+                    grabacion.agente.user.username if grabacion.agente_id != -1 else "")  # username
                 row.append(grabacion.tipo_llamada_show)  # tipo de llamada
                 row.append(grabacion.numero_marcado)  # Número telefónico
-                row.append(grabacion.agente.user.get_full_name())  # nombre del agente
+                row.append(
+                    grabacion.agente.user.get_full_name() if grabacion.agente_id != -1 else "")
                 row.append(grabacion.campana.nombre)  # nombre de campana
                 row.append(calificacion.opcion_calificacion.nombre if calificacion else "")
-                row.append(grabacion_time.strftime('%d/%m/%Y'))  # fecha
+                row.append(grabacion_time.strftime('%Y-%m-%d'))  # fecha
                 writer.writerow(row)
 
     def handle(self, *args, **options):
