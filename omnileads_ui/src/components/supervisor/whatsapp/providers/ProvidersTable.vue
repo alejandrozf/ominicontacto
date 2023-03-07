@@ -81,7 +81,7 @@
           />
         </template>
       </Column>
-      <Column :header="$tc('globals.option', 2)" :exportable="false">
+      <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">
         <template #body="slotProps">
           <Button
             icon="pi pi-pencil"

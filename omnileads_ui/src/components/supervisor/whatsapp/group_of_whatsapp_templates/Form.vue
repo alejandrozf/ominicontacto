@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="grid formgrid mt-4">
-      <div class="field col-4">
+      <div class="field col-6">
         <label
           :class="{
             'p-error': v$.form.nombre.$invalid && submitted,
@@ -33,7 +33,10 @@
           }}</small
         >
       </div>
-      <div class="field col-8">
+    </div>
+    <div class="grid formgrid mt-2">
+      <div class="field col-12">
+        <h2>Templates</h2>
         <InlineMessage v-if="emptyTemplates" severity="warn" class="mb-3">{{
           $t(
             "forms.whatsapp.group_of_whatsapp_template.validations.not_empty_templates"

@@ -106,8 +106,8 @@ class ViewSet(viewsets.ViewSet):
             linea = Linea.objects.get(pk=linea_pk)
             proveedor = linea.proveedor
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-                appname = linea.configuracion['appname']
-                apikey = proveedor.configuracion['apikey']
+                appname = linea.configuracion['app_name']
+                apikey = proveedor.configuracion['api_key']
                 url = 'https://api.gupshup.io/sm/api/v1/template/list/{}'.format(appname)  # mover
                 headers = {"apikey": apikey}
                 respuesta = requests.get(url, headers=headers)
@@ -131,7 +131,7 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
-                    message=_('Se los templates de forma exitosa')),
+                    message=_('Se obtuvieron los templates de whatsapp de forma exitosa')),
                 status=status.HTTP_200_OK)
         except Exception as e:
             print(e)

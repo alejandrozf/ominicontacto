@@ -110,7 +110,7 @@ export default {
         async syncUp () {
             const { status, message } = await this.sycnupWhatsappTemplates(this.id);
             if (status === HTTP_STATUS.SUCCESS) {
-                await await this.initSupWhatsappTemplates();
+                await this.initSupWhatsappTemplates();
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
@@ -136,8 +136,10 @@ export default {
     watch: {
         supWhatsappTemplates: {
             handler () {
-                if (this.supWhatsappTemplates && this.supWhatsappTemplates.length > 0) {
-                    this.templates = this.supWhatsappTemplates.filter(wt => wt.linea === this.id);
+                if (this.supWhatsappTemplates.length > 0) {
+                    this.templates = this.supWhatsappTemplates.filter(wt => parseInt(wt.linea) === parseInt(this.id));
+                } else {
+                    this.templates = [];
                 }
             },
             deep: true,

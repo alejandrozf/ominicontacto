@@ -128,7 +128,12 @@ export default {
                     (t) => !this.supWhatsappTemplatesOfGroup.includes(t.id)
                 );
             } else {
-                this.templates = this.supWhatsappTemplates;
+                this.templates = this.supWhatsappTemplates.map(function (wt) {
+                    return {
+                        id: wt.id,
+                        nombre: `Linea (${wt.linea}): ${wt.nombre}`
+                    };
+                });
             }
         }
     },

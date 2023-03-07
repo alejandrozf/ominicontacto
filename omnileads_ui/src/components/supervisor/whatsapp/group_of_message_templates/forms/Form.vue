@@ -66,6 +66,7 @@
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -83,6 +84,13 @@ export default {
                 plantilla: null
             },
             submitted: false,
+            templateTypes: [
+                { name: '-----', value: null },
+                {
+                    name: this.$t('forms.whatsapp.message_template.types.text'),
+                    value: TEMPLATE_TYPES.TEXT
+                }
+            ],
             templates: []
         };
     },
@@ -128,7 +136,14 @@ export default {
                     (t) => !this.supMessageTemplatesOfGroup.includes(t.id)
                 );
             } else {
-                this.templates = this.supWhatsappMessageTemplates;
+                const $this = this;
+                this.templates = this.supWhatsappMessageTemplates.map(function (t) {
+                    const tipo = $this.templateTypes.find(type => type.value === t.tipo).name;
+                    return {
+                        id: t.id,
+                        nombre: `Tipo (${tipo}): ${t.nombre}`
+                    };
+                });
             }
         }
     },

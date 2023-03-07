@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="grid formgrid">
-      <div class="field col-4">
+      <div class="field col-6">
         <Fieldset>
           <template #legend>
             {{ $t("views.whatsapp.line.step2.sender") }}
@@ -42,7 +42,9 @@
           </div>
         </Fieldset>
       </div>
-      <div class="field col-8">
+    </div>
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
         <Fieldset>
           <template #legend>
             {{ $t("views.whatsapp.line.step2.app_info") }}
@@ -52,7 +54,7 @@
               <label
                 :class="{
                   'p-error':
-                    v$.supWhatsappLine.configuracion.appname.$invalid &&
+                    v$.supWhatsappLine.configuracion.app_name.$invalid &&
                     submitted,
                 }"
                 >{{ $t("models.whatsapp.line.configuracion.app_name") }}*</label
@@ -64,22 +66,22 @@
                 <InputText
                   :class="{
                     'p-invalid':
-                      v$.supWhatsappLine.configuracion.appname.$invalid &&
+                      v$.supWhatsappLine.configuracion.app_name.$invalid &&
                       submitted,
                   }"
                   :placeholder="$t('forms.form.enter_name')"
-                  v-model="v$.supWhatsappLine.configuracion.appname.$model"
+                  v-model="v$.supWhatsappLine.configuracion.app_name.$model"
                 />
               </div>
               <small
                 v-if="
-                  (v$.supWhatsappLine.configuracion.appname.$invalid &&
+                  (v$.supWhatsappLine.configuracion.app_name.$invalid &&
                     submitted) ||
-                  v$.supWhatsappLine.configuracion.appname.$pending.$response
+                  v$.supWhatsappLine.configuracion.app_name.$pending.$response
                 "
                 class="p-error"
                 >{{
-                  v$.supWhatsappLine.configuracion.appname.required.$message.replace(
+                  v$.supWhatsappLine.configuracion.app_name.required.$message.replace(
                     "Value",
                     $t("models.whatsapp.line.configuracion.app_name")
                   )
@@ -90,7 +92,7 @@
               <label
                 :class="{
                   'p-error':
-                    v$.supWhatsappLine.configuracion.appid.$invalid &&
+                    v$.supWhatsappLine.configuracion.app_id.$invalid &&
                     submitted,
                 }"
                 >{{ $t("models.whatsapp.line.configuracion.app_id") }}*</label
@@ -102,22 +104,22 @@
                 <InputText
                   :class="{
                     'p-invalid':
-                      v$.supWhatsappLine.configuracion.appid.$invalid &&
+                      v$.supWhatsappLine.configuracion.app_id.$invalid &&
                       submitted,
                   }"
                   :placeholder="$t('forms.form.enter_name')"
-                  v-model="v$.supWhatsappLine.configuracion.appid.$model"
+                  v-model="v$.supWhatsappLine.configuracion.app_id.$model"
                 />
               </div>
               <small
                 v-if="
-                  (v$.supWhatsappLine.configuracion.appid.$invalid &&
+                  (v$.supWhatsappLine.configuracion.app_id.$invalid &&
                     submitted) ||
-                  v$.supWhatsappLine.configuracion.appid.$pending.$response
+                  v$.supWhatsappLine.configuracion.app_id.$pending.$response
                 "
                 class="p-error"
                 >{{
-                  v$.supWhatsappLine.configuracion.appid.required.$message.replace(
+                  v$.supWhatsappLine.configuracion.app_id.required.$message.replace(
                     "Value",
                     $t("models.whatsapp.line.configuracion.app_id")
                   )
@@ -163,8 +165,8 @@ export default {
             supWhatsappLine: {
                 numero: { required },
                 configuracion: {
-                    appname: { required },
-                    appid: { required }
+                    app_name: { required },
+                    app_id: { required }
                 }
             }
         };

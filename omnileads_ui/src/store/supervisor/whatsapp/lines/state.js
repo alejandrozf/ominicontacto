@@ -7,8 +7,8 @@ export default {
         proveedor: null,
         numero: '',
         configuracion: {
-            appname: '',
-            appid: '',
+            app_name: '',
+            app_id: '',
             destino: null,
             tipo_de_destino: 0
         },

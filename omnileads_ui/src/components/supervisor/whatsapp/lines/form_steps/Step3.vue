@@ -161,7 +161,9 @@
           </div>
         </Fieldset>
       </div>
-      <div class="col-6">
+    </div>
+    <div class="grid formgrid mt-4">
+      <div class="col-12">
         <Fieldset>
           <template #legend>
             {{ $t("views.whatsapp.line.step3.message") }}
@@ -300,7 +302,7 @@
         </Fieldset>
       </div>
     </div>
-    <div class="flex justify-content-between flex-wrap mb-4">
+    <div class="flex justify-content-between flex-wrap mt-4">
       <div class="flex align-items-center justify-content-center">
         <Button
           :label="$t('globals.back')"

@@ -10,8 +10,8 @@ export default {
                 proveedor: line.proveedor,
                 numero: line.numero,
                 configuracion: {
-                    appname: line.configuracion.appname,
-                    appid: line.configuracion.appid,
+                    app_name: line.configuracion.app_name,
+                    app_id: line.configuracion.app_id,
                     destino: line.configuracion.destino,
                     tipo_de_destino: line.configuracion.tipo_de_destino
                 },
@@ -27,8 +27,8 @@ export default {
                 proveedor: null,
                 numero: '',
                 configuracion: {
-                    appname: '',
-                    appid: '',
+                    app_name: '',
+                    app_id: '',
                     destino: null,
                     tipo_de_destino: 0
                 },

@@ -184,6 +184,10 @@ export default {
         group_of_message_template: {
             new_title: 'Novo grupo',
             edit_title: 'Editar grupo'
+        },
+        group_of_whatsapp_template: {
+            new_title: 'Novo grupo',
+            edit_title: 'Editar grupo'
         }
     }
 };

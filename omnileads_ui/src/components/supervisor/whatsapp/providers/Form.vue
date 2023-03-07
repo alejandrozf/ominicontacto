@@ -182,14 +182,14 @@ export default {
             filters: null,
             providers: [
                 { name: '-------', value: null },
-                {
-                    name: this.$t('forms.whatsapp.provider.types.twilio'),
-                    value: PROVIDER_TYPES.TWILIO
-                },
-                {
-                    name: this.$t('forms.whatsapp.provider.types.meta'),
-                    value: PROVIDER_TYPES.META
-                },
+                // {
+                //     name: this.$t('forms.whatsapp.provider.types.twilio'),
+                //     value: PROVIDER_TYPES.TWILIO
+                // },
+                // {
+                //     name: this.$t('forms.whatsapp.provider.types.meta'),
+                //     value: PROVIDER_TYPES.META
+                // },
                 {
                     name: this.$t('forms.whatsapp.provider.types.gupshup'),
                     value: PROVIDER_TYPES.GUPSHUP
