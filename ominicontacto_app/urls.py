@@ -257,11 +257,11 @@ urlpatterns = [
                 views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
             name='update_base_datos_contacto'
             ),
-    re_path(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/actualizar/$',
-            login_required(
-                views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
-            name='update_base_datos_contacto_de_campana'
-            ),
+    path('campana/base_datos_contacto/<int:pk_campana>/actualizar/',
+         login_required(
+             views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
+         name='update_base_datos_contacto_de_campana'
+         ),
     re_path(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
             login_required(
                 views_base_de_datos_contacto.DefineBaseDatosContactoView.as_view()),
@@ -280,11 +280,11 @@ urlpatterns = [
                 views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
             name='actualiza_base_datos_contacto',
             ),
-    re_path(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/validacion_actualizacion/$',
-            login_required(
-                views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
-            name='actualiza_base_datos_contacto_de_campana',
-            ),
+    path('campana/base_datos_contacto/<int:pk_campana>/validacion_actualizacion/',
+         login_required(
+             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
+         name='actualiza_base_datos_contacto_de_campana',
+         ),
 
     re_path(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
             login_required(views_contacto.ContactoBDContactoListView.as_view()),
