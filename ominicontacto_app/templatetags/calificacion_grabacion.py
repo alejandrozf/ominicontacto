@@ -26,9 +26,7 @@ def es_calificacion_llamada(grabacion, calificacion):
     """Determina si la calificación es la exacta de la llamada que generó
     la grabación
     """
-    if grabacion.callid == calificacion.callid and \
-       calificacion.history_change_reason == 'calificacion':
-        # no es una recalificacion sin llamada
+    if grabacion.callid == calificacion.callid:
         return calificacion
     return False
 

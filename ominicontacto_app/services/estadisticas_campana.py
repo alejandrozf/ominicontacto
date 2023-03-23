@@ -93,7 +93,7 @@ class EstadisticasBaseCampana:
 
     def _inicializar_valores_calificaciones(self):
         calificacion_finales_qs = CalificacionCliente.objects.using('replica').filter(
-            opcion_calificacion__campana=self.campana, fecha__range=(
+            opcion_calificacion__campana=self.campana, modified__range=(
                 self.fecha_desde, self.fecha_hasta)).select_related(
                     'agente', 'agente__user', 'contacto', 'contacto__bd_contacto',
                     'opcion_calificacion')
