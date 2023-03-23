@@ -87,12 +87,10 @@ class CampanaReporteCalificacionListView(FormView):
             fecha_hasta = fecha_hora_local(datetime.datetime.combine(hoy_ahora, datetime.time.max))
             service = ReporteCampanaService(self.get_object())
             service.calificaciones_por_fechas(fecha_desde, fecha_hasta)
-            calificaciones_qs = service.calificaciones_qs
             historico_calificaciones_qs = service.historico_calificaciones_qs
             historico_calidficaciones = self._procesa_historico_calificaciones(
-                historico_calificaciones_qs)
+                historico_calificaciones_qs, fecha_desde, fecha_hasta)
             return self.render_to_response(self.get_context_data(
-                calificaciones=calificaciones_qs,
                 historico_calificaciones=historico_calidficaciones.values()))
         except Campana.DoesNotExist:
             messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
@@ -106,7 +104,8 @@ class CampanaReporteCalificacionListView(FormView):
         context['formulario_gestion_task_id'] = get_random_string(8)
         return context
 
-    def _procesa_historico_calificaciones(self, historico_calificaciones_qs):
+    def _procesa_historico_calificaciones(
+            self, historico_calificaciones_qs, fecha_desde, fecha_hasta):
         res = {}
         for hc in list(historico_calificaciones_qs):
             if hc.id not in res:
@@ -134,12 +133,16 @@ class CampanaReporteCalificacionListView(FormView):
                 res[hc.id]['tiene_historico'] = True
 
         historico_formulario_gestion = RespuestaFormularioGestion.history.filter(
+            history_date__range=(fecha_desde, fecha_hasta),
             calificacion__in=res.keys())
 
         for gestion in historico_formulario_gestion:
             if gestion.metadata is not None:
                 calificacion_historica_id = gestion.history_change_reason
                 if calificacion_historica_id is not None and str(calificacion_historica_id).isdigit:
+                    if int(calificacion_historica_id) not in res[gestion.calificacion.id]['cals']:
+                        # Evitar Problema con calificacion de un dia y la repuesta del siguiente
+                        continue
                     try:
                         gestiones_list = res[gestion.calificacion.id]['cals'][int(
                             calificacion_historica_id)]['gestiones']
@@ -161,12 +164,10 @@ class CampanaReporteCalificacionListView(FormView):
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         service = ReporteCampanaService(self.get_object())
         service.calificaciones_por_fechas(fecha_desde, fecha_hasta)
-        calificaciones_qs = service.calificaciones_qs
         historico_calificaciones_qs = service.historico_calificaciones_qs
         historico_calidficaciones = self._procesa_historico_calificaciones(
-            historico_calificaciones_qs)
+            historico_calificaciones_qs, fecha_desde, fecha_hasta)
         return self.render_to_response(self.get_context_data(
-            calificaciones=calificaciones_qs,
             historico_calificaciones=historico_calidficaciones.values(),
             reporte_fecha_desde_elegida=fecha_desde.strftime("%m/%d/%Y"),
             reporte_fecha_hasta_elegida=fecha_hasta.strftime("%m/%d/%Y"),
