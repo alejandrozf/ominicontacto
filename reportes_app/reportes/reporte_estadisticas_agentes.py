@@ -43,18 +43,25 @@ class ReporteActividadAgente:
         self.pausa = timedelta()
         self.sesion = timedelta()
         self.pausa_recreativa = timedelta()
+        self.pausa_productiva = timedelta()
 
     def _to_dict(self):
         seconds_pausa = self.pausa.total_seconds()
+        seconds_pausa_recreativa = self.pausa_recreativa.total_seconds()
+        seconds_pausa_productiva = self.pausa_productiva.total_seconds()
         seconds_sesion = self.sesion.total_seconds()
 
         result = {
             'pausa': seconds_pausa,
+            'pausa_recreativa': seconds_pausa_recreativa,
+            'pausa_productiva': seconds_pausa_productiva,
             'sesion': seconds_sesion,
         }
-        result['tiempo_pausa'] = _("{0} hs".format(
-            str(self.pausa_recreativa - datetime.timedelta(
-                microseconds=self.pausa_recreativa.microseconds))))
+        pausa_productiva = self.pausa_productiva -\
+            datetime.timedelta(microseconds=self.pausa_productiva.microseconds)
+        pausa_recreativa = self.pausa_recreativa -\
+            datetime.timedelta(microseconds=self.pausa_recreativa.microseconds)
+        result['tiempo_pausa'] = _("{0} hs".format(str(pausa_productiva + pausa_recreativa)))
         return result
 
 
@@ -117,6 +124,13 @@ class ReporteEstadisticasDiariaAgente(object):
                 hours=tiempo_datetime.hour, minutes=tiempo_datetime.minute,
                 seconds=tiempo_datetime.second)
             self.estadisticas[info_agente['id']]['tiempos'].pausa_recreativa += tiempo_pausa
+
+        if tipo_pausa == Pausa.CHOICE_PRODUCTIVA:
+            tiempo_datetime = datetime.datetime.strptime(info_agente['tiempo'], "%H:%M:%S")
+            tiempo_pausa = timedelta(
+                hours=tiempo_datetime.hour, minutes=tiempo_datetime.minute,
+                seconds=tiempo_datetime.second)
+            self.estadisticas[info_agente['id']]['tiempos'].pausa_productiva += tiempo_pausa
 
     def contabilizar_estadisticas_actividad(self):
         hoy_ahora = datetime.datetime.today()

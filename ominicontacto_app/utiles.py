@@ -51,6 +51,7 @@ logger = _logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 REGEX_NO_ALFANUMERICOS = re.compile(r'([^.a-zA-Z0-9])')
+REGEX_ALFANUMERICOS_CON_GUIONES = re.compile(r'([^a-zA-Z0-9_-])')
 
 
 def _upload_to(prefix, max_length, instance, filename):
@@ -354,14 +355,14 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
 
 def validar_solo_ascii_y_sin_espacios(
         cadena,
-        error_ascii='el texto no puede contener tildes ni caracteres no ASCII',
+        error_ascii='el texto no puede contener tildes ni caracteres no ASCII, solo (a-zA-Z0-9)',
         error_espacios='el texto no puede contener espacios'):
     """
     Valida que no hayan espacios ni caracteres no ASCII
     """
     if ' ' in cadena:
         raise ValidationError(error_espacios)
-    if any([(ord(i) >= 128) for i in cadena]):
+    if len(REGEX_ALFANUMERICOS_CON_GUIONES.findall(cadena)) != 0:
         raise ValidationError(error_ascii)
 
 

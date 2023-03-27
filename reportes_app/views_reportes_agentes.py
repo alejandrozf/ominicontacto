@@ -17,6 +17,7 @@
 #
 
 from __future__ import unicode_literals
+import os
 
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -123,6 +124,7 @@ class ReportesTiemposAgente(FormView):
             supervisor).select_related('user')
         context['agentes_activos'] = agentes_activos
         context['agentes_eliminados'] = agentes_inactivos
+        context['survey_app_activado'] = not os.getenv('SURVEY_VERSION', '') == ''
         return context
 
 

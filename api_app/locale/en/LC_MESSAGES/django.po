@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 16:30-0300\n"
+"POT-Creation-Date: 2023-03-16 16:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,525 +17,544 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api_app/apps.py:289
+#: api_app/apps.py:291
 msgid "Lista de agentes activos de un Grupo"
 msgstr "Active agents list for a Group"
 
-#: api_app/apps.py:291
+#: api_app/apps.py:293
 msgid "Campañas relacionadas a un supervisor"
 msgstr "Campaigns related to a supervisor"
 
-#: api_app/apps.py:293
+#: api_app/apps.py:295
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr "Campaign disposition options (external campaign id)"
 
-#: api_app/apps.py:296
+#: api_app/apps.py:298
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr "Campaign disposition options (OML campaign id)"
 
-#: api_app/apps.py:299
+#: api_app/apps.py:301
 msgid "Ver/editar calificación cliente"
 msgstr "View/edit Client Disposition"
 
-#: api_app/apps.py:301
+#: api_app/apps.py:303
 msgid "Crear calificacion cliente"
 msgstr "Create Call Disposition"
 
-#: api_app/apps.py:303
+#: api_app/apps.py:305
 msgid "Crear contacto"
 msgstr "Create Contact"
 
-#: api_app/apps.py:305
+#: api_app/apps.py:307
 msgid "Metadata de la base de datos de una campaña"
 msgstr "Campaign database metadata"
 
-#: api_app/apps.py:307
+#: api_app/apps.py:309
 msgid "Crear nuevo rol"
 msgstr "Create new Role"
 
-#: api_app/apps.py:309
+#: api_app/apps.py:311
 msgid "Eliminar rol"
 msgstr "Delete Role"
 
-#: api_app/apps.py:311
+#: api_app/apps.py:313
 msgid "Actualizar permisos de Rol"
 msgstr "Update Role Permissions"
 
-#: api_app/apps.py:313
+#: api_app/apps.py:315
 msgid "Devuelve información de los agentes en el sistema"
 msgstr "Returns Agents information"
 
-#: api_app/apps.py:316
+#: api_app/apps.py:318
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr "Supervision Inbound calls report"
 
-#: api_app/apps.py:318
+#: api_app/apps.py:320
 msgid "Reporte de llamadas salientes no dialer de supervisión."
 msgstr "Supervision Outbound non dialer calls report"
 
-#: api_app/apps.py:322
+#: api_app/apps.py:324
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr "Apply supervision actions on Agent (Logoff, Pauses, etc..)"
 
-#: api_app/apps.py:325
+#: api_app/apps.py:327
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr "Call types ammount for a Campaign"
 
-#: api_app/apps.py:328
+#: api_app/apps.py:330
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr "Disposition types ammount for a Campaign"
 
-#: api_app/apps.py:331
+#: api_app/apps.py:333
 msgid "Reasignar una Agenda a otro Agente"
 msgstr "Reassign Agenda to another Agent"
 
-#: api_app/apps.py:333
+#: api_app/apps.py:335
 msgid "Información de contacto de una  Agenda"
 msgstr "Agenda's contact information"
 
-#: api_app/apps.py:335
+#: api_app/apps.py:337
 msgid "Exportar reporte de contactados de una campaña a csv"
 msgstr "Export contacted campaign calls report to csv"
 
-#: api_app/apps.py:338
+#: api_app/apps.py:340
 msgid "Exportar reporte de calificados de una campaña a csv"
 msgstr "Export dispositioned campaign calls report to csv"
 
-#: api_app/apps.py:341
+#: api_app/apps.py:343
 msgid "Exportar reporte de no atendidos de una campaña a csv"
 msgstr "Export unnatended campaign calls report to csv"
 
-#: api_app/apps.py:344 api_app/apps.py:347
+#: api_app/apps.py:346 api_app/apps.py:349
 msgid "Exportar reporte de calificaciones de una campaña a csv"
 msgstr "Export dispositioned campaign calls report to csv"
 
-#: api_app/apps.py:350
+#: api_app/apps.py:352
 msgid "API para exportar resultados de base contactados a csv"
 msgstr "API for exporting contacted database results to csv"
 
-#: api_app/apps.py:353
+#: api_app/apps.py:355
 msgid "Contactos de una campaña"
 msgstr "Campaign contacts"
 
-#: api_app/apps.py:355
+#: api_app/apps.py:357
 msgid "Ejecuta un click 2 call a una campaña"
 msgstr "Start a click 2 call for a campaign"
 
-#: api_app/apps.py:357
+#: api_app/apps.py:359
 msgid "Ejecuta un click 2 call fuera de campaña"
 msgstr "Start a click 2 call out of campaign"
 
-#: api_app/apps.py:359
+#: api_app/apps.py:361
 msgid "Ejecuta el login del agente en Asterisk."
 msgstr "Agent's Asterisk login"
 
-#: api_app/apps.py:361
+#: api_app/apps.py:363
 msgid "Ejecuta el logout del agente en Asterisk"
 msgstr "Agent's Asterisk logout"
 
-#: api_app/apps.py:363
+#: api_app/apps.py:365
 msgid "Logout del agente en OML"
 msgstr "Agent's OML logout"
 
-#: api_app/apps.py:365
+#: api_app/apps.py:367
 msgid "Pone al agente en una pausa"
 msgstr "Start an Agent's pause"
 
-#: api_app/apps.py:367
+#: api_app/apps.py:369
 msgid "Saca al agente de una pausa"
 msgstr "Stop an Agent's pause"
 
-#: api_app/apps.py:369
+#: api_app/apps.py:371
 msgid "Establece el estado Ringing del Agente"
 msgstr "Set Agent's Ringing status"
 
-#: api_app/apps.py:371
+#: api_app/apps.py:373
 msgid "Establece el estado Reject del Agente"
 msgstr "Save Agent's call reject log"
 
-#: api_app/apps.py:373
+#: api_app/apps.py:375
 msgid "Devuelve credenciales SIP de un agente"
 msgstr "Return Agent's SIP credentials"
 
-#: api_app/apps.py:375
+#: api_app/apps.py:377
 msgid "Establece el estado de revisión de una Auditoría"
 msgstr "Establishes review status for an Audit"
 
-#: api_app/apps.py:378
+#: api_app/apps.py:380
 msgid "Almacena en la base de datos los contactos subidos en archivo csv"
 msgstr "Stores uploaded contact of a database in a csv file"
 
-#: api_app/apps.py:381
+#: api_app/apps.py:383
 msgid "Detecta si una llamada esta calificada."
 msgstr "Detect if an call is qualified"
 
-#: api_app/apps.py:384
+#: api_app/apps.py:386
 msgid "Reenvía la llave de la instancia registrada por email"
 msgstr "Sends registered instance key by email"
 
-#: api_app/apps.py:386
+#: api_app/apps.py:388
 msgid "Retorna el archivo de grabación especificado"
 msgstr "Returns the specified recording file"
 
-#: api_app/apps.py:389
+#: api_app/apps.py:391
 msgid "Retorna Zip con archivos de grabación especificados"
 msgstr "Returns .zip file with the specified recording files"
 
-#: api_app/apps.py:392
+#: api_app/apps.py:394
 msgid "Retorna URL del archivos de grabación asociado al callid"
 msgstr "Returns the URL of the recording file associated to callid"
 
-#: api_app/apps.py:395
+#: api_app/apps.py:397
 msgid "Devuelve los contactos asignados de una campaña preview"
 msgstr "Returns the assigned contacts of a preview campaign"
 
-#: api_app/apps.py:398
+#: api_app/apps.py:400
 msgid "Loggea el evento hold o unhold"
 msgstr "Logs a hold or unhold event"
 
-#: api_app/apps.py:401
+#: api_app/apps.py:403
 msgid "Lista audios de asterisk"
 msgstr "Asterisk audio list"
 
-#: api_app/apps.py:404
+#: api_app/apps.py:406
 msgid "Lista de grupos de agentes"
 msgstr "Agent groups list"
 
-#: api_app/apps.py:407
+#: api_app/apps.py:409
 msgid "Lista de Agentes"
 msgstr "Agent's list"
 
-#: api_app/apps.py:410
+#: api_app/apps.py:412
 msgid "Dashboard de supervision"
 msgstr "Supervision dashboard"
 
-#: api_app/apps.py:413
+#: api_app/apps.py:415
 msgid "Auditoría a supervisores"
 msgstr "Supervisor's Audit"
 
-#: api_app/apps.py:416
+#: api_app/apps.py:418
 msgid "Listas de nombres de columnas para Base de datos de Contactos"
 msgstr "Contact Database fields names list"
 
-#: api_app/apps.py:419
+#: api_app/apps.py:421
 msgid "Reinicia servicio Wombat Dialer"
 msgstr "Restart Wombat Dialer Service"
 
-#: api_app/apps.py:422
+#: api_app/apps.py:424
 msgid "Estado del servicio Wombat Dialer"
 msgstr "Wombat Dialer service state"
 
-#: api_app/apps.py:425
+#: api_app/apps.py:427
 msgid "Lista de agentes por campaña"
 msgstr "Campaign's agents list"
 
-#: api_app/apps.py:428
+#: api_app/apps.py:430
 msgid "Actualiza los agentes de una campaña"
 msgstr "Update a Campaign's agents"
 
-#: api_app/apps.py:431
+#: api_app/apps.py:433
 msgid "Obtiene todos los agentes activos"
 msgstr "Get all active agents"
 
-#: api_app/apps.py:434
+#: api_app/apps.py:436
 msgid "Obtiene las pausas que no estan eliminadas"
 msgstr "Get non deleted pauses"
 
-#: api_app/apps.py:437
+#: api_app/apps.py:439
 msgid "Lista los conjuntos de pausas"
 msgstr "List pause Sets"
 
-#: api_app/apps.py:440
+#: api_app/apps.py:442
 msgid "Obtiene el detalle de un conjunto de pausas"
 msgstr "Get pause Set detail"
 
-#: api_app/apps.py:443
+#: api_app/apps.py:445
 msgid "Crea un conjunto de pausas"
 msgstr "Create a pause Set"
 
-#: api_app/apps.py:446
+#: api_app/apps.py:448
 msgid "Actualiza un conjunto de pausas"
 msgstr "Update pause Set"
 
-#: api_app/apps.py:449
+#: api_app/apps.py:451
 msgid "Elimina un conjunto de pausas"
 msgstr "Delete pause Set"
 
-#: api_app/apps.py:452
+#: api_app/apps.py:454
 msgid "Crea una configuracion de pausa"
 msgstr "Create pause configuration"
 
-#: api_app/apps.py:455
+#: api_app/apps.py:457
 msgid "Actualiza una configuracion de pausa"
 msgstr "Update pause configuration"
 
-#: api_app/apps.py:458
+#: api_app/apps.py:460
 msgid "Elimina una configuracion de pausa"
 msgstr "Delete pause configuration"
 
-#: api_app/apps.py:461
+#: api_app/apps.py:463
 msgid "Lista los sitios externos"
 msgstr "External Site list"
 
-#: api_app/apps.py:464
+#: api_app/apps.py:466
 msgid "Obtiene el detalle de un sitio externo"
 msgstr "Get External Site detail"
 
-#: api_app/apps.py:467
+#: api_app/apps.py:469
 msgid "Crea un sitio externo"
 msgstr "Create external site"
 
-#: api_app/apps.py:470
+#: api_app/apps.py:472
 msgid "Actualiza un sitio externo"
 msgstr "Update external site"
 
-#: api_app/apps.py:473
+#: api_app/apps.py:475
 msgid "Elimina un sitio externo"
 msgstr "Deletes external site"
 
-#: api_app/apps.py:476
+#: api_app/apps.py:478
 msgid "Lista las autenticaciones para sitios externos"
 msgstr "External Site authentications list"
 
-#: api_app/apps.py:479
+#: api_app/apps.py:481
 msgid "Obtiene el detalle de una autenticacion para sitio externo"
 msgstr "Get External Site Authentication detail"
 
-#: api_app/apps.py:482
+#: api_app/apps.py:484
 msgid "Crea una autenticacion para sitio externo"
 msgstr "Create external site authentication"
 
-#: api_app/apps.py:485
+#: api_app/apps.py:487
 msgid "Actualiza una autenticacion para sitio externo"
 msgstr "Update external site authentication"
 
-#: api_app/apps.py:488
+#: api_app/apps.py:490
 msgid "Elimina una autenticacion para sitio externo"
 msgstr "Deletes external site authentication"
 
-#: api_app/apps.py:491
+#: api_app/apps.py:493
 msgid "Oculta un sitio externo"
 msgstr "Hides external site"
 
-#: api_app/apps.py:494
+#: api_app/apps.py:496
 msgid "Desoculta un sitio externo"
 msgstr "Unhide external site"
 
-#: api_app/apps.py:497
+#: api_app/apps.py:499
 msgid "Lista las calificaciones"
 msgstr "Call Disposition list"
 
-#: api_app/apps.py:500
+#: api_app/apps.py:502
 msgid "Crea una calificacion"
 msgstr "Create Call Disposition"
 
-#: api_app/apps.py:503
+#: api_app/apps.py:505
 msgid "Actualiza una calificacion"
 msgstr "Update call disposition"
 
-#: api_app/apps.py:506
+#: api_app/apps.py:508
 msgid "Elimina una calificacion"
 msgstr "Delete call disposition"
 
-#: api_app/apps.py:509
+#: api_app/apps.py:511
 msgid "Obtiene detalle de una calificacion"
 msgstr "Get call disposition detail"
 
-#: api_app/apps.py:512
+#: api_app/apps.py:514
 msgid "Lista los destinos entrantes"
 msgstr "Destination list"
 
-#: api_app/apps.py:515
+#: api_app/apps.py:517
 msgid "Lista tipos de destinos entrantes"
 msgstr "Destination type list"
 
-#: api_app/apps.py:518
+#: api_app/apps.py:520
 msgid "Lista los sistemas externos"
 msgstr "External System list"
 
-#: api_app/apps.py:521
+#: api_app/apps.py:523
 msgid "Crea un sistema externo"
 msgstr "Create external system"
 
-#: api_app/apps.py:524
+#: api_app/apps.py:526
 msgid "Actualiza un sistema externo"
 msgstr "Update external system"
 
-#: api_app/apps.py:527
+#: api_app/apps.py:529
 msgid "Obtiene detalle de un sistema externo"
 msgstr "Get External system detail"
 
-#: api_app/apps.py:530
+#: api_app/apps.py:532
 msgid "Obtiene los agentes para asignar a un sistema externo"
 msgstr "Get Agents for External system assignment"
 
-#: api_app/apps.py:533
+#: api_app/apps.py:535
 msgid "Lista los formularios"
 msgstr "Call Disposition Forms list"
 
-#: api_app/apps.py:536
+#: api_app/apps.py:538
 msgid "Crea un formulario"
 msgstr "Create Call Disposition Form"
 
-#: api_app/apps.py:539
+#: api_app/apps.py:541
 msgid "Actualiza un formulario"
 msgstr "Update call disposition form"
 
-#: api_app/apps.py:542
+#: api_app/apps.py:544
 msgid "Obtiene detalle de un formulario"
 msgstr "Get call disposition form detail"
 
-#: api_app/apps.py:545
+#: api_app/apps.py:547
 msgid "Elimina un formulario"
 msgstr "Delete call disposition"
 
-#: api_app/apps.py:548
+#: api_app/apps.py:550
 msgid "Oculta un formulario"
 msgstr "Hides call disposition form"
 
-#: api_app/apps.py:551
+#: api_app/apps.py:553
 msgid "Desoculta un formulario"
 msgstr "Unhide call disposition form"
 
-#: api_app/apps.py:554
+#: api_app/apps.py:556
 msgid "Lista las pausas"
 msgstr "Pauses list"
 
-#: api_app/apps.py:557
+#: api_app/apps.py:559
 msgid "Crea una pausa"
 msgstr "Create a pause"
 
-#: api_app/apps.py:560
+#: api_app/apps.py:562
 msgid "Actualiza una pausa"
 msgstr "Update pause"
 
-#: api_app/apps.py:563
+#: api_app/apps.py:565
 msgid "Obtiene detalle de una pausa"
 msgstr "Get pause detail"
 
-#: api_app/apps.py:566
+#: api_app/apps.py:568
 msgid "Elimina una pausa"
 msgstr "Delete pause"
 
-#: api_app/apps.py:569
+#: api_app/apps.py:571
 msgid "Reactiva una pausa"
 msgstr "Reactivate pause"
 
-#: api_app/apps.py:572
+#: api_app/apps.py:574
 msgid "Lista las rutas entrantes"
 msgstr "Inbound route list"
 
-#: api_app/apps.py:575
+#: api_app/apps.py:577
 msgid "Crea una ruta entrante"
 msgstr "Create Inbound route"
 
-#: api_app/apps.py:578
+#: api_app/apps.py:580
 msgid "Actualiza una ruta entrante"
 msgstr "Update Inbound route"
 
-#: api_app/apps.py:581
+#: api_app/apps.py:583
 msgid "Obtiene detalle de una ruta entrante"
 msgstr "Get Inbound route detail"
 
-#: api_app/apps.py:584
+#: api_app/apps.py:586
 msgid "Elimina una ruta entrante"
 msgstr "Deletes Inbound route"
 
-#: api_app/apps.py:587
+#: api_app/apps.py:589
 msgid "Obtiene los destinos disponibles"
 msgstr "Get available destinations list"
 
-#: api_app/apps.py:590
+#: api_app/apps.py:592
 msgid "Lista las rutas salientes"
 msgstr "Outbound routes list"
 
-#: api_app/apps.py:593
+#: api_app/apps.py:595
 msgid "Crea una ruta saliente"
 msgstr "Create Outbound route"
 
-#: api_app/apps.py:596
+#: api_app/apps.py:598
 msgid "Actualiza una ruta saliente"
 msgstr "Update Outbound route"
 
-#: api_app/apps.py:599
+#: api_app/apps.py:601
 msgid "Obtiene detalle de una ruta saliente"
 msgstr "Get Outbound route detail"
 
-#: api_app/apps.py:602
+#: api_app/apps.py:604
 msgid "Elimina una ruta saliente"
 msgstr "Delete Outbound route"
 
-#: api_app/apps.py:605
+#: api_app/apps.py:607
 msgid "Obtiene las troncales sip para rutas salientes"
 msgstr "Get SIP Trunks for Outbound routes"
 
-#: api_app/apps.py:608
+#: api_app/apps.py:610
 msgid "Obtiene las troncales huerfanas de una ruta saliente"
 msgstr "Get orphan SIP Trunk for an Outbound route"
 
-#: api_app/apps.py:611
+#: api_app/apps.py:613
 msgid "Reordena las rutas salientes"
 msgstr "Rearrange Outbound routes"
 
-#: api_app/apps.py:614
+#: api_app/apps.py:616
 msgid "Lista los grupos horarios"
 msgstr "Group of hours list"
 
-#: api_app/apps.py:617
+#: api_app/apps.py:619
 msgid "Crea un grupo horario"
 msgstr "Create Group of hours"
 
-#: api_app/apps.py:620
+#: api_app/apps.py:622
 msgid "Actualiza un grupo horario"
 msgstr "Update Group of hours"
 
-#: api_app/apps.py:623
+#: api_app/apps.py:625
 msgid "Obtiene detalle de un grupo horario"
 msgstr "Get Group of hours detail"
 
-#: api_app/apps.py:626
+#: api_app/apps.py:628
 msgid "Elimina un grupo horario"
 msgstr "Delete Group of hours"
 
-#: api_app/apps.py:629
+#: api_app/apps.py:631
 msgid "Lista los ivrs"
 msgstr "IVR list"
 
-#: api_app/apps.py:632
+#: api_app/apps.py:634
 msgid "Crea un ivr"
 msgstr "Create an IVR"
 
-#: api_app/apps.py:635
+#: api_app/apps.py:637
 msgid "Actualiza un ivr"
 msgstr "Update IVR"
 
-#: api_app/apps.py:638
+#: api_app/apps.py:640
 msgid "Obtiene detalle de un ivr"
 msgstr "Get IVR detail"
 
-#: api_app/apps.py:641
+#: api_app/apps.py:643
 msgid "Elimina un ivr"
 msgstr "Delete IVR"
 
-#: api_app/apps.py:644
+#: api_app/apps.py:646
 msgid "Obtiene los audios disponibles para ivr"
 msgstr "Get available audios for IVR"
 
-#: api_app/apps.py:647
+#: api_app/apps.py:649
 msgid "Obtiene los destinos por tipo para un ivr"
 msgstr "Get destinations by type for an IVR"
 
+#: api_app/apps.py:652
+msgid "Loguea un intento de transferencia a Survey"
+msgstr "Logs a transfer to a survey attempt"
+
 #: api_app/forms.py:52 api_app/forms.py:97
+#: api_app/tests/tests_api_click2call.py:135
+#: api_app/tests/tests_api_click2call.py:207
 msgid "El agente no participa en la campaña."
 msgstr "The agent is not related to campaign"
 
-#: api_app/forms.py:61
+#: api_app/forms.py:61 api_app/tests/tests_api_click2call.py:143
 msgid "El contacto no corresponde a la campaña."
 msgstr "The contact is not related to campaign."
 
-#: api_app/forms.py:99
+#: api_app/forms.py:99 api_app/tests/tests_api_click2call.py:173
+#: api_app/tests/tests_api_click2call.py:195
 msgid "El agente no corresponde al sistema externo."
 msgstr "The agent is not related to external system."
+
+#: api_app/serializers/reportes.py:44
+msgid "Addon no instalado"
+msgstr "Addon not installed"
+
+#: api_app/serializers/reportes.py:50
+msgid "Parámetro requerido"
+msgstr "Required parameter"
+
+#: api_app/serializers/reportes.py:56
+msgid "No existe una encuesta para esa campaña"
+msgstr "A survey does not exist for this campaign"
 
 #: api_app/services/base_datos_contacto_service.py:44
 msgid "Ya existe una base de datos de contactos con ese nombre"
@@ -548,6 +567,7 @@ msgid ""
 msgstr "The file specified to import contacts is not valid"
 
 #: api_app/services/base_datos_contacto_service.py:53
+#: api_app/tests/tests_api_subir_base_contactos.py:203
 #: api_app/views/administrador.py:194
 msgid "El archivo a procesar tiene nombres de columnas repetidos."
 msgstr "The file to be processed has repeated column names."
@@ -560,66 +580,480 @@ msgstr "File exceeds maximum rows allowed"
 msgid "Error al parsear el archivo csv"
 msgstr "Error parsing csv file"
 
-#: api_app/views/administrador.py:77
-msgid "Se esperaba el campo \"name\""
-msgstr "Field \"name\" expected"
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:89
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:99
+#: api_app/views/campaigns/add_agents_to_campaign.py:50
+#: api_app/views/campaigns/add_agents_to_campaign.py:201
+#: api_app/views/external_system.py:173
+msgid "Se obtuvieron los agentes de forma exitosa"
+msgstr "Agents fetched successfully"
 
-#: api_app/views/administrador.py:82
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:118
+#: api_app/views/campaigns/add_agents_to_campaign.py:137
+msgid "Se agregaron los agentes de forma exitosa a la campaña"
+msgstr "Agents to campaign added successfully"
+
+#: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:69
+#: api_app/views/pause_set.py:232
+msgid "Se creo la configuracion de pausa de forma exitosa"
+msgstr "Pause configuration created successfully"
+
+#: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:87
+#: api_app/views/pause_set.py:312
+msgid "Se actualizo la configuracion de pausa de forma exitosa"
+msgstr "Pause configuration updated successfully"
+
+#: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:105
+#: api_app/views/pause_set.py:279
+msgid "Se elimino la configuracion de pausa de forma exitosa"
+msgstr "Pause configuration deleted successfully"
+
+#: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:124
+#: api_app/views/pause_set.py:239
+msgid "El timeout debe ser mayor a cero"
+msgstr "Timeout must be greater than zero"
+
+#: api_app/tests/pause_sets/tests_configuraciones_de_pausas.py:136
+#: api_app/views/pause_set.py:287
+msgid "No puedes dejar a un Conjunto de Pausas vacio"
+msgstr "Pause set can't be empty"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:66
+#: api_app/views/pause_set.py:69
+msgid "Se obtuvieron los conjuntos de pausas de forma exitosa"
+msgstr "Pause Sets fetched successfully"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:88
+#: api_app/views/pause_set.py:128
+msgid "Se creo el conjunto de pausa de forma exitosa"
+msgstr "Pause set created successfully"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:109
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:160
+#: api_app/views/pause_set.py:133 api_app/views/pause_set.py:169
+msgid "El nombre del conjunto es requerido"
+msgstr "Set name required"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:125
+#: api_app/views/pause_set.py:137
+msgid "Debe existir al menos una pausa en el conjunto"
+msgstr "Pause Set requires at least une Pause"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:143
+#: api_app/views/pause_set.py:165
+msgid "Se actualizo el conjunto de pausa de forma exitosa"
+msgstr "Pause set updated successfully"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:172
+#: api_app/views/pause_set.py:198
+msgid "Se elimino el conjunto de pausa de forma exitosa"
+msgstr "Pause set deleted successfully"
+
+#: api_app/tests/pause_sets/tests_conjuntos_de_pausa.py:186
+#: api_app/views/pause_set.py:205
+msgid ""
+"No puedes borrar un conjunto de pausas que esta asignado a un grupo de "
+"agentes"
+msgstr "Can't delete pause set already assigned to agent group"
+
+#: api_app/tests/tests_api_call_dispositions.py:57
+#: api_app/views/call_disposition.py:43
+msgid "Se obtuvieron las calificaciones de forma exitosa"
+msgstr "Call disposition fetched successfully"
+
+#: api_app/tests/tests_api_call_dispositions.py:76
+#: api_app/views/call_disposition.py:112
+msgid "Se creo la calificacion de forma exitosa"
+msgstr "Call disposition created successfully"
+
+#: api_app/tests/tests_api_call_dispositions.py:92
+#: api_app/views/call_disposition.py:119 api_app/views/call_disposition.py:162
+msgid "Error al hacer la peticion"
+msgstr "Error making request"
+
+#: api_app/tests/tests_api_call_dispositions.py:112
+#: api_app/views/call_disposition.py:154
+msgid "Se actualizo la calificacion de forma exitosa"
+msgstr "Call disposition updated successfully"
+
+#: api_app/tests/tests_api_call_dispositions.py:128
+#: api_app/views/call_disposition.py:192
+msgid "Se elimino la calificacion de forma exitosa"
+msgstr "Call disposition deleted successfully"
+
+#: api_app/tests/tests_api_click2call.py:104
+#: api_app/tests/tests_api_click2call.py:112
+#: api_app/tests/tests_api_click2call.py:120
+#: api_app/tests/tests_api_click2call.py:165
+msgid "Escoja una opción válida. Esa opción no está entre las disponibles."
+msgstr "Choose a valid option. That option is not available."
+
+#: api_app/tests/tests_api_click2call.py:157
+#: api_app/tests/tests_api_contactos.py:169
+#: api_app/tests/tests_api_contactos.py:261 api_app/views/agente.py:221
+#: api_app/views/base.py:86 api_app/views/base.py:218
+msgid "Sistema externo inexistente."
+msgstr "Unkown external system"
+
+#: api_app/tests/tests_api_contactos.py:113 api_app/views/base.py:175
+msgid "Contacto agregado"
+msgstr "Contact added"
+
+#: api_app/tests/tests_api_contactos.py:141
+#: api_app/tests/tests_api_contactos.py:159
+#: api_app/tests/tests_api_contactos.py:228
+#: api_app/tests/tests_api_contactos.py:251 api_app/views/base.py:117
+#: api_app/views/base.py:250
+msgid "No tiene permiso para editar la campaña."
+msgstr "You don't have permission to edit the campaign"
+
+#: api_app/tests/tests_api_contactos.py:177
+#: api_app/tests/tests_api_contactos.py:194
+#: api_app/tests/tests_api_contactos.py:271
+#: api_app/tests/tests_api_contactos.py:291 api_app/views/base.py:110
+#: api_app/views/base.py:243
+msgid "Campaña inexistente."
+msgstr "Campaign not found"
+
+#: api_app/tests/tests_api_contactos.py:185
+#: api_app/tests/tests_api_contactos.py:281 api_app/views/base.py:98
+#: api_app/views/base.py:230
+msgid "Debe indicar un idCampaign válido."
+msgstr "You must provide a valid idCampaign"
+
+#: api_app/tests/tests_api_contactos.py:301
+msgid "Ya existe un contacto con ese id externo en la base de datos"
+msgstr "A contact with that external id already exist in database"
+
+#: api_app/tests/tests_api_contactos.py:333 api_app/views/base.py:134
+msgid "El campo es obligatorio"
+msgstr "The field is required"
+
+#: api_app/tests/tests_api_contactos.py:344 api_app/views/base.py:126
+msgid "Se recibieron campos incorrectos"
+msgstr "Incorrect fields were received"
+
+#: api_app/tests/tests_api_external_site_authentications.py:60
+#: api_app/views/external_site_authentication.py:42
+msgid "Se obtuvieron las autenticaciones para sitios externos de forma exitosa"
+msgstr "External sites authentications fetched successfully"
+
+#: api_app/tests/tests_api_external_site_authentications.py:73
+#: api_app/views/external_site_authentication.py:141
+msgid ""
+"Se obtuvo la informacion de la autenticacion para sitio externo de forma "
+"exitosa"
+msgstr "External site authentication information fetched successfully "
+
+#: api_app/tests/tests_api_external_site_authentications.py:104
+#: api_app/views/external_site_authentication.py:167
+msgid "Se elimino la autenticacion para sitio externo de forma exitosa"
+msgstr "External site authentication deleted successfully"
+
+#: api_app/tests/tests_api_external_site_authentications.py:120
+#: api_app/views/external_site_authentication.py:173
+msgid "No está permitido eliminar una autenticacion que tiene sitios externos"
+msgstr "Authentications assigned to external sites can not be deleted"
+
+#: api_app/tests/tests_api_external_site_authentications.py:147
+#: api_app/views/external_site_authentication.py:69
+msgid "Se creo la autenticacion para sitio externo de forma exitosa"
+msgstr "External sites created successfully"
+
+#: api_app/tests/tests_api_external_sites.py:66
+#: api_app/views/external_site.py:43
+msgid "Se obtuvieron los sitios externos de forma exitosa"
+msgstr "External sites fetched successfully"
+
+#: api_app/tests/tests_api_external_sites.py:79
+#: api_app/views/external_site.py:140
+msgid "Se obtuvo la informacion del sitio externo de forma exitosa"
+msgstr "External site information fetched successfully "
+
+#: api_app/tests/tests_api_external_sites.py:108
+#: api_app/views/external_site.py:165
+msgid "Se elimino el sitio externo de forma exitosa"
+msgstr "External site deleted successfully"
+
+#: api_app/tests/tests_api_external_sites.py:124
+#: api_app/views/external_site.py:171
+msgid "No está permitido eliminar un sitio externo asociado a una campaña"
+msgstr "External sites assigned to campaigns can not be deleted"
+
+#: api_app/tests/tests_api_external_sites.py:140
+#: api_app/views/external_site.py:199
+msgid "Se oculto el sitio externo de forma exitosa"
+msgstr "External site hidden successfully"
+
+#: api_app/tests/tests_api_external_sites.py:156
+#: api_app/views/external_site.py:222
+msgid "Se desoculto el sitio externo de forma exitosa"
+msgstr "External sites successfully unhidden"
+
+#: api_app/tests/tests_api_external_sites.py:181
+#: api_app/views/external_site.py:70
+msgid "Se creo el sitio externo de forma exitosa"
+msgstr "External sites created successfully"
+
+#: api_app/tests/tests_api_external_systems.py:58
+#: api_app/views/external_system.py:44
+msgid "Se obtuvieron los sistemas externos de forma exitosa"
+msgstr "External systems fetched successfully"
+
+#: api_app/tests/tests_api_external_systems.py:76
+#: api_app/views/external_system.py:142
+msgid "Se obtuvo la informacion del sistema externo de forma exitosa"
+msgstr "External system information fetched successfully "
+
+#: api_app/tests/tests_api_external_systems.py:105
+#: api_app/views/external_system.py:72
+msgid "Se creo el sistema externo de forma exitosa"
+msgstr "External system created successfully"
+
+#: api_app/tests/tests_api_external_systems.py:136
+#: api_app/views/external_system.py:103
+msgid "Se actualizo el sistema externo de forma exitosa"
+msgstr "External system updated successfully"
+
+#: api_app/tests/tests_api_forms.py:109 api_app/views/form.py:43
+msgid "Se obtuvieron los formularios de forma exitosa"
+msgstr "Call disposition form fetched successfully"
+
+#: api_app/tests/tests_api_forms.py:130 api_app/views/form.py:146
+msgid "Se obtuvo la informacion del formulario de forma exitosa"
+msgstr "Call disposition form information fetched successfully "
+
+#: api_app/tests/tests_api_forms.py:146 api_app/views/form.py:70
+msgid "Se creo el formulario de forma exitosa"
+msgstr "Call disposition form created successfully"
+
+#: api_app/tests/tests_api_forms.py:162 api_app/views/form.py:177
+msgid "Se elimino el formulario de forma exitosa"
+msgstr "Call disposition form deleted successfully"
+
+#: api_app/tests/tests_api_forms.py:176 api_app/views/form.py:183
+msgid "No está permitido eliminar un formulario con calificaciones"
+msgstr "Call dispositions forms with dispositions can not be deleted"
+
+#: api_app/tests/tests_api_forms.py:192 api_app/views/form.py:211
+msgid "Se oculto el formulario de forma exitosa"
+msgstr "Call dispositions form hidden successfully"
+
+#: api_app/tests/tests_api_forms.py:208 api_app/views/form.py:234
+msgid "Se desoculto el formulario de forma exitosa"
+msgstr "Call dispositions form successfully unhidden"
+
+#: api_app/tests/tests_api_forms.py:234 api_app/views/form.py:101
+msgid "Se actualizo el formulario de forma exitosa"
+msgstr "Call disposition form updated successfully"
+
+#: api_app/tests/tests_api_forms.py:256 api_app/views/form.py:107
+msgid "No está permitido actualizar un formulario con calificaciones"
+msgstr "Call dispositions forms with dispositions can not be updated"
+
+#: api_app/tests/tests_api_group_of_hour.py:79
+#: api_app/views/group_of_hour.py:46
+msgid "Se obtuvieron los grupos horarios de forma exitosa"
+msgstr "Group of hours fetched successfully"
+
+#: api_app/tests/tests_api_group_of_hour.py:97
+#: api_app/views/group_of_hour.py:150
+msgid "Se obtuvo la informacion el grupo horario de forma exitosa"
+msgstr "Group of hours information fetched successfully "
+
+#: api_app/tests/tests_api_group_of_hour.py:116
+#: api_app/views/group_of_hour.py:73
+msgid "Se creo el grupo horario de forma exitosa"
+msgstr "Group of hours created successfully"
+
+#: api_app/tests/tests_api_group_of_hour.py:134
+#: api_app/views/group_of_hour.py:180
+msgid "Se elimino el grupo horario de forma exitosa"
+msgstr "Group of hours deleted successfully"
+
+#: api_app/tests/tests_api_group_of_hour.py:145
+#: api_app/views/group_of_hour.py:186
+msgid ""
+"No está permitido eliminar un grupo horario asociado a Validacion Fecha Hora"
+msgstr "Group of hours with associated to Time conditions can not be deleted"
+
+#: api_app/tests/tests_api_group_of_hour.py:188
+#: api_app/views/group_of_hour.py:108
+msgid "Se actualizo el grupo horario de forma exitosa"
+msgstr "Group of hours updated successfully"
+
+#: api_app/tests/tests_api_inbound_route.py:77
+#: api_app/tests/tests_api_outbound_route.py:114
+#: api_app/views/inbound_route.py:46 api_app/views/outbound_route.py:49
+msgid "Se obtuvieron las rutas entrantes de forma exitosa"
+msgstr "Inbound Routes fetched successfully"
+
+#: api_app/tests/tests_api_inbound_route.py:104
+#: api_app/views/inbound_route.py:151
+msgid "Se obtuvo la informacion de la ruta entrante de forma exitosa"
+msgstr "Inbound Route information fetched successfully "
+
+#: api_app/tests/tests_api_inbound_route.py:127
+#: api_app/views/inbound_route.py:73
+msgid "Se creo la ruta entrante de forma exitosa"
+msgstr "Inbound Route created successfully"
+
+#: api_app/tests/tests_api_inbound_route.py:146
+#: api_app/views/inbound_route.py:182
+msgid "Se elimino la ruta entrante de forma exitosa"
+msgstr "Inbound Route deleted successfully"
+
+#: api_app/tests/tests_api_inbound_route.py:192
+#: api_app/views/inbound_route.py:107
+msgid "Se actualizo la ruta entrante de forma exitosa"
+msgstr "Inbound Route updated successfully"
+
+#: api_app/tests/tests_api_ivr.py:219 api_app/views/ivr.py:54
+msgid "Se obtuvieron los IVRs de forma exitosa"
+msgstr "IVRs fetched successfully"
+
+#: api_app/tests/tests_api_ivr.py:237 api_app/views/ivr.py:165
+msgid "Se obtuvo la informacion del IVR de forma exitosa"
+msgstr "IVR information fetched successfully "
+
+#: api_app/tests/tests_api_ivr.py:257 api_app/views/ivr.py:82
+msgid "Se creo el IVR de forma exitosa"
+msgstr "IVR created successfully"
+
+#: api_app/tests/tests_api_ivr.py:290 api_app/views/ivr.py:208
+msgid "Se elimino el IVR de forma exitosa"
+msgstr "IVR deleted successfully"
+
+#: api_app/tests/tests_api_ivr.py:302 api_app/tests/tests_api_ivr.py:322
+#: api_app/views/ivr.py:194
+msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
+msgstr "Can not delete an object that is a destination in a call flow."
+
+#: api_app/tests/tests_api_outbound_route.py:138
+#: api_app/views/outbound_route.py:152
+msgid "Se obtuvo la informacion de la ruta saliente de forma exitosa"
+msgstr "Outbound Route information fetched successfully "
+
+#: api_app/tests/tests_api_outbound_route.py:160
+#: api_app/views/outbound_route.py:76
+msgid "Se creo la ruta saliente de forma exitosa"
+msgstr "Outbound Route created successfully"
+
+#: api_app/tests/tests_api_outbound_route.py:181
+#: api_app/views/outbound_route.py:184
+msgid "Se elimino la ruta saliente de forma exitosa"
+msgstr "Outbound Route deleted successfully"
+
+#: api_app/tests/tests_api_outbound_route.py:195
+#: api_app/views/outbound_route.py:190
+msgid "No está permitido eliminar una ruta saliente asociada a una campaña"
+msgstr "Outbound Route assigned to campaigns can not be deleted"
+
+#: api_app/tests/tests_api_outbound_route.py:357
+#: api_app/views/outbound_route.py:110
+msgid "Se actualizo la ruta saliente de forma exitosa"
+msgstr "Outbound Route updated successfully"
+
+#: api_app/tests/tests_api_pauses.py:65 api_app/views/pause.py:66
+#: api_app/views/pause_set.py:44
+msgid "Se obtuvieron las pausas de forma exitosa"
+msgstr "Pauses fetched successfully"
+
+#: api_app/tests/tests_api_pauses.py:83 api_app/views/pause.py:276
+msgid "Se obtuvo la informacion de la pausa de forma exitosa"
+msgstr "Pause information fetched successfully "
+
+#: api_app/tests/tests_api_pauses.py:103 api_app/views/pause.py:92
+msgid "Se creo la pausa de forma exitosa"
+msgstr "Pause created successfully"
+
+#: api_app/tests/tests_api_pauses.py:124 api_app/views/pause.py:197
+msgid "Se elimino la pausa de forma exitosa"
+msgstr "Pause deleted successfully"
+
+#: api_app/tests/tests_api_pauses.py:138 api_app/views/pause.py:203
+msgid "No está permitido eliminar un pausa con configuraciones creadas"
+msgstr "Pauses with configurations can not be deleted"
+
+#: api_app/tests/tests_api_pauses.py:164 api_app/views/pause.py:140
+msgid "Se actualizo la pausa de forma exitosa"
+msgstr "Pause updated successfully"
+
+#: api_app/tests/tests_api_pauses.py:202 api_app/views/pause.py:240
+msgid "Se reactivo la pausa de forma exitosa"
+msgstr "Pause reactivated successfully"
+
+#: api_app/tests/tests_api_permisos.py:55 api_app/views/administrador.py:82
 msgid "Ya existe un rol con ese nombre"
 msgstr "A Role with that name already exists"
 
-#: api_app/views/administrador.py:107
+#: api_app/tests/tests_api_permisos.py:65 api_app/views/administrador.py:77
+msgid "Se esperaba el campo \"name\""
+msgstr "Field \"name\" expected"
+
+#: api_app/tests/tests_api_permisos.py:95 api_app/views/administrador.py:107
 msgid "Se esperaba el campo \"role_id\" (numérico)"
 msgstr "Field \"role_id\" (numeric) expected"
 
-#: api_app/views/administrador.py:114 api_app/views/administrador.py:144
+#: api_app/tests/tests_api_permisos.py:102
+#: api_app/tests/tests_api_permisos.py:110
+#: api_app/tests/tests_api_permisos.py:170 api_app/views/administrador.py:114
+#: api_app/views/administrador.py:144
 msgid "Id de Rol incorrecto"
 msgstr "Wrong Role Id"
 
-#: api_app/views/administrador.py:118
+#: api_app/tests/tests_api_permisos.py:119
+#: api_app/tests/tests_api_permisos.py:128 api_app/views/administrador.py:118
 msgid "Se esperaba el campo \"permissions\" (lista)"
 msgstr "Field \"permissions\" (list) expected"
 
-#: api_app/views/administrador.py:123
+#: api_app/tests/tests_api_permisos.py:138 api_app/views/administrador.py:123
 msgid "Lista de permisos incorrecta"
 msgstr "Wrong permission list"
 
-#: api_app/views/administrador.py:149
+#: api_app/tests/tests_api_permisos.py:161 api_app/views/administrador.py:149
 msgid "No se puede borrar un rol asignado a usuarios."
 msgstr "Deleting a Role assigned to a User is forbidden"
 
+#: api_app/tests/tests_api_subir_base_contactos.py:100
+#: api_app/views/administrador.py:191
+msgid "falta parámetro filename en request"
+msgstr "Filename parameter missing in request"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:112
+#: api_app/tests/tests_api_subir_base_contactos.py:124
+#: api_app/views/administrador.py:213
+msgid "falta parámetro:"
+msgstr "Missing parameter"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:137
+#: api_app/views/administrador.py:228
+msgid "campo de teléfono no coincide con nombre de columna"
+msgstr "Phone field does not match column name"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:150
+#: api_app/views/administrador.py:236
+msgid "campo de id externo no coincide con nombre de columna"
+msgstr "External id field does not match column name"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:162
+#: api_app/views/administrador.py:188
+msgid "la extensión del archivo no es .CSV"
+msgstr "The file extension is not .CSV"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:176
 #: api_app/views/administrador.py:184
 #, python-brace-format
 msgid "La longitud del nombre no debe exceder los {0} caracteres"
 msgstr "The length of the name should not exceed {0} characters"
 
-#: api_app/views/administrador.py:188
-msgid "la extensión del archivo no es .CSV"
-msgstr "The file extension is not .CSV"
-
-#: api_app/views/administrador.py:191
-msgid "falta parámetro filename en request"
-msgstr "Filename parameter missing in request"
-
 #: api_app/views/administrador.py:201
 msgid "no se pudo crear la base de datos de contacto"
 msgstr "Contact Database could not be created"
 
-#: api_app/views/administrador.py:213
-msgid "falta parámetro:"
-msgstr "Missing parameter"
-
 #: api_app/views/administrador.py:225
 msgid "lista de campos teléfono vacia"
 msgstr "List of fields phone empty"
-
-#: api_app/views/administrador.py:228
-msgid "campo de teléfono no coincide con nombre de columna"
-msgstr "Phone field does not match column name"
-
-#: api_app/views/administrador.py:236
-msgid "campo de id externo no coincide con nombre de columna"
-msgstr "External id field does not match column name"
 
 #: api_app/views/administrador.py:280
 #, python-brace-format
@@ -638,11 +1072,6 @@ msgstr "Error creating sip password"
 #: api_app/views/base.py:75 api_app/views/base.py:207
 msgid "Hubo errores en los datos recibidos"
 msgstr "There were errors on received data"
-
-#: api_app/views/agente.py:221 api_app/views/base.py:86
-#: api_app/views/base.py:218
-msgid "Sistema externo inexistente."
-msgstr "Unkown external system"
 
 #: api_app/views/agente.py:246
 msgid "Error al ejecutar la llamada"
@@ -672,34 +1101,6 @@ msgstr "Audit not found"
 msgid "No tiene permiso para modificar la auditoría"
 msgstr "You don't have permission to edit the audit"
 
-#: api_app/views/base.py:98 api_app/views/base.py:230
-msgid "Debe indicar un idCampaign válido."
-msgstr "You must provide a valid idCampaign"
-
-#: api_app/views/base.py:110 api_app/views/base.py:243
-msgid "Campaña inexistente."
-msgstr "Campaign not found"
-
-#: api_app/views/base.py:117 api_app/views/base.py:250
-msgid "No tiene permiso para editar la campaña."
-msgstr "You don't have permission to edit the campaign"
-
-#: api_app/views/base.py:126
-msgid "Se recibieron campos incorrectos"
-msgstr "Incorrect fields were received"
-
-#: api_app/views/base.py:134
-msgid "El campo es obligatorio"
-msgstr "The field is required"
-
-#: api_app/views/base.py:175
-msgid "Contacto agregado"
-msgstr "Contact added"
-
-#: api_app/views/call_disposition.py:43
-msgid "Se obtuvieron las calificaciones de forma exitosa"
-msgstr "Call disposition fetched successfully"
-
 #: api_app/views/call_disposition.py:54
 msgid "Error al obtener las calificaciones"
 msgstr "Error fetching call dispositions"
@@ -716,21 +1117,9 @@ msgstr "Call disposition does not exist"
 msgid "Error al obtener el detalle de la calificacion"
 msgstr "Error fetching call disposition detail"
 
-#: api_app/views/call_disposition.py:112
-msgid "Se creo la calificacion de forma exitosa"
-msgstr "Call disposition created successfully"
-
-#: api_app/views/call_disposition.py:119 api_app/views/call_disposition.py:162
-msgid "Error al hacer la peticion"
-msgstr "Error making request"
-
 #: api_app/views/call_disposition.py:126
 msgid "Error al crear la calificacion"
 msgstr "Error creating call disposition"
-
-#: api_app/views/call_disposition.py:154
-msgid "Se actualizo la calificacion de forma exitosa"
-msgstr "Call disposition updated successfully"
 
 #: api_app/views/call_disposition.py:170
 msgid "No existe la calificacion que se quiere actualizar"
@@ -740,10 +1129,6 @@ msgstr "call disposition does not exist"
 msgid "Error al actualizar la calificacion"
 msgstr "Error updating call disposition"
 
-#: api_app/views/call_disposition.py:192
-msgid "Se elimino la calificacion de forma exitosa"
-msgstr "Call disposition deleted successfully"
-
 #: api_app/views/call_disposition.py:200
 msgid "No está permitido eliminar una calificacion reservada del sistema"
 msgstr "System reserved call dispositions can not be deleted"
@@ -751,12 +1136,6 @@ msgstr "System reserved call dispositions can not be deleted"
 #: api_app/views/call_disposition.py:213
 msgid "Error al eliminar la calificacion"
 msgstr "Error deleting call disposition"
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:50
-#: api_app/views/campaigns/add_agents_to_campaign.py:201
-#: api_app/views/external_system.py:173
-msgid "Se obtuvieron los agentes de forma exitosa"
-msgstr "Agents fetched successfully"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:62
 #: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
@@ -776,10 +1155,6 @@ msgstr "QueueRemove failed - agent: {0} from campaign: {1}"
 #: api_app/views/campaigns/add_agents_to_campaign.py:122
 msgid "No existe el agente en cola"
 msgstr "Agent does not exist in queue"
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:137
-msgid "Se agregaron los agentes de forma exitosa a la campaña"
-msgstr "Agents to campaign added successfully"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:144
 msgid "No existe la campaña, no se pueden agregar agentes"
@@ -809,17 +1184,9 @@ msgstr "Could not confirm dialplan creation"
 msgid "Error al obtener los agentes activos"
 msgstr "Error fetching active agents"
 
-#: api_app/views/external_site.py:43
-msgid "Se obtuvieron los sitios externos de forma exitosa"
-msgstr "External sites fetched successfully"
-
 #: api_app/views/external_site.py:53
 msgid "Error al obtener los sitios externos"
 msgstr "Error fetching external sites"
-
-#: api_app/views/external_site.py:70
-msgid "Se creo el sitio externo de forma exitosa"
-msgstr "External sites created successfully"
 
 #: api_app/views/external_site.py:84
 msgid "Error al crear el sitio externo"
@@ -837,21 +1204,9 @@ msgstr "External site does not exist"
 msgid "Error al actualizar el sitio externo"
 msgstr "Error updating external site"
 
-#: api_app/views/external_site.py:140
-msgid "Se obtuvo la informacion del sitio externo de forma exitosa"
-msgstr "External site information fetched successfully "
-
 #: api_app/views/external_site.py:149
 msgid "Error al obtener el detalle del sitio externo"
 msgstr "Error fetching external site detail"
-
-#: api_app/views/external_site.py:165
-msgid "Se elimino el sitio externo de forma exitosa"
-msgstr "External site deleted successfully"
-
-#: api_app/views/external_site.py:171
-msgid "No está permitido eliminar un sitio externo asociado a una campaña"
-msgstr "External sites assigned to campaigns can not be deleted"
 
 #: api_app/views/external_site.py:179
 msgid "No existe el sitio externo"
@@ -861,33 +1216,17 @@ msgstr "External site does not exist"
 msgid "Error al eliminar el sitio externo"
 msgstr "Error deleting external site"
 
-#: api_app/views/external_site.py:199
-msgid "Se oculto el sitio externo de forma exitosa"
-msgstr "External site hidden successfully"
-
 #: api_app/views/external_site.py:207
 msgid "Error al ocultar el sitio externo"
 msgstr "Error hiding external site"
-
-#: api_app/views/external_site.py:222
-msgid "Se desoculto el sitio externo de forma exitosa"
-msgstr "External sites successfully unhidden"
 
 #: api_app/views/external_site.py:230
 msgid "Error al desocultar el sitio externo"
 msgstr "Error unhiding external site"
 
-#: api_app/views/external_site_authentication.py:42
-msgid "Se obtuvieron las autenticaciones para sitios externos de forma exitosa"
-msgstr "External sites authentications fetched successfully"
-
 #: api_app/views/external_site_authentication.py:52
 msgid "Error al obtener las autenticaciones para sitios externos"
 msgstr "Error fetching external sites authentication"
-
-#: api_app/views/external_site_authentication.py:69
-msgid "Se creo la autenticacion para sitio externo de forma exitosa"
-msgstr "External sites created successfully"
 
 #: api_app/views/external_site_authentication.py:84
 msgid "Error al crear la autenticacion para sitio externo"
@@ -905,23 +1244,9 @@ msgstr "External site authentication does not exist"
 msgid "Error al actualizar la autenticacion para sitio externo"
 msgstr "Error updating external site authentication"
 
-#: api_app/views/external_site_authentication.py:141
-msgid ""
-"Se obtuvo la informacion de la autenticacion para sitio externo de forma "
-"exitosa"
-msgstr "External site authentication information fetched successfully "
-
 #: api_app/views/external_site_authentication.py:151
 msgid "Error al obtener el detalle de la autenticacion para sitio externo"
 msgstr "Error fetching external site authentication detail"
-
-#: api_app/views/external_site_authentication.py:167
-msgid "Se elimino la autenticacion para sitio externo de forma exitosa"
-msgstr "External site authentication deleted successfully"
-
-#: api_app/views/external_site_authentication.py:173
-msgid "No está permitido eliminar una autenticacion que tiene sitios externos"
-msgstr "Authentications assigned to external sites can not be deleted"
 
 #: api_app/views/external_site_authentication.py:181
 msgid "No existe la autenticacion para sitio externo"
@@ -931,25 +1256,13 @@ msgstr "External site authentication does not exist"
 msgid "Error al eliminar la autenticacion para sitio externo"
 msgstr "Error deleting external site authentication"
 
-#: api_app/views/external_system.py:44
-msgid "Se obtuvieron los sistemas externos de forma exitosa"
-msgstr "External systems fetched successfully"
-
 #: api_app/views/external_system.py:55
 msgid "Error al obtener los sistemas externos"
 msgstr "Error fetching external systems"
 
-#: api_app/views/external_system.py:72
-msgid "Se creo el sistema externo de forma exitosa"
-msgstr "External system created successfully"
-
 #: api_app/views/external_system.py:86
 msgid "Error al crear el sistema externo"
 msgstr "Error creating external system"
-
-#: api_app/views/external_system.py:103
-msgid "Se actualizo el sistema externo de forma exitosa"
-msgstr "External system updated successfully"
 
 #: api_app/views/external_system.py:120
 msgid "No existe el sistema externo que se quiere actualizar"
@@ -958,10 +1271,6 @@ msgstr "External system does not exist"
 #: api_app/views/external_system.py:126
 msgid "Error al actualizar el sistema externo"
 msgstr "Error updating external system"
-
-#: api_app/views/external_system.py:142
-msgid "Se obtuvo la informacion del sistema externo de forma exitosa"
-msgstr "External system information fetched successfully "
 
 #: api_app/views/external_system.py:151
 msgid "No existe el sistema externo para obtener el detalle"
@@ -975,29 +1284,13 @@ msgstr "Error fetching external system detail"
 msgid "Error al obtener los agentes"
 msgstr "Error fetching agents"
 
-#: api_app/views/form.py:43
-msgid "Se obtuvieron los formularios de forma exitosa"
-msgstr "Call disposition form fetched successfully"
-
 #: api_app/views/form.py:53
 msgid "Error al obtener los formularios"
 msgstr "Error fetching call disposition forms"
 
-#: api_app/views/form.py:70
-msgid "Se creo el formulario de forma exitosa"
-msgstr "Call disposition form created successfully"
-
 #: api_app/views/form.py:84
 msgid "Error al crear el formulario"
 msgstr "Error creating call disposition form"
-
-#: api_app/views/form.py:101
-msgid "Se actualizo el formulario de forma exitosa"
-msgstr "Call disposition form updated successfully"
-
-#: api_app/views/form.py:107
-msgid "No está permitido actualizar un formulario con calificaciones"
-msgstr "Call dispositions forms with dispositions can not be updated"
 
 #: api_app/views/form.py:124
 msgid "No existe el formulario que se quiere actualizar"
@@ -1007,10 +1300,6 @@ msgstr "Call disposition form does not exist"
 msgid "Error al actualizar el formulario"
 msgstr "Error updating call disposition form"
 
-#: api_app/views/form.py:146
-msgid "Se obtuvo la informacion del formulario de forma exitosa"
-msgstr "Call disposition form information fetched successfully "
-
 #: api_app/views/form.py:155
 msgid "No existe el formulario para obtener el detalle"
 msgstr "Call disposition form does not exist"
@@ -1018,14 +1307,6 @@ msgstr "Call disposition form does not exist"
 #: api_app/views/form.py:161
 msgid "Error al obtener el detalle del formulario"
 msgstr "Error fetching call disposition form detail"
-
-#: api_app/views/form.py:177
-msgid "Se elimino el formulario de forma exitosa"
-msgstr "Call disposition form deleted successfully"
-
-#: api_app/views/form.py:183
-msgid "No está permitido eliminar un formulario con calificaciones"
-msgstr "Call dispositions forms with dispositions can not be deleted"
 
 #: api_app/views/form.py:191
 msgid "No existe el formulario"
@@ -1035,17 +1316,9 @@ msgstr "Call disposition form does not exist"
 msgid "Error al eliminar el formulario"
 msgstr "Error deleting call disposition form"
 
-#: api_app/views/form.py:211
-msgid "Se oculto el formulario de forma exitosa"
-msgstr "Call dispositions form hidden successfully"
-
 #: api_app/views/form.py:219
 msgid "Error al ocultar el formulario"
 msgstr "Error hiding call disposition form"
-
-#: api_app/views/form.py:234
-msgid "Se desoculto el formulario de forma exitosa"
-msgstr "Call dispositions form successfully unhidden"
 
 #: api_app/views/form.py:242
 msgid "Error al desocultar el formulario"
@@ -1055,17 +1328,9 @@ msgstr "Error unhiding call disposition form"
 msgid "Exportación de grabaciones Zip en proceso"
 msgstr "Exportation of recordings to a .Zip file in process"
 
-#: api_app/views/group_of_hour.py:46
-msgid "Se obtuvieron los grupos horarios de forma exitosa"
-msgstr "Group of hours fetched successfully"
-
 #: api_app/views/group_of_hour.py:56
 msgid "Error al obtener los grupos horarios"
 msgstr "Error fetching Group of hours"
-
-#: api_app/views/group_of_hour.py:73
-msgid "Se creo el grupo horario de forma exitosa"
-msgstr "Group of hours created successfully"
 
 #: api_app/views/group_of_hour.py:79
 msgid ""
@@ -1075,10 +1340,6 @@ msgstr "Group of hours created, but configuration was not loaded properly"
 #: api_app/views/group_of_hour.py:91
 msgid "Error al crear el grupo horario"
 msgstr "Error creating Group of hours"
-
-#: api_app/views/group_of_hour.py:108
-msgid "Se actualizo el grupo horario de forma exitosa"
-msgstr "Group of hours updated successfully"
 
 #: api_app/views/group_of_hour.py:117
 msgid ""
@@ -1090,22 +1351,9 @@ msgstr "Group of hours updated, but configuration was not loaded properly"
 msgid "Error al actualizar el grupo horario"
 msgstr "Error updating Group of hours"
 
-#: api_app/views/group_of_hour.py:150
-msgid "Se obtuvo la informacion el grupo horario de forma exitosa"
-msgstr "Group of hours information fetched successfully "
-
 #: api_app/views/group_of_hour.py:164
 msgid "Error al obtener el detalle del grupo horario"
 msgstr "Error fetching Group of hours detail"
-
-#: api_app/views/group_of_hour.py:180
-msgid "Se elimino el grupo horario de forma exitosa"
-msgstr "Group of hours deleted successfully"
-
-#: api_app/views/group_of_hour.py:186
-msgid ""
-"No está permitido eliminar un grupo horario asociado a Validacion Fecha Hora"
-msgstr "Group of hours with associated to Time conditions can not be deleted"
 
 #: api_app/views/group_of_hour.py:191
 msgid ""
@@ -1113,17 +1361,9 @@ msgid ""
 "telefónica"
 msgstr "Group of hours deleted, but configuration was not loaded properly"
 
-#: api_app/views/inbound_route.py:46 api_app/views/outbound_route.py:49
-msgid "Se obtuvieron las rutas entrantes de forma exitosa"
-msgstr "Inbound Routes fetched successfully"
-
 #: api_app/views/inbound_route.py:56
 msgid "Error al obtener las rutas entrantes"
 msgstr "Error fetching Inbound routes"
-
-#: api_app/views/inbound_route.py:73
-msgid "Se creo la ruta entrante de forma exitosa"
-msgstr "Inbound Route created successfully"
 
 #: api_app/views/inbound_route.py:79
 msgid ""
@@ -1133,10 +1373,6 @@ msgstr "Inbound route created, but configuration was not loaded properly"
 #: api_app/views/inbound_route.py:90
 msgid "Error al crear la ruta entrante"
 msgstr "Error creating inbound route"
-
-#: api_app/views/inbound_route.py:107
-msgid "Se actualizo la ruta entrante de forma exitosa"
-msgstr "Inbound Route updated successfully"
 
 #: api_app/views/inbound_route.py:118 api_app/views/inbound_route.py:195
 msgid ""
@@ -1152,10 +1388,6 @@ msgstr "Inbound Route does not exist"
 msgid "Error al actualizar la ruta entrante"
 msgstr "Error updating inbound route"
 
-#: api_app/views/inbound_route.py:151
-msgid "Se obtuvo la informacion de la ruta entrante de forma exitosa"
-msgstr "Inbound Route information fetched successfully "
-
 #: api_app/views/inbound_route.py:160
 msgid "No existe la ruta entrante para obtener el detalle"
 msgstr "Inbound route does not exist"
@@ -1163,10 +1395,6 @@ msgstr "Inbound route does not exist"
 #: api_app/views/inbound_route.py:166
 msgid "Error al obtener el detalle de la ruta entrante"
 msgstr "Error fetching inbound route detail"
-
-#: api_app/views/inbound_route.py:182
-msgid "Se elimino la ruta entrante de forma exitosa"
-msgstr "Inbound Route deleted successfully"
 
 #: api_app/views/inbound_route.py:189
 msgid ""
@@ -1190,17 +1418,9 @@ msgstr "Destinations information fetched successfully "
 msgid "Error al obtener los destinos de las rutas entrantes"
 msgstr "Error fetching Inbound routes destinations"
 
-#: api_app/views/ivr.py:54
-msgid "Se obtuvieron los IVRs de forma exitosa"
-msgstr "IVRs fetched successfully"
-
 #: api_app/views/ivr.py:60
 msgid "Error al obtener los ivrs"
 msgstr "Error fetching IVRs"
-
-#: api_app/views/ivr.py:82
-msgid "Se creo el IVR de forma exitosa"
-msgstr "IVR created successfully"
 
 #: api_app/views/ivr.py:84
 msgid "Se creo el IVR pero no se pudo cargar la configuración telefónica"
@@ -1230,17 +1450,9 @@ msgstr "IVR does not exist"
 msgid "Error al actualizar el IVR"
 msgstr "Error updating IVR"
 
-#: api_app/views/ivr.py:165
-msgid "Se obtuvo la informacion del IVR de forma exitosa"
-msgstr "IVR information fetched successfully "
-
 #: api_app/views/ivr.py:176
 msgid "Error al obtener el detalle del IVR"
 msgstr "Error fetching IVR detail"
-
-#: api_app/views/ivr.py:194
-msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
-msgstr "Can not delete an object that is a destination in a call flow."
 
 #: api_app/views/ivr.py:199
 #, python-brace-format
@@ -1250,10 +1462,6 @@ msgid ""
 msgstr ""
 "Can't delete campaign. It's being used as a failover destination in "
 "campaigns: {0}"
-
-#: api_app/views/ivr.py:208
-msgid "Se elimino el IVR de forma exitosa"
-msgstr "IVR deleted successfully"
 
 #: api_app/views/ivr.py:210
 msgid "Se elimino el IVR pero no se pudo cargar la configuración telefónica"
@@ -1283,10 +1491,6 @@ msgstr "Error fetching destinations"
 msgid "Error al obtener las rutas salientes"
 msgstr "Error fetching Outbound routes"
 
-#: api_app/views/outbound_route.py:76
-msgid "Se creo la ruta saliente de forma exitosa"
-msgstr "Outbound Route created successfully"
-
 #: api_app/views/outbound_route.py:82
 msgid ""
 "Se creo la ruta saliente pero no se pudo cargar la configuración telefónica"
@@ -1295,10 +1499,6 @@ msgstr "Outbound route created, but configuration was not loaded properly"
 #: api_app/views/outbound_route.py:93
 msgid "Error al crear la ruta saliente"
 msgstr "Error creating Outbound route"
-
-#: api_app/views/outbound_route.py:110
-msgid "Se actualizo la ruta saliente de forma exitosa"
-msgstr "Outbound Route updated successfully"
 
 #: api_app/views/outbound_route.py:119
 msgid ""
@@ -1314,10 +1514,6 @@ msgstr "Outbound route does not exist"
 msgid "Error al actualizar la ruta saliente"
 msgstr "Error updating Outbound route"
 
-#: api_app/views/outbound_route.py:152
-msgid "Se obtuvo la informacion de la ruta saliente de forma exitosa"
-msgstr "Outbound Route information fetched successfully "
-
 #: api_app/views/outbound_route.py:162
 msgid "No existe la ruta saliente para obtener el detalle"
 msgstr "Outbound route does not exist"
@@ -1325,14 +1521,6 @@ msgstr "Outbound route does not exist"
 #: api_app/views/outbound_route.py:168
 msgid "Error al obtener el detalle de la ruta saliente"
 msgstr "Error fetching Outbound route detail"
-
-#: api_app/views/outbound_route.py:184
-msgid "Se elimino la ruta saliente de forma exitosa"
-msgstr "Outbound Route deleted successfully"
-
-#: api_app/views/outbound_route.py:190
-msgid "No está permitido eliminar una ruta saliente asociada a una campaña"
-msgstr "Outbound Route assigned to campaigns can not be deleted"
 
 #: api_app/views/outbound_route.py:195
 msgid "Se elimino la ruta pero no se pudo cargar la configuración telefónica"
@@ -1387,17 +1575,9 @@ msgstr "Outbound route's order can not repeat'"
 msgid "Error al actualizar el orden de las rutas salientes"
 msgstr "Error updating Outbound routes order"
 
-#: api_app/views/pause.py:66 api_app/views/pause_set.py:44
-msgid "Se obtuvieron las pausas de forma exitosa"
-msgstr "Pauses fetched successfully"
-
 #: api_app/views/pause.py:76 api_app/views/pause_set.py:54
 msgid "Error al obtener las pausas"
 msgstr "Error fetching pauses"
-
-#: api_app/views/pause.py:92
-msgid "Se creo la pausa de forma exitosa"
-msgstr "Pause created successfully"
 
 #: api_app/views/pause.py:106 api_app/views/pause.py:157
 #: api_app/views/pause.py:214 api_app/views/pause.py:250
@@ -1408,45 +1588,21 @@ msgstr "Error sinchronizing pauses with Asterisk"
 msgid "Error al crear la pausa"
 msgstr "Error creating pauses"
 
-#: api_app/views/pause.py:140
-msgid "Se actualizo la pausa de forma exitosa"
-msgstr "Pause updated successfully"
-
 #: api_app/views/pause.py:181
 msgid "Error al actualizar la pausa"
 msgstr "Error updating pause"
-
-#: api_app/views/pause.py:197
-msgid "Se elimino la pausa de forma exitosa"
-msgstr "Pause deleted successfully"
-
-#: api_app/views/pause.py:203
-msgid "No está permitido eliminar un pausa con configuraciones creadas"
-msgstr "Pauses with configurations can not be deleted"
 
 #: api_app/views/pause.py:225
 msgid "Error al eliminar la pausa"
 msgstr "Error deleting pause"
 
-#: api_app/views/pause.py:240
-msgid "Se reactivo la pausa de forma exitosa"
-msgstr "Pause reactivated successfully"
-
 #: api_app/views/pause.py:261
 msgid "Error al reactivar la pausa"
 msgstr "Error reactivating pause"
 
-#: api_app/views/pause.py:276
-msgid "Se obtuvo la informacion de la pausa de forma exitosa"
-msgstr "Pause information fetched successfully "
-
 #: api_app/views/pause.py:291
 msgid "Error al obtener el detalle de la pausa"
 msgstr "Error fetching pause detail"
-
-#: api_app/views/pause_set.py:69
-msgid "Se obtuvieron los conjuntos de pausas de forma exitosa"
-msgstr "Pause Sets fetched successfully"
 
 #: api_app/views/pause_set.py:80
 msgid "Error al obtener los conjuntos de pausas"
@@ -1460,25 +1616,9 @@ msgstr "Pause set information fetched successfully "
 msgid "Error al obtener el detalle del conjunto de pausa"
 msgstr "Error fetching pause set detail"
 
-#: api_app/views/pause_set.py:128
-msgid "Se creo el conjunto de pausa de forma exitosa"
-msgstr "Pause set created successfully"
-
-#: api_app/views/pause_set.py:133 api_app/views/pause_set.py:169
-msgid "El nombre del conjunto es requerido"
-msgstr "Set name required"
-
-#: api_app/views/pause_set.py:137
-msgid "Debe existir al menos una pausa en el conjunto"
-msgstr "Pause Set requires at least une Pause"
-
 #: api_app/views/pause_set.py:150
 msgid "Error al crear el conjunto de pausa"
 msgstr "Error creating pause set"
-
-#: api_app/views/pause_set.py:165
-msgid "Se actualizo el conjunto de pausa de forma exitosa"
-msgstr "Pause set updated successfully"
 
 #: api_app/views/pause_set.py:178 api_app/views/pause_set.py:212
 #: api_app/views/pause_set.py:254
@@ -1489,27 +1629,9 @@ msgstr "Pause set does not exist"
 msgid "Error al actualizar el conjunto de pausa"
 msgstr "Error updating pause set"
 
-#: api_app/views/pause_set.py:198
-msgid "Se elimino el conjunto de pausa de forma exitosa"
-msgstr "Pause set deleted successfully"
-
-#: api_app/views/pause_set.py:205
-msgid ""
-"No puedes borrar un conjunto de pausas que esta asignado a un grupo de "
-"agentes"
-msgstr "Can't delete pause set already assigned to agent group"
-
 #: api_app/views/pause_set.py:217
 msgid "Error al eliminar el conjunto de pausa"
 msgstr "Error deleting pause set"
-
-#: api_app/views/pause_set.py:232
-msgid "Se creo la configuracion de pausa de forma exitosa"
-msgstr "Pause configuration created successfully"
-
-#: api_app/views/pause_set.py:239
-msgid "El timeout debe ser mayor a cero"
-msgstr "Timeout must be greater than zero"
 
 #: api_app/views/pause_set.py:246
 msgid "No existe la pausa"
@@ -1519,14 +1641,6 @@ msgstr "Pause does not exist"
 msgid "Error al crear la configuracion de pausa"
 msgstr "Error creating pause configuration"
 
-#: api_app/views/pause_set.py:279
-msgid "Se elimino la configuracion de pausa de forma exitosa"
-msgstr "Pause configuration deleted successfully"
-
-#: api_app/views/pause_set.py:287
-msgid "No puedes dejar a un Conjunto de Pausas vacio"
-msgstr "Pause set can't be empty"
-
 #: api_app/views/pause_set.py:292 api_app/views/pause_set.py:322
 msgid "No existe la configuracion de pausa"
 msgstr "Pause configuration does not exist"
@@ -1535,13 +1649,17 @@ msgstr "Pause configuration does not exist"
 msgid "Error al eliminar la configuracion de pausa"
 msgstr "Error deleting pause configuration"
 
-#: api_app/views/pause_set.py:312
-msgid "Se actualizo la configuracion de pausa de forma exitosa"
-msgstr "Pause configuration updated successfully"
-
 #: api_app/views/pause_set.py:327
 msgid "Error al actualizar la configuracion de pausa"
 msgstr "Error updating pause configuration"
+
+#: api_app/views/reportes.py:44
+msgid "Se creo el Log de transferencia a Encuesta"
+msgstr "Transfer to survey log created successfully"
+
+#: api_app/views/reportes.py:63
+msgid "Error al crear el Log de transferencia"
+msgstr "Error creating transfer log"
 
 #: api_app/views/supervisor.py:108 api_app/views/supervisor.py:112
 #: api_app/views/supervisor.py:115
@@ -1669,10 +1787,6 @@ msgstr "Exportation of Disposition Forms to a .csv file in process"
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr "Refreshing. Wait at least 15 seconds while the process ends."
 
-#: notification_app/message/apps.py:46
-msgid "Lista de los mensajes de correos que el sistema soporta"
-msgstr "System supported email messages list"
-
-#: notification_app/message/apps.py:50
-msgid "Obtiene detalle de un mensaje de correo"
-msgstr "Get email message detail"
+#: utiles_globales.py:36
+msgid "Archivos permitidos: .wav"
+msgstr "Allowd files: .wav"

@@ -1257,6 +1257,8 @@ class Campana(models.Model):
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
         self.save()
+        if self.type == Campana.TYPE_PREVIEW:
+            AgenteEnContacto.objects.filter(campana_id=self.id).delete()
 
     def ocultar(self):
         """setea la campana como oculta"""
@@ -2868,7 +2870,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         return self.obtener_auditoria().resultado == AuditoriaCalificacion.OBSERVADA
 
     @classmethod
-    def obtener_califs_gestion_campanas(cls, campanas):
+    def obtener_califs_gestion_campanas(cls, campanas, fecha_desde, fecha_hasta):
         """Obtiene las calificaciones históricas de gestión de un conjunto de
         campañas en un rango de fechas definido
         """
@@ -2876,6 +2878,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         calificaciones = cls.history.filter(
             opcion_calificacion__campana__pk__in=ids_campanas)
         calificaciones = calificaciones.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
+        calificaciones = calificaciones.filter(modified__range=(fecha_desde, fecha_hasta))
         return calificaciones
 
 
@@ -3616,10 +3619,15 @@ class AgenteEnContacto(models.Model):
         for campana_preview in campanas_preview_activas:
             campanas_preview_dict[campana_preview.pk] = campana_preview.tiempo_desconexion
 
+        hay_asignaciones_residuales = False
         agente_en_contacto_ids = []
         for agente_en_contacto in AgenteEnContacto.objects.filter(
                 estado__in=[AgenteEnContacto.ESTADO_ENTREGADO, AgenteEnContacto.ESTADO_ASIGNADO]):
             campana_id = agente_en_contacto.campana_id
+            # Fix para casos donde el AgenteEnContacto no pertenece a una campaña ACTIVA
+            if campana_id not in campanas_preview_dict:
+                hay_asignaciones_residuales = True
+                continue
             tiempo_de_reserva = campanas_preview_dict[campana_id]
             delta_tiempo_desconexion = timedelta(minutes=tiempo_de_reserva)
             hora_limite_reserva = tiempo_actual - delta_tiempo_desconexion
@@ -3633,6 +3641,11 @@ class AgenteEnContacto(models.Model):
             elif (ultima_modificacion <= hora_limite_asignacion and
                   agente_en_contacto.estado == AgenteEnContacto.ESTADO_ASIGNADO):
                 agente_en_contacto_ids.append(agente_en_contacto.pk)
+
+        if hay_asignaciones_residuales:
+            id_campanas_no_activas = Campana.objects.filter(
+                type=Campana.TYPE_PREVIEW).exclude(estado=Campana.ESTADO_ACTIVA).values_list('id')
+            AgenteEnContacto.objects.filter(campana_id__in=id_campanas_no_activas).delete()
 
         liberados = AgenteEnContacto.objects.filter(pk__in=agente_en_contacto_ids).update(
             agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)

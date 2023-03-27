@@ -282,6 +282,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_ivrs_destination_types_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_log_survey_transfer',
+             'roles': ['Agente', ]},
         ]
 
     informacion_de_permisos = {
@@ -646,4 +648,7 @@ class ApiAppConfig(AppConfig):
         'api_ivrs_destination_types_list':
             {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
              'version': '1.26.0'},
+        'api_log_survey_transfer':
+            {'descripcion': _('Loguea un intento de transferencia a Survey'),
+             'version': 'X.X.X'},
     }

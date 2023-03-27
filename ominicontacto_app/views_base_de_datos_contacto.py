@@ -694,7 +694,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
             ))
 
         return redirect(
-            reverse('update_base_datos_contacto_de_campana', kwargs={'pk_campana': '9'}))
+            reverse('update_base_datos_contacto_de_campana',
+                    kwargs={'pk_campana': self.campana.id})
+        )
 
     def form_invalid(self, estructura_archivo,
                      form_primer_linea_encabezado, error=None):

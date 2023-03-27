@@ -202,7 +202,7 @@ class LlamadaLogManager(models.Manager):
                             archivo_grabacion__isnull=False)
         query = query.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
         query = query.order_by('-time')
-        return query.exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+        return query.exclude(archivo_grabacion='-1')
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
@@ -227,8 +227,7 @@ class LlamadaLogManager(models.Manager):
                                   event__in=INCLUDED_EVENTS)
 
         grabaciones = grabaciones.filter(Q(duracion_llamada__gt=0) | Q(event='CT-ANSWER'))
-        grabaciones = grabaciones.exclude(
-            archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+        grabaciones = grabaciones.exclude(archivo_grabacion='-1')
 
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
@@ -240,7 +239,7 @@ class LlamadaLogManager(models.Manager):
                 opcion_calificacion_id__in=calificaciones)
             # Optimizo filtro calificaciones historicas por fecha
             if fecha_desde and fecha_hasta:
-                historicals.filter(modified__range=(fecha_desde, fecha_hasta))
+                historicals = historicals.filter(modified__range=(fecha_desde, fecha_hasta))
             call_ids = historicals.values_list('callid', flat=True)
             grabaciones = grabaciones.filter(callid__in=call_ids)
 
@@ -267,7 +266,7 @@ class LlamadaLogManager(models.Manager):
             grabaciones = grabaciones & total_grabaciones_marcadas
         if gestion:
             calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
-                campanas)
+                campanas, fecha_desde, fecha_hasta)
             callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
                 'callid', flat=True))
             grabaciones = grabaciones.filter(
@@ -553,3 +552,14 @@ class ActividadAgenteLog(models.Model):
         return "Log de actividad agente con fecha {0} para agente de id {1} con el evento {2} " \
                "con id de pausa {3}".format(self.time, self.agente_id,
                                             self.event, self.pausa_id)
+
+
+class TransferenciaAEncuestaLog(models.Model):
+    """
+    Registro de transferencia a una encuesta
+    """
+    time = models.DateTimeField(db_index=True, auto_now_add=True)
+    agente_id = models.IntegerField(db_index=True, blank=True, null=True)
+    campana_id = models.IntegerField(db_index=True, blank=True, null=True)
+    encuesta_id = models.IntegerField(db_index=True, blank=True, null=True)
+    callid = models.CharField(db_index=True, max_length=32, blank=True, null=True)
