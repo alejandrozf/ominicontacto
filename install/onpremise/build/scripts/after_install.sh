@@ -5,12 +5,14 @@ INSTALL_PREFIX="/opt/omnileads"
 STATIC_PATH="${INSTALL_PREFIX}/static"
 MANAGE_SCRIPT="${INSTALL_PREFIX}/bin/manage.sh"
 if [ -f /etc/profile.d/omnileads_envars.sh ];then
+  echo "Deleting addons envars..."
+  unset LIMIT_USERS_VERSION PREMIUM_REPORTS_VERSION SURVEY_VERSION WALLBOARD_VERSION WEBPHONE_CLIENT_VERSION
   echo "Loading OMniLeads envars..."
   source /etc/profile.d/omnileads_envars.sh
   echo "Erasing the javascript cache files..."
   rm -rf ${STATIC_PATH}/CACHE/js
   rm -rf ${STATIC_PATH}/CACHE/manifest.json
-  echo " Executing django commands..."
+  echo "Executing django commands..."
   sudo -u omnileads bash -c "$MANAGE_SCRIPT migrate --noinput"
   echo "Creating admin superuser..."
   sudo -u omnileads bash -c "$MANAGE_SCRIPT createsuperuser --noinput --username=admin --email=admin@example.com" || true

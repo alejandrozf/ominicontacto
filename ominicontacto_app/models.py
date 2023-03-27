@@ -2870,7 +2870,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         return self.obtener_auditoria().resultado == AuditoriaCalificacion.OBSERVADA
 
     @classmethod
-    def obtener_califs_gestion_campanas(cls, campanas):
+    def obtener_califs_gestion_campanas(cls, campanas, fecha_desde, fecha_hasta):
         """Obtiene las calificaciones históricas de gestión de un conjunto de
         campañas en un rango de fechas definido
         """
@@ -2878,6 +2878,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         calificaciones = cls.history.filter(
             opcion_calificacion__campana__pk__in=ids_campanas)
         calificaciones = calificaciones.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
+        calificaciones = calificaciones.filter(modified__range=(fecha_desde, fecha_hasta))
         return calificaciones
 
 

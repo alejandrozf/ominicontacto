@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 16:30-0300\n"
+"POT-Creation-Date: 2023-03-16 12:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -564,82 +564,82 @@ msgstr ""
 msgid "Paquete de idioma"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:87
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:98
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:119
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:132
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:92
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:103
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:124
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:137
 #, python-brace-format
 msgid "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:88
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:99
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:274
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:93
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:104
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:279
 msgid "intentar create_config_asterisk()"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:91
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:96
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks de "
 "Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:102
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:107
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks "
 "registration de Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:120
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:125
 msgid "intentar regenerar_familys_rutas()"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:122
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:127
 msgid ""
 "Hubo un inconveniente al insertar los registros del troncal en la base de "
 "datos de Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:133
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:138
 msgid "intentar delete_family_trunk()"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:135
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:140
 msgid ""
 "Hubo un inconveniente al eliminar los registros de los troncales en la base "
 "de datos de Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:163
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:168
 #, python-brace-format
 msgid "Error {0} en la family {1} al intentar regenerar_family()"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:165
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:170
 #, python-brace-format
 msgid ""
 "Hubo un inconveniente al insertar los registros de la family {0} en la base "
 "de datos de Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:176
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:181
 #, python-brace-format
 msgid "Error {0} en la family {1} al intentar delete_family()"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:178
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:183
 #, python-brace-format
 msgid ""
 "Hubo un inconveniente al eliminar los registros de la family {0} en la base "
 "de datos de Asterisk. "
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:273
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:278
 #, python-brace-format
 msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al"
 msgstr ""
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:278
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:283
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de rutas de "
 "Asterisk. "
@@ -936,6 +936,15 @@ msgstr ""
 
 #: configuracion_telefonia_app/templates/validacion_fecha_hora.html:87
 msgid "Destino si NO cumple la condición de tiempo"
+msgstr ""
+
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:258
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:272
+msgid "Introduzca un valor válido."
+msgstr ""
+
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:283
+msgid "Este campo es requerido."
 msgstr ""
 
 #: configuracion_telefonia_app/views/audio.py:104

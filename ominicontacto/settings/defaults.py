@@ -196,7 +196,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
-  ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
+    ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
 ]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
@@ -379,6 +379,7 @@ REST_FRAMEWORK = {
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'api_app/locale'),
     os.path.join(BASE_DIR, 'configuracion_telefonia_app/locale'),
+    os.path.join(BASE_DIR, 'notification_app/locale'),
     os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
     os.path.join(BASE_DIR, 'reportes_app/locale'),
     os.path.join(BASE_DIR, 'reciclado_app/locale'),
@@ -401,14 +402,14 @@ ALLOW_FEEDBACK = False
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 DJANGO_EASY_AUDIT_REGISTERED_CLASSES = [
-    'ominicontacto_app.campana', 
-    'ominicontacto_app.queue', 
+    'ominicontacto_app.campana',
+    'ominicontacto_app.queue',
     'ominicontacto_app.agenteprofile'
 ]
 
 DJANGO_EASY_AUDIT_REGISTERED_URLS = [
-    r'^/reporte/llamadas/', 
-    r'^/reportes/agentes_tiempos/', 
+    r'^/reporte/llamadas/',
+    r'^/reportes/agentes_tiempos/',
     r'^/auditar_gestion/buscar/(\d+)/',
     r'^/campana/(\d+)/reporte_grafico/',
     r'^/reporte_de_resultados/(\d+)/',

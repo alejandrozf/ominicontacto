@@ -345,7 +345,8 @@ class LiberarReservarContactoAsignado(View):
                                                     agente_id=agente_id, campana_id=campana_id,
                                                     contacto_id=contacto_id)
         finalizado = AgenteEnContacto.objects.filter(
-            contacto_id=contacto_id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+            contacto_id=contacto_id, campana_id=campana_id,
+            estado=AgenteEnContacto.ESTADO_FINALIZADO)
         if finalizado.exists():
             status = 'finalizado'
             return status
@@ -366,9 +367,10 @@ class LiberarReservarContactoAsignado(View):
 
     def _reservar_contacto(self, contacto_id, campana_id, id_agente):
         finalizado = AgenteEnContacto.objects.filter(
-            contacto_id=contacto_id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+            contacto_id=contacto_id, campana_id=campana_id,
+            estado=AgenteEnContacto.ESTADO_FINALIZADO)
         contacto_esta_reservado = AgenteEnContacto.objects.filter(
-            contacto_id=contacto_id).first()
+            contacto_id=contacto_id, campana_id=campana_id).first()
         contacto_liberado = AgenteEnContacto.objects.activos(
             campana_id=campana_id).filter(agente_id=-1,
                                           estado=AgenteEnContacto.ESTADO_INICIAL,
