@@ -102,7 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {% for calificacion in calificaciones %} {% es_calificacion_llamada grabacion.origen calificacion as calificacion %} {% if calificacion %}
                     <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">
-                        {% if calificacion.agendado %}
+                        {% if calificacion.opcion_calificacion.es_agenda %}
                             {{ calificacion.opcion_calificacion.nombre }} {{ calificacion.get_tipo_agenda_display }}
                         {% else %} 
                             {{ calificacion.opcion_calificacion.nombre }}
