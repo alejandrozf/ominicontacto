@@ -162,12 +162,13 @@ class LlamadaLogManager(models.Manager):
             campana_id=0).annotate(
                 fecha=TruncDate('time')).values('fecha').annotate(cantidad=Count('fecha'))
 
-    def obtener_llamadas_finalizadas_del_dia(self, agente_id, fecha):
+    def obtener_historico_llamadas_del_dia(self, agente_id, fecha):
         fecha_desde = datetime_hora_minima_dia(fecha)
         fecha_hasta = datetime_hora_maxima_dia(fecha)
         return self.filter(agente_id=agente_id,
                            time__gte=fecha_desde, time__lte=fecha_hasta,
-                           event__in=LlamadaLog.EVENTOS_FIN_CONEXION)
+                           event__in=LlamadaLog.EVENTOS_FIN_CONEXION + LlamadaLog.EVENTOS_REJECT
+                           + list(LlamadaLog.EVENTOS_NO_CONEXION))
 
     def entrantes_espera(self):
         campanas_eliminadas_ids = list(
