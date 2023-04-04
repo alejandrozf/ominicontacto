@@ -103,7 +103,7 @@ class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
         for dato in datos:
             lista_opciones.append(dato)
         opcion_calificacion_nombre = calificacion.opcion_calificacion.nombre
-        if calificacion.agendado:
+        if calificacion.opcion_calificacion.es_agenda():
             opcion_calificacion_nombre = "{} {}".\
                 format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
         lista_opciones.append(opcion_calificacion_nombre)
