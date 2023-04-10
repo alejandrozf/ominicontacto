@@ -507,9 +507,9 @@ urlpatterns = [
     path('api/v1/audit_supervisor/',
          AuditSupervisor.as_view(), name='api_audit_supervisor'),
     # ###########  WOMBAT DIALER    ############ #
-    path('api/v1/womabat_dialer/restart/',
+    path('api/v1/wombat_dialer/restart/',
          ReiniciarWombat.as_view(), name='api_restart_wombat'),
-    path('api/v1/womabat_dialer/status/',
+    path('api/v1/wombat_dialer/status/',
          WombatState.as_view(), name='api_wombat_state'),
 
     # ###########  ASTERISK    ############ #

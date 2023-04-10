@@ -38,19 +38,14 @@ class ReporteCampanaService(object):
 
     def __init__(self, campana):
         self.campana = campana
-        self.calificaciones_qs = campana.obtener_calificaciones().select_related(
-            'opcion_calificacion', 'contacto').prefetch_related(
-                'contacto__bd_contacto', 'agente__user')
         self.historico_calificaciones_qs = campana.obtener_historico_calificaciones() \
             .select_related(
             'opcion_calificacion', 'contacto').prefetch_related(
                 'contacto__bd_contacto', 'agente__user')
 
     def calificaciones_por_fechas(self, fecha_desde, fecha_hasta):
-        self.calificaciones_qs = self.calificaciones_qs.filter(
-            fecha__range=(fecha_desde, fecha_hasta))
         self.historico_calificaciones_qs = self.historico_calificaciones_qs.filter(
-            fecha__range=(fecha_desde, fecha_hasta))
+            history_date__range=(fecha_desde, fecha_hasta))
 
 
 class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
