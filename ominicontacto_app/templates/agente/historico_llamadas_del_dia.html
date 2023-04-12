@@ -24,9 +24,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <div class="col-lg-1 col-ms-1 col-xs-1">
         <img height='15' width='15'
               {%if registro.tipo_llamada in tipos_salientes %}
-                src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
+                {%if registro.event in event_fin_conexion %}
+                  src="{% static 'ominicontacto/Img/incomingCall.png' %}"
+                {% else %}
+                  src="{% static 'ominicontacto/Img/redcross.png' %}"
+                {% endif %}
               {% else %}
-                src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+                {%if registro.event in event_fin_conexion %}
+                  src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+                {% else %}
+                  src="{% static 'ominicontacto/Img/lostCall.png' %}"
+                {% endif %}
               {% endif %}/>
       </div>
       <div class="col-lg-6 col-ms-6 col-xs-6">
