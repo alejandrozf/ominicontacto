@@ -115,10 +115,10 @@ urlpatterns = [
             name='user_change_password', kwargs={'change_password': ''}
             ),
     # Perfil Agente  ==========================================================
-    re_path(r'^agente/list/(?P<page>[0-9]+)/$',
-            login_required(views_user_profiles.AgenteListView.as_view()),
-            name='agente_list',
-            ),
+    path('agente/list/',
+         login_required(views_user_profiles.AgenteListView.as_view()),
+         name='agente_list',
+         ),
     re_path(r'^user/agenteprofile/update/(?P<pk_agenteprofile>\d+)/$',
             login_required(views_user_profiles.AgenteProfileUpdateView.as_view()),
             name='agenteprofile_update',

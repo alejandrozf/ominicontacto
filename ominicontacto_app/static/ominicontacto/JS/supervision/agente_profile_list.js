@@ -18,6 +18,50 @@
 /* global Urls */
 /* global gettext */
 
+var agents_table;
+var GROUP_COL = 3;
+
+$(function () {
+    initializeAgentsTable();
+    inicializarFiltroGrupos();
+});
+
+function initializeAgentsTable() {
+    agents_table = $('#agents-table').DataTable({
+        language: {
+            search: gettext('Filtrar:'),
+            paginate: {
+                first: gettext('Primero'),
+                previous: gettext('Anterior'),
+                next: gettext('Siguiente'),
+                last: gettext('Último')
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        },
+        columnDefs: [
+            {'searchable': false, 'targets': [4, 5]},
+            {'orderable': false, 'targets': [4, 5]}
+        ],
+    });
+}
+
+function inicializarFiltroGrupos() {
+    var select = $('#group-filter').on('change', function () {
+        buscarGrupo($(this).val());
+    });
+
+    var column = agents_table.column(GROUP_COL);
+    column.data().unique().sort().each(function (d, j) {
+        select.append('<option value="' + d + '">' + d + '</option>');
+    });
+}
+
+function buscarGrupo(nombre_grupo) {
+    var val = $.fn.dataTable.util.escapeRegex(nombre_grupo);
+    agents_table.column(GROUP_COL).search(val ? '^' + val + '$' : '', true, false).draw();
+}
+
 function obtener_campanas_agente(pk_agent) {
     var $campanasAgenteModal = $('#campanasAgenteModal');
     var filter = '?status=[2,5,6]&agent=' + pk_agent;

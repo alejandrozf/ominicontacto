@@ -31,18 +31,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 <div class="form-row">
-    <div class="col-md-9">
+    <div class="col-md-6">
         <h1>{% trans 'Agentes' %}</h1>
     </div>
-    <div class="col-md-3">
-        <form method="GET" action="{% url 'agente_list' page=1 %}" class="filter-flex">
-            <input type="text" class="form-control" name="search" value="{{ search }}">
-            <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
-        </form>
+    <div class="col-md-1">
+        <label for="group-filter">{% trans 'Grupo' %}</label>
+    </div>
+    <div class="col-md-5">
+        <select class="form-control" name="group-filter" id="group-filter">
+            <option value="">{% trans 'Todos' %}</option>
+        </select>
     </div>
 </div>
 
-<table class="table">
+<table class="table" id="agents-table">
     <thead>
         <tr>
             <th>{% trans 'id' %}</th>
@@ -54,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
     </thead>
     <tbody>
-    {% for agente in page_obj%}
+    {% for agente in object_list%}
         <tr id="{{agente.user}}">
             <td>{{ agente.id }}</td>
             <td>{{ agente.user.first_name}} {{ agente.user.last_name}}</td>
@@ -87,45 +89,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </tbody>
 </table>
 
-{% if is_paginated %}
-    <nav aria-label="Page navigation">
-        <ul class="pagination pagination-centered">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" aria-label="First" href="{% url 'agente_list' page=1 %}{{ search_url }}">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">{% trans 'Principio' %}</span>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" aria-label="Previous" href="{% url 'agente_list' page=page_obj.previous_page_number%}{{ search_url }}">
-                    <span aria-hidden="true">&lt;</span>
-                    <span class="sr-only">{% trans 'Anterior' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-            {% for i in pages %}
-                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
-                  <a class="page-link" href="{% url 'agente_list' page=i %}{{ search_url }}"> {{i}} </a>
-                </li>
-            {% endfor %}
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                  <a class="page-link" aria-label="Next" href="{% url 'agente_list' page=page_obj.next_page_number %}{{ search_url }}">
-                    <span aria-hidden="true">&gt;</span>
-                    <span class="sr-only">{% trans 'Siguiente' %}</span>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" aria-label="Last" href="{% url 'agente_list' page=page_obj.paginator.num_pages %}{{ search_url }}">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">{% trans 'Final' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-{% endif %}
+
 <div class="modal" id="campanasAgenteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
