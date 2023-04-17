@@ -219,7 +219,29 @@ class ViewSet(viewsets.ViewSet):
         data.update({"conversacion": pk})
         serializer = MensajeAtachmentCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        # serializer.save()
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=True, methods=["post"])
+    def send_message_template(self, request, pk):
+        data = request.data.copy() #  Id Plantilla, Parámetros
+        data.update({"conversacion": pk})
+        serializer = MensajePlantillaCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        # serializer.save()
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=True, methods=["post"])
+    def send_message_whatsapp_template(self, request, pk):
+        data = request.data.copy() #  Id Template
+        data.update({"conversacion": pk})
+        serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        # serializer.save()
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)
