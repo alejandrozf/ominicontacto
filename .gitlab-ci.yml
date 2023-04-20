@@ -42,9 +42,7 @@ container-image:
     - |-
       if [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_SECRET}" ]; then
         echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-        docker tag dev omnileads/omlapp:devenv
         docker tag run omnileads/omlapp:1.27.0
-        docker push docker.io/omnileads/omlapp:devenv
         docker push docker.io/omnileads/omlapp:1.27.0
       fi
   rules:
