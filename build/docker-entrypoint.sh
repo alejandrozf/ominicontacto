@@ -35,8 +35,14 @@ EOF
     echo "Iniciando Django Server"
     exec $COMMAND runserver 0.0.0.0:8099
   else
-    echo "Iniciando Django uWSGI"
+    echo "Iniciando uWSGI"
+
+    if [[ $LOGS_FILE == "True" ]]; then
+    echo "crontab disabled"
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log
+    else
     exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
+    fi
   fi
 }
 
