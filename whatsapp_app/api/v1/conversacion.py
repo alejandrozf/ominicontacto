@@ -226,7 +226,7 @@ class ViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_template(self, request, pk):
-        data = request.data.copy() #  Id Plantilla, Parámetros
+        data = request.data.copy()  # Id Plantilla, Parámetros
         data.update({"conversacion": pk})
         serializer = MensajePlantillaCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -237,7 +237,7 @@ class ViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_whatsapp_template(self, request, pk):
-        data = request.data.copy() #  Id Template
+        data = request.data.copy()  # Id Template
         data.update({"conversacion": pk})
         serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)

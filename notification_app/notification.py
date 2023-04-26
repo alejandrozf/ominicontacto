@@ -29,6 +29,9 @@ class AgentNotifier:
     TYPE_UNPAUSE = 'unpause'
     TYPE_PAUSE = 'pause'
     TYPE_CONTACT_SAVED = 'contact_saved'
+    TYPE_WHATSAPP_NEW_CHAT = 'whatsapp_new_chat'
+    TYPE_WHATSAPP_CHAT_ATTENDED = 'whatsapp_chat_attended'
+    TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
 
     def get_group_name(self, user_id=None):
         if user_id is not None:
@@ -62,6 +65,55 @@ class AgentNotifier:
             "contact_id": contact_id
         }
         self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
+
+    def notify_whatsapp_new_chat(self, user_id, id_conversacion):
+        message = {
+            "id": id_conversacion,
+            "id_campana": "id_campana",
+            "nombre_cliente": "nombre_cliente",
+            "foto": "foto.jpg",
+            "fecha": "20/04/2023",
+            "nombre_campana": "nombre_campana",
+            "cantidad_mensaje": "10"
+        }
+        self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
+
+    def notify_whatsapp_chat_attended(self, user_id, id_conversacion):
+        message = {
+            "id": id_conversacion,
+            "id_campana": "id_campana",
+        }
+        self.send_message(self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id)
+
+    def notify_whatsapp_chat_transfered(self, user_id, id_conversacion):
+        message = {
+            "chat_info": {
+                "id": id_conversacion,
+                "id_campana": "id_campana",
+                "nombre_cliente": "nombre_cliente",
+                "foto": "foto.jpg",
+                "fecha": "20/04/2023",
+                "nombre_campana": "nombre_campana",
+                "cantidad_mensaje": "10"
+            },
+            "messages": [
+                {
+                    "id": "1",
+                    "contenido": "contenido",
+                    "status": "leido",
+                    "fecha": "20/04/2023",
+                    "emisor": "emisor"
+                },
+                {
+                    "id": "2",
+                    "contenido": "contenido",
+                    "status": "leido",
+                    "fecha": "20/04/2023",
+                    "emisor": "emisor"
+                },
+            ]
+        }
+        self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
 
     def send_message(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados
