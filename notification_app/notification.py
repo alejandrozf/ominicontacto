@@ -32,6 +32,8 @@ class AgentNotifier:
     TYPE_WHATSAPP_NEW_CHAT = 'whatsapp_new_chat'
     TYPE_WHATSAPP_CHAT_ATTENDED = 'whatsapp_chat_attended'
     TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
+    TYPE_WHATSAPP_NEW_MESSAGE = 'whatsapp_new_message'
+    TYPE_WHATSAPP_MESSAGE_STATUS = 'whatsapp_message_status'
 
     def get_group_name(self, user_id=None):
         if user_id is not None:
@@ -114,6 +116,28 @@ class AgentNotifier:
             ]
         }
         self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
+
+    def notify_whatsapp_new_message(self, user_id, id_message):
+        message = {
+            "chat_id": 'id_conversacion',
+            "campana_id": "id_campana",
+            "message_id": "id_message",
+            "contenido": "contenido",
+            "status": "leido",
+            "fecha": "20/04/2023",
+            "emisor": "emisor"
+        }
+        self.send_message(self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id)
+
+    def notify_whatsapp_message_status(self, user_id, id_message):
+        message = {
+            "chat_id": 'id_conversacion',
+            "campana_id": "id_campana",
+            "message_id": "id_message",
+            "status": "leido",
+            "fecha": "20/04/2023",
+        }
+        self.send_message(self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id)
 
     def send_message(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados
