@@ -2081,7 +2081,7 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
-                  'obligar_despausa')
+                  'obligar_despausa', 'whatsapp_habilitado')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
