@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0100_queue_ivr_breakdown_on_delete'),
+        ('ominicontacto_app', '0101_historicalcalificacioncliente_index'),
     ]
 
     operations = [
@@ -14,5 +14,11 @@ class Migration(migrations.Migration):
             model_name='campana',
             name='whatsapp_habilitado',
             field=models.BooleanField(default=False),
+        ),
+        migrations.AddField(
+            model_name='grupo',
+            name='whatsapp_habilitado',
+            field=models.BooleanField(default=False,
+                                      verbose_name='Permiso de uso de la canalidad WhatsApp'),
         ),
     ]
