@@ -48,7 +48,7 @@ class ReporteFormularioGestionCampanaCSV(ReporteCSV):
         self.datos = []
         respuestas = RespuestaFormularioGestion.history.filter(
             calificacion__opcion_calificacion__campana=self.campana,
-            fecha__range=(fecha_desde, fecha_hasta)).select_related(
+            history_date__range=(fecha_desde, fecha_hasta)).select_related(
                 'calificacion').prefetch_related(
                     'calificacion__contacto', 'calificacion__agente',
                     'calificacion__agente__user',

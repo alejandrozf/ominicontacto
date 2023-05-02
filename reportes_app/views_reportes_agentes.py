@@ -205,7 +205,8 @@ class HistoricoDeLlamadasView(TemplateView):
         context = super(HistoricoDeLlamadasView, self).get_context_data(*args, **kwargs)
         agente_profile = self.request.user.get_agente_profile()
         hoy = fecha_local(now())
-        logs = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
+        logs = LlamadaLog.objects.obtener_historico_llamadas_del_dia(agente_profile.id, hoy)
         context['registros'] = logs
         context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
+        context['event_fin_conexion'] = LlamadaLog.EVENTOS_FIN_CONEXION
         return context

@@ -50,7 +50,7 @@ class OminicontactoAppConfig(AppConfig):
         if 'agente_list' in permissions:
             usuarios.append({
                 'label': _('Agentes'),
-                'url': reverse('agente_list', args=(1, ))
+                'url': reverse('agente_list')
             })
         if 'supervisor_list' in permissions:
             usuarios.append({

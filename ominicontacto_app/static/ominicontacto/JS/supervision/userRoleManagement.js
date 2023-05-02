@@ -141,6 +141,10 @@ class RoleManager {
         var action = $('#apply_action').val();
         var target_role = this.getRoleById(target_role_id);
         var role_model = this.getRoleById(role_model_id);
+        var role_permissions = $('[permission_role="' + target_role_id + '"]:checked').map(function() {
+            return $(this).attr('permission_id');
+        }).get();
+        
         if (action == 'mimic') {
             target_role.permissions = role_model.permissions.slice();
         }
@@ -148,6 +152,11 @@ class RoleManager {
             for (var permission_id of role_model.permissions) {
                 if (target_role.permissions.indexOf(permission_id) == -1){
                     target_role.permissions.push(permission_id);
+                }
+            }
+            for (permission_id of role_permissions) {
+                if (target_role.permissions.indexOf(Number(permission_id)) == -1){
+                    target_role.permissions.push(Number(permission_id));
                 }
             }
         }
@@ -242,7 +251,7 @@ class RoleManager {
         var permissions = $('[permission_role="' + role_id + '"]:checked').map(function() {
             return $(this).attr('permission_id');
         }).get();
-        var role_name = role_manager.getRoleById(role_id).name;
+        var role = role_manager.getRoleById(role_id);
 
         var URL = Urls.api_update_role_permissions();
         $.ajax({
@@ -253,15 +262,16 @@ class RoleManager {
             data: JSON.stringify({role_id: role_id, permissions: permissions}),
             success: function(data){
                 if (data['status'] == 'OK') {
-                    alert(gettext('Se guardó el rol: ') + role_name);
+                    role.permission = permissions.map(id => Number(id));
+                    alert(gettext('Se guardó el rol: ') + role.name);
                 }
                 else {
                     // Show error message
-                    alert(gettext('No se pudo guardar el rol: ') + role_name + '\n' + data['message']);
+                    alert(gettext('No se pudo guardar el rol: ') + role.name + '\n' + data['message']);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert(gettext('Error al guardar Rol: ') + role_name);
+                alert(gettext('Error al guardar Rol: ') + role.name);
                 console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });

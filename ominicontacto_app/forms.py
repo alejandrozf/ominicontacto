@@ -47,7 +47,9 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios,
+                                      validar_solo_alfanumericos_o_guiones,
+                                      contiene_solo_alfanumericos_o_guiones,
+                                      validar_valor_parametro_crm,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from ominicontacto_app.parser import is_valid_length
@@ -380,7 +382,7 @@ class BaseDatosContactoForm(forms.ModelForm):
     def clean_nombre(self):
         # controlamos que el nombre no tenga espacios y caracteres no ascii
         nombre = self.cleaned_data.get('nombre')
-        validar_solo_ascii_y_sin_espacios(nombre)
+        validar_solo_alfanumericos_o_guiones(nombre)
         validar_longitud_nombre_base_de_contactos(nombre)
         return nombre
 
@@ -514,7 +516,7 @@ class ListaRapidaForm(forms.ModelForm):
     def clean_nombre(self):
         # controlamos que el nombre no tenga espacios y caracteres no ascii
         nombre = self.cleaned_data.get('nombre')
-        validar_solo_ascii_y_sin_espacios(nombre)
+        validar_solo_alfanumericos_o_guiones(nombre)
         validar_longitud_nombre_base_de_contactos(nombre)
         return nombre
 
@@ -2055,7 +2057,7 @@ class ParametrosCrmForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('El valor debe corresponder a un dato válido de la llamada'))
         if tipo == ParametrosCrm.CUSTOM:
-            validar_solo_ascii_y_sin_espacios(valor)
+            validar_valor_parametro_crm(valor)
         if tipo == ParametrosCrm.DIALPLAN:
             if not valor.startswith(ParametrosCrm.PREFIJO_DIALPLAN):
                 raise (forms.ValidationError(
@@ -2068,12 +2070,19 @@ class ParametrosCrmForm(forms.ModelForm):
                 _('El valor debe corresponder a un campo válido de datos de calificación'))
         return valor
 
+    def es_placeholder(self, nombre):
+        return nombre[0] == '{' and nombre[-1] == '}' and nombre[1:-1].isdigit()
+
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre', '')
         if not nombre:
             raise forms.ValidationError(_('Debe definir un nombre para el parámetro'))
-        validar_solo_ascii_y_sin_espacios(nombre)
-        return nombre
+        if contiene_solo_alfanumericos_o_guiones(nombre):
+            return nombre
+        if self.es_placeholder(nombre):
+            return nombre
+        raise forms.ValidationError(
+            _('Sólo se permiten caracteres alfanuméricos o ser de tipo placeholder. Ej: "{1}"'))
 
 
 class QueueMemberBaseFomset(BaseInlineFormSet):

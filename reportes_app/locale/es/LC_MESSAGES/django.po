@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-16 13:24-0300\n"
+"POT-Creation-Date: 2023-04-28 13:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,39 +146,39 @@ msgstr ""
 msgid "No se encontraron llamadas "
 msgstr ""
 
-#: reportes_app/models.py:293
+#: reportes_app/models.py:294
 msgid "No se encontraron holds "
 msgstr ""
 
-#: reportes_app/models.py:488
+#: reportes_app/models.py:489
 msgid "Llamada manual"
 msgstr ""
 
-#: reportes_app/models.py:489
+#: reportes_app/models.py:490
 msgid "Llamada dialer"
 msgstr ""
 
-#: reportes_app/models.py:490
+#: reportes_app/models.py:491
 msgid "Llamada entrante"
 msgstr ""
 
-#: reportes_app/models.py:491
+#: reportes_app/models.py:492
 msgid "Llamada preview"
 msgstr ""
 
-#: reportes_app/models.py:492
+#: reportes_app/models.py:493
 msgid "Llamada click2call"
 msgstr ""
 
-#: reportes_app/models.py:493
+#: reportes_app/models.py:494
 msgid "Llamada transferencia interna"
 msgstr ""
 
-#: reportes_app/models.py:494
+#: reportes_app/models.py:495
 msgid "Llamada transferencia externa"
 msgstr ""
 
-#: reportes_app/models.py:536
+#: reportes_app/models.py:537
 msgid "No se encontraron pausas "
 msgstr ""
 
@@ -1407,6 +1407,6 @@ msgid ""
 "administrador."
 msgstr ""
 
-#: reportes_app/views_reportes.py:98 reportes_app/views_reportes.py:238
+#: reportes_app/views_reportes.py:96 reportes_app/views_reportes.py:239
 msgid "Usted no puede acceder a esta campaña."
 msgstr ""

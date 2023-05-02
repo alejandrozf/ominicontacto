@@ -369,6 +369,10 @@ class CalificacionClienteFormView(FormView):
             es_calificacion_manual = 'manual' in self.kwargs and self.kwargs['manual']
             self.object_calificacion.es_calificacion_manual = es_calificacion_manual
 
+        # No está agendado hasta que se haya creado la agenda correspondiente (?)
+        if not self.object_calificacion.es_agenda():
+            self.object_calificacion.agendado = False
+
         self.object_calificacion.save()
         redis_stream_notifier = RedisStreamNotifier()
         redis_stream_notifier.send('calification', self.agente.id)

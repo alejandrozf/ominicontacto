@@ -496,32 +496,14 @@ class AgenteListView(ListView):
     """Vista para listar los agentes"""
     model = AgenteProfile
     template_name = 'usuarios_grupos/agente_profile_list.html'
-    paginate_by = 40
 
-    def get_context_data(self, **kwargs):
-        context = super(AgenteListView, self).get_context_data(
-            **kwargs)
-        agentes = AgenteProfile.objects.exclude(borrado=True)
-
+    def get_queryset(self):
         # TODO: Limitar la lista a los agentes que tiene asignado
         # if self.request.user.is_authenticated and self.request.user:
         #     user = self.request.user
         #     agentes = agentes.filter(reported_by=user)
-
-        context['agentes'] = agentes
-
-        obtener_paginas(context, 7)
-        return context
-
-    def get_queryset(self):
-        """Returns user ordernado por id"""
         agentes = AgenteProfile.objects.exclude(borrado=True).order_by('id')
-        if 'search' in self.request.GET:
-            search = self.request.GET.get('search')
-            agentes = agentes.annotate(
-                user__full_name=Concat('user__first_name', V(' '), 'user__last_name')).\
-                filter(Q(user__full_name__icontains=search) | Q(user__username__icontains=search))
-        return agentes
+        return agentes.select_related('user', 'grupo')
 
 
 class AgenteProfileUpdateView(UpdateView):
@@ -552,7 +534,7 @@ class DesactivarAgenteView(RedirectView):
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.desactivar()
-        return HttpResponseRedirect(reverse('agente_list', kwargs={"page": 1}))
+        return HttpResponseRedirect(reverse('agente_list'))
 
 
 class ActivarAgenteView(RedirectView):
@@ -567,7 +549,7 @@ class ActivarAgenteView(RedirectView):
         agente.activar()
         agente_family = AgenteFamily()
         agente_family.regenerar_family(agente)
-        return HttpResponseRedirect(reverse('agente_list', kwargs={"page": 1}))
+        return HttpResponseRedirect(reverse('agente_list'))
 
 
 class ClienteWebPhoneListView(ListView):
@@ -638,14 +620,20 @@ class UserRoleManagementView(TemplateView):
 class UserResourceExport(resources.ModelResource):
 
     profile = Field()
+    group = Field()
 
     def dehydrate_profile(self, user):
         return user.rol.name
 
+    def dehydrate_group(self, user):
+        if user.get_is_agente():
+            return user.agenteprofile.grupo.nombre
+        return ''
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'profile')
-        export_order = ('id', 'username', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'username', 'first_name', 'last_name', 'profile', 'group')
+        export_order = ('id', 'username', 'first_name', 'last_name', 'profile', 'group')
 
 
 class ExportCsvUsuariosView(View):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-16 12:22-0300\n"
+"POT-Creation-Date: 2023-04-28 13:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,7 +86,7 @@ msgstr "Remember to logout before leaving this page."
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:47
 #: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:98
 #: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:126
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:265
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:275
 msgid "Error al ejecutar => "
 msgstr "Error when executing =>"
 
@@ -361,12 +361,14 @@ msgstr "Lastest"
 #: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:76
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:146
 #: ominicontacto_app/static/ominicontacto/JS/contactosList.js:166
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:39
 msgid "Mostrar _MENU_ entradas"
 msgstr "Show _MENU_ entries"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:77
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:147
 #: ominicontacto_app/static/ominicontacto/JS/contactosList.js:167
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:40
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 
@@ -383,18 +385,22 @@ msgid "Buscar:"
 msgstr "Search:"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:141
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:34
 msgid "Primero"
 msgstr "First"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:142
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:35
 msgid "Anterior"
 msgstr "Last"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:143
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:36
 msgid "Siguiente"
 msgstr "Next"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:144
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:37
 msgid "Último"
 msgstr "Lastest"
 
@@ -593,6 +599,10 @@ msgstr "The data sent from instance were incorrect"
 msgid "No se pudo conectar al servidor"
 msgstr "Could not connect to server"
 
+#: ominicontacto_app/static/ominicontacto/JS/supervision/agente_profile_list.js:32
+msgid "Filtrar:"
+msgstr "Filter:"
+
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:58
 msgid "Agenda reasignada"
 msgstr "Agenda reassigned"
@@ -647,23 +657,23 @@ msgstr "Could not delete role: "
 msgid "Error al eliminar Rol: "
 msgstr "Error deleting Role: "
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:256
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:266
 msgid "Se guardó el rol: "
 msgstr "Role saved: "
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:260
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:270
 msgid "No se pudo guardar el rol: "
 msgstr "Could not save role: "
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:264
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:274
 msgid "Error al guardar Rol: "
 msgstr "Error saving Role: "
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:279
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:289
 msgid "Imitar permisos de Rol"
 msgstr "Mimic role permissions"
 
-#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:287
+#: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:297
 msgid "Agregar permisos de Rol"
 msgstr "Add Role permissions"
 

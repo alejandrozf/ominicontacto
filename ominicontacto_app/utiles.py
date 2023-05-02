@@ -51,7 +51,8 @@ logger = _logging.getLogger(__name__)
 
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 REGEX_NO_ALFANUMERICOS = re.compile(r'([^.a-zA-Z0-9])')
-REGEX_ALFANUMERICOS_CON_GUIONES = re.compile(r'([^a-zA-Z0-9_-])')
+REGEX_NO_ALFANUMERICOS_O_GUIONES = re.compile(r'([^a-zA-Z0-9_-])')
+REGEX_NO_VALOR_PARAMETRO_CRM_CUSTOM = re.compile(r'([^a-zA-Z0-9+_-])')
 
 
 def _upload_to(prefix, max_length, instance, filename):
@@ -353,26 +354,37 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
             self.writerow(row)
 
 
-def validar_solo_ascii_y_sin_espacios(
+def contiene_solo_alfanumericos_o_guiones(cadena):
+    return len(REGEX_NO_ALFANUMERICOS_O_GUIONES.findall(cadena)) == 0
+
+
+def validar_solo_alfanumericos_o_guiones(
         cadena,
         error_ascii='el texto no puede contener tildes ni caracteres no ASCII, solo (a-zA-Z0-9)',
         error_espacios='el texto no puede contener espacios'):
     """
-    Valida que no hayan espacios ni caracteres no ASCII
+    Valida que no hayan espacios ni caracteres no alfanuméricos o guiones
+    Con error especial en caso de contener espacios
     """
     if ' ' in cadena:
         raise ValidationError(error_espacios)
-    if len(REGEX_ALFANUMERICOS_CON_GUIONES.findall(cadena)) != 0:
+    if not contiene_solo_alfanumericos_o_guiones(cadena):
         raise ValidationError(error_ascii)
+
+
+def validar_valor_parametro_crm(cadena):
+    msg = _('el texto sólo puede contener caracteres alfanumericos guiones o el signo +')
+    if len(REGEX_NO_VALOR_PARAMETRO_CRM_CUSTOM.findall(cadena)) != 0:
+        raise ValidationError(msg)
 
 
 def validar_nombres_campanas(nombre):
     """
-    Valida que no hayan espacios ni caracteres no ASCII en los nombres de campañas
+    Valida que no haya espacios ni caracteres no alfanuméricos o guiones en los nombres de campañas
     """
     error_ascii = _('el nombre no puede contener tildes ni caracteres no ASCII')
     error_espacios = _('el nombre no puede contener espacios')
-    validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
+    validar_solo_alfanumericos_o_guiones(nombre, error_ascii, error_espacios)
 
 
 def validar_longitud_nombre_base_de_contactos(nombre):

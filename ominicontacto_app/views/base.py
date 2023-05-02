@@ -201,12 +201,13 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
             make_aware(datetime.combine(x[0], x[1])).isoformat() for x in fechas_agendas]
 
         hoy = fecha_local(now())
-        registros = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
+        registros = LlamadaLog.objects.obtener_historico_llamadas_del_dia(agente_profile.id, hoy)
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
         context['pausas'] = self.get_pausas(agente_profile)
         context['registros'] = registros
         context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
+        context['event_fin_conexion'] = LlamadaLog.EVENTOS_FIN_CONEXION
         context['campanas_preview_activas'] = campanas_preview_activas
         context['agente_profile'] = agente_profile
         context['sip_usuario'] = sip_usuario
