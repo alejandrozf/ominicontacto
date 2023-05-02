@@ -60,7 +60,7 @@ fi
 
 if [ $Convertir == 1 ]; then
   cd ${Path_origen}
-  Files="`ls -ltr|awk '{print $9}'`"
+  Files="`ls -ltr *.wav|awk '{print $9}'`"
   for File in ${Files};do
     if [ -f $Lame ]; then
       Sufijo="`ls ${File}|cut -d "." -f 3,3`"
