@@ -26,6 +26,7 @@ import whatsapp_app.api.v1.grupo_plantilla_whatsapp
 import whatsapp_app.api.v1.grupo_template_whatsapp
 import whatsapp_app.api.v1.configuracion_whatsapp_campana
 import whatsapp_app.api.v1.conversacion
+import whatsapp_app.api.v1.transfer
 
 from whatsapp_app.api import ViewSetRouter
 
@@ -42,6 +43,7 @@ routes = (
     (r"grupo_template_whatsapp", whatsapp_app.api.v1.grupo_template_whatsapp.ViewSet),
     (r"configuracion_whatsapp_campana", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
     (r"chat", whatsapp_app.api.v1.conversacion.ViewSet),
+    (r"transfer", whatsapp_app.api.v1.transfer.ViewSet),
 )
 
 for route in routes:
