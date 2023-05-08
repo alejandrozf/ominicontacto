@@ -56,9 +56,9 @@ class ConfiguraciontemplateTest(OMLBaseTest):
         url = reverse('whatsapp_app:plantilla-mensaje-list')
         response_template_list = self.client.get(url)
         playload = {
-            "nombre": "plantilla",
-            "tipo": PlantillaMensaje.TIPO_TEXT,
-            "configuracion": {
+            "name": "plantilla",
+            "type": PlantillaMensaje.TIPO_TEXT,
+            "configuration": {
                 "type": "text",
                 "text": "Hello World"
             }

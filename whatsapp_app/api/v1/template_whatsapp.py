@@ -35,28 +35,28 @@ from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    linea = serializers.IntegerField(source='linea.id')
-    nombre = serializers.CharField()
-    identificador = serializers.CharField()
-    texto = serializers.CharField()
-    idioma = serializers.CharField()
+    line = serializers.IntegerField(source='linea.id')
+    name = serializers.CharField(source='nombre')
+    identifier = serializers.CharField(source='identificador')
+    text = serializers.CharField(source='texto')
+    language = serializers.CharField(source='idioma')
     status = serializers.CharField()
-    creado = serializers.CharField()
-    modificado = serializers.CharField()
-    tipo = serializers.CharField()
+    created = serializers.CharField(source='creado')
+    updated = serializers.CharField(source='modificado')
+    type = serializers.CharField(source='tipo')
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    linea = serializers.IntegerField(source='linea.id')
-    nombre = serializers.CharField()
-    identificador = serializers.CharField()
-    texto = serializers.CharField()
-    idioma = serializers.CharField()
+    line = serializers.IntegerField(source='linea.id')
+    name = serializers.CharField(source='nombre')
+    identifier = serializers.CharField(source='identificador')
+    text = serializers.CharField(source='texto')
+    language = serializers.CharField(source='idioma')
     status = serializers.CharField()
-    creado = serializers.CharField()
-    modificado = serializers.CharField()
-    tipo = serializers.CharField()
+    created = serializers.CharField(source='creado')
+    updated = serializers.CharField(source='modificado')
+    type = serializers.CharField(source='tipo')
 
 
 class ViewSet(viewsets.ViewSet):

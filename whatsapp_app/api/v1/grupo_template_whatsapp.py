@@ -33,33 +33,36 @@ from whatsapp_app.models import GrupoTemplateWhatsapp
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
+    name = serializers.CharField(source='nombre')
     templates = TemplateWhatsappListSerializer(read_only=True, many=True)
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
 
     class Meta:
         model = GrupoTemplateWhatsapp
         fields = [
             'id',
-            'nombre',
+            'name',
             'templates',
         ]
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
+    name = serializers.CharField(source='nombre')
     templates = TemplateWhatsappListSerializer(read_only=True, many=True)
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+
     class Meta:
         model = GrupoTemplateWhatsapp
         fields = [
             'id',
-            'nombre',
+            'name',
             'templates',
         ]
 

@@ -34,6 +34,7 @@ class AgentNotifier:
     TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
     TYPE_WHATSAPP_NEW_MESSAGE = 'whatsapp_new_message'
     TYPE_WHATSAPP_MESSAGE_STATUS = 'whatsapp_message_status'
+    TYPE_WHATSAPP_CHAT_EXPIRED = 'whatsapp_chat_expired'
 
     def get_group_name(self, user_id=None):
         if user_id is not None:
@@ -43,21 +44,21 @@ class AgentNotifier:
 
     def notify_pause(self, user_id, pause_id, pause_name):
         message = {
-            "id": pause_id,
-            "name": pause_name
+            'id': pause_id,
+            'name': pause_name
         }
         self.send_message(self.TYPE_PAUSE, message, user_id=user_id)
 
     def notify_unpause(self, user_id, pause_id):
         message = {
-            "id": pause_id,
+            'id': pause_id,
         }
         self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
 
     def notify_dispositioned(self, user_id, call_id, dispositioned):
         message = {
-            "id": call_id,
-            "dispositioned": dispositioned
+            'id': call_id,
+            'dispositioned': dispositioned
         }
         self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
 
@@ -70,48 +71,48 @@ class AgentNotifier:
 
     def notify_whatsapp_new_chat(self, user_id, id_conversacion):
         message = {
-            "id": id_conversacion,
-            "id_campana": "id_campana",
-            "nombre_cliente": "nombre_cliente",
-            "foto": "foto.jpg",
-            "fecha": "20/04/2023",
-            "nombre_campana": "nombre_campana",
-            "cantidad_mensaje": "10"
+            'id': id_conversacion,
+            'campaing_id': 'id_campana',
+            'client_name': 'nombre_cliente',
+            'photo': 'foto.jpg',
+            'date': '20/04/2023',
+            'campaing_name': 'nombre_campana',
+            'message_number': '10'
         }
         self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
 
     def notify_whatsapp_chat_attended(self, user_id, id_conversacion):
         message = {
-            "id": id_conversacion,
-            "id_campana": "id_campana",
+            'id': id_conversacion,
+            'campaing_id': 'id_campana',
         }
         self.send_message(self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id)
 
     def notify_whatsapp_chat_transfered(self, user_id, id_conversacion):
         message = {
-            "chat_info": {
-                "id": id_conversacion,
-                "id_campana": "id_campana",
-                "nombre_cliente": "nombre_cliente",
-                "foto": "foto.jpg",
-                "fecha": "20/04/2023",
-                "nombre_campana": "nombre_campana",
-                "cantidad_mensaje": "10"
+            'chat_info': {
+                'id': id_conversacion,
+                'campaing_id': 'id_campana',
+                'client_name': 'nombre_cliente',
+                'photo': 'foto.jpg',
+                'date': '20/04/2023',
+                'campaing_name': 'nombre_campana',
+                'message_number': '10'
             },
-            "messages": [
+            'messages': [
                 {
-                    "id": "1",
-                    "contenido": "contenido",
-                    "status": "leido",
-                    "fecha": "20/04/2023",
-                    "emisor": "emisor"
+                    'id': '1',
+                    'content': 'contenido',
+                    'status': 'leido',
+                    'date': '20/04/2023',
+                    'sender': 'emisor'
                 },
                 {
-                    "id": "2",
-                    "contenido": "contenido",
-                    "status": "leido",
-                    "fecha": "20/04/2023",
-                    "emisor": "emisor"
+                    'id': '2',
+                    'content': 'contenido',
+                    'status': 'leido',
+                    'date': '20/04/2023',
+                    'sender': 'emisor'
                 },
             ]
         }
@@ -119,33 +120,40 @@ class AgentNotifier:
 
     def notify_whatsapp_new_message(self, user_id, id_message):
         message = {
-            "chat_id": 'id_conversacion',
-            "campana_id": "id_campana",
-            "message_id": "id_message",
-            "contenido": "contenido",
-            "status": "leido",
-            "fecha": "20/04/2023",
-            "emisor": "emisor"
+            'chat_id': 'id_conversacion',
+            'campaing_id': 'id_campana',
+            'message_id': 'id_message',
+            'content': 'contenido',
+            'status': 'leido',
+            'date': '20/04/2023',
+            'sender': 'emisor'
         }
         self.send_message(self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id)
 
     def notify_whatsapp_message_status(self, user_id, id_message):
         message = {
-            "chat_id": 'id_conversacion',
-            "campana_id": "id_campana",
-            "message_id": "id_message",
-            "status": "leido",
-            "fecha": "20/04/2023",
+            'chat_id': 'id_conversacion',
+            'campaing_id': 'id_campana',
+            'message_id': 'id_message',
+            'status': 'leido',
+            'date': '20/04/2023',
         }
         self.send_message(self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id)
+
+    def notify_whatsapp_chat_expired(self, user_id, id_message):
+        message = {
+            'chat_id': 'id_conversacion',
+            'campaing_id': 'campaing_id',
+        }
+        self.send_message(self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id)
 
     def send_message(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados
         async_to_sync(get_channel_layer().group_send)(self.get_group_name(user_id), {
-            "type": "broadcast",
-            "payload": {
-                "type": type,
-                "args": message
+            'type': 'broadcast',
+            'payload': {
+                'type': type,
+                'args': message
             }
         })
 

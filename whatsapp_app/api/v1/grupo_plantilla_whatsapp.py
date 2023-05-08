@@ -29,38 +29,46 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from whatsapp_app.api.v1.plantilla_mensaje import ListSerializer as PlantillaMensajeListSerializer
 from whatsapp_app.models import GrupoPlantillaMensaje
+from whatsapp_app.models import PlantillaMensaje
 
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    plantillas = PlantillaMensajeListSerializer(read_only=True, many=True)
+    name = serializers.CharField(source='nombre')
+    templates = PlantillaMensajeListSerializer(read_only=True, many=True, source='plantillas')
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    templates = serializers.PrimaryKeyRelatedField(
+        allow_empty=False, many=True, queryset=PlantillaMensaje.objects.all(), source='plantillas')
 
     class Meta:
         model = GrupoPlantillaMensaje
         fields = [
             'id',
-            'nombre',
-            'plantillas',
+            'name',
+            'templates',
         ]
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    plantillas = PlantillaMensajeListSerializer(read_only=True, many=True)
+    name = serializers.CharField(source='nombre')
+    templates = PlantillaMensajeListSerializer(read_only=True, many=True, source='plantillas')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    templates = serializers.PrimaryKeyRelatedField(
+        allow_empty=False, many=True, queryset=PlantillaMensaje.objects.all(), source='plantillas')
+
     class Meta:
         model = GrupoPlantillaMensaje
         fields = [
             'id',
-            'nombre',
-            'plantillas',
+            'name',
+            'templates',
         ]
 
 

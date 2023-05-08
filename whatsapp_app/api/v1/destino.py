@@ -32,8 +32,8 @@ from configuracion_telefonia_app.models import DestinoEntrante
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    tipo = serializers.IntegerField()
+    name = serializers.CharField(source='nombre')
+    type = serializers.IntegerField(source='tipo')
 
 
 class ViewSet(viewsets.ViewSet):

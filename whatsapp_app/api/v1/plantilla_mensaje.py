@@ -18,7 +18,6 @@
 
 # APIs para visualizar lineas
 from django.contrib.postgres.fields import JSONField
-from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.db.models import F
 from django.db.models import Func
@@ -37,61 +36,62 @@ from whatsapp_app.models import PlantillaMensaje
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    tipo = serializers.IntegerField()
-    configuracion = serializers.JSONField()
+    name = serializers.CharField(source='nombre')
+    type = serializers.IntegerField(source='tipo')
+    configuration = serializers.JSONField(source='configuracion')
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    type = serializers.IntegerField(source='tipo')
+    configuration = serializers.JSONField(source='configuracion')
 
     class Meta:
         model = PlantillaMensaje
         fields = [
             'id',
-            'nombre',
-            'tipo',
-            'configuracion'
+            'name',
+            'type',
+            'configuration'
         ]
 
-    def validate_configuracion(self, configuracion):
-        tipo = self.initial_data.get('tipo')
+    def validate_configuracion(self, configuration):
+        tipo = self.initial_data.get('type')
         if tipo not in [PlantillaMensaje.TIPO_TEXT]:
             raise serializers.ValidationError({'tipo': _('No soportado por el momento')})
         else:
             if tipo == PlantillaMensaje.TIPO_TEXT:
-                if 'type' not in configuracion\
-                    or configuracion['type'] != 'text'\
-                        or 'text' not in configuracion:
+                if 'type' not in configuration\
+                    or configuration['type'] != 'text'\
+                        or 'text' not in configuration:
                     raise serializers.ValidationError({
                         'error': _('Configuración incorrecta para el tipo de mensaje')})
-        return configuracion
+        return configuration
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    tipo = serializers.IntegerField()
-    configuracion = serializers.JSONField()
+    name = serializers.CharField(source='nombre')
+    type = serializers.IntegerField(source='tipo')
+    configuration = serializers.JSONField(source='configuracion')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    type = serializers.IntegerField(source='tipo')
+    configuration = serializers.JSONField(source='configuracion')
 
     class Meta:
         model = PlantillaMensaje
         fields = [
             'id',
-            'nombre',
-            'tipo',
-            'configuracion'
+            'name',
+            'type',
+            'configuration'
         ]
 
-    @cached_property
-    def _readable_fields(self):
-        return [f for f in self.fields.values()
-                if not f.write_only and f.field_name in self.initial_data]
-
     def validate_configuracion(self, configuracion):
-        if self.initial_data.get('tipo'):
+        if self.initial_data.get('type'):
             tipo = self.initial_data.get('tipo')
         else:
             tipo = self.instance.tipo

@@ -56,9 +56,10 @@ class LineaTest(OMLBaseTest):
         response_linea_list = self.client.get(url)
         proveedor = ConfiguracionProveedorFactory()
         playload = {
-            "nombre": "linea",
-            "proveedor": proveedor.id,
-            "numero": "45665465466456545",
+            "name": "linea",
+            "number": "0000000",
+            "provider": proveedor.id,
+            "configuration": {},
         }
         response_linea_create = self.client.post(url, playload, content_type="application/json")
         self.assertEqual(response_linea_list.status_code, status.HTTP_200_OK)
@@ -70,7 +71,7 @@ class LineaTest(OMLBaseTest):
         url = reverse('whatsapp_app:linea-detail', args=[linea.pk])
         response_linea_detail = self.client.get(url)
         playload = {
-            "nombre": "linea2",
+            "name": "linea2",
         }
         response_linea_update = self.client.put(url, playload, content_type="application/json")
         response_linea_delete = self.client.delete(url, content_type="application/json")

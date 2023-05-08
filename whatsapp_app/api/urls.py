@@ -33,15 +33,15 @@ from whatsapp_app.api import ViewSetRouter
 router = ViewSetRouter(trailing_slash=False)
 
 routes = (
-    (r"providers", whatsapp_app.api.v1.proveedor.ViewSet),
-    (r"lines", whatsapp_app.api.v1.linea.ViewSet),
-    (r"destinations", whatsapp_app.api.v1.destino.ViewSet),
-    (r"plantillas_message", whatsapp_app.api.v1.plantilla_mensaje.ViewSet),
+    (r"provider", whatsapp_app.api.v1.proveedor.ViewSet),
+    (r"line", whatsapp_app.api.v1.linea.ViewSet),
+    (r"destination", whatsapp_app.api.v1.destino.ViewSet),
+    (r"templates_message", whatsapp_app.api.v1.plantilla_mensaje.ViewSet),
     (r"templates_whatsapp", whatsapp_app.api.v1.template_whatsapp.ViewSet),
-    (r"campana", whatsapp_app.api.v1.campana.ViewSet),
-    (r"grupo_plantilla_whatsapp", whatsapp_app.api.v1.grupo_plantilla_whatsapp.ViewSet),
-    (r"grupo_template_whatsapp", whatsapp_app.api.v1.grupo_template_whatsapp.ViewSet),
-    (r"configuracion_whatsapp_campana", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
+    (r"campaing", whatsapp_app.api.v1.campana.ViewSet),
+    (r"group_plantilla_whatsapp", whatsapp_app.api.v1.grupo_plantilla_whatsapp.ViewSet),
+    (r"group_template_whatsapp", whatsapp_app.api.v1.grupo_template_whatsapp.ViewSet),
+    (r"configuration_whatsapp", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
     (r"chat", whatsapp_app.api.v1.conversacion.ViewSet),
     (r"transfer", whatsapp_app.api.v1.transfer.ViewSet),
 )

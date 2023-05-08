@@ -32,7 +32,7 @@ from ominicontacto_app.models import Campana
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
+    name = serializers.CharField(source='nombre')
     type = serializers.IntegerField()
 
 
@@ -50,8 +50,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se obtuvieron las campanas de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener campanas')),

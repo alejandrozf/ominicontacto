@@ -30,35 +30,35 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    conversacion = serializers.IntegerField()
-    contenido = serializers.CharField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
     status = serializers.CharField()
-    fecha = serializers.DateTimeField()
-    emisor = serializers.CharField()
+    date = serializers.DateTimeField()
+    sender = serializers.CharField()
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):
-    conversacion = serializers.IntegerField()
-    contenido = serializers.CharField()
-    emisor = serializers.CharField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
 
 
 class MensajeAtachmentCreateSerializer(serializers.Serializer):
-    conversacion = serializers.IntegerField()
-    contenido = serializers.CharField()
-    emisor = serializers.CharField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
 
 
 class MensajePlantillaCreateSerializer(serializers.Serializer):
-    conversacion = serializers.IntegerField()
-    contenido = serializers.CharField()
-    emisor = serializers.CharField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
 
 
 class MensajeWhatsappTemplateCreateSerializer(serializers.Serializer):
-    conversacion = serializers.IntegerField()
-    contenido = serializers.CharField()
-    emisor = serializers.CharField()
+    conversation = serializers.IntegerField()
+    content = serializers.CharField()
+    sender = serializers.CharField()
 
 
 class ViewSet(viewsets.ViewSet):

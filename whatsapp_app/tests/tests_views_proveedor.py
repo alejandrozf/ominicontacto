@@ -55,8 +55,9 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         url = reverse('whatsapp_app:proveedor-list')
         response_proveedor_list = self.client.get(url)
         playload = {
-            "nombre": "provedor",
-            "tipo_proveedor": 1,
+            "name": "provedor",
+            "provider_type": 1,
+            "configuration": {}
         }
         response_proveedor_create = self.client.post(url, playload, content_type="application/json")
         self.assertEqual(response_proveedor_list.status_code, status.HTTP_200_OK)
@@ -68,7 +69,7 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         url = reverse('whatsapp_app:proveedor-detail', args=[configuaracion.pk])
         response_proveedor_detail = self.client.get(url)
         playload = {
-            "nombre": "provedor2",
+            "name": "provedor2",
         }
         response_proveedor_update = self.client.put(url, playload,
                                                     content_type="application/json")

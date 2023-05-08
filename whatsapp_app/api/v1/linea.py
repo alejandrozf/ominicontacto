@@ -19,7 +19,6 @@
 # APIs para visualizar lineas
 from django.utils.translation import ugettext as _
 from django.contrib.postgres.fields import JSONField
-from django.utils.functional import cached_property
 from django.db.models import F
 from django.db.models import Func
 from django.db.models import Value
@@ -34,107 +33,143 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from whatsapp_app.models import Linea
 from whatsapp_app.models import ConfiguracionProveedor
+from configuracion_telefonia_app.models import DestinoEntrante, GrupoHorario
+from whatsapp_app.models import PlantillaMensaje
 
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    numero = serializers.CharField()
-    proveedor = serializers.IntegerField(source='proveedor.id')
-    configuracion = serializers.JSONField()
-    destino = serializers.IntegerField(source='destino.id', required=False)
-    horario = serializers.IntegerField(source='horario.id', required=False)
-    tipo_de_destino = serializers.IntegerField(source='destino.tipo', required=False)
-    mensaje_bienvenida = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
-    mensaje_despedida = serializers.IntegerField(source='mensaje_despedida.id', required=False)
-    mensaje_fueradehora = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
+    name = serializers.CharField(source='nombre')
+    number = serializers.CharField(source='numero')
+    provider = serializers.IntegerField(source='proveedor.id')
+    configuration = serializers.JSONField(source='configuracion')
+    destination = serializers.IntegerField(source='destino.id', required=False)
+    schedule = serializers.IntegerField(source='horario.id', required=False)
+    destination_type = serializers.IntegerField(source='destino.tipo', required=False)
+    welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
+    farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
+    afterhours_message = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    number = serializers.CharField(source='numero')
+    provider = serializers.PrimaryKeyRelatedField(
+        queryset=ConfiguracionProveedor.objects.all(), source='proveedor')
+    configuration = serializers.JSONField(source='configuracion')
+    destination = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=DestinoEntrante.objects.all(), required=False, source='destino')
+    schedule = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=GrupoHorario.objects.all(), required=False, source='horario')
+    welcome_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_bienvenida')
+    farewell_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_despedida')
+    afterhours_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_fueradehora')
 
     class Meta:
         model = Linea
         fields = [
             'id',
-            'nombre',
-            'numero',
-            'proveedor',
-            'configuracion',
-            'destino',
-            'horario',
-            'mensaje_bienvenida',
-            'mensaje_despedida',
-            'mensaje_fueradehora',
+            'name',
+            'number',
+            'provider',
+            'configuration',
+            'destination',
+            'schedule',
+            'welcome_message',
+            'farewell_message',
+            'afterhours_message'
         ]
 
-    def validate_configuracion(self, configuracion):
-        proveedor_id = self.initial_data.get('proveedor')
+    def validate_configuracion(self, configuration):
+        proveedor_id = self.initial_data.get('provider')
         proveedor = ConfiguracionProveedor.objects.get(pk=proveedor_id)
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'app_name' not in configuracion\
-                    or 'app_id' not in configuracion:
+            if 'app_name' not in configuration\
+                    or 'app_id' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuracion\
-                    or 'token_de_verificacion' not in configuracion:
+            if 'app_id' not in configuration\
+                    or 'token_de_verificacion' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuracion
+        return configuration
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    numero = serializers.CharField()
-    proveedor = serializers.IntegerField(source='proveedor.id')
-    configuracion = serializers.JSONField()
-    destino = serializers.IntegerField(source='destino.id', required=False)
-    horario = serializers.IntegerField(source='horario.id', required=False)
-    mensaje_bienvenida = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
-    mensaje_despedida = serializers.IntegerField(source='mensaje_despedida.id', required=False)
-    mensaje_fueradehora = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
+    name = serializers.CharField(source='nombre')
+    number = serializers.CharField(source='numero')
+    provider = serializers.IntegerField(source='proveedor.id')
+    configuration = serializers.JSONField(source='configuracion')
+    destination = serializers.IntegerField(source='destino.id', required=False)
+    schedule = serializers.IntegerField(source='horario.id', required=False)
+    destination_type = serializers.IntegerField(source='destino.tipo', required=False)
+    welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
+    farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
+    afterhours_message = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    number = serializers.CharField(source='numero')
+    provider = serializers.PrimaryKeyRelatedField(
+        queryset=ConfiguracionProveedor.objects.all(), source='proveedor')
+    configuration = serializers.JSONField(source='configuracion')
+    destination = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=DestinoEntrante.objects.all(),
+        required=False, source='destino')
+    schedule = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=GrupoHorario.objects.all(),
+        required=False, source='horario')
+    welcome_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_bienvenida')
+    farewell_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_despedida')
+    afterhours_message = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=PlantillaMensaje.objects.all(),
+        required=False, source='mensaje_fueradehora')
 
     class Meta:
         model = Linea
         fields = [
             'id',
-            'nombre',
-            'numero',
-            'proveedor',
-            'configuracion',
-            'destino',
-            'horario',
-            'mensaje_bienvenida',
-            'mensaje_despedida',
-            'mensaje_fueradehora',
+            'name',
+            'number',
+            'provider',
+            'configuration',
+            'destination',
+            'schedule',
+            'welcome_message',
+            'farewell_message',
+            'afterhours_message'
         ]
 
-    @cached_property
-    def _readable_fields(self):
-        return [f for f in self.fields.values()
-                if not f.write_only and f.field_name in self.initial_data]
-
-    def validate_configuracion(self, configuracion):
-        if self.initial_data.get('proveedor'):
-            proveedor_id = self.initial_data.get('proveedor')
+    def validate_configuracion(self, configuration):
+        if self.initial_data.get('provider'):
+            proveedor_id = self.initial_data.get('provider')
             proveedor = ConfiguracionProveedor.objects.get(pk=proveedor_id)
         else:
             proveedor = self.instance.proveedor
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'app_name' not in configuracion\
-                    or 'app_id' not in configuracion:
+            if 'app_name' not in configuration\
+                    or 'app_id' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuracion\
-                    or 'token_de_verificacion' not in configuracion:
+            if 'app_id' not in configuration\
+                    or 'token_de_verificacion' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuracion
+        return configuration
 
 
 class ViewSet(viewsets.ViewSet):
@@ -172,8 +207,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se obtuvieron las líneas de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener las líneas')),
@@ -198,8 +232,7 @@ class ViewSet(viewsets.ViewSet):
                     data=get_response_data(
                         message=_('Error en los datos'), errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(message=_('Error al crear la línea')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -238,8 +271,7 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Línea no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener la línea')),
@@ -267,8 +299,7 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Línea no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al actualizar la línea')),

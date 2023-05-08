@@ -37,52 +37,58 @@ from whatsapp_app.models import ConfiguracionProveedor
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    tipo_proveedor = serializers.IntegerField()
-    configuracion = serializers.JSONField()
+    name = serializers.CharField(source='nombre')
+    provider_type = serializers.IntegerField(source='tipo_proveedor')
+    configuration = serializers.JSONField(source='configuracion')
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    provider_type = serializers.IntegerField(source='tipo_proveedor')
+    configuration = serializers.JSONField(source='configuracion')
 
     class Meta:
         model = ConfiguracionProveedor
         fields = [
             "id",
-            "nombre",
-            "tipo_proveedor",
-            "configuracion"
+            "name",
+            "provider_type",
+            "configuration"
         ]
 
-    def validate_configuracion(self, configuracion):
-        tipo_proveedor = self.initial_data.get('tipo_proveedor')
+    def validate_configuracion(self, configuration):
+        tipo_proveedor = self.initial_data.get('provider_type')
         if tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'api_key' not in configuracion:
+            if 'api_key' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'business_id' not in configuracion\
-                    or 'token_de_acceso' not in configuracion:
+            if 'business_id' not in configuration\
+                    or 'token_de_acceso' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuracion
+        return configuration
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    nombre = serializers.CharField()
-    tipo_proveedor = serializers.IntegerField()
-    configuracion = serializers.JSONField()
+    name = serializers.CharField(source='nombre')
+    provider_type = serializers.IntegerField(source='tipo_proveedor')
+    configuration = serializers.JSONField(source='configuracion')
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+    provider_type = serializers.IntegerField(source='tipo_proveedor')
+    configuration = serializers.JSONField(source='configuracion')
 
     class Meta:
         model = ConfiguracionProveedor
         fields = [
             "id",
-            "nombre",
-            "tipo_proveedor",
-            "configuracion"
+            "name",
+            "provider_type",
+            "configuration"
         ]
 
     @cached_property
@@ -90,21 +96,21 @@ class UpdateSerializer(serializers.ModelSerializer):
         return [f for f in self.fields.values()
                 if not f.write_only and f.field_name in self.initial_data]
 
-    def validate_configuracion(self, configuracion):
-        if self.initial_data.get('tipo_proveedor'):
+    def validate_configuracion(self, configuration):
+        if self.initial_data.get('provider_type'):
             tipo_proveedor = self.initial_data.get('tipo_proveedor')
         else:
             tipo_proveedor = self.instance.tipo_proveedor
         if tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'api_key' not in configuracion:
+            if 'api_key' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'business_id' not in configuracion\
-                    or 'token_de_acceso' not in configuracion:
+            if 'business_id' not in configuration\
+                    or 'token_de_acceso' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuracion
+        return configuration
 
 
 class ViewSet(viewsets.ViewSet):
