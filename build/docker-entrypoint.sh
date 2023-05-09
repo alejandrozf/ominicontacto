@@ -27,7 +27,6 @@ SHELL=/bin/bash
 * * * * * flock -n /opt/omnileads/actualizar_campanas_preview.lock /usr/local/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview
 0 1 * * * flock -n /opt/omnileads/callrec_converter.lock /opt/omnileads/bin/callrec_converter.sh
 EOF
-    sed -i "s/8099/8097/g" ${INSTALL_PREFIX}/run/oml_uwsgi.ini
     exec crond &
   fi
 
@@ -36,12 +35,12 @@ EOF
     exec $COMMAND runserver 0.0.0.0:8099
   else
     echo "Iniciando uWSGI"
-
+    
     if [[ $LOGS_FILE == "True" ]]; then
-    echo "crontab disabled"
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log
+    echo "Logs to file"
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --logger file:/opt/omnileads/log/django.log --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
     else
-    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
     fi
   fi
 }
@@ -49,12 +48,16 @@ EOF
 Init_ASGI() {
     cat /dev/null > /var/spool/cron/crontabs/root
     echo "Iniciando Daphne ASGI"
-    exec /usr/local/bin/daphne -p 8098 -b 0.0.0.0 --proxy-headers --verbosity=3 ominicontacto.asgi:application
+    exec /usr/local/bin/daphne -p ${DAPHNE_PORT} -b ${DJANGO_HOSTNAME} --proxy-headers --verbosity=3 ominicontacto.asgi:application
 }
 
 if [ "$1" = "" ]; then
   if [ ! -f /etc/localtime ]; then
     ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+  fi
+
+  if [[ $DJANGO_HOSTNAME == "app" ]]; then
+      DJANGO_HOSTNAME=0.0.0.0
   fi
 
   if [[ $DAPHNE_ENABLE == "True" ]]; then

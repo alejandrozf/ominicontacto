@@ -42,8 +42,8 @@ container-image:
     - |-
       if [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_SECRET}" ]; then
         echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-        docker tag run omnileads/omlapp:1.27.0
-        docker push docker.io/omnileads/omlapp:1.27.0
+        docker tag run omnileads/omlapp:1.27.1
+        docker push docker.io/omnileads/omlapp:1.27.1
       fi
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "oml-dev-2.0"
