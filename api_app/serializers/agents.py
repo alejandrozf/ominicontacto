@@ -16,20 +16,16 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
-from rest_framework.permissions import IsAuthenticated
-from utiles_globales import request_url_name
+from rest_framework import serializers
+from ominicontacto_app.models import AgenteProfile
 
 
-class TienePermisoOML(IsAuthenticated):
-    """Permiso para aplicar a vistas restringidas por PermisoOML"""
+class AgentesParaTransferenciaSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField(read_only=True)
 
-    def has_permission(self, request, view):
-        has_permission = super(TienePermisoOML, self).has_permission(request, view)
-        if not has_permission:
-            return has_permission
+    class Meta:
+        model = AgenteProfile
+        fields = ('id', 'full_name', 'sip_extension')
 
-        current_url_name = request_url_name(request)
-        if hasattr(view, 'basename') and view.basename:
-            current_url_name = view.basename
-        return request.user.tiene_permiso_oml(current_url_name)
+    def get_full_name(self, agente_profile):
+        return agente_profile.user.get_full_name()

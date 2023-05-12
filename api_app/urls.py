@@ -84,7 +84,7 @@ from api_app.views.agente import (
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
-    AgentRejectCallAsterisk, Click2CallOutsideCampaign
+    AgentRejectCallAsterisk, Click2CallOutsideCampaign, ApiAgentesParaTransferencia
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
@@ -489,6 +489,8 @@ urlpatterns = [
             name='api_status_calificacion_llamada'),
     re_path(r'api/v1/evento_hold/', ApiEventoHold.as_view(),
             name='api_evento_hold'),
+    path('api/v1/agent/transfer_options', ApiAgentesParaTransferencia.as_view({'get': 'list'}),
+         name='api_agent_call_transfer_options'),
     # ###########     GRABACIONES      ############ #
     re_path(r'^api/v1/grabacion/archivo/$',
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),

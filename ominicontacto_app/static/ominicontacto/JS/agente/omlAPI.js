@@ -61,13 +61,13 @@ class OMLAPI {
     }
 
     getAgentes(callback) {
-        var URL = Urls.service_agentes_de_grupo();
+        var URL = Urls.api_agent_call_transfer_options();
         $.ajax({
             type: 'get',
             url: URL,
             contentType: 'text/html',
             success: function(msg) {
-                callback(msg.agentes);
+                callback(msg);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);

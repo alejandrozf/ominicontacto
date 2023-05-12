@@ -26,8 +26,6 @@ import logging as _logging
 from django.contrib import messages
 from django.contrib.sessions.models import Session
 from django.core.exceptions import PermissionDenied
-from django.db.models import F, Value
-from django.db.models.functions import Concat
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -368,20 +366,6 @@ class AgentesLogueadosCampana(View):
             'id', 'user__username', 'sip_extension', 'user__id', 'grupo__id')
         agentes_profiles_result = self._parsear_agentes_profiles(agentes_profiles)
         return JsonResponse(data={'agentes': list(agentes_profiles_result)})
-
-
-class AgentesDeGrupoPropioView(View):
-    """
-    Devuelve un JSON con información de los agentes pertenecientes al grupo del agente
-    """
-    def get(self, request):
-        agente_profile = self.request.user.get_agente_profile()
-        agentes_del_grupo = agente_profile.grupo.agentes.obtener_activos() \
-            .exclude(id=agente_profile.id)
-        data_agentes = agentes_del_grupo.annotate(
-            full_name=Concat(F('user__first_name'), Value(' '), F('user__last_name'))) \
-            .values('id', 'full_name', 'sip_extension')
-        return JsonResponse(data={'agentes': list(data_agentes)})
 
 
 class UpdateAgentPasswordView(UpdateView):
