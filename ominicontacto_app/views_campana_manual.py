@@ -23,12 +23,13 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from ominicontacto_app.models import Campana
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import ListView, DeleteView
 from django.views.generic.base import RedirectView
 
+from ominicontacto_app.models import Campana
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 
 import logging as logging_
@@ -38,8 +39,7 @@ logger = logging_.getLogger(__name__)
 
 class CampanaManualListView(ListView):
     """
-    Esta vista lista los objetos Campana de type dialer
-    Vista copiada
+    Esta vista lista los objetos Campana de type Manual
     """
 
     template_name = 'campanas/campana_manual/campana_list.html'
@@ -120,6 +120,9 @@ class CampanaManualSupervisorUpdateView(CampanaSupervisorUpdateView):
 
     def get_success_url(self):
         return reverse('campana_manual_list')
+
+    def _get_redirecccion_campana_erronea(self):
+        return redirect('campana_manual_list')
 
 
 class CampanaManualBorradasListView(CampanaManualListView):

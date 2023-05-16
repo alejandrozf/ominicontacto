@@ -35,7 +35,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView, FormView
 
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
@@ -281,6 +281,9 @@ class CampanaPreviewSupervisorUpdateView(CampanaSupervisorUpdateView):
 
     def get_success_url(self):
         return reverse('campana_preview_list')
+
+    def _get_redirecccion_campana_erronea(self):
+        return redirect('campana_preview_list')
 
 
 def campana_mostrar_ocultar_view(request, *args, **kwargs):

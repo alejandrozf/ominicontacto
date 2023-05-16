@@ -94,26 +94,22 @@ urlpatterns = [
             login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
             name='descargar_usuarios_csv'
             ),
-    re_path(r'^user/delete/(?P<pk>\d+)/$',
-            login_required(views_user_profiles.UserDeleteView.as_view()),
-            name='user_delete',
-            ),
-    re_path(r'^user/update/(?P<pk>\d+)/$',
-            login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
-            name='user_update',
-            ),
-    re_path(r'^user/agent/delete/(?P<pk>\d+)/$',
-            login_required(views_user_profiles.UserDeleteView.as_view()),
-            name='agent_delete', kwargs={'for_agent': ''}
-            ),
-    re_path(r'^user/agent/update/(?P<pk>\d+)/$',
-            login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
-            name='agent_update', kwargs={'for_agent': ''}
-            ),
-    re_path(r'^user/password/$',
-            login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
-            name='user_change_password', kwargs={'change_password': ''}
-            ),
+    path('user/delete/<int:pk>',
+         login_required(views_user_profiles.UserDeleteView.as_view()),
+         name='user_delete'),
+    path('user/update/<int:pk>',
+         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+         name='user_update'),
+    path('user/agent/delete/<int:pk>',
+         login_required(views_user_profiles.UserDeleteView.as_view()),
+         name='agent_delete', kwargs={'for_agent': ''}),
+    path('user/agent/update/<int:pk>',
+         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+         name='agent_update', kwargs={'for_agent': ''}),
+    path('user/password',
+         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+         name='user_change_password', kwargs={'change_password': ''}),
+
     # Perfil Agente  ==========================================================
     path('agente/list/',
          login_required(views_user_profiles.AgenteListView.as_view()),
@@ -620,13 +616,12 @@ urlpatterns = [
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================
-    re_path(r'^campana_dialer/list/$',
-            login_required(views_campana_dialer.CampanaDialerListView.as_view()),
-            name="campana_dialer_list"),
-    re_path(r'^campana_dialer/create/$',
-            login_required(
-                views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
-            name="campana_dialer_create"),
+    path('campana_dialer/list',
+         login_required(views_campana_dialer.CampanaDialerListView.as_view()),
+         name="campana_dialer_list"),
+    path('campana_dialer/create',
+         login_required(views_campana_dialer_creacion.CampanaDialerCreateView.as_view()),
+         name="campana_dialer_create"),
     re_path(r'^campana_dialer/(?P<pk_campana>\d+)/update/$',
             login_required(
                 views_campana_dialer_creacion.CampanaDialerUpdateView.as_view()),
@@ -659,14 +654,12 @@ urlpatterns = [
             login_required(
                 views_campana_dialer.UpdateBaseDatosDialerView.as_view()),
             name="campana_dialer_update_base"),
-    re_path(r'^campana_dialer/(?P<pk_campana>\d+)/supervisors/$',
-            login_required(
-                views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
-            name="campana_dialer_supervisors"),
-    re_path(r'^campana_dialer/mostrar_ocultas/$',
-            login_required(
-                views_campana_dialer.CampanaDialerBorradasListView.as_view()),
-            name="campana_dialer_mostrar_ocultas"),
+    path('campana_dialer/<int:pk_campana>/supervisors',
+         login_required(views_campana_dialer.CampanaDialerSupervisorUpdateView.as_view()),
+         name="campana_dialer_supervisors"),
+    path('campana_dialer/mostrar_ocultas',
+         login_required(views_campana_dialer.CampanaDialerBorradasListView.as_view()),
+         name="campana_dialer_mostrar_ocultas"),
     re_path(r'^campana_dialer/finaliza_actovas/$',
             login_required(
                 views_campana_dialer.FinalizarCampanasActivasView.as_view()),
@@ -708,14 +701,12 @@ urlpatterns = [
     # ==========================================================================
     # Campana Manual
     # ==========================================================================
-    re_path(r'^campana_manual/lista/$',
-            login_required(
-                views_campana_manual.CampanaManualListView.as_view()),
-            name="campana_manual_list"),
-    re_path(r'^campana_manual/create/$',
-            login_required(
-                views_campana_manual_creacion.CampanaManualCreateView.as_view()),
-            name="campana_manual_create"),
+    path('campana_manual/lista',
+         login_required(views_campana_manual.CampanaManualListView.as_view()),
+         name="campana_manual_list"),
+    path('campana_manual/create',
+         login_required(views_campana_manual_creacion.CampanaManualCreateView.as_view()),
+         name="campana_manual_create"),
     re_path(r'^campana_manual/(?P<pk_campana>\d+)/update/$',
             login_required(
                 views_campana_manual_creacion.CampanaManualUpdateView.as_view()),
@@ -732,25 +723,21 @@ urlpatterns = [
             login_required(
                 views_campana_manual.DesOcultarCampanaManualView.as_view()),
             name="campana_manual_desocultar"),
-    re_path(r'^campana_manual/(?P<pk_campana>\d+)/supervisors/$',
-            login_required(
-                views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
-            name="campana_manual_supervisors"),
-    re_path(r'^campana_manual/mostrar_ocultas/$',
-            login_required(
-                views_campana_manual.CampanaManualBorradasListView.as_view()),
-            name="campana_manual_mostrar_ocultas"),
+    path('campana_manual/<int:pk_campana>/supervisors',
+         login_required(views_campana_manual.CampanaManualSupervisorUpdateView.as_view()),
+         name="campana_manual_supervisors"),
+    path('campana_manual/mostrar_ocultas',
+         login_required(views_campana_manual.CampanaManualBorradasListView.as_view()),
+         name="campana_manual_mostrar_ocultas"),
     # ==========================================================================
     # Campana Preview
     # ==========================================================================
-    re_path(r'^campana_preview/lista/$',
-            login_required(
-                views_campana_preview.CampanaPreviewListView.as_view()),
-            name="campana_preview_list"),
-    re_path(r'^campana_preview/create/$',
-            login_required(
-                views_campana_preview.CampanaPreviewCreateView.as_view()),
-            name="campana_preview_create"),
+    path('campana_preview/lista',
+         login_required(views_campana_preview.CampanaPreviewListView.as_view()),
+         name="campana_preview_list"),
+    path('campana_preview/create',
+         login_required(views_campana_preview.CampanaPreviewCreateView.as_view()),
+         name="campana_preview_create"),
     re_path(r'^campana_preview/(?P<pk_campana>\d+)/update/$',
             login_required(
                 views_campana_preview.CampanaPreviewUpdateView.as_view()),
@@ -759,14 +746,12 @@ urlpatterns = [
             login_required(
                 views_campana_preview.CampanaPreviewDeleteView.as_view()),
             name="campana_preview_delete"),
-    re_path(r'^campana_preview/(?P<pk_campana>\d+)/supervisors/$',
-            login_required(
-                views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
-            name="campana_preview_supervisors"),
-    re_path(r'^campana_preview/mostrar_ocultas/$',
-            login_required(
-                views_campana_preview.CampanaPreviewBorradasListView.as_view()),
-            name="campana_preview_mostrar_ocultas"),
+    path('campana_preview/<int:pk_campana>/supervisors',
+         login_required(views_campana_preview.CampanaPreviewSupervisorUpdateView.as_view()),
+         name="campana_preview_supervisors"),
+    path('campana_preview/mostrar_ocultas',
+         login_required(views_campana_preview.CampanaPreviewBorradasListView.as_view()),
+         name="campana_preview_mostrar_ocultas"),
     re_path(r'^campana/mostrar_ocultar/(?P<pk_campana>\d+)/$',
             login_required(
                 views_campana_preview.campana_mostrar_ocultar_view),
@@ -802,15 +787,12 @@ urlpatterns = [
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================
-    re_path(r'campana/list/$',
-            login_required(views_campana.CampanaListView.as_view()),
-            name='campana_list',
-            ),
-    re_path(r'^campana/nuevo/$',
-            login_required(
-                views_campana_creacion.CampanaEntranteCreateView.as_view()),
-            name='campana_nuevo',
-            ),
+    path('campana/list',
+         login_required(views_campana.CampanaListView.as_view()),
+         name='campana_list'),
+    path('campana/nuevo',
+         login_required(views_campana_creacion.CampanaEntranteCreateView.as_view()),
+         name='campana_nuevo'),
     re_path(r'^campana/(?P<pk_campana>\d+)/update/$',
             login_required(
                 views_campana_creacion.CampanaEntranteUpdateView.as_view()),
@@ -826,14 +808,12 @@ urlpatterns = [
     re_path(r'^campana/(?P<pk_campana>\d+)/desocultar/$',
             login_required(views_campana.DesOcultarCampanaView.as_view()),
             name='desoculta_campana', ),
-    re_path(r'^campana/(?P<pk_campana>\d+)/supervisors/$',
-            login_required(
-                views_campana.CampanaSupervisorUpdateView.as_view()),
-            name="campana_supervisors"),
-    re_path(r'^campana/mostrar_ocultas/$',
-            login_required(
-                views_campana.CampanaBorradasListView.as_view()),
-            name="mostrar_campanas_ocultas"),
+    path('campana/<int:pk_campana>/supervisors',
+         login_required(views_campana.CampanaSupervisorUpdateView.as_view()),
+         name="campana_supervisors"),
+    path('campana/mostrar_ocultas',
+         login_required(views_campana.CampanaBorradasListView.as_view()),
+         name="mostrar_campanas_ocultas"),
     # ==========================================================================
     # Blacklist
     # ==========================================================================

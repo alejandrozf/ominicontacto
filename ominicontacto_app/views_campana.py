@@ -168,6 +168,19 @@ class CampanaSupervisorUpdateView(UpdateView):
     context_object_name = 'campana'
     form_class = CampanaSupervisorUpdateForm
 
+    def dispatch(self, request, *args, **kwargs):
+        campana = self.get_object()
+        if self.request.user.is_authenticated and self.request.user and \
+                not self.request.user.get_is_administrador():
+            profile = self.request.user.get_supervisor_profile()
+            asignado = profile.esta_asignado_a_campana(campana)
+            creador = profile.es_creador_de_campana(campana)
+            if not (asignado or creador):
+                messages.warning(
+                    self.request, _("No tiene permiso para asignar supervisores a esta campaña."))
+                return self._get_redirecccion_campana_erronea()
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
@@ -184,6 +197,9 @@ class CampanaSupervisorUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('campana_list')
+
+    def _get_redirecccion_campana_erronea(self):
+        return redirect('campana_list')
 
 
 class CampanaBorradasListView(CampanaListView):
