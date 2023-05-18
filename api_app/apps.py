@@ -106,6 +106,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_status_calificacion_llamada',
              'roles': ['Agente', ]},
+            {'nombre': 'api_auditoria_archivo',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_archivo',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_descarga_masiva',
@@ -386,6 +388,9 @@ class ApiAppConfig(AppConfig):
              'version': '1.8.0'},
         'reenviar_key_registro':
             {'description': _('Reenvía la llave de la instancia registrada por email')},
+        'api_auditoria_archivo':
+            {'descripcion': _('Retorna el archivo csv de auditoria'),
+             'version': '1.11.0'},
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},

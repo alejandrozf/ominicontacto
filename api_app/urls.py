@@ -89,6 +89,7 @@ from api_app.views.agente import (
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
 )
+from api_app.views.auditoria import ObtenerArchivoAuditoriaView
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
@@ -491,6 +492,9 @@ urlpatterns = [
             name='api_evento_hold'),
     path('api/v1/agent/transfer_options', ApiAgentesParaTransferencia.as_view({'get': 'list'}),
          name='api_agent_call_transfer_options'),
+    # ###########     AUDITORIAS       ############ #
+    path('api/v1/auditoria/archivo',
+         ObtenerArchivoAuditoriaView.as_view(), name='api_auditoria_archivo'),
     # ###########     GRABACIONES      ############ #
     re_path(r'^api/v1/grabacion/archivo/$',
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),

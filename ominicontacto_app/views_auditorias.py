@@ -135,7 +135,7 @@ class AuditarCalificacionesFormView(FormView):
 
         return self.render_to_response(self.get_context_data(
             listado_de_calificaciones=listado_de_calificaciones, pagina=pagina,
-            no_renderizar=False))
+            no_renderizar=False, user_id=self.request.user.id))
 
 
 class AuditoriaCalificacionFormView(FormView):
