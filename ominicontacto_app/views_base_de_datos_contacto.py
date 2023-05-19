@@ -185,6 +185,67 @@ class BaseDatosContactoUpdateView(UpdateView):
                            kwargs={"pk_campana": self.campana.id})
 
 
+class BaseDatosContactoDeleteView(DeleteView):
+    """
+    Esta vista se encarga del borrado del
+    objeto Base de Datos seleccionado.
+    """
+
+    model = BaseDatosContacto
+    template_name = 'base_datos_contacto/eliminar_base_datos_contacto.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # Si no esta asignada a ninguna campaña permito su borrado
+        if self.object.campanas.exists():
+            message = _('<strong>¡Cuidado!</strong> ') +\
+                _('La Base Datos Contacto que intenta eliminar esta siendo utilizada '
+                  'por alguna campaña. No se llevará a cabo el borrado la misma '
+                  'mientras esté siendo utilizada.')
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super(BaseDatosContactoDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        try:
+            self.object.estado = BaseDatosContacto.ESTADO_EN_DEPURACION
+            self.object.save()
+            self.object.elimina_contactos()
+            self.object.delete()
+        except OmlDepuraBaseDatoContactoError:
+            message = _('<strong>¡Operación Errónea!</strong> ') +\
+                _('La Base Datos de Contactoa no se pudo eliminar.')
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return HttpResponseRedirect(success_url)
+        else:
+            message = _('<strong>Operación Exitosa!</strong> ') +\
+                _('Se llevó a cabo con éxito el borrado de la Base de Datos.')
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+            return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse(
+            'lista_base_datos_contacto', args=[1]
+        )
+
+
 class DefineBaseDatosContactoView(UpdateView):
     """
     Esta vista se obtiene un resumen de la estructura

@@ -239,17 +239,19 @@ urlpatterns = [
                 views_base_de_datos_contacto.BaseDatosContactoListView.as_view()),
             name='lista_base_datos_contacto',
             ),
-    re_path(r'^base_datos_contacto/nueva/$',
-            login_required(
-                views_base_de_datos_contacto.BaseDatosContactoCreateView.as_view()),
-            name='nueva_base_datos_contacto'
-            ),
-    re_path(r'^base_datos_contacto/(?P<pk_bd_contacto>\d+)/actualizar/$',
-            login_required(
-                views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
-            name='update_base_datos_contacto'
-            ),
-    path('campana/base_datos_contacto/<int:pk_campana>/actualizar/',
+    path('base_datos_contacto/nueva',
+         login_required(views_base_de_datos_contacto.BaseDatosContactoCreateView.as_view()),
+         name='nueva_base_datos_contacto'
+         ),
+    path('base_datos_contacto/<int:pk>/borrar/',
+         login_required(views_base_de_datos_contacto.BaseDatosContactoDeleteView.as_view()),
+         name='delete_base_datos_contacto'
+         ),
+    path('base_datos_contacto/<int:pk_bd_contacto>/actualizar',
+         login_required(views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
+         name='update_base_datos_contacto'
+         ),
+    path('campana/base_datos_contacto/<int:pk_campana>/actualizar',
          login_required(
              views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
          name='update_base_datos_contacto_de_campana'
