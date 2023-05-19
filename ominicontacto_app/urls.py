@@ -234,10 +234,6 @@ urlpatterns = [
             login_required(
                 views_agente.CampanasActivasView.as_view()),
             name="service_campanas_activas"),
-    re_path(r'^service/agente/otros_agentes_de_grupo/$',
-            login_required(
-                views_agente.AgentesDeGrupoPropioView.as_view()),
-            name="service_agentes_de_grupo"),
 
     # ==========================================================================
     # Base Datos Contacto

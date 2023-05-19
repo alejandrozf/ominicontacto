@@ -116,6 +116,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
              'roles': ['Agente', ]},
+            {'nombre': 'api_agent_call_transfer_options',
+             'roles': ['Agente', ]},
             {'nombre': 'api_audios_listado',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_grupos',
@@ -399,6 +401,9 @@ class ApiAppConfig(AppConfig):
         'api_evento_hold':
             {'descripcion': _('Loggea el evento hold o unhold'),
              'version': '1.13.0'},
+        'api_agent_call_transfer_options':
+            {'descripcion': _('Lista de agentes para transferir llamadas'),
+             'version': '1.29.0'},
         'api_audios_listado':
             {'descripcion': _('Lista audios de asterisk'),
              'version': '1.16.0'},

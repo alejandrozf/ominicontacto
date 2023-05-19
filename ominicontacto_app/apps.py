@@ -400,8 +400,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'service_campanas_activas',
              'roles': ['Agente', ]},
-            {'nombre': 'service_agentes_de_grupo',
-             'roles': ['Agente', ]},
             {'nombre': 'lista_base_datos_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'nueva_base_datos_contacto',
@@ -780,9 +778,6 @@ class OminicontactoAppConfig(AppConfig):
         'service_campanas_activas':
             {'descripcion':
              _('Lista de Campanas activas. Se usan como opciones para transferencias.'),
-             'version': '1.7.0'},
-        'service_agentes_de_grupo':
-            {'descripcion': _('Lista de Agentes del mismo grupo que el Agente loggeado'),
              'version': '1.7.0'},
         'lista_base_datos_contacto':
             {'descripcion': _('Lista de bases de datos de contactos'), 'version': '1.7.0'},

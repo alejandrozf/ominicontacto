@@ -37,6 +37,7 @@ from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSitePar
 from api_app.serializers.base import (
     OpcionCalificacionSerializer, CalificacionClienteSerializer,
     CalificacionClienteNuevoContactoSerializer)
+from api_app.serializers.agents import AgentesParaTransferenciaSerializer
 from api_app.views.permissions import TienePermisoOML
 
 from ominicontacto_app.models import (
@@ -562,3 +563,14 @@ class ApiEventoHold(APIView):
             return Response(data={'status': 'OK'})
         else:
             return Response(data={'status': 'ERROR'})
+
+
+class ApiAgentesParaTransferencia(viewsets.ModelViewSet):
+    """Servicio que devuelve las opciones de calificación de una campaña
+    """
+    serializer_class = AgentesParaTransferenciaSerializer
+    permission_classes = (TienePermisoOML, )
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        return AgenteProfile.objects.obtener_activos()
