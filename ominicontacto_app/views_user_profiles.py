@@ -250,7 +250,11 @@ class CustomerUserUpdateView(UpdateView):
             return False
         if self.for_agent:
             if self.request.user.is_supervisor:
-                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+                supervisor_profile = self.request.user.get_supervisor_profile()
+                agente_profile = user.get_agente_profile()
+                asignado = self.request.user.tiene_agente_asignado(agente_profile)
+                creado = supervisor_profile.es_creador_de_agente(agente_profile)
+                return asignado or creado
         return True
 
     def get_object(self, *args, **kwargs):
@@ -351,7 +355,11 @@ class UserDeleteView(DeleteView):
             return False
         if self.for_agent:
             if self.request.user.is_supervisor:
-                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+                supervisor_profile = self.request.user.get_supervisor_profile()
+                agente_profile = user.get_agente_profile()
+                asignado = self.request.user.tiene_agente_asignado(agente_profile)
+                creado = supervisor_profile.es_creador_de_agente(agente_profile)
+                return asignado or creado
         return True
 
     def get_context_data(self, **kwargs):
