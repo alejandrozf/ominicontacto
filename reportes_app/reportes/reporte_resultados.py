@@ -22,7 +22,7 @@ from collections import OrderedDict
 from django.core.paginator import Paginator
 from django.utils.translation import gettext_lazy as _
 from django.db import connection
-from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.models import CalificacionCliente, Campana, AgenteEnContacto
 from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
 from reportes_app.models import LlamadaLog
 
@@ -36,9 +36,7 @@ class ReporteDeResultadosDeCampana(object):
         self.campana = campana
 
         self.contactaciones = OrderedDict()
-        contactos = self.campana.bd_contacto.contactos.order_by("id")
-        if todos_contactos is False:
-            contactos = contactos.filter(es_originario=True)
+        contactos = self.obtener_contactos(todos_contactos)
         if page_number is not None:
             self.paginator = Paginator(contactos, page_size)
             self.page = self.paginator.page(page_number)
@@ -48,6 +46,21 @@ class ReporteDeResultadosDeCampana(object):
         if len(contactos_ids) > 0:
             calificados_ids = self._registrar_calificaciones(contactos_ids)
             self._registrar_no_calificados(contactos_ids, calificados_ids)
+
+    def obtener_contactos(self, todos_contactos):
+        contactos = self.campana.bd_contacto.contactos.order_by("id")
+        if self.campana.type == Campana.TYPE_PREVIEW:
+            contactos = contactos.filter(es_originario=True)
+            if todos_contactos:
+                return contactos
+            ids_activos = AgenteEnContacto.objects.activos(self.campana.id).values_list(
+                'contacto_id')
+            return contactos.filter(id__in=ids_activos)
+
+        if todos_contactos:
+            return contactos
+        else:
+            return contactos.filter(es_originario=True)
 
     @property
     def is_paginated(self):
