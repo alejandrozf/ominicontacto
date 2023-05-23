@@ -61,7 +61,8 @@ export default {
         message_template: 'Message template | Message templates',
         whatsapp_template: 'WhatsApp template | Whatsapp template',
         group_of_message_template: 'Group of message templates | Message template groups',
-        group_of_whatsapp_template: 'Whatsapp template group | Whatsapp template groups'
+        group_of_whatsapp_template: 'Whatsapp template group | Whatsapp template groups',
+        template: 'Template | Templates'
     },
     // -------------
     // -- Actions --
@@ -108,6 +109,10 @@ export default {
     reorder: 'Reorder',
     register: 'Register',
     sync: 'Sync up',
+    send: 'Enviar',
+    transfer: 'Transferir',
+    attach: 'Attach',
+    upload: 'Upload',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -133,6 +138,19 @@ export default {
     october: 'October',
     november: 'November',
     december: 'December',
+    // -------------
+    // --- Media ---
+    // -------------
+    media: {
+        image: 'Image | Images',
+        doc: 'File | Files',
+        uploaderForm: {
+            invalid_file_limit_message: 'Maximum number of files to be uploaded is {num}',
+            invalid_file_size_message: 'Invalid file size, file size should be smaller than {num}',
+            invalid_file_type_message: 'Invalid file type',
+            drag_and_drop: 'Drag and drop files to here to upload'
+        }
+    },
     // ---------------------
     // --- Notifications ---
     // ---------------------

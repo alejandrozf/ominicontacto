@@ -197,6 +197,21 @@ export default {
         group_of_whatsapp_template: {
             new_title: 'New group',
             edit_title: 'Edit group'
+        },
+        disposition_form: {
+            form: 'Form',
+            record: 'Record',
+            management: 'Management'
+        },
+        media_uploader: {
+            title: 'File management'
+        },
+        message_transfer: {
+            title: 'Transfer chat'
+        },
+        conversations: {
+            answered: 'Answered',
+            new: 'New'
         }
     }
 };

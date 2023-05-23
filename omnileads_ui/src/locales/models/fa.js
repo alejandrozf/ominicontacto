@@ -213,6 +213,23 @@ export default {
             nombre: 'نام',
             plantillas: 'قالب ها',
             status: 'حالت'
+        },
+        disposition_form: {
+            from: 'از',
+            to: 'برای',
+            phone: 'تلفن',
+            agent: 'عامل',
+            type: 'پسر',
+            mean: 'نیم',
+            result: 'نتیجه',
+            score: 'صلاحیت',
+            start_datetime: 'تاریخ شروع',
+            end_datetime: 'تاریخ پایان',
+            observation: 'مشاهدات'
+        },
+        message_transfer: {
+            from: 'از',
+            to: 'برای'
         }
     }
 };

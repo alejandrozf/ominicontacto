@@ -61,7 +61,8 @@ export default {
         message_template: 'Template de mensaje | Templates de mensajes',
         whatsapp_template: 'Template de whatsapp | Templates de whatsapp',
         group_of_message_template: 'Grupo de plantillas de mensaje | Grupos de plantillas de mensaje',
-        group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp'
+        group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp',
+        template: 'Plantilla | Plantillas'
     },
     // -------------
     // -- Actions --
@@ -108,6 +109,10 @@ export default {
     reorder: 'Reordenar',
     register: 'Registrar',
     sync: 'Sincronizar',
+    send: 'Enviar',
+    transfer: 'Transferir',
+    attach: 'Adjuntar',
+    upload: 'Subir',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -133,6 +138,19 @@ export default {
     october: 'Octubre',
     november: 'Noviembre',
     december: 'Diciembre',
+    // -------------
+    // --- Media ---
+    // -------------
+    media: {
+        image: 'Imagen | Imagenes',
+        doc: 'Documento | Documentos',
+        uploaderForm: {
+            invalid_file_limit_message: 'El número máximo de archivos que se pueden cargar es {num}',
+            invalid_file_size_message: 'Tamaño de archivo no válido, el tamaño del archivo debe ser menor que {num}',
+            invalid_file_type_message: 'Tipo de archivo invalido',
+            drag_and_drop: 'Arrastre y suelte los archivos aquí para cargarlos'
+        }
+    },
     // ---------------------
     // --- Notifications ---
     // ---------------------

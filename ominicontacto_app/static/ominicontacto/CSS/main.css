@@ -564,6 +564,20 @@ body > h1 {
   margin-bottom: 100px;
 }
 
+.whatsapp_panel_view {
+  width: 600px;
+  height: 850px;
+  background-color: transparent;
+}
+
+.whatsapp_iframe_container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  border: none;
+}
+
 /* Other */
 .infoAjax {
   font-size: 16px;
@@ -910,6 +924,10 @@ body > h1 {
 }
 
 #bottomBar #webCall {
+  color: #52C159;
+}
+
+#bottomBar #whatsappChat {
   color: #52C159;
 }
 

@@ -35,6 +35,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/daterangepicker.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
+        <!-- Sweetalert2 -->
+        <link rel="stylesheet" href="{% static 'CSS/ext/sweetalert2.min.css' %}">
         {% block extra_css %}{% endblock %}
         <!-- Fonts -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
@@ -134,7 +136,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
         {% block extra_js %}{% endblock %}
-
+        <script type="text/javascript" src="{% static 'JS/ext/sweetalert2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/whatsapp_notifications.js' %}"></script>
         <!-- Cambiar idioma -->
         <script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/register_server.js' %}"></script>

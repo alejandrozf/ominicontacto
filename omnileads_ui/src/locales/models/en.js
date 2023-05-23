@@ -213,6 +213,23 @@ export default {
             nombre: 'Name',
             templates: 'Templates',
             status: 'Status'
+        },
+        disposition_form: {
+            from: 'From',
+            to: 'To',
+            phone: 'Phone',
+            agent: 'Agent',
+            type: 'Type',
+            mean: 'Mean',
+            result: 'Result',
+            score: 'Score',
+            start_datetime: 'Start date',
+            end_datetime: 'End date',
+            observation: 'Observations'
+        },
+        message_transfer: {
+            from: 'From',
+            to: 'To'
         }
     }
 };

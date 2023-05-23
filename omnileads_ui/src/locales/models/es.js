@@ -213,6 +213,23 @@ export default {
             nombre: 'Nombre',
             templates: 'Plantillas',
             status: 'Estado'
+        },
+        disposition_form: {
+            from: 'De',
+            to: 'Para',
+            phone: 'Telefono',
+            agent: 'Agente',
+            type: 'Tipo',
+            mean: 'Medio',
+            result: 'Resultado',
+            score: 'Calificacion',
+            start_datetime: 'Fecha de inicio',
+            end_datetime: 'Fecha de fin',
+            observation: 'Observaciones'
+        },
+        message_transfer: {
+            from: 'De',
+            to: 'Para'
         }
     }
 };

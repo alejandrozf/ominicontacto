@@ -61,7 +61,8 @@ export default {
         message_template: 'قالب پیام | الگوهای پیام',
         whatsapp_template: 'قالب واتس اپ | قالب واتساپ',
         group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام',
-        group_of_whatsapp_template: 'گروه قالب واتساپ | گروه های قالب واتساپ'
+        group_of_whatsapp_template: 'گروه قالب واتساپ | گروه های قالب واتساپ',
+        template: 'الگو | قالب ها'
     },
     // -------------
     // -- Actions --
@@ -108,6 +109,10 @@ export default {
     reorder: 'دوباره سفارش دهید',
     register: 'برای ثبت نام',
     sync: 'همگام سازی کنید',
+    send: 'ارسال',
+    transfer: 'انتقال',
+    attach: 'ضمیمه کنید',
+    upload: 'افزایش دادن',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -133,6 +138,19 @@ export default {
     october: 'اکتبر',
     november: 'نوامبر',
     december: 'دسامبر',
+    // -------------
+    // --- Media ---
+    // -------------
+    media: {
+        image: 'تصویر | تصاویر',
+        doc: 'سند | اسناد',
+        uploaderForm: {
+            invalid_file_limit_message: 'حداکثر تعداد فایل هایی که می توان آپلود کرد {num} است',
+            invalid_file_size_message: 'اندازه فایل نامعتبر است، اندازه فایل باید کمتر از {num} باشد',
+            invalid_file_type_message: 'نوع فایل نامعتبر',
+            drag_and_drop: 'برای آپلود فایل ها را به اینجا بکشید و رها کنید'
+        }
+    },
     // ---------------------
     // --- Notifications ---
     // ---------------------

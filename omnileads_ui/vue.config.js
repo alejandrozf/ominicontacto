@@ -47,7 +47,15 @@ module.exports = {
         supervisor_whatsapp_message_templates: getPageConfig('supervisor_whatsapp_message_templates'),
         supervisor_whatsapp_templates: getPageConfig('supervisor_whatsapp_templates'),
         supervisor_whatsapp_group_of_message_templates: getPageConfig('supervisor_whatsapp_group_of_message_templates'),
-        supervisor_whatsapp_group_of_whatsapp_templates: getPageConfig('supervisor_whatsapp_group_of_whatsapp_templates')
+        supervisor_whatsapp_group_of_whatsapp_templates: getPageConfig('supervisor_whatsapp_group_of_whatsapp_templates'),
+        // Agent Pages
+        agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
+        agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),
+        agent_whatsapp_templates: getPageConfig('agent_whatsapp_templates'),
+        agent_whatsapp_disposition_form: getPageConfig('agent_whatsapp_disposition_form'),
+        agent_whatsapp_message_transfer: getPageConfig('agent_whatsapp_message_transfer'),
+        agent_whatsapp_image_uploader: getPageConfig('agent_whatsapp_image_uploader'),
+        agent_whatsapp_file_uploader: getPageConfig('agent_whatsapp_file_uploader')
     },
     devServer: {
         contentBase: './src/assets',

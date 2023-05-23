@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { supervisorActions, supervisorGetters, supervisorMutations, supervisorState } from './supervisor';
-import { agentActions, agentMutations, agentState } from './agent';
+import { agentActions, agentMutations, agentState, agentGetters } from './agent';
 
 export default createStore({
     state: {
@@ -18,6 +18,7 @@ export default createStore({
     modules: {
     },
     getters: {
-        ...supervisorGetters
+        ...supervisorGetters,
+        ...agentGetters
     }
 });

@@ -48,6 +48,15 @@ import ProgressSpinner from 'primevue/progressspinner';
 import Avatar from 'primevue/avatar';
 import Image from 'primevue/image';
 import InputMask from 'primevue/inputmask';
+import Avatar from 'primevue/avatar';
+import Chip from 'primevue/chip';
+import Badge from 'primevue/badge';
+import BadgeDirective from 'primevue/badgedirective';
+import Listbox from 'primevue/listbox';
+import SplitButton from 'primevue/splitbutton';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import Tag from 'primevue/tag';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -65,7 +74,11 @@ const i18n = createI18n({
 
 const app = createApp(App);
 
+// Directives Primevue
+app.directive('badge', BadgeDirective);
 app.directive('tooltip', Tooltip);
+
+// Components Primevue
 app.component('Card', Card);
 app.component('Button', Button);
 app.component('InputText', InputText);
@@ -95,6 +108,14 @@ app.component('ProgressSpinner', ProgressSpinner);
 app.component('Avatar', Avatar);
 app.component('Image', Image);
 app.component('InputMask', InputMask);
+app.component('Avatar', Avatar);
+app.component('Chip', Chip);
+app.component('Badge', Badge);
+app.component('Listbox', Listbox);
+app.component('SplitButton', SplitButton);
+app.component('TabView', TabView);
+app.component('TabPanel', TabPanel);
+app.component('Tag', Tag);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

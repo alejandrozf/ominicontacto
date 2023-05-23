@@ -234,6 +234,11 @@ export default {
                 }
             }
         },
+        line: {
+            validations: {
+                field_is_required: '{field} این لازم است'
+            }
+        },
         group_of_message_template: {
             validations: {
                 not_empty_templates: 'حداقل باید یک الگو وجود داشته باشد'
