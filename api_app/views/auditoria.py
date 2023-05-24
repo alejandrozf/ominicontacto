@@ -132,7 +132,8 @@ class ObtenerArchivoAuditoriaView(APIView):
         mostrar_detalles = json.loads(params.get('mostrar_detalles'))
         supervisor_id = request.user.id
         TASK_ID = 'csv'
-        key_task = 'OML:STATUS_DOWNLOAD:DISPOSITIONED:{0}:{1}'.format(supervisor_id, TASK_ID)
+        key_task = 'OML:STATUS_DOWNLOAD_AUDITORIA:DISPOSITIONED:{0}:{1}'.format(supervisor_id,
+                                                                                TASK_ID)
         thread_exportacion = threading.Thread(
             target=self.generar_csv_calificaciones,
             args=[key_task, supervisor_id, calificaciones_id, mostrar_detalles])

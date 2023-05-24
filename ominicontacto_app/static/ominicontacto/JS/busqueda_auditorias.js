@@ -105,7 +105,7 @@ function wsProcess() {
     var $csvDescarga = $('#csvDescarga');
     var $csvDescargaLink = $('#csvDescargaLink');
     const userId = $('#user_id').val();
-    const url = `wss://${window.location.host}/consumers/genera_zip_grabaciones/calificados/${userId}/csv`;
+    const url = `wss://${window.location.host}/consumers/genera_csv_auditoria/calificados/${userId}/csv`;
     const rws = new ReconnectingWebSocket(url, [], {
         connectionTimeout: 8000,
         maxReconnectionDelay: 3000,
