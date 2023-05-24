@@ -21,7 +21,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/busqueda_auditorias.js' %}"></script>
 {% endblock %}
 {% block content %}
@@ -30,6 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <h1>{% trans 'Auditoría' %}</h1>
     <h2>{% trans 'Buscar calificaciones de gestión' %}</h1>
 
+    <input id="user_id" type="hidden" value="{{user_id}}">
     <div id="wrapper-search">
         <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
         <div id="wrapperSearchForm" class="show">
@@ -43,9 +46,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     {% if no_renderizar == False %}
     <div class="wrapper-results">
+            <div class="row ml-2">
+            <div class="col-md-3">
+                <div class="row">
+                    <input type="button" class="btn btn-outline-primary btn-sm mb-2" value="{% trans 'Generar csv de auditoria' %}" id="csvDescarga"></input>
+                    <a class="hidden mb-2" id="csvDescargaLink" href="{% url 'api_auditoria_archivo' %}">{% trans "Descargar archivo de auditoria (CSV)" %}</a>
+                </div>
+                <div id="barraProgresoCSV" class="hidden mt-1">
+                    <div class="progress ">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="check-mostrar-detalles">{% trans "Agregar los detalles de calificación:" %}</label>
+                <input class=" ml-0 mt-0" type="checkbox" name="check-mostrar-detalles" id="check-mostrar-detalles" title="{% trans '¡Advertencia! Esta acción puede consumir más recursos de los esperados, según el rango de fecha seleccionado.' %}" >
+            </div>
+        </div>
         <table class="table table-stripped">
             <thead>
                 <tr>
+                    <th>
+                        <input class=" ml-0 mt-0" type="checkbox" value="" id="check-general">
+                    </th>
                     <th>{% trans 'Fecha/Hora' %}</th>
                     <th>{% trans 'Agente' %}</th>
                     <th>{% trans 'Id de contacto' %}</th>
@@ -65,6 +88,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% else %}
                             <tr class="observada">
                     {% endif %}
+                        <td> <input class="form-check-input ml-0 check-auditoria" type="checkbox" value="{{calificacion.id}}"></td>
                         <td>{{ calificacion.modified|date:"Y-m-d H:i"}}</td>
                         <td>{{ calificacion.agente}}</td>
                         <td>{{ calificacion.contacto.id}}</td>
