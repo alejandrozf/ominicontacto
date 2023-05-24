@@ -660,5 +660,5 @@ class ApiAppConfig(AppConfig):
              'version': '1.26.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
-             'version': 'X.X.X'},
+             'version': '1.27.0'},
     }

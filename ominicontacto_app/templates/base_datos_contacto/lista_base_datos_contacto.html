@@ -76,6 +76,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
                                     <span class="icon icon-plus"></span>{% trans 'Agregar contactos' %}
                                 </a>
+                                <a class="dropdown-item" href="{% url 'delete_base_datos_contacto' base_datos_contacto.pk %}">
+                                    <span class="icon icon-trash"></span>{% trans 'Borrar Base de Contactos' %}
+                                </a>
                                 {% if base_datos_contacto.oculto %}
                                 <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
                                     <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}

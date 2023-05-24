@@ -404,6 +404,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'nueva_base_datos_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'delete_base_datos_contacto',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'update_base_datos_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'update_base_datos_contacto_de_campana',
@@ -783,6 +785,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Lista de bases de datos de contactos'), 'version': '1.7.0'},
         'nueva_base_datos_contacto':
             {'descripcion': _('Crear base de datos de contacto'), 'version': '1.7.0'},
+        'delete_base_datos_contacto':
+            {'descripcion': _('Eliminar base de datos de contacto'), 'version': '1.29.0'},
         'update_base_datos_contacto':
             {'descripcion': _('Agregar lista de contactos a base de datos de contacto'),
              'version': '1.7.0'},
