@@ -33,6 +33,9 @@ import GroupOfHourState from './group_of_hours/state';
 import IVRActions from './ivrs/actions';
 import IVRMutations from './ivrs/mutations';
 import IVRState from './ivrs/state';
+import RegisterServerActions from './register_server/actions';
+import RegisterServerMutations from './register_server/mutations';
+import RegisterServerState from './register_server/state';
 const agentsCampaignService = new AgentsCampaignService();
 
 export default createStore({
@@ -51,7 +54,8 @@ export default createStore({
         ...InboundRouteState,
         ...OutboundRouteState,
         ...GroupOfHourState,
-        ...IVRState
+        ...IVRState,
+        ...RegisterServerState
     },
     mutations: {
         addAgentToCampaign (state, newAgent) {
@@ -87,7 +91,8 @@ export default createStore({
         ...InboundRouteMutations,
         ...OutboundRouteMutations,
         ...GroupOfHourMutations,
-        ...IVRMutations
+        ...IVRMutations,
+        ...RegisterServerMutations
     },
     actions: {
         addAgentToCampaign ({ commit }, newAgent) {
@@ -119,7 +124,8 @@ export default createStore({
         ...InboundRouteActions,
         ...OutboundRouteActions,
         ...GroupOfHourActions,
-        ...IVRActions
+        ...IVRActions,
+        ...RegisterServerActions
     },
     modules: {
     },

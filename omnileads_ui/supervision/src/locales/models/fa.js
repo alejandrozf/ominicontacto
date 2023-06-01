@@ -150,5 +150,11 @@ export default {
         dtmf: 'DTMF',
         destination_type: 'نوع مقصد',
         destination: 'سرنوشت'
+    },
+    register_server: {
+        name: 'نام و یا شرکت',
+        email: 'پست الکترونیک',
+        password: 'رمز دسترسی',
+        phone: 'تلفن'
     }
 };

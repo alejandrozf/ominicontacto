@@ -150,5 +150,11 @@ export default {
         dtmf: 'DTMF',
         destination_type: 'Destination type',
         destination: 'Destination'
+    },
+    register_server: {
+        name: 'Name or company',
+        email: 'Email',
+        password: 'Access password',
+        phone: 'Phone'
     }
 };

@@ -43,6 +43,10 @@ import Password from 'primevue/password';
 import FileUpload from 'primevue/fileupload';
 import RadioButton from 'primevue/radiobutton';
 import Fieldset from 'primevue/fieldset';
+import Tag from 'primevue/tag';
+import ProgressSpinner from 'primevue/progressspinner';
+import Avatar from 'primevue/avatar';
+import Image from 'primevue/image';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -84,6 +88,10 @@ app.component('Password', Password);
 app.component('FileUpload', FileUpload);
 app.component('RadioButton', RadioButton);
 app.component('Fieldset', Fieldset);
+app.component('Tag', Tag);
+app.component('ProgressSpinner', ProgressSpinner);
+app.component('Avatar', Avatar);
+app.component('Image', Image);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

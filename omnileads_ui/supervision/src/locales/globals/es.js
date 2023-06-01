@@ -96,6 +96,7 @@ export default {
     down: 'Mover abajo',
     reactivate: 'Reactivar',
     reorder: 'Reordenar',
+    register: 'Registrar',
     // ----------------
     // --- weekdays ---
     // ----------------
