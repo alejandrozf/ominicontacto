@@ -118,5 +118,31 @@ export default {
     destination_option: {
         new_title: 'Nuevo destino',
         edit_title: 'Edita el destino'
+    },
+    register_server: {
+        title: 'Registro De Instancia',
+        info1: 'Gracias por utilizar OMniLeads, la Suite de Contact Center Open Source mas completa y amigable del mercado',
+        info2: 'Vaya! Esta instancia aun no esta registrada.',
+        info3: 'A partir de este registro, podremos informarte sobre:',
+        info4: 'Además, podrás apoyarnos con casos de uso o bugs de software de manera más ágil (podrás solicitar la baja del canal de comunicación en cualquier momento).',
+        info5: 'En caso de dudas, contacte a su Administrador.',
+        info6: 'Nuevos Releases',
+        info7: 'Nuevos Addons',
+        info8: 'Ofertas especiales',
+        info9: 'Avances de Roadmap',
+        info10: 'Articulos de Blogs',
+        info11: 'Notas del producto',
+        privacy_policies: 'Políticas de privacidad',
+        detail: {
+            title: 'Gracias por su registro',
+            already_register: 'Ya está registrado',
+            resend_key: 'Reenviar Key',
+            user: 'Usuario',
+            http_responses: {
+                res1: 'Los datos de la llave fueron enviados con éxito a su email',
+                res2: 'No fue posible conectar con el servidor de llaves',
+                res3: 'Los datos enviados desde la instancia no son correctos'
+            }
+        }
     }
 };

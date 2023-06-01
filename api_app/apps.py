@@ -286,6 +286,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_ivrs_destination_types_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_register_server_detail',
+             'roles': ['Administrador']},
+            {'nombre': 'api_register_server_create',
+             'roles': ['Administrador']},
             {'nombre': 'api_log_survey_transfer',
              'roles': ['Agente', ]},
         ]
@@ -658,6 +662,12 @@ class ApiAppConfig(AppConfig):
         'api_ivrs_destination_types_list':
             {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
              'version': '1.26.0'},
+        'api_register_server_detail':
+            {'descripcion': _('Obtener el detalle del registro'),
+             'version': '1.29.0'},
+        'api_register_server_create':
+            {'descripcion': _('Obtener el detalle del registro'),
+             'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
              'version': '1.27.0'},

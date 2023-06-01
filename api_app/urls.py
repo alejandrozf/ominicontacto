@@ -78,6 +78,9 @@ from api_app.views.group_of_hour import (
 from api_app.views.ivr import (
     IVRAudioOptions, IVRCreate, IVRDelete, IVRDestinationTypes, IVRList,
     IVRDetail, IVRUpdate)
+from api_app.views.register_server import (
+    RegisterServerCreate,
+    RegisterServerList)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -459,6 +462,15 @@ urlpatterns = [
     re_path(r'api/v1/ivrs/destination_types/$',
             IVRDestinationTypes.as_view(),
             name='api_ivrs_destination_types_list'),
+    # =========================
+    # Register Server
+    # =========================
+    path('api/v1/register_server/',
+         RegisterServerList.as_view(),
+         name='api_register_server_detail'),
+    path('api/v1/register_server/create/',
+         RegisterServerCreate.as_view(),
+         name='api_register_server_create'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
