@@ -309,12 +309,12 @@ class ReporteAgentes(object):
         transferencias = TransferenciaAEncuestaLog.objects.filter(agente_id__in=agente_ids,
                                                                   time__gte=fecha_inicio,
                                                                   time__lte=fecha_fin)
-        transferencias_por_agente = dict(transferencias.values_list('agente_id').annotate(
-            cantidad=Count('agente_id')).order_by('agente_id'))
-        transferidas_a_encuesta = []
-        for agente_id in transferencias_por_agente:
-            transferidas_a_encuesta.append(transferencias_por_agente[agente_id])
-        return transferidas_a_encuesta
+        total = OrderedDict(zip(agente_ids, [0] * len(agente_ids)))
+        transferencias_por_agente = transferencias.values_list('agente_id').annotate(
+            cantidad=Count('agente_id'))
+        for agente_id, cantidad in transferencias_por_agente:
+            total[agente_id] = cantidad
+        return total.values()
 
 
 class ActividadAgente(object):
