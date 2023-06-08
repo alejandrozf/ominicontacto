@@ -6,5 +6,6 @@ export default {
         phone: ''
     },
     registerServerStatus: false,
+    registerServerIsAdmin: false,
     registerServerAdminName: ''
 };

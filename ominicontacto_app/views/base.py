@@ -71,6 +71,7 @@ def index_view(request):
         else:
             showRegisterPopUp = False
         context = {
+            'isAdmin': request.user.get_is_administrador(),
             'showRegisterPopUp': showRegisterPopUp,
             'registered': admin_registered,
         }

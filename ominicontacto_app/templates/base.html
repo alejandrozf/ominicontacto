@@ -95,6 +95,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% if user.get_tiene_permiso_administracion  %}
                             {% block content %}
                                 {% if user.get_es_administrador_o_supervisor_normal %}
+                                    <input class="hidden" value="{{ isAdmin }}" id="registerPopUpIsAdmin">
                                     {% if showRegisterPopUp %}
                                     <div class="modal" id="registerServerPopUp">
                                         <div class="modal-dialog modal-dialog-scrollable" id="sizeModalRegisterServer">

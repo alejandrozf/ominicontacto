@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h3 class="text-center title title_color">
+      <h3 class="text-center title" :style="{ 'color': titleColor(), 'border': border() }">
         <b>{{ $t("views.register_server.title").toUpperCase() }}</b>
       </h3>
       <Image
@@ -33,13 +33,14 @@
       </div>
     </div>
     <br>
-    <div>
+    <div v-if="registerServerIsAdmin">
       <div class="fluid grid formgrid">
         <div class="field col-6">
           <label
             id="name"
             :class="{
               'p-error': v$.form.name.$invalid && submitted,
+              'text-500': !registerServerIsAdmin
             }"
             >{{ $t("models.register_server.name") }}*</label
           >
@@ -52,6 +53,7 @@
               :class="{
                 'p-invalid': v$.form.name.$invalid && submitted,
               }"
+              :disabled="!registerServerIsAdmin"
               class="w-full"
               :placeholder="$t('forms.register_server.enter_name')"
               v-model="v$.form.name.$model"
@@ -76,6 +78,7 @@
             id="password"
             :class="{
               'p-error': v$.form.password.$invalid && submitted,
+              'text-500': !registerServerIsAdmin
             }"
             >{{ $t("models.register_server.password") }}*</label
           >
@@ -87,6 +90,7 @@
               id="password"
               :toggleMask="true"
               :feedback="false"
+              :disabled="!registerServerIsAdmin"
               :class="{
                 'p-invalid': v$.form.password.$invalid && submitted,
               }"
@@ -115,6 +119,7 @@
             id="email"
             :class="{
               'p-error': v$.form.email.$invalid && submitted,
+              'text-500': !registerServerIsAdmin
             }"
             >{{ $t("models.register_server.email") }}*</label
           >
@@ -124,6 +129,7 @@
             </span>
             <InputText
               id="email"
+              :disabled="!registerServerIsAdmin"
               :class="{
                 'p-invalid': v$.form.email.$invalid && submitted,
               }"
@@ -159,13 +165,14 @@
           </small>
         </div>
         <div class="field col-6">
-          <label id="phone">{{ $t("models.register_server.phone") }}</label>
+          <label id="phone" :class="{'text-500': !registerServerIsAdmin }">{{ $t("models.register_server.phone") }}</label>
           <div class="p-inputgroup">
             <span class="p-inputgroup-addon">
               <i class="pi pi-phone"></i>
             </span>
             <InputText
               id="phone"
+              :disabled="!registerServerIsAdmin"
               :placeholder="$t('forms.register_server.enter_phone')"
               v-model="form.phone"
             />
@@ -177,6 +184,7 @@
         <div class="field col-6">
           <Button
             class="p-button-danger p-button-outlined mr-2 btn_border w-full"
+            :disabled="!registerServerIsAdmin"
             @click="cancel"
             :label="$t('globals.cancel')"
           />
@@ -186,6 +194,7 @@
             :label="$t('globals.register')"
             :loading="isLoading"
             class="w-full btn_border"
+            :disabled="!registerServerIsAdmin"
             @click="save(!v$.$invalid)"
           />
         </div>
@@ -194,6 +203,27 @@
         <div class="field col-12 flex justify-content-center">
           <Button
             class="p-button-link"
+            @click="privacyPolicies"
+            :label="$t('views.register_server.privacy_policies')"
+          />
+        </div>
+      </div>
+    </div>
+    <div v-else >
+      <div class="grid col-12">
+        <Message severity="warn" class="w-full" :closable="false">{{ $t("forms.register_server.validations.forbidden") }}</Message>
+      </div>
+      <div class="grid">
+        <div class="col-6">
+          <Button
+            class="p-button-secondary p-button-outlined mr-2 btn_border w-full"
+            @click="cancel"
+            :label="$t('globals.close')"
+          />
+        </div>
+        <div class="col-6">
+          <Button
+            class="w-full btn_border p-button-outlined"
             @click="privacyPolicies"
             :label="$t('views.register_server.privacy_policies')"
           />
@@ -236,13 +266,19 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['registerServer']),
+        ...mapState(['registerServer', 'registerServerIsAdmin']),
         iconUrl () {
             return require('@/assets/oml_logo.png');
         }
     },
     methods: {
         ...mapActions(['createRegisterServer', 'initRegisterServer']),
+        titleColor () {
+            return this.registerServerIsAdmin ? '#4caf50' : '#d9a300';
+        },
+        border () {
+            return `5px solid ${this.titleColor()}`;
+        },
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -263,6 +299,15 @@ export default {
             this.form.phone = this.registerServer?.phone;
         },
         async save (isFormValid) {
+            if (!this.registerServerIsAdmin) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        this.$t('froms.register_server.validations.forbidden'),
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
             this.submitted = true;
             if (!isFormValid) {
                 return null;
@@ -311,6 +356,14 @@ export default {
             },
             deep: true,
             immediate: true
+        },
+        registerServerIsAdmin: {
+            handler () {
+                this.titleColor();
+                this.border();
+            },
+            deep: true,
+            immediate: true
         }
     }
 };
@@ -321,11 +374,7 @@ export default {
   border-radius: 25px;
 }
 .title {
-  border: 5px solid #4caf50;
   border-radius: 25px;
   padding: 7px;
-}
-.title_color {
-  color: #4caf50;
 }
 </style>

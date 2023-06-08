@@ -144,6 +144,9 @@ export default {
         enter_name: 'Ingresa el nombre o empresa',
         enter_password: 'Ingresa el password',
         enter_email: 'Ingresa el email',
-        enter_phone: 'Ejemplo: 5555555555'
+        enter_phone: 'Ejemplo: 5555555555',
+        validations: {
+            forbidden: 'No tiene permisos para registrar la instancia. Por favor contacte con su Administrador'
+        }
     }
 };
