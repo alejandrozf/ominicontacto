@@ -22,11 +22,13 @@ from rest_framework import serializers
 from rest_framework import response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-
+from whatsapp_app.api.v1.plantilla_mensaje import ListSerializer as ListPlantillaMensajeSerializer
+from whatsapp_app.api.v1.template_whatsapp import ListSerializer as ListTemplateWhatsappSerializer
 from whatsapp_app.models import ConfiguracionWhatsappCampana
 
 
@@ -189,3 +191,16 @@ class ViewSet(viewsets.ViewSet):
                 data=get_response_data(
                     message=_('Error al eliminar la Configuración de whatsapp')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @decorators.action(detail=False, methods=["get"], url_path='templates/(?P<campana_pk>[^/.]+)/')
+    def templates(self, request, campana_pk):
+        configuracion = ConfiguracionWhatsappCampana.objects.filter(campana__id=campana_pk).last()
+        templates = configuracion.grupo_template_whatsapp.templates.all()
+        plantillas = configuracion.grupo_plantilla_whatsapp.plantillas.all()
+        templates = ListTemplateWhatsappSerializer(templates, many=True)
+        plantillas = ListPlantillaMensajeSerializer(plantillas, many=True)
+        return response.Response(
+            data=get_response_data(
+                status=HttpResponseStatus.SUCCESS,
+                data={"message_templates": plantillas.data, "whatsapp_templates": templates.data}),
+            status=status.HTTP_200_OK)

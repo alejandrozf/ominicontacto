@@ -27,7 +27,9 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-from whatsapp_app.api.v1.mensaje import MensajeSerializer
+from whatsapp_app.api.v1.mensaje import (
+    MensajeTextCreateSerializer, MensajeAtachmentCreateSerializer, MensajeListSerializer,
+    MensajePlantillaCreateSerializer, MensajeWhatsappTemplateCreateSerializer)
 
 
 class ConversacionSerializer(serializers.Serializer):
@@ -162,7 +164,7 @@ class ViewSet(viewsets.ViewSet):
             }
         ]  # Mensajes.objects.filter(conversacion_id=pk)
         serializer_conversacion = ConversacionSerializer(conversacion)
-        serializer_mensajes = MensajeSerializer(mensajes, many=True)
+        serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
             "conversacion_otorgada": True,  # conversacion.otorgar(agente),
             "datos_de_conversacion": serializer_conversacion.data,
@@ -170,4 +172,54 @@ class ViewSet(viewsets.ViewSet):
         }
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=True, methods=["get"])
+    def messages(self, request, pk):
+        mensajes = [
+            {
+                "id": 1,
+                "conversacion": 1,
+                "contenido": "Buenos días",
+                "status": "",
+                "fecha": "2023-03-07 01:30",
+                "emisor": "cliente"
+            },
+            {
+                "id": 2,
+                "conversacion": 1,
+                "contenido": "Hola",
+                "status": "",
+                "fecha": "2023-03-07 01:30",
+                "emisor": "cliente"
+            }
+        ]  # Mensajes.objects.filter(conversacion_id=pk)
+        serializer_mensajes = MensajeListSerializer(mensajes, many=True)
+        data = {
+            "mensajes": serializer_mensajes.data
+        }
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=True, methods=["post"])
+    def send_menssage_text(self, request, pk):
+        data = request.data.copy()
+        data.update({"conversacion": pk})
+        serializer = MensajeTextCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=True, methods=["post"])
+    def send_menssage_attachment(self, request, pk):
+        data = request.data.copy()
+        data.update({"conversacion": pk})
+        serializer = MensajeAtachmentCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)

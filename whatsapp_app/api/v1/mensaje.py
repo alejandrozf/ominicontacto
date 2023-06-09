@@ -28,11 +28,36 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 
-class MensajeSerializer(serializers.Serializer):
+class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    conversacion = serializers.IntegerField()
     contenido = serializers.CharField()
     status = serializers.CharField()
     fecha = serializers.DateTimeField()
+    emisor = serializers.CharField()
+
+
+class MensajeTextCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajeAtachmentCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajePlantillaCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
+    emisor = serializers.CharField()
+
+
+class MensajeWhatsappTemplateCreateSerializer(serializers.Serializer):
+    conversacion = serializers.IntegerField()
+    contenido = serializers.CharField()
     emisor = serializers.CharField()
 
 
@@ -43,7 +68,7 @@ class ViewSet(viewsets.ViewSet):
     def list(self, request):
         try:
             queryset = []
-            serializer = MensajeSerializer(queryset, many=True)
+            serializer = MensajeListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
