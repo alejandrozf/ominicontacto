@@ -90,103 +90,128 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'transfer-to-agent',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'conversacion-assign-contact',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'contacto-search',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'contacto-list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'contacto-detail',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'contacto-db-fields',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
         'whatsapp_providers_configuration':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('whatsapp_providers_configuration'),
              'version': '1.26.0'},
         'whatsapp_lines_configuration':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('whatsapp_lines_configuration'),
              'version': '1.26.0'},
         'message_templates_configuration':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('message_templates_configuration'),
              'version': '1.26.0'},
         'whatsapp_message_template_groups':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('whatsapp_message_template_groups'),
              'version': '1.26.0'},
         'whatsapp_template_groups':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('whatsapp_template_groups'),
              'version': '1.26.0'},
         'proveedor-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('proveedor-list'),
              'version': '1.26.0'},
         'proveedor-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('proveedor-detail'),
              'version': '1.26.0'},
         'linea-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('linea-list'),
              'version': '1.26.0'},
         'linea-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('linea-detailp'),
              'version': '1.26.0'},
         'destino-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('destino-list'),
              'version': '1.26.0'},
         'plantilla-mensaje-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('plantilla-mensaje-list'),
              'version': '1.26.0'},
         'plantilla-mensaje-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('plantilla-mensaje-detail'),
              'version': '1.26.0'},
         'template-whatsapp-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('template-whatsapp-list'),
              'version': '1.26.0'},
         'template-whatsapp-sincronizar-templates':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('template-whatsapp-sincronizar-templates'),
              'version': '1.26.0'},
         'campana-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('campana-list'),
              'version': '1.26.0'},
         'grupo-plantilla-whatsapp-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('grupo-plantilla-whatsapp-listp'),
              'version': '1.26.0'},
         'grupo-plantilla-whatsapp-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('grupo-plantilla-whatsapp-detail'),
              'version': '1.26.0'},
         'grupo-template-whatsapp-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('grupo-template-whatsapp-list'),
              'version': '1.26.0'},
         'grupo-template-whatsapp-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('grupo-template-whatsapp-detail'),
              'version': '1.26.0'},
         'configuracion-whatsapp-campana-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('configuracion-whatsapp-campana-list'),
              'version': '1.26.0'},
         'configuracion-whatsapp-campana-templates':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('configuracion-whatsapp-campana-templates'),
              'version': '1.26.0'},
         'configuracion-whatsapp-campana-detail':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('configuracion-whatsapp-campana-detai'),
              'version': '1.26.0'},
         'conversacion-list':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-list'),
              'version': '1.26.0'},
         'conversacion-agent-chats-lists':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-agent-chats-lists'),
              'version': '1.26.0'},
         'conversacion-attend-chat':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-attend-chat'),
              'version': '1.26.0'},
         'conversacion-messages':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-messages'),
              'version': '1.26.0'},
         'conversacion-send-menssage-attachment':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-send-menssage-attachment'),
              'version': '1.26.0'},
         'conversacion-send-menssage-text':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-send-menssage-text'),
              'version': '1.26.0'},
         'conversacion-send-message-template':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-send-message-template'),
              'version': '1.26.0'},
         'conversacion-send-message-whatsapp-template':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('conversacion-send-message-whatsapp-template'),
              'version': '1.26.0'},
         'transfer-to-agent':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('transfer-to-agent'),
              'version': '1.26.0'},
         'transfer-agents':
-            {'descripcion': _('Configuración Whatsapp'),
+            {'descripcion': _('transfer-agents'),
+             'version': '1.26.0'},
+        'conversacion-assign-contact':
+            {'descripcion': _('conversacion-assign-contact'),
+             'version': '1.26.0'},
+        'contacto-search':
+            {'descripcion': _('contacto-search'),
+             'version': '1.26.0'},
+        'contacto-list':
+            {'descripcion': _('contacto-list'),
+             'version': '1.26.0'},
+        'contacto-detail':
+            {'descripcion': _('contacto-detail'),
+             'version': '1.26.0'},
+        'contacto-db-fields':
+            {'descripcion': _('contacto-db-fields'),
              'version': '1.26.0'},
     }

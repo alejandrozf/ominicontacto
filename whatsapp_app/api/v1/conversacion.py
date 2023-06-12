@@ -176,6 +176,16 @@ class ViewSet(viewsets.ViewSet):
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
             status=status.HTTP_200_OK)
 
+    @decorators.action(detail=True, methods=["post"])
+    def assign_contact(self, request, pk):
+        #  contact_pk = request.data.get('contact_pk')
+        #  conversacion = Conversacion.objects.get(pk=pk)
+        #  conversacion.contacto = contact_pk
+        #  conversacion.save()
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS,),
+            status=status.HTTP_200_OK)
+
     @decorators.action(detail=True, methods=["get"])
     def messages(self, request, pk):
         mensajes = [

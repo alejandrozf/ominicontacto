@@ -27,6 +27,7 @@ import whatsapp_app.api.v1.grupo_template_whatsapp
 import whatsapp_app.api.v1.configuracion_whatsapp_campana
 import whatsapp_app.api.v1.conversacion
 import whatsapp_app.api.v1.transfer
+import whatsapp_app.api.v1.contacto
 
 from whatsapp_app.api import ViewSetRouter
 
@@ -44,6 +45,7 @@ routes = (
     (r"configuration_whatsapp", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
     (r"chat", whatsapp_app.api.v1.conversacion.ViewSet),
     (r"transfer", whatsapp_app.api.v1.transfer.ViewSet),
+    (r"contact/(?P<campana_pk>[^/.]+)", whatsapp_app.api.v1.contacto.ViewSet),
 )
 
 for route in routes:
