@@ -95,6 +95,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% if user.get_tiene_permiso_administracion  %}
                             {% block content %}
                                 {% if user.get_es_administrador_o_supervisor_normal %}
+                                    <input class="hidden" value="{{ isAdmin }}" id="registerPopUpIsAdmin">
+                                    {% if showRegisterPopUp %}
+                                    <div class="modal" id="registerServerPopUp">
+                                        <div class="modal-dialog modal-dialog-scrollable" id="sizeModalRegisterServer">
+                                            <div class="modal-content">
+                                                <div class="modal-body" style="padding: 5px">
+                                                    <iframe class="popup_container" id="iframeRegisterServer" src="{% static 'omnileads-ui-supervision/register_server.html' %}"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                     <iframe src="{% static 'omnileads-ui-supervision/supervision_dashboard.html' %}" class="crm" name="crm"></iframe>
                                     <!-- <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
@@ -125,6 +137,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <!-- Cambiar idioma -->
         <script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/register_server.js' %}"></script>
 
         <script type="text/javascript">
          $(document).ready(function () {
@@ -134,6 +147,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
              $('#sidebar').toggleClass('active');
 
            });
+
+           // Modal Register Server
+            var registered = '{{ registered|safe }}';
+            showModalRegisterServer(registered === 'True');
 
            //Toogle sidebar and keep current state on page reload
            //retrieve current state

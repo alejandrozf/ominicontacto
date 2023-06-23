@@ -139,5 +139,14 @@ export default {
             repeated_dtmf: 'There is already a destination option with that DTMF',
             invalid_dtmf: 'The DTMF value must be a digit (0-9) or a character (#, -, *)'
         }
+    },
+    register_server: {
+        enter_name: 'Enter the name or company',
+        enter_password: 'Enter the password',
+        enter_email: 'Enter the email',
+        enter_phone: 'Example: 5555555555',
+        validations: {
+            forbidden: 'You do not have permissions to register the instance. Please contact your Administrator'
+        }
     }
 };

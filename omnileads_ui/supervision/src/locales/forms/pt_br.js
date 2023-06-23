@@ -139,5 +139,14 @@ export default {
             repeated_dtmf: 'Já existe uma opção de destino com esse DTMF',
             invalid_dtmf: 'O valor DTMF deve ser um dígito (0-9) ou um caractere (#, -, *)'
         }
+    },
+    register_server: {
+        enter_name: 'Digite o nome ou empresa',
+        enter_password: 'Digite a senha',
+        enter_email: 'Digite o e-mail',
+        enter_phone: 'Exemplo: 5555555555',
+        validations: {
+            forbidden: 'Você não tem permissões para registrar a instância. Entre em contato com seu administrador'
+        }
     }
 };

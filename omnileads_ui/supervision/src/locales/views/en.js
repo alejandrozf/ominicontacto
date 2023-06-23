@@ -118,5 +118,31 @@ export default {
     destination_option: {
         new_title: 'New destination',
         edit_title: 'Edit destination'
+    },
+    register_server: {
+        title: 'Instance record',
+        info1: 'Thank you for using OMniLeads, the most complete and friendly Open Source Contact Center Suite on the market.',
+        info2: 'Oops! This instance is not yet registered',
+        info3: 'From this record, we can inform you about',
+        info4: 'In addition, you can support us with use cases or software bugs in a more agile way (you can request to cancel the communication channel at any time',
+        info5: 'In case of doubts, contact your Administrator',
+        info6: 'New Releases',
+        info7: 'New Addons',
+        info8: 'Special offers',
+        info9: 'Roadmap Trailers',
+        info10: 'Blog Articles',
+        info11: 'Product Notes',
+        privacy_policies: 'Privacy policies',
+        detail: {
+            title: 'Thank you for your registration',
+            already_register: 'Are you already registered',
+            resend_key: 'Resend Key',
+            user: 'User',
+            http_responses: {
+                res1: 'The key data was successfully sent to your email',
+                res2: 'Failed to connect to the keyserver',
+                res3: 'The data sent from the instance is not correct'
+            }
+        }
     }
 };

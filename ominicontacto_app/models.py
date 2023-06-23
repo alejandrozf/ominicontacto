@@ -496,6 +496,12 @@ class SupervisorProfile(models.Model):
     def esta_asignado_a_campana(self, campana):
         return self.user.campanasupervisors.filter(id=campana.id).exists()
 
+    def es_creador_de_campana(self, campana):
+        return campana.reported_by == self.user
+
+    def es_creador_de_agente(self, agente):
+        return agente.reported_by == self.user
+
 
 class ClienteWebPhoneProfileManager(models.Manager):
     def obtener_activos(self):

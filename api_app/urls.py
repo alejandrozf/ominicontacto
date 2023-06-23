@@ -78,17 +78,21 @@ from api_app.views.group_of_hour import (
 from api_app.views.ivr import (
     IVRAudioOptions, IVRCreate, IVRDelete, IVRDestinationTypes, IVRList,
     IVRDetail, IVRUpdate)
+from api_app.views.register_server import (
+    RegisterServerCreate,
+    RegisterServerList)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
-    AgentRejectCallAsterisk, Click2CallOutsideCampaign
+    AgentRejectCallAsterisk, Click2CallOutsideCampaign, ApiAgentesParaTransferencia
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
 )
+from api_app.views.auditoria import ObtenerArchivoAuditoriaView
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
@@ -458,6 +462,15 @@ urlpatterns = [
     re_path(r'api/v1/ivrs/destination_types/$',
             IVRDestinationTypes.as_view(),
             name='api_ivrs_destination_types_list'),
+    # =========================
+    # Register Server
+    # =========================
+    path('api/v1/register_server/',
+         RegisterServerList.as_view(),
+         name='api_register_server_detail'),
+    path('api/v1/register_server/create/',
+         RegisterServerCreate.as_view(),
+         name='api_register_server_create'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
@@ -489,6 +502,11 @@ urlpatterns = [
             name='api_status_calificacion_llamada'),
     re_path(r'api/v1/evento_hold/', ApiEventoHold.as_view(),
             name='api_evento_hold'),
+    path('api/v1/agent/transfer_options', ApiAgentesParaTransferencia.as_view({'get': 'list'}),
+         name='api_agent_call_transfer_options'),
+    # ###########     AUDITORIAS       ############ #
+    path('api/v1/auditoria/archivo',
+         ObtenerArchivoAuditoriaView.as_view(), name='api_auditoria_archivo'),
     # ###########     GRABACIONES      ############ #
     re_path(r'^api/v1/grabacion/archivo/$',
             ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),

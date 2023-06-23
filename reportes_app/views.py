@@ -222,7 +222,7 @@ class ReporteDeResultadosView(TemplateView):
         context['columnas_datos'] = metadata.nombres_de_columnas_de_datos
         context['reporte'] = reporte
 
-        if self.campana.type in [Campana.TYPE_ENTRANTE, Campana.TYPE_MANUAL]:
+        if self.campana.type in [Campana.TYPE_ENTRANTE, Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]:
             context['mostrar_export_todos'] = True
         else:
             context['mostrar_export_todos'] = False

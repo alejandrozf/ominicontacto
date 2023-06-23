@@ -356,6 +356,9 @@ class CampanaDialerSupervisorUpdateView(CampanaSupervisorUpdateView):
     def get_success_url(self):
         return reverse('campana_dialer_list')
 
+    def _get_redirecccion_campana_erronea(self):
+        return redirect('campana_dialer_list')
+
 
 class CampanaDialerBorradasListView(CampanaDialerListView):
     """

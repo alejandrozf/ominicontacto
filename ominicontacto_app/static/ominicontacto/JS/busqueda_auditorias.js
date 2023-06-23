@@ -16,7 +16,9 @@
 
 */
 
-/* global moment get_ranges */
+/* global moment get_ranges Urls gettext*/
+
+var subscribeConfirmationMessage = 'Subscribed!';
 
 $(function() {
     var start = moment().subtract(29, 'days');
@@ -46,10 +48,103 @@ $(function() {
         }, cb);
 
     cb(start, end);
+    
+    const checkGeneral = $('#check-general');
+    checkGeneral.on('click', function() {
+        cambiaEstadoChecks(checkGeneral.prop('checked'));
+    });
+
+    $('.check-auditoria').on('click', function() {
+        if (!$('#check-auditoria').prop('checked')) {
+            checkGeneral.prop('checked', false);
+        }
+    });
+
+    $('#csvDescarga').on('click', function() {
+        wsProcess();
+    });
 
 });
+
+function cambiaEstadoChecks(estado) {
+    $('.check-auditoria').prop('checked', estado);
+}
 
 function filtrar_pagina(pagina) {
     $('#id_pagina').val(pagina);
     $('#form-buscar-gestiones').submit();
+}
+
+function generarReporteCSV() {
+    var buttonDescarga = $('#csvDescarga');
+    var check_mostrar_detalles = $('#check-mostrar-detalles').is(':checked');
+    buttonDescarga.val(gettext('Descargar archivo de auditoria (CSV)'));
+    buttonDescarga.attr('class', 'btn btn-outline-secondary btn-sm disabled');
+    buttonDescarga.attr('disabled', true);
+    $.ajax({
+        type: 'POST',
+        url: Urls.api_auditoria_archivo(),
+        dataType: 'json',
+        data: {
+            calificaciones_id: JSON.stringify(prepareData()),
+            mostrar_detalles: check_mostrar_detalles
+        },
+        success: function(msg) {
+            console.log(msg);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+        }
+    });
+    $('#barraProgresoCSV').toggle();
+
+}
+
+function wsProcess() {
+    var $barraProgresoCSV = $('#barraProgresoCSV');
+    var $csvDescarga = $('#csvDescarga');
+    var $csvDescargaLink = $('#csvDescargaLink');
+    const userId = $('#user_id').val();
+    const url = `wss://${window.location.host}/consumers/genera_csv_auditoria/calificados/${userId}/csv`;
+    const rws = new ReconnectingWebSocket(url, [], {
+        connectionTimeout: 8000,
+        maxReconnectionDelay: 3000,
+        minReconnectionDelay: 1000,
+    });
+    rws.addEventListener('message', function(e) {
+        var data = e.data;
+        if (data == subscribeConfirmationMessage) {
+            generarReporteCSV();
+        } else {
+            $barraProgresoCSV.find('.progress-bar').width(data + '%');
+            $barraProgresoCSV.find('.progress-bar').text(data + '%');
+            if (data == '100') {
+                $csvDescargaLink.attr('class', 'btn btn-outline-primary btn-sm');
+                $csvDescarga.remove();
+                if (!('Notification' in window)) {
+                    console.log('Web Notification not supported');
+                    return;
+                }
+                var notification = new Notification(
+                    gettext('Exportación completa'), {
+                        body: gettext(
+                            'La exportación a .csv del reporte de ' +
+                            ' ha sido completada completada exitosamente.')
+                    });
+                setTimeout(function() {
+                    notification.close();
+                }, 3000);
+                rws.close();
+            }
+        }
+    });
+}
+
+function prepareData() {
+    var res = [];
+    $('.check-auditoria:checked').each(function() {
+        const id = $(this).val();
+        res.push(id);
+    });
+    return res;
 }

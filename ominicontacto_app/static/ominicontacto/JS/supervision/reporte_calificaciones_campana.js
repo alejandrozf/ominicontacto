@@ -165,5 +165,12 @@ $(function() {
             $csvFormularioGestionCampanaDescargaLink, start, end);
     });
 
+    initSubmitButton();
 });
 
+function initSubmitButton() {
+    $('#id_buscar_btn').click(function (params) {
+        $('#submit_msg').show();
+        setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
+    });
+}

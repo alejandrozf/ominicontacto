@@ -30,6 +30,6 @@ class TienePermisoOML(IsAuthenticated):
             return has_permission
 
         current_url_name = request_url_name(request)
-        if hasattr(view, 'basename'):
+        if hasattr(view, 'basename') and view.basename:
             current_url_name = view.basename
         return request.user.tiene_permiso_oml(current_url_name)

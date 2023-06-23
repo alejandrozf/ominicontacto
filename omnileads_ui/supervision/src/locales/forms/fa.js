@@ -139,5 +139,14 @@ export default {
             repeated_dtmf: 'در حال حاضر یک گزینه مقصد با آن DTMF وجود دارد',
             invalid_dtmf: 'مقدار DTMF باید یک رقم (0-9) یا یک کاراکتر (#، -، *) باشد.'
         }
+    },
+    register_server: {
+        enter_name: 'نام یا شرکت را وارد کنید',
+        enter_password: 'رمز عبور را وارد کنید',
+        enter_email: 'ایمیل را وارد کنید',
+        enter_phone: 'مثال: 5555555555',
+        validations: {
+            forbidden: 'شما مجوز ثبت نمونه را ندارید. لطفا با مدیر خود تماس بگیرید'
+        }
     }
 };

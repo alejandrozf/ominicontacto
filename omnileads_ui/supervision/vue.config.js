@@ -1,3 +1,5 @@
+const path = require('path');
+
 function getCsfrToken (cookie) {
     const arr = cookie.split(';');
     for (const a in arr) {
@@ -18,6 +20,9 @@ function getPageConfig (pageName) {
 }
 
 module.exports = {
+    chainWebpack: (config) => {
+        config.resolve.alias.set('@assets', path.resolve(__dirname, 'src/assets'));
+    },
     publicPath: '/static/omnileads-ui-supervision/',
     pages: {
         supervision_dashboard: getPageConfig('supervision_dashboard'),
@@ -33,9 +38,11 @@ module.exports = {
         inbound_routes: getPageConfig('inbound_routes'),
         outbound_routes: getPageConfig('outbound_routes'),
         group_of_hours: getPageConfig('group_of_hours'),
-        ivrs: getPageConfig('ivrs')
+        ivrs: getPageConfig('ivrs'),
+        register_server: getPageConfig('register_server')
     },
     devServer: {
+        contentBase: './src/assets',
         proxy: {
             '/api': {
                 target: 'https://nginx',

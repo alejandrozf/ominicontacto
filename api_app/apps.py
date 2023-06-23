@@ -106,6 +106,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_status_calificacion_llamada',
              'roles': ['Agente', ]},
+            {'nombre': 'api_auditoria_archivo',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_archivo',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_grabacion_descarga_masiva',
@@ -115,6 +117,8 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
+             'roles': ['Agente', ]},
+            {'nombre': 'api_agent_call_transfer_options',
              'roles': ['Agente', ]},
             {'nombre': 'api_audios_listado',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
@@ -282,6 +286,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_ivrs_destination_types_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_register_server_detail',
+             'roles': ['Administrador']},
+            {'nombre': 'api_register_server_create',
+             'roles': ['Administrador']},
             {'nombre': 'api_log_survey_transfer',
              'roles': ['Agente', ]},
         ]
@@ -384,6 +392,9 @@ class ApiAppConfig(AppConfig):
              'version': '1.8.0'},
         'reenviar_key_registro':
             {'description': _('Reenvía la llave de la instancia registrada por email')},
+        'api_auditoria_archivo':
+            {'descripcion': _('Retorna el archivo csv de auditoria'),
+             'version': '1.11.0'},
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},
@@ -399,6 +410,9 @@ class ApiAppConfig(AppConfig):
         'api_evento_hold':
             {'descripcion': _('Loggea el evento hold o unhold'),
              'version': '1.13.0'},
+        'api_agent_call_transfer_options':
+            {'descripcion': _('Lista de agentes para transferir llamadas'),
+             'version': '1.29.0'},
         'api_audios_listado':
             {'descripcion': _('Lista audios de asterisk'),
              'version': '1.16.0'},
@@ -648,7 +662,13 @@ class ApiAppConfig(AppConfig):
         'api_ivrs_destination_types_list':
             {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
              'version': '1.26.0'},
+        'api_register_server_detail':
+            {'descripcion': _('Obtener el detalle del registro de la instancia'),
+             'version': '1.29.0'},
+        'api_register_server_create':
+            {'descripcion': _('Registrar la instancia'),
+             'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
-             'version': 'X.X.X'},
+             'version': '1.27.0'},
     }

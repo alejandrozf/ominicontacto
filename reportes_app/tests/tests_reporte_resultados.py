@@ -55,6 +55,12 @@ class APITest(OMLBaseTest):
             'taskId': self.taskId,
         }
 
+        # Creo AgenteEnContacto
+        self.campana.adicionar_agente_en_contacto(self.contacto_calificado_gestion, -1)
+        self.campana.adicionar_agente_en_contacto(self.contacto_calificado_no_accion, -1)
+        self.campana.adicionar_agente_en_contacto(self.contacto_no_atendido, -1)
+        self.campana.adicionar_agente_en_contacto(self.contacto_no_calificado, -1)
+
     def tearDown(self):
         super(APITest, self).tearDown()
         self.client.logout()
