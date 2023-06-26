@@ -51,6 +51,7 @@ class RegisterServerList(APIView):
             email = config.CLIENT_EMAIL
             telefono = config.CLIENT_PHONE
             data['adminName'] = user.username if user.username else ''
+            data['isAdmin'] = user.get_is_administrador()
             data['registered'] = (config.CLIENT_NAME != '' and config.CLIENT_KEY != '')
             data['registerServer'] = {
                 'client': client, 'password': password, 'email': email, 'phone': telefono}

@@ -25,7 +25,11 @@ export default {
         CardInfo
     },
     async created () {
-        await this.initRegisterServer();
+        const element = window.parent.document.getElementById(
+            'registerPopUpIsAdmin'
+        );
+        const isAdmin = element.value;
+        await this.initRegisterServer(isAdmin === 'True');
     },
     computed: {
         ...mapState(['registerServerStatus'])

@@ -663,10 +663,10 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Obtiene los destinos por tipo para un ivr'),
              'version': '1.26.0'},
         'api_register_server_detail':
-            {'descripcion': _('Obtener el detalle del registro'),
+            {'descripcion': _('Obtener el detalle del registro de la instancia'),
              'version': '1.29.0'},
         'api_register_server_create':
-            {'descripcion': _('Obtener el detalle del registro'),
+            {'descripcion': _('Registrar la instancia'),
              'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),

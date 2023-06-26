@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-28 13:04-0300\n"
+"POT-Creation-Date: 2023-06-21 09:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -656,8 +656,8 @@ msgstr ""
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:161
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:344
-#: reportes_app/reportes/reporte_resultados.py:121
-#: reportes_app/tests/tests_reporte_resultados.py:98
+#: reportes_app/reportes/reporte_resultados.py:134
+#: reportes_app/tests/tests_reporte_resultados.py:104
 msgid "Contactado"
 msgstr ""
 
@@ -724,7 +724,7 @@ msgstr ""
 msgid "Telefono de llamada"
 msgstr ""
 
-#: reportes_app/reportes/reporte_resultados.py:123
+#: reportes_app/reportes/reporte_resultados.py:136
 msgid "Sin datos"
 msgstr ""
 

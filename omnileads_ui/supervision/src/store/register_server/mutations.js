@@ -1,5 +1,5 @@
 export default {
-    initRegisterServer (state, { registered = false, registerServer = null, adminName = '' }) {
+    initRegisterServer (state, { registered = false, registerServer = null, adminName = '', isAdmin = false }) {
         state.registerServer = {
             name: registerServer ? registerServer.client : '',
             email: registerServer ? registerServer.email : '',
@@ -8,5 +8,6 @@ export default {
         };
         state.registerServerStatus = registered;
         state.registerServerAdminName = adminName;
+        state.registerServerIsAdmin = isAdmin;
     }
 };
