@@ -2,14 +2,14 @@
 
 ########################################################################
 # Stage build python pip requirements and utils
-FROM python:3.9.2-alpine as dev
+FROM python:3.9-alpine as dev
 
 ENV INSTALL_PREFIX /opt/omnileads
 
 RUN apk add --virtual .buildeps \
       build-base \
       libffi-dev \
-      postgresql-dev \
+      postgresql14-dev \
       git \
       zlib-dev \
       jpeg-dev \
@@ -39,7 +39,7 @@ RUN npm run build
 
 ########################################################################
 # Build omlapp image with binaries
-FROM python:3.9.2-alpine as run
+FROM python:3.9-alpine as run
 
 ENV INSTALL_PREFIX /opt/omnileads
 
@@ -61,7 +61,7 @@ RUN apk add bash \
         libxslt \
         sox \
         tzdata \
-        postgresql-client \
+        postgresql14-client \
         pcre pcre-dev \
         aws-cli \
         git \
