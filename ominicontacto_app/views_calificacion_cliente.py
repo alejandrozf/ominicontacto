@@ -49,6 +49,7 @@ from notification_app.notification import RedisStreamNotifier
 from configuracion_telefonia_app.models import DestinoEntrante
 
 from reportes_app.models import LlamadaLog
+from notification_app.notification import AgentNotifier
 
 
 logger = logging_.getLogger(__name__)
@@ -473,6 +474,8 @@ class CalificacionClienteFormView(FormView):
                 llamadalog = LlamadaLog.objects.filter(callid=self.call_data['call_id'])
                 if llamadalog:
                     llamadalog.update(contacto_id=self.contacto.id)
+                    AgentNotifier().notify_contact_saved(
+                        self.agente.user_id, self.call_data['call_id'], self.contacto.id)
 
             # TODO: Pasar esto dentro de _calificar_form() ?
             if not calificacion_form or not calificacion_form.instance.es_gestion():

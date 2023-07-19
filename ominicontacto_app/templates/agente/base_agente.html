@@ -589,6 +589,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </div>
 </div> <!-- fin modal info -->
 
+<div id="modalAlertContactSaved" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 class="modal-title">{% trans 'Los datos del contacto que está por transferir no han sido guardados. ¿Desea continuar?' %}</h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="buttonCancelTransfer" class="btn btn-primary" data-dismiss="modal">
+                    {% trans 'No' %}
+                </button>
+                <button type="button" id="buttonContinueTransfer" class="btn btn-default">
+                    {% trans 'Si' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Contendio -->
 <div class="wrapper-main">
     <nav id="navBar">

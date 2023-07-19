@@ -227,9 +227,23 @@ class PhoneJSController {
                 alert(gettext('Seleccione una opción válida'));
             }
             else {
-                self.phone_fsm.dialTransfer();
-                self.phone.dialTransfer(transfer);
-                $('#numberToTransfer').val('');
+                if (self.phone.session_data.remote_call.id_contacto == '-1') {
+                    $('#modalAlertContactSaved').modal('show');
+                    $('#buttonContinueTransfer').click(function(){
+                        $('#modalAlertContactSaved').modal('hide');
+                        self.phone_fsm.dialTransfer();
+                        self.phone.dialTransfer(transfer);
+                        $('#numberToTransfer').val('');
+                    });
+                    $('#buttonCancelTransfer').click(function(){
+                        $('#modalTransfer').modal('hide');
+                    });
+                }
+                else {
+                    self.phone_fsm.dialTransfer();
+                    self.phone.dialTransfer(transfer);
+                    $('#numberToTransfer').val('');
+                }
             }
         });
 
@@ -640,6 +654,11 @@ class PhoneJSController {
             self.view.setCallStatus(message, 'red');
             alert(message);
             
+        });
+        this.notification_agent.eventsCallbacks.onNotificationContactSaved.add(function(args){
+            if(self.phone.session_data){
+                self.phone.session_data.remote_call.id_contacto=args['contact_id'];
+            }
         });
 
     }
