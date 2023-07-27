@@ -81,11 +81,14 @@ class CustomUserChangeForm(UserChangeForm):
 
 class CustomUserCreationForm(UserCreationForm):
     rol = forms.ModelChoiceField(queryset=Group.objects.all(), label=_('Rol del usuario'))
+    grupo = forms.ModelChoiceField(
+        queryset=Grupo.objects.all(), label=_('Grupo de agentes'), required=False)
 
     class Meta(UserCreationForm.Meta):
         model = User
         fields = (
-            'username', 'first_name', 'last_name', 'email', 'rol', 'password1', 'password2')
+            'username', 'first_name', 'last_name', 'email',
+            'rol', 'password1', 'password2', 'grupo')
         labels = {
         }
         error_messages = {
@@ -103,12 +106,16 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].queryset = roles_queryset
+        self.fields['grupo'].widget.attrs['class'] = 'form-control'
 
     def clean(self):
         cleaned_data = super().clean()
         rol = cleaned_data.get('rol')
+        grupo = cleaned_data.get('grupo')
         if rol and rol.name == User.AGENTE and not cleaned_data.get('email'):
             self.add_error("email", _("Este campo es requerido para un usuario de tipo Agente."))
+        if rol and rol.name == User.AGENTE and not grupo:
+            self.add_error("grupo", _("Este campo es requerido para un usuario de tipo Agente."))
         return cleaned_data
 
 
@@ -186,6 +193,44 @@ class AgenteProfileForm(forms.ModelForm):
         super(AgenteProfileForm, self).__init__(*args, **kwargs)
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
         self.fields['grupo'].queryset = grupos_queryset
+
+
+class NoValidationMultipleChoiceField(forms.MultipleChoiceField):
+    def validate(self, value):
+        pass
+
+
+class CampaingsByTypeForm(forms.Form):
+    """
+    Formulario para filtrar campañas por tipo
+    """
+    MANUAL = 1
+    DIALER = 2
+    ENTRANTE = 3
+    PREVIEW = 4
+    MANUAL_DISPLAY = 'Manual'
+    DIALER_DISPLAY = 'Dialer'
+    ENTRANTE_DISPLAY = 'Entrante'
+    PREVIEW_DISPLAY = 'Preview'
+
+    CAMPAING_TYPES = (
+        ('-------', '-------'),
+        (ENTRANTE, ENTRANTE_DISPLAY),
+        (DIALER, DIALER_DISPLAY),
+        (MANUAL, MANUAL_DISPLAY),
+        (PREVIEW, PREVIEW_DISPLAY),
+    )
+
+    campaign_type = forms.ChoiceField(
+        required=True, choices=CAMPAING_TYPES, label=_('Tipo de campaña'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    campaigns_by_type = NoValidationMultipleChoiceField(
+        required=True, label=_('Campañas'), choices=[],
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CampaingsByTypeForm, self).__init__(*args, **kwargs)
 
 
 class UpdateAgentPasswordForm(forms.ModelForm):
