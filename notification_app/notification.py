@@ -28,6 +28,7 @@ class AgentNotifier:
 
     TYPE_UNPAUSE = 'unpause'
     TYPE_PAUSE = 'pause'
+    TYPE_CONTACT_SAVED = 'contact_saved'
 
     def get_group_name(self, user_id=None):
         if user_id is not None:
@@ -54,6 +55,13 @@ class AgentNotifier:
             "dispositioned": dispositioned
         }
         self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
+
+    def notify_contact_saved(self, user_id, call_id, contact_id):
+        message = {
+            "id": call_id,
+            "contact_id": contact_id
+        }
+        self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
 
     def send_message(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados

@@ -25,7 +25,8 @@ class NotificationSocket
         this.eventsCallbacks = {
             onNotificationForzarDespausa: $.Callbacks(),
             onNotificationForzarPausa: $.Callbacks(),
-            onNotificationPhoneJsLogout: $.Callbacks()
+            onNotificationPhoneJsLogout: $.Callbacks(),
+            onNotificationContactSaved: $.Callbacks()
         };
     }
 
@@ -45,7 +46,8 @@ class NotificationSocket
                 self.eventsCallbacks.onNotificationForzarDespausa.fire(data.args);
             if (data.type == 'logout')
                 self.eventsCallbacks.onNotificationPhoneJsLogout.fire();
-                
+            if (data.type == 'contact_saved')
+                self.eventsCallbacks.onNotificationContactSaved.fire(data.args);
         });
       
     }
