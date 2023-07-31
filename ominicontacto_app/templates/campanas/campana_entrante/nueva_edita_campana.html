@@ -31,6 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block extra_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campoDireccion.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/base_de_contactos.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -153,4 +154,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         </div>
     {% endwith %}
+{% endblock %}
+
+{% block modal_content %}
+<div class="modal" id="modalDBContactos">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalContentDBContactos"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Continuar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="cancelModal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

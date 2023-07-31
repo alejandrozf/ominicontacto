@@ -81,6 +81,7 @@ from api_app.views.ivr import (
 from api_app.views.register_server import (
     RegisterServerCreate,
     RegisterServerList)
+from api_app.views.base_de_contactos import (CampaingsOnDB)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -472,6 +473,12 @@ urlpatterns = [
     path('api/v1/register_server/create/',
          RegisterServerCreate.as_view(),
          name='api_register_server_create'),
+    # =========================
+    # Base de contactos
+    # =========================
+    path('api/v1/contact_database/(<int:pk>/campaings/',
+         CampaingsOnDB.as_view(),
+         name='api_contact_database_campaings'),
     # ###########     AGENTE      ############ #
     re_path(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
             API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),

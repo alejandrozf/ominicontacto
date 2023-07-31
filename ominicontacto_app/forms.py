@@ -836,7 +836,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
             'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
