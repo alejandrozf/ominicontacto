@@ -111,6 +111,9 @@ class AgentActivityAmiManager(object):
     def set_agent_as_unavailable(self, agente_profile):
         self._set_agent_redis_status(agente_profile, 'UNAVAILABLE')
 
+    def set_agent_as_disabled(self, agente_profile):
+        self._set_agent_redis_status(agente_profile, 'DISABLED')
+
     def get_pause_id(self, pause_id):
         return pause_id
 
@@ -128,7 +131,8 @@ class AgentActivityAmiManager(object):
             status = action
         elif 'UNAVAILABLE' in action:
             status = action
-
+        elif 'DISABLE' in action:
+            status = action
         return {
             'STATUS': status,
             'TIMESTAMP': str(int(time.time()))

@@ -310,4 +310,17 @@ class OMLAPI {
             }
         });
     }
+
+    makeDisabled(){
+        var URL = Urls.api_make_disabled();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
 }

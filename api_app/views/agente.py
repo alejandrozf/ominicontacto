@@ -465,6 +465,23 @@ class AgentUnpauseAsterisk(APIView):
             })
 
 
+class AgentDisabledAsterisk(APIView):
+    """
+        Vista para ejecutar la despausa de agente a asterisk, realizando las acciones
+        que solia hacer la extension 0077UNPAUSE
+    """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        agent_login_manager = AgentActivityAmiManager()
+        agente_profile = self.request.user.get_agente_profile()
+        agent_login_manager.set_agent_as_disabled(agente_profile)
+        return Response(data={'status': 'OK'})
+
+
 class SetEstadoRevisionAuditoria(APIView):
     """ Vista para marcar si una auditoria fue revisada """
     permission_classes = (TienePermisoOML, )

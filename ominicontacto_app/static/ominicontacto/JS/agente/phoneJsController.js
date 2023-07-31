@@ -65,6 +65,7 @@ class PhoneJSController {
         this.subscribeToFSMEvents();
         this.subscribeToPhoneEvents();
         this.subscribeToAgentNotificationEvents();
+        this.subscribeToNavigatorEvents();
 
         this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
@@ -661,6 +662,25 @@ class PhoneJSController {
             }
         });
 
+    }
+
+    subscribeToNavigatorEvents() {
+        var self = this;
+        navigator.permissions.query({ name: 'microphone' })
+            .then(function(permissionStatus){
+                permissionStatus.onchange = function(){
+                    if (this.state=='denied'){
+                        self.phone.logout();
+                        self.oml_api.makeDisabled();
+                        $.growl.error({
+                            title: gettext('Atención!'),
+                            message: gettext('No se ha podido acceder a su micrófono. \n\
+                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
+                            duration: 15000,
+                        });
+                    }
+                };
+            });
     }
 
     goToReadyAfterLogin() {
