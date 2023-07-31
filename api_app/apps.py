@@ -292,6 +292,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador']},
             {'nombre': 'api_register_server_create',
              'roles': ['Administrador']},
+            {'nombre': 'api_contact_database_campaings',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_log_survey_transfer',
              'roles': ['Agente', ]},
         ]
@@ -671,6 +673,9 @@ class ApiAppConfig(AppConfig):
              'version': '1.29.0'},
         'api_register_server_create':
             {'descripcion': _('Registrar la instancia'),
+             'version': '1.29.0'},
+        'api_contact_database_campaings':
+            {'descripcion': _('Campañas asociadas a una base de datos de contactos'),
              'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
