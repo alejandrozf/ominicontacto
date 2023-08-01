@@ -25,7 +25,6 @@ from formtools.wizard.views import SessionWizardView
 
 from import_export import resources
 from import_export.fields import Field
-
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -42,15 +41,14 @@ from constance import config
 
 from ominicontacto_app.forms import (
     CustomUserCreationForm, SupervisorProfileForm, UserChangeForm, AgenteProfileForm,
-    ForcePasswordChangeForm,
+    ForcePasswordChangeForm, CampaingsByTypeForm
 )
 
 from ominicontacto_app.models import (
-    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo,
+    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo, Campana
 )
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
-
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
@@ -80,7 +78,7 @@ class CustomUserWizard(SessionWizardView):
     AGENTE = '1'
     condition_dict = {AGENTE: show_agente_profile_form_condition}
     form_list = [(USER, CustomUserCreationForm),
-                 (AGENTE, AgenteProfileForm), ]
+                 (AGENTE, CampaingsByTypeForm), ]
     template_name = "user/user_create_form.html"
 
     def _grupos_disponibles(self):
@@ -102,7 +100,7 @@ class CustomUserWizard(SessionWizardView):
         if self.steps.current == self.USER:
             context['titulo'] = _('Nuevo Usuario: Datos Básicos')
         elif self.steps.current == self.AGENTE:
-            context['titulo'] = _('Nuevo Usuario: Perfil de Agente')
+            context['titulo'] = _('Nuevo Usuario: Selección de Campañas')
 
         agente_rol = Group.objects.filter(name=User.AGENTE).first()
         if agente_rol:
@@ -125,10 +123,6 @@ class CustomUserWizard(SessionWizardView):
                 roles_queryset = Group.objects.filter(name=User.AGENTE)
 
             kwargs['roles_queryset'] = roles_queryset
-
-        if step == self.AGENTE:
-            # TODO: Limitar los agentes y grupos que puede seleccionar segun el tipo de usuario
-            kwargs['grupos_queryset'] = Grupo.objects.all()
         return kwargs
 
     def _save_supervisor(self, user, rol):
@@ -155,12 +149,25 @@ class CustomUserWizard(SessionWizardView):
                 message,
             )
 
-    def _save_agente_form(self, user, form):
-        agente_profile = form.save(commit=False)
-        agente_profile.user = user
-        agente_profile.sip_extension = 1000 + user.id
-        agente_profile.reported_by = self.request.user
-        agente_profile.save()
+    def _save_agent_to_campaigns(self, agent, campaigns):
+        try:
+            for campaign in campaigns:
+                QueueMember.objects.get_or_create(
+                    member=agent,
+                    penalty=0,
+                    queue_name=campaign.queue_campana,
+                    defaults=QueueMember.get_defaults(agent, campaign))
+        except Exception as e:
+            logger.exception(_("Error al adicionar agente a la cola de la campaña"))
+            print(e)
+
+    def _save_agente(self, user, grupo):
+        agente_profile = AgenteProfile.objects.create(
+            user=user,
+            grupo=grupo,
+            reported_by=self.request.user,
+            sip_extension=1000 + user.id
+        )
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
@@ -173,6 +180,7 @@ class CustomUserWizard(SessionWizardView):
                 messages.WARNING,
                 message,
             )
+        return agente_profile
 
     def _save_cliente_webphone(self, user):
         sip_extension = 1000 + user.id
@@ -198,6 +206,7 @@ class CustomUserWizard(SessionWizardView):
         form_list = [i for i in form_list]
         user_form = form_list[int(self.USER)]
         rol = user_form.cleaned_data.get('rol')
+        grupo = user_form.cleaned_data.get('grupo')
         user = user_form.save(commit=False)
         user.is_agente = rol.name == User.AGENTE
         user.is_cliente_webphone = rol.name == User.CLIENTE_WEBPHONE
@@ -206,7 +215,11 @@ class CustomUserWizard(SessionWizardView):
         user.groups.add(rol)
 
         if rol.name == User.AGENTE:
-            self._save_agente_form(user, form_list[1])
+            form_campaigns = form_list[int(self.AGENTE)]
+            campaigns_pks = form_campaigns.cleaned_data.get('campaigns_by_type')
+            campaigns = Campana.objects.filter(pk__in=campaigns_pks)
+            agent = self._save_agente(user, grupo)
+            self._save_agent_to_campaigns(agent, campaigns)
         elif rol.name == User.CLIENTE_WEBPHONE:
             self._save_cliente_webphone(user)
         else:

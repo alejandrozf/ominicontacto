@@ -104,14 +104,16 @@ class CreacionUsuariosTest(ABMUsuariosTest):
             '0-password1': COMPLEX_PASSWORD,
             '0-password2': COMPLEX_PASSWORD,
             '0-rol': self.rol_agente.id,
+            '0-grupo': self.grupo1.id,
         }
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data['titulo'], _('Nuevo Usuario: Perfil de Agente'))
+        self.assertEqual(response.context_data['titulo'], _('Nuevo Usuario: Selección de Campañas'))
 
         data = {
             'custom_user_wizard-current_step': '1',
-            '1-grupo': self.grupo1.id,
+            '1-campaign_type': Campana.TYPE_MANUAL,
+            '1-campaigns_by_type': [self.campana.id],
         }
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
