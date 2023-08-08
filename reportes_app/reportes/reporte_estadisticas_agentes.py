@@ -119,17 +119,11 @@ class ReporteEstadisticasDiariaAgente(object):
              'valor': info_agente['tiempo']})
 
         if tipo_pausa == Pausa.CHOICE_RECREATIVA:
-            tiempo_datetime = datetime.datetime.strptime(info_agente['tiempo'], "%H:%M:%S")
-            tiempo_pausa = timedelta(
-                hours=tiempo_datetime.hour, minutes=tiempo_datetime.minute,
-                seconds=tiempo_datetime.second)
+            tiempo_pausa = info_agente['tiempo']
             self.estadisticas[info_agente['id']]['tiempos'].pausa_recreativa += tiempo_pausa
 
         if tipo_pausa == Pausa.CHOICE_PRODUCTIVA:
-            tiempo_datetime = datetime.datetime.strptime(info_agente['tiempo'], "%H:%M:%S")
-            tiempo_pausa = timedelta(
-                hours=tiempo_datetime.hour, minutes=tiempo_datetime.minute,
-                seconds=tiempo_datetime.second)
+            tiempo_pausa = info_agente['tiempo']
             self.estadisticas[info_agente['id']]['tiempos'].pausa_productiva += tiempo_pausa
 
     def contabilizar_estadisticas_actividad(self):

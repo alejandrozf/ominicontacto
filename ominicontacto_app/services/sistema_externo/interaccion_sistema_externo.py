@@ -44,16 +44,21 @@ class InteraccionConSistemaExterno(object):
             return headers
         try:
             if sitio_externo.metodo == SitioExterno.GET:
-                response = requests.get(url, params=parametros, headers=headers, verify=verify_ssl)
+                response = requests.get(url, params=parametros, headers=headers,
+                                        verify=verify_ssl, timeout=10)
             elif sitio_externo.formato == SitioExterno.TEXT_PLAIN:
                 headers['content_type'] = 'text/plain'
-                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers,
+                                         verify=verify_ssl, timeout=10)
             elif sitio_externo.formato == SitioExterno.WWW_FORM:
-                response = requests.post(url, data=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, data=parametros, headers=headers,
+                                         verify=verify_ssl, timeout=10)
             elif sitio_externo.formato == SitioExterno.MULTIPART:
-                response = requests.post(url, files=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, files=parametros, headers=headers,
+                                         verify=verify_ssl, timeout=10)
             elif sitio_externo.formato == SitioExterno.JSON:
-                response = requests.post(url, json=parametros, headers=headers, verify=verify_ssl)
+                response = requests.post(url, json=parametros, headers=headers,
+                                         verify=verify_ssl, timeout=10)
         except Exception as e:
             # Si es invalido el token:
             #     pido token de nuevo y reintento 1 vez
@@ -92,7 +97,7 @@ class InteraccionConSistemaExterno(object):
         verify_ssl = autenticacion.ssl_estricto
         try:
             ahora = now()
-            response = requests.post(autenticacion.url, parametros, verify=verify_ssl)
+            response = requests.post(autenticacion.url, parametros, verify=verify_ssl, timeout=10)
         except Exception as e:
             return err_msg.format(e), True
 
