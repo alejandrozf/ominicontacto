@@ -290,7 +290,7 @@ class PhoneJS {
                     }, 2500);
                 }
             } else if (transfer.is_to_number || transfer.is_quick_contact) {
-                if (transfer.destination) {
+                if (transfer.destination) {             // TODO: Remove Line
                     var i = 0;
                     this.transferTimeoutHandler = setTimeout(function() {
                         while (i < transfer.destination.length) {
@@ -305,7 +305,7 @@ class PhoneJS {
             this.currentSession.sendDTMF('*');
             this.currentSession.sendDTMF('2');
             if (transfer.is_to_agent) {
-                if (transfer.destination) {
+                if (transfer.destination) {             // TODO: Remove Line
                     this.transferTimeoutHandler = setTimeout(function() {
                         self.currentSession.sendDTMF('1');
                         self.currentSession.sendDTMF('1');
@@ -315,8 +315,19 @@ class PhoneJS {
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
                 }
+            } else if (transfer.is_to_campaign) {
+                if (transfer.destination) {             // TODO: Remove Line
+                    this.transferTimeoutHandler = setTimeout(function() {
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF(transfer.destination);
+                        self.eventsCallbacks.onTransferDialed.fire(transfer);
+                    }, 2500);
+                }
             } else if (transfer.is_to_number || transfer.is_quick_contact) {
-                if (transfer.destination) {
+                if (transfer.destination) {             // TODO: Remove Line
                     i = 0;
                     this.transferTimeoutHandler = setTimeout(function() {
                         while (i < transfer.destination.length) {

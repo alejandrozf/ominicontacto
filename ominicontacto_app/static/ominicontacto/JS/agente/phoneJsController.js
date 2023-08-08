@@ -1198,9 +1198,10 @@ class OutTransferData {
     }
 
     get is_valid() {
-        return (this.is_blind || (this.is_consultative && !this.is_to_campaign)) &&
-            (this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact) &&
-            this.destination != '' && this.destination != undefined;
+        let type_defined = this.is_blind || this.is_consultative;
+        let destination_type_defined = this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact;
+        let destination_defined = this.destination != '' && this.destination != undefined;
+        return type_defined && destination_type_defined && destination_defined;
     }
 }
 
