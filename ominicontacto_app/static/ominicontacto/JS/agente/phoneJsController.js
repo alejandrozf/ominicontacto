@@ -169,12 +169,12 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
-                self.oml_api.eventHold();
+                self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
-                self.oml_api.eventHold();
+                self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else {
                 phone_logger.log('Error');
             }

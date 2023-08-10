@@ -560,8 +560,11 @@ class ApiEventoHold(APIView):
 
     def post(self, request):
         agente = self.request.user.get_agente_profile()
-        llamadalog = LlamadaLog.objects.filter(agente_id=agente.id).last()
-        callid = llamadalog.callid
+        callid = self.request.POST.get('callid', None)
+        if not callid:
+            return Response(data={'status': 'ERROR'})
+
+        llamadalog = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid).last()
         campana_id = llamadalog.campana_id
         tipo_campana = llamadalog.tipo_campana
         tipo_llamada = llamadalog.tipo_llamada
