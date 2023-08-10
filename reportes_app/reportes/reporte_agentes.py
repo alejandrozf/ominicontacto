@@ -425,7 +425,6 @@ class ActividadAgente(object):
             res[pausa.pausa_id]['tiempo'] += pausa.duracion
         r = []
         for p in res.values():
-            p['tiempo'] = str(timedelta(seconds=p['tiempo'].seconds))
             r.append(p)
         return r
 

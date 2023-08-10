@@ -305,6 +305,15 @@ def datetime_hora_maxima_dia_utc(fecha_utc):
     return fecha_utc.replace(hour=23, minute=59, second=59, microsecond=999999)
 
 
+def format_total_seconds(delta):
+    "Devuelve str con cantidad total de horas minutos y segundos de un timedelta"
+    seconds = delta.total_seconds()
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    return '%02d:%02d:%02d' % (hours, minutes, seconds) if delta else '00:00:00'
+
+
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
     return cadena.encode('ascii', errors='ignore').decode('utf-8')

@@ -33,6 +33,15 @@ def format_seconds(seconds):
     return str(timedelta(seconds=seconds))
 
 
+@register.filter
+def format_total_seconds(delta):
+    seconds = delta.total_seconds()
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    return '%02d:%02d:%02d' % (hours, minutes, seconds) if delta else '00:00:00'
+
+
 @register.filter(name='get_class')
 def get_class(value):
     return value.__class__.__name__
