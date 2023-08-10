@@ -40,11 +40,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <div id="wrapper-search">
     <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans 'Buscar' %}</button>
     <div id="wrapperSearchForm" class="show">
-        <form role="form" method="post" enctype="multipart/form-data" >
+        <form role="form" id="form_buscar_por_fecha" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
+            {{form.pagina}}
             <div class="form-row">
                 <div class="col-md-6">
                     {{form.fecha}}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    {{form.calificaciones_x_pagina.label_tag}}{{form.calificaciones_x_pagina}}
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
@@ -178,6 +184,41 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endfor %}
             </tbody>
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if historico_calificaciones.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="First" onclick="javascript:filtrar_pagina({{historico_calificaciones.first}})">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Principio' %}</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{historico_calificaciones.previous_page_number}})">
+                        <span aria-hidden="true">&lt;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% for page in pages %}
+                    <li class="page-item {% if historico_calificaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
+                {% endfor %}
+                {% if historico_calificaciones.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{historico_calificaciones.next_page_number}})">
+                        <span aria-hidden="true">&gt;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Last" onclick="javascript:filtrar_pagina({{historico_calificaciones.paginator.num_pages}})">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Final' %}</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 </div>
 {% endblock %} {% block extra_css %}

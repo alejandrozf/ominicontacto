@@ -1114,6 +1114,13 @@ class ReporteCampanaForm(forms.Form):
     """
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
+    calificaciones_x_pagina = forms.ChoiceField(
+        required=False,
+        choices=([(5, 5), (10, 10), (25, 25), (50, 50), (100, 100)]),
+        label=_('Calificaciones por página'),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
 
 class ReporteForm(forms.Form):
