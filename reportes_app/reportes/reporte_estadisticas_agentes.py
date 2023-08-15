@@ -26,7 +26,8 @@ from django.utils.translation import gettext as _
 from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_agentes import ReporteAgentes
 
-from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+from ominicontacto_app.utiles import (
+    datetime_hora_maxima_dia, datetime_hora_minima_dia, format_total_seconds)
 from ominicontacto_app.models import (CalificacionCliente, AgenteProfile, Campana, User,
                                       Pausa)
 
@@ -116,7 +117,7 @@ class ReporteEstadisticasDiariaAgente(object):
         tipo_pausa = info_agente['tipo_de_pausa']
         self.estadisticas[info_agente['id']]['pausas'].append(
             {'nombre': info_agente['pausa'].nombre,
-             'valor': info_agente['tiempo']})
+             'valor': format_total_seconds(info_agente['tiempo'])})
 
         if tipo_pausa == Pausa.CHOICE_RECREATIVA:
             tiempo_pausa = info_agente['tiempo']
