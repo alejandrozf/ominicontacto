@@ -27,6 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <th>{% trans 'Calificación' %}</th>
                         <th>{% trans 'Fecha' %}</th>
                         <th>{% trans 'Observaciones' %}</th>
+                        <th>{% trans 'Agente' %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <td>{{ calificacion.opcion_calificacion.nombre }}</td>
                             <td>{{ calificacion.history_date }}</td>
                             <td>{{ calificacion.observaciones }}</td>
+                            <td>{{ calificacion.agente.user.get_full_name }}</td>
                         </tr>
                     {% empty %}
                         <tr>
