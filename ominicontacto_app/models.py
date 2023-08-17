@@ -1426,6 +1426,10 @@ class Campana(models.Model):
             return queue_id_name[:45]
         return queue_id_name
 
+    @classmethod
+    def get_id_from_queue_id_name(cls, queue_id_name):
+        return queue_id_name[:queue_id_name.find('_')]
+
     def gestionar_opcion_calificacion_agenda(self):
         """
         Devuelve la opción de calificación de agenda para la campaña.
