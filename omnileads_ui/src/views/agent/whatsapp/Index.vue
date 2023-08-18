@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import HeaderMessages from '@/components/agent/whatsapp/messages/HeaderMessages';
 import ListMessages from '@/components/agent/whatsapp/messages/ListMessages';
 import { WhatsappConsumer } from '@/services/agent/whatsapp/whatsapp_consumer';
@@ -32,10 +32,14 @@ export default {
         ListMessages
     },
     computed: {
-        ...mapState(['agtWhatsMessages'])
+        ...mapState(['agtWhatsChatsList'])
     },
-    created () {
+    async created () {
         this.consumer = new WhatsappConsumer();
+        await this.agtWhatsChatsListInit();
+    },
+    methods: {
+        ...mapActions(['agtWhatsChatsListInit'])
     },
     data () {
         return {
@@ -46,18 +50,18 @@ export default {
         };
     },
     watch: {
-        agtWhatsMessages: {
+        agtWhatsChatsList: {
             handler () {
-                this.newMessages = this.agtWhatsMessages.filter(
+                this.newMessages = this.agtWhatsChatsList.filter(
                     (m) => m.isNew === true
                 );
-                this.answeredMessages = this.agtWhatsMessages.filter(
+                this.answeredMessages = this.agtWhatsChatsList.filter(
                     (m) => m.isNew === false
                 );
-                this.numNewMessages = this.agtWhatsMessages.filter(
+                this.numNewMessages = this.agtWhatsChatsList.filter(
                     (m) => m.isNew === true && m.answered === false
                 ).length;
-                this.numAnsweredMessages = this.agtWhatsMessages.filter(
+                this.numAnsweredMessages = this.agtWhatsChatsList.filter(
                     (m) => m.isNew === false && m.answered === false
                 ).length;
             },

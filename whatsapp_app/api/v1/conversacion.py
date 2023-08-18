@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar destinos
+import datetime
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -60,7 +61,7 @@ class ConversacionNuevaSerializer(ConversacionSerializer):
 
 class ConversacionEnCursoSerializer(ConversacionSerializer):
     is_transfer_agent = serializers.BooleanField()
-    number_new_messages = serializers.IntegerField()
+    number_messages = serializers.IntegerField()
 
 
 class ViewSet(viewsets.ViewSet):
@@ -91,23 +92,23 @@ class ViewSet(viewsets.ViewSet):
                 "id": 1,
                 "campaing_id": 1,
                 "campaing_name": "nombre_campana",
-                "client_name": "cliente",
-                "client_number": "0000000",
+                "client_name": "7221313052",
+                "client_number": "7221313052",
                 "photo": "foto.jpg",
-                "date": "23-03-08 01:30",
+                "date": datetime.datetime.now(),
                 "is_transfer_campaing": True,
-                "number_messages": 10
+                "number_messages": 2
             },
             {
                 "id": 2,
                 "campaing_id": 1,
                 "campaing_name": "nombre_campana",
-                "client_name": "cliente",
-                "client_number": "0000000",
+                "client_name": "7221313052",
+                "client_number": "7221313052",
                 "photo": "foto.jpg",
-                "date": "23-03-08 01:30",
+                "date": datetime.datetime.now(),
                 "is_transfer_campaing": True,
-                "number_messages": 10
+                "number_messages": 5
             }
         ]
         conversaciones_en_curso = [
@@ -115,23 +116,23 @@ class ViewSet(viewsets.ViewSet):
                 "id": 3,
                 "campaing_id": 1,
                 "campaing_name": "nombre_campana",
-                "client_name": "cliente",
+                "client_name": "Cliente 1",
                 "client_number": "0000000",
                 "photo": "foto.jpg",
-                "date": "23-03-08 01:30",
+                "date": datetime.datetime.now(),
                 "is_transfer_agent": True,
-                "number_new_messages": 10
+                "number_messages": 10
             },
             {
                 "id": 4,
                 "campaing_id": 1,
                 "campaing_name": "nombre_campana",
-                "client_name": "cliente",
+                "client_name": "Cliente 2",
                 "client_number": "0000000",
                 "photo": "foto.jpg",
-                "date": "23-03-08 01:30",
+                "date": datetime.datetime.now(),
                 "is_transfer_agent": True,
-                "number_new_messages": 10
+                "number_messages": 4
             }
         ]
         data = {

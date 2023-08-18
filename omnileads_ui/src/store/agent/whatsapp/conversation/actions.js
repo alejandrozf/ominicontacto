@@ -39,10 +39,7 @@ export default {
             console.error(error);
         }
     },
-    agtWhatsCoversationReciveMessage (
-        { commit },
-        message
-    ) {
+    agtWhatsCoversationReciveMessage ({ commit }, message) {
         try {
             commit('agtWhatsCoversationReciveMessage', message);
         } catch (error) {
@@ -74,6 +71,27 @@ export default {
         } catch (error) {
             console.error('===> ERROR al obtener mensajes de la conversacion');
             console.error(error);
+        }
+    },
+    async agtWhatsChatsListInit ({ commit }) {
+        try {
+            const { status, data } = await service.getAgentChatsList();
+            commit('agtWhatsChatsListInit', {
+                isNew:
+                    status === HTTP_STATUS.SUCCESS
+                        ? data.conversations_new
+                        : [],
+                inProgress:
+                    status === HTTP_STATUS.SUCCESS
+                        ? data.conversations_in_progress
+                        : []
+            });
+        } catch (error) {
+            console.error(
+                '===> ERROR al obtener la lista de chats de un agente'
+            );
+            console.error(error);
+            commit('agtWhatsChatsListInit', { isNew: [], inProgress: [] });
         }
     }
 };

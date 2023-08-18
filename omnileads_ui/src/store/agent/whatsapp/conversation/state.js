@@ -1,3 +1,4 @@
 export default {
-    agtWhatsCoversationMessages: []
+    agtWhatsCoversationMessages: [],
+    agtWhatsChatsList: []
 };
