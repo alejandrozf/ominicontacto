@@ -21,4 +21,5 @@ from . import consumers
 
 websocket_urlpatterns = [
     path('channels/agent-console', consumers.AgentConsole.as_asgi()),
+    path('channels/agent-console-whatsapp', consumers.AgentConsoleWhatsapp.as_asgi()),
 ]

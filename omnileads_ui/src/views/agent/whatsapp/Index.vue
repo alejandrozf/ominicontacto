@@ -21,9 +21,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import HeaderMessages from '@/components/agent/whatsapp/messages/HeaderMessages';
 import ListMessages from '@/components/agent/whatsapp/messages/ListMessages';
-import { mapState } from 'vuex';
+import { WhatsappConsumer } from '@/services/agent/whatsapp/whatsapp_consumer';
+
 export default {
     components: {
         HeaderMessages,
@@ -31,6 +33,9 @@ export default {
     },
     computed: {
         ...mapState(['agtWhatsMessages'])
+    },
+    created () {
+        this.consumer = new WhatsappConsumer();
     },
     data () {
         return {

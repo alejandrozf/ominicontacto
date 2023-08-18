@@ -20,7 +20,7 @@ import time
 import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from notification_app.consumers import AgentConsole
+from notification_app.consumers import AgentConsole, AgentConsoleWhatsapp
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 
@@ -36,10 +36,14 @@ class AgentNotifier:
     TYPE_WHATSAPP_MESSAGE_STATUS = 'whatsapp_message_status'
     TYPE_WHATSAPP_CHAT_EXPIRED = 'whatsapp_chat_expired'
 
-    def get_group_name(self, user_id=None):
+    def get_group_name(self, user_id=None, whatsapp_event=False):
         if user_id is not None:
+            if whatsapp_event:
+                return AgentConsoleWhatsapp.GROUP_USER_OBJ.format(user_id=user_id)
             return AgentConsole.GROUP_USER_OBJ.format(user_id=user_id)
         else:
+            if whatsapp_event:
+                return AgentConsoleWhatsapp.GROUP_USER_CLS
             return AgentConsole.GROUP_USER_CLS
 
     def notify_pause(self, user_id, pause_id, pause_name):
@@ -79,14 +83,16 @@ class AgentNotifier:
             'campaing_name': 'nombre_campana',
             'message_number': '10'
         }
-        self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_chat_attended(self, user_id, id_conversacion):
         message = {
             'id': id_conversacion,
             'campaing_id': 'id_campana',
         }
-        self.send_message(self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_chat_transfered(self, user_id, id_conversacion):
         message = {
@@ -116,46 +122,53 @@ class AgentNotifier:
                 },
             ]
         }
-        self.send_message(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_new_message(self, user_id, id_message):
+    def notify_whatsapp_new_message(self, user_id, message):
         message = {
-            'chat_id': 'id_conversacion',
-            'campaing_id': 'id_campana',
-            'message_id': 'id_message',
-            'content': 'contenido',
-            'status': 'leido',
-            'date': '20/04/2023',
-            'sender': 'emisor'
+            'chat_id': 1,
+            'campaing_id': 1,
+            'message_id': 1,
+            'content': message,
+            'user': 'Cliente EMI',
+            'status': 1,
+            'date': '2023-03-07 01:30',
+            'sender': 1
         }
-        self.send_message(self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_message_status(self, user_id, id_message):
         message = {
             'chat_id': 'id_conversacion',
             'campaing_id': 'id_campana',
             'message_id': 'id_message',
-            'status': 'leido',
+            'status': '',
             'date': '20/04/2023',
         }
-        self.send_message(self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_chat_expired(self, user_id, id_message):
         message = {
             'chat_id': 'id_conversacion',
             'campaing_id': 'campaing_id',
         }
-        self.send_message(self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id)
+        self.send_message(
+            self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id, whatsapp_event=True)
 
-    def send_message(self, type, message, user_id=None):
+    def send_message(self, type, message, user_id=None, whatsapp_event=False):
         # si user_id=None se envia mensaje a todos los agentes conectados
-        async_to_sync(get_channel_layer().group_send)(self.get_group_name(user_id), {
-            'type': 'broadcast',
-            'payload': {
-                'type': type,
-                'args': message
+        async_to_sync(
+            get_channel_layer().group_send)(self.get_group_name(user_id, whatsapp_event), {
+                'type': 'broadcast',
+                'payload': {
+                    'type': type,
+                    'args': message
+                }
             }
-        })
+        )
 
 
 class RedisStreamNotifier:

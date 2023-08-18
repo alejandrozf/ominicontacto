@@ -18,3 +18,11 @@ export const WHATSAPP_MESSAGE = {
         ERROR: 4
     }
 };
+export const WHATSAPP_EVENTS = {
+    NEW_CHAT: 'whatsapp_new_chat',
+    CHAT_ATTENDED: 'whatsapp_chat_attended',
+    CHAT_TRANSFERED: 'whatsapp_chat_transfered',
+    NEW_MESSAGE: 'whatsapp_new_message',
+    MESSAGE_STATUS: 'whatsapp_message_status',
+    CHAT_EXPIRED: 'whatsapp_chat_expired'
+};

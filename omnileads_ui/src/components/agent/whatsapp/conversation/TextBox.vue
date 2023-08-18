@@ -42,8 +42,9 @@ export default {
                         from: 'Agente Sofia',
                         itsMine: true,
                         message: this.message,
-                        date: new Date(),
-                        status: WHATSAPP_MESSAGE.STATUS.SENT
+                        sender: WHATSAPP_MESSAGE?.SENDERS?.AGENT,
+                        status: WHATSAPP_MESSAGE?.STATUS?.SENT,
+                        date: new Date()
                     },
                     conversationId: 1
                 };

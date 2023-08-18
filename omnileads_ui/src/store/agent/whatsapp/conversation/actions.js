@@ -39,6 +39,17 @@ export default {
             console.error(error);
         }
     },
+    agtWhatsCoversationReciveMessage (
+        { commit },
+        message
+    ) {
+        try {
+            commit('agtWhatsCoversationReciveMessage', message);
+        } catch (error) {
+            console.error('===> ERROR al recibir mensaje de texto');
+            console.error(error);
+        }
+    },
     async agtWhatsConversationInitMessages ({ commit }, chatId) {
         try {
             const { status, data } = await service.getMessagesByConversationId(
