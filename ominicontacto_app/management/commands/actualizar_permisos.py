@@ -43,7 +43,7 @@ class Command(BaseCommand):
                         app.name, configuracion, gestor_de_permisos.permisos_por_rol)
                     if configuracion_de_permiso.nombre in nombres_de_permisos:
                         raise ConfiguracionDePermisoError(
-                            nombre=app.name,
+                            app_name=app.name,
                             mensaje=_('El nombre del permiso esta repetido: {0}').format(
                                 configuracion_de_permiso.nombre))
                     gestor_de_permisos.gestionar_permiso(configuracion_de_permiso)
