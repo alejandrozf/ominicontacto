@@ -23,6 +23,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
 
 export default {
     data () {
@@ -31,17 +32,22 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['agtWhatsCoversationSendMessage']),
+        ...mapActions(['agtWhatsCoversationSendTextMessage']),
         sendMessage () {
             if (this.message !== '') {
                 this.$emit('scrollDownEvent');
-                this.agtWhatsCoversationSendMessage({
-                    id: 0,
-                    from: 'Agent',
-                    itsMine: true,
-                    message: this.message,
-                    date: new Date()
-                });
+                const data = {
+                    message: {
+                        id: 6,
+                        from: 'Agente Sofia',
+                        itsMine: true,
+                        message: this.message,
+                        date: new Date(),
+                        status: WHATSAPP_MESSAGE.STATUS.SENT
+                    },
+                    conversationId: 1
+                };
+                this.agtWhatsCoversationSendTextMessage(data);
                 this.message = '';
             }
         }

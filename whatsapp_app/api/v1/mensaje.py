@@ -32,33 +32,34 @@ class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     conversation = serializers.IntegerField()
     content = serializers.CharField()
-    status = serializers.CharField()
+    status = serializers.IntegerField()
     date = serializers.DateTimeField()
-    sender = serializers.CharField()
+    sender = serializers.IntegerField()
+    user = serializers.CharField()
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):
     conversation = serializers.IntegerField()
     content = serializers.CharField()
-    sender = serializers.CharField()
+    sender = serializers.IntegerField()
 
 
 class MensajeAtachmentCreateSerializer(serializers.Serializer):
     conversation = serializers.IntegerField()
     content = serializers.CharField()
-    sender = serializers.CharField()
+    sender = serializers.IntegerField()
 
 
 class MensajePlantillaCreateSerializer(serializers.Serializer):
     conversation = serializers.IntegerField()
     content = serializers.CharField()
-    sender = serializers.CharField()
+    sender = serializers.IntegerField()
 
 
 class MensajeWhatsappTemplateCreateSerializer(serializers.Serializer):
     conversation = serializers.IntegerField()
     content = serializers.CharField()
-    sender = serializers.CharField()
+    sender = serializers.IntegerField()
 
 
 class ViewSet(viewsets.ViewSet):

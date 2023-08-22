@@ -30,6 +30,17 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import (
     MensajeTextCreateSerializer, MensajeAtachmentCreateSerializer, MensajeListSerializer,
     MensajePlantillaCreateSerializer, MensajeWhatsappTemplateCreateSerializer)
+MESSAGE_SENDERS = {
+    'AGENT': 0,
+    'CLIENT': 1
+}
+MESSAGE_STATUS = {
+    'SENDING': 0,
+    'SENT': 1,
+    'DELIVERED': 2,
+    'READ': 3,
+    'ERROR': 4
+}
 
 
 class ConversacionSerializer(serializers.Serializer):
@@ -193,17 +204,46 @@ class ViewSet(viewsets.ViewSet):
                 "id": 1,
                 "conversation": 1,
                 "content": "Buenos días",
-                "status": "",
+                "status": MESSAGE_STATUS['SENDING'],
                 "date": "2023-03-07 01:30",
-                "sender": "cliente"
+                "user": "Cliente EMI",
+                "sender": MESSAGE_SENDERS['CLIENT']
             },
             {
                 "id": 2,
                 "conversation": 1,
-                "content": "Hola",
-                "status": "",
+                "content": "Buenas, en que puedo ayudarte",
+                "status": MESSAGE_STATUS['SENT'],
                 "date": "2023-03-07 01:30",
-                "sender": "cliente"
+                "user": "Agente Sofia",
+                "sender": MESSAGE_SENDERS['AGENT']
+            },
+            {
+                "id": 3,
+                "conversation": 1,
+                "content": "Quiero agregar agentes a campaña, como lo hago?",
+                "status": MESSAGE_STATUS['DELIVERED'],
+                "date": "2023-03-07 01:30",
+                "user": "Cliente EMI",
+                "sender": MESSAGE_SENDERS['CLIENT']
+            },
+            {
+                "id": 4,
+                "conversation": 1,
+                "content": "Claro, a que tipo de campana te refieres?",
+                "status": MESSAGE_STATUS['READ'],
+                "date": "2023-03-07 01:30",
+                "user": "Agente Sofia",
+                "sender": MESSAGE_SENDERS['AGENT']
+            },
+            {
+                "id": 5,
+                "conversation": 1,
+                "content": "Son de tipo Inbount",
+                "status": MESSAGE_STATUS['ERROR'],
+                "date": "2023-03-07 01:30",
+                "user": "Cliente EMI",
+                "sender": MESSAGE_SENDERS['CLIENT']
             }
         ]
         # if 'message_id' in self.request.GET:
@@ -225,13 +265,13 @@ class ViewSet(viewsets.ViewSet):
     def send_message_text(self, request, pk):
         # sender = request.user.get_agente_profile()
         data = request.data.copy()
-        data.update({"conversation": pk, "sender": "sender"})
+        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
         serializer = MensajeTextCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
         # orquestador_response = send_message_text(serializer.data) # orquestador
         orquestador_response = {
-            "status": "send",
+            "status": MESSAGE_STATUS['SENT'],
             "message_id": "1",
             "date": "01-01-2022 09:10"
         }
@@ -243,13 +283,13 @@ class ViewSet(viewsets.ViewSet):
     def send_message_attachment(self, request, pk):
         # sender = request.user.get_agente_profile()
         data = request.data.copy()
-        data.update({"conversation": pk, "sender": "sender"})
+        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
         serializer = MensajeAtachmentCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
         # orquestador_response = send_message_attachment(serializer.data) # orquestador
         orquestador_response = {
-            "status": "send",
+            "status": MESSAGE_STATUS['SENT'],
             "message_id": "1",
             "date": "01-01-2022 09:10"
         }
@@ -261,13 +301,13 @@ class ViewSet(viewsets.ViewSet):
     def send_message_template(self, request, pk):
         # sender = request.user.get_agente_profile()
         data = request.data.copy()  # Id Plantilla, Parámetros
-        data.update({"conversation": pk, "sender": "sender"})
+        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
         serializer = MensajePlantillaCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
         # orquestador_response = send_message_template(serializer.data) # orquestador
         orquestador_response = {
-            "status": "send",
+            "status": MESSAGE_STATUS['SENT'],
             "message_id": "1",
             "date": "01-01-2022 09:10"
         }
@@ -279,13 +319,13 @@ class ViewSet(viewsets.ViewSet):
     def send_message_whatsapp_template(self, request, pk):
         # sender = request.user.get_agente_profile()
         data = request.data.copy()  # Id Template
-        data.update({"conversation": pk, "sender": "sender"})
+        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
         serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         # serializer.save()
         # orquestador_response = send_message_whatsapp_template(serializer.data) # orquestador
         orquestador_response = {
-            "status": "send",
+            "status": MESSAGE_STATUS['SENT'],
             "message_id": "1",
             "date": "01-01-2022 09:10"
         }
