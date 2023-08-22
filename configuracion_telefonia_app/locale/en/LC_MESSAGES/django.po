@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-16 12:42-0300\n"
+"POT-Creation-Date: 2023-08-23 00:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -942,11 +942,11 @@ msgstr "Destination if time condition does not match"
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:258
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:272
 msgid "Introduzca un valor válido."
-msgstr "Insert a valid value."
+msgstr "Insert a valid value"
 
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:283
 msgid "Este campo es requerido."
-msgstr "This field is required."
+msgstr "This field is required"
 
 #: configuracion_telefonia_app/views/audio.py:104
 msgid "Se ha instalado el paquete de idioma satisfactoriamente."
