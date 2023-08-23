@@ -28,7 +28,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, View
-
+from django.core import paginator as django_paginator
 
 from ominicontacto_app.forms import ReporteCampanaForm
 
@@ -102,6 +102,43 @@ class CampanaReporteCalificacionListView(FormView):
         context['campana'] = self.get_object()
         context['calificaciones_task_id'] = get_random_string(8)
         context['formulario_gestion_task_id'] = get_random_string(8)
+
+        historico_calificaciones = []
+
+        if 'historico_calificaciones' in context:
+            historico_calificaciones = context['historico_calificaciones']
+
+        qs = list(historico_calificaciones)
+
+        if 'pagina' in context and context['pagina']:
+            page = context['pagina']
+        else:
+            page = 1
+
+        if 'calificaciones_x_pagina' in context:
+            calificaciones_x_pagina = context['calificaciones_x_pagina']
+        else:
+            calificaciones_x_pagina = 2
+
+        result_paginator = django_paginator.Paginator(qs, calificaciones_x_pagina)
+        try:
+            qs = result_paginator.page(page)
+        except django_paginator.PageNotAnInteger:
+            qs = result_paginator.page(1)
+        except django_paginator.EmptyPage:
+            qs = result_paginator.page(result_paginator.num_pages)
+
+        num_pages = result_paginator.num_pages
+        page_no = int(page)
+        if num_pages <= 7 or page_no <= 4:  # case 1 and 2
+            pages = [x for x in range(1, min(num_pages + 1, 8))]
+        elif page_no > num_pages - 4:  # case 4
+            pages = [x for x in range(num_pages - 6, num_pages + 1)]
+        else:  # case 3
+            pages = [x for x in range(page_no - 3, page_no + 4)]
+        context.update({'pages': pages})
+        # ----- </Paginate> -----
+        context['historico_calificaciones'] = qs
         return context
 
     def _procesa_historico_calificaciones(
@@ -157,6 +194,8 @@ class CampanaReporteCalificacionListView(FormView):
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
+        pagina = form.cleaned_data.get('pagina')
+        calificaciones_x_pagina = form.cleaned_data.get('calificaciones_x_pagina')
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
@@ -171,7 +210,9 @@ class CampanaReporteCalificacionListView(FormView):
             historico_calificaciones=historico_calidficaciones.values(),
             reporte_fecha_desde_elegida=fecha_desde.strftime("%m/%d/%Y"),
             reporte_fecha_hasta_elegida=fecha_hasta.strftime("%m/%d/%Y"),
-            pk_campana=self.kwargs['pk_campana']
+            pk_campana=self.kwargs['pk_campana'],
+            pagina=pagina,
+            calificaciones_x_pagina=calificaciones_x_pagina
         ))
 
 

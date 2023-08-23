@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 12:00-0300\n"
+"POT-Creation-Date: 2023-08-22 17:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,14 +20,14 @@ msgstr ""
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:173
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:140
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:93
-#: supervision_app/static/supervision_app/JS/supervision.js:191
+#: supervision_app/static/supervision_app/JS/supervision.js:194
 msgid "Todos"
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:175
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:142
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:95
-#: supervision_app/static/supervision_app/JS/supervision.js:193
+#: supervision_app/static/supervision_app/JS/supervision.js:196
 msgid "Buscar: "
 msgstr ""
 
@@ -38,42 +38,42 @@ msgstr ""
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:178
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:145
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:98
-#: supervision_app/static/supervision_app/JS/supervision.js:196
+#: supervision_app/static/supervision_app/JS/supervision.js:199
 msgid "Primero "
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:179
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:146
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:99
-#: supervision_app/static/supervision_app/JS/supervision.js:197
+#: supervision_app/static/supervision_app/JS/supervision.js:200
 msgid "Anterior "
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:180
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:147
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:100
-#: supervision_app/static/supervision_app/JS/supervision.js:198
+#: supervision_app/static/supervision_app/JS/supervision.js:201
 msgid " Siguiente"
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:181
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:148
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:101
-#: supervision_app/static/supervision_app/JS/supervision.js:199
+#: supervision_app/static/supervision_app/JS/supervision.js:202
 msgid " Último"
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:183
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:150
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:103
-#: supervision_app/static/supervision_app/JS/supervision.js:201
+#: supervision_app/static/supervision_app/JS/supervision.js:204
 msgid "Mostrar _MENU_ entradas"
 msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:184
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:151
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:104
-#: supervision_app/static/supervision_app/JS/supervision.js:202
+#: supervision_app/static/supervision_app/JS/supervision.js:205
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr ""
 
@@ -84,7 +84,7 @@ msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:143
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:96
-#: supervision_app/static/supervision_app/JS/supervision.js:194
+#: supervision_app/static/supervision_app/JS/supervision.js:197
 msgid "(filtrando de un total de _MAX_ contactos)"
 msgstr ""
 
@@ -192,15 +192,15 @@ msgstr ""
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:219
+#: supervision_app/static/supervision_app/JS/supervision.js:222
 msgid "Susurrar"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:232
+#: supervision_app/static/supervision_app/JS/supervision.js:235
 msgid "Monitoreo"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:261
+#: supervision_app/static/supervision_app/JS/supervision.js:264
 msgid "Logout"
 msgstr ""
 

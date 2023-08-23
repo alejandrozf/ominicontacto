@@ -510,8 +510,8 @@ urlpatterns = [
             name='api_set_estado_revision'),
     re_path(r'api/v1/calificar_llamada/', ApiStatusCalificacionLlamada.as_view(),
             name='api_status_calificacion_llamada'),
-    re_path(r'api/v1/evento_hold/', ApiEventoHold.as_view(),
-            name='api_evento_hold'),
+    path('api/v1/evento_hold/', ApiEventoHold.as_view(),
+         name='api_evento_hold'),
     path('api/v1/agent/transfer_options', ApiAgentesParaTransferencia.as_view({'get': 'list'}),
          name='api_agent_call_transfer_options'),
     # ###########     AUDITORIAS       ############ #

@@ -246,11 +246,15 @@ class OMLAPI {
         
     }
 
-    eventHold(){
+    eventHold(callid){
         var URL = Urls.api_evento_hold();
+        var post_data = {
+            'callid': callid,
+        };
         $.ajax({
             url: URL,
             type: 'POST',
+            data: post_data,
             dataType: 'json',
             success: function(msg){
             },

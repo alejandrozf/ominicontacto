@@ -30,7 +30,7 @@ import datetime
 from django.conf import settings
 from django.utils.translation import gettext as _
 
-from ominicontacto_app.utiles import crear_archivo_en_media_root
+from ominicontacto_app.utiles import crear_archivo_en_media_root, format_total_seconds
 from django.utils.encoding import force_text
 
 
@@ -167,7 +167,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente['nombre_agente'])
                 lista_opciones.append(agente['pausa'])
                 lista_opciones.append(agente['tipo_de_pausa'])
-                lista_opciones.append(agente['tiempo'] + "hs")
+                lista_opciones.append(format_total_seconds(agente['tiempo']))
 
                 # --- Finalmente, escribimos la linea
                 lista_opciones_utf8 = [force_text(item) for item in lista_opciones]

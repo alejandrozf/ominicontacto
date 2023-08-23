@@ -19,6 +19,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load util_tags %}
+
 {% block head_js %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
 <script type="text/javascript" src="{% static 'reportes_app/JS/reportes_agentes_tiempos.js' %}"></script>
@@ -219,7 +221,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </td>
                     <td>{{agente.pausa}}</td>
                     <td>{{agente.tipo_de_pausa}}</td>
-                    <td>{{agente.tiempo}}{% trans 'hs' %}</td>
+                    <td>{{ agente.tiempo|format_total_seconds }}{% trans 'hs' %}</td>
                 </tr>
             {% endfor %}
             <tbody>
