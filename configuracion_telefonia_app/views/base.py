@@ -44,6 +44,7 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
     SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
+from ominicontacto_app.services.asterisk.trunk_status import TrunkStatusMonitor
 
 from utiles_globales import obtener_paginas
 
@@ -128,6 +129,9 @@ class TroncalSIPListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(TroncalSIPListView, self).get_context_data(**kwargs)
         obtener_paginas(context, 7)
+        trunks = context['page_obj'].object_list
+        trunk_status_service = TrunkStatusMonitor()
+        trunk_status_service.set_trunks_statuses(trunks)
         return context
 
 
