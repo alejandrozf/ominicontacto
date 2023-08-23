@@ -85,7 +85,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
 
-            {% if edita_user or elimina_user or edita_agente or elimina_agente %}
+            {% if edita_user or elimina_user or edita_agente or elimina_agente or clona_agente %}
               <td>
                 {% if usuario.is_agente %}
                   {% if edita_agente or elimina_agente %}
@@ -97,6 +97,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% if edita_agente %}
                             <a name="edit_user" class="dropdown-item" href="{% url 'agent_update' usuario.id %}">
                                 <span class="icon icon-pencil"></span>{% trans 'Editar' %}
+                            </a>
+                        {% endif %}
+                        {% if clona_agente %}
+                            <a name="clone_agent" class="dropdown-item" href="{% url 'clone_agent' usuario.id %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Clonar' %}
                             </a>
                         {% endif %}
                         {% if elimina_agente %}

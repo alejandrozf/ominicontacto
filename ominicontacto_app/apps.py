@@ -352,6 +352,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'agent_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'clone_agent',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agent_update',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_change_password',
@@ -728,6 +730,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar Usuario (no agente)'), 'version': '1.7.0'},
         'agent_delete':
             {'descripcion': _('Borrar Usuario Agente'), 'version': '1.7.0'},
+        'clone_agent':
+            {'descripcion': _('Clonar Usuario Agente'), 'version': '1.31.0'},
         'agent_update':
             {'descripcion': _('Editar Usuario Agente'), 'version': '1.7.0'},
         'user_change_password':

@@ -87,3 +87,22 @@ $(function () {
         updateSelect(opciones);
     });
 });
+
+function obtener_campanas_agente(pk_agent) {
+    var $campanasAgenteModal = $('#campanasAgenteModal');
+    var filter = '?status=[2,5,6]&agent=' + pk_agent;
+    var table = $('#campanasAgenteTable').DataTable( {
+        ajax: {
+            url: Urls.api_campanas_de_supervisor() + filter,
+            dataSrc: '',
+        },
+        columns: [
+            { 'data': 'id'},
+            { 'data': 'nombre',},
+            { 'data': 'objetivo'},
+        ],
+        paging: false,
+    } );
+    $campanasAgenteModal.modal('show');
+    table.destroy();
+}

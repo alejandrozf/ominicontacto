@@ -78,22 +78,23 @@ urlpatterns = [
     # ==========================================================================
     # Usuarios, Perfiles y Roles
     # ==========================================================================
-    re_path(r'^user/nuevo/$',
-            login_required(views_user_profiles.CustomUserWizard.as_view()),
-            name='user_nuevo',
-            ),
-    re_path(r'^user/new/agent/$',
-            login_required(views_user_profiles.CustomUserWizard.as_view()),
-            name='user_new_agent', kwargs={'create_agent': ''}
-            ),
-    re_path(r'^user/list/(?P<page>[0-9]+)/$',
-            login_required(views_user_profiles.UserListView.as_view()),
-            name='user_list'
-            ),
-    re_path(r'^user/list/download_csv/$',
-            login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
-            name='descargar_usuarios_csv'
-            ),
+    path('user/new/',
+         login_required(views_user_profiles.CustomUserWizard.as_view()),
+         name='user_nuevo',
+         ),
+    path('user/new/agent/',
+         login_required(views_user_profiles.CustomUserWizard.as_view()),
+         name='user_new_agent', kwargs={'create_agent': ''}
+         ),
+    path('user/clone/agent/<int:clone_pk>/',
+         login_required(views_user_profiles.CustomUserWizard.as_view()),
+         name='clone_agent'),
+    path('user/list/<int:page>/',
+         login_required(views_user_profiles.UserListView.as_view()),
+         name='user_list'),
+    path('user/list/download_csv/$',
+         login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
+         name='descargar_usuarios_csv'),
     path('user/delete/<int:pk>',
          login_required(views_user_profiles.UserDeleteView.as_view()),
          name='user_delete'),
