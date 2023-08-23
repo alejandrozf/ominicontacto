@@ -174,3 +174,8 @@ function initSubmitButton() {
         setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
     });
 }
+
+function filtrar_pagina(pagina) {
+    $('#id_pagina').val(pagina);
+    $('#form_buscar_por_fecha').submit();
+}

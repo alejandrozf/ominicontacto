@@ -246,11 +246,15 @@ class OMLAPI {
         
     }
 
-    eventHold(){
+    eventHold(callid){
         var URL = Urls.api_evento_hold();
+        var post_data = {
+            'callid': callid,
+        };
         $.ajax({
             url: URL,
             type: 'POST',
+            data: post_data,
             dataType: 'json',
             success: function(msg){
             },
@@ -303,6 +307,19 @@ class OMLAPI {
             url: URL,
             type: 'POST',
             data: post_data,
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
+    makeDisabled(){
+        var URL = Urls.api_make_disabled();
+        $.ajax({
+            url: URL,
+            type: 'POST',
             success: function(msg){
             },
             error: function(jqXHR, textStatus, errorThrown) {

@@ -469,13 +469,13 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             if agente['pausa_id'] in ['0', '1']:
                 if agente['id'] == self.agente.id:
                     if int(agente['pausa_id']) == pausa.id:
-                        self.assertEqual(str(total_pausa_agente), agente['tiempo'])
+                        self.assertEqual(total_pausa_agente, agente['tiempo'])
                     elif int(agente['pausa_id']) == pausa1.id:
-                        self.assertEqual(str(total_pausa_agente_1), agente['tiempo'])
+                        self.assertEqual(total_pausa_agente_1, agente['tiempo'])
                     else:
                         self.fail("pausa no calculada revisar test")
                 elif agente['id'] == self.agente1.id:
-                    self.assertEqual(str(total_pausa_agente1), agente['tiempo'])
+                    self.assertEqual(total_pausa_agente1, agente['tiempo'])
                 else:
                     self.fail("Agente no calculado revisar test")
 

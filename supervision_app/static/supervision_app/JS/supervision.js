@@ -157,6 +157,9 @@ function createDataTable() {
                     if (data.search('UNAVAILABLE') != -1) {
                         $status.attr('class', 'unavailable');
                     }
+                    if (data.search('DISABLED') != -1) {
+                        $status.attr('class', 'unavailable');
+                    }
                     if (data.search('RINGING') != -1) {
                         $status.attr('class', 'ringing');
                     }

@@ -44,11 +44,13 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
 from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.redis.call_contact_cache import CallContactCache
 from api_app.services.calificacion_llamada import CalificacionLLamada
 from notification_app.notification import RedisStreamNotifier
 from configuracion_telefonia_app.models import DestinoEntrante
 
 from reportes_app.models import LlamadaLog
+from notification_app.notification import AgentNotifier
 
 
 logger = logging_.getLogger(__name__)
@@ -136,6 +138,8 @@ class CalificacionClienteFormView(FormView):
         id_contacto = None
         self.call_data = None
         call_data_json = 'false'
+        notificar_contacto_existente = False
+
         if 'call_data_json' in kwargs and kwargs['call_data_json']:
             call_data_json = kwargs['call_data_json']
             self.call_data = json.loads(call_data_json)
@@ -143,6 +147,18 @@ class CalificacionClienteFormView(FormView):
             telefono = self.call_data['telefono']
             if self.call_data['id_contacto']:
                 id_contacto = self.call_data['id_contacto']
+
+            if id_contacto is None or id_contacto == '-1':
+                callid = self.call_data['call_id']
+                call_contact_cache = CallContactCache()
+                # Busco si la llamada ya está asociada a un contacto
+                id_contacto = call_contact_cache.get_call_contact_id(callid)
+                # Me aseguro que si hay contacto, exista en la base de datos de esta campaña
+                if id_contacto:
+                    if not self.campana.bd_contacto.contactos.filter(id=id_contacto).exists():
+                        id_contacto = None
+                    else:
+                        notificar_contacto_existente = True
         else:
             self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
             telefono = kwargs.get('telefono', False)
@@ -177,6 +193,9 @@ class CalificacionClienteFormView(FormView):
         self.object = self.get_object()
 
         self.agente = self._get_agente()
+        if notificar_contacto_existente:
+            AgentNotifier().notify_contact_saved(
+                self.agente.user_id, self.call_data['call_id'], id_contacto)
 
         self.campos_bloqueados = self._get_campos_bloqueados()
         self.campos_ocultos = self._get_campos_ocultos()
@@ -468,9 +487,23 @@ class CalificacionClienteFormView(FormView):
                 self.contacto.es_originario = False
             self.contacto.save()
 
-            # Actualizar el contacto en LlamadaLog
+            if nuevo_contacto and self.call_data is not None:
+                self.call_data['id_contacto'] = self.contacto.id
+
+            callid = None
             if self.call_data is not None and self.call_data['call_id']:
-                llamadalog = LlamadaLog.objects.filter(callid=self.call_data['call_id'])
+                callid = self.call_data['call_id']
+                # Si es un nuevo contacto y tengo un callid, los asocio en CallContactCache
+                if nuevo_contacto:
+                    call_contact_cache = CallContactCache()
+                    call_contact_cache.set_call_contact_id(callid, self.contacto.id)
+                    AgentNotifier().notify_contact_saved(
+                        self.agente.user_id, self.call_data['call_id'], self.contacto.id)
+
+            # Actualizar el contacto en LlamadaLog
+            # TODO: Verificar si es necesario hacerlo siempre o solo si es nuevo el contacto
+            if callid:
+                llamadalog = LlamadaLog.objects.filter(callid=callid)
                 if llamadalog:
                     llamadalog.update(contacto_id=self.contacto.id)
 

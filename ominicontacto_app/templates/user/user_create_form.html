@@ -26,10 +26,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <ul class="nav nav-indicators">
     	{% if wizard.steps.current == '0' %}
 	        <li class="active"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="disabled"><a>{% trans 'Perfil' %}</a></li>
+	        <li class="disabled"><a>{% trans 'Selección de campañas' %}</a></li>
         {% else %}
 	        <li class="disabled"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="active"><a>{% trans 'Perfil' %}</a></li>
+	        <li class="active"><a>{% trans 'Selección de campañas' %}</a></li>
     	{% endif %}
     </ul>
 {% endblock %}
@@ -41,4 +41,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         data-agente-rol-id="{{ AGENTE_ROL_ID }}">
     </script>
     {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/agent_create.js' %}"></script>
 {% endblock %}

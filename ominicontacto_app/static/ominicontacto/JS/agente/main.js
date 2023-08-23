@@ -39,6 +39,7 @@ var logoffEvent = undefined;
 var agendas_notifier = undefined;
 
 $(function () {
+    var oml_api = new OMLAPI();
     let agendas_dates = JSON.parse($('#agendas_dates_json').val());
     agendas_notifier = new AgendasNotifier(agendas_dates);
 
@@ -47,6 +48,7 @@ $(function () {
             startPhoneJs();
         })
         .catch(function(err) {
+            oml_api.makeDisabled();
             alert(gettext('No se ha podido acceder a su micrófono. \n\
 Permita el acceso al mismo y recargue la página para comenzar a trabajar.'));
             return;

@@ -65,6 +65,7 @@ class PhoneJSController {
         this.subscribeToFSMEvents();
         this.subscribeToPhoneEvents();
         this.subscribeToAgentNotificationEvents();
+        this.subscribeToNavigatorEvents();
 
         this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
@@ -168,12 +169,12 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
-                self.oml_api.eventHold();
+                self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
-                self.oml_api.eventHold();
+                self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else {
                 phone_logger.log('Error');
             }
@@ -227,9 +228,23 @@ class PhoneJSController {
                 alert(gettext('Seleccione una opción válida'));
             }
             else {
-                self.phone_fsm.dialTransfer();
-                self.phone.dialTransfer(transfer);
-                $('#numberToTransfer').val('');
+                if (self.phone.session_data.remote_call.id_contacto == '-1') {
+                    $('#modalAlertContactSaved').modal('show');
+                    $('#buttonContinueTransfer').click(function(){
+                        $('#modalAlertContactSaved').modal('hide');
+                        self.phone_fsm.dialTransfer();
+                        self.phone.dialTransfer(transfer);
+                        $('#numberToTransfer').val('');
+                    });
+                    $('#buttonCancelTransfer').click(function(){
+                        $('#modalTransfer').modal('hide');
+                    });
+                }
+                else {
+                    self.phone_fsm.dialTransfer();
+                    self.phone.dialTransfer(transfer);
+                    $('#numberToTransfer').val('');
+                }
             }
         });
 
@@ -641,7 +656,31 @@ class PhoneJSController {
             alert(message);
             
         });
+        this.notification_agent.eventsCallbacks.onNotificationContactSaved.add(function(args){
+            if(self.phone.session_data){
+                self.phone.session_data.remote_call.id_contacto=args['contact_id'];
+            }
+        });
 
+    }
+
+    subscribeToNavigatorEvents() {
+        var self = this;
+        navigator.permissions.query({ name: 'microphone' })
+            .then(function(permissionStatus){
+                permissionStatus.onchange = function(){
+                    if (this.state=='denied'){
+                        self.phone.logout();
+                        self.oml_api.makeDisabled();
+                        $.growl.error({
+                            title: gettext('Atención!'),
+                            message: gettext('No se ha podido acceder a su micrófono. \n\
+                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
+                            duration: 15000,
+                        });
+                    }
+                };
+            });
     }
 
     goToReadyAfterLogin() {
@@ -1159,9 +1198,10 @@ class OutTransferData {
     }
 
     get is_valid() {
-        return (this.is_blind || (this.is_consultative && !this.is_to_campaign)) &&
-            (this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact) &&
-            this.destination != '' && this.destination != undefined;
+        let type_defined = this.is_blind || this.is_consultative;
+        let destination_type_defined = this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact;
+        let destination_defined = this.destination != '' && this.destination != undefined;
+        return type_defined && destination_type_defined && destination_defined;
     }
 }
 

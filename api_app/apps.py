@@ -98,6 +98,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_make_reject_call',
              'roles': ['Agente', ]},
+            {'nombre': 'api_make_disabled',
+             'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
             {'nombre': 'api_set_estado_revision',
@@ -290,6 +292,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador']},
             {'nombre': 'api_register_server_create',
              'roles': ['Administrador']},
+            {'nombre': 'api_contact_database_campaings',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_log_survey_transfer',
              'roles': ['Agente', ]},
         ]
@@ -379,6 +383,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Establece el estado Ringing del Agente'), 'version': '1.7.0'},
         'api_make_reject_call':
             {'descripcion': _('Establece el estado Reject del Agente'), 'version': '1.7.0'},
+        'api_make_disabled':
+            {'descripcion': _('Establece el estado Disabled del Agente'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':
@@ -667,6 +673,9 @@ class ApiAppConfig(AppConfig):
              'version': '1.29.0'},
         'api_register_server_create':
             {'descripcion': _('Registrar la instancia'),
+             'version': '1.29.0'},
+        'api_contact_database_campaings':
+            {'descripcion': _('Campañas asociadas a una base de datos de contactos'),
              'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
