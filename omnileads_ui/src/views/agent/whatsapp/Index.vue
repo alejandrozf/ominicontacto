@@ -24,7 +24,7 @@
 import { mapActions, mapState } from 'vuex';
 import HeaderMessages from '@/components/agent/whatsapp/messages/HeaderMessages';
 import ListMessages from '@/components/agent/whatsapp/messages/ListMessages';
-import { WhatsappConsumer } from '@/services/agent/whatsapp/whatsapp_consumer';
+import { WhatsappConsumer } from '@/web_sockets/whatsapp_consumer';
 
 export default {
     components: {

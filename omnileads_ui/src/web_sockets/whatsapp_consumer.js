@@ -1,4 +1,4 @@
-import { WHATSAPP_EVENTS, WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
+import { WHATSAPP_EVENTS, WHATSAPP_MESSAGE, notificationEvent } from '@/globals/agent/whatsapp';
 import STORE from '@/store';
 
 export class WhatsappConsumer {
@@ -37,6 +37,8 @@ export class WhatsappConsumer {
                 this.handleChatAttendedEvent(args);
             } else if (type === WHATSAPP_EVENTS.CHAT_TRANSFERED) {
                 this.handleChatTransferedEvent(args);
+            } else if (type === WHATSAPP_EVENTS.CHAT_EXPIRED) {
+                this.handleChatExpiredEvent(args);
             }
         };
 
@@ -76,11 +78,31 @@ export class WhatsappConsumer {
     handleChatAttendedEvent (data) {
         console.log('Whatsapp Consumer CHAT_ATTENDED: ');
         console.log(data);
+        notificationEvent(
+            'WHATSAPP_CHAT_ATTENDED',
+            `El chat de la campana (${data.campaign_name}), se atendio`,
+            'INFO'
+        );
     }
 
     handleChatTransferedEvent (data) {
         console.log('Whatsapp Consumer CHAT_TRANSFERED: ');
         console.log(data);
+        notificationEvent(
+            'WHATSAPP_CHAT_TRANSFERED',
+            `El chat del cliente (${data.chat_info.client_name}), se te transfirio`,
+            'INFO'
+        );
+    }
+
+    handleChatExpiredEvent (data) {
+        console.log('Whatsapp Consumer CHAT_EXPIRED: ');
+        console.log(data);
+        notificationEvent(
+            'WHATSAPP_CHAT_EXPIRED',
+            'El chat expiro debido a inactividad del agent/cliente',
+            'WARNING'
+        );
     }
 
     close () {

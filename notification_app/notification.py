@@ -98,10 +98,11 @@ class AgentNotifier:
         self.send_message(
             self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_chat_attended(self, user_id, id_conversacion):
+    def notify_whatsapp_chat_attended(self, user_id, id_conversacion, campaing):
         message = {
             'id': id_conversacion,
-            'campaing_id': 'id_campana',
+            'campaign_id': campaing.pk,
+            'campaign_name': campaing.nombre,
         }
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id, whatsapp_event=True)

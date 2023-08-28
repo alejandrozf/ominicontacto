@@ -20,7 +20,13 @@
 const TITLE = {
     SUCCESS: gettext('¡Operación exitosa!'),
     ERROR: gettext('¡Operación erronea!'),
-    WARNING: gettext('¡Advertencia!')
+    WARNING: gettext('¡Advertencia!'),
+    WHATSAPP_NEW_CHAT: null,
+    WHATSAPP_CHAT_ATTENDED: gettext('!Chat atendido!'),
+    WHATSAPP_CHAT_TRANSFERED: gettext('¡Chat transferido!'),
+    WHATSAPP_NEW_MESSAGE: null,
+    WHATSAPP_MESSAGE_STATUS: null,
+    WHATSAPP_CHAT_EXPIRED: gettext('¡Chat expirado!')
 };
 
 const ICON = {
