@@ -22,6 +22,17 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from notification_app.consumers import AgentConsole, AgentConsoleWhatsapp
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
+MESSAGE_SENDERS = {
+    'AGENT': 0,
+    'CLIENT': 1
+}
+MESSAGE_STATUS = {
+    'SENDING': 0,
+    'SENT': 1,
+    'DELIVERED': 2,
+    'READ': 3,
+    'ERROR': 4
+}
 
 
 class AgentNotifier:
@@ -76,12 +87,13 @@ class AgentNotifier:
     def notify_whatsapp_new_chat(self, user_id, id_conversacion):
         message = {
             'id': id_conversacion,
-            'campaing_id': 'id_campana',
-            'client_name': 'nombre_cliente',
-            'photo': 'foto.jpg',
-            'date': '20/04/2023',
+            'campaing_id': 1,
             'campaing_name': 'nombre_campana',
-            'message_number': '10'
+            "client_name": "7221313052",
+            "client_number": "7221313052",
+            'photo': 'foto.jpg',
+            'date': str(datetime.datetime.now()),
+            'message_number': 10
         }
         self.send_message(
             self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
@@ -99,31 +111,38 @@ class AgentNotifier:
             'chat_info': {
                 'id': id_conversacion,
                 'campaing_id': 'id_campana',
-                'client_name': 'nombre_cliente',
-                'photo': 'foto.jpg',
-                'date': '20/04/2023',
                 'campaing_name': 'nombre_campana',
-                'message_number': '10'
+                'client_name': 'Cliente Transferido',
+                "client_number": "7221313052",
+                'photo': 'foto.jpg',
+                'date': str(datetime.datetime.now()),
+                'message_number': 2
             },
             'messages': [
                 {
-                    'id': '1',
-                    'content': 'contenido',
-                    'status': 'leido',
-                    'date': '20/04/2023',
-                    'sender': 'emisor'
+                    'chat_id': id_conversacion,
+                    'message_id': 1,
+                    'campaing_id': None,
+                    'content': 'contenido1',
+                    'message_id': 1,
+                    'status': MESSAGE_STATUS['READ'],
+                    'date': str(datetime.datetime.now()),
+                    'sender': MESSAGE_SENDERS['CLIENT'],
                 },
                 {
-                    'id': '2',
-                    'content': 'contenido',
-                    'status': 'leido',
-                    'date': '20/04/2023',
-                    'sender': 'emisor'
+                    'chat_id': id_conversacion,
+                    'message_id': 2,
+                    'campaing_id': None,
+                    'content': 'contenido2',
+                    'message_id': 2,
+                    'status': MESSAGE_STATUS['READ'],
+                    'date': str(datetime.datetime.now()),
+                    'sender': MESSAGE_SENDERS['AGENT']
                 },
             ]
         }
         self.send_message(
-            self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
+            self.TYPE_WHATSAPP_CHAT_TRANSFERED, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_new_message(self, user_id, message):
         message = {
@@ -132,9 +151,9 @@ class AgentNotifier:
             'message_id': 1,
             'content': message,
             'user': 'Cliente EMI',
-            'status': 1,
-            'date': '2023-03-07 01:30',
-            'sender': 1
+            'status': MESSAGE_STATUS['SENT'],
+            'date': str(datetime.datetime.now()),
+            'sender': MESSAGE_SENDERS['CLIENT']
         }
         self.send_message(
             self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id, whatsapp_event=True)
@@ -145,7 +164,7 @@ class AgentNotifier:
             'campaing_id': 'id_campana',
             'message_id': 'id_message',
             'status': '',
-            'date': '20/04/2023',
+            'date': str(datetime.datetime.now()),
         }
         self.send_message(
             self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id, whatsapp_event=True)

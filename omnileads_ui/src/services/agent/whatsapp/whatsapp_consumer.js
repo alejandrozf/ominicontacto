@@ -31,6 +31,12 @@ export class WhatsappConsumer {
                 this.handleNewMessageEvent(args);
             } else if (type === WHATSAPP_EVENTS.MESSAGE_STATUS) {
                 this.handleMessageStatusEvent(args);
+            } else if (type === WHATSAPP_EVENTS.NEW_CHAT) {
+                this.handleNewChatEvent(args);
+            } else if (type === WHATSAPP_EVENTS.CHAT_ATTENDED) {
+                this.handleChatAttendedEvent(args);
+            } else if (type === WHATSAPP_EVENTS.CHAT_TRANSFERED) {
+                this.handleChatTransferedEvent(args);
             }
         };
 
@@ -58,6 +64,22 @@ export class WhatsappConsumer {
 
     handleMessageStatusEvent (data) {
         console.log('Whatsapp Consumer MESSAGE_STATUS: ');
+        console.log(data);
+    }
+
+    handleNewChatEvent (data) {
+        console.log('Whatsapp Consumer NEW_CHAT: ');
+        console.log(data);
+        STORE.dispatch('agtWhatsReceiveNewChat', data);
+    }
+
+    handleChatAttendedEvent (data) {
+        console.log('Whatsapp Consumer CHAT_ATTENDED: ');
+        console.log(data);
+    }
+
+    handleChatTransferedEvent (data) {
+        console.log('Whatsapp Consumer CHAT_TRANSFERED: ');
         console.log(data);
     }
 

@@ -39,5 +39,21 @@ export default {
             });
         });
         state.agtWhatsChatsList = chats;
+    },
+    agtWhatsReceiveNewChat (state, chat = null) {
+        if (chat) {
+            state.agtWhatsChatsList.push({
+                id: chat.id,
+                from: chat.client_name,
+                campaing_id: chat.campaing_id,
+                campaing_name: chat.campaing_name,
+                numMessages: chat.number_messages,
+                photo: chat.photo,
+                isNew: true,
+                isMine: false,
+                answered: false,
+                date: new Date(chat.date)
+            });
+        }
     }
 };

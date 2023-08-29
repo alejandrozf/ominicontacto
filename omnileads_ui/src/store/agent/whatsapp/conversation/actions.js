@@ -93,5 +93,16 @@ export default {
             console.error(error);
             commit('agtWhatsChatsListInit', { isNew: [], inProgress: [] });
         }
+    },
+    async agtWhatsReceiveNewChat ({ commit }, chat) {
+        try {
+            commit('agtWhatsReceiveNewChat', chat);
+        } catch (error) {
+            console.error(
+                '===> ERROR al recibir nuevo chat'
+            );
+            console.error(error);
+            commit('agtWhatsReceiveNewChat', null);
+        }
     }
 };
