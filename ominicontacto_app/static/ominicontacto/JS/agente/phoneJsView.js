@@ -17,7 +17,7 @@
 
 */
 
-/* global gettext */
+/* global gettext OMLAPI */
 
 var CAMPANA_TYPE_ENTRANTE = 3;
 
@@ -122,7 +122,8 @@ class PhoneJSView {
             $('#quickNumToTransfer').prop('disabled', true);
 
             self.transferOutMenu.modal('show');
-
+            var oml_api = new OMLAPI();
+            oml_api.getAgentes(self.cargarAgentes);
             if (self.session_data.survey) {
                 $('#transferToSurveyContainer').show();
             }
@@ -244,7 +245,14 @@ class PhoneJSView {
         for (var i = 0; i < agentes.length; i++) {
             var id = agentes[i].id;
             var full_name = agentes[i].full_name;
-            $('#agentToTransfer').append('<option value=\'' + id + '\'>' + full_name + '</option>');        }
+            var status = agentes[i].status;
+            if (status == 'READY') {
+                $('#agentToTransfer').append('<option value=\'' + id + '\'>' + full_name + ': ' + status + '</option>');
+            }
+            else {
+                $('#agentToTransfer').append('<option disabled="disabled" value=\'' + id + '\'>' + full_name + ': ' + status + '</option>');
+            }
+        }
     }
 
     cargarCampanasActivas(campanas) {
