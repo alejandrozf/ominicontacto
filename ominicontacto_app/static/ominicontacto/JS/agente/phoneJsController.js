@@ -67,7 +67,6 @@ class PhoneJSController {
         this.subscribeToAgentNotificationEvents();
         this.subscribeToNavigatorEvents();
 
-        this.oml_api.getAgentes(this.view.cargarAgentes);
         this.oml_api.getCampanasActivas(this.view.cargarCampanasActivas);
 
         this.phone_fsm.start();
