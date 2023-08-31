@@ -22,6 +22,9 @@
 /* global get_ranges */
 
 $(function() {
+
+    initSubmitButton();
+
     var start = moment();
     var end = moment();
     function cb(start, end) {
@@ -148,3 +151,11 @@ $(function() {
     });
 
 });
+
+function initSubmitButton() {
+    $('#id_buscar_btn').click(function (params) {
+        $('#submit_msg').show();
+        setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
+    });
+}
+    
