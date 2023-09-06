@@ -123,6 +123,7 @@ class PhoneJSView {
 
             self.transferOutMenu.modal('show');
             var oml_api = new OMLAPI();
+            $('#agentToTransfer').find('option').remove();
             oml_api.getAgentes(self.cargarAgentes);
             if (self.session_data.survey) {
                 $('#transferToSurveyContainer').show();
