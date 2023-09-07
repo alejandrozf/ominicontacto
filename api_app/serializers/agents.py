@@ -20,5 +20,6 @@ from rest_framework import serializers
 
 
 class AgentesParaTransferenciaSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
     full_name = serializers.CharField(read_only=True, source='nombre')
     status = serializers.CharField(read_only=True)
