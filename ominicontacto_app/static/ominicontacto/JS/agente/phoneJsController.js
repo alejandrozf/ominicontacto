@@ -221,7 +221,7 @@ class PhoneJSController {
         });
 
         // Transfer View events: makeTransfer, EndTransfer,
-        this.view.makeTransferButton.click(function () {
+        this.view.makeTransferButton.on('click', function () {
             var transfer = new OutTransferData();
             if (!transfer.is_valid){
                 alert(gettext('Seleccione una opción válida'));
@@ -229,22 +229,20 @@ class PhoneJSController {
             else {
                 if (self.phone.session_data.remote_call.id_contacto == '-1') {
                     $('#modalAlertContactSaved').modal('show');
-                    $('#buttonContinueTransfer').click(function(){
-                        $('#modalAlertContactSaved').modal('hide');
-                        self.phone_fsm.dialTransfer();
-                        self.phone.dialTransfer(transfer);
-                        $('#numberToTransfer').val('');
-                    });
-                    $('#buttonCancelTransfer').click(function(){
-                        $('#modalTransfer').modal('hide');
-                    });
                 }
                 else {
-                    self.phone_fsm.dialTransfer();
-                    self.phone.dialTransfer(transfer);
-                    $('#numberToTransfer').val('');
+                    self.makeSelectedTransfer();
                 }
             }
+        });
+
+        this.view.confirmTransferButton.on('click', function () {
+            $('#modalAlertContactSaved').modal('hide');
+            self.makeSelectedTransfer();
+        });
+
+        this.view.cancelTransferButton.on('click', function () {
+            $('#modalTransfer').modal('hide');
         });
 
         this.view.makeTransferToSurveyButton.click(function() {
@@ -1119,6 +1117,16 @@ class PhoneJSController {
 
     agentRejectCall() {
         this.oml_api.eventReject();
+    }
+
+    makeSelectedTransfer() {
+        var transfer = new OutTransferData();
+        if (!transfer.is_valid){
+            alert(gettext('Seleccione una opción válida'));
+        }
+        this.phone_fsm.dialTransfer();
+        this.phone.dialTransfer(transfer);
+        $('#numberToTransfer').val('');
     }
 
 }
