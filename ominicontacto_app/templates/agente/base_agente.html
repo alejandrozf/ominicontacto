@@ -235,7 +235,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <input type="radio" name="tipotransf" id="blindTransf" class="typetransf-secondcolumn"/>&nbsp;{% trans 'Ciega' %}
                         </label>
                     </div>
-
                     <div class="radio col-xs-3">
                         <label>
                             <input type="radio" name="tipotransf" id="consultTransf" class="typetransf-secondcolumn"/>&nbsp;{% trans 'Asistida' %}
@@ -244,51 +243,51 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
                 <br>
                 <div class="form-group row">
-                    <div class="radio col-xs-3">
+                    <div class="radio col-xs-4">
                         <label>
                             <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToNum"/>&nbsp;{% trans 'a Número' %}
                         </label>
                     </div>
-                    <div class=" col-xs-7">
+                    <div class=" col-xs-8">
                         <input type="text" class="form-control typetransf-secondcolumn-number" id="numberToTransfer" disabled/>
                     </div>
                 </div>
                 <br>
                 <br>
                 <div class="form-group row">
-                    <div class="radio col-xs-3">
+                    <div class="radio col-xs-4">
                         <label>
                             <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToCamp"/>&nbsp;{% trans 'a Campaña' %}
                         </label>
                     </div>
-                    <div class="col-xs-7">
-                        <select class="form-control typetransf-secondcolumn" id="campToTransfer" disabled>
-                        </select>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <div class="form-inline form-group row">
-                    <div class="radio col-xs-3 ">
-                        <label>
-                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;{% trans 'a Agente' %}
-                        </label>
-                    </div>
-                    <div class="col-xs-7">
-                        <select class="form-control typetransf-secondcolumn-agent" id="agentToTransfer" disabled>
+                    <div class="col-xs-8 typetransf-secondcolumn">
+                        <select class="form-control" id="campToTransfer" disabled>
                         </select>
                     </div>
                 </div>
                 <br>
                 <br>
                 <div class="form-group row">
-                    <div class="radio col-xs-3">
+                    <div class="radio col-xs-4">
+                        <label>
+                            <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToAgent"/>&nbsp;{% trans 'a Agente' %}
+                        </label>
+                    </div>
+                    <div class="col-xs-8 typetransf-secondcolumn-agent">
+                        <select class="form-control" id="agentToTransfer" disabled>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="form-group row">
+                    <div class="radio col-xs-4">
                         <label>
                             <input class="typetransf-firstcolumn" type="radio" name="dstTransf" id="transfToQuickNum"/>&nbsp;{% trans 'A lista rápida' %}
                         </label>
                     </div>
-                    <div class="col-xs-7">
-                        <select class="form-control typetransf-secondcolumn" id="quickNumToTransfer" disabled>
+                    <div class="col-xs-8 typetransf-secondcolumn">
+                        <select class="form-control" id="quickNumToTransfer" disabled>
                             {% for lista in listas_rapidas %}
                                 <option value = "{{ lista.telefono }}"> {{lista.lista_rapida.nombre}}: {{ lista.nombre }} </option>
                             {% endfor %}
