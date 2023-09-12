@@ -344,16 +344,17 @@ ul.errorlist li {
 }
 
 .typetransf-secondcolumn-number {
-  margin-left: 33px;
+  margin-left: 30px;
   width: 250px !important;
 }
 
 .typetransf-secondcolumn-agent {
-  margin-left: 45px;
+  margin-left: 30px;
+  min-width: 300px !important;
 }
 
 .typetransf-firstcolumn {
-  margin-left: 50px;
+  margin-left: 25px;
 }
 
 /* Select widget */
