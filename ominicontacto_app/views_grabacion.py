@@ -32,7 +32,7 @@ from django.core import paginator as django_paginator
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 
-from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
+from ominicontacto_app.forms.base import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
     GrabacionMarca, Campana, CalificacionCliente, OpcionCalificacion)
 from .utiles import convert_fecha_datetime, fecha_local

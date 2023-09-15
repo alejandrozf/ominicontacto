@@ -37,8 +37,8 @@ from configuracion_telefonia_app.models import DestinoEntrante
 
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
                                       ParametrosCrm)
-from ominicontacto_app.forms import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
-                                     CampanaDialerForm, CampanaEntranteForm)
+from ominicontacto_app.forms.base import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
+                                          CampanaDialerForm, CampanaEntranteForm)
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,

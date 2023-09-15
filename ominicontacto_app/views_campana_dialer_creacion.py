@@ -26,11 +26,12 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
-                                     ReglasIncidenciaFormSet, CampanaDialerForm,
-                                     OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset)
+from ominicontacto_app.forms.base import (QueueDialerForm, SincronizaDialerForm,
+                                          ActuacionVigenteForm,
+                                          ReglasIncidenciaFormSet, CampanaDialerForm,
+                                          OpcionCalificacionFormSet,
+                                          ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                          QueueMemberFormset)
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.services.campana_service import CampanaService

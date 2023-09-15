@@ -38,11 +38,11 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView, FormView
 
-from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset, AsignacionContactosForm,
-                                     OrdenarAsignacionContactosForm,
-                                     CampanaPreviewCampoDesactivacion)
+from ominicontacto_app.forms.base import (CampanaPreviewForm, OpcionCalificacionFormSet,
+                                          ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                          QueueMemberFormset, AsignacionContactosForm,
+                                          OrdenarAsignacionContactosForm,
+                                          CampanaPreviewCampoDesactivacion)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,

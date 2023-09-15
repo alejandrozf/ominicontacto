@@ -25,10 +25,10 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
-from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm
+from ominicontacto_app.forms.base import AuditoriaBusquedaForm, AuditoriaCalificacionForm
 from ominicontacto_app.models import CalificacionCliente
 
-from .utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
 
 

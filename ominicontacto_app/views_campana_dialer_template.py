@@ -31,7 +31,7 @@ from django.views.generic.detail import DetailView
 from ominicontacto_app.views_campana_creacion import CampanaTemplateCreateMixin
 from django.shortcuts import get_object_or_404
 
-from ominicontacto_app.forms import ReglasIncidenciaFormSet
+from ominicontacto_app.forms.base import ReglasIncidenciaFormSet
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.views_campana_creacion import CampanaTemplateCreateCampanaMixin

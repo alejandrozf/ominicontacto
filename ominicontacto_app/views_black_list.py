@@ -31,7 +31,7 @@ from django.views.generic.list import ListView
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlArchivoImportacionInvalidoError)
-from ominicontacto_app.forms import BlacklistForm, ContactoBlacklistForm
+from ominicontacto_app.forms.base import BlacklistForm, ContactoBlacklistForm
 from ominicontacto_app.models import Blacklist, ContactoBlacklist
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.black_list import (

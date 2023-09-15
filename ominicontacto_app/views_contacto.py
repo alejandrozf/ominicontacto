@@ -36,9 +36,9 @@ from django.utils.translation import gettext as _
 from django.db.models import Q
 from utiles_globales import obtener_paginas
 
-from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaContacto,
-                                     FormularioNuevoContacto, EscogerCampanaForm,
-                                     BloquearCamposParaAgenteForm)
+from ominicontacto_app.forms.base import (BusquedaContactoForm, FormularioCampanaContacto,
+                                          FormularioNuevoContacto, EscogerCampanaForm,
+                                          BloquearCamposParaAgenteForm)
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from ominicontacto_app.services.click2call import Click2CallOriginator
 

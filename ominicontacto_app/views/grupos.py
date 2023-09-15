@@ -24,7 +24,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView,
     DetailView)
 
-from ominicontacto_app.forms import GrupoForm
+from ominicontacto_app.forms.base import GrupoForm
 from ominicontacto_app.models import Grupo
 from utiles_globales import obtener_paginas
 
