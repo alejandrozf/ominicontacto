@@ -83,6 +83,14 @@ class AgendaContactoCreateView(CreateView):
     context_object_name = 'agendacontacto'
     form_class = AgendaContactoForm
 
+    def dispatch(self, request, *args, **kwargs):
+        pk_contacto = kwargs['pk_contacto']
+        pk_campana = kwargs['pk_campana']
+        agenda = AgendaContacto.objects.filter(contacto_id=pk_contacto, campana_id=pk_campana)
+        if agenda.exists():
+            return redirect(reverse('agenda_contacto_update', kwargs={'pk': agenda.first().id}))
+        return super().dispatch(request, *args, **kwargs)
+
     def get_initial(self):
         initial = super(AgendaContactoCreateView, self).get_initial()
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
