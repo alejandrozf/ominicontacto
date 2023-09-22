@@ -113,6 +113,7 @@ export default {
     transfer: 'Transferir',
     attach: 'Adjuntar',
     upload: 'Subir',
+    request: 'Solicitar',
     // ----------------
     // --- weekdays ---
     // ----------------
@@ -169,6 +170,7 @@ export default {
     error_to_hide_type: 'Error al ocultar {type}',
     error_to_show_type: 'Error al desocultar {type}',
     error_to_reactivate_type: 'Error al reactivar {type}',
+    error_to_process_form: 'Error al procesar el formulario',
     success_updated_type: '{type} actualizado exitosamente | {type} actualizada exitosamente',
     success_updated: 'Actualizado exitosamente | Actualizada exitosamente | Actualizados exitosamente',
     success_added_type: '{type} agregado exitosamente | {type} agregada exitosamente',
@@ -188,5 +190,11 @@ export default {
     icon_success: 'success',
     icon_error: 'error',
     icon_warning: 'warning',
-    icon_info: 'info'
+    icon_info: 'info',
+    // ---------------------
+    // --- Validations ---
+    // ---------------------
+    validations: {
+        field_is_required: '{field} es requerido'
+    }
 };

@@ -24,6 +24,7 @@
             optionValue="id"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
+            :showClear="true"
             v-bind:filterPlaceholder="
               $t('globals.find_by', { field: $tc('globals.name') }, 1)
             "
@@ -128,15 +129,21 @@ export default {
             );
         },
         setTemplates () {
+            const $this = this;
             if (
                 this.supMessageTemplatesOfGroup &&
         this.supMessageTemplatesOfGroup.length > 0
             ) {
                 this.templates = this.supWhatsappMessageTemplates.filter(
                     (t) => !this.supMessageTemplatesOfGroup.includes(t.id)
-                );
+                ).map(function (t) {
+                    const tipo = $this.templateTypes.find(type => type.value === t.type).name;
+                    return {
+                        id: t.id,
+                        nombre: `Tipo (${tipo}): ${t.name}`
+                    };
+                });
             } else {
-                const $this = this;
                 this.templates = this.supWhatsappMessageTemplates.map(function (t) {
                     const tipo = $this.templateTypes.find(type => type.value === t.type).name;
                     return {

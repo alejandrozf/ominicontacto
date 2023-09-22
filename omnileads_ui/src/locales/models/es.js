@@ -230,6 +230,10 @@ export default {
         message_transfer: {
             from: 'De',
             to: 'Para'
+        },
+        templates: {
+            message_template: 'Plantilla de mensaje',
+            whatsapp_template: 'Plantilla de Whatsapp'
         }
     }
 };

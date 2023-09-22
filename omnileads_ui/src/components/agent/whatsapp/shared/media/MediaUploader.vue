@@ -11,9 +11,19 @@
       @select="onSelectedFiles($event)"
       @uploader="customUploader($event)"
       @error="errorToUpload($event)"
-      :invalidFileLimitMessage="$t('globals.media.uploaderForm.invalid_file_limit_message', {num: fileLimit})"
-      :invalidFileSizeMessage="$t('globals.media.uploaderForm.invalid_file_size_message', {num: maxFileSize})"
-      :invalidFileTypeMessage="$t('globals.media.uploaderForm.invalid_file_type_message')"
+      :invalidFileLimitMessage="
+        $t('globals.media.uploaderForm.invalid_file_limit_message', {
+          num: fileLimit,
+        })
+      "
+      :invalidFileSizeMessage="
+        $t('globals.media.uploaderForm.invalid_file_size_message', {
+          num: maxFileSize,
+        })
+      "
+      :invalidFileTypeMessage="
+        $t('globals.media.uploaderForm.invalid_file_type_message')
+      "
       :cancelLabel="$t('globals.cancel')"
       :chooseLabel="$t('globals.select')"
       :uploadLabel="$t('globals.upload')"
@@ -23,7 +33,9 @@
           <i
             class="pi pi-cloud-upload border-2 border-circle p-5 text-6xl text-400 border-400"
           />
-          <p class="mt-4 mb-0">{{ $t('globals.media.uploaderForm.drag_and_drop') }}</p>
+          <p class="mt-4 mb-0">
+            {{ $t("globals.media.uploaderForm.drag_and_drop") }}
+          </p>
         </div>
       </template>
     </FileUpload>
@@ -32,7 +44,7 @@
 
 <script>
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent } from '@/globals/agent/whatsapp';
+import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 export default {
     props: {
         fileType: {
@@ -95,15 +107,15 @@ export default {
                 const message = 'Se envio el documento satisfactoriamente';
                 if (status === HTTP_STATUS.SUCCESS) {
                     await notificationEvent(
-                        this.$t('globals.success_notification'),
+                        NOTIFICATION.TITLES.SUCCESS,
                         message,
-                        this.$t('globals.icon_success')
+                        NOTIFICATION.ICONS.SUCCESS
                     );
                 } else {
                     await notificationEvent(
-                        this.$t('globals.error_notification'),
+                        NOTIFICATION.TITLES.ERROR,
                         message,
-                        this.$t('globals.icon_error')
+                        NOTIFICATION.ICONS.ERROR
                     );
                 }
             } catch (error) {
@@ -111,9 +123,9 @@ export default {
                 console.error(error);
                 this.clearData();
                 await notificationEvent(
-                    this.$t('globals.error_notification'),
+                    NOTIFICATION.TITLES.ERROR,
                     'Error al enviar template',
-                    this.$t('globals.icon_error')
+                    NOTIFICATION.ICONS.ERROR
                 );
             }
         },

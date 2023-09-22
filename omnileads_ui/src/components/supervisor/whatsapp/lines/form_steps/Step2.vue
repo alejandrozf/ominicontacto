@@ -17,8 +17,7 @@
               <span class="p-inputgroup-addon">
                 <i class="pi pi-phone"></i>
               </span>
-              <InputMask
-                mask="999-999-9999"
+              <InputText
                 placeholder="999-999-9999"
                 :class="{
                   'p-invalid': v$.supWhatsappLine.numero.$invalid && submitted,
@@ -32,13 +31,14 @@
                 v$.supWhatsappLine.numero.$pending.$response
               "
               class="p-error"
-              >{{
+              >
+              {{
                 v$.supWhatsappLine.numero.required.$message.replace(
                   "Value",
                   $t("models.whatsapp.line.numero")
                 )
-              }}</small
-            >
+              }}
+            </small>
           </div>
         </Fieldset>
       </div>
@@ -163,7 +163,9 @@ export default {
     validations () {
         return {
             supWhatsappLine: {
-                numero: { required },
+                numero: {
+                    required
+                },
                 configuracion: {
                     app_name: { required },
                     app_id: { required }
@@ -174,7 +176,8 @@ export default {
     inject: ['$helpers'],
     data () {
         return {
-            submitted: false
+            submitted: false,
+            isPhoneValid: false
         };
     },
     computed: {

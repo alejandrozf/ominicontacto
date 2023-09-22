@@ -8,7 +8,7 @@
     <template #header>
       <h2>
         {{
-          $t("views.whatsapp.whatsapp_template.new_title")
+          $t("views.whatsapp.group_of_whatsapp_template.add_template")
         }}
       </h2>
     </template>

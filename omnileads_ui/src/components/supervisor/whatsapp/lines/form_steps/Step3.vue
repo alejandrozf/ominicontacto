@@ -137,6 +137,8 @@
                     'p-invalid':
                       v$.supWhatsappLine.horario.$invalid && submitted,
                   }"
+                  :filter="true"
+                  :showClear="true"
                   :options="groupOfHours"
                   placeholder="-----"
                   optionLabel="nombre"
@@ -512,6 +514,7 @@ export default {
                 number: this.supWhatsappLine.numero,
                 provider: this.supWhatsappLine.proveedor,
                 configuration: this.supWhatsappLine.configuracion,
+                destination: this.supWhatsappLine.configuracion.destino,
                 schedule: this.supWhatsappLine.horario,
                 welcome_message: this.supWhatsappLine.mensaje_bienvenida,
                 farewell_message: this.supWhatsappLine.mensaje_despedida,
@@ -587,22 +590,38 @@ export default {
         supWhatsappLineCampaigns: {
             handler () {
                 if (this.supWhatsappLineCampaigns.length > 0) {
-                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items =
-            this.supWhatsappLineCampaigns.filter(
-                (c) => c.type === CAMPAIGN_TYPES.INBOUND
-            );
-                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items =
-            this.supWhatsappLineCampaigns.filter(
-                (c) => c.type === CAMPAIGN_TYPES.MANUAL
-            );
-                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items =
-            this.supWhatsappLineCampaigns.filter(
-                (c) => c.type === CAMPAIGN_TYPES.PREVIEW
-            );
-                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items =
-            this.supWhatsappLineCampaigns.filter(
-                (c) => c.type === CAMPAIGN_TYPES.DIALER
-            );
+                    const manualCampaigns = this.supWhatsappLineCampaigns.filter(
+                        (c) => c.type === CAMPAIGN_TYPES.MANUAL
+                    ) || [];
+                    const inboundCampaigns = this.supWhatsappLineCampaigns.filter(
+                        (c) => c.type === CAMPAIGN_TYPES.INBOUND
+                    ) || [];
+                    const previewCampaigns = this.supWhatsappLineCampaigns.filter(
+                        (c) => c.type === CAMPAIGN_TYPES.PREVIEW
+                    ) || [];
+                    const dialerCampaigns = this.supWhatsappLineCampaigns.filter(
+                        (c) => c.type === CAMPAIGN_TYPES.DIALER
+                    ) || [];
+                    if (inboundCampaigns.length > 0) {
+                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
+                    } else {
+                        this.campaings = this.campaings.filter((c) => c.type !== CAMPAIGN_TYPES.INBOUND);
+                    }
+                    if (manualCampaigns.length > 0) {
+                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
+                    } else {
+                        this.campaings = this.campaings.filter((c) => c.type !== CAMPAIGN_TYPES.MANUAL);
+                    }
+                    if (previewCampaigns.length > 0) {
+                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
+                    } else {
+                        this.campaings = this.campaings.filter((c) => c.type !== CAMPAIGN_TYPES.PREVIEW);
+                    }
+                    if (dialerCampaigns.length > 0) {
+                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
+                    } else {
+                        this.campaings = this.campaings.filter((c) => c.type !== CAMPAIGN_TYPES.DIALER);
+                    }
                 }
             },
             deep: true,

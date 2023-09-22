@@ -230,6 +230,10 @@ export default {
         message_transfer: {
             from: 'از',
             to: 'برای'
+        },
+        templates: {
+            message_template: 'الگوی پیام',
+            whatsapp_template: 'قالب واتساپ'
         }
     }
 };

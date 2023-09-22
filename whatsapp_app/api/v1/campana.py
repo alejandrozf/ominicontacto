@@ -42,7 +42,8 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA)
+            queryset = Campana.objects.filter(
+                estado=Campana.ESTADO_ACTIVA, whatsapp_habilitado=True)
             serializer = ListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(

@@ -2,8 +2,9 @@
   <div class="card mt-2">
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
-        <label id="message_transfer_from"
-        :class="{
+        <label
+          id="message_transfer_from"
+          :class="{
             'p-error': v$.form.from.$invalid && submitted,
           }"
           >{{ $t("models.whatsapp.message_transfer.from") }}*</label
@@ -22,7 +23,8 @@
         </div>
         <small
           v-if="
-            (v$.form.from.$invalid && submitted) || v$.form.from.$pending.$response
+            (v$.form.from.$invalid && submitted) ||
+            v$.form.from.$pending.$response
           "
           class="p-error"
         >
@@ -104,7 +106,7 @@ import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent } from '@/globals/agent/whatsapp';
+import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -190,24 +192,24 @@ export default {
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
                     await notificationEvent(
-                        this.$t('globals.success_notification'),
+                        NOTIFICATION.TITLES.SUCCESS,
                         message,
-                        this.$t('globals.icon_success')
+                        NOTIFICATION.ICONS.SUCCESS
                     );
                 } else {
                     await notificationEvent(
-                        this.$t('globals.error_notification'),
+                        NOTIFICATION.TITLES.ERROR,
                         message,
-                        this.$t('globals.icon_error')
+                        NOTIFICATION.ICONS.ERROR
                     );
                 }
             } catch (error) {
                 console.error('ERROR AL TRANSFERIR');
                 console.error(error);
                 await notificationEvent(
-                    this.$t('globals.error_notification'),
+                    NOTIFICATION.TITLES.ERROR,
                     'Error al transferir chat',
-                    this.$t('globals.icon_error')
+                    NOTIFICATION.TITLES.ERROR
                 );
             }
         }
@@ -217,7 +219,9 @@ export default {
             handler () {
                 this.initFormData();
                 if (this.agents.length > 0) {
-                    this.fromLabel = this.agents.find(a => a.agent_id === this.form?.from)?.agent_full_name || '';
+                    this.fromLabel =
+            this.agents.find((a) => a.agent_id === this.form?.from)
+                ?.agent_full_name || '';
                 } else {
                     this.fromLabel = '';
                 }
@@ -230,7 +234,9 @@ export default {
                 if (this.agtWhatsTransferChatAgents) {
                     this.agents = this.agtWhatsTransferChatAgents;
                     if (this.agents.length > 0) {
-                        this.fromLabel = this.agents.find(a => a.agent_id === this.form?.from)?.agent_full_name || '';
+                        this.fromLabel =
+              this.agents.find((a) => a.agent_id === this.form?.from)
+                  ?.agent_full_name || '';
                     } else {
                         this.fromLabel = '';
                     }

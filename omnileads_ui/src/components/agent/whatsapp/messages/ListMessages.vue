@@ -10,10 +10,8 @@
   >
     <template #option="data">
       <ConversationInfo
-        :from="data.option.from"
-        :date="data.option.date.toLocaleString()"
-        :numMessages="data.option.numMessages"
-        @click="conversationDetail(data.option.id)"
+        :conversationInfo="getConversationInfo(data.option)"
+        @click="conversationDetail(data.option)"
       />
     </template>
   </Listbox>
@@ -32,11 +30,25 @@ export default {
         }
     },
     methods: {
-        conversationDetail (id) {
-            this.$router.push({
-                name: 'agent_whatsapp_conversation_detail',
-                params: { id }
-            });
+        getConversationInfo (data) {
+            return {
+                id: data.id,
+                from: data.from,
+                date: data.date.toLocaleString(),
+                campaignId: data.campaignId,
+                campaignName: data.campaignName,
+                numMessages: data.numMessages,
+                isMine: data.isMine,
+                isNew: data.isNew
+            };
+        },
+        conversationDetail ({ id, isNew, isMine }) {
+            if (!isNew && isMine) {
+                this.$router.push({
+                    name: 'agent_whatsapp_conversation_detail',
+                    params: { id }
+                });
+            }
         }
     }
 };

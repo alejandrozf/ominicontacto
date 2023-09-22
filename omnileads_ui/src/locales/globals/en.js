@@ -169,6 +169,7 @@ export default {
     error_to_hide_type: 'Failed to hide {type}',
     error_to_show_type: 'Failed to unhide {type}',
     error_to_reactivate_type: 'Failed to reactivate {type}',
+    error_to_process_form: 'Failed to process form',
     success_updated_type: '{type} successfully updated | {type} successfully updated',
     success_updated: 'successfully updated | successfully updated',
     success_added_type: '{type} successfully added | {type} successfully added',
@@ -188,5 +189,11 @@ export default {
     icon_success: 'success',
     icon_error: 'error',
     icon_warning: 'warning',
-    icon_info: 'info'
+    icon_info: 'info',
+    // ---------------------
+    // --- Validations ---
+    // ---------------------
+    validations: {
+        field_is_required: '{field} is required'
+    }
 };

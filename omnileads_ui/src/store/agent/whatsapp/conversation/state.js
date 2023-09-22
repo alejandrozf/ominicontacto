@@ -1,5 +1,7 @@
 export default {
     agtWhatsCoversationMessages: [],
     agtWhatsChatsList: [],
-    agtWhatsCoversationInfo: {}
+    agtWhatsCoversationInfo: {},
+    agtWhatsCoversationId: null,
+    agtWhatsCoversationCampaignId: null
 };

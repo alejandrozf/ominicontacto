@@ -24,6 +24,7 @@
             optionValue="id"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
+            :showClear="true"
             v-bind:filterPlaceholder="
               $t('globals.find_by', { field: $tc('globals.name') }, 1)
             "
@@ -126,7 +127,12 @@ export default {
             ) {
                 this.templates = this.supWhatsappTemplates.filter(
                     (t) => !this.supWhatsappTemplatesOfGroup.includes(t.id)
-                );
+                ).map(function (wt) {
+                    return {
+                        id: wt.id,
+                        nombre: `Linea (${wt.line}): ${wt.name}`
+                    };
+                });
             } else {
                 this.templates = this.supWhatsappTemplates.map(function (wt) {
                     return {

@@ -62,6 +62,38 @@ export default class WhatsappConversationService extends BaseService {
         }
     }
 
+    async sendTemplateMessage (chatId, data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatSendTemplateMessage(chatId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al enviar Template de Mensaje`);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
+    async sendWhatsappTemplateMessage (chatId, data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatSendWhatsappTemplateMessage(chatId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al enviar Whatsapp Template de Mensaje`);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
     async getAgentChatsList () {
         try {
             const resp = await fetch(this.urls.ChatAgentConversationsList(), this.payload);
@@ -69,6 +101,22 @@ export default class WhatsappConversationService extends BaseService {
         } catch (error) {
             console.error(`Error al obtener < Lista de Chats >`);
             return [];
+        } finally {
+            this.initPayload();
+        }
+    }
+
+    async requestConversation ({ id, data = {} }) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatAgentConversationRequest(id),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`ERROR al solicitar Conversacion (${id})`);
+            return null;
         } finally {
             this.initPayload();
         }

@@ -23,7 +23,8 @@ export default {
             this.$emit('handleClearFiltersEvent');
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
-                    templates: false
+                    templates: false,
+                    conversationId: null
                 }
             });
             window.parent.document.dispatchEvent(event);

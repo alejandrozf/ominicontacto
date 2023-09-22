@@ -1,9 +1,10 @@
 import {
     WHATSAPP_EVENTS,
-    notificationEvent
+    notificationEvent,
+    NOTIFICATION
 } from '@/globals/agent/whatsapp';
 import STORE from '@/store';
-const MAX_RECONNECT_ATTEMPTS = 1;
+const MAX_RECONNECT_ATTEMPTS = 5;
 
 export class WhatsappConsumer {
     constructor () {
@@ -94,10 +95,10 @@ export class WhatsappConsumer {
                 id: data.message_id,
                 from: itsMine
                     ? `Agente (${data.sender.name})`
-                    : (data.sender.name || data.sender.phone),
+                    : data.sender.name || data.sender.phone,
                 conversationId: data.chat_id,
                 itsMine,
-                message: data.content[`${data.type}`],
+                message: data.content.text,
                 status: data.status || null,
                 date: new Date(data.timestamp)
             });
@@ -119,9 +120,9 @@ export class WhatsappConsumer {
         console.log('Whatsapp Consumer CHAT_ATTENDED: ');
         console.log(data);
         notificationEvent(
-            'WHATSAPP_CHAT_ATTENDED',
+            NOTIFICATION.TITLES.WHATSAPP_CHAT_ATTENDED,
             `El chat de la campana (${data.campaign_name}), se atendio`,
-            'INFO'
+            NOTIFICATION.ICONS.INFO
         );
     }
 
@@ -129,9 +130,9 @@ export class WhatsappConsumer {
         console.log('Whatsapp Consumer CHAT_TRANSFERED: ');
         console.log(data);
         notificationEvent(
-            'WHATSAPP_CHAT_TRANSFERED',
+            NOTIFICATION.TITLES.WHATSAPP_CHAT_TRANSFERED,
             `El chat del cliente (${data.chat_info.client_name}), se te transfirio`,
-            'INFO'
+            NOTIFICATION.ICONS.INFO
         );
     }
 
@@ -139,9 +140,9 @@ export class WhatsappConsumer {
         console.log('Whatsapp Consumer CHAT_EXPIRED: ');
         console.log(data);
         notificationEvent(
-            'WHATSAPP_CHAT_EXPIRED',
+            NOTIFICATION.TITLES.WHATSAPP_CHAT_EXPIRED,
             'El chat expiro debido a inactividad del agent/cliente',
-            'WARNING'
+            NOTIFICATION.ICONS.WARNING
         );
     }
 

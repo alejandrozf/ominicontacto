@@ -45,6 +45,7 @@
               />
             </span>
             <Button
+              v-if="!withoutTemplates"
               class="p-button-secondary ml-2"
               icon="pi pi-plus"
               v-tooltip.top="$t('globals.new')"
@@ -127,7 +128,8 @@ export default {
                     value: TEMPLATE_TYPES.CONTACT
                 }
             ],
-            templates: []
+            templates: [],
+            withoutTemplates: false
         };
     },
     created () {
@@ -176,6 +178,20 @@ export default {
                 );
             } else {
                 this.templates = [];
+            }
+            if (
+                JSON.stringify(
+                    this.supWhatsappMessageTemplates
+                        .map((t) => t.id)
+                        .sort((a, b) => a - b)
+                ) ===
+        JSON.stringify(
+            Array.from(this.supMessageTemplatesOfGroup).sort((a, b) => a - b)
+        )
+            ) {
+                this.withoutTemplates = true;
+            } else {
+                this.withoutTemplates = false;
             }
         },
         ...mapActions(['removeMessageTemplateOfGroup'])

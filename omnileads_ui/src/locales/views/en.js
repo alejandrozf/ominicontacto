@@ -192,11 +192,13 @@ export default {
         },
         group_of_message_template: {
             new_title: 'New group',
-            edit_title: 'Edit group'
+            edit_title: 'Edit group',
+            add_template: 'Add template'
         },
         group_of_whatsapp_template: {
             new_title: 'New group',
-            edit_title: 'Edit group'
+            edit_title: 'Edit group',
+            add_template: 'Add template'
         },
         disposition_form: {
             form: 'Form',

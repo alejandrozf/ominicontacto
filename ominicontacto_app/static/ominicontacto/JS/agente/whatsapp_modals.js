@@ -11,7 +11,10 @@ const onWhatsappTransferChatEvent = ($event) => {
 };
 
 const onWhatsappTemplatesEvent = ($event) => {
-    const { templates } = $event.detail;
+    const { templates, conversationId } = $event.detail;
+    if (conversationId) {
+        localStorage.setItem('agtWhatsappConversationId', conversationId);
+    }
     modalTemplates.modal(templates === true ? 'show' : 'hide');
 };
 

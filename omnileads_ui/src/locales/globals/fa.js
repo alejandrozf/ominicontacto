@@ -169,6 +169,7 @@ export default {
     error_to_hide_type: 'پنهان کردن ناموفق بود {type}',
     error_to_show_type: 'نمایش داده نشد {type}',
     error_to_reactivate_type: 'فعال سازی مجدد انجام نشد {type}',
+    error_to_process_form: 'فرم پردازش خطا',
     success_updated_type: '{type} با موفقیت ارتقا یافت | {type} با موفقیت ارتقا یافت',
     success_updated: 'با موفقیت ارتقا یافت | با موفقیت ارتقا یافت',
     success_added_type: '{type} با موفقیت اضافه شد | {type} با موفقیت اضافه شد',
@@ -188,5 +189,11 @@ export default {
     icon_success: 'success',
     icon_error: 'error',
     icon_warning: 'warning',
-    icon_info: 'info'
+    icon_info: 'info',
+    // ---------------------
+    // --- Validations ---
+    // ---------------------
+    validations: {
+        field_is_required: '{field} این لازم است'
+    }
 };

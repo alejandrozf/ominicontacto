@@ -18,6 +18,25 @@ export const WHATSAPP_MESSAGE = {
         ERROR: 4
     }
 };
+export const NOTIFICATION = {
+    ICONS: {
+        SUCCESS: 'SUCCESS',
+        ERROR: 'ERROR',
+        WARNING: 'WARNING',
+        INFO: 'INFO'
+    },
+    TITLES: {
+        SUCCESS: 'SUCCESS',
+        ERROR: 'ERROR',
+        WARNING: 'WARNING',
+        WHATSAPP_NEW_CHAT: null,
+        WHATSAPP_CHAT_ATTENDED: 'WHATSAPP_CHAT_ATTENDED',
+        WHATSAPP_CHAT_TRANSFERED: 'WHATSAPP_CHAT_TRANSFERED',
+        WHATSAPP_NEW_MESSAGE: null,
+        WHATSAPP_MESSAGE_STATUS: null,
+        WHATSAPP_CHAT_EXPIRED: 'WHATSAPP_CHAT_EXPIRED'
+    }
+};
 export const WHATSAPP_EVENTS = {
     NEW_CHAT: 'whatsapp_new_chat',
     CHAT_ATTENDED: 'whatsapp_chat_attended',

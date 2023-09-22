@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="agtWhatsTemplates"
+      :value="supCampaignTemplates"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -50,26 +50,26 @@
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
       <Column
-        field="nombre"
+        field="name"
         style="max-width: 15rem"
         :sortable="true"
         :header="$t('models.whatsapp.message_template.nombre')"
       ></Column>
       <Column
-        field="configuracion"
+        field="configuration.text"
         :header="$t('models.whatsapp.message_template.configuracion')"
       ></Column>
       <Column
-        field="tipo"
+        field="type"
         :header="$t('models.whatsapp.message_template.tipo')"
         :sortable="true"
         style="max-width: 15rem"
       >
         <template #body="slotProps">
           <Tag
-            :icon="`pi ${getIconByType(slotProps.data.tipo)}`"
-            :value="getType(slotProps.data.tipo)"
-            :severity="getSeveretyByType(slotProps.data.tipo)"
+            :icon="`pi ${getIconByType(slotProps.data.type)}`"
+            :value="getType(slotProps.data.type)"
+            :severity="getSeveretyByType(slotProps.data.type)"
             rounded
           ></Tag>
         </template>
@@ -92,7 +92,8 @@
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent } from '@/globals/agent/whatsapp';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp';
+import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 
 export default {
     inject: ['$helpers'],
@@ -103,10 +104,9 @@ export default {
     },
     created () {
         this.initFilters();
-        this.agtWhatsTemplatesInit();
     },
     computed: {
-        ...mapState(['agtWhatsTemplates'])
+        ...mapState(['supCampaignTemplates', 'agtWhatsCoversationId', 'agtWhatsCoversationInfo'])
     },
     methods: {
         clearFilter () {
@@ -121,51 +121,97 @@ export default {
             this.clearFilter();
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
-                    templates: false
+                    templates: false,
+                    conversationId: null
                 }
             });
             window.parent.document.dispatchEvent(event);
+            window.location.reload();
+        },
+        setParamsToTemplate (template) {
+            this.$emit('handleModalEvent', {
+                showModal: true,
+                template,
+                conversationId: this.agtWhatsCoversationId
+            });
         },
         getType (type) {
-            return type === 0 ? 'Plantilla mensaje' : 'Template Whatsapp';
+            return type === TEMPLATE_TYPES.MESSAGE
+                ? this.$t('models.whatsapp.templates.message_template')
+                : this.$t('models.whatsapp.templates.whatsapp_template');
         },
         getSeveretyByType (type) {
-            return type === 0 ? 'info' : 'success';
+            return type === TEMPLATE_TYPES.MESSAGE ? 'info' : 'success';
         },
         getIconByType (type) {
-            return type === 0 ? 'pi-copy' : 'pi-whatsapp';
+            return type === TEMPLATE_TYPES.MESSAGE ? 'pi-copy' : 'pi-whatsapp';
         },
         async send (template) {
             try {
-                const { status, message } = await this.agtWhatsTemplateSendMsg(template);
+                const messages = JSON.parse(localStorage.getItem('agtWhatsappConversationMessages'));
+                let result = null;
+                if (template.type === TEMPLATE_TYPES.WHATSAPP) {
+                    if (template.configuration.numParams > 0) {
+                        this.setParamsToTemplate(template);
+                        return;
+                    } else {
+                        result = await this.agtWhatsCoversationSendWhatsappTemplateMessage({
+                            conversationId: this.agtWhatsCoversationId,
+                            templateId: template.id,
+                            phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                            params: []
+                        });
+                    }
+                } else {
+                    result = await this.agtWhatsCoversationSendTemplateMessage({
+                        conversationId: this.agtWhatsCoversationId,
+                        templateId: template.id,
+                        phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                        messages
+                    });
+                }
+                const { status, message } = result;
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
                     await notificationEvent(
-                        this.$t('globals.success_notification'),
+                        NOTIFICATION.TITLES.SUCCESS,
                         message,
-                        this.$t('globals.icon_success')
+                        NOTIFICATION.ICONS.SUCCESS
                     );
                 } else {
                     await notificationEvent(
-                        this.$t('globals.error_notification'),
+                        NOTIFICATION.TITLES.ERROR,
                         message,
-                        this.$t('globals.icon_error')
+                        NOTIFICATION.ICONS.ERROR
                     );
                 }
             } catch (error) {
                 console.error('Error al enviar template');
                 console.error(error);
                 await notificationEvent(
-                    this.$t('globals.error_notification'),
+                    NOTIFICATION.TITLES.ERROR,
                     'Error al enviar template',
-                    this.$t('globals.icon_error')
+                    NOTIFICATION.ICONS.ERROR
                 );
             }
         },
-        ...mapActions(['agtWhatsTemplatesInit', 'agtWhatsTemplateSendMsg'])
+        ...mapActions([
+            'agtWhatsCoversationSendTemplateMessage',
+            'agtWhatsCoversationSendWhatsappTemplateMessage'
+        ])
     },
     watch: {
-        agtWhatsTemplates: {
+        supCampaignTemplates: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        agtWhatsCoversationId: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        agtWhatsCoversationInfo: {
             handler () {},
             deep: true,
             immediate: true

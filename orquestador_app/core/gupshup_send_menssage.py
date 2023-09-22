@@ -88,7 +88,7 @@ def send_text_message(line, destination, message):
             "source": line.numero,
             "src.name": line.configuracion['app_name'],
             "destination": destination,
-            "message": json.dumps(message)
+            "message": message['text']
         }
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
         return response.json()

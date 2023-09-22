@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
+import { HTTP_STATUS } from '@/globals';
 import LineService from '@/services/supervisor/whatsapp/line_service';
 const service = new LineService();
 
 export default {
     async initWhatsappLines ({ commit }) {
         const { status, data } = await service.list();
-        commit('initWhatsappLines', status === 'SUCCESS' ? data : []);
+        commit('initWhatsappLines', status === HTTP_STATUS.SUCCESS ? data : []);
     },
     async initWhatsappLine ({ commit }, { id = null, line = null }) {
         if (line) {
             commit('initWhatsappLine', line);
         } else if (id) {
             const { status, data } = await service.detail(id);
-            commit('initWhatsappLine', status === 'SUCCESS' ? data : null);
+            commit('initWhatsappLine', status === HTTP_STATUS.SUCCESS ? data : null);
         } else {
             commit('initWhatsappLine', null);
         }
@@ -31,6 +32,6 @@ export default {
     },
     async initWhatsappLineCampaigns ({ commit }) {
         const { status, data } = await service.getCampaigns();
-        commit('initWhatsappLineCampaigns', status === 'SUCCESS' ? data : []);
+        commit('initWhatsappLineCampaigns', status === HTTP_STATUS.SUCCESS ? data : []);
     }
 };

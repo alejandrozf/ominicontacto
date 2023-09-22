@@ -1,41 +1,44 @@
 <template>
   <Toolbar>
     <template #start>
-      <Button
+    <Button
         @click="back"
         v-tooltip.top="$t('globals.back')"
         icon="pi pi-arrow-left"
         class="p-button-rounded p-button-secondary p-button-text"
-      />
-      <Chip
+    />
+    <Chip
         :label="clientInfo?.name"
-        :image="clientInfo?.avatar"
-      />
+        icon="pi pi-user"
+    />
     </template>
     <template #end>
-      <SplitButton
+      <!-- <SplitButton
         icon="pi pi-paperclip"
         :model="attachOptions"
         v-tooltip.top="$t('globals.attach')"
         class="p-button-warning"
-      />
-      <Button
-        icon="pi pi-copy"
-        class="p-button-info ml-2"
-        @click="templates"
-        v-tooltip.top="$tc('globals.whatsapp.template', 2)"
+        disabled
       />
       <Button
         icon="pi pi-save"
         class="ml-2"
         @click="save"
         v-tooltip.top="$t('globals.save')"
+        disabled
       />
       <Button
         icon="pi pi-arrows-h"
         class="p-button-secondary ml-2"
         @click="transfer"
         v-tooltip.top="$t('globals.transfer')"
+        disabled
+      /> -->
+      <Button
+        icon="pi pi-copy"
+        class="p-button-info ml-2"
+        @click="templates"
+        v-tooltip.top="$tc('globals.whatsapp.template', 2)"
       />
       <Button
         icon="pi pi-times"
@@ -77,17 +80,20 @@ export default {
         };
     },
     computed: {
-        ...mapState(['agtWhatsCoversationInfo'])
+        ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
     },
     methods: {
-        ...mapActions(['agtWhatsTransferChatInitData']),
+        ...mapActions(['agtWhatsTransferChatInitData', 'agtWhatsSetCoversationId', 'agtWhatsSetCoversationMessages', 'agtWhatsSetCoversationCampaignId']),
         back () {
             this.$router.push({ name: 'agent_whatsapp' });
         },
         templates () {
+            localStorage.setItem('agtWhatsappConversationMessages', JSON.stringify(this.agtWhatsCoversationMessages));
+            localStorage.setItem('agtWhatsCoversationCampaignId', this.agtWhatsCoversationInfo.campaignId);
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
-                    templates: true
+                    templates: true,
+                    conversationId: parseInt(this.$route.params.id)
                 }
             });
             window.parent.document.dispatchEvent(event);
@@ -131,11 +137,15 @@ export default {
         agtWhatsCoversationInfo: {
             handler () {
                 if (this.agtWhatsCoversationInfo) {
-                    this.conversationId = this.agtWhatsCoversationInfo.id;
                     this.clientInfo.name = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.name : this.agtWhatsCoversationInfo.destination;
                     this.clientInfo.phone = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.phone : this.agtWhatsCoversationInfo.destination;
                 }
             },
+            deep: true,
+            immediate: true
+        },
+        agtWhatsCoversationMessages: {
+            handler () {},
             deep: true,
             immediate: true
         }

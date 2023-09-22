@@ -8,9 +8,7 @@
     <template #header>
       <h2>
         {{
-          formToCreate
-            ? $t("views.whatsapp.message_template.new_title")
-            : $t("views.whatsapp.message_template.edit_title")
+            $t("views.whatsapp.group_of_message_template.add_template")
         }}
       </h2>
     </template>
@@ -26,10 +24,6 @@ export default {
         showModal: {
             type: Boolean,
             default: false
-        },
-        formToCreate: {
-            type: Boolean,
-            default: true
         }
     },
     components: {

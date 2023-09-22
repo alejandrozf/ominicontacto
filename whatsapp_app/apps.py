@@ -67,7 +67,7 @@ class WhatsappAppConfig(AppConfig):
             {'nombre': 'configuracion-whatsapp-campana-list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'configuracion-whatsapp-campana-templates',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'configuracion-whatsapp-campana-detail',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'conversacion-list',

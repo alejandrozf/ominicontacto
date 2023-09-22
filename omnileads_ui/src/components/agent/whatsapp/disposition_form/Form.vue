@@ -226,7 +226,7 @@ import {
     MEANS
 } from '@/globals/agent/whatsapp/disposition';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent } from '@/globals/agent/whatsapp';
+import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -353,24 +353,24 @@ export default {
                 if (status === HTTP_STATUS.SUCCESS) {
                     await this.agtWhatsManagementInitData();
                     await notificationEvent(
-                        this.$t('globals.success_notification'),
+                        NOTIFICATION.TITLES.SUCCESS,
                         message,
-                        this.$t('globals.icon_success')
+                        NOTIFICATION.ICONS.SUCCESS
                     );
                 } else {
                     await notificationEvent(
-                        this.$t('globals.error_notification'),
+                        NOTIFICATION.TITLES.ERROR,
                         message,
-                        this.$t('globals.icon_error')
+                        NOTIFICATION.ICONS.ERROR
                     );
                 }
             } catch (error) {
                 console.error('ERROR Al calificar conversacion');
                 console.error(error);
                 await notificationEvent(
-                    this.$t('globals.error_notification'),
-                    'Error al calificar conversacion',
-                    this.$t('globals.icon_error')
+                    NOTIFICATION.TITLES.ERROR,
+                    'Error Al calificar conversacion',
+                    NOTIFICATION.ICONS.ERROR
                 );
             }
         }

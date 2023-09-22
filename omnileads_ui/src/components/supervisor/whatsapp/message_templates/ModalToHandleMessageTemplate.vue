@@ -1,7 +1,7 @@
 <template>
   <Dialog
     :visible="showModal"
-    :style="{ width: '40vw' }"
+    :style="{ width: '60vw' }"
     :closable="false"
     :modal="false"
   >

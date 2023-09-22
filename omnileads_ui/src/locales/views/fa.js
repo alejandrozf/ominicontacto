@@ -183,11 +183,13 @@ export default {
         },
         group_of_message_template: {
             new_title: 'گروه جدید',
-            edit_title: 'گروه ویرایش'
+            edit_title: 'گروه ویرایش',
+            add_template: 'اضافه کردن الگو'
         },
         group_of_whatsapp_template: {
             new_title: 'گروه جدید',
-            edit_title: 'گروه ویرایش'
+            edit_title: 'گروه ویرایش',
+            add_template: 'اضافه کردن الگو'
         },
         disposition_form: {
             form: 'فرم',

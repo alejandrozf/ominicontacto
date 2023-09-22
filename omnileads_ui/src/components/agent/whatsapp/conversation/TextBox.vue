@@ -44,7 +44,6 @@ export default {
         ...mapActions(['agtWhatsCoversationSendTextMessage']),
         sendMessage () {
             if (this.message !== '') {
-                this.$emit('scrollDownEvent');
                 const data = {
                     message: {
                         message: this.message
@@ -54,6 +53,7 @@ export default {
                 };
                 this.agtWhatsCoversationSendTextMessage(data);
                 this.message = '';
+                this.$emit('scrollDownEvent');
             }
         }
     },

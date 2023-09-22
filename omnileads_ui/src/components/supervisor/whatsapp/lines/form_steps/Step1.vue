@@ -165,19 +165,31 @@ export default {
         },
         supWhatsappProviders: {
             handler () {
+                const twilioProviders = this.supWhatsappProviders.filter(
+                    (p) => p.provider_type === PROVIDER_TYPES.TWILIO
+                ) || [];
+                const metaProviders = this.supWhatsappProviders.filter(
+                    (p) => p.provider_type === PROVIDER_TYPES.META
+                ) || [];
+                const gupshupProviders = this.supWhatsappProviders.filter(
+                    (p) => p.provider_type === PROVIDER_TYPES.GUPSHUP
+                ) || [];
                 if (this.supWhatsappProviders.length > 0) {
-                    this.providers.find((p) => p.type === PROVIDER_TYPES.TWILIO).items =
-            this.supWhatsappProviders.filter(
-                (p) => p.provider_type === PROVIDER_TYPES.TWILIO
-            );
-                    this.providers.find((p) => p.type === PROVIDER_TYPES.META).items =
-            this.supWhatsappProviders.filter(
-                (p) => p.provider_type === PROVIDER_TYPES.META
-            );
-                    this.providers.find((p) => p.type === PROVIDER_TYPES.GUPSHUP).items =
-            this.supWhatsappProviders.filter(
-                (p) => p.provider_type === PROVIDER_TYPES.GUPSHUP
-            );
+                    if (twilioProviders.length > 0) {
+                        this.providers.find((p) => p.type === PROVIDER_TYPES.TWILIO).items = twilioProviders;
+                    } else {
+                        this.providers = this.providers.filter((p) => p.type !== PROVIDER_TYPES.TWILIO);
+                    }
+                    if (metaProviders.length > 0) {
+                        this.providers.find((p) => p.type === PROVIDER_TYPES.META).items = metaProviders;
+                    } else {
+                        this.providers = this.providers.filter((p) => p.type !== PROVIDER_TYPES.META);
+                    }
+                    if (gupshupProviders.length > 0) {
+                        this.providers.find((p) => p.type === PROVIDER_TYPES.GUPSHUP).items = gupshupProviders;
+                    } else {
+                        this.providers = this.providers.filter((p) => p.type !== PROVIDER_TYPES.GUPSHUP);
+                    }
                 }
             },
             deep: true,

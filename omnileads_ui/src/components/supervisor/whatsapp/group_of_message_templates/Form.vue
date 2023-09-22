@@ -36,7 +36,7 @@
     </div>
     <div class="grid formgrid mt-2">
       <div class="field col-12">
-        <h2>Templates</h2>
+        <h2>{{ $t("models.whatsapp.group_of_message_template.plantillas") }}</h2>
         <InlineMessage v-if="emptyTemplates" severity="warn" class="mb-3">{{
           $t(
             "forms.whatsapp.group_of_message_template.validations.not_empty_templates"
