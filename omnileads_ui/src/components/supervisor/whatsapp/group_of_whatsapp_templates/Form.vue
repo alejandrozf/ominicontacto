@@ -150,13 +150,17 @@ export default {
             if (!isFormValid || this.emptyTemplates) {
                 return null;
             }
+            const form = {
+                name: this.form.nombre,
+                templates: this.form.templates
+            };
             var response = null;
             if (this.formToCreate) {
-                response = await this.createWhatsappGroupOfWhatsappTemplate(this.form);
+                response = await this.createWhatsappGroupOfWhatsappTemplate(form);
             } else {
                 response = await this.updateWhatsappGroupOfWhatsappTemplate({
                     id: this.form.id,
-                    data: this.form
+                    data: form
                 });
             }
             const { status, message } = response;

@@ -2,7 +2,7 @@
     <div>
         <HeaderConversation class="mb-3"/>
         <ListMessages id="listMessages" class="scroll" />
-        <TextBox class="footer" @scrollDownEvent="scrollDown" />
+        <TextBox class="footer" :conversationId="id" @scrollDownEvent="scrollDown" />
     </div>
 </template>
 
@@ -17,12 +17,16 @@ export default {
         ListMessages,
         TextBox
     },
+    data () {
+        return {
+            id: parseInt(this.$route.params.id)
+        };
+    },
     async created () {
-        const id = this.$route.params.id;
-        await this.agtWhatsConversationInitMessages(id);
+        await this.agtWhatsConversationDetail(this.id);
     },
     methods: {
-        ...mapActions(['agtWhatsConversationInitMessages']),
+        ...mapActions(['agtWhatsConversationDetail']),
         scrollDown () {
             const scroll = document.getElementById('listMessages');
             scroll.scrollTop = scroll.scrollHeight;

@@ -17,7 +17,7 @@
 #
 
 # APIs para visualizar destinos
-import datetime
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -28,9 +28,14 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-from whatsapp_app.api.v1.mensaje import (
-    MensajeTextCreateSerializer, MensajeAtachmentCreateSerializer, MensajeListSerializer,
-    MensajePlantillaCreateSerializer, MensajeWhatsappTemplateCreateSerializer)
+from whatsapp_app.api.v1.mensaje import MensajeListSerializer
+from whatsapp_app.models import (
+    ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
+    ConfiguracionWhatsappCampana, TemplateWhatsapp)
+from ominicontacto_app.models import Campana, AgenteProfile
+from notification_app.notification import AgentNotifier
+from orquestador_app.core.gupshup_send_menssage import send_template_message, send_text_message
+
 MESSAGE_SENDERS = {
     'AGENT': 0,
     'CLIENT': 1
@@ -42,16 +47,42 @@ MESSAGE_STATUS = {
     'READ': 3,
     'ERROR': 4
 }
+MESSAGE_LIMIT = 2
 
 
 class ConversacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    campaing_id = serializers.IntegerField()
-    campaing_name = serializers.CharField()
-    client_name = serializers.CharField()
-    client_number = serializers.CharField()
-    photo = serializers.CharField()
-    date = serializers.DateTimeField()
+    conversation_id = serializers.CharField()
+    conversation_type = serializers.CharField()
+    campaing_id = serializers.PrimaryKeyRelatedField(
+        source='campana', queryset=Campana.objects.all())
+    campaing_name = serializers.CharField(source='campana.nombre')
+    destination = serializers.CharField()
+    client = serializers.SerializerMethodField()
+    agent = serializers.PrimaryKeyRelatedField(queryset=AgenteProfile.objects.all())
+    is_active = serializers.BooleanField(default=True)
+    expire = serializers.IntegerField()
+    timestamp = serializers.IntegerField()
+    message_number = serializers.SerializerMethodField()
+    messages = serializers.SerializerMethodField()
+    photo = serializers.CharField(default="")
+    line_number = serializers.SerializerMethodField()
+
+    def get_message_number(self, obj):
+        return obj.mensajes.count()
+
+    def get_line_number(self, obj):
+        campana = obj.campana
+        configuracion = ConfiguracionWhatsappCampana.objects.filter(campana=campana).last()
+        return configuracion.linea.numero
+
+    def get_messages(self, obj):
+        return MensajeListSerializer(obj.mensajes.all(), many=True).data
+
+    def get_client(self, obj):
+        if obj.client:
+            return obj.client.obtener_datos()
+        return None
 
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
@@ -70,193 +101,111 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = []
-            serializer = ConversacionSerializer(queryset, many=True)
+            request.user.get_agente_profile()
+            conversaciones_nuevas = ConversacionWhatsapp.objects.filter(agent=None)
+            conversaciones_en_curso = ConversacionWhatsapp.objects.exclude(agent=None)
+            conversaciones_nuevas = ConversacionSerializer(conversaciones_nuevas, many=True)
+            conversaciones_en_curso = ConversacionSerializer(conversaciones_en_curso, many=True)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
                     message=_('Se obtuvieron las conversaciones de forma exitosa'),
-                    data=serializer.data),
+                    data={
+                        "new_conversations": conversaciones_nuevas.data,
+                        "inprogress_conversations": conversaciones_en_curso.data}),
                 status=status.HTTP_200_OK)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener las conversaciones')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def retrieve(self, request, pk):
+        try:
+            queryset = ConversacionWhatsapp.objects.all()
+            instance = queryset.get(pk=pk)
+            serializer = ConversacionSerializer(instance)
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.SUCCESS,
+                    data=serializer.data,
+                    message=_('Se obtuvo la conversacion de forma exitosa')),
+                status=status.HTTP_200_OK)
+        except ConversacionWhatsapp.DoesNotExist:
+            return response.Response(
+                data=get_response_data(message=_('Conversacion no encontrada')),
+                status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return response.Response(
+                data=get_response_data(
+                    message=_('Error al obtener la conversacion')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @decorators.action(detail=False, methods=["get"])
     def agent_chats_lists(self, request):
-        #  agente = request.user.get_agente_profile()
-        conversaciones_nuevas = [
-            {
-                "id": 1,
-                "campaing_id": 1,
-                "campaing_name": "nombre_campana",
-                "client_name": "7221313052",
-                "client_number": "7221313052",
-                "photo": "foto.jpg",
-                "date": datetime.datetime.now(),
-                "is_transfer_campaing": True,
-                "number_messages": 2
-            },
-            {
-                "id": 2,
-                "campaing_id": 1,
-                "campaing_name": "nombre_campana",
-                "client_name": "7221313052",
-                "client_number": "7221313052",
-                "photo": "foto.jpg",
-                "date": datetime.datetime.now(),
-                "is_transfer_campaing": True,
-                "number_messages": 5
-            }
-        ]
-        conversaciones_en_curso = [
-            {
-                "id": 3,
-                "campaing_id": 1,
-                "campaing_name": "nombre_campana",
-                "client_name": "Cliente 1",
-                "client_number": "0000000",
-                "photo": "foto.jpg",
-                "date": datetime.datetime.now(),
-                "is_transfer_agent": True,
-                "number_messages": 10
-            },
-            {
-                "id": 4,
-                "campaing_id": 1,
-                "campaing_name": "nombre_campana",
-                "client_name": "Cliente 2",
-                "client_number": "0000000",
-                "photo": "foto.jpg",
-                "date": datetime.datetime.now(),
-                "is_transfer_agent": True,
-                "number_messages": 4
-            }
-        ]
-        data = {
-            "conversations_new": ConversacionNuevaSerializer(
-                conversaciones_nuevas, many=True).data,
-            "conversations_in_progress": ConversacionEnCursoSerializer(
-                conversaciones_en_curso, many=True).data
-        }
+        agente = request.user.get_agente_profile()
+        conversaciones_asignadas = agente.conversaciones.all()
+        conversaciones_en_curso = ConversacionSerializer(conversaciones_asignadas, many=True)
         return response.Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,
-                data=data),
+                data=conversaciones_en_curso.data),
             status=status.HTTP_201_CREATED)
 
     @decorators.action(detail=True, methods=["post"])
     def attend_chat(self, request, pk):
-        #  agente = request.user.get_agente_profile()
-        conversacion = {
-            "id": 1,
-            "campaing_id": 1,
-            "campaing_name": "nombre_campana",
-            "client_name": "cliente",
-            "client_number": "0000000",
-            "photo": "foto.jpg",
-            "date": "23-03-08 01:30",
-        }  # Conversacion.objects.get(pk=pk)
-        mensajes = [
-            {
-                "id": 1,
-                "conversation": 1,
-                "content": "Buenos días",
-                "status": "",
-                "date": "2023-03-07 01:30",
-                "sender": "cliente"
-            },
-            {
-                "id": 2,
-                "conversation": 1,
-                "content": "Hola",
-                "status": "",
-                "date": "2023-03-07 01:30",
-                "sender": "cliente"
-            }
-        ]  # Mensajes.objects.filter(conversacion_id=pk)
+        agente = request.user.get_agente_profile()
+        conversacion = ConversacionWhatsapp.objects.get(pk=pk)
+        conversation_granted = conversacion.otorgar_conversacion(agente),
+        mensajes = conversacion.mensajes.all()
         serializer_conversacion = ConversacionSerializer(conversacion)
         serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
-            "conversation_granted": True,  # conversacion.otorgar(agente),
+            "conversation_granted": conversation_granted,
             "conversation_data": serializer_conversacion.data,
             "messages": serializer_mensajes.data
         }
+        agentes = conversacion.campana.obtener_agentes()
+        agent_notifier = AgentNotifier()
+        for agente in agentes:
+            print("attend_chat...")
+            message = {
+                'chat_id': conversacion.id,
+                'campaign_id': conversacion.campana.pk,
+                'campaign_name': conversacion.campana.nombre,
+                'agent': agente.user.pk
+            }
+            agent_notifier.notify_whatsapp_chat_attended(agente.user_id, message)
+
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
-            status=status.HTTP_200_OK)
+            status=status.HTTP_200_OK
+        )
 
     @decorators.action(detail=True, methods=["post"])
     def assign_contact(self, request, pk):
-        #  contact_pk = request.data.get('contact_pk')
-        #  conversacion = Conversacion.objects.get(pk=pk)
-        #  conversacion.contacto = contact_pk
-        #  conversacion.save()
+        contact_pk = request.data.get('contact_pk')
+        conversacion = ConversacionWhatsapp.objects.get(pk=pk)
+        conversacion.contacto = contact_pk
+        conversacion.save()
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS,),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["get"])
     def messages(self, request, pk):
-        mensajes = [
-            {
-                "id": 1,
-                "conversation": 1,
-                "content": "Buenos días",
-                "status": MESSAGE_STATUS['SENDING'],
-                "date": "2023-03-07 01:30",
-                "user": "Cliente EMI",
-                "sender": MESSAGE_SENDERS['CLIENT']
-            },
-            {
-                "id": 2,
-                "conversation": 1,
-                "content": "Buenas, en que puedo ayudarte",
-                "status": MESSAGE_STATUS['SENT'],
-                "date": "2023-03-07 01:30",
-                "user": "Agente Sofia",
-                "sender": MESSAGE_SENDERS['AGENT']
-            },
-            {
-                "id": 3,
-                "conversation": 1,
-                "content": "Quiero agregar agentes a campaña, como lo hago?",
-                "status": MESSAGE_STATUS['DELIVERED'],
-                "date": "2023-03-07 01:30",
-                "user": "Cliente EMI",
-                "sender": MESSAGE_SENDERS['CLIENT']
-            },
-            {
-                "id": 4,
-                "conversation": 1,
-                "content": "Claro, a que tipo de campana te refieres?",
-                "status": MESSAGE_STATUS['READ'],
-                "date": "2023-03-07 01:30",
-                "user": "Agente Sofia",
-                "sender": MESSAGE_SENDERS['AGENT']
-            },
-            {
-                "id": 5,
-                "conversation": 1,
-                "content": "Son de tipo Inbount",
-                "status": MESSAGE_STATUS['ERROR'],
-                "date": "2023-03-07 01:30",
-                "user": "Cliente EMI",
-                "sender": MESSAGE_SENDERS['CLIENT']
-            }
-        ]
-        # if 'message_id' in self.request.GET:
-        #     last_message = Mensajes.objects.get(id=message_id).date
-        #     mensajes =\
-        #         Mensajes.objects.filter(chat_id=pk, date__lt=last_message.date)
-        #         .order_by('-date')[:MESSAGE_LIMIT]
-        # else:
-        #     mensajes = Mensajes.objects.filter(chat_id=pk).order_by('-date')[:MESSAGE_LIMIT]
+        conversation = ConversacionWhatsapp.objects.get(pk=pk)
+        if 'message_id' in self.request.GET:
+            last_message = MensajeWhatsapp.objects.get(id=self.request.GET['message_id'])
+            mensajes = MensajeWhatsapp.objects.filter(
+                conversation=pk, timestamp__gte=last_message.timestamp).order_by('timestamp')
+        else:
+            mensajes = MensajeWhatsapp.objects.filter(conversation=pk).order_by('timestamp')
         serializer_mensajes = MensajeListSerializer(mensajes, many=True)
         data = {
-            "messages": serializer_mensajes.data
+            "messages": serializer_mensajes.data,
+            "conversation_info": ConversacionSerializer(conversation).data
         }
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
@@ -264,72 +213,109 @@ class ViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_text(self, request, pk):
-        # sender = request.user.get_agente_profile()
+        conversation = ConversacionWhatsapp.objects.get(pk=pk)
+        destination = conversation.destination
+        sender = request.user.get_agente_profile()
         data = request.data.copy()
-        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
-        serializer = MensajeTextCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # orquestador_response = send_message_text(serializer.data) # orquestador
-        orquestador_response = {
-            "status": MESSAGE_STATUS['SENT'],
-            "message_id": "1",
-            "date": "01-01-2022 09:10"
-        }
+        line = ConfiguracionWhatsappCampana.objects.filter(
+            campana=conversation.campana).last().linea
+        message = {"text": data['message'], "type": "text"}
+        orquestador_response = send_text_message(
+            line, destination, message)  # orquestador
+        if orquestador_response["status"] == "submitted":
+            mensaje = MensajeWhatsapp.objects.create(
+                conversation=conversation,
+                origen=line.numero,
+                timestamp=timezone.now().astimezone(timezone.get_current_timezone()).timestamp(),
+                sender={"name": sender.user.username, "agent_id": sender.user.id},
+                content=message,
+                type="text",
+            )
+            serializer = MensajeListSerializer(mensaje)
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)
 
-    @decorators.action(detail=True, methods=["post"])
-    def send_message_attachment(self, request, pk):
-        # sender = request.user.get_agente_profile()
-        data = request.data.copy()
-        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
-        serializer = MensajeAtachmentCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # orquestador_response = send_message_attachment(serializer.data) # orquestador
-        orquestador_response = {
-            "status": MESSAGE_STATUS['SENT'],
-            "message_id": "1",
-            "date": "01-01-2022 09:10"
-        }
-        return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
-            status=status.HTTP_200_OK)
+    # @decorators.action(detail=True, methods=["post"])
+    # def send_message_attachment(self, request, pk):
+    #     sender = request.user.get_agente_profile()
+    #     data = request.data.copy()
+    #     data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
+    #     serializer = MensajeAtachmentCreateSerializer(data=data)
+    #     serializer.is_valid(raise_exception=True)
+    #     # serializer.save()
+    #     # orquestador_response = send_message_attachment(serializer.data) # orquestador
+    #     orquestador_response = {
+    #         "status": MESSAGE_STATUS['SENT'],
+    #         "message_id": "1",
+    #         "date": "01-01-2022 09:10"
+    #     }
+    #     return response.Response(
+    #         data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
+    #         status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_template(self, request, pk):
-        # sender = request.user.get_agente_profile()
-        data = request.data.copy()  # Id Plantilla, Parámetros
-        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
-        serializer = MensajePlantillaCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # orquestador_response = send_message_template(serializer.data) # orquestador
-        orquestador_response = {
-            "status": MESSAGE_STATUS['SENT'],
-            "message_id": "1",
-            "date": "01-01-2022 09:10"
-        }
+        conversation = ConversacionWhatsapp.objects.get(pk=pk)
+        destination = conversation.destination
+        sender = request.user.get_agente_profile()
+        data = request.data.copy()  # template_id
+        line = ConfiguracionWhatsappCampana.objects.filter(
+            campana=conversation.campana).last().linea
+        message = PlantillaMensaje.objects.get(pk=data['template_id']).configuracion
+        orquestador_response = send_text_message(
+            line, destination, message)  # orquestador
+        if orquestador_response["status"] == "submitted":
+            mensaje = MensajeWhatsapp.objects.create(
+                conversation=conversation,
+                origen=line.numero,
+                timestamp=timezone.now().astimezone(timezone.get_current_timezone()).timestamp(),
+                sender={"name": sender.user.username, "agent_id": sender.user.id},
+                content=message,
+                type="template",
+            )
+            serializer = MensajeListSerializer(mensaje)
         return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
             status=status.HTTP_200_OK)
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_whatsapp_template(self, request, pk):
-        # sender = request.user.get_agente_profile()
+        conversation = ConversacionWhatsapp.objects.get(pk=pk)
+        destination = conversation.destination
         data = request.data.copy()  # Id Template
-        data.update({"conversation": pk, "sender": MESSAGE_SENDERS['AGENT']})
-        serializer = MensajeWhatsappTemplateCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # orquestador_response = send_message_whatsapp_template(serializer.data) # orquestador
-        orquestador_response = {
-            "status": MESSAGE_STATUS['SENT'],
-            "message_id": "1",
-            "date": "01-01-2022 09:10"
-        }
+        template = TemplateWhatsapp.objects.get(id=data['template_id'])
+        template_id = template.identificador
+        sender = request.user.get_agente_profile()
+        line = ConfiguracionWhatsappCampana.objects.filter(
+            campana=conversation.campana).last().linea
+        orquestador_response = send_template_message(
+            line, destination, template_id, data['params'])  # orquestador
+        if orquestador_response["status"] == "submitted":
+            text = template.texto.replace('{{', '{').replace('}}', '}').format("", *data['params'])
+
+            mensaje = MensajeWhatsapp.objects.create(
+                conversation=conversation,
+                origen=line.numero,
+                timestamp=timezone.now().astimezone(timezone.get_current_timezone()).timestamp(),
+                sender={"name": sender.user.username, "agent_id": sender.user.id},
+                content=text,
+                type="template",
+            )
+            serializer = MensajeListSerializer(mensaje)
+        return response.Response(
+            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+            status=status.HTTP_200_OK)
+
+    @decorators.action(detail=False, methods=["post"])
+    def send_initing_conversation(self, request):
+        data = request.data.copy()  # Id Template
+        line = ConfiguracionWhatsappCampana.objects.filter(
+            campana=data['campana']).last().linea
+        template = TemplateWhatsapp.objects.get(id=data['template_id'])
+        template_id = template.identificador
+        orquestador_response = send_template_message(
+            line, data['destination'], template_id, data['params'])  # orquestador
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
             status=status.HTTP_200_OK)

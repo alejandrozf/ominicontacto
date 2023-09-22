@@ -6,7 +6,7 @@ export default {
         if (data) {
             state.supWhatsappGroupOfWhatsappTemplate = {
                 id: data.id,
-                nombre: data.nombre,
+                nombre: data.name,
                 templates: data.templates
             };
         } else {

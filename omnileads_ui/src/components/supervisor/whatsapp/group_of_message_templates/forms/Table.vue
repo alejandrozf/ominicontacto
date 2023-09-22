@@ -56,7 +56,7 @@
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
       <Column
-        field="nombre"
+        field="name"
         :header="$t('models.whatsapp.message_template.nombre')"
         :sortable="true"
       ></Column>
@@ -66,7 +66,7 @@
         :sortable="true"
       >
         <template #body="slotProps">
-          {{ getType(slotProps.data.tipo) }}
+          {{ getType(slotProps.data.type) }}
         </template>
       </Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">

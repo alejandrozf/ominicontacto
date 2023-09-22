@@ -63,7 +63,7 @@
             :filter="true"
             :showClear="true"
             placeholder="-----"
-            optionLabel="nombre"
+            optionLabel="name"
             optionValue="id"
             optionGroupLabel="label"
             optionGroupChildren="items"
@@ -168,15 +168,15 @@ export default {
                 if (this.supWhatsappProviders.length > 0) {
                     this.providers.find((p) => p.type === PROVIDER_TYPES.TWILIO).items =
             this.supWhatsappProviders.filter(
-                (p) => p.tipo_proveedor === PROVIDER_TYPES.TWILIO
+                (p) => p.provider_type === PROVIDER_TYPES.TWILIO
             );
                     this.providers.find((p) => p.type === PROVIDER_TYPES.META).items =
             this.supWhatsappProviders.filter(
-                (p) => p.tipo_proveedor === PROVIDER_TYPES.META
+                (p) => p.provider_type === PROVIDER_TYPES.META
             );
                     this.providers.find((p) => p.type === PROVIDER_TYPES.GUPSHUP).items =
             this.supWhatsappProviders.filter(
-                (p) => p.tipo_proveedor === PROVIDER_TYPES.GUPSHUP
+                (p) => p.provider_type === PROVIDER_TYPES.GUPSHUP
             );
                 }
             },

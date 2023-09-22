@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supWhatsappMessageTemplates"
+      :value="templates"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -100,6 +100,7 @@ export default {
     data () {
         return {
             filters: null,
+            templates: [],
             templateTypes: [
                 {
                     name: this.$t('forms.whatsapp.message_template.types.text'),
@@ -230,7 +231,16 @@ export default {
     },
     watch: {
         supWhatsappMessageTemplates: {
-            handler () {},
+            handler () {
+                this.templates = this.supWhatsappMessageTemplates.map((template) => {
+                    return {
+                        id: template.id,
+                        nombre: template.name,
+                        tipo: template.type,
+                        configuracion: template.configuration
+                    };
+                });
+            },
             deep: true,
             immediate: true
         }

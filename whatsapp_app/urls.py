@@ -51,7 +51,7 @@ urlpatterns = [
     path('webhookmeta/<int:identificador>/', WebhookMetaView.as_view(),
          name='webhook-meta',
          ),
-    path('webhook/<int:identificador>/', WebhookGupshupView.as_view(),
+    path('webhook/<str:identificador>/', WebhookGupshupView.as_view(),
          name='webhook-meta',
          ),
     path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),

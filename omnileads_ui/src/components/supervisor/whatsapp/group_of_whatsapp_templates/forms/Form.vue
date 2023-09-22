@@ -131,7 +131,7 @@ export default {
                 this.templates = this.supWhatsappTemplates.map(function (wt) {
                     return {
                         id: wt.id,
-                        nombre: `Linea (${wt.linea}): ${wt.nombre}`
+                        nombre: `Linea (${wt.line}): ${wt.name}`
                     };
                 });
             }

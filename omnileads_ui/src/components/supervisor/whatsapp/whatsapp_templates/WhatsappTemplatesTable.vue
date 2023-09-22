@@ -137,7 +137,21 @@ export default {
         supWhatsappTemplates: {
             handler () {
                 if (this.supWhatsappTemplates.length > 0) {
-                    this.templates = this.supWhatsappTemplates.filter(wt => parseInt(wt.linea) === parseInt(this.id));
+                    this.templates = this.supWhatsappTemplates.filter(wt => parseInt(wt.line) === parseInt(this.id)).map(
+                        (wt) => {
+                            return {
+                                id: wt.id,
+                                linea: wt.line,
+                                nombre: wt.name,
+                                idioma: wt.language,
+                                status: wt.status,
+                                tipo: wt.type,
+                                identificador: wt.identifier,
+                                created: wt.created,
+                                updated: wt.updated
+                            };
+                        }
+                    );
                 } else {
                     this.templates = [];
                 }

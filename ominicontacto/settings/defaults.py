@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api_app.apps.ApiAppConfig',
     'whatsapp_app.apps.WhatsappAppConfig',
+    'orquestador_app.apps.OrquestadorAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',

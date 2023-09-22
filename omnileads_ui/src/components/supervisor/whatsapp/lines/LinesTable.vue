@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supWhatsappLines"
+      :value="lines"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -103,7 +103,8 @@ export default {
     inject: ['$helpers'],
     data () {
         return {
-            filters: null
+            filters: null,
+            lines: []
         };
     },
     created () {
@@ -124,8 +125,8 @@ export default {
         getProvider (id) {
             const proveedor = this.supWhatsappProviders.find((p) => p.id === id);
             if (proveedor) {
-                const tipo = this.getProviderType(proveedor.tipo_proveedor);
-                return `${tipo} - ${proveedor.nombre}`;
+                const tipo = this.getProviderType(proveedor.provider_type);
+                return `${tipo} - ${proveedor.name}`;
             } else {
                 return '----------';
             }
@@ -214,12 +215,37 @@ export default {
     },
     watch: {
         supWhatsappLines: {
-            handler () {},
+            handler () {
+                this.lines = this.supWhatsappLines.map((line) => {
+                    return {
+                        id: line.id,
+                        nombre: line.name,
+                        numero: line.number,
+                        proveedor: line.provider,
+                        configuracion: line.configuration,
+                        horario: line.schedule,
+                        mensaje_bienvenida: line.welcome_message,
+                        mensaje_despedida: line.farewell_message,
+                        mensaje_fueradehora: line.afterhours_message
+                    };
+                });
+            },
             deep: true,
             immediate: true
         },
         supWhatsappProviders: {
-            handler () {},
+            handler () {
+                if (this.supWhatsappProviders.length > 0) {
+                    this.supWhatsappProviders = this.supWhatsappProviders.map((provider) => {
+                        return {
+                            id: provider.id,
+                            nombre: provider.name,
+                            tipo_proveedor: provider.provider_type,
+                            configuracion: provider.configuration
+                        };
+                    });
+                }
+            },
             deep: true,
             immediate: true
         }

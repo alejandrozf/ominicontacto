@@ -17,8 +17,6 @@
 #
 
 # APIs para visualizar lineas
-import requests
-import json
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -29,8 +27,8 @@ from rest_framework.decorators import action
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
+from orquestador_app.core.gupshup_send_menssage import sync_templates
 
 
 class ListSerializer(serializers.Serializer):
@@ -106,12 +104,7 @@ class ViewSet(viewsets.ViewSet):
             linea = Linea.objects.get(pk=linea_pk)
             proveedor = linea.proveedor
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-                appname = linea.configuracion['app_name']
-                apikey = proveedor.configuracion['api_key']
-                url = 'https://api.gupshup.io/sm/api/v1/template/list/{}'.format(appname)  # mover
-                headers = {"apikey": apikey}
-                respuesta = requests.get(url, headers=headers)
-                templates = json.loads(respuesta.text)['templates']
+                templates = sync_templates(linea)
                 TemplateWhatsapp.objects.filter(linea=linea).delete()
                 TemplateWhatsapp.objects.bulk_create(
                     [TemplateWhatsapp(
@@ -134,7 +127,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se obtuvieron los templates de whatsapp de forma exitosa')),
                 status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
+            print("********************************", e)
             return response.Response(
-                data=get_response_data(message=_('Error al sincronizar los templates')),
+                data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -1,5 +1,5 @@
 import { getRestWhatsappRoutesByModule } from '@/utils/routes_generator';
 
 export default {
-    ...getRestWhatsappRoutesByModule('providers')
+    ...getRestWhatsappRoutesByModule('provider')
 };

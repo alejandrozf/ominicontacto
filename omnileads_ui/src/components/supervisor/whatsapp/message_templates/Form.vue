@@ -298,15 +298,20 @@ export default {
                 return null;
             }
             this.supWhatsappMessageTemplateForm.configuracion = config;
+            const form = {
+                name: this.supWhatsappMessageTemplateForm.nombre,
+                type: this.supWhatsappMessageTemplateForm.tipo,
+                configuration: this.supWhatsappMessageTemplateForm.configuracion
+            };
             var response = null;
             if (this.formToCreate) {
                 response = await this.createWhatsappMessageTemplate(
-                    this.supWhatsappMessageTemplateForm
+                    form
                 );
             } else {
                 response = await this.updateWhatsappMessageTemplate({
                     id: this.supWhatsappMessageTemplate.id,
-                    data: this.supWhatsappMessageTemplateForm
+                    data: form
                 });
             }
             const { status, message } = response;

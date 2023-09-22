@@ -56,11 +56,11 @@
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
       <Column
-        field="nombre"
+        field="name"
         :header="$t('models.whatsapp.whatsapp_template.nombre')"
       ></Column>
       <Column
-        field="idioma"
+        field="language"
         :header="$t('models.whatsapp.whatsapp_template.idioma')"
         :sortable="true"
       ></Column>
@@ -70,7 +70,7 @@
         :sortable="true"
       ></Column>
       <Column
-        field="tipo"
+        field="type"
         :header="$t('models.whatsapp.whatsapp_template.tipo')"
       ></Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">

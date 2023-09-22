@@ -22,14 +22,23 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
+import { mapActions, mapState } from 'vuex';
 
 export default {
+    props: {
+        conversationId: {
+            type: Number,
+            required: true,
+            default: null
+        }
+    },
     data () {
         return {
             message: ''
         };
+    },
+    computed: {
+        ...mapState(['agtWhatsCoversationInfo'])
     },
     methods: {
         ...mapActions(['agtWhatsCoversationSendTextMessage']),
@@ -38,19 +47,26 @@ export default {
                 this.$emit('scrollDownEvent');
                 const data = {
                     message: {
-                        id: 6,
-                        from: 'Agente Sofia',
-                        itsMine: true,
-                        message: this.message,
-                        sender: WHATSAPP_MESSAGE?.SENDERS?.AGENT,
-                        status: WHATSAPP_MESSAGE?.STATUS?.SENT,
-                        date: new Date()
+                        message: this.message
                     },
-                    conversationId: 1
+                    conversationId: this.conversationId,
+                    phoneLine: this.agtWhatsCoversationInfo.lineNumber
                 };
                 this.agtWhatsCoversationSendTextMessage(data);
                 this.message = '';
             }
+        }
+    },
+    watch: {
+        conversationId: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        agtWhatsCoversationInfo: {
+            handler () {},
+            deep: true,
+            immediate: true
         }
     }
 };

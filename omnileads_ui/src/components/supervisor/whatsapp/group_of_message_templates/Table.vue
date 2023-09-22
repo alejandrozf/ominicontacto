@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supWhatsappGroupOfMessageTemplates"
+      :value="groups"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -108,7 +108,8 @@ export default {
     inject: ['$helpers'],
     data () {
         return {
-            filters: null
+            filters: null,
+            groups: []
         };
     },
     created () {
@@ -194,7 +195,17 @@ export default {
     },
     watch: {
         supWhatsappGroupOfMessageTemplates: {
-            handler () {},
+            handler () {
+                this.groups = this.supWhatsappGroupOfMessageTemplates.map(
+                    (group) => {
+                        return {
+                            id: group.id,
+                            nombre: group.name,
+                            plantillas: group.templates
+                        };
+                    }
+                );
+            },
             deep: true,
             immediate: true
         }

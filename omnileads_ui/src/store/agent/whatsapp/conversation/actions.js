@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Service from '@/services/agent/whatsapp/conversation_service';
 import { HTTP_STATUS } from '@/globals';
-import { WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
+// import { WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
 const service = new Service();
 
 export default {
@@ -24,14 +24,26 @@ export default {
     },
     async agtWhatsCoversationSendTextMessage (
         { commit },
-        { conversationId, message }
+        { conversationId, message, phoneLine }
     ) {
         try {
             const { status, data } = await service.sendTextMessage(
                 conversationId,
-                { content: message.message }
+                { message: message.message, destination: message.destination }
             );
             if (status === HTTP_STATUS.SUCCESS) {
+                const itsMine = data.origen === phoneLine;
+                const message = {
+                    id: data.id,
+                    from: itsMine
+                        ? `Agente (${data.sender.name})`
+                        : data.sender.name,
+                    conversationId: data.conversation,
+                    itsMine,
+                    message: data.content[`${data.type}`],
+                    status: data.status || null,
+                    date: new Date(data.timestamp)
+                };
                 commit('agtWhatsCoversationSendMessage', message);
             }
         } catch (error) {
@@ -52,25 +64,63 @@ export default {
             const { status, data } = await service.getMessagesByConversationId(
                 chatId
             );
+            console.log('===> Conversation Messages');
+            console.log(data);
             if (status === HTTP_STATUS.SUCCESS) {
                 commit(
                     'agtWhatsConversationInitMessages',
                     data.messages.map((msg) => {
+                        const itsMine = msg.origen === '5493764962109';
                         return {
                             id: msg.id,
-                            from: msg.user,
+                            from: itsMine
+                                ? `Agente (${msg.sender.name})`
+                                : msg.sender.name,
                             conversationId: msg.conversation,
-                            itsMine: msg.sender === WHATSAPP_MESSAGE.SENDERS.AGENT,
-                            message: msg.content,
-                            status: msg.status,
-                            date: new Date(msg.date)
+                            itsMine,
+                            message: msg.content[`${msg.type}`],
+                            status: msg.status || null,
+                            date: new Date(msg.timestamp)
                         };
                     })
                 );
+                // commit('agtWhatsConversationInfoInit', data.conversation_info);
             }
         } catch (error) {
             console.error('===> ERROR al obtener mensajes de la conversacion');
             console.error(error);
+        }
+    },
+    async agtWhatsConversationDetail ({ commit }, chatId) {
+        try {
+            const { status, data } = await service.getConversationDetail(
+                chatId
+            );
+            if (status === HTTP_STATUS.SUCCESS) {
+                commit(
+                    'agtWhatsConversationInitMessages',
+                    data.messages.map((msg) => {
+                        const itsMine = msg.origen === data.line_number;
+                        return {
+                            id: msg.id,
+                            from: itsMine
+                                ? `Agente (${msg.sender.name})`
+                                : msg.sender.name,
+                            conversationId: msg.conversation,
+                            itsMine,
+                            message: msg.content[`${msg.type}`],
+                            status: msg.status || null,
+                            date: new Date(msg.timestamp)
+                        };
+                    })
+                );
+                commit('agtWhatsConversationInfoInit', data);
+            }
+        } catch (error) {
+            console.error('===> ERROR al obtener detalle de la conversacion');
+            console.error(error);
+            commit('agtWhatsConversationInitMessages', []);
+            commit('agtWhatsConversationInfoInit', {});
         }
     },
     async agtWhatsChatsListInit ({ commit }) {
@@ -79,11 +129,11 @@ export default {
             commit('agtWhatsChatsListInit', {
                 isNew:
                     status === HTTP_STATUS.SUCCESS
-                        ? data.conversations_new
+                        ? data.new_conversations
                         : [],
                 inProgress:
                     status === HTTP_STATUS.SUCCESS
-                        ? data.conversations_in_progress
+                        ? data.inprogress_conversations
                         : []
             });
         } catch (error) {
@@ -98,9 +148,7 @@ export default {
         try {
             commit('agtWhatsReceiveNewChat', chat);
         } catch (error) {
-            console.error(
-                '===> ERROR al recibir nuevo chat'
-            );
+            console.error('===> ERROR al recibir nuevo chat');
             console.error(error);
             commit('agtWhatsReceiveNewChat', null);
         }

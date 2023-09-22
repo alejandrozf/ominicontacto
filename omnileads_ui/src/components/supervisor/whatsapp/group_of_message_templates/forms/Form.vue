@@ -138,10 +138,10 @@ export default {
             } else {
                 const $this = this;
                 this.templates = this.supWhatsappMessageTemplates.map(function (t) {
-                    const tipo = $this.templateTypes.find(type => type.value === t.tipo).name;
+                    const tipo = $this.templateTypes.find(type => type.value === t.type).name;
                     return {
                         id: t.id,
-                        nombre: `Tipo (${tipo}): ${t.nombre}`
+                        nombre: `Tipo (${tipo}): ${t.name}`
                     };
                 });
             }

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supWhatsappProviders"
+      :value="providers"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -111,7 +111,8 @@ export default {
     inject: ['$helpers'],
     data () {
         return {
-            filters: null
+            filters: null,
+            providers: []
         };
     },
     created () {
@@ -209,7 +210,18 @@ export default {
     },
     watch: {
         supWhatsappProviders: {
-            handler () {},
+            handler () {
+                if (this.supWhatsappProviders.length > 0) {
+                    this.providers = this.supWhatsappProviders.map((provider) => {
+                        return {
+                            id: provider.id,
+                            nombre: provider.name,
+                            tipo_proveedor: provider.provider_type,
+                            configuracion: provider.configuration
+                        };
+                    });
+                }
+            },
             deep: true,
             immediate: true
         }

@@ -26,16 +26,18 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
+from whatsapp_app.models import ConversacionWhatsapp
 
 
 class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    conversation = serializers.IntegerField()
-    content = serializers.CharField()
-    status = serializers.IntegerField()
-    date = serializers.DateTimeField()
-    sender = serializers.IntegerField()
-    user = serializers.CharField()
+    conversation = serializers.PrimaryKeyRelatedField(queryset=ConversacionWhatsapp.objects.all())
+    contact_data = serializers.JSONField(source='conversation.client')
+    timestamp = serializers.IntegerField()
+    content = serializers.JSONField()
+    origen = serializers.CharField()
+    sender = serializers.JSONField()
+    type = serializers.CharField()
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):

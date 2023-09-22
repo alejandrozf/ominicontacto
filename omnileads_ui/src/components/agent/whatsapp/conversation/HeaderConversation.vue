@@ -8,8 +8,8 @@
         class="p-button-rounded p-button-secondary p-button-text"
       />
       <Chip
-        :label="conversation?.client_info?.name"
-        :image="conversation?.client_info?.avatar"
+        :label="clientInfo?.name"
+        :image="clientInfo?.avatar"
       />
     </template>
     <template #end>
@@ -48,21 +48,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 export default {
-    props: {
-        conversation: {
-            type: Object,
-            default: () => ({
-                id: null,
-                client_info: {
-                    name: 'Emiliano',
-                    avatar: 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'
-                },
-                agent_info: {}
-            })
-        }
-    },
     data () {
         return {
             attachOptions: [
@@ -80,8 +67,17 @@ export default {
                         this.attach('pdf');
                     }
                 }
-            ]
+            ],
+            conversationId: null,
+            clientInfo: {
+                name: '',
+                phone: '',
+                avatar: 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'
+            }
         };
+    },
+    computed: {
+        ...mapState(['agtWhatsCoversationInfo'])
     },
     methods: {
         ...mapActions(['agtWhatsTransferChatInitData']),
@@ -129,6 +125,19 @@ export default {
                 }
             });
             window.parent.document.dispatchEvent(event);
+        }
+    },
+    watch: {
+        agtWhatsCoversationInfo: {
+            handler () {
+                if (this.agtWhatsCoversationInfo) {
+                    this.conversationId = this.agtWhatsCoversationInfo.id;
+                    this.clientInfo.name = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.name : this.agtWhatsCoversationInfo.destination;
+                    this.clientInfo.phone = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.phone : this.agtWhatsCoversationInfo.destination;
+                }
+            },
+            deep: true,
+            immediate: true
         }
     }
 };

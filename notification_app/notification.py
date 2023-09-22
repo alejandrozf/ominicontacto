@@ -98,12 +98,7 @@ class AgentNotifier:
         self.send_message(
             self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_chat_attended(self, user_id, id_conversacion, campaing):
-        message = {
-            'id': id_conversacion,
-            'campaign_id': campaing.pk,
-            'campaign_name': campaing.nombre,
-        }
+    def notify_whatsapp_chat_attended(self, user_id, message):
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id, whatsapp_event=True)
 
@@ -145,18 +140,8 @@ class AgentNotifier:
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_TRANSFERED, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_new_message(self, user_id, message):
-        message = {
-            'chat_id': 1,
-            'campaing_id': 1,
-            'message_id': 1,
-            'content': message,
-            'user': 'Cliente EMI',
-            'status': MESSAGE_STATUS['SENT'],
-            'date': str(datetime.datetime.now()),
-            'sender': MESSAGE_SENDERS['CLIENT']
-        }
-        self.send_message(
+    async def notify_whatsapp_new_message(self, user_id, message):
+        await self.send_message_whatsapp(
             self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_message_status(self, user_id, id_message):
@@ -189,6 +174,18 @@ class AgentNotifier:
                 }
             }
         )
+
+    async def send_message_whatsapp(self, type, message, user_id=None, whatsapp_event=False):
+        # si user_id=None se envia mensaje a todos los agentes conectados
+        await get_channel_layer().group_send(
+            self.get_group_name(user_id, whatsapp_event),
+            {
+                'type': 'broadcast',
+                'payload': {
+                    'type': type,
+                    'args': message
+                }
+            })
 
 
 class RedisStreamNotifier:

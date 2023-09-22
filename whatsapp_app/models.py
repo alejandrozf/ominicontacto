@@ -21,7 +21,7 @@ from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from configuracion_telefonia_app.models import DestinoEntrante, GrupoHorario
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import AgenteProfile, Campana, Contacto
 
 
 class ConfiguracionProveedor(AuditableModelMixin, models.Model):
@@ -120,3 +120,36 @@ class ConfiguracionWhatsappCampana(AuditableModelMixin):
     grupo_plantilla_whatsapp = models.ForeignKey(
         GrupoPlantillaMensaje, related_name="configuracionwhatsapp", on_delete=models.CASCADE)
     nivel_servicio = models.IntegerField()
+
+
+class ConversacionWhatsapp(models.Model):
+    conversation_id = models.CharField(max_length=100)
+    campana = models.ForeignKey(
+        Campana, related_name="conversaciones", on_delete=models.CASCADE)
+    destination = models.CharField(max_length=100)
+    client = models.ForeignKey(
+        Contacto, null=True, related_name="conversaciones", on_delete=models.CASCADE)
+    agent = models.ForeignKey(
+        AgenteProfile, null=True, related_name="conversaciones", on_delete=models.CASCADE)
+    conversation_type = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    expire = models.BigIntegerField()
+    timestamp = models.BigIntegerField()
+
+    def otorgar_conversacion(self, agent):
+        if self.agent:
+            return False
+        else:
+            self.agent = agent
+            self.save()
+            return True
+
+
+class MensajeWhatsapp(models.Model):
+    timestamp = models.BigIntegerField()
+    origen = models.CharField(max_length=100)
+    sender = JSONField(default=dict)
+    conversation = models.ForeignKey(
+        ConversacionWhatsapp, related_name="mensajes", on_delete=models.CASCADE)
+    content = JSONField(default=dict)
+    type = models.CharField(max_length=100)

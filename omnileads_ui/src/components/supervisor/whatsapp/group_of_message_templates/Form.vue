@@ -154,12 +154,16 @@ export default {
                 return null;
             }
             var response = null;
+            const form = {
+                name: this.form.nombre,
+                templates: this.form.plantillas
+            };
             if (this.formToCreate) {
-                response = await this.createWhatsappGroupOfMessageTemplate(this.form);
+                response = await this.createWhatsappGroupOfMessageTemplate(form);
             } else {
                 response = await this.updateWhatsappGroupOfMessageTemplate({
                     id: this.form.id,
-                    data: this.form
+                    data: form
                 });
             }
             const { status, message } = response;

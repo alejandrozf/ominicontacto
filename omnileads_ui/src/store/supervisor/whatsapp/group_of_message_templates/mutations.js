@@ -6,8 +6,8 @@ export default {
         if (data) {
             state.supWhatsappGroupOfMessageTemplate = {
                 id: data.id,
-                nombre: data.nombre,
-                plantillas: data.plantillas
+                nombre: data.name,
+                plantillas: data.templates
             };
         } else {
             state.supWhatsappGroupOfMessageTemplate = {

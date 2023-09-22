@@ -244,14 +244,22 @@ export default {
             this.supWhatsappProviderForm.configuracion = {
                 api_key: this.supWhatsappProviderForm.api_key
             };
+
+            const form = {
+                name: this.supWhatsappProviderForm.nombre,
+                provider_type: this.supWhatsappProviderForm.tipo_proveedor,
+                configuration: {
+                    api_key: this.supWhatsappProviderForm.api_key
+                }
+            };
             if (this.formToCreate) {
                 response = await this.createWhatsappProvider(
-                    this.supWhatsappProviderForm
+                    form
                 );
             } else {
                 response = await this.updateWhatsappProvider({
                     id: this.supWhatsappProvider.id,
-                    data: this.supWhatsappProviderForm
+                    data: form
                 });
             }
             const { status, message } = response;

@@ -10,11 +10,11 @@ export default {
     async initWhatsappGroupOfMessageTemplate ({ commit }, { id = null, obj = null }) {
         if (obj) {
             commit('initWhatsappGroupOfMessageTemplate', obj);
-            commit('initMessageTemplatesOfGroup', obj.plantillas.map(p => p.id));
+            commit('initMessageTemplatesOfGroup', obj.templates.map(p => p.id));
         } else if (id) {
             const { status, data } = await service.detail(id);
             commit('initWhatsappGroupOfMessageTemplate', status === 'SUCCESS' ? data : null);
-            commit('initMessageTemplatesOfGroup', data.plantillas.map(p => p.id));
+            commit('initMessageTemplatesOfGroup', data.templates.map(p => p.id));
         } else {
             commit('initWhatsappGroupOfMessageTemplate', null);
             commit('initMessageTemplatesOfGroup');

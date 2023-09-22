@@ -78,7 +78,7 @@
                     :filter="true"
                     :showClear="true"
                     placeholder="-----"
-                    optionLabel="nombre"
+                    optionLabel="name"
                     optionValue="id"
                     optionGroupLabel="label"
                     optionGroupChildren="items"
@@ -186,7 +186,7 @@
                       :resetFilterOnHide="true"
                       :showClear="true"
                       placeholder="-----"
-                      optionLabel="nombre"
+                      optionLabel="name"
                       optionValue="id"
                       optionGroupLabel="label"
                       optionGroupChildren="items"
@@ -229,7 +229,7 @@
                       :resetFilterOnHide="true"
                       :showClear="true"
                       placeholder="-----"
-                      optionLabel="nombre"
+                      optionLabel="name"
                       optionValue="id"
                       optionGroupLabel="label"
                       optionGroupChildren="items"
@@ -272,7 +272,7 @@
                       :resetFilterOnHide="true"
                       :showClear="true"
                       placeholder="-----"
-                      optionLabel="nombre"
+                      optionLabel="name"
                       optionValue="id"
                       optionGroupLabel="label"
                       optionGroupChildren="items"
@@ -414,7 +414,7 @@ export default {
             );
             if (messageTemplate) {
                 this.msgBienvenidaContent = JSON.stringify(
-                    messageTemplate.configuracion
+                    messageTemplate.configuration
                 );
             } else {
                 this.msgBienvenidaContent = '';
@@ -426,7 +426,7 @@ export default {
             );
             if (messageTemplate) {
                 this.msgFueraHoraContent = JSON.stringify(
-                    messageTemplate.configuracion
+                    messageTemplate.configuration
                 );
             } else {
                 this.msgFueraHoraContent = '';
@@ -438,7 +438,7 @@ export default {
             );
             if (messageTemplate) {
                 this.msgDespedidaContent = JSON.stringify(
-                    messageTemplate.configuracion
+                    messageTemplate.configuration
                 );
             } else {
                 this.msgDespedidaContent = '';
@@ -507,12 +507,22 @@ export default {
                 return null;
             }
             var response = null;
+            const form = {
+                name: this.supWhatsappLine.nombre,
+                number: this.supWhatsappLine.numero,
+                provider: this.supWhatsappLine.proveedor,
+                configuration: this.supWhatsappLine.configuracion,
+                schedule: this.supWhatsappLine.horario,
+                welcome_message: this.supWhatsappLine.mensaje_bienvenida,
+                farewell_message: this.supWhatsappLine.mensaje_despedida,
+                afterhours_message: this.supWhatsappLine.mensaje_fueradehora
+            };
             if (this.isFormToCreate) {
-                response = await this.createWhatsappLine(this.supWhatsappLine);
+                response = await this.createWhatsappLine(form);
             } else {
                 response = await this.updateWhatsappLine({
                     id: this.supWhatsappLine.id,
-                    data: this.supWhatsappLine
+                    data: form
                 });
             }
             const { status, message } = response;
@@ -549,12 +559,12 @@ export default {
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT
                     ).items = this.supWhatsappMessageTemplates.filter(
-                        (mt) => mt.tipo === TEMPLATE_TYPES.TEXT
+                        (mt) => mt.type === TEMPLATE_TYPES.TEXT
                     );
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.IMAGE
                     ).items = this.supWhatsappMessageTemplates.filter(
-                        (mt) => mt.tipo === TEMPLATE_TYPES.IMAGE
+                        (mt) => mt.type === TEMPLATE_TYPES.IMAGE
                     );
                     this.msgBienvenidaChange();
                     this.msgDespedidaChange();
