@@ -67,6 +67,8 @@ logger = logging_.getLogger(__name__)
 
 
 def show_agente_profile_form_condition(wizard):
+    if wizard.agente_a_clonar is not None:
+        return False
     cleaned_data = wizard.get_cleaned_data_for_step(wizard.USER) or {}
     rol = cleaned_data.get('rol')
     if rol:
@@ -87,8 +89,15 @@ class CustomUserWizard(SessionWizardView):
 
     def dispatch(self, request, *args, **kwargs):
         self.crear_agentes_unicamente = False
+        self.agente_a_clonar = None
         if 'create_agent' in kwargs:
             self.crear_agentes_unicamente = True
+        if 'clone_pk' in kwargs:
+            try:
+                self.agente_a_clonar = User.objects.get(id=kwargs.get('clone_pk'))
+                self.crear_agentes_unicamente = True
+            except User.DoesNotExist:
+                return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         if not self._grupos_disponibles():
             message = _(u"Para poder crear un Usuario Agente asegurese de contar con al menos "
                         "un Grupo cargado.")
@@ -98,13 +107,18 @@ class CustomUserWizard(SessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super(CustomUserWizard, self).get_context_data(form=form, **kwargs)
         if self.steps.current == self.USER:
-            context['titulo'] = _('Nuevo Usuario: Datos Básicos')
+            if self.agente_a_clonar:
+                context['titulo'] = _('Clonar agente: ') + self.agente_a_clonar.get_full_name()
+            else:
+                context['titulo'] = _('Nuevo Usuario: Datos Básicos')
         elif self.steps.current == self.AGENTE:
             context['titulo'] = _('Nuevo Usuario: Selección de Campañas')
 
         agente_rol = Group.objects.filter(name=User.AGENTE).first()
         if agente_rol:
             context['AGENTE_ROL_ID'] = agente_rol.pk
+        if self.agente_a_clonar is not None:
+            context['clonando_agente'] = self.agente_a_clonar
         return context
 
     def get_form_kwargs(self, step):
@@ -123,6 +137,11 @@ class CustomUserWizard(SessionWizardView):
                 roles_queryset = Group.objects.filter(name=User.AGENTE)
 
             kwargs['roles_queryset'] = roles_queryset
+
+            kwargs['grupo_queryset'] = None
+            if self.agente_a_clonar is not None:
+                kwargs['grupo_queryset'] = Grupo.objects.filter(
+                    id=self.agente_a_clonar.agenteprofile.grupo_id)
         return kwargs
 
     def _save_supervisor(self, user, rol):
@@ -215,11 +234,17 @@ class CustomUserWizard(SessionWizardView):
         user.groups.add(rol)
 
         if rol.name == User.AGENTE:
-            form_campaigns = form_list[int(self.AGENTE)]
-            campaigns_pks = form_campaigns.cleaned_data.get('campaigns_by_type')
+            if self.agente_a_clonar is None:
+                form_campaigns = form_list[int(self.AGENTE)]
+                campaigns_pks = form_campaigns.cleaned_data.get('campaigns_by_type')
+            else:
+                campana_members = self.agente_a_clonar.get_agente_profile().campana_member.all()
+                queue_names = campana_members.values_list('id_campana', flat=True)
+                campaigns_pks = [Campana.get_id_from_queue_id_name(name) for name in queue_names]
             campaigns = Campana.objects.filter(pk__in=campaigns_pks)
             agent = self._save_agente(user, grupo)
             self._save_agent_to_campaigns(agent, campaigns)
+
         elif rol.name == User.CLIENTE_WEBPHONE:
             self._save_cliente_webphone(user)
         else:
@@ -426,6 +451,7 @@ class UserListView(ListView):
         context['elimina_user'] = user.tiene_permiso_oml('user_delete')
         context['edita_agente'] = user.tiene_permiso_oml('agent_update')
         context['elimina_agente'] = user.tiene_permiso_oml('agent_delete')
+        context['clona_agente'] = user.tiene_permiso_oml('clone_agent')
         context['numero_usuarios_activos'] = User.numero_usuarios_activos()
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')

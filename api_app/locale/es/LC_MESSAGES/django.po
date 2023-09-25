@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-23 00:25-0300\n"
+"POT-Creation-Date: 2023-09-25 11:41-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -723,7 +723,7 @@ msgstr ""
 
 #: api_app/tests/tests_api_click2call.py:157
 #: api_app/tests/tests_api_contactos.py:169
-#: api_app/tests/tests_api_contactos.py:261 api_app/views/agente.py:222
+#: api_app/tests/tests_api_contactos.py:261 api_app/views/agente.py:224
 #: api_app/views/base.py:86 api_app/views/base.py:218
 msgid "Sistema externo inexistente."
 msgstr ""
@@ -1102,40 +1102,40 @@ msgstr ""
 msgid "Error en el servidor externo"
 msgstr ""
 
-#: api_app/views/agente.py:69
+#: api_app/views/agente.py:71
 msgid "Error al generar sip password"
 msgstr ""
 
-#: api_app/views/agente.py:221 api_app/views/agente.py:256
+#: api_app/views/agente.py:223 api_app/views/agente.py:258
 #: api_app/views/base.py:75 api_app/views/base.py:207
 msgid "Hubo errores en los datos recibidos"
 msgstr ""
 
-#: api_app/views/agente.py:247
+#: api_app/views/agente.py:249
 msgid "Error al ejecutar la llamada"
 msgstr ""
 
-#: api_app/views/agente.py:277
+#: api_app/views/agente.py:279
 msgid "Usted no tiene permiso para realizar esta acción"
 msgstr ""
 
-#: api_app/views/agente.py:290
+#: api_app/views/agente.py:292
 msgid "Valor de destination inválido"
 msgstr ""
 
-#: api_app/views/agente.py:300
+#: api_app/views/agente.py:302
 msgid "Valor de destination_type inválido"
 msgstr ""
 
-#: api_app/views/agente.py:304
+#: api_app/views/agente.py:306
 msgid "Llamada fuera de campaña iniciada"
 msgstr ""
 
-#: api_app/views/agente.py:501
+#: api_app/views/agente.py:503
 msgid "Auditoría inexistente"
 msgstr ""
 
-#: api_app/views/agente.py:506
+#: api_app/views/agente.py:508
 msgid "No tiene permiso para modificar la auditoría"
 msgstr ""
 

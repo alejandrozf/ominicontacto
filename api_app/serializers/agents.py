@@ -17,15 +17,9 @@
 #
 
 from rest_framework import serializers
-from ominicontacto_app.models import AgenteProfile
 
 
-class AgentesParaTransferenciaSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = AgenteProfile
-        fields = ('id', 'full_name', 'sip_extension')
-
-    def get_full_name(self, agente_profile):
-        return agente_profile.user.get_full_name()
+class AgentesParaTransferenciaSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    full_name = serializers.CharField(read_only=True, source='nombre')
+    status = serializers.CharField(read_only=True)

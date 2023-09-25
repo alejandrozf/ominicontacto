@@ -127,13 +127,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
                     </div>
                 {% endif %}
-                <div class="mapouter">
-                    <div class="gmap_canvas" id="map"></div>
-                    <div id="infowindow-content">
-                        <span id="place-name" class="title"></span><br />
-                        <span id="place-address"></span>
+                {% if campana.campo_direccion %}    
+                    <div class="mapouter">
+                        <div class="gmap_canvas" id="map"></div>
+                        <div id="infowindow-content">
+                            <span id="place-name" class="title"></span><br />
+                            <span id="place-address"></span>
+                        </div>
                     </div>
-                </div>            
+                {% endif %}
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
                         {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}

@@ -96,7 +96,7 @@ class CustomUserCreationForm(UserCreationForm):
                          _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
         }
 
-    def __init__(self, roles_queryset, deshabilitar_agente=False, *args, **kwargs):
+    def __init__(self, roles_queryset, grupo_queryset, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['first_name'].widget.attrs['class'] = 'form-control'
@@ -106,6 +106,8 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].queryset = roles_queryset
+        if grupo_queryset:
+            self.fields['grupo'].queryset = grupo_queryset
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
 
     def clean(self):

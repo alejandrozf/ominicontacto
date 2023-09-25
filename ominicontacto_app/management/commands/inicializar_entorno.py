@@ -16,13 +16,16 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 import logging
+import os
 
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from constance import config as constance_config
 from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 
-from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion, QueueMember
+from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion, QueueMember,
+                                      SupervisorProfile, ClienteWebPhoneProfile)
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                ArchivoDeAudioFactory, FormularioFactory,
                                                FieldFormularioFactory, BaseDatosContactoFactory,
@@ -49,6 +52,8 @@ from ominicontacto_app.services.asterisk.asterisk_ami import AmiManagerClient
 
 logger = logging.getLogger(__name__)
 
+PASSWORD = 'usuario0*'
+
 
 class Command(BaseCommand):
     """
@@ -57,8 +62,16 @@ class Command(BaseCommand):
 
     help = "Valores mínimos para tener un entorno de desarrollo listo"
 
-    agent_username = 'agent'
-    agent_password = 'agent1*'
+    agent_1_username = 'ag1'
+    agent_2_username = 'ag2'
+    # agent_3_username = 'ag3'
+    # agent_4_username = 'ag4'
+    # agent_5_username = 'ag5'
+    # agent_6_username = 'ag6'
+    # agent_7_username = 'ag7'
+    # agent_8_username = 'ag8'
+    # agent_9_username = 'ag9'
+    # agent_10_username = 'ag10'
 
     def _crear_opciones_calificacion(self, campana):
         # opciones de calificacion
@@ -91,26 +104,26 @@ class Command(BaseCommand):
             print("Can't assign agent to campaign due to {0}".error(e))
             raise e
 
-    def _crear_campana_manual(self):
+    def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual
         campana = CampanaFactory(
-            nombre='test_manual_campaign', bd_contacto=self.bd_contacto,
+            nombre=nombre_campana, bd_contacto=self.bd_contacto,
             type=Campana.TYPE_MANUAL, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
         )
         # crear Queue para la campaña
         Queue.objects.create(
             campana=campana,
             name=campana.nombre,
-            maxlen=5,
+            maxlen=25,
             wrapuptime=5,
-            servicelevel=30,
+            servicelevel=10,
             strategy='rrmemory',
             eventmemberstatus=True,
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=120,
+            wait=25,
             auto_grabacion=True,
         )
 
@@ -118,28 +131,28 @@ class Command(BaseCommand):
 
         return campana
 
-    def _crear_campana_entrante(self):
+    def _crear_campana_entrante(self, nombre_campana):
         # crear campaña entrante
         campana = CampanaFactory(
-            nombre='test_entrante_campaign', bd_contacto=self.bd_contacto,
+            nombre=nombre_campana, bd_contacto=self.bd_contacto,
             type=Campana.TYPE_ENTRANTE, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
         )
         # crear Queue para la campaña
         Queue.objects.create(
             campana=campana,
             name=campana.nombre,
-            maxlen=5,
-            timeout=3,
-            retry=3,
+            maxlen=25,
+            timeout=12,
+            retry=5,
             wrapuptime=5,
-            servicelevel=30,
+            servicelevel=10,
             strategy='rrmemory',
             eventmemberstatus=True,
             eventwhencalled=True,
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=60,
+            wait=30,
             auto_grabacion=True,
         )
 
@@ -147,33 +160,137 @@ class Command(BaseCommand):
 
         return campana
 
-    def _crear_ruta_entrante(self, campana_entrante, qa_devops):
-        telefono = '01177660010'
-        if qa_devops:
-            telefono = '99999999'
+    def _crear_campana_dialer(self, nombre_campana):
+        # crear campaña dialer
+        campana = CampanaFactory(
+            nombre=nombre_campana, bd_contacto=self.bd_contacto,
+            type=Campana.TYPE_DIALER, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
+        )
+        # crear Queue para la campaña
+        Queue.objects.create(
+            campana=campana,
+            name=campana.nombre,
+            maxlen=1,
+            timeout=12,
+            retry=5,
+            wrapuptime=5,
+            servicelevel=5,
+            strategy='rrmemory',
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            weight=0,
+            wait=10,
+            auto_grabacion=True,
+        )
+
+        self._crear_opciones_calificacion(campana)
+
+        return campana
+
+    def _crear_campana_preview(self, nombre_campana):
+        # crear campaña dialer
+        campana = CampanaFactory(
+            nombre=nombre_campana, bd_contacto=self.bd_contacto,
+            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
+        )
+        # crear Queue para la campaña
+        Queue.objects.create(
+            campana=campana,
+            name=campana.nombre,
+            maxlen=1,
+            timeout=12,
+            retry=5,
+            wrapuptime=5,
+            servicelevel=5,
+            strategy='rrmemory',
+            eventmemberstatus=True,
+            eventwhencalled=True,
+            ringinuse=True,
+            setinterfacevar=True,
+            weight=0,
+            wait=10,
+            auto_grabacion=True,
+        )
+        self._crear_opciones_calificacion(campana)
+
+        campana.establecer_valores_iniciales_agente_contacto(False, False)
+
+        return campana
+
+    def _crear_ruta_entrante(self, campana_entrante, telefono):
         destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             campana_entrante)
         ruta_entrante = RutaEntranteFactory(
             telefono=telefono, destino=destino_campana_entrante, prefijo_caller_id='')
         escribir_ruta_entrante_config(self, ruta_entrante)
 
-    def _crear_datos_entorno(self, qa_devops):
-
-        self.admin = User.objects.filter(is_staff=True).first()
-
-        # crear grupo
-        grupo = GrupoFactory()
-
-        # crear agente
+    def _crear_agente(self, grupo, username, password):
         agente = AgenteProfileFactory(grupo=grupo, reported_by=self.admin)
-        agente.user.username = self.agent_username
-        agente.user.set_password(self.agent_password)
+        agente.user.username = username
+        agente.user.set_password(password)
         agente.sip_extension = 1000 + agente.user.id
         agente.user.is_agente = True
         agente.user.save()
         agente.save()
-
         agente.user.groups.add(Group.objects.get(name='Agente'))
+        asterisk_sip_service = ActivacionAgenteService()
+        asterisk_sip_service.activar()
+        return agente
+
+    def _crear_supervisor_gerente(self, username):
+        user = User.objects.create_user(
+            username=username,
+            email=username + '@example.com',
+            password=PASSWORD,
+            is_supervisor=True,
+            first_name='Gerente',
+            last_name=username
+        )
+        user.groups.set([Group.objects.get(name=User.GERENTE)])
+        SupervisorProfile.objects.create(
+            user=user,
+            sip_extension=1000 + user.id,
+            sip_password="sdsfhdfhfdhfd",
+            is_administrador=False,
+            is_customer=False,
+        )
+        return user
+
+    def _crear_cliente_webphone(self, username):
+        user = User.objects.create_user(
+            username=username,
+            email=username + '@example.com',
+            password=PASSWORD,
+            is_supervisor=False,
+            first_name='Gerente',
+            last_name=username
+        )
+        user.groups.set([Group.objects.get(name=User.CLIENTE_WEBPHONE)])
+        cliente_webphone = ClienteWebPhoneProfile(user=user, sip_extension=1000 + user.id)
+        cliente_webphone.save()
+        return user
+
+    def _crear_datos_entorno(self, qa_devops):
+
+        self.admin = User.objects.filter(is_staff=True).first()
+        self.gerente = self._crear_supervisor_gerente('gerente')
+        self.cliente_webphone = self._crear_cliente_webphone('webphone')
+
+        # crear grupo
+        grupo = GrupoFactory()
+
+        agentes_creados = []  # Esta lista almacenará los agentes que crees
+
+        agent_usernames = [self.agent_1_username, self.agent_2_username]
+        for username in agent_usernames:
+            agente = self._crear_agente(grupo, username, PASSWORD)
+            agente.user.groups.add(Group.objects.get(name='Agente'))
+            agentes_creados.append(agente)
+
+        if not os.getenv('WEBPHONE_CLIENT_VERSION', '') == '':
+            constance_config.WEBPHONE_CLIENT_ENABLED = True
 
         asterisk_sip_service = ActivacionAgenteService()
         asterisk_sip_service.activar()
@@ -192,13 +309,18 @@ class Command(BaseCommand):
         self.success = NombreCalificacionFactory(nombre='Success')
         self.angry = NombreCalificacionFactory(nombre='Hangs up angry')
 
-        # crear BD (3 contactos)
+        # crear BD (100 contactos)
         self.bd_contacto = BaseDatosContactoFactory()
+        ContactoFactory.create_batch(100, bd_contacto=self.bd_contacto)
 
-        ContactoFactory.create_batch(3, bd_contacto=self.bd_contacto)
-
-        campana_manual = self._crear_campana_manual()
-        campana_entrante = self._crear_campana_entrante()
+        # Crear campañas
+        campana_manual = self._crear_campana_manual('test_manual_01')
+        campana_entrante = self._crear_campana_entrante('test_entrante_01')
+        campana_entrante_2 = self._crear_campana_entrante('test_entrante_02')
+        campana_entrante_2.videocall_habilitada = True
+        campana_entrante_2.save()
+        campana_dialer = self._crear_campana_dialer('test_dialer_01')
+        campana_preview = self._crear_campana_preview('test_preview_01')
 
         activacion_queue_service = ActivacionQueueService()
         activacion_queue_service.activar()
@@ -238,10 +360,22 @@ class Command(BaseCommand):
         sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador_ruta_saliente.regenerar_asterisk(ruta_saliente)
 
-        # crear ruta entrante
-        self._crear_ruta_entrante(campana_entrante, qa_devops)
-        self._asignar_agente_a_campana(agente, campana_manual)
-        self._asignar_agente_a_campana(agente, campana_entrante)
+        # crear rutas entrantes
+        self._crear_ruta_entrante(campana_entrante, '99999999' if qa_devops else '01177660010')
+        self._crear_ruta_entrante(campana_entrante_2, '01177660011')
+
+        # Asigno agentes a campañas (no entrantes)
+        campanas = [campana_manual, campana_dialer, campana_preview]
+        for agente in agentes_creados:
+            for campana in campanas:
+                self._asignar_agente_a_campana(agente, campana)
+        # Asigno 1 Agente por campaña entrante
+        self._asignar_agente_a_campana(agentes_creados[0], campana_entrante)
+        self._asignar_agente_a_campana(agentes_creados[1], campana_entrante_2)
+
+        # Asigno campañas a gerente
+        campanas.extend([campana_entrante, campana_entrante_2])
+        self.gerente.campanasupervisors.set(campanas)
 
     def add_arguments(self, parser):
         parser.add_argument(

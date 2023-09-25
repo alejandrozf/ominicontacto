@@ -48,6 +48,8 @@ from ominicontacto_app.services.click2call import Click2CallOriginator
 
 from ominicontacto_app.services.kamailio_service import KamailioService
 from api_app.services.calificacion_llamada import CalificacionLLamada
+from ominicontacto_app.services.asterisk.supervisor_activity import (
+    SupervisorActivityAmiManager)
 
 
 class ObtenerCredencialesSIPAgenteView(APIView):
@@ -593,4 +595,4 @@ class ApiAgentesParaTransferencia(viewsets.ModelViewSet):
     http_method_names = ['get']
 
     def get_queryset(self):
-        return AgenteProfile.objects.obtener_activos()
+        return SupervisorActivityAmiManager().obtener_agentes_activos()

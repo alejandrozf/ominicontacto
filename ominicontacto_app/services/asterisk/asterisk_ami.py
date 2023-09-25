@@ -194,6 +194,9 @@ class AmiManagerClient(AMIManagerConnector):
 
         return self._ami_action('QueueRemove', content)
 
+    def pjsip_show_endpoints(self):
+        return self._ami_manager('command', 'pjsip show endpoints')
+
 
 class AMIManagerConnectorError(OmlError):
 
