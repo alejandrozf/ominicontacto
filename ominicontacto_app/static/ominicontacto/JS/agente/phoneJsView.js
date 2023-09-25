@@ -77,6 +77,8 @@ class PhoneJSView {
         this.tagCallMenu = $('#modalSignCall');
         this.makeTransferButton = $('#makeTransfer');
         this.makeTransferToSurveyButton = $('#makeTransferToSurvey');
+        this.confirmTransferButton = $('#buttonContinueTransfer');
+        this.cancelTransferButton = $('#buttonCancelTransfer');
         this.callOffCampaignMenu = $('#modalCallOffCamp');
         this.reload_video_button = $('#reload_video_id');
         this.buttonVideo = $('#buttonVideo');
@@ -123,6 +125,7 @@ class PhoneJSView {
 
             self.transferOutMenu.modal('show');
             var oml_api = new OMLAPI();
+            $('#agentToTransfer').find('option').remove();
             oml_api.getAgentes(self.cargarAgentes);
             if (self.session_data.survey) {
                 $('#transferToSurveyContainer').show();
