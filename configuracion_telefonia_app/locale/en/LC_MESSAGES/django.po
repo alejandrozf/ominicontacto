@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-23 00:25-0300\n"
+"POT-Creation-Date: 2023-09-25 11:41-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -814,7 +814,7 @@ msgstr "Create Custom Destinations"
 
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:66
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:66
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:67
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:69
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:64
 #: configuracion_telefonia_app/templates/playlist/lista_playlists.html:65
 msgid "Principio"
@@ -822,7 +822,7 @@ msgstr "Start"
 
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:72
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:72
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:73
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:75
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:70
 #: configuracion_telefonia_app/templates/playlist/lista_playlists.html:71
 msgid "Anterior"
@@ -830,7 +830,7 @@ msgstr "Previous"
 
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:85
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:85
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:86
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:88
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:83
 #: configuracion_telefonia_app/templates/playlist/lista_playlists.html:84
 msgid "Siguiente"
@@ -838,7 +838,7 @@ msgstr "Next"
 
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:91
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:91
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:92
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:94
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:89
 #: configuracion_telefonia_app/templates/playlist/lista_playlists.html:90
 msgid "Final"
@@ -865,14 +865,18 @@ msgid "Caller ID"
 msgstr "Caller ID"
 
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:33
+msgid "Status"
+msgstr "Status"
+
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:34
 msgid "Canales Máximos"
 msgstr "Maximum number of channels"
 
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:52
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:54
 msgid "No hay Troncales SIP configuradas"
 msgstr "There are no SIP trunks configured"
 
-#: configuracion_telefonia_app/templates/lista_troncal_sip.html:57
+#: configuracion_telefonia_app/templates/lista_troncal_sip.html:59
 #: configuracion_telefonia_app/templates/playlist/editar_playlist.html:60
 #: configuracion_telefonia_app/templates/playlist/lista_playlists.html:53
 msgid "Agregar"
@@ -988,41 +992,41 @@ msgstr "Playlist deleted successfully"
 msgid "Musica de Espera eliminada con éxito"
 msgstr "Music on Hold deleted successfully"
 
-#: configuracion_telefonia_app/views/base.py:75
-#: configuracion_telefonia_app/views/base.py:90
-#: configuracion_telefonia_app/views/base.py:108
-#: configuracion_telefonia_app/views/base.py:391
+#: configuracion_telefonia_app/views/base.py:76
+#: configuracion_telefonia_app/views/base.py:91
+#: configuracion_telefonia_app/views/base.py:109
+#: configuracion_telefonia_app/views/base.py:395
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr "<strong>Warning!</strong> with the following error: {0} ."
 
-#: configuracion_telefonia_app/views/base.py:165
+#: configuracion_telefonia_app/views/base.py:169
 msgid ""
 "No se puede eliminar un troncal que está siendo usado en una rutasaliente"
 msgstr "You cannot delete a trunk being in use by an Outbound route"
 
-#: configuracion_telefonia_app/views/base.py:178
+#: configuracion_telefonia_app/views/base.py:182
 msgid "Troncal Sip eliminado con éxito"
 msgstr "SIP trunk deleted successfully"
 
-#: configuracion_telefonia_app/views/base.py:252
+#: configuracion_telefonia_app/views/base.py:256
 msgid "Se ha creado la validacion horaria con éxito"
 msgstr "Time Condition created successfully"
 
-#: configuracion_telefonia_app/views/base.py:288
+#: configuracion_telefonia_app/views/base.py:292
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr "Time Condition updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:327
+#: configuracion_telefonia_app/views/base.py:331
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr "You cannot delete an object that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:328
+#: configuracion_telefonia_app/views/base.py:332
 msgid "Se ha eliminado el Nodo."
 msgstr "Node deleted"
 
-#: configuracion_telefonia_app/views/base.py:356
-#: configuracion_telefonia_app/views/base.py:380
+#: configuracion_telefonia_app/views/base.py:360
+#: configuracion_telefonia_app/views/base.py:384
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
@@ -1031,26 +1035,26 @@ msgstr ""
 "You cannot delete a campaign that is set as a failover destination in "
 "campaigns: {0}"
 
-#: configuracion_telefonia_app/views/base.py:412
+#: configuracion_telefonia_app/views/base.py:416
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 "You cannot delete a Time Condition that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:414
+#: configuracion_telefonia_app/views/base.py:418
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr "Time Condition deleted"
 
-#: configuracion_telefonia_app/views/base.py:446
+#: configuracion_telefonia_app/views/base.py:450
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr "Client Identification service created successfully"
 
-#: configuracion_telefonia_app/views/base.py:506
+#: configuracion_telefonia_app/views/base.py:510
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr "Client Identification service updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:585
+#: configuracion_telefonia_app/views/base.py:589
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
@@ -1058,15 +1062,15 @@ msgstr ""
 "You cannot delete an Client Identification service that is a current "
 "destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:587
+#: configuracion_telefonia_app/views/base.py:591
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr "Client Identification service route removed"
 
-#: configuracion_telefonia_app/views/base.py:619
+#: configuracion_telefonia_app/views/base.py:623
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination created successfully"
 
-#: configuracion_telefonia_app/views/base.py:652
+#: configuracion_telefonia_app/views/base.py:656
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination updated successfully"
 
