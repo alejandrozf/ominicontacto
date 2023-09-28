@@ -25,6 +25,7 @@ import random
 import re
 import uuid
 import datetime
+import urllib.parse
 
 
 from ast import literal_eval
@@ -3280,9 +3281,8 @@ class SitioExterno(models.Model):
             else:
                 valores[parametro.nombre] = valor
 
-        valores = '&'.join([key + '=' + val for (key, val) in valores.items()])
         if completa and valores:
-            return url + '?' + valores
+            return url + '?' + urllib.parse.urlencode(valores)
         else:
             return url
 
