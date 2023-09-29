@@ -49,7 +49,8 @@ export default {
                         message: this.message
                     },
                     conversationId: this.conversationId,
-                    phoneLine: this.agtWhatsCoversationInfo.lineNumber
+                    phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                    $t: this.$t
                 };
                 this.agtWhatsCoversationSendTextMessage(data);
                 this.message = '';

@@ -42,6 +42,8 @@ export class WhatsappConsumer {
 
             this.consumer.onmessage = (event) => {
                 const { type, args } = JSON.parse(event.data);
+                console.log('Whatsapp Consumer MESSAGE');
+                console.log(event.data);
                 if (type === WHATSAPP_EVENTS.NEW_MESSAGE) {
                     this.handleNewMessageEvent(args);
                 } else if (type === WHATSAPP_EVENTS.MESSAGE_STATUS) {
@@ -65,24 +67,28 @@ export class WhatsappConsumer {
     }
 
     openSocket () {
-        this.consumer =
-            new WebSocket(
-                `wss://${window.location.host}/channels/agent-console-whatsapp`
-            ) || null;
-        if (this.consumer) {
-            this.setConsumerEvents();
-        } else {
-            console.error(
-                'Whatsapp Consumer: No se pudo establecer la conexión'
-            );
-            if (this.reconnectIntent < MAX_RECONNECT_ATTEMPTS) {
-                this.reconnectIntent++;
-                setTimeout(() => {
-                    this.openSocket();
-                }, 3000);
+        if (!this.consumer || this.consumer.readyState === WebSocket.CLOSED) {
+            this.consumer =
+                new WebSocket(
+                    `wss://${window.location.host}/channels/agent-console-whatsapp`
+                ) || null;
+            if (this.consumer) {
+                this.setConsumerEvents();
             } else {
-                this.close();
+                console.error(
+                    'Whatsapp Consumer: No se pudo establecer la conexión'
+                );
+                if (this.reconnectIntent < MAX_RECONNECT_ATTEMPTS) {
+                    this.reconnectIntent++;
+                    setTimeout(() => {
+                        this.openSocket();
+                    }, 3000);
+                } else {
+                    this.close();
+                }
             }
+        } else {
+            console.log('Whatsapp Consumer: Ya existe una conexión abierta');
         }
     }
 
@@ -147,13 +153,15 @@ export class WhatsappConsumer {
     }
 
     close () {
-        console.log('Whatsapp Consumer CLOSE: Cerrando conexión');
-        if (this.reconnectIntent >= MAX_RECONNECT_ATTEMPTS) {
-            console.warn('Whatsapp Consumer MAX_RECONNECT_ATTEMPTS');
-        }
-        if (this.consumer) {
+        if (this.consumer && this.consumer.readyState !== WebSocket.CLOSED) {
             this.consumer.close();
             this.consumer = null;
+            if (this.reconnectIntent >= MAX_RECONNECT_ATTEMPTS) {
+                console.warn('Whatsapp Consumer MAX_RECONNECT_ATTEMPTS');
+            }
+            console.log('Whatsapp Consumer CLOSE: Conexión cerrada');
+        } else {
+            console.log('No hay una conexión WebSocket activa para cerrar.');
         }
     }
 }

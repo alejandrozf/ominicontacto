@@ -82,7 +82,7 @@ export default {
         await this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsCoversationId', 'agtWhatsCoversationInfo']),
+        ...mapState(['agtWhatsCoversationInfo']),
         getPreviewMessage () {
             if (!this.template.configuration || this.form === {}) return this.template.configuration.text || '';
             const self = this;
@@ -150,11 +150,16 @@ export default {
                     }
                 }
                 if (this.invalidForm) return null;
+                const messages = JSON.parse(
+                    localStorage.getItem('agtWhatsappConversationMessages')
+                );
                 const result = await this.agtWhatsCoversationSendWhatsappTemplateMessage({
-                    conversationId: this.agtWhatsCoversationId,
+                    conversationId: this.agtWhatsCoversationInfo.id,
                     templateId: this.template.id,
                     phoneLine: this.agtWhatsCoversationInfo.lineNumber,
-                    params: this.getFormData()
+                    params: this.getFormData(),
+                    messages,
+                    $t: this.$t
                 });
                 this.closeModal();
                 const { status, message } = result;
@@ -189,11 +194,6 @@ export default {
                     this.initFormData();
                 }
             },
-            deep: true,
-            immediate: true
-        },
-        agtWhatsCoversationId: {
-            handler () {},
             deep: true,
             immediate: true
         },

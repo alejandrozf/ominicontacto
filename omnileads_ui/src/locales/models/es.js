@@ -233,7 +233,7 @@ export default {
         },
         templates: {
             message_template: 'Plantilla de mensaje',
-            whatsapp_template: 'Plantilla de Whatsapp'
+            whatsapp_template: 'Template de Whatsapp'
         }
     }
 };

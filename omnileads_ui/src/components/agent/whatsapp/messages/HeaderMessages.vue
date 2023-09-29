@@ -1,6 +1,7 @@
 <template>
-  <Toolbar class="mb-4">
+  <Toolbar class="mb-4" :style="{border: `4px solid ${whatsapp_color}`}">
     <template #start>
+      <i class="pi pi-whatsapp mr-2" :style="{ color: whatsapp_color, 'font-size': '3rem'}"></i>
       <h2 class="font-bold">{{ $t('globals.whatsapp.title') }}</h2>
     </template>
     <template #end>
@@ -21,7 +22,13 @@
 </template>
 
 <script>
+import { COLORS } from '@/globals';
 export default {
+    data () {
+        return {
+            whatsapp_color: COLORS.WHATSAPP.TealGreen
+        };
+    },
     methods: {
         newConversation () {
             const event = new CustomEvent('onWhatsappNewConversationEvent', {

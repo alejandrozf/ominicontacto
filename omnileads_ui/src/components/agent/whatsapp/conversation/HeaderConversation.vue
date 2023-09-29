@@ -83,13 +83,13 @@ export default {
         ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
     },
     methods: {
-        ...mapActions(['agtWhatsTransferChatInitData', 'agtWhatsSetCoversationId', 'agtWhatsSetCoversationMessages', 'agtWhatsSetCoversationCampaignId']),
+        ...mapActions(['agtWhatsTransferChatInitData', 'agtWhatsSetCoversationMessages']),
         back () {
             this.$router.push({ name: 'agent_whatsapp' });
         },
         templates () {
             localStorage.setItem('agtWhatsappConversationMessages', JSON.stringify(this.agtWhatsCoversationMessages));
-            localStorage.setItem('agtWhatsCoversationCampaignId', this.agtWhatsCoversationInfo.campaignId);
+            localStorage.setItem('agtWhatsCoversationInfo', JSON.stringify(this.agtWhatsCoversationInfo));
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
                     templates: true,

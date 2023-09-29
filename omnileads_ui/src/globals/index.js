@@ -5,3 +5,10 @@ export const HTTP_STATUS = {
     ERROR: 'ERROR',
     WARNING: 'WARNING'
 };
+export const COLORS = {
+    WHATSAPP: {
+        TealGreen: '#128C7E',
+        TealGreenDark: '#075E54',
+        LightGreen: '#25D366'
+    }
+};

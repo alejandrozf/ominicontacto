@@ -8,12 +8,6 @@ export default {
     agtWhatsConversationInitMessages (state, messages) {
         state.agtWhatsCoversationMessages = messages;
     },
-    agtWhatsSetCoversationId (state, pk) {
-        state.agtWhatsCoversationId = pk;
-    },
-    agtWhatsSetCoversationCampaignId (state, pk) {
-        state.agtWhatsCoversationCampaignId = pk;
-    },
     agtWhatsConversationInfoInit (state, conversation = null) {
         state.agtWhatsCoversationInfo = {
             id: conversation ? conversation.id : null,
@@ -81,5 +75,24 @@ export default {
                 date: new Date(chat.date)
             });
         }
+    },
+    agtWhatsSetCoversationInfo (state, conversation = null) {
+        state.agtWhatsCoversationInfo = {
+            id: conversation ? conversation.id : null,
+            conversationType: conversation
+                ? conversation.conversationType
+                : null,
+            campaignId: conversation ? conversation.campaignId : null,
+            campaignName: conversation ? conversation.campaignName : null,
+            destination: conversation ? conversation.destination : null,
+            client: conversation ? conversation.client : null,
+            agent: conversation ? conversation.agent : null,
+            isActive: conversation ? conversation.isActive : null,
+            expire: conversation ? conversation.expire : null,
+            timestamp: conversation ? conversation.timestamp : null,
+            messageNumber: conversation ? conversation.messageNumber : null,
+            photo: conversation ? conversation.photo : null,
+            lineNumber: conversation ? conversation.lineNumber : null
+        };
     }
 };

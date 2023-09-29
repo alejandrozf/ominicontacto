@@ -4,14 +4,14 @@
     <TabView>
       <TabPanel>
         <template #header>
-          <span>{{ $t('views.whatsapp.conversations.answered')}}</span>
+          <span>{{ $t("views.whatsapp.conversations.answered") }}</span>
           <Badge :value="numAnsweredMessages" class="ml-2"></Badge>
         </template>
-        <ListMessages :messages="answeredMessages" class="scroll"/>
+        <ListMessages :messages="answeredMessages" class="scroll" />
       </TabPanel>
       <TabPanel>
         <template #header>
-          <span>{{ $t('views.whatsapp.conversations.new')}}</span>
+          <span>{{ $t("views.whatsapp.conversations.new") }}</span>
           <Badge :value="numNewMessages" class="ml-2"></Badge>
         </template>
         <ListMessages :messages="newMessages" class="scroll" />
@@ -74,7 +74,7 @@ export default {
 
 <style scoped>
 .scroll {
-    overflow-y: scroll;
-    height: calc(100vh - 250px);
+  overflow-y: scroll;
+  height: calc(100vh - 250px);
 }
 </style>

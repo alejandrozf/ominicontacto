@@ -8,7 +8,7 @@
     <template #header>
       <h2>
         {{
-            `Template de Whatsapp: (${template.name})`
+            $t('models.whatsapp.templates.whatsapp_template') + `: (${template.name})`
         }}
       </h2>
     </template>

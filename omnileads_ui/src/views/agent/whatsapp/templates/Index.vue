@@ -27,7 +27,8 @@ export default {
             showModal: false,
             template: null,
             conversationId: null,
-            campaignId: null
+            campaignId: null,
+            conversationInfo: null
         };
     },
     mounted () {
@@ -35,16 +36,16 @@ export default {
         this.updatedLocalStorage();
     },
     beforeUnmount () {
-        window.removeEventListener(
-            'storage',
-            this.updatedLocalStorage
-        );
+        window.removeEventListener('storage', this.updatedLocalStorage);
     },
     computed: {
         ...mapState(['agtWhatsCoversationInfo'])
     },
     methods: {
-        ...mapActions(['initSupCampaignTemplates', 'agtWhatsSetCoversationId']),
+        ...mapActions([
+            'initSupCampaignTemplates',
+            'agtWhatsSetCoversationInfo'
+        ]),
         clearFiltersEvent () {
             this.$refs.tableRef.clearFilter();
         },
@@ -54,13 +55,17 @@ export default {
             this.conversationId = conversationId;
         },
         updatedLocalStorage () {
-            this.conversationId = localStorage.getItem('agtWhatsappConversationId') || null;
-            this.campaignId = localStorage.getItem('agtWhatsCoversationCampaignId') || null;
+            this.conversationInfo =
+        JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
+            this.agtWhatsSetCoversationInfo(this.conversationInfo);
+            this.conversationId = this.conversationInfo
+                ? parseInt(this.conversationInfo.id)
+                : null;
+            this.campaignId = this.conversationInfo
+                ? parseInt(this.conversationInfo.campaignId)
+                : null;
             if (this.campaignId) {
                 this.initSupCampaignTemplates(this.campaignId);
-            }
-            if (this.conversationId) {
-                this.agtWhatsSetCoversationId(this.conversationId);
             }
         }
     }

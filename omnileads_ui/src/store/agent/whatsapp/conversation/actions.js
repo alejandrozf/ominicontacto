@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Service from '@/services/agent/whatsapp/conversation_service';
 import { HTTP_STATUS } from '@/globals';
+import { resetStoreDataByAction } from '@/utils';
 const service = new Service();
 
 export default {
@@ -23,7 +24,7 @@ export default {
     },
     async agtWhatsCoversationSendTextMessage (
         { commit },
-        { conversationId, message, phoneLine }
+        { conversationId, message, phoneLine, $t }
     ) {
         try {
             const { status, data } = await service.sendTextMessage(
@@ -35,7 +36,7 @@ export default {
                 const message = {
                     id: data.id,
                     from: itsMine
-                        ? `Agente (${data.sender.name})`
+                        ? `${$t('globals.agent')} (${data.sender.name})`
                         : data.sender.name,
                     conversationId: data.conversation,
                     itsMine,
@@ -52,22 +53,19 @@ export default {
     },
     async agtWhatsCoversationSendTemplateMessage (
         { commit },
-        { conversationId, templateId, phoneLine, messages }
+        { conversationId, templateId, phoneLine, messages, $t }
     ) {
         try {
-            console.log('===> Messages Antes');
-            console.log(messages);
-            const result = await service.sendTemplateMessage(
-                conversationId,
-                { template_id: templateId }
-            );
+            const result = await service.sendTemplateMessage(conversationId, {
+                template_id: templateId
+            });
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
                 const message = {
                     id: data.id,
                     from: itsMine
-                        ? `Agente (${data.sender.name})`
+                        ? `${$t('globals.agent')} (${data.sender.name})`
                         : data.sender.name,
                     conversationId: data.conversation,
                     itsMine,
@@ -76,9 +74,11 @@ export default {
                     date: new Date(data.timestamp)
                 };
                 messages.push(message);
-                console.log('===> Messages Despues');
-                console.log(messages);
             }
+            await resetStoreDataByAction({
+                action: 'agtWhatsSetCoversationMessages',
+                data: messages
+            });
             await commit('agtWhatsConversationInitMessages', messages);
             return result;
         } catch (error) {
@@ -92,7 +92,7 @@ export default {
     },
     async agtWhatsCoversationSendWhatsappTemplateMessage (
         { commit },
-        { conversationId, templateId, params, phoneLine }
+        { conversationId, templateId, params, phoneLine, messages, $t }
     ) {
         try {
             const result = await service.sendWhatsappTemplateMessage(
@@ -105,7 +105,7 @@ export default {
                 const message = {
                     id: data.id,
                     from: itsMine
-                        ? `Agente (${data.sender.name})`
+                        ? `${$t('globals.agent')} (${data.sender.name})`
                         : data.sender.name,
                     conversationId: data.conversation,
                     itsMine,
@@ -113,8 +113,12 @@ export default {
                     status: data.status || null,
                     date: new Date(data.timestamp)
                 };
-                await commit('agtWhatsCoversationSendMessage', message);
+                messages.push(message);
             }
+            await resetStoreDataByAction({
+                action: 'agtWhatsSetCoversationMessages',
+                data: messages
+            });
             return result;
         } catch (error) {
             console.error('===> ERROR al enviar Template de Whatsapp');
@@ -133,10 +137,10 @@ export default {
             console.error(error);
         }
     },
-    async agtWhatsConversationDetail ({ commit }, chatId) {
+    async agtWhatsConversationDetail ({ commit }, { conversationId, $t }) {
         try {
             const { status, data } = await service.getConversationDetail(
-                chatId
+                conversationId
             );
             if (status === HTTP_STATUS.SUCCESS) {
                 commit(
@@ -146,7 +150,7 @@ export default {
                         return {
                             id: msg.id,
                             from: itsMine
-                                ? `Agente (${msg.sender.name})`
+                                ? `${$t('globals.agent')} (${msg.sender.name})`
                                 : msg.sender.name,
                             conversationId: msg.conversation,
                             itsMine,
@@ -205,16 +209,7 @@ export default {
             console.error(error);
         }
     },
-    async agtWhatsSetCoversationId ({ commit }, conversationId) {
-        try {
-            commit('agtWhatsSetCoversationId', conversationId);
-        } catch (error) {
-            console.error('===> ERROR al settear ID de la conversacion');
-            console.error(error);
-            commit('agtWhatsSetCoversationId', null);
-        }
-    },
-    async agtWhatsSetCoversationMessages ({ commit }, messages = []) {
+    agtWhatsSetCoversationMessages ({ commit }, messages = []) {
         try {
             commit('agtWhatsConversationInitMessages', messages);
         } catch (error) {
@@ -223,13 +218,13 @@ export default {
             commit('agtWhatsConversationInitMessages', []);
         }
     },
-    async agtWhatsSetCoversationCampaignId ({ commit }, campaignId = null) {
+    agtWhatsSetCoversationInfo ({ commit }, info = null) {
         try {
-            commit('agtWhatsSetCoversationCampaignId', campaignId);
+            commit('agtWhatsSetCoversationInfo', info);
         } catch (error) {
-            console.error('===> ERROR al settear campaignId de la conversacion');
+            console.error('===> ERROR al settear info de la conversacion');
             console.error(error);
-            commit('agtWhatsSetCoversationCampaignId', null);
+            commit('agtWhatsSetCoversationInfo', null);
         }
     }
 };

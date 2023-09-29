@@ -106,7 +106,10 @@ export default {
         this.initFilters();
     },
     computed: {
-        ...mapState(['supCampaignTemplates', 'agtWhatsCoversationId', 'agtWhatsCoversationInfo'])
+        ...mapState([
+            'supCampaignTemplates',
+            'agtWhatsCoversationInfo'
+        ])
     },
     methods: {
         clearFilter () {
@@ -132,7 +135,7 @@ export default {
             this.$emit('handleModalEvent', {
                 showModal: true,
                 template,
-                conversationId: this.agtWhatsCoversationId
+                conversationId: this.agtWhatsCoversationInfo.id
             });
         },
         getType (type) {
@@ -148,7 +151,9 @@ export default {
         },
         async send (template) {
             try {
-                const messages = JSON.parse(localStorage.getItem('agtWhatsappConversationMessages'));
+                const messages = JSON.parse(
+                    localStorage.getItem('agtWhatsappConversationMessages')
+                );
                 let result = null;
                 if (template.type === TEMPLATE_TYPES.WHATSAPP) {
                     if (template.configuration.numParams > 0) {
@@ -156,18 +161,21 @@ export default {
                         return;
                     } else {
                         result = await this.agtWhatsCoversationSendWhatsappTemplateMessage({
-                            conversationId: this.agtWhatsCoversationId,
+                            conversationId: this.agtWhatsCoversationInfo.id,
                             templateId: template.id,
                             phoneLine: this.agtWhatsCoversationInfo.lineNumber,
-                            params: []
+                            params: [],
+                            messages,
+                            $t: this.$t
                         });
                     }
                 } else {
                     result = await this.agtWhatsCoversationSendTemplateMessage({
-                        conversationId: this.agtWhatsCoversationId,
+                        conversationId: this.agtWhatsCoversationInfo.id,
                         templateId: template.id,
                         phoneLine: this.agtWhatsCoversationInfo.lineNumber,
-                        messages
+                        messages,
+                        $t: this.$t
                     });
                 }
                 const { status, message } = result;
@@ -202,11 +210,6 @@ export default {
     },
     watch: {
         supCampaignTemplates: {
-            handler () {},
-            deep: true,
-            immediate: true
-        },
-        agtWhatsCoversationId: {
             handler () {},
             deep: true,
             immediate: true
