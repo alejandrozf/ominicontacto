@@ -22,6 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from configuracion_telefonia_app.models import DestinoEntrante, GrupoHorario
 from ominicontacto_app.models import AgenteProfile, Campana, Contacto
+from django.utils import timezone
 
 
 class ConfiguracionProveedor(AuditableModelMixin, models.Model):
@@ -133,8 +134,8 @@ class ConversacionWhatsapp(models.Model):
         AgenteProfile, null=True, related_name="conversaciones", on_delete=models.CASCADE)
     conversation_type = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
-    expire = models.BigIntegerField()
-    timestamp = models.BigIntegerField()
+    expire = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def otorgar_conversacion(self, agent):
         if self.agent:
@@ -146,7 +147,7 @@ class ConversacionWhatsapp(models.Model):
 
 
 class MensajeWhatsapp(models.Model):
-    timestamp = models.BigIntegerField()
+    timestamp = models.DateTimeField(default=timezone.now)
     origen = models.CharField(max_length=100)
     sender = JSONField(default=dict)
     conversation = models.ForeignKey(

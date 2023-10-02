@@ -33,7 +33,7 @@ class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     conversation = serializers.PrimaryKeyRelatedField(queryset=ConversacionWhatsapp.objects.all())
     contact_data = serializers.JSONField(source='conversation.client')
-    timestamp = serializers.IntegerField()
+    timestamp = serializers.DateTimeField()
     content = serializers.JSONField()
     origen = serializers.CharField()
     sender = serializers.JSONField()

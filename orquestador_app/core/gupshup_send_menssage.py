@@ -112,8 +112,6 @@ def sync_templates(line):
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
         response = requests.get(url, headers=headers)
         templates = json.loads(response.text)['templates']
-        for t in templates:
-            print("---", t['data'])
         return templates
     except Exception as e:
         print(e)

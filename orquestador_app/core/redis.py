@@ -9,6 +9,9 @@ from django.contrib.contenttypes.models import ContentType
 from whatsapp_app.models import (
     Linea, ConversacionWhatsapp, MensajeWhatsapp)
 from notification_app.notification import AgentNotifier
+from django.utils import timezone
+from datetime import datetime
+
 
 streams = {}
 
@@ -72,12 +75,16 @@ async def handler_messages(line, payloads):
                 if msg_json['type'] == 'message-event' and \
                         msg_json['payload']['type'] == 'sent':  # conversaciones desde el agente
                     destination = msg_json['payload']['destination']
-                    timestamp = msg_json['timestamp']
+                    timestamp = datetime.fromtimestamp(
+                        msg_json['timestamp'] / 1000, timezone.get_current_timezone())
                     conversation_id = msg_json['payload']['id']
-                    expire = msg_json['payload']['conversation']['expiresAt']
+                    expire =\
+                        datetime.fromtimestamp(
+                            msg_json['payload']['conversation']['expiresAt'],
+                            timezone.get_current_timezone())
                     conversacion_type = msg_json['payload']['conversation']['type']
                     obj, created = ConversacionWhatsapp.objects.get_or_create(
-                        destination=destination, expire=int(expire), campana=campana,
+                        destination=destination, expire=expire, campana=campana,
                         defaults={
                             'conversation_id': conversation_id,
                             'conversation_type': conversacion_type,
@@ -85,7 +92,8 @@ async def handler_messages(line, payloads):
                         })
                 if msg_json['type'] == 'message':  # mensajes enviados por cliente
                     # crear mensaje
-                    timestamp = int(msg_json['timestamp'])
+                    timestamp = datetime.fromtimestamp(
+                        msg_json['timestamp'] / 1000, timezone.get_current_timezone())
                     origen = msg_json['payload']['source']
                     type = msg_json['payload']['type']
                     content = msg_json['payload']['payload']

@@ -38,7 +38,7 @@ async def linea_handler(line: Linea, redis_host: RedisServer, loop: Loop):
 def start(redis_host):
     loop = get_event_loop()
     try:
-        for ws_linea in Linea.objects.all():
+        for ws_linea in Linea.objects.filter(is_active=True):
             loop.run_until_complete(linea_handler(ws_linea, redis_host, loop))
     finally:
         loop.run_until_complete(loop.shutdown_asyncgens())

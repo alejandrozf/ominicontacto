@@ -61,8 +61,8 @@ class ConversacionSerializer(serializers.Serializer):
     client = serializers.SerializerMethodField()
     agent = serializers.PrimaryKeyRelatedField(queryset=AgenteProfile.objects.all())
     is_active = serializers.BooleanField(default=True)
-    expire = serializers.IntegerField()
-    timestamp = serializers.IntegerField()
+    expire = serializers.DateTimeField()
+    timestamp = serializers.DateTimeField()
     message_number = serializers.SerializerMethodField()
     messages = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
@@ -227,28 +227,34 @@ class ViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=True, methods=["post"])
     def send_message_text(self, request, pk):
-        conversation = ConversacionWhatsapp.objects.get(pk=pk)
-        destination = conversation.destination
-        sender = request.user.get_agente_profile()
-        data = request.data.copy()
-        line = ConfiguracionWhatsappCampana.objects.filter(
-            campana=conversation.campana).last().linea
-        message = {"text": data['message'], "type": "text"}
-        orquestador_response = send_text_message(
-            line, destination, message)  # orquestador
-        if orquestador_response["status"] == "submitted":
-            mensaje = MensajeWhatsapp.objects.create(
-                conversation=conversation,
-                origen=line.numero,
-                timestamp=timezone.now().astimezone(timezone.get_current_timezone()).timestamp(),
-                sender={"name": sender.user.username, "agent_id": sender.user.id},
-                content=message,
-                type="text",
-            )
-            serializer = MensajeListSerializer(mensaje)
-        return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
-            status=status.HTTP_200_OK)
+        try:
+            conversation = ConversacionWhatsapp.objects.get(pk=pk)
+            destination = conversation.destination
+            sender = request.user.get_agente_profile()
+            data = request.data.copy()
+            line = ConfiguracionWhatsappCampana.objects.filter(
+                campana=conversation.campana).last().linea
+            message = {"text": data['message'], "type": "text"}
+            orquestador_response = send_text_message(
+                line, destination, message)  # orquestador
+            if orquestador_response["status"] == "submitted":
+                mensaje = MensajeWhatsapp.objects.create(
+                    conversation=conversation,
+                    origen=line.numero,
+                    timestamp=timezone.now().astimezone(
+                        timezone.get_current_timezone()),
+                    sender={"name": sender.user.username, "agent_id": sender.user.id},
+                    content=message,
+                    type="text",
+                )
+                serializer = MensajeListSerializer(mensaje)
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+                status=status.HTTP_200_OK)
+        except Exception:
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # @decorators.action(detail=True, methods=["post"])
     # def send_message_attachment(self, request, pk):
@@ -285,7 +291,7 @@ class ViewSet(viewsets.ViewSet):
                     conversation=conversation,
                     origen=line.numero,
                     timestamp=timezone.now().astimezone(
-                        timezone.get_current_timezone()).timestamp(),
+                        timezone.get_current_timezone()),
                     sender={"name": sender.user.username, "agent_id": sender.user.id},
                     content=message,
                     type="template",
@@ -323,7 +329,7 @@ class ViewSet(viewsets.ViewSet):
                     conversation=conversation,
                     origen=line.numero,
                     timestamp=timezone.now().astimezone(
-                        timezone.get_current_timezone()).timestamp(),
+                        timezone.get_current_timezone()),
                     sender={"name": sender.user.username, "agent_id": sender.user.id},
                     content={"text": text, "type": "template"},
                     type="template",
@@ -335,22 +341,26 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se envió el mensaje de forma exitosa')
                 ),
                 status=status.HTTP_200_OK)
-        except Exception as e:
-            print("Error al enviar el mensaje")
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(message=_('Error al enviar el mensaje')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["post"])
     def send_initing_conversation(self, request):
-        data = request.data.copy()  # Id Template
-        line = ConfiguracionWhatsappCampana.objects.filter(
-            campana=data['campana']).last().linea
-        template = TemplateWhatsapp.objects.get(id=data['template_id'])
-        template_id = template.identificador
-        orquestador_response = send_template_message(
-            line, data['destination'], template_id, data['params'])  # orquestador
-        return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS, data=orquestador_response),
-            status=status.HTTP_200_OK)
+        try:
+            data = request.data.copy()  # Id Template
+            line = ConfiguracionWhatsappCampana.objects.filter(
+                campana=data['campaing']).last().linea
+            template = TemplateWhatsapp.objects.get(id=data['template_id'])
+            template_id = template.identificador
+            orquestador_response = send_template_message(
+                line, data['destination'], template_id, data['params'])  # orquestador
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.SUCCESS, data=orquestador_response),
+                status=status.HTTP_200_OK)
+        except Exception:
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
