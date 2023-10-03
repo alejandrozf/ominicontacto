@@ -45,6 +45,7 @@ from ominicontacto_app.models import (
     AgenteProfile, Pausa, AgendaContacto,
     ClienteWebPhoneProfile, ContactoListaRapida
 )
+from ominicontacto_app.services.agent.presence import AgentPresenceManager
 from ominicontacto_app.services.kamailio_service import KamailioService
 from ominicontacto_app.utiles import fecha_local
 from reportes_app.models import LlamadaLog
@@ -121,6 +122,8 @@ def login_view(request):
                         'api_agente_logout'):
                     return redirect(request.GET.get('next'))
                 if user.is_agente:
+                    presence_manager = AgentPresenceManager()
+                    presence_manager.login(user.get_agente_profile())
                     return HttpResponseRedirect(reverse('consola_de_agente'))
                 else:
                     return HttpResponseRedirect(reverse('index'))
@@ -129,6 +132,8 @@ def login_view(request):
         if request.user.is_authenticated and not request.user.borrado:
             if request.user.is_agente and request.user.get_agente_profile().is_inactive:
                 form = AuthenticationForm(request)
+                presence_manager = AgentPresenceManager()
+                presence_manager.logout(user.get_agente_profile())
                 logout(request)
             elif 'next' in request.GET:
                 return redirect(request.GET.get('next'))
@@ -139,6 +144,9 @@ def login_view(request):
         else:
             form = AuthenticationForm(request)
             if request.user.is_authenticated:
+                if request.user.is_agente:
+                    presence_manager = AgentPresenceManager()
+                    presence_manager.logout(user.get_agente_profile())
                 logout(request)
     context = {
         'form': form,
@@ -174,6 +182,8 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
             message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
                         " su supervisor")
             messages.warning(request, message)
+            presence_manager = AgentPresenceManager()
+            presence_manager.logout(agente_profile)
             logout(request)
             return redirect('login')
 

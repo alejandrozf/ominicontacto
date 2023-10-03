@@ -24,6 +24,7 @@ from django.utils.timezone import now
 
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
+from ominicontacto_app.services.agent.presence import AgentPresenceManager
 
 from ominicontacto_app.models import AgenteProfile
 
@@ -39,6 +40,7 @@ class Command(BaseCommand):
 
     def logout_expired_sessions(self):
         agentes_deslogueados = []
+        presence_manager = AgentPresenceManager()
         agent_activity = AgentActivityAmiManager()
         conectado = False
         hora_actual = now()
@@ -56,6 +58,8 @@ class Command(BaseCommand):
                 agentes_deslogueados.append(str(agente_profile.id))
                 agente_profile.force_logout()
                 agent_activity.logout_agent(agente_profile, manage_connection=False)
+                # TODO: Todo el logout deberia manejarse desde AgentPresenceManager.logout
+                presence_manager.logout(agente_profile)
         if conectado:
             agent_activity.disconnect_manager()
         if agentes_deslogueados:
