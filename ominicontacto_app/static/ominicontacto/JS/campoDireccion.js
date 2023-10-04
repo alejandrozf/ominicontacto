@@ -18,23 +18,24 @@
 
 /*global google Urls*/
 
+const $selectDBContactos = $('#camp_bd_contactos');
+
 $(function () {
-    $('#id_0-bd_contacto').on('change', actualizarOpcionesCampoDireccion);
+    $selectDBContactos.change(actualizarOpcionesCampoDireccion);
     $('#id_0-campo_direccion_choice').on('change', actualizarCampoDireccion);
     actualizarOpcionesCampoDireccion();
 });
 
 function actualizarOpcionesCampoDireccion() {
-    var selected_bd_contacto = document.getElementById('id_0-bd_contacto');
     $('#id_0-campo_direccion_choice').find('option').remove().end()
         .append('<option value="">---------</option>').val('');
 
-    if(selected_bd_contacto.selectedIndex == 0) {
+    if($selectDBContactos.val() == '') {
         $('#id_0-campo_direccion_choice').prop('disabled', true);
     }
     else{
         $('#id_0-campo_direccion_choice').prop('disabled', false);
-        var bd_contacto_pk = selected_bd_contacto.options[selected_bd_contacto.selectedIndex].value;
+        var bd_contacto_pk = $selectDBContactos.val();
         var campo_direccion = document.getElementById('id_0-campo_direccion').value;
         $.get(Urls.api_database_metadata_columns_fields(bd_contacto_pk), function (data) {
             data.forEach(function(e, i){

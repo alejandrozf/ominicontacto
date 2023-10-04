@@ -15,14 +15,23 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
-/* global Urls */
+/* global Urls $selectDBContactos */
 const $modalDBContactos = $('#modalDBContactos');
-const $selectDBContactos = $('#camp_bd_contactos');
+// const $selectDBContactos = $('#camp_bd_contactos');
 const $modalContentDBContactos = $('#modalContentDBContactos');
 const $modalTitle = $('#modalTitle');
 const $cancelModal = $('#cancelModal');
 
-$selectDBContactos.change(function () {
+$(function() {
+    $selectDBContactos.change(checkDatabaseCampaigns);
+
+    $cancelModal.click(function () {
+        $selectDBContactos.val(null);
+        $modalDBContactos.modal('hide');
+    });
+});
+
+function checkDatabaseCampaigns() {
     try {
         $modalDBContactos.modal('hide');
         const selectText = $(this).find('option:selected').text();
@@ -54,9 +63,4 @@ $selectDBContactos.change(function () {
         console.error('===> ERROR: Al obtener info de la base de contactos');
         console.error(error);
     }
-});
-
-$cancelModal.click(function () {
-    $selectDBContactos.val(null);
-    $modalDBContactos.modal('hide');
-});
+}
