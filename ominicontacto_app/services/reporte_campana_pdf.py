@@ -164,7 +164,7 @@ class ArchivoDeReportePDF(object):
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 6.75 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 270)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 230)
         archivo_imagen = settings.MEDIA_ROOT + \
             '/reporte_campana/barra_campana_no_atendido_{}.png'.format(self._campana.id)
 
@@ -199,13 +199,13 @@ class ArchivoDeReportePDF(object):
         pdf.setFont("Helvetica", 10)
         # Establecemos el tamaño de la hoja que ocupará la tabla
         he, we = detalle_orden.wrapOn(pdf, 0, 0)
-        pdf.setPageSize((he + 300, we + 300))
+        pdf.setPageSize((he + 300, we + 200))
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 6.75 mas cercano del margen TOP
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(100, we + 200, _("Calificaciones agentes"))
-        detalle_orden.drawOn(pdf, 100, we + 150)
+        pdf.drawString(100, we + 120, _("Calificaciones agentes"))
+        detalle_orden.drawOn(pdf, 100, 100)
 
     def ya_existe(self):
         return os.path.exists(self.ruta)
