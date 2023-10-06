@@ -383,12 +383,6 @@ def validar_solo_alfanumericos_o_guiones(
         raise ValidationError(error_ascii)
 
 
-def validar_valor_parametro_crm(cadena):
-    msg = _('el texto sólo puede contener caracteres alfanumericos guiones o el signo +')
-    if len(REGEX_NO_VALOR_PARAMETRO_CRM_CUSTOM.findall(cadena)) != 0:
-        raise ValidationError(msg)
-
-
 def validar_nombres_campanas(nombre):
     """
     Valida que no haya espacios ni caracteres no alfanuméricos o guiones en los nombres de campañas

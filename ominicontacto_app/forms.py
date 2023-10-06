@@ -49,7 +49,6 @@ from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
                                       contiene_solo_alfanumericos_o_guiones,
-                                      validar_valor_parametro_crm,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from ominicontacto_app.parser import is_valid_length
@@ -2110,8 +2109,6 @@ class ParametrosCrmForm(forms.ModelForm):
         if tipo == ParametrosCrm.DATO_LLAMADA and valor not in ParametrosCrm.OPCIONES_LLAMADA_KEYS:
             raise forms.ValidationError(
                 _('El valor debe corresponder a un dato válido de la llamada'))
-        if tipo == ParametrosCrm.CUSTOM:
-            validar_valor_parametro_crm(valor)
         if tipo == ParametrosCrm.DIALPLAN:
             if not valor.startswith(ParametrosCrm.PREFIJO_DIALPLAN):
                 raise (forms.ValidationError(
@@ -2122,6 +2119,7 @@ class ParametrosCrmForm(forms.ModelForm):
                 valor not in ParametrosCrm.OPCIONES_DATO_CALIFICACION_KEYS:
             raise forms.ValidationError(
                 _('El valor debe corresponder a un campo válido de datos de calificación'))
+        # Si es tipo ParametrosCrm.CUSTOM puede ir cualquier valor.
         return valor
 
     def es_placeholder(self, nombre):
