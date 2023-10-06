@@ -476,7 +476,7 @@ urlpatterns = [
     # =========================
     # Base de contactos
     # =========================
-    path('api/v1/contact_database/(<int:pk>/campaings/',
+    path('api/v1/contact_database/<int:pk>/campaings/',
          CampaingsOnDB.as_view(),
          name='api_contact_database_campaings'),
     # ###########     AGENTE      ############ #
