@@ -27,6 +27,7 @@ from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
+from ominicontacto_app.services.agent.presence import AgentPresenceManager
 from ominicontacto_app.models import AgenteProfile
 
 LONGITUD_MINIMA_HEADERS = 4
@@ -40,6 +41,7 @@ class SupervisorActivityAmiManager(object):
     def __init__(self, *args, **kwargs):
         self.manager = AMIManagerConnector()
         self.agent_activity = AgentActivityAmiManager()
+        self.presence_manager = AgentPresenceManager()
 
     def _originate_call(self, originate_data):
         self.manager.connect()
@@ -90,9 +92,14 @@ class SupervisorActivityAmiManager(object):
         if exten == "AGENTLOGOUT":
             agente_profile.force_logout()
             self.agent_activity.logout_agent(agente_profile, manage_connection=True)
+            # TODO: Todo el logout deberia manejarse desde AgentPresenceManager.logout
+            self.presence_manager.logout(agente_profile)
         elif exten == "AGENTPAUSE":
             self.agent_activity.pause_agent(
                 agente_profile, '00', manage_connection=True, supervisor=True)
+            # TODO: Todo el proceso de pausa deberia manejarse desde AgentPresenceManager.pause
+            presence_manager = AgentPresenceManager()
+            presence_manager.pause(agente_profile, '00')
         elif exten == "AGENTUNPAUSE":
             self.agent_activity.unpause_agent(
                 agente_profile, '00', manage_connection=True, supervisor=True)

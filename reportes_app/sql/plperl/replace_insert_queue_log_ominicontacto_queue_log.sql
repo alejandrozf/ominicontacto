@@ -12,8 +12,6 @@ $bridge_wait_time = $_TD->{new}{data3};
 $duracion_llamada = $_TD->{new}{data4};
 $archivo_grabacion = $_TD->{new}{data5};
 
-@EVENTOS_AGENTE = ('ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL');
-
 @EVENTOS_LLAMADAS = (
     'DIAL',
     'ANSWER',
@@ -150,25 +148,7 @@ sub procesar_datos_transferencias {
     return ($agente_id_modificado, $agente_extra_id, $campana_extra_id, $numero_extra);
 }
 
-if( grep $_ eq $event,  @EVENTOS_AGENTE) { # TODO: ver como usar 'and' con 'grep' en Perl
-    if ($queuename == 'ALL') {
-        # es un log de la actividad de un agente
-        $_SHARED{plan_agente_log} = spi_prepare('INSERT INTO reportes_app_actividadagentelog( time, agente_id, event, pausa_id )VALUES( $1 ,$2, $3, $4 )', 'TIMESTAMP WITH TIME ZONE', 'INTEGER', 'TEXT', 'TEXT');
-        if ( is_number($agente_id) == 1 || $agente_id == -1) {
-            eval {
-                spi_exec_prepared($_SHARED{plan_agente_log}, {limit => 1}, $fecha, $agente_id, $event, $data1);
-            }
-            or do {
-                my $e = $@;
-                my $entrada = "time=$fecha,\nagente_id=$agente_id,\nevent=$event,\ndata1=$data1,\n";
-                elog(ERROR, "Error $e trying to insert input $entrada");
-            };
-        }
-
-    }
-}
-
-elsif ( grep $_ eq $event,  @EVENTOS)  {
+if ( grep $_ eq $event,  @EVENTOS)  {
     eval {
         ($campana_id, $tipo_campana, $tipo_llamada) = split("-", $queuename);
     }
