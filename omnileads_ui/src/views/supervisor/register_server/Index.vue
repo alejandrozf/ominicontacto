@@ -11,8 +11,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import RegistrationForm from '@/components/register_server/Form';
-import CardInfo from '@/components/register_server/Info';
+import RegistrationForm from '@/components/supervisor/register_server/Form';
+import CardInfo from '@/components/supervisor/register_server/Info';
 
 export default {
     data () {

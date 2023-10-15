@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import Service from '@/services/register_server_service';
+import Service from '@/services/supervisor/register_server_service';
 const service = new Service();
 
 export default {

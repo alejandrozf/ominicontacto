@@ -1,5 +1,5 @@
-import urls from '../const/register_server_urls';
-import { BaseService, HTTP } from './base_service';
+import urls from '@/api_urls/supervisor/register_server_urls';
+import { BaseService, HTTP } from '@/services/base_service';
 
 export default class RegisterServerService extends BaseService {
     constructor () {

@@ -45,7 +45,6 @@ import RadioButton from 'primevue/radiobutton';
 import Fieldset from 'primevue/fieldset';
 import Tag from 'primevue/tag';
 import ProgressSpinner from 'primevue/progressspinner';
-import Avatar from 'primevue/avatar';
 import Image from 'primevue/image';
 import InputMask from 'primevue/inputmask';
 import Avatar from 'primevue/avatar';
@@ -57,7 +56,6 @@ import SplitButton from 'primevue/splitbutton';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Panel from 'primevue/panel';
-import Tag from 'primevue/tag';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -109,7 +107,6 @@ app.component('ProgressSpinner', ProgressSpinner);
 app.component('Avatar', Avatar);
 app.component('Image', Image);
 app.component('InputMask', InputMask);
-app.component('Avatar', Avatar);
 app.component('Chip', Chip);
 app.component('Badge', Badge);
 app.component('Listbox', Listbox);
@@ -117,7 +114,6 @@ app.component('SplitButton', SplitButton);
 app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
 app.component('Panel', Panel);
-app.component('Tag', Tag);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

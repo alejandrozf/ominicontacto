@@ -40,7 +40,7 @@ module.exports = {
         supervisor_outbound_routes: getPageConfig('supervisor_outbound_routes'),
         supervisor_group_of_hours: getPageConfig('supervisor_group_of_hours'),
         supervisor_ivrs: getPageConfig('supervisor_ivrs'),
-        register_server: getPageConfig('supervisor_register_server'),
+        supervisor_register_server: getPageConfig('supervisor_register_server'),
         // WhatsApp
         supervisor_whatsapp_providers: getPageConfig('supervisor_whatsapp_providers'),
         supervisor_whatsapp_lines: getPageConfig('supervisor_whatsapp_lines'),
