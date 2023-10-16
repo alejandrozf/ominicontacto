@@ -69,29 +69,56 @@ async def handler_messages(line, payloads):
     try:
         destination_entrante = line.destino
         if destination_entrante.content_type == ContentType.objects.get(model='campana'):
+            agent_notifier = AgentNotifier()
             campana = destination_entrante.content_object
             for msg in payloads:
                 msg_json = loads(msg)
-                if msg_json['type'] == 'message-event' and \
-                        msg_json['payload']['type'] == 'sent':  # conversaciones desde el agente
-                    destination = msg_json['payload']['destination']
-                    timestamp = datetime.fromtimestamp(
-                        msg_json['timestamp'] / 1000, timezone.get_current_timezone())
-                    conversation_id = msg_json['payload']['id']
-                    expire =\
-                        datetime.fromtimestamp(
-                            msg_json['payload']['conversation']['expiresAt'],
-                            timezone.get_current_timezone())
-                    conversacion_type = msg_json['payload']['conversation']['type']
-                    obj, created = ConversacionWhatsapp.objects.get_or_create(
-                        destination=destination, expire=expire, campana=campana,
-                        defaults={
-                            'conversation_id': conversation_id,
-                            'conversation_type': conversacion_type,
-                            'timestamp': timestamp
-                        })
+                if msg_json['type'] == 'message-event'\
+                        and not msg_json['payload']['type'] == 'enqueued':
+                    # buscar el mensaje que gener el evento:
+                    message_id = msg_json['payload']['gsId']
+                    message = MensajeWhatsapp.objects.get(message_id=message_id)
+                    message.status = msg_json['payload']['type']
+                    message.save()
+                    print("notificar al agente estatus de su mensaje ==>",
+                          msg_json['payload']['type'])
+                    if msg_json['payload']['type'] == 'sent':
+                        destination = msg_json['payload']['destination']
+                        timestamp = datetime.fromtimestamp(
+                            msg_json['timestamp'] / 1000, timezone.get_current_timezone())
+                        expire =\
+                            datetime.fromtimestamp(
+                                msg_json['payload']['conversation']['expiresAt'],
+                                timezone.get_current_timezone())
+                        conversation_type = msg_json['payload']['conversation']['type']
+                        if not message.conversation:  # crear coneveracion
+                            conversation = ConversacionWhatsapp.objects.create(
+                                destination=destination,
+                                expire=expire,
+                                campana=campana,
+                                conversation_type=conversation_type,
+                                timestamp=timestamp
+                            )
+                            conversation.save()
+                            message.conversation = conversation
+                            message.save()
+                            previous_messages = MensajeWhatsapp.objects.filter(
+                                origen=destination,
+                                timestamp__lte=timestamp,
+                                conversation__isnull=True
+                            ).update(conversation=conversation)
+                            if previous_messages:
+                                conversation.is_active = True
+                                conversation.save()
+                        else:  # extension de conversacion expirada
+                            print("expirada", expire)
+                            message.conversation.timestamp = timestamp
+                            message.conversation.expire = expire
+                            message.conversation.save()
+                print(msg_json)
                 if msg_json['type'] == 'message':  # mensajes enviados por cliente
                     # crear mensaje
+                    message_id = msg_json['payload']['id']
                     timestamp = datetime.fromtimestamp(
                         msg_json['timestamp'] / 1000, timezone.get_current_timezone())
                     origen = msg_json['payload']['source']
@@ -99,46 +126,60 @@ async def handler_messages(line, payloads):
                     content = msg_json['payload']['payload']
                     sender = msg_json['payload']['sender']
                     conversation = ConversacionWhatsapp.objects.filter(
-                        campana=campana, destination=origen, timestamp__lte=timestamp).last()
+                        campana=campana, destination=origen, expire__gte=timestamp).last()
+                    print("conversation >>>>>", conversation)
+                    message, created_message =\
+                        MensajeWhatsapp.objects.get_or_create(message_id=message_id, defaults={
+                            'origen': origen,
+                            'timestamp': timestamp,
+                            'sender': sender,
+                            'content': content,
+                            'type': type,
+                        })
                     if conversation:
+                        message.conversation = conversation
+                        message.save()
                         conversation_new = False
-                        obj, created = MensajeWhatsapp.objects.get_or_create(
-                            conversation=conversation,
-                            origen=origen,
-                            timestamp=timestamp,
-                            defaults={
-                                'sender': sender,
-                                'content': content,
-                                'type': type,
-                            }
-                        )
-                        if created:
-                            # evento mensaje nuevo
-                            agent_notifier = AgentNotifier()
+                        if not conversation.is_active:
+                            conversation.is_active = True
+                            conversation.save()
+                    else:  # mensaje de bienvenida
+                        conversation_new = True
+                    if created_message and conversation:
+                        # evento mensaje nuevo
+                        if conversation and conversation.agent:
                             message = {
-                                'chat_id': obj.conversation.id,
+                                'chat_id': message.conversation.id,
                                 'campaing_id': campana.id,
-                                'message_id': obj.id,
-                                'content': obj.content,
+                                'message_id': message.id,
+                                'content': message.content,
                                 'origen': origen,
                                 'timestamp': timestamp,
                                 'sender': sender,
                                 'type': type
                             }
-                            if conversation.agent:
+                            print("new message...")
+                            await agent_notifier.notify_whatsapp_new_message(
+                                conversation.agent.user_id, message)
+                        else:
+                            message = {
+                                'campaing_id': campana.id,
+                                'message_id': message.id,
+                                'content': message.content,
+                                'origen': origen,
+                                'timestamp': timestamp,
+                                'sender': sender,
+                                'type': type
+                            }
+                            agentes = campana.obtener_agentes()
+                            for agente in agentes:
                                 print("new message...")
                                 await agent_notifier.notify_whatsapp_new_message(
-                                    conversation.agent.user_id, message)
-                            else:
-                                agentes = campana.obtener_agentes()
-                                for agente in agentes:
-                                    print("new message...")
-                                    await agent_notifier.notify_whatsapp_new_message(
-                                        agente.user_id, message)
-                    else:  # mensaje de bienvenida
-                        conversation_new = True
-                    handler_autoresponses(line, origen, conversation_new)
+                                    agente.user_id, message)
+                    print("conversation_new", conversation_new)
+                    handler_autoresponses(line, origen, sender, conversation_new)
         else:
             pass
     except Exception as e:
-        print(e)
+        print("Error----->>>>", e)
+        # raise

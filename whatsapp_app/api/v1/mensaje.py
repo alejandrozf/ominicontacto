@@ -31,6 +31,7 @@ from whatsapp_app.models import ConversacionWhatsapp
 
 class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    message_id = serializers.CharField()
     conversation = serializers.PrimaryKeyRelatedField(queryset=ConversacionWhatsapp.objects.all())
     contact_data = serializers.JSONField(source='conversation.client')
     timestamp = serializers.DateTimeField()

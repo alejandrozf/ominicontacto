@@ -1,7 +1,8 @@
 import requests
 import json
+from django.utils import timezone
 from orquestador_app.core.apis_urls import URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES
-
+from whatsapp_app.models import MensajeWhatsapp
 
 headers = {
     "accept": "application/json",
@@ -13,33 +14,49 @@ def autoresponse_out_of_time(line, destination):
     # validar fuera de horario
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
+        template_id = "a7da0ec0-5861-43f5-82f5-03311df7f00f"
         data = {
-            "channel": "whatsapp",
-            "source": line.numero,
-            "src.name": line.configuracion['app_name'],
-            "destination": destination,
-            "message": json.dumps(line.mensaje_fueradehora.configuracion)
+            'source': line.numero,
+            'destination': destination,
+            'template': json.dumps({"id": template_id, "params": []})
         }
-        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
-        return response
+        print("===> data send_template_message")
+        print(data)
+        response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data)
+        print("===> response send_template_message")
+        print(response.json())
+        return response.json()
     except Exception as e:
         print(e)
 
 
-def autoresponse_welcome(line, destination):
+def autoresponse_welcome(line, destination, sender):
     try:
-        print("mensaje_bienvenida", line.id, line.mensaje_bienvenida)
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
+        template_id = "a7da0ec0-5861-43f5-82f5-03311df7f00f"
+        template_id = "a7da0ec0-5861-43f5-82f5-03311df7f00f"
         data = {
-            "channel": "whatsapp",
-            "source": line.numero,
-            "src.name": line.configuracion['app_name'],
-            "destination": destination,
-            "message": json.dumps(line.mensaje_bienvenida.configuracion)
+            'source': line.numero,
+            'destination': destination,
+            'template': json.dumps({"id": template_id, "params": [sender['name']]})
         }
-        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
+        print("===> data send_template_message")
+        response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data).json()
+        print("===> response send_template_message")
+        print("fhdh", response)
+        if response["status"] == "submitted":
+            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            # text = template.texto.replace('{{', '{').\
+            #     replace('}}', '}').format("", *data['params'])
+            MensajeWhatsapp.objects.create(
+                message_id=response['messageId'],
+                origen=line.numero,
+                timestamp=timestamp,
+                sender={},
+                content={"text": "text", "type": "template"},
+                type="template",
+            )
         return response
-
     except Exception as e:
         print(e)
 
@@ -96,11 +113,11 @@ def send_text_message(line, destination, message):
         print(e)
 
 
-def handler_autoresponses(line, destination, conversation_new):
+def handler_autoresponses(line, destination, sender, conversation_new):
     if False:  # validar horario
         autoresponse_out_of_time(line, destination)
     elif conversation_new:
-        autoresponse_welcome(line, destination)
+        autoresponse_welcome(line, destination, sender)
     # elif conversation_expired:
     #     autoresponse_goodbye(line, destination)
 

@@ -124,7 +124,7 @@ class ConfiguracionWhatsappCampana(AuditableModelMixin):
 
 
 class ConversacionWhatsapp(models.Model):
-    conversation_id = models.CharField(max_length=100)
+    # conversation_id = models.CharField(max_length=100)
     campana = models.ForeignKey(
         Campana, related_name="conversaciones", on_delete=models.CASCADE)
     destination = models.CharField(max_length=100)
@@ -133,7 +133,8 @@ class ConversacionWhatsapp(models.Model):
     agent = models.ForeignKey(
         AgenteProfile, null=True, related_name="conversaciones", on_delete=models.CASCADE)
     conversation_type = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+    is_disposition = models.BooleanField(default=False)
     expire = models.DateTimeField(default=timezone.now)
     timestamp = models.DateTimeField(default=timezone.now)
 
@@ -147,10 +148,12 @@ class ConversacionWhatsapp(models.Model):
 
 
 class MensajeWhatsapp(models.Model):
+    message_id = models.CharField(max_length=100)
     timestamp = models.DateTimeField(default=timezone.now)
     origen = models.CharField(max_length=100)
     sender = JSONField(default=dict)
     conversation = models.ForeignKey(
-        ConversacionWhatsapp, related_name="mensajes", on_delete=models.CASCADE)
+        ConversacionWhatsapp, related_name="mensajes", on_delete=models.CASCADE, null=True)
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
+    status = models.CharField(max_length=100)
