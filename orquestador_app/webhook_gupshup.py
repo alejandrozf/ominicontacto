@@ -30,7 +30,6 @@ class WebhookGupshupView(APIView):
         return super(WebhookGupshupView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, identificador):
-        print("get", identificador, request.body)
         return HttpResponse("OK", status=status.HTTP_200_OK)
 
     def post(self, request, identificador):

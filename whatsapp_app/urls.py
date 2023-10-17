@@ -24,8 +24,7 @@ from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
     MessageTemplatesConfigurationView, MessageTemplateGroupView, WhatsappTemplateGroupView)
 from whatsapp_app.api.urls import api_urls_v1
-from whatsapp_app.webhook_meta import WebhookMetaView
-from whatsapp_app.webhook_gupshup import WebhookGupshupView
+
 
 urlpatterns = [
     path('connections/whatsapp/providers/',
@@ -47,12 +46,6 @@ urlpatterns = [
     path('resources/whatsapp_template_groups/',
          login_required(WhatsappTemplateGroupView.as_view()),
          name='whatsapp_template_groups',
-         ),
-    path('webhookmeta/<int:identificador>/', WebhookMetaView.as_view(),
-         name='webhook-meta',
-         ),
-    path('webhook/<str:identificador>/', WebhookGupshupView.as_view(),
-         name='webhook-meta',
          ),
     path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),
 ]
