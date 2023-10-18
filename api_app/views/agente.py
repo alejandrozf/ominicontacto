@@ -308,6 +308,28 @@ class Click2CallOutsideCampaign(APIView):
         })
 
 
+class HangUpCallView(APIView):
+    """
+        Vista para ejecutar un hangup via AMI
+    """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request):
+        agente_profile = self.request.user.get_agente_profile()
+        manager = AgentActivityAmiManager()
+        error = manager.hangup_current_call(agente_profile)
+        if error:
+            return Response(data={
+                'status': 'ERROR',
+            })
+        else:
+            return Response(data={
+                'status': 'OK',
+            })
+
+
 class AgentLoginAsterisk(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )

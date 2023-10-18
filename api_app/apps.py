@@ -84,6 +84,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call_outside_campaign',
              'roles': ['Agente', ]},
+            {'nombre': 'api_hangup_call',
+             'roles': ['Agente', ]},
             {'nombre': 'api_agent_asterisk_login',
              'roles': ['Agente', ]},
             {'nombre': 'api_agent_asterisk_logout',
@@ -369,6 +371,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Ejecuta un click 2 call a una campaña'), 'version': '1.7.0'},
         'api_click2call_outside_campaign':
             {'descripcion': _('Ejecuta un click 2 call fuera de campaña'), 'version': '1.25.0'},
+        'api_hangup_call':
+            {'descripcion': _('Ejecuta un hangup call via AMI'), 'version': '1.32.0'},
         'api_agent_asterisk_login':
             {'descripcion': _('Ejecuta el login del agente en Asterisk.'), 'version': '1.7.0'},
         'api_agent_asterisk_logout':
