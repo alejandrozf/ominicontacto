@@ -35,7 +35,7 @@ from constance import config as config_constance
 
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     UpdateBaseDatosForm, ReglaIncidenciaPorCalificacionForm, ReglasIncidenciaForm)
 from ominicontacto_app.services.wombat_service import WombatReloader
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin

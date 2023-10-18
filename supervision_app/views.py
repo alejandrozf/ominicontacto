@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from ominicontacto_app.services.kamailio_service import KamailioService
 
 from utiles_globales import AddSettingsContextMixin
-from ominicontacto_app.forms import GrupoAgenteForm
+from ominicontacto_app.forms.base import GrupoAgenteForm
 
 from ominicontacto_app.models import Campana, Grupo, AgenteProfile
 from supervision_app.services.redisgears_service import RedisGearsService

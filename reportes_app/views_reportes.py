@@ -30,7 +30,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
 
-from ominicontacto_app.forms import ReporteCampanaForm
+from ominicontacto_app.forms.base import ReporteCampanaForm
 
 from ominicontacto_app.models import AgenteProfile, Campana, RespuestaFormularioGestion
 

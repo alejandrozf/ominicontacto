@@ -36,8 +36,8 @@ from django.views.generic.detail import DetailView
 
 from simple_history.utils import update_change_reason
 
-from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoContacto,
-                                     RespuestaFormularioGestionForm)
+from ominicontacto_app.forms.base import (CalificacionClienteForm, FormularioNuevoContacto,
+                                          RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
     OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)

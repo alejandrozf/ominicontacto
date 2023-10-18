@@ -29,7 +29,7 @@ from django.db import transaction
 from django.views.generic import FormView, TemplateView
 from django.utils.translation import gettext as _
 
-from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
+from ominicontacto_app.forms.base import QueueMemberForm, GrupoAgenteForm
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 

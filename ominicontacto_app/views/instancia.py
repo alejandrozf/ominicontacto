@@ -30,7 +30,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 
 from ominicontacto_app import version
-from ominicontacto_app.forms import RegistroForm
+from ominicontacto_app.forms.base import RegistroForm
 
 
 logger = logging.getLogger(__name__)

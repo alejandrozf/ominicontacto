@@ -36,7 +36,7 @@ from django.views.generic import FormView, TemplateView, UpdateView, View
 
 from django.views.generic.base import RedirectView
 
-from ominicontacto_app.forms import ReporteForm, UpdateAgentPasswordForm
+from ominicontacto_app.forms.base import ReporteForm, UpdateAgentPasswordForm
 from ominicontacto_app.models import (
     AgenteEnContacto, AgenteProfile, CalificacionCliente, Campana, Contacto
 )

@@ -38,7 +38,7 @@ from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
 from ominicontacto_app.utiles import convert_fecha_datetime
 from notification_app.notification import AgentNotifier

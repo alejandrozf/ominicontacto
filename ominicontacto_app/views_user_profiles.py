@@ -39,13 +39,14 @@ from django.views.generic import (
 
 from constance import config
 
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     CustomUserCreationForm, SupervisorProfileForm, UserChangeForm, AgenteProfileForm,
     ForcePasswordChangeForm, CampaingsByTypeForm
 )
 
 from ominicontacto_app.models import (
-    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo, Campana
+    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo, Campana,
+    AutenticacionExternaDeUsuario
 )
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
@@ -102,6 +103,14 @@ class CustomUserWizard(SessionWizardView):
             message = _(u"Para poder crear un Usuario Agente asegurese de contar con al menos "
                         "un Grupo cargado.")
             messages.warning(self.request, message)
+
+        self.habilitar_autenticacion_externa = False
+        self.mostrar_autenticacion_externa = config.EXTERNAL_AUTH_TYPE != '0'
+        if self.mostrar_autenticacion_externa:
+            manuales = [AutenticacionExternaDeUsuario.MANUAL_ACTIVO,
+                        AutenticacionExternaDeUsuario.MANUAL_INACTIVO]
+            self.habilitar_autenticacion_externa = config.EXTERNAL_AUTH_ACTIVATION in manuales
+
         return super(CustomUserWizard, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, form, **kwargs):
@@ -142,6 +151,10 @@ class CustomUserWizard(SessionWizardView):
             if self.agente_a_clonar is not None:
                 kwargs['grupo_queryset'] = Grupo.objects.filter(
                     id=self.agente_a_clonar.agenteprofile.grupo_id)
+
+            kwargs['mostrar_autenticacion_externa'] = self.mostrar_autenticacion_externa
+            kwargs['habilitar_autenticacion_externa'] = self.habilitar_autenticacion_externa
+
         return kwargs
 
     def _save_supervisor(self, user, rol):
@@ -254,6 +267,13 @@ class CustomUserWizard(SessionWizardView):
             user._password = user_form.cleaned_data["password1"]
             emsg.create("user.created", user=user, request=self.request).send()
 
+        if self.mostrar_autenticacion_externa:
+            activa = True
+            if self.habilitar_autenticacion_externa:
+                activa = user_form.cleaned_data['autenticacion_externa']
+            autenticacion = AutenticacionExternaDeUsuario(user=user, activa=activa)
+            autenticacion.save()
+
         return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
 
 
@@ -280,6 +300,15 @@ class CustomerUserUpdateView(UpdateView):
                     user.get_full_name()))
                 messages.warning(self.request, message)
                 return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
+        self.habilitar_autenticacion_externa = False
+        self.mostrar_autenticacion_externa = False
+        if not self.force_password_change:
+            self.mostrar_autenticacion_externa = config.EXTERNAL_AUTH_TYPE != '0'
+        if self.mostrar_autenticacion_externa:
+            manuales = [AutenticacionExternaDeUsuario.MANUAL_ACTIVO,
+                        AutenticacionExternaDeUsuario.MANUAL_INACTIVO]
+            self.habilitar_autenticacion_externa = config.EXTERNAL_AUTH_ACTIVATION in manuales
+
         return super(CustomerUserUpdateView, self).dispatch(*args, **kwargs)
 
     def _can_edit_user(self, user):
@@ -315,6 +344,12 @@ class CustomerUserUpdateView(UpdateView):
         context['user'] = self.request.user
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['mostrar_autenticacion_externa'] = self.mostrar_autenticacion_externa
+        kwargs['habilitar_autenticacion_externa'] = self.habilitar_autenticacion_externa
+        return kwargs
+
     def form_valid(self, form):
         ret = super(CustomerUserUpdateView, self).form_valid(form)
 
@@ -346,6 +381,10 @@ class CustomerUserUpdateView(UpdateView):
         if form.instance.email and form.cleaned_data["password1"]:
             form.instance._password = form.cleaned_data["password1"]
             emsg.create("user.password-updated", user=form.instance, request=self.request).send()
+
+        if self.habilitar_autenticacion_externa:
+            form.instance.autenticacion_externa.activa = form.cleaned_data['autenticacion_externa']
+            form.instance.autenticacion_externa.save()
 
         messages.success(self.request,
                          _('El usuario fue actualizado correctamente'))

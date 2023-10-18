@@ -42,11 +42,12 @@ from defender import utils
 from defender import config
 
 from ominicontacto_app.models import (
-    AgenteProfile, Pausa, AgendaContacto,
+    AgenteProfile, Pausa, AgendaContacto, User,
     ClienteWebPhoneProfile, ContactoListaRapida
 )
 from ominicontacto_app.services.agent.presence import AgentPresenceManager
 from ominicontacto_app.services.kamailio_service import KamailioService
+from ominicontacto_app.services.authentication.ldap import authenticate_in_ldap
 from ominicontacto_app.utiles import fecha_local
 from reportes_app.models import LlamadaLog
 
@@ -79,13 +80,39 @@ def index_view(request):
         return TemplateResponse(request, template_name, context)
 
 
+def custom_authenticate(username, password):
+    # Ver si corresponde usar django authenticate o ldap autenticate
+    user = User.objects.filter(username=username).first()
+    authentication = {
+        'user': user,
+        'ok': False,
+        'service_error': False,
+        'ldap': False,
+    }
+    if user is None or not user.is_active:
+        user = None
+    elif user.autenticar_con_ldap:
+        authentication['ldap'] = True
+        authentication_ok, service_error = authenticate_in_ldap(username, password)
+        authentication['ok'] = authentication_ok
+        authentication['service_error'] = service_error
+        if not authentication_ok:
+            user = None
+    else:
+        user = authenticate(username=username, password=password)
+        authentication['ok'] = user is not None
+
+    authentication['user'] = user
+    return authentication
+
+
 def login_view(request):
     detail = None
     user_is_blocked = False
+    login_unsuccessful = False
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-        login_unsuccessful = False
         if utils.is_already_locked(request, username=username):
             intentos_fallidos = config.FAILURE_LIMIT + 2
             detail = _("Haz tratado de loguearte {intentos_fallidos} veces,"
@@ -97,14 +124,26 @@ def login_view(request):
                        )
             user_is_blocked = True
             login_unsuccessful = True
-        user = authenticate(username=username, password=password)
+
+        authentication = custom_authenticate(username=username, password=password)
+        user = authentication['user']
+
         form = AuthenticationForm(request, data=request.POST)
-        if not form.is_valid():
-            login_unsuccessful = True
-        utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful,
-                                      username=username)
-        user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful,
-                                               username=username)
+        if not authentication['ldap']:
+            if not authentication['ok'] or not form.is_valid():
+                login_unsuccessful = True
+        else:
+            login_unsuccessful = not authentication['ok']
+
+        user_not_blocked = True
+        if not authentication['service_error']:
+            utils.add_login_attempt_to_db(request, login_valid=not login_unsuccessful,
+                                          username=username)
+            user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful,
+                                                   username=username)
+        else:
+            messages.error(
+                request, _('usuario/contraseña inválidos. Consulte con su administrador LDAP'))
 
         # TODO: Si es cliente webphone lo bloqueo
         if ClienteWebPhoneProfile.objects.filter(user__username=username).exists():
@@ -112,7 +151,7 @@ def login_view(request):
             detail = _("Este tipo de usuario no puede loguearse en este momento.")
 
         if user_not_blocked and not user_is_blocked and not login_unsuccessful:
-            if form.is_valid():
+            if authentication['ok'] or form.is_valid():
                 primer_log = user.last_login is None
                 login(request, user)
                 user.set_session_key(request.session.session_key)
@@ -152,6 +191,7 @@ def login_view(request):
         'form': form,
         'detail': detail,
         'user_is_blocked': user_is_blocked,
+        'login_unsuccessful': login_unsuccessful,
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
@@ -178,6 +218,8 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         agente_profile = request.user.get_agente_profile()
+        if agente_profile is None:
+            return redirect('index')
         if agente_profile.is_inactive:
             message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
                         " su supervisor")

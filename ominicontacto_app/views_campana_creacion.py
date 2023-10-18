@@ -33,7 +33,7 @@ from django.utils.translation import gettext as _
 from formtools.wizard.views import SessionWizardView
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
     CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SitioExterno, SupervisorProfile,

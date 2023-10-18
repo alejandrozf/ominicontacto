@@ -22,7 +22,7 @@ import json
 
 from django.forms import ValidationError
 from rest_framework import serializers
-from ominicontacto_app.forms import FormularioNuevoContacto
+from ominicontacto_app.forms.base import FormularioNuevoContacto
 from ominicontacto_app.models import (
     AgenteEnContacto, AgenteProfile, ArchivoDeAudio, CalificacionCliente,
     Campana, Contacto, Grupo, OpcionCalificacion, User)

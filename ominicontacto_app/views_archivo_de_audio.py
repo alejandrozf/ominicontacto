@@ -30,7 +30,7 @@ from django.utils.translation import gettext_lazy as _
 from api_app.services.storage_service import StorageService
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
-from ominicontacto_app.forms import ArchivoDeAudioForm
+from ominicontacto_app.forms.base import ArchivoDeAudioForm
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.asterisk_config import AudioConfigFile
 import logging as logging_

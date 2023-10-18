@@ -313,19 +313,26 @@ class OminicontactoAppConfig(AppConfig):
                           'icon': 'icon-search',
                           'url': reverse('buscar_auditorias_gestion', args=(1,))})
 
+        # Seguridad
+        seguridad = []
         # Auditoria al supervisor
-        auditoria = []
         if 'seguridad_auditoria' in permissions:
-            auditoria.append({
+            seguridad.append({
                 'label': _('Auditoría'),
                 'url': reverse('seguridad_auditoria'),
             })
+        if 'security_external_authentication':
+            seguridad.append({
+                'label': _('Autenticación'),
+                'url': reverse('security_external_authentication'),
+            })
+        if seguridad:
             items.append({
                 'order': 900,
                 'label': _('Seguridad'),
                 'icon': 'icon-contacts',
                 'id': 'menuSeguridad',
-                'children': auditoria
+                'children': seguridad
             })
 
         return items
@@ -703,6 +710,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'seguridad_auditoria',
+             'roles': ['Administrador', ]},
+            {'nombre': 'security_external_authentication',
              'roles': ['Administrador', ]},
             {'nombre': 'conjuntos_de_pausas_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -1132,6 +1141,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
         'seguridad_auditoria':
             {'descripcion': _('Ver acciones realizadas por supervisores'), 'version': '1.19.0'},
+        'security_external_authentication':
+            {'descripcion': _('Configurar autenticación externa'), 'version': '1.31.0'},
         'conjuntos_de_pausas_list':
             {'descripcion': _('Listado de conjuntos de pausas'), 'version': '1.21.0'},
     }
