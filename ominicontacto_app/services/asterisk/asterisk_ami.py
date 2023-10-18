@@ -133,6 +133,12 @@ class AMIManagerConnector(object):
                 priority=1,
                 timeout='25000',
                 variables=content[3])
+        elif action == 'Hangup':
+            dict = {
+                'Action': action,
+                'Channel': '/PJSIP/{0}/'.format(content)
+            }
+            data_returned = self.manager.send_action(dict)
         if action == 'QueueAdd' or action == 'QueueRemove' or action == 'QueuePause':
             dict = {
                 'Action': 'QueueLog',

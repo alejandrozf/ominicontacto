@@ -85,7 +85,7 @@ from api_app.views.base_de_contactos import (CampaingsOnDB)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
-    API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
+    API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView, HangUpCallView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk, Click2CallOutsideCampaign, ApiAgentesParaTransferencia,
@@ -488,6 +488,9 @@ urlpatterns = [
     path('api/v1/make_call_outside_campaign/',
          Click2CallOutsideCampaign.as_view(),
          name='api_click2call_outside_campaign'),
+    path('api/v1/hangupCall/',
+         HangUpCallView.as_view(),
+         name='api_hangup_call'),
     path('api/v1/asterisk_login/',
          AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     path('api/v1/asterisk_logout/',

@@ -114,8 +114,12 @@ class AgentActivityAmiManager(object):
     def set_agent_as_disabled(self, agente_profile):
         self._set_agent_redis_status(agente_profile, 'DISABLED')
 
-    def get_pause_id(self, pause_id):
-        return pause_id
+    def hangup_current_call(self, agente_profile):
+        self.connect_manager()
+        data_returned, error = self.manager._ami_manager(action='Hangup',
+                                                         content=agente_profile.sip_extension)
+        self.disconnect_manager()
+        return error
 
     def _get_family(self, agente_profile):
         agente_family = AgenteFamily()
