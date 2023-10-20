@@ -84,18 +84,8 @@ class AgentNotifier:
         }
         self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
 
-    def notify_whatsapp_new_chat(self, user_id, id_conversacion):
-        message = {
-            'id': id_conversacion,
-            'campaing_id': 1,
-            'campaing_name': 'nombre_campana',
-            "client_name": "7221313052",
-            "client_number": "7221313052",
-            'photo': 'foto.jpg',
-            'date': str(datetime.datetime.now()),
-            'message_number': 10
-        }
-        self.send_message(
+    async def notify_whatsapp_new_chat(self, user_id, message):
+        await self.send_message(
             self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_chat_attended(self, user_id, message):
@@ -144,23 +134,13 @@ class AgentNotifier:
         await self.send_message_whatsapp(
             self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_message_status(self, user_id, id_message):
-        message = {
-            'chat_id': 'id_conversacion',
-            'campaing_id': 'id_campana',
-            'message_id': 'id_message',
-            'status': '',
-            'date': str(datetime.datetime.now()),
-        }
-        self.send_message(
+    async def notify_whatsapp_message_status(self, user_id, message):
+        await self.send_message_whatsapp(
             self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_chat_expired(self, user_id, id_message):
-        message = {
-            'chat_id': 'id_conversacion',
-            'campaing_id': 'campaing_id',
-        }
-        self.send_message(
+    async def notify_whatsapp_chat_expired(self, user_id, message):
+        print("send_message")
+        await self.send_message_whatsapp(
             self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id, whatsapp_event=True)
 
     def send_message(self, type, message, user_id=None, whatsapp_event=False):
