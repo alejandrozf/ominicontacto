@@ -46,3 +46,20 @@ class AgentPresenceManager(object):
         ActividadAgenteLog.objects.create(agente_id=agente.id,
                                           pausa_id=pausa_id,
                                           event=ActividadAgenteLog.UNPAUSE)
+
+    def enforce_login(self, agente):
+        ultimo_log = ActividadAgenteLog.objects.filter(agente_id=agente.id).last()
+        # Este caso no debería ocurrir nunca ya que debe estar loggeado
+        if ultimo_log.event == ActividadAgenteLog.LOGOUT:
+            self.login(agente)
+        # Este sería el caso en que refresca la vista estando en pausa
+        elif ultimo_log.event == ActividadAgenteLog.PAUSE:
+            self.unpause(agente, ultimo_log.pausa_id)
+            self.logout(agente)
+            self.login(agente)
+        # Este sería el caso en que refresca la vista luego de una pausa
+        elif ultimo_log.event == ActividadAgenteLog.UNPAUSE:
+            self.logout(agente)
+            self.login(agente)
+        # No se toma en cuenta el caso en que refresque la vista sin haber pasado
+        # a pausa para no complicar demasiado el control.
