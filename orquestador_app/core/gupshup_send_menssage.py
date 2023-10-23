@@ -120,9 +120,38 @@ def send_text_message(line, destination, message):
         print(e)
 
 
-def handler_autoresponses(line, destination, sender, conversation):
-    if False:  # validar horario
-        autoresponse_out_of_time(line, destination)
+def is_out_of_time(line, timestamp):
+
+    if line.horario:
+        time = timestamp.time()
+        weekday = timestamp.weekday()
+        monthday = timestamp.day
+        month = timestamp.month
+        validaciones_tiempo = line.horario.validaciones_tiempo.all()
+
+        for validacion in validaciones_tiempo:
+            if validacion.tiempo_inicial and validacion.tiempo_inicial > time:
+                return True
+            if validacion.tiempo_final and validacion.tiempo_final < time:
+                return True
+            if validacion.dia_semana_inicial and validacion.dia_semana_inicial > weekday:
+                return True
+            if validacion.dia_semana_final and validacion.dia_semana_final < weekday:
+                return True
+            if validacion.dia_mes_inicio and validacion.dia_mes_inicio > monthday:
+                return True
+            if validacion.dia_mes_final and validacion.dia_mes_final < monthday:
+                return True
+            if validacion.mes_inicio and validacion.mes_inicio > month:
+                return True
+            if validacion.mes_final and validacion.mes_final < month:
+                return True
+    return False
+
+
+def handler_autoresponses(line, timestamp, destination, sender, conversation):
+    if is_out_of_time(line, timestamp):
+        autoresponse_out_of_time(line, destination, sender)
     elif not conversation:
         autoresponse_welcome(line, destination, sender)
     # elif conversation_expired:
