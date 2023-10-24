@@ -424,6 +424,9 @@ class TiemposAgente(object):
         elif id_pausa == '00':
             datos['nombre'] = _(u'Supervisión')
             datos['tipo'] = Pausa.CHOICE_PRODUCTIVA
+        elif id_pausa == 'OW':
+            datos['nombre'] = _(u'On Whatsapp')
+            datos['tipo'] = Pausa.CHOICE_PRODUCTIVA
         else:
             try:
                 pausa = Pausa.objects.get(id=id_pausa)

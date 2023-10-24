@@ -146,7 +146,7 @@ class PhoneJSController {
 
         this.view.setPauseButton.click(function() {
             const pause_data = $('#pauseType').val().split(',');
-            var pause_id = parseInt(pause_data[0]);
+            var pause_id = pause_data[0];
             var pause_name = pause_data[1];
             var pause_time = parseInt(pause_data[2]);
             clearTimeout(self.ACW_pause_timeout_handler);

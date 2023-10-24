@@ -250,6 +250,11 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
                     'name': pause.nombre,
                     'timeToEndPause': 0
                 })
+        pausas.append({
+            'id': 'OW',
+            'name': _('On-Whatsapp'),
+            'timeToEndPause': 0
+        })
         return pausas
 
     def get_context_data(self, **kwargs):
