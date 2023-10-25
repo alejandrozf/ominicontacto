@@ -32,22 +32,27 @@ class AgentPresenceManager(object):
     """
 
     def login(self, agente):
+        return
         ActividadAgenteLog.objects.create(agente_id=agente.id, event=ActividadAgenteLog.LOGIN)
 
     def logout(self, agente):
+        return
         ActividadAgenteLog.objects.create(agente_id=agente.id, event=ActividadAgenteLog.LOGOUT)
 
     def pause(self, agente, pausa_id):
+        return
         ActividadAgenteLog.objects.create(agente_id=agente.id,
                                           pausa_id=pausa_id,
                                           event=ActividadAgenteLog.PAUSE)
 
     def unpause(self, agente, pausa_id):
+        return
         ActividadAgenteLog.objects.create(agente_id=agente.id,
                                           pausa_id=pausa_id,
                                           event=ActividadAgenteLog.UNPAUSE)
 
     def enforce_login(self, agente):
+        return
         ultimo_log = ActividadAgenteLog.objects.filter(agente_id=agente.id).last()
         # Este caso no debería ocurrir nunca ya que debe estar loggeado
         if ultimo_log.event == ActividadAgenteLog.LOGOUT:

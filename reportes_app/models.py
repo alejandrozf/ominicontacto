@@ -548,7 +548,7 @@ class ActividadAgenteLog(models.Model):
 
     objects = ActividadAgenteLogManager()
 
-    time = models.DateTimeField(auto_now_add=True, db_index=True)
+    time = models.DateTimeField(db_index=True)  # agregar auto_now_add=True en 2.0
     agente_id = models.IntegerField(db_index=True, blank=True, null=True)
     event = models.CharField(max_length=32, blank=True, null=True)
     pausa_id = models.CharField(max_length=128, blank=True, null=True)
