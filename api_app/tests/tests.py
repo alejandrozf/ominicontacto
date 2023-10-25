@@ -40,7 +40,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, SistemaExternoFac
                                                OpcionCalificacionFactory, ContactoFactory,
                                                CalificacionCliente, QueueFactory,
                                                QueueMemberFactory, CalificacionClienteFactory)
-# from reportes_app.models import ActividadAgenteLog
+from reportes_app.models import ActividadAgenteLog
 
 
 class APITest(OMLBaseTest):
@@ -673,7 +673,7 @@ class APITest(OMLBaseTest):
     def test_api_vista_pausa_de_agente_retorno_de_valores_correctos(self, pause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         pause_agent.return_value = False, False
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         url = reverse('api_make_pause')
         post_data = {
             'pause_id': 1
@@ -681,18 +681,18 @@ class APITest(OMLBaseTest):
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'OK')
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
-        # log = ActividadAgenteLog.objects.last()
-        # self.assertEqual(log.pausa_id, '1')
-        # self.assertEqual(log.agente_id, self.agente_profile.id)
-        # self.assertEqual(log.event, ActividadAgenteLog.PAUSE)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
+        log = ActividadAgenteLog.objects.last()
+        self.assertEqual(log.pausa_id, '1')
+        self.assertEqual(log.agente_id, self.agente_profile.id)
+        self.assertEqual(log.event, ActividadAgenteLog.PAUSE)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "pause_agent")
     def test_api_vista_pausa_de_agente_retorno_de_valores_erroneos(self, pause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         pause_agent.return_value = True, False
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         url = reverse('api_make_pause')
         post_data = {
             'pause_id': 1
@@ -700,14 +700,14 @@ class APITest(OMLBaseTest):
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'ERROR')
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "unpause_agent")
     def test_api_vista_despausa_de_agente_retorno_de_valores_correctos(
             self, unpause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         unpause_agent.return_value = False, False
         url = reverse('api_make_unpause')
         post_data = {
@@ -716,18 +716,18 @@ class APITest(OMLBaseTest):
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'OK')
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
-        # log = ActividadAgenteLog.objects.last()
-        # self.assertEqual(log.pausa_id, '1')
-        # self.assertEqual(log.agente_id, self.agente_profile.id)
-        # self.assertEqual(log.event, ActividadAgenteLog.UNPAUSE)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
+        log = ActividadAgenteLog.objects.last()
+        self.assertEqual(log.pausa_id, '1')
+        self.assertEqual(log.agente_id, self.agente_profile.id)
+        self.assertEqual(log.event, ActividadAgenteLog.UNPAUSE)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "unpause_agent")
     def test_api_vista_despausa_de_agente_retorno_de_valores_erroneos(self, unpause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         unpause_agent.return_value = True, False
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         url = reverse('api_make_unpause')
         post_data = {
             'pause_id': 1
@@ -735,4 +735,4 @@ class APITest(OMLBaseTest):
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'ERROR')
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs)

@@ -64,13 +64,12 @@ class LlamadaLogFactory(DjangoModelFactory):
 class ActividadAgenteLogFactory(DjangoModelFactory):
     class Meta:
         model = ActividadAgenteLog
-    time = lazy_attribute(lambda a: timezone.now())
     agente_id = Sequence(lambda n: n)
     event = Sequence(lambda n: "evento_{0}".format(n))
     pausa_id = Sequence(lambda n: n)
 
     @classmethod
-    def x_create(cls, target_class, *args, **kwargs):  # renombrar como _create en 2.0
+    def _create(cls, target_class, *args, **kwargs):
         # Parche para permitir definir el valor de time
         time = kwargs.pop('time', None)
         obj = super(ActividadAgenteLogFactory, cls)._create(target_class, *args, **kwargs)
