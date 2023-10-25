@@ -20,7 +20,6 @@ from django.db import models
 from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
-from configuracion_telefonia_app.models import DestinoEntrante, GrupoHorario
 from ominicontacto_app.models import AgenteProfile, Campana, Contacto
 from django.utils import timezone
 
@@ -45,10 +44,13 @@ class Linea(AuditableModelMixin):
         ConfiguracionProveedor, on_delete=models.CASCADE, related_name="lineas")
     numero = models.CharField(max_length=100)  # sender
     configuracion = JSONField(default=dict)  # appname, appid
+    # TODO: Modelar en destino entrante whatsapp?
     destino = models.ForeignKey(
-        DestinoEntrante, on_delete=models.CASCADE, related_name="lineas", blank=True, null=True)
+        'configuracion_telefonia_app.DestinoEntrante', on_delete=models.CASCADE,
+        related_name="lineas", blank=True, null=True)
     horario = models.ForeignKey(
-        GrupoHorario, on_delete=models.CASCADE, related_name="lineas", blank=True, null=True)
+        'configuracion_telefonia_app.GrupoHorario', on_delete=models.CASCADE,
+        related_name="lineas", blank=True, null=True)
     mensaje_bienvenida = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
         on_delete=models.CASCADE, related_name="linea_mensaje_bienvenida")
@@ -152,3 +154,21 @@ class MensajeWhatsapp(models.Model):
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
+
+
+class MenuInteractivoWhatsapp(models.Model):
+    texto_opciones = models.CharField(max_length=100)
+    texto_opcion_incorrecta = models.CharField(max_length=100)
+    texto_derivacion = models.CharField(max_length=100)
+    timeout = models.IntegerField()
+
+    @property
+    def nombre(self):
+        return 'menu-interactivo-whatsapp-{0}'.format(self.id)
+
+
+class OpcionMenuInteractivoWhatsapp(models.Model):
+    opcion = models.OneToOneField(
+        'configuracion_telefonia_app.OpcionDestino', on_delete=models.CASCADE,
+        related_name="opcion_menu_whatsapp")
+    descripcion = models.CharField(max_length=100)

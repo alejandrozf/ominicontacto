@@ -36,12 +36,12 @@ class ConfiguraciontemplateTest(OMLBaseTest):
         for user in User.objects.all():
             Token.objects.create(user=user)
 
-    def test_configuaracion_template_forbidden(self):
+    def test_configuracion_template_forbidden(self):
         url_list = reverse('whatsapp_app:plantilla-mensaje-list')
         response_template_list = self.client.get(url_list)
         response_template_create = self.client.post(url_list)
-        configuaracion = PlantillaAgenteFactory()
-        url_details = reverse('whatsapp_app:plantilla-mensaje-detail', args=[configuaracion.pk])
+        configuracion = PlantillaAgenteFactory()
+        url_details = reverse('whatsapp_app:plantilla-mensaje-detail', args=[configuracion.pk])
         response_template_update = self.client.put(url_details)
         response_template_detail = self.client.get(url_details)
         response_template_delete = self.client.delete(url_details)
@@ -51,7 +51,7 @@ class ConfiguraciontemplateTest(OMLBaseTest):
         self.assertEqual(response_template_detail.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response_template_delete.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_configuaracion_template_list(self):
+    def test_configuracion_template_list(self):
         self.client.login(username=self.admin.user.username, password=PASSWORD)
         url = reverse('whatsapp_app:plantilla-mensaje-list')
         response_template_list = self.client.get(url)
@@ -67,10 +67,10 @@ class ConfiguraciontemplateTest(OMLBaseTest):
         self.assertEqual(response_template_list.status_code, status.HTTP_200_OK)
         self.assertEqual(response_template_create.status_code, status.HTTP_201_CREATED)
 
-    def test_configuaracion_template_detail(self):
+    def test_configuracion_template_detail(self):
         self.client.login(username=self.admin.user.username, password=PASSWORD)
-        configuaracion = PlantillaAgenteFactory()
-        url = reverse('whatsapp_app:plantilla-mensaje-detail', args=[configuaracion.pk])
+        configuracion = PlantillaAgenteFactory()
+        url = reverse('whatsapp_app:plantilla-mensaje-detail', args=[configuracion.pk])
         response_template_detail = self.client.get(url)
         playload = {
             "nombre": "plantilla2",

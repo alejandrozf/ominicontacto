@@ -35,12 +35,12 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         for user in User.objects.all():
             Token.objects.create(user=user)
 
-    def test_configuaracion_proveedor_forbidden(self):
+    def test_configuracion_proveedor_forbidden(self):
         url_list = reverse('whatsapp_app:proveedor-list')
         response_proveedor_list = self.client.get(url_list)
         response_proveedor_create = self.client.post(url_list)
-        configuaracion = ConfiguracionProveedorFactory()
-        url_details = reverse('whatsapp_app:proveedor-detail', args=[configuaracion.pk])
+        configuracion = ConfiguracionProveedorFactory()
+        url_details = reverse('whatsapp_app:proveedor-detail', args=[configuracion.pk])
         response_proveedor_update = self.client.put(url_details)
         response_proveedor_detail = self.client.get(url_details)
         response_proveedor_delete = self.client.delete(url_details)
@@ -50,7 +50,7 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         self.assertEqual(response_proveedor_detail.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response_proveedor_delete.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_configuaracion_proveedor_list(self):
+    def test_configuracion_proveedor_list(self):
         self.client.login(username=self.admin.user.username, password=PASSWORD)
         url = reverse('whatsapp_app:proveedor-list')
         response_proveedor_list = self.client.get(url)
@@ -63,10 +63,10 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         self.assertEqual(response_proveedor_list.status_code, status.HTTP_200_OK)
         self.assertEqual(response_proveedor_create.status_code, status.HTTP_201_CREATED)
 
-    def test_configuaracion_proveedor_detail(self):
+    def test_configuracion_proveedor_detail(self):
         self.client.login(username=self.admin.user.username, password=PASSWORD)
-        configuaracion = ConfiguracionProveedorFactory()
-        url = reverse('whatsapp_app:proveedor-detail', args=[configuaracion.pk])
+        configuracion = ConfiguracionProveedorFactory()
+        url = reverse('whatsapp_app:proveedor-detail', args=[configuracion.pk])
         response_proveedor_detail = self.client.get(url)
         playload = {
             "name": "provedor2",

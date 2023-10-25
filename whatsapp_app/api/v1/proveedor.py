@@ -145,13 +145,13 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
-                    message=_('Se obtuvieron las configuaraciones de proveedor de forma exitosa'),
+                    message=_('Se obtuvieron las configuraciones de proveedor de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
         except Exception:
             return response.Response(
                 data=get_response_data(
-                    message=_('Error al obtener las configuaraciones de proveedor')),
+                    message=_('Error al obtener las configuraciones de proveedor')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request):

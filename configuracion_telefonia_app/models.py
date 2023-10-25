@@ -27,6 +27,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
+from whatsapp_app.models import MenuInteractivoWhatsapp
 
 import os
 import re
@@ -343,6 +344,7 @@ class DestinoEntrante(models.Model):
     CUSTOM_DST = 7
     VOICEMAIL = 8
     IDENTIFICADOR_CLIENTE = 9
+    MENU_INTERACTIVO_WHATSAPP = 10
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
@@ -351,6 +353,7 @@ class DestinoEntrante(models.Model):
         (HANGUP, _('HangUp')),
         (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
         (CUSTOM_DST, _('Destino personalizado')),
+        (MENU_INTERACTIVO_WHATSAPP, _('Menú Interactivo de Whatsapp')),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -381,6 +384,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.CUSTOM_DST
         elif isinstance(info_nodo_entrante, HangUp):
             raise _('Error: El nodo HangUp es único.')
+        elif isinstance(info_nodo_entrante, MenuInteractivoWhatsapp):
+            tipo = cls.MENU_INTERACTIVO_WHATSAPP
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -436,7 +441,7 @@ class OpcionDestino(models.Model):
         kwargs = {'destino_anterior': destino_anterior,
                   'destino_siguiente': destino_siguiente,
                   'valor': valor}
-        cls.objects.create(**kwargs)
+        return cls.objects.create(**kwargs)
 
     class Meta:
         unique_together = ('destino_anterior', 'valor')

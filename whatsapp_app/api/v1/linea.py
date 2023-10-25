@@ -22,7 +22,6 @@ from django.contrib.postgres.fields import JSONField
 from django.db.models import F
 from django.db.models import Func
 from django.db.models import Value
-from rest_framework import serializers
 from rest_framework import response
 from rest_framework import status
 from rest_framework import viewsets
@@ -32,144 +31,9 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from whatsapp_app.models import Linea
-from whatsapp_app.models import ConfiguracionProveedor
-from configuracion_telefonia_app.models import DestinoEntrante, GrupoHorario
-from whatsapp_app.models import PlantillaMensaje
-
-
-class ListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField(source='nombre')
-    number = serializers.CharField(source='numero')
-    provider = serializers.IntegerField(source='proveedor.id')
-    configuration = serializers.JSONField(source='configuracion')
-    destination = serializers.IntegerField(source='destino.id', required=False)
-    schedule = serializers.IntegerField(source='horario.id', required=False)
-    destination_type = serializers.IntegerField(source='destino.tipo', required=False)
-    welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
-    farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
-    afterhours_message = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
-
-
-class CreateSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='nombre')
-    number = serializers.CharField(source='numero')
-    provider = serializers.PrimaryKeyRelatedField(
-        queryset=ConfiguracionProveedor.objects.all(), source='proveedor')
-    configuration = serializers.JSONField(source='configuracion')
-    destination = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=DestinoEntrante.objects.all(), required=False, source='destino')
-    schedule = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=GrupoHorario.objects.all(), required=False, source='horario')
-    welcome_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_bienvenida')
-    farewell_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_despedida')
-    afterhours_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_fueradehora')
-
-    class Meta:
-        model = Linea
-        fields = [
-            'id',
-            'name',
-            'number',
-            'provider',
-            'configuration',
-            'destination',
-            'schedule',
-            'welcome_message',
-            'farewell_message',
-            'afterhours_message'
-        ]
-
-    def validate_configuracion(self, configuration):
-        proveedor_id = self.initial_data.get('provider')
-        proveedor = ConfiguracionProveedor.objects.get(pk=proveedor_id)
-        if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'app_name' not in configuration\
-                    or 'app_id' not in configuration:
-                raise serializers.ValidationError({
-                    'error': _('Configuración incorrecta para el tipo de proveedor')})
-        if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuration\
-                    or 'token_de_verificacion' not in configuration:
-                raise serializers.ValidationError({
-                    'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuration
-
-
-class RetrieveSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField(source='nombre')
-    number = serializers.CharField(source='numero')
-    provider = serializers.IntegerField(source='proveedor.id')
-    configuration = serializers.JSONField(source='configuracion')
-    destination = serializers.IntegerField(source='destino.id', required=False)
-    schedule = serializers.IntegerField(source='horario.id', required=False)
-    destination_type = serializers.IntegerField(source='destino.tipo', required=False)
-    welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
-    farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
-    afterhours_message = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)
-
-
-class UpdateSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='nombre')
-    number = serializers.CharField(source='numero')
-    provider = serializers.PrimaryKeyRelatedField(
-        queryset=ConfiguracionProveedor.objects.all(), source='proveedor')
-    configuration = serializers.JSONField(source='configuracion')
-    destination = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=DestinoEntrante.objects.all(),
-        required=False, source='destino')
-    schedule = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=GrupoHorario.objects.all(),
-        required=False, source='horario')
-    welcome_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_bienvenida')
-    farewell_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_despedida')
-    afterhours_message = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=PlantillaMensaje.objects.all(),
-        required=False, source='mensaje_fueradehora')
-
-    class Meta:
-        model = Linea
-        fields = [
-            'id',
-            'name',
-            'number',
-            'provider',
-            'configuration',
-            'destination',
-            'schedule',
-            'welcome_message',
-            'farewell_message',
-            'afterhours_message'
-        ]
-
-    def validate_configuracion(self, configuration):
-        if self.initial_data.get('provider'):
-            proveedor_id = self.initial_data.get('provider')
-            proveedor = ConfiguracionProveedor.objects.get(pk=proveedor_id)
-        else:
-            proveedor = self.instance.proveedor
-        if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-            if 'app_name' not in configuration\
-                    or 'app_id' not in configuration:
-                raise serializers.ValidationError({
-                    'error': _('Configuración incorrecta para el tipo de proveedor')})
-        if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuration\
-                    or 'token_de_verificacion' not in configuration:
-                raise serializers.ValidationError({
-                    'error': _('Configuración incorrecta para el tipo de proveedor')})
-        return configuration
+from whatsapp_app.api.v1.linea_serializers import (
+    ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
+    DestinoDeLineaCreateSerializer, )
 
 
 class ViewSet(viewsets.ViewSet):
@@ -215,22 +79,41 @@ class ViewSet(viewsets.ViewSet):
 
     def create(self, request):
         try:
-            serializer = CreateSerializer(data=request.data)
+            request_data = request.data.copy()
+            if 'destination' not in request_data:
+                return response.Response(data=get_response_data(
+                    message=_('Error en los datos'), errors={
+                        'destination': [_('Este campo es requerido.')]}),
+                    status=status.HTTP_400_BAD_REQUEST)
+            destino_data = request_data.pop('destination')
+            serializer = LineaCreateSerializer(data=request_data)
             if serializer.is_valid():
-                serializer.save(
-                    created_by=request.user,
-                    updated_by=request.user,
-                )
-                return response.Response(
-                    data=get_response_data(
-                        status=HttpResponseStatus.SUCCESS,
-                        message=_('Se creo la línea de forma exitosa'),
-                        data=serializer.data),
-                    status=status.HTTP_201_CREATED)
+                serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
+                if serializer_destino.is_valid():
+                    serializer_destino.save()
+                    destino = serializer_destino.destino
+                    serializer.save(
+                        destino=destino,
+                        created_by=request.user,
+                        updated_by=request.user,
+                    )
+                    serialized_data = serializer.data
+                    serialized_data['destination'] = serializer_destino.serialize_data()
+                    return response.Response(
+                        data=get_response_data(
+                            status=HttpResponseStatus.SUCCESS,
+                            message=_('Se creo la línea de forma exitosa'),
+                            data=serialized_data),
+                        status=status.HTTP_201_CREATED)
+                else:
+                    return response.Response(
+                        data=get_response_data(message=_('Error en los datos'),
+                                               errors={'destination': serializer_destino.errors}),
+                        status=status.HTTP_400_BAD_REQUEST)
             else:
                 return response.Response(
-                    data=get_response_data(
-                        message=_('Error en los datos'), errors=serializer.errors),
+                    data=get_response_data(message=_('Error en los datos'),
+                                           errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             return response.Response(
@@ -260,7 +143,7 @@ class ViewSet(viewsets.ViewSet):
                 ),
             )
             instance = queryset.get(pk=pk)
-            serializer = RetrieveSerializer(instance)
+            serializer = LineaRetrieveSerializer(instance)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
@@ -281,15 +164,40 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = Linea.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            serializer = UpdateSerializer(instance, data=request.data, partial=True)
+            request_data = request.data.copy()
+            if 'destination' not in request_data:
+                return response.Response(data=get_response_data(
+                    message=_('Error en los datos'), errors={
+                        'destination': [_('Este campo es requerido.')]}),
+                    status=status.HTTP_400_BAD_REQUEST)
+            destino_data = request_data.pop('destination')
+            serializer = UpdateSerializer(instance, data=request_data, partial=True)
             if serializer.is_valid():
-                serializer.save(updated_by=request.user)
-                return response.Response(
-                    data=get_response_data(
-                        status=HttpResponseStatus.SUCCESS,
-                        data=serializer.data,
-                        message=_('Se actualizó la línea de forma exitosa')),
-                    status=status.HTTP_200_OK)
+                serializer_destino = DestinoDeLineaCreateSerializer(instance.destino,
+                                                                    data=destino_data)
+                if serializer_destino.is_valid():
+                    serializer_destino.save()
+                    destino_previo = instance.destino
+                    destino = serializer_destino.destino
+                    serializer.save(
+                        destino=destino,
+                        created_by=request.user,
+                        updated_by=request.user,
+                    )
+                    serializer_destino.borrar_destino_sobrante(destino_previo, destino)
+                    serialized_data = serializer.data
+                    serialized_data['destination'] = serializer_destino.serialize_data()
+                    return response.Response(
+                        data=get_response_data(
+                            status=HttpResponseStatus.SUCCESS,
+                            message=_('Se actualizó la línea de forma exitosa'),
+                            data=serialized_data),
+                        status=status.HTTP_200_OK)
+                else:
+                    return response.Response(
+                        data=get_response_data(message=_('Error en los datos'),
+                                               errors={'destination': serializer_destino.errors}),
+                        status=status.HTTP_400_BAD_REQUEST)
             else:
                 return response.Response(
                     data=get_response_data(

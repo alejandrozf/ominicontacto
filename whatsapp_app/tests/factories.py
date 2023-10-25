@@ -23,7 +23,8 @@ from factory import (DjangoModelFactory, fuzzy, lazy_attribute, Sequence, SubFac
 from ominicontacto_app.tests.factories import UserFactory
 from ominicontacto_app.tests.factories import CampanaFactory
 from configuracion_telefonia_app.models import DestinoEntrante
-from whatsapp_app.models import ConfiguracionProveedor, Linea, PlantillaMensaje
+from whatsapp_app.models import (ConfiguracionProveedor, Linea, PlantillaMensaje,
+                                 MenuInteractivoWhatsapp, )
 
 
 faker = faker.Factory.create()
@@ -51,7 +52,7 @@ class DestinoEntranteFactory(DjangoModelFactory):
 class LineaFactory(DjangoModelFactory):
     class Meta:
         model = Linea
-    nombre = Sequence(lambda n: "proveedor_{0}".format(n))
+    nombre = Sequence(lambda n: "linea_{0}".format(n))
     proveedor = SubFactory(ConfiguracionProveedorFactory)
     destino = SubFactory(DestinoEntranteFactory)
     numero = fuzzy.FuzzyText(length=12, chars=string.ascii_uppercase + string.digits)
@@ -66,3 +67,13 @@ class PlantillaAgenteFactory(DjangoModelFactory):
     tipo = PlantillaMensaje.TIPO_TEXT
     created_by = SubFactory(UserFactory)
     updated_by = SubFactory(UserFactory)
+
+
+class MenuInteractivoFactory(DjangoModelFactory):
+    class Meta:
+        model = MenuInteractivoWhatsapp
+
+    texto_opciones = lazy_attribute(lambda a: faker.text(15))
+    texto_opcion_incorrecta = lazy_attribute(lambda a: faker.text(15))
+    texto_derivacion = lazy_attribute(lambda a: faker.text(15))
+    timeout = lazy_attribute(lambda a: faker.random_int(5, 60))
