@@ -25,7 +25,7 @@ from django.urls import reverse
 from ominicontacto_app.tests.factories import PausaFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.utiles import PASSWORD
-# from reportes_app.models import ActividadAgenteLog
+from reportes_app.models import ActividadAgenteLog
 
 
 class AgentsAsteriskSessionAPITest(OMLBaseTest):
@@ -113,7 +113,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'connect_manager')
     def test_asterisk_session_pause_agent(self, connect_manager, disconnect_manager, pause_agent):
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         connect_manager.return_value = False
         disconnect_manager.return_value = False
         pause_agent.return_value = False, False
@@ -124,11 +124,11 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'OK')
         pause_agent.assert_called_once_with(self.agente, str(self.pausa.id), manage_connection=True)
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
-        # log = ActividadAgenteLog.objects.last()
-        # self.assertEqual(log.pausa_id, str(self.pausa.id))
-        # self.assertEqual(log.agente_id, self.agente.id)
-        # self.assertEqual(log.event, ActividadAgenteLog.PAUSE)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
+        log = ActividadAgenteLog.objects.last()
+        self.assertEqual(log.pausa_id, str(self.pausa.id))
+        self.assertEqual(log.agente_id, self.agente.id)
+        self.assertEqual(log.event, ActividadAgenteLog.PAUSE)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'unpause_agent')
@@ -138,7 +138,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
            'connect_manager')
     def test_asterisk_session_unpause_agent(self, connect_manager, disconnect_manager,
                                             unpause_agent):
-        # cant_logs = ActividadAgenteLog.objects.count()
+        cant_logs = ActividadAgenteLog.objects.count()
         connect_manager.return_value = False
         disconnect_manager.return_value = False
         unpause_agent.return_value = False, False
@@ -150,8 +150,8 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
         self.assertEqual(response.json()['status'], 'OK')
         unpause_agent.assert_called_once_with(self.agente, str(self.pausa.id),
                                               manage_connection=True)
-        # self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
-        # log = ActividadAgenteLog.objects.last()
-        # self.assertEqual(log.pausa_id, str(self.pausa.id))
-        # self.assertEqual(log.agente_id, self.agente.id)
-        # self.assertEqual(log.event, ActividadAgenteLog.UNPAUSE)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
+        log = ActividadAgenteLog.objects.last()
+        self.assertEqual(log.pausa_id, str(self.pausa.id))
+        self.assertEqual(log.agente_id, self.agente.id)
+        self.assertEqual(log.event, ActividadAgenteLog.UNPAUSE)
