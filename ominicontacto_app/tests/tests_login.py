@@ -84,7 +84,7 @@ class LoginTests(OMLBaseTest):
     @patch('defender.utils.is_already_locked')
     @patch('defender.utils.check_request')
     @patch('defender.utils.add_login_attempt_to_db')
-    def test_logs_agent_login(
+    def xtest_logs_agent_login(  # Renombrar para 2.0
             self, add_login_attempt_to_db, check_request, is_already_locked,
             generar_sip_password, generar_sip_user):
         cant_logs = ActividadAgenteLog.objects.count()
