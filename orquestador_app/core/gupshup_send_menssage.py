@@ -1,8 +1,11 @@
 import requests
 import json
 from django.utils import timezone
-from orquestador_app.core.apis_urls import URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES
+from orquestador_app.core.apis_urls import (
+    URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES,
+    URL_SEND_MENU_OPTION)
 from whatsapp_app.models import MensajeWhatsapp
+
 
 headers = {
     "accept": "application/json",
@@ -13,25 +16,23 @@ headers = {
 def autoresponse_out_of_time(line, destination, sender):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        template_id = "a7da0ec0-5861-43f5-82f5-03311df7f00f"
+        template = line.mensaje_fueradehora
+        params = [sender['name']]
         data = {
             'source': line.numero,
             'destination': destination,
-            'template': json.dumps({"id": template_id, "params": [sender['name']]})
+            'template': json.dumps({"id": template.identificador, "params": [sender['name']]})
         }
         response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data).json()
-        print("===> send_template_message")
-        print("response", response)
         if response["status"] == "submitted":
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            # text = template.texto.replace('{{', '{').\
-            #     replace('}}', '}').format("", *data['params'])
+            text = template.texto.replace('{{', '{').replace('}}', '}').format("", *params)
             MensajeWhatsapp.objects.create(
                 message_id=response['messageId'],
                 origen=line.numero,
                 timestamp=timestamp,
                 sender={},
-                content={"text": "text", "type": "template"},
+                content={"text": text, "type": "template"},
                 type="template",
             )
         return response
@@ -39,31 +40,77 @@ def autoresponse_out_of_time(line, destination, sender):
         print(e)
 
 
-def autoresponse_welcome(line, destination, sender):
+def autoresponse_welcome(line, conversation, sender):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        template_id = "a7da0ec0-5861-43f5-82f5-03311df7f00f"
+        template = line.mensaje_bienvenida
+        params = [sender['name']]
         data = {
             'source': line.numero,
-            'destination': destination,
-            'template': json.dumps({"id": template_id, "params": [sender['name']]})
+            'destination': conversation.destination,
+            'template': json.dumps({"id": template.identificador, "params": params})
         }
+        message_outbound = None
         response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data).json()
-        print("===> send_template_message")
-        print("response", response)
-        if response["status"] == "submitted":
-            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            # text = template.texto.replace('{{', '{').\
-            #     replace('}}', '}').format("", *data['params'])
-            MensajeWhatsapp.objects.create(
+        if response['status'] == "submitted":
+            text = template.texto.replace('{{', '{').replace('}}', '}').format("", *params)
+            content = {"text": text, "type": "template"},
+            message_outbound = MensajeWhatsapp.objects.create(
                 message_id=response['messageId'],
+                conversation=conversation,
                 origen=line.numero,
-                timestamp=timestamp,
                 sender={},
-                content={"text": "text", "type": "template"},
-                type="template",
+                content=content,
+                type='template',
             )
-        return response
+        return message_outbound
+    except Exception as e:
+        print(">>>>>>>>", e)
+
+
+def autoreponse_destino_interactivo(line, conversation, sender):
+    try:
+        message = {
+            'type': 'list',
+            'title': 'Seleccione un destino',
+            'body': 'Click Main Menu',
+            'globalButtons': [{'type': 'text', 'title': 'Main Menu'}],
+            'items': [{
+                'title': 'Destinos', 'subtitle': 'Seleccione un destino',
+                'options': [
+                    {'type': 'text', 'title': 'Book 1', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 2', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 3', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 4', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 5', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 6', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 7', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 8', 'description': 'Book description'},
+                    {'type': 'text', 'title': 'Book 9', 'description': 'Book description'},
+                ]
+            }]
+        }
+        headers.update({'apikey': line.proveedor.configuracion['api_key']})
+        data = {
+            "channel": "whatsapp",
+            "source": line.numero,
+            "src.name": line.configuracion['app_name'],
+            "destination": conversation.destination,
+            "message": json.dumps(message)
+        }
+        response = requests.post(URL_SEND_MENU_OPTION, headers=headers, data=data).json()
+        message_outbound = None
+        if response['status'] == "submitted":
+            content = {"text": json.dumps(message), "type": "list"},
+            message_outbound = MensajeWhatsapp.objects.create(
+                message_id=response['messageId'],
+                conversation=conversation,
+                origen=line.numero,
+                sender={},
+                content=content,
+                type='list',
+            )
+        return message_outbound
     except Exception as e:
         print(e)
 
@@ -121,7 +168,6 @@ def send_text_message(line, destination, message):
 
 
 def is_out_of_time(line, timestamp):
-
     if line.horario:
         time = timestamp.time()
         weekday = timestamp.weekday()
@@ -147,15 +193,6 @@ def is_out_of_time(line, timestamp):
             if validacion.mes_final and validacion.mes_final < month:
                 return True
     return False
-
-
-def handler_autoresponses(line, timestamp, destination, sender, conversation):
-    if is_out_of_time(line, timestamp):
-        autoresponse_out_of_time(line, destination, sender)
-    elif not conversation:
-        autoresponse_welcome(line, destination, sender)
-    # elif conversation_expired:
-    #     autoresponse_goodbye(line, destination)
 
 
 def sync_templates(line):

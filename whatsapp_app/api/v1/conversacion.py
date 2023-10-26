@@ -417,23 +417,31 @@ class ViewSet(viewsets.ViewSet):
         try:
             data = request.data.copy()  # Id Template
             sender = request.user.get_agente_profile()
-            line = ConfiguracionWhatsappCampana.objects.filter(
-                campana=data['campaing']).last().linea
+            campana = Campana.objects.get(id=data['campaing'])
             template = TemplateWhatsapp.objects.get(id=data['template_id'])
             template_id = template.identificador
             destination = data['destination']
+            line = ConfiguracionWhatsappCampana.objects.filter(
+                campana=campana).last().linea
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             conversation_started = ConversacionWhatsapp.objects.filter(
-                destination=data['destination'],
+                destination=destination,
                 expire__gte=timestamp
             )
             if not conversation_started:
                 orquestador_response = send_template_message(
                     line, destination, template_id, data['params'])  # orquestador
+                print(">>>>", orquestador_response["status"])
                 if orquestador_response["status"] == "submitted":
+                    conversation_started = ConversacionWhatsapp.objects.create(
+                        destination=destination,
+                        campana=campana,
+                        agent=sender
+                    )
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
                     mensaje = MensajeWhatsapp.objects.create(
+                        conversation=conversation_started,
                         message_id=orquestador_response['messageId'],
                         origen=line.numero,
                         timestamp=timestamp,
@@ -449,7 +457,8 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Ya existe una conversacion iniciada')),
                 status=status.HTTP_401_UNAUTHORIZED)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

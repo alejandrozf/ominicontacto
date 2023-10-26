@@ -84,9 +84,17 @@ class AgentNotifier:
         }
         self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
 
-    async def notify_whatsapp_new_chat(self, user_id, message):
-        await self.send_message(
-            self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
+    async def notify_whatsapp_new_chat(self, user_id, **kwargs):
+        conversation = kwargs.get('conversation', None)
+        if conversation:
+            message = {
+                'chat_id': conversation.id,
+                'campaing_id': conversation.campana,
+                'timestamp': conversation.timestamp,
+            }
+            print(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id)
+            await self.send_message_whatsapp(
+                self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 
     def notify_whatsapp_chat_attended(self, user_id, message):
         self.send_message(
@@ -130,18 +138,49 @@ class AgentNotifier:
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_TRANSFERED, message, user_id=user_id, whatsapp_event=True)
 
-    async def notify_whatsapp_new_message(self, user_id, message):
-        await self.send_message_whatsapp(
-            self.TYPE_WHATSAPP_NEW_MESSAGE, message, user_id=user_id, whatsapp_event=True)
+    async def notify_whatsapp_new_message(self, user_id, **kwargs):
+        message = kwargs.get('message', None)
+        if message:
+            message_json = {
+                'chat_id': message.conversation.id,
+                'campaing_id': message.conversation.campana.id
+                if message.conversation.campana else "",
+                'message_id': message.id,
+                'content': message.content,
+                'origen': message.origen,
+                'timestamp': message.timestamp,
+                'sender': message.sender,
+                'type': message.type
+            }
+            print(self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id)
+            await self.send_message_whatsapp(
+                self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id=user_id, whatsapp_event=True)
 
-    async def notify_whatsapp_message_status(self, user_id, message):
-        await self.send_message_whatsapp(
-            self.TYPE_WHATSAPP_MESSAGE_STATUS, message, user_id=user_id, whatsapp_event=True)
+    async def notify_whatsapp_message_status(self, user_id, **kwargs):
+        message = kwargs.get('message', None)
+        if message:
+            message_json = {
+                'chat_id': message.conversation.id,
+                'message_id': message.id,
+                'status': message.status,
+                'date': message.timestamp
+            }
+            await self.send_message_whatsapp(
+                self.TYPE_WHATSAPP_MESSAGE_STATUS,
+                message_json,
+                user_id=user_id,
+                whatsapp_event=True)
 
-    async def notify_whatsapp_chat_expired(self, user_id, message):
-        print("send_message")
-        await self.send_message_whatsapp(
-            self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id, whatsapp_event=True)
+    async def notify_whatsapp_chat_expired(self, user_id, **kwargs):
+        conversation = kwargs.get('conversation', None)
+        if conversation:
+            message = {
+                "coneversation_id": conversation.id,
+                "expire": conversation.expire,
+                "is_active": conversation.is_active
+            }
+            await self.send_message_whatsapp(
+                self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id, whatsapp_event=True)
 
     def send_message(self, type, message, user_id=None, whatsapp_event=False):
         # si user_id=None se envia mensaje a todos los agentes conectados
