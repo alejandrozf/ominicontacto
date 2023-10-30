@@ -26,6 +26,7 @@ from django.utils.timezone import now
 from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import User
+from reportes_app.models import ActividadAgenteLog
 
 
 def request_host_port(request):
@@ -35,6 +36,7 @@ def request_host_port(request):
 class LoginTests(OMLBaseTest):
 
     def setUp(self):
+        super(LoginTests, self).setUp()
         self.agente = self.crear_agente_profile()
         self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
@@ -75,3 +77,25 @@ class LoginTests(OMLBaseTest):
         consola_agente_url = reverse('consola_de_agente')
         response = self.client.get(index_url, follow=True)
         self.assertRedirects(response, consola_agente_url)
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    @patch('defender.utils.is_already_locked')
+    @patch('defender.utils.check_request')
+    @patch('defender.utils.add_login_attempt_to_db')
+    def xtest_logs_agent_login(  # Renombrar para 2.0
+            self, add_login_attempt_to_db, check_request, is_already_locked,
+            generar_sip_password, generar_sip_user):
+        cant_logs = ActividadAgenteLog.objects.count()
+        is_already_locked.return_value = False
+        check_request.return_value = True
+        consola_agente_url = reverse('consola_de_agente')
+        login_url = reverse('login')
+        login_data = {'username': self.agente.user.username, 'password': PASSWORD}
+        response = self.client.post(login_url, login_data, follow=True)
+        self.assertRedirects(response, consola_agente_url)
+        self.assertEqual(ActividadAgenteLog.objects.count(), cant_logs + 1)
+        log = ActividadAgenteLog.objects.last()
+        self.assertEqual(log.agente_id, self.agente.id)
+        self.assertEqual(log.event, ActividadAgenteLog.LOGIN)

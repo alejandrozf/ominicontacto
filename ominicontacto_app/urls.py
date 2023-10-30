@@ -32,7 +32,7 @@ from ominicontacto_app import (
     views_auditorias, views_lista_rapida
 )
 
-from ominicontacto_app.views import base, grupos, instancia
+from ominicontacto_app.views import base, grupos, instancia, autenticacion_externa
 
 from ominicontacto_app.views_utils import (
     handler400, handler403, handler404, handler500
@@ -107,7 +107,7 @@ urlpatterns = [
     path('user/agent/update/<int:pk>',
          login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
          name='agent_update', kwargs={'for_agent': ''}),
-    path('user/password',
+    path('user/password/',
          login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
          name='user_change_password', kwargs={'change_password': ''}),
 
@@ -217,11 +217,14 @@ urlpatterns = [
 
 
     # ==========================================================================
-    # Auditorías a Supervisor
+    # Seguridad
     # ==========================================================================
-    re_path(r'^seguridad/auditoria/$',
-            login_required(views_auditorias.SeguridadAuditoriaView.as_view()),
-            name='seguridad_auditoria'),
+    path('seguridad/auditoria/',
+         login_required(views_auditorias.SeguridadAuditoriaView.as_view()),
+         name='seguridad_auditoria'),
+    path('security/external_authentication/',
+         login_required(autenticacion_externa.ConfigurarAutenticacionExternaView.as_view()),
+         name='security_external_authentication'),
 
 
     # ==========================================================================

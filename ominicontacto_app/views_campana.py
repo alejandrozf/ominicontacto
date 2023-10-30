@@ -28,7 +28,8 @@ from django.views.generic import (ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
 from django.utils.translation import gettext_lazy as _
 
-from ominicontacto_app.forms import CampanaSupervisorUpdateForm, ConfiguracionDeAgentesDeCampanaForm
+from ominicontacto_app.forms.base import (CampanaSupervisorUpdateForm,
+                                          ConfiguracionDeAgentesDeCampanaForm)
 from ominicontacto_app.models import Campana, SupervisorProfile, ConfiguracionDeAgentesDeCampana
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)

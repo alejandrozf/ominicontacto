@@ -37,7 +37,7 @@ from ominicontacto_app.errors import (
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError, OmlParserRepeatedColumnsError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError,
     OmlError)
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeBaseDeDatosForm, )
 from ominicontacto_app.models import BaseDatosContacto, Campana, AgenteEnContacto
 from ominicontacto_app.parser import ParserCsv

@@ -44,6 +44,7 @@ from ominicontacto_app.models import (
     Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion, AgenteProfile)
 from reportes_app.models import LlamadaLog
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
+from ominicontacto_app.services.agent.presence import AgentPresenceManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
 from ominicontacto_app.services.kamailio_service import KamailioService
@@ -307,6 +308,28 @@ class Click2CallOutsideCampaign(APIView):
         })
 
 
+class HangUpCallView(APIView):
+    """
+        Vista para ejecutar un hangup via AMI
+    """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request):
+        agente_profile = self.request.user.get_agente_profile()
+        manager = AgentActivityAmiManager()
+        error = manager.hangup_current_call(agente_profile)
+        if error:
+            return Response(data={
+                'status': 'ERROR',
+            })
+        else:
+            return Response(data={
+                'status': 'OK',
+            })
+
+
 class AgentLoginAsterisk(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
@@ -403,14 +426,16 @@ class AgentRejectCallAsterisk(APIView):
 
 class AgentLogoutView(View):
     """
-        Vista para ejecutar el logout de agente a asterisk, realizando las acciones
-        que solia hacer la extension 066LOGOUT
+        Vista para ejecutar el logout del agente a OML
     """
 
     def dispatch(self, request, *args, **kwargs):
         agente_profile = self.request.user.get_agente_profile()
         agent_login_manager = AgentActivityAmiManager()
         agent_login_manager.logout_agent(agente_profile, manage_connection=True)
+        # TODO: Todo el logout deberia manejarse desde AgentPresenceManager.logout
+        presence_manager = AgentPresenceManager()
+        presence_manager.logout(agente_profile)
         logout(request)
         return redirect('login')
 
@@ -431,11 +456,15 @@ class AgentPauseAsterisk(APIView):
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_redis_error = agent_login_manager.pause_agent(
             agente_profile, pause_id, manage_connection=True)
+
         if queue_pause_error or insert_redis_error:
             return Response(data={
                 'status': 'ERROR',
             })
         else:
+            # TODO: Todo el proceso de pausa deberia manejarse desde AgentPresenceManager.pause
+            presence_manager = AgentPresenceManager()
+            presence_manager.pause(agente_profile, pause_id)
             return Response(data={
                 'status': 'OK',
             })
@@ -462,6 +491,9 @@ class AgentUnpauseAsterisk(APIView):
                 'status': 'ERROR',
             })
         else:
+            # TODO: Todo el proceso de pausa deberia manejarse desde AgentPresenceManager.pause
+            presence_manager = AgentPresenceManager()
+            presence_manager.unpause(agente_profile, pause_id)
             return Response(data={
                 'status': 'OK',
             })
@@ -469,8 +501,7 @@ class AgentUnpauseAsterisk(APIView):
 
 class AgentDisabledAsterisk(APIView):
     """
-        Vista para ejecutar la despausa de agente a asterisk, realizando las acciones
-        que solia hacer la extension 0077UNPAUSE
+        Vista para poner al agente como deshabilitado
     """
     permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )

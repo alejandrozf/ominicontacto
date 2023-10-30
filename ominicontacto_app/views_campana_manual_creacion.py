@@ -28,9 +28,9 @@ from django.views.generic import DetailView, ListView, DeleteView
 
 from formtools.wizard.views import SessionWizardView
 
-from ominicontacto_app.forms import (CampanaManualForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset)
+from ominicontacto_app.forms.base import (CampanaManualForm, OpcionCalificacionFormSet,
+                                          ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                          QueueMemberFormset)
 from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,

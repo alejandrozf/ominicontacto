@@ -25,10 +25,12 @@ import random
 import re
 import uuid
 import datetime
+import urllib.parse
 
 
 from ast import literal_eval
 
+from constance import config as config_constance
 from django.contrib.auth.models import AbstractUser, _user_has_perm
 from django.contrib.sessions.models import Session
 from django.db import (models,
@@ -216,6 +218,33 @@ class User(AbstractUser):
             'queue_name__campana_id', flat=True))
         # Si las campañas son disjuntas es porque no esta asignado
         return not campanas_supervisor.isdisjoint(campanas_agent)
+
+    @property
+    def tipo_de_autenticacion(self):
+        if config_constance.EXTERNAL_AUTH_TYPE == _('LDAP'):
+            if self.autenticar_con_ldap:
+                return 'LDAP'
+        return _('Normal')
+
+    @property
+    def autenticar_con_ldap(self):
+        if config_constance.EXTERNAL_AUTH_TYPE == 'LDAP':
+            activacion = config_constance.EXTERNAL_AUTH_ACTIVATION
+            if activacion == AutenticacionExternaDeUsuario.TODOS:
+                return True
+            if activacion == AutenticacionExternaDeUsuario.TODOS_NO_ADMIN:
+                if self.is_superuser:
+                    return False
+                else:
+                    return True
+            # Si no tiene autenticacion externa configurado tomo el valor default
+            if not hasattr(self, 'autenticacion_externa') or self.autenticacion_externa is None:
+                if activacion == AutenticacionExternaDeUsuario.MANUAL_ACTIVO:
+                    return True
+                return False
+            if self.autenticacion_externa.activa:
+                return True
+        return False
 
 
 class ConjuntoDePausa(models.Model):
@@ -3280,9 +3309,8 @@ class SitioExterno(models.Model):
             else:
                 valores[parametro.nombre] = valor
 
-        valores = '&'.join([key + '=' + val for (key, val) in valores.items()])
         if completa and valores:
-            return url + '?' + valores
+            return url + '?' + urllib.parse.urlencode(valores)
         else:
             return url
 
@@ -3800,3 +3828,39 @@ class ConfiguracionDeAgentesDeCampana(models.Model):
         'Configurar forzar calificación'))
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
+
+
+class AutenticacionExternaDeUsuario(models.Model):
+    TODOS = '1'
+    TODOS_NO_ADMIN = '2'
+    MANUAL_ACTIVO = '3'
+    MANUAL_INACTIVO = '4'
+    CHOICES_ACTIVACION = ['1', '2', '3', '4']
+
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='autenticacion_externa')
+    activa = models.BooleanField(default=None, null=True)
+
+    @classmethod
+    def establecer_manual_defaults(cls, activa):
+        """Establece la configuracion para todos los usuarios según el valor de activa """
+        for user in User.objects.all():
+            if not hasattr(user, 'autenticacion_externa') or user.autenticacion_externa is None:
+                auth = AutenticacionExternaDeUsuario(user=user, activa=activa)
+                auth.save()
+            else:
+                if user.autenticacion_externa.activa is None:
+                    user.autenticacion_externa.activa = activa
+                    user.autenticacion_externa.save()
+
+    @classmethod
+    def desactivar_autenticacion_de_administradores(cls):
+        if not config_constance.EXTERNAL_AUTH_TYPE == 'LDAP':
+            return None
+        activacion = config_constance.EXTERNAL_AUTH_ACTIVATION
+        if activacion == cls.TODOS:
+            config_constance.EXTERNAL_AUTH_ACTIVATION = cls.TODOS_NO_ADMIN
+            return None
+        for user in User.objects.filter(is_superuser=True):
+            user.autenticacion_externa.activa = False
+            user.autenticacion_externa.save()

@@ -28,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <p> {{ detail }} </p>
     </div>
   {% elif not user.is_authenticated %}
-    {% if form.errors and not user_is_blocked%}
+    {% if login_unsuccessful and not user_is_blocked%}
         <div class="alert alert-danger">
             <p> {% trans 'Username/password incorrecto ingrese nuevamente los datos' %}</p>
     {% endif %}

@@ -39,6 +39,10 @@ CONSTANCE_CONFIG = {
     'WOMBAT_DIALER_STATE': ('READY', 'WOMBAT_DIALER_STATE', str),
     'WOMBAT_DIALER_UP_SINCE': (datetime(2022, 2, 2, 22, 2, 22, 2222, timezone(timedelta(0))),
                                'WOMBAT_DIALER_UP_SINCE', datetime),
+    'EXTERNAL_AUTH_TYPE': ('0', 'EXTERNAL_AUTH_TYPE', str),
+    'EXTERNAL_AUTH_SERVER': ('', 'EXTERNAL_AUTH_SERVER', str),
+    'EXTERNAL_AUTH_DN': ('', 'EXTERNAL_AUTH_DN', str),
+    'EXTERNAL_AUTH_ACTIVATION': ('', 'EXTERNAL_AUTH_ACTIVATION', str),
 
     # Addons configs
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),

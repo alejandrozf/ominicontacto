@@ -69,6 +69,16 @@ class ActividadAgenteLogFactory(DjangoModelFactory):
     event = Sequence(lambda n: "evento_{0}".format(n))
     pausa_id = Sequence(lambda n: n)
 
+    @classmethod
+    def x_create(cls, target_class, *args, **kwargs):  # renombrar como _create en 2.0
+        # Parche para permitir definir el valor de time
+        time = kwargs.pop('time', None)
+        obj = super(ActividadAgenteLogFactory, cls)._create(target_class, *args, **kwargs)
+        if time is not None:
+            obj.time = time
+            obj.save()
+        return obj
+
 
 class UserFactory(DjangoModelFactory):
     class Meta:

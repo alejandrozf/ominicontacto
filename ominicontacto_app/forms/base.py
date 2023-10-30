@@ -22,6 +22,7 @@ import json
 from django import forms
 from django.conf import settings
 
+from django.core.validators import URLValidator
 from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
@@ -43,19 +44,19 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm,
-    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida,
+    AutenticacionExternaDeUsuario
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
                                       contiene_solo_alfanumericos_o_guiones,
-                                      validar_valor_parametro_crm,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from ominicontacto_app.parser import is_valid_length
 
 from utiles_globales import validar_extension_archivo_audio
-from .utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
 
 TIEMPO_MINIMO_DESCONEXION = 2
@@ -83,6 +84,9 @@ class CustomUserCreationForm(UserCreationForm):
     rol = forms.ModelChoiceField(queryset=Group.objects.all(), label=_('Rol del usuario'))
     grupo = forms.ModelChoiceField(
         queryset=Grupo.objects.all(), label=_('Grupo de agentes'), required=False)
+    autenticacion_externa = forms.BooleanField(
+        required=False, disabled=True, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Autenticación externa'), initial=True)
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -96,7 +100,8 @@ class CustomUserCreationForm(UserCreationForm):
                          _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
         }
 
-    def __init__(self, roles_queryset, grupo_queryset, *args, **kwargs):
+    def __init__(self, roles_queryset, grupo_queryset, mostrar_autenticacion_externa,
+                 habilitar_autenticacion_externa, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['first_name'].widget.attrs['class'] = 'form-control'
@@ -109,6 +114,12 @@ class CustomUserCreationForm(UserCreationForm):
         if grupo_queryset:
             self.fields['grupo'].queryset = grupo_queryset
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
+        if mostrar_autenticacion_externa:
+            self.fields['autenticacion_externa'].initial = self.instance.autenticar_con_ldap
+            if habilitar_autenticacion_externa:
+                self.fields['autenticacion_externa'].disabled = False
+        else:
+            self.fields.pop('autenticacion_externa')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -144,10 +155,21 @@ class UserChangeForm(forms.ModelForm):
         widget=forms.PasswordInput(),
         label=_('Contraseña (otra vez)'))
 
-    def __init__(self, *args, **kwargs):
+    autenticacion_externa = forms.BooleanField(
+        required=False, disabled=True, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Autenticación externa'))
+
+    def __init__(self, mostrar_autenticacion_externa,
+                 habilitar_autenticacion_externa, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if kwargs["instance"].is_agente:
             self.fields["email"].required = True
+        if mostrar_autenticacion_externa:
+            self.fields['autenticacion_externa'].initial = self.instance.autenticar_con_ldap
+            if habilitar_autenticacion_externa:
+                self.fields['autenticacion_externa'].disabled = False
+        else:
+            self.fields.pop('autenticacion_externa')
 
     def clean(self):
         cleaned_data = super(UserChangeForm, self).clean()
@@ -2056,7 +2078,7 @@ class GrupoForm(forms.ModelForm):
 
     def validate_required_field(self, cleaned_data, field_name,
                                 message=_('Este campo es requerido')):
-        if(field_name in cleaned_data and
+        if (field_name in cleaned_data and
                 cleaned_data[field_name] is None):
             self._errors[field_name] = self.error_class([message])
             del cleaned_data[field_name]
@@ -2110,8 +2132,6 @@ class ParametrosCrmForm(forms.ModelForm):
         if tipo == ParametrosCrm.DATO_LLAMADA and valor not in ParametrosCrm.OPCIONES_LLAMADA_KEYS:
             raise forms.ValidationError(
                 _('El valor debe corresponder a un dato válido de la llamada'))
-        if tipo == ParametrosCrm.CUSTOM:
-            validar_valor_parametro_crm(valor)
         if tipo == ParametrosCrm.DIALPLAN:
             if not valor.startswith(ParametrosCrm.PREFIJO_DIALPLAN):
                 raise (forms.ValidationError(
@@ -2122,6 +2142,7 @@ class ParametrosCrmForm(forms.ModelForm):
                 valor not in ParametrosCrm.OPCIONES_DATO_CALIFICACION_KEYS:
             raise forms.ValidationError(
                 _('El valor debe corresponder a un campo válido de datos de calificación'))
+        # Si es tipo ParametrosCrm.CUSTOM puede ir cualquier valor.
         return valor
 
     def es_placeholder(self, nombre):
@@ -2282,3 +2303,39 @@ class ConfiguracionDeAgentesDeCampanaForm(forms.ModelForm):
         if not campana_type == Campana.TYPE_DIALER:
             del self.fields['set_auto_attend_dialer']
             del self.fields['auto_attend_dialer']
+
+
+class AutenticacionExternaForm(forms.Form):
+    tipo = forms.ChoiceField(
+        required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+        choices=(('0', '--------'), ('LDAP', _('LDAP Server'))))
+    servidor = forms.CharField(
+        max_length=255, required=False, validators=[URLValidator],
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    base_dn = forms.CharField(
+        max_length=255, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    activacion = forms.ChoiceField(
+        required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+        choices=((AutenticacionExternaDeUsuario.TODOS, _('Todos')),
+                 (AutenticacionExternaDeUsuario.TODOS_NO_ADMIN, _('Todos menos Admin')),
+                 (AutenticacionExternaDeUsuario.MANUAL_ACTIVO, _('Manual (default activo)')),
+                 (AutenticacionExternaDeUsuario.MANUAL_INACTIVO, _('Manual (default inactivo)'))
+                 ))
+
+    def clean(self):
+        # no tiene sentido q se seleccione aleatoriamente si no se seleccionó
+        # la asignación proporcional
+        cleaned_data = super(AutenticacionExternaForm, self).clean()
+        if cleaned_data.get('tipo') == 'LDAP':
+            if len(self.cleaned_data.get('servidor', '')) < 4:
+                self.add_error('servidor',
+                               _('Ingrese una url de servidor válida.'))
+            if len(self.cleaned_data.get('base_dn', '')) < 4:
+                self.add_error('base_dn',
+                               _('Ingrese una base DN válida.'))
+            activacion = self.cleaned_data.get('activacion', '')
+            if activacion not in AutenticacionExternaDeUsuario.CHOICES_ACTIVACION:
+                self.add_error('activacion',
+                               _('Seleccione un tipo de activación válido.'))
+        return cleaned_data

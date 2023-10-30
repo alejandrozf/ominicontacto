@@ -36,7 +36,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvImportacionError
 )
 from ominicontacto_app.models import ListasRapidas, ContactoListaRapida
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     ListaRapidaForm,
     PrimerLineaEncabezadoForm,
     CamposListaRapidaForm,

@@ -28,7 +28,7 @@ from django.views.generic import (
 )
 from django.utils.translation import gettext as _
 from ominicontacto_app.models import Formulario
-from ominicontacto_app.forms import (FormularioCRMForm)
+from ominicontacto_app.forms.base import (FormularioCRMForm)
 import logging as logging_
 
 logger = logging_.getLogger(__name__)

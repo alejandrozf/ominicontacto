@@ -38,7 +38,7 @@ from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
-from ominicontacto_app.forms import (
+from ominicontacto_app.forms.base import (
     AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
 from ominicontacto_app.utiles import convert_fecha_datetime
 from notification_app.notification import AgentNotifier
@@ -82,6 +82,14 @@ class AgendaContactoCreateView(CreateView):
     model = AgendaContacto
     context_object_name = 'agendacontacto'
     form_class = AgendaContactoForm
+
+    def dispatch(self, request, *args, **kwargs):
+        pk_contacto = kwargs['pk_contacto']
+        pk_campana = kwargs['pk_campana']
+        agenda = AgendaContacto.objects.filter(contacto_id=pk_contacto, campana_id=pk_campana)
+        if agenda.exists():
+            return redirect(reverse('agenda_contacto_update', kwargs={'pk': agenda.first().id}))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
         initial = super(AgendaContactoCreateView, self).get_initial()
