@@ -218,17 +218,18 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         agente_profile = request.user.get_agente_profile()
+        presence_manager = AgentPresenceManager()
         if agente_profile is None:
             return redirect('index')
         if agente_profile.is_inactive:
             message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
                         " su supervisor")
             messages.warning(request, message)
-            presence_manager = AgentPresenceManager()
             presence_manager.logout(agente_profile)
             logout(request)
             return redirect('login')
 
+        presence_manager.enforce_login(agente_profile)
         return super(ConsolaAgenteView, self).dispatch(request, *args, **kwargs)
 
     def get_pausas(self, agent):

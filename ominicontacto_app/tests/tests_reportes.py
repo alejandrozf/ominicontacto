@@ -110,10 +110,16 @@ class TriggerQueuelogTest(OMLBaseTest):
             'Sin migraciones no existe la tabla ´queue_log´')
     def test_eventos_sesion_actividad_agente_insertan_info_en_tabla_logs_actividades_agente(self):
         queuename = 'ALL'
-        cantidad = ActividadAgenteLog.objects.count()
-        for evento_agente in ['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL']:
-            self._aplicar_sql_query(queuename, event=evento_agente)
-        self.assertEqual(cantidad, ActividadAgenteLog.objects.count())
+        # Eliminar en 2.0
+        evento_agente = choice(['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL'])
+        self._aplicar_sql_query(queuename, event=evento_agente)
+        actividad_agente_log = ActividadAgenteLog.objects.first()
+        self.assertEqual(actividad_agente_log.event, evento_agente)
+        # Descomentar en 2.0
+        # cantidad = ActividadAgenteLog.objects.count()
+        # for evento_agente in ['ADDMEMBER', 'REMOVEMEMBER', 'PAUSEALL', 'UNPAUSEALL']:
+        #     self._aplicar_sql_query(queuename, event=evento_agente)
+        # self.assertEqual(cantidad, ActividadAgenteLog.objects.count())
 
     @skipIf(hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and
             settings.DESHABILITAR_MIGRACIONES_EN_TESTS,
