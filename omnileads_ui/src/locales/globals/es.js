@@ -114,6 +114,8 @@ export default {
     attach: 'Adjuntar',
     upload: 'Subir',
     request: 'Solicitar',
+    config: 'Configurar',
+    here: 'Aquí',
     // ----------------
     // --- weekdays ---
     // ----------------

@@ -1,16 +1,13 @@
 <template>
   <Toolbar>
     <template #start>
-    <Button
+      <Button
         @click="back"
         v-tooltip.top="$t('globals.back')"
         icon="pi pi-arrow-left"
         class="p-button-rounded p-button-secondary p-button-text"
-    />
-    <Chip
-        :label="clientInfo?.name"
-        icon="pi pi-user"
-    />
+      />
+      <Chip :label="clientInfo?.name" icon="pi pi-user" />
     </template>
     <template #end>
       <!-- <SplitButton
@@ -39,6 +36,13 @@
         class="p-button-info ml-2"
         @click="templates"
         v-tooltip.top="$tc('globals.whatsapp.template', 2)"
+      />
+      <Button
+        v-if="agtWhatsCoversationInfo.client.id"
+        icon="pi pi-user-edit"
+        class="p-button-secondary ml-2"
+        @click="editUserInfo"
+        v-tooltip.top="$t('views.whatsapp.contact.settings.edit_info')"
       />
       <Button
         icon="pi pi-times"
@@ -71,11 +75,28 @@ export default {
                     }
                 }
             ],
+            settingOptions: [
+                {
+                    label: this.$t('views.whatsapp.contact.settings.edit_info'),
+                    icon: 'pi pi-user-edit',
+                    command: () => {
+                        this.editUserInfo();
+                    }
+                },
+                {
+                    label: this.$t('views.whatsapp.contact.settings.show_info'),
+                    icon: 'pi pi-info-circle',
+                    command: () => {
+                        this.showUserInfo();
+                    }
+                }
+            ],
             conversationId: null,
             clientInfo: {
                 name: '',
                 phone: '',
-                avatar: 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'
+                avatar:
+          'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'
             }
         };
     },
@@ -83,13 +104,22 @@ export default {
         ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
     },
     methods: {
-        ...mapActions(['agtWhatsTransferChatInitData', 'agtWhatsSetCoversationMessages']),
+        ...mapActions([
+            'agtWhatsTransferChatInitData',
+            'agtWhatsSetCoversationMessages'
+        ]),
         back () {
             this.$router.push({ name: 'agent_whatsapp' });
         },
         templates () {
-            localStorage.setItem('agtWhatsappConversationMessages', JSON.stringify(this.agtWhatsCoversationMessages));
-            localStorage.setItem('agtWhatsCoversationInfo', JSON.stringify(this.agtWhatsCoversationInfo));
+            localStorage.setItem(
+                'agtWhatsappConversationMessages',
+                JSON.stringify(this.agtWhatsCoversationMessages)
+            );
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(this.agtWhatsCoversationInfo)
+            );
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
                     templates: true,
@@ -106,6 +136,32 @@ export default {
                 }
             });
             window.parent.document.dispatchEvent(event);
+        },
+        showUserInfo () {
+            const event = new CustomEvent('onWhatsappUserInfoEvent', {
+                detail: {
+                    user_info: true
+                }
+            });
+            window.parent.document.dispatchEvent(event);
+        },
+        editUserInfo () {
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(this.agtWhatsCoversationInfo)
+            );
+            const event = new CustomEvent('onWhatsappContactFormEvent', {
+                detail: {
+                    contact_form: true
+                }
+            });
+            window.parent.document.dispatchEvent(event);
+            // const event = new CustomEvent('onWhatsappUserEditEvent', {
+            //     detail: {
+            //         user_edit: true
+            //     }
+            // });
+            // window.parent.document.dispatchEvent(event);
         },
         save () {
             const event = new CustomEvent('onWhatsappDispositionFormEvent', {
@@ -137,8 +193,15 @@ export default {
         agtWhatsCoversationInfo: {
             handler () {
                 if (this.agtWhatsCoversationInfo) {
-                    this.clientInfo.name = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.name : this.agtWhatsCoversationInfo.destination;
-                    this.clientInfo.phone = this.agtWhatsCoversationInfo.client ? this.agtWhatsCoversationInfo.client.phone : this.agtWhatsCoversationInfo.destination;
+                    if (this.agtWhatsCoversationInfo.client.id) {
+                        this.clientInfo.name =
+              this.agtWhatsCoversationInfo.client.name ||
+              this.agtWhatsCoversationInfo.client.phone;
+                        this.clientInfo.phone = this.agtWhatsCoversationInfo.client.phone;
+                    } else {
+                        this.clientInfo.name = this.agtWhatsCoversationInfo.destination;
+                        this.clientInfo.phone = this.agtWhatsCoversationInfo.destination;
+                    }
                 }
             },
             deep: true,

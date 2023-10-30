@@ -29,6 +29,7 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer
+from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 from whatsapp_app.models import (
     ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
     ConfiguracionWhatsappCampana, TemplateWhatsapp)
@@ -80,7 +81,8 @@ class ConversacionSerializer(serializers.Serializer):
 
     def get_client(self, obj):
         if obj.client:
-            return obj.client.obtener_datos()
+            serializer = ContactoSerializer(obj.client)
+            return serializer.data
         return None
 
 
@@ -135,7 +137,8 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Conversacion no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener la conversacion')),

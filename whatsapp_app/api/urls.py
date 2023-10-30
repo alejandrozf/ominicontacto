@@ -46,7 +46,8 @@ routes = (
     (r"configuration_whatsapp", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
     (r"chat", whatsapp_app.api.v1.conversacion.ViewSet),
     (r"transfer", whatsapp_app.api.v1.transfer.ViewSet),
-    (r"contact/(?P<campana_pk>[^/.]+)", whatsapp_app.api.v1.contacto.ViewSet),
+    (r"contact/(?P<campana_pk>[^/.]+)/(?P<conversacion_pk>[^/.]+)",
+        whatsapp_app.api.v1.contacto.ViewSet),
     (r"disposition_chat", whatsapp_app.api.v1.calificacion.ViewSet),
 )
 

@@ -113,6 +113,9 @@ export default {
     transfer: 'Transferir',
     attach: 'Attach',
     upload: 'Upload',
+    request: 'Request',
+    config: 'Set up',
+    here: 'Here',
     // ----------------
     // --- weekdays ---
     // ----------------

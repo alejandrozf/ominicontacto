@@ -14,13 +14,17 @@ import TransferChatActions from './transfer_chat/actions';
 import TransferChatMutations from './transfer_chat/mutations';
 import TransferChatState from './transfer_chat/state';
 import TransferChatGetters from './transfer_chat/getters';
+import ContactActions from './contact/actions';
+import ContactMutations from './contact/mutations';
+import ContactState from './contact/state';
 
 export const AgentWhatsappState = {
     ...ConversationState,
     ...MessageState,
     ...TemplateState,
     ...ManagementState,
-    ...TransferChatState
+    ...TransferChatState,
+    ...ContactState
 };
 
 export const AgentWhatsappMutations = {
@@ -28,7 +32,8 @@ export const AgentWhatsappMutations = {
     ...MessageMutations,
     ...TemplateMutations,
     ...ManagementMutations,
-    ...TransferChatMutations
+    ...TransferChatMutations,
+    ...ContactMutations
 };
 
 export const AgentWhatsappActions = {
@@ -36,7 +41,8 @@ export const AgentWhatsappActions = {
     ...MessageActions,
     ...TemplateActions,
     ...ManagementActions,
-    ...TransferChatActions
+    ...TransferChatActions,
+    ...ContactActions
 };
 
 export const AgentWhatsappGetters = {

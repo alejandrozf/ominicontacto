@@ -248,6 +248,12 @@ export default {
             validations: {
                 not_empty_templates: 'There must be at least one template'
             }
+        },
+        contact: {
+            validations: {
+                field_is_required: '{field} is required',
+                invalid_field: '{field} has an invalid format'
+            }
         }
     }
 };

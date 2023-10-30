@@ -248,6 +248,12 @@ export default {
             validations: {
                 not_empty_templates: 'حداقل باید یک الگو وجود داشته باشد'
             }
+        },
+        contact: {
+            validations: {
+                field_is_required: '{field} این لازم است',
+                invalid_field: '{field} دارای قالب نامعتبر است'
+            }
         }
     }
 };

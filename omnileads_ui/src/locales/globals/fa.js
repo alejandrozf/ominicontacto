@@ -113,6 +113,9 @@ export default {
     transfer: 'انتقال',
     attach: 'ضمیمه کنید',
     upload: 'افزایش دادن',
+    request: 'درخواست',
+    config: 'برپایی',
+    here: 'اینجا',
     // ----------------
     // --- weekdays ---
     // ----------------

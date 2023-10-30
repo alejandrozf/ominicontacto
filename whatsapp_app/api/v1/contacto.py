@@ -31,12 +31,24 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from ominicontacto_app.models import Campana, Contacto
+from whatsapp_app.models import ConversacionWhatsapp
 
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
     data = serializers.CharField(source='datos')
+
+
+class RetriveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacto
+        fields = [
+            'id',
+            'telefono',
+            'datos',
+            'bd_contacto',
+        ]
 
 
 class CreateSerializer(serializers.ModelSerializer):
@@ -167,7 +179,7 @@ class ViewSet(viewsets.ViewSet):
     permission_classes = [TienePermisoOML]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
-    def list(self, request, campana_pk):
+    def list(self, request, campana_pk, conversacion_pk):
         try:
             filtro = request.GET.get('search')
             campana = Campana.objects.get(id=campana_pk)
@@ -184,7 +196,7 @@ class ViewSet(viewsets.ViewSet):
                 data=serializer.data),
             status=status.HTTP_200_OK)
 
-    def create(self, request, campana_pk):
+    def create(self, request, campana_pk, conversacion_pk):
         try:
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
@@ -192,9 +204,12 @@ class ViewSet(viewsets.ViewSet):
                 "bd_contacto": campana.bd_contacto.id,
                 "datos": request_data
             }
+            conversation = ConversacionWhatsapp.objects.get(id=conversacion_pk)
             serializer = CreateSerializer(data=data, context={'campana': campana})
             if serializer.is_valid():
-                serializer.save()
+                client = serializer.save()
+                conversation.client = client
+                conversation.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
@@ -211,7 +226,7 @@ class ViewSet(viewsets.ViewSet):
                 data=get_response_data(message=_('Error al crear el contacto')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def update(self, request, campana_pk, pk):
+    def update(self, request, campana_pk, conversacion_pk, pk):
         try:
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
@@ -246,18 +261,20 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["get"])
-    def db_fields(self, request, campana_pk):
+    def db_fields(self, request, campana_pk, conversacion_pk):
         try:
+            print("conversacion_pk", conversacion_pk)
             campana = Campana.objects.get(id=campana_pk)
-            columnas = json.loads(campana.bd_contacto.metadata)
+            metadata = campana.bd_contacto.get_metadata()
             data = []
-            for index, name in enumerate(columnas['nombres_de_columnas'], start=0):
+            for index, name in enumerate(metadata.nombres_de_columnas, start=0):
                 field = {}
                 field['name'] = name
-                field['mandatory'] = name in campana.get_campos_obligatorios()
+                field['mandatory'] = name in campana.get_campos_obligatorios() \
+                    or name == metadata.nombre_campo_telefono
                 field['block'] = name in campana.get_campos_no_editables()
                 field['hide'] = name in campana.get_campos_ocultos()
-                field['is_phone_field'] = index in columnas['cols_telefono']
+                field['is_phone_field'] = index in metadata.columnas_con_telefono
                 data.append(field)
             return response.Response(
                 data=get_response_data(
@@ -271,7 +288,7 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["post"])
-    def search(self, request, campana_pk):
+    def search(self, request, campana_pk, conversacion_pk):
         try:
             values = request.data.values()
             q_list = [Q(datos__contains=x) for x in values]

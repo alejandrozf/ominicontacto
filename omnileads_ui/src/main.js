@@ -56,6 +56,7 @@ import SplitButton from 'primevue/splitbutton';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Panel from 'primevue/panel';
+import SpeedDial from 'primevue/speeddial';
 
 // Idiomas
 import { createI18n } from 'vue-i18n';
@@ -114,6 +115,7 @@ app.component('SplitButton', SplitButton);
 app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
 app.component('Panel', Panel);
+app.component('SpeedDial', SpeedDial);
 
 // Register Helpers
 app.provide('$helpers', Helpers);

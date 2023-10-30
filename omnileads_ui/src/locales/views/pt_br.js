@@ -205,6 +205,16 @@ export default {
         conversations: {
             answered: 'respondidas',
             new: 'Novo'
+        },
+        contact: {
+            new: 'Criar contato',
+            edit: 'Editar Contato',
+            detail: 'Informação de contato',
+            info: 'O contato ainda não está cadastrado, você pode identificá-lo',
+            settings: {
+                show_info: 'Mostrar informações',
+                edit_info: 'Editar contato'
+            }
         }
     }
 };

@@ -214,6 +214,16 @@ export default {
         conversations: {
             answered: 'Contestados',
             new: 'Nuevos'
+        },
+        contact: {
+            new: 'Crear contacto',
+            edit: 'Editar contacto',
+            detail: 'Informacion de contacto',
+            info: 'El contacto aun no esta registrado, puedes identificarlo',
+            settings: {
+                show_info: 'Mostrar informacion',
+                edit_info: 'Editar usuario'
+            }
         }
     }
 };

@@ -18,7 +18,11 @@ export default {
             campaignId: conversation ? conversation.campaing_id : null,
             campaignName: conversation ? conversation.campaing_name : null,
             destination: conversation ? conversation.destination : null,
-            client: conversation ? conversation.client : null,
+            client: {
+                id: conversation.client ? conversation.client.id : null,
+                phone: conversation.client ? conversation.client.phone : null,
+                data: conversation.client ? conversation.client.data : null
+            },
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.is_active : null,
             expire: conversation ? conversation.expire : null,
@@ -33,7 +37,7 @@ export default {
         isNew.forEach((e) => {
             chats.push({
                 id: e.id,
-                from: e.client ? e.client.name : e.destination,
+                from: e.client ? (e.client.name || e.client.phone) : e.destination,
                 campaignId: e.campaing_id,
                 campaignName: e.campaing_name,
                 numMessages: e.message_number,
@@ -47,7 +51,7 @@ export default {
         inProgress.forEach((e) => {
             chats.push({
                 id: e.id,
-                from: e.client ? e.client.name : e.destination,
+                from: e.client ? (e.client.name || e.client.phone) : e.destination,
                 campaignId: e.campaing_id,
                 campaignName: e.campaing_name,
                 numMessages: e.message_number,
@@ -85,7 +89,11 @@ export default {
             campaignId: conversation ? conversation.campaignId : null,
             campaignName: conversation ? conversation.campaignName : null,
             destination: conversation ? conversation.destination : null,
-            client: conversation ? conversation.client : null,
+            client: {
+                id: conversation.client ? conversation.client.id : null,
+                phone: conversation.client ? conversation.client.phone : null,
+                data: conversation.client ? conversation.client.data : null
+            },
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.isActive : null,
             expire: conversation ? conversation.expire : null,
@@ -94,5 +102,14 @@ export default {
             photo: conversation ? conversation.photo : null,
             lineNumber: conversation ? conversation.lineNumber : null
         };
+    },
+    agtWhatsSetCoversationClientInfo (state, info = null) {
+        state.agtWhatsCoversationInfo.client.id = info ? info.id : null;
+        state.agtWhatsCoversationInfo.client.phone = info ? info.telefono : null;
+        state.agtWhatsCoversationInfo.client.data = info ? info.datos : null;
+        localStorage.setItem(
+            'agtWhatsCoversationInfo',
+            JSON.stringify(state.agtWhatsCoversationInfo)
+        );
     }
 };

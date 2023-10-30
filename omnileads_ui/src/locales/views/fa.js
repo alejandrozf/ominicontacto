@@ -205,6 +205,16 @@ export default {
         conversations: {
             answered: 'جواب داد',
             new: 'جدید'
+        },
+        contact: {
+            new: 'ایجاد تماس',
+            edit: 'ویرایش مخاطب',
+            detail: 'اطلاعات تماس',
+            info: 'مخاطب هنوز ثبت نشده است، می توانید آن را شناسایی کنید',
+            settings: {
+                show_info: 'نمایش اطلاعات',
+                edit_info: 'ویرایش کنید'
+            }
         }
     }
 };

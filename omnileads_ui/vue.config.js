@@ -55,7 +55,8 @@ module.exports = {
         agent_whatsapp_disposition_form: getPageConfig('agent_whatsapp_disposition_form'),
         agent_whatsapp_message_transfer: getPageConfig('agent_whatsapp_message_transfer'),
         agent_whatsapp_image_uploader: getPageConfig('agent_whatsapp_image_uploader'),
-        agent_whatsapp_file_uploader: getPageConfig('agent_whatsapp_file_uploader')
+        agent_whatsapp_file_uploader: getPageConfig('agent_whatsapp_file_uploader'),
+        agent_whatsapp_contact_form: getPageConfig('agent_whatsapp_contact_form')
     },
     devServer: {
         contentBase: './src/assets',

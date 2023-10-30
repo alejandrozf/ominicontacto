@@ -214,6 +214,16 @@ export default {
         conversations: {
             answered: 'Answered',
             new: 'New'
+        },
+        contact: {
+            new: 'Create contact',
+            edit: 'Edit contact',
+            detail: 'Contact information',
+            info: 'The contact is not yet registered, you can identify it',
+            settings: {
+                show_info: 'Show information',
+                edit_info: 'Edit user'
+            }
         }
     }
 };
