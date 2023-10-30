@@ -94,6 +94,22 @@ export default class WhatsappConversationService extends BaseService {
         }
     }
 
+    async reactiveExpiredConversation (chatId, data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatAgentReactiveExpiredConversation(chatId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al reactivar la conversacion expirada`);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
     async getAgentChatsList () {
         try {
             const resp = await fetch(this.urls.ChatAgentConversationsList(), this.payload);

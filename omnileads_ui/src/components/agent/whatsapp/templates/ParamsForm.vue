@@ -27,9 +27,9 @@
       </div>
     </div>
     <Panel header="Vista previa" class="field col-12 bg-green-200">
-        <p class="m-0">
-            {{ getPreviewMessage }}
-        </p>
+      <p class="m-0">
+        {{ getPreviewMessage }}
+      </p>
     </Panel>
     <div class="flex justify-content-end flex-wrap mt-2">
       <div class="flex align-items-center">
@@ -66,6 +66,10 @@ export default {
                     }
                 };
             }
+        },
+        onlyWhatappTemplates: {
+            type: Boolean,
+            default: false
         }
     },
     data () {
@@ -84,16 +88,22 @@ export default {
     computed: {
         ...mapState(['agtWhatsCoversationInfo']),
         getPreviewMessage () {
-            if (!this.template.configuration || this.form === {}) return this.template.configuration.text || '';
+            if (!this.template.configuration || this.form === {}) { return this.template.configuration.text || ''; }
             const self = this;
-            return this.template.configuration.text.replace(/{{(\d+)}}/g, function (match, numero) {
-                const field = self.form[`param_${numero}`];
-                return field.value || `${match}`;
-            });
+            return this.template.configuration.text.replace(
+                /{{(\d+)}}/g,
+                function (match, numero) {
+                    const field = self.form[`param_${numero}`];
+                    return field.value || `${match}`;
+                }
+            );
         }
     },
     methods: {
-        ...mapActions(['agtWhatsCoversationSendWhatsappTemplateMessage']),
+        ...mapActions([
+            'agtWhatsCoversationSendWhatsappTemplateMessage',
+            'agtWhatsCoversationReactiveExpiredConversation'
+        ]),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -153,14 +163,24 @@ export default {
                 const messages = JSON.parse(
                     localStorage.getItem('agtWhatsappConversationMessages')
                 );
-                const result = await this.agtWhatsCoversationSendWhatsappTemplateMessage({
+                let result = null;
+                const reqData = {
                     conversationId: this.agtWhatsCoversationInfo.id,
                     templateId: this.template.id,
                     phoneLine: this.agtWhatsCoversationInfo.lineNumber,
                     params: this.getFormData(),
                     messages,
                     $t: this.$t
-                });
+                };
+                if (this.onlyWhatappTemplates) {
+                    result = await this.agtWhatsCoversationReactiveExpiredConversation(
+                        reqData
+                    );
+                } else {
+                    result = await this.agtWhatsCoversationSendWhatsappTemplateMessage(
+                        reqData
+                    );
+                }
                 this.closeModal();
                 const { status, message } = result;
                 if (status === HTTP_STATUS.SUCCESS) {

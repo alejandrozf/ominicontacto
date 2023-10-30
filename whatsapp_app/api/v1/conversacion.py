@@ -53,7 +53,6 @@ MESSAGE_LIMIT = 2
 
 class ConversacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    conversation_type = serializers.CharField()
     campaing_id = serializers.PrimaryKeyRelatedField(
         source='campana', queryset=Campana.objects.all())
     campaing_name = serializers.CharField(source='campana.nombre')
@@ -404,12 +403,17 @@ class ViewSet(viewsets.ViewSet):
                 serializer = MensajeListSerializer(mensaje)
             return response.Response(
                 data=get_response_data(
+                    message=_('Se envio el mensaje de forma exitosa'),
                     status=HttpResponseStatus.SUCCESS, data=serializer.data),
                 status=status.HTTP_200_OK)
 
-        except Exception:
+        except Exception as e:
+            print('\n\n===> Error al reactivar la conversacion')
+            print(e)
             return response.Response(
-                data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
+                data=get_response_data(
+                    message=_('Error al enviar el mensaje'),
+                    status=HttpResponseStatus.SUCCESS, data={}),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["post"])

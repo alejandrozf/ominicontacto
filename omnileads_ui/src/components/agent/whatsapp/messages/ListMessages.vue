@@ -39,7 +39,8 @@ export default {
                 campaignName: data.campaignName,
                 numMessages: data.numMessages,
                 isMine: data.isMine,
-                isNew: data.isNew
+                isNew: data.isNew,
+                expire: data.expire
             };
         },
         conversationDetail ({ id, isNew, isMine }) {

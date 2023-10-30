@@ -129,6 +129,45 @@ export default {
             };
         }
     },
+    async agtWhatsCoversationReactiveExpiredConversation (
+        { commit },
+        { conversationId, templateId, params, phoneLine, messages, $t }
+    ) {
+        try {
+            const result = await service.reactiveExpiredConversation(
+                conversationId,
+                { template_id: templateId, params }
+            );
+            const { status, data } = result;
+            if (status === HTTP_STATUS.SUCCESS) {
+                const itsMine = data.origen === phoneLine;
+                const message = {
+                    id: data.id,
+                    from: itsMine
+                        ? `${$t('globals.agent')} (${data.sender.name})`
+                        : data.sender.name,
+                    conversationId: data.conversation,
+                    itsMine,
+                    message: data.content.text,
+                    status: data.status || null,
+                    date: new Date(data.timestamp)
+                };
+                messages.push(message);
+            }
+            await resetStoreDataByAction({
+                action: 'agtWhatsSetCoversationMessages',
+                data: messages
+            });
+            return result;
+        } catch (error) {
+            console.error('===> ERROR al reactivar conversacion expirada');
+            console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al reactivar conversacion expirada'
+            };
+        }
+    },
     agtWhatsCoversationReciveMessage ({ commit }, message) {
         try {
             commit('agtWhatsCoversationReciveMessage', message);
@@ -190,7 +229,7 @@ export default {
             commit('agtWhatsChatsListInit', { isNew: [], inProgress: [] });
         }
     },
-    async agtWhatsReceiveNewChat ({ commit }, chat) {
+    agtWhatsReceiveNewChat ({ commit }, chat) {
         try {
             commit('agtWhatsReceiveNewChat', chat);
         } catch (error) {
@@ -234,6 +273,15 @@ export default {
             console.error('===> ERROR al settear info del cliente de la conversacion');
             console.error(error);
             commit('agtWhatsSetCoversationClientInfo', null);
+        }
+    },
+    agtWhatsRestartExpiredCoversation ({ commit }, info = null) {
+        try {
+            commit('agtWhatsRestartExpiredCoversation', info);
+        } catch (error) {
+            console.error('===> ERROR al actualizar la fecha de expiracion de la conversacion');
+            console.error(error);
+            commit('agtWhatsRestartExpiredCoversation', null);
         }
     }
 };

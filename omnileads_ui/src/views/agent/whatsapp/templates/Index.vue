@@ -1,11 +1,16 @@
 <template>
   <div>
     <Header @handleClearFiltersEvent="clearFiltersEvent" />
-    <Table ref="tableRef" @handleModalEvent="handleModal" />
+    <Table
+      ref="tableRef"
+      @handleModalEvent="handleModal"
+      :onlyWhatappTemplates="onlyWhatappTemplates"
+    />
     <ModalTemplateParams
       :showModal="showModal"
       :template="template"
       :conversationId="conversationId"
+      :onlyWhatappTemplates="onlyWhatappTemplates"
       @handleModalEvent="handleModal"
     />
   </div>
@@ -28,7 +33,8 @@ export default {
             template: null,
             conversationId: null,
             campaignId: null,
-            conversationInfo: null
+            conversationInfo: null,
+            onlyWhatappTemplates: false
         };
     },
     mounted () {
@@ -42,10 +48,7 @@ export default {
         ...mapState(['agtWhatsCoversationInfo'])
     },
     methods: {
-        ...mapActions([
-            'initSupCampaignTemplates',
-            'agtWhatsSetCoversationInfo'
-        ]),
+        ...mapActions(['initSupCampaignTemplates', 'agtWhatsSetCoversationInfo']),
         clearFiltersEvent () {
             this.$refs.tableRef.clearFilter();
         },
@@ -57,6 +60,8 @@ export default {
         updatedLocalStorage () {
             this.conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
+            this.onlyWhatappTemplates =
+        localStorage.getItem('onlyWhatappTemplates').toString() === 'true';
             this.agtWhatsSetCoversationInfo(this.conversationInfo);
             this.conversationId = this.conversationInfo
                 ? parseInt(this.conversationInfo.id)

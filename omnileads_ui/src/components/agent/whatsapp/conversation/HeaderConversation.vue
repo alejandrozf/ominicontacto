@@ -32,6 +32,7 @@
         disabled
       /> -->
       <Button
+        v-if="!isExpired"
         icon="pi pi-copy"
         class="p-button-info ml-2"
         @click="templates"
@@ -57,6 +58,12 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 export default {
+    props: {
+        isExpired: {
+            type: Boolean,
+            default: false
+        }
+    },
     data () {
         return {
             attachOptions: [
@@ -120,6 +127,7 @@ export default {
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
+            localStorage.setItem('onlyWhatappTemplates', false);
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
                     templates: true,
@@ -208,6 +216,11 @@ export default {
             immediate: true
         },
         agtWhatsCoversationMessages: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        isExpired: {
             handler () {},
             deep: true,
             immediate: true

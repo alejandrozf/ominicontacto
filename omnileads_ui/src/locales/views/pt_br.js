@@ -204,7 +204,9 @@ export default {
         },
         conversations: {
             answered: 'respondidas',
-            new: 'Novo'
+            new: 'Novo',
+            expired_conversation: 'A conversa expirou',
+            restart_conversation: 'Reiniciar conversa'
         },
         contact: {
             new: 'Criar contato',

@@ -1,10 +1,13 @@
+const BASE_ROUTE = '/api/v1/whatsapp/chat';
+
 export default {
-    ChatMessages: (chatId) => `/api/v1/whatsapp/chat/${chatId}/messages`,
-    ChatSendTextMessage: (chatId) => `/api/v1/whatsapp/chat/${chatId}/send_message_text`,
-    ChatSendAttachmentMessage: (chatId) => `/api/v1/whatsapp/chat/${chatId}/send_message_attachment`,
-    ChatSendTemplateMessage: (chatId) => `/api/v1/whatsapp/chat/${chatId}/send_message_template`,
-    ChatSendWhatsappTemplateMessage: (chatId) => `/api/v1/whatsapp/chat/${chatId}/send_message_whatsapp_template`,
-    ChatAgentConversationsList: () => `/api/v1/whatsapp/chat`,
-    ChatAgentConversationsDetail: (chatId) => `/api/v1/whatsapp/chat/${chatId}`,
-    ChatAgentConversationRequest: (chatId) => `/api/v1/whatsapp/chat/${chatId}/attend_chat`
+    ChatMessages: (chatId) => `${BASE_ROUTE}/${chatId}/messages`,
+    ChatSendTextMessage: (chatId) => `${BASE_ROUTE}/${chatId}/send_message_text`,
+    ChatSendAttachmentMessage: (chatId) => `${BASE_ROUTE}/${chatId}/send_message_attachment`,
+    ChatSendTemplateMessage: (chatId) => `${BASE_ROUTE}/${chatId}/send_message_template`,
+    ChatSendWhatsappTemplateMessage: (chatId) => `${BASE_ROUTE}/${chatId}/send_message_whatsapp_template`,
+    ChatAgentReactiveExpiredConversation: (chatId) => `${BASE_ROUTE}/${chatId}/reactive_expired_conversation`,
+    ChatAgentConversationsList: () => `${BASE_ROUTE}`,
+    ChatAgentConversationsDetail: (chatId) => `${BASE_ROUTE}/${chatId}`,
+    ChatAgentConversationRequest: (chatId) => `${BASE_ROUTE}/${chatId}/attend_chat`
 };

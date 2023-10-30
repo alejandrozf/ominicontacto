@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="supCampaignTemplates"
+      :value="templates"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -97,19 +97,23 @@ import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 
 export default {
     inject: ['$helpers'],
+    props: {
+        onlyWhatappTemplates: {
+            type: Boolean,
+            default: false
+        }
+    },
     data () {
         return {
-            filters: null
+            filters: null,
+            templates: []
         };
     },
     created () {
         this.initFilters();
     },
     computed: {
-        ...mapState([
-            'supCampaignTemplates',
-            'agtWhatsCoversationInfo'
-        ])
+        ...mapState(['supCampaignTemplates', 'agtWhatsCoversationInfo'])
     },
     methods: {
         clearFilter () {
@@ -160,14 +164,25 @@ export default {
                         this.setParamsToTemplate(template);
                         return;
                     } else {
-                        result = await this.agtWhatsCoversationSendWhatsappTemplateMessage({
+                        const reqData = {
                             conversationId: this.agtWhatsCoversationInfo.id,
                             templateId: template.id,
                             phoneLine: this.agtWhatsCoversationInfo.lineNumber,
                             params: [],
                             messages,
                             $t: this.$t
-                        });
+                        };
+                        if (this.onlyWhatappTemplates) {
+                            result =
+                await this.agtWhatsCoversationReactiveExpiredConversation(
+                    reqData
+                );
+                        } else {
+                            result =
+                await this.agtWhatsCoversationSendWhatsappTemplateMessage(
+                    reqData
+                );
+                        }
                     }
                 } else {
                     result = await this.agtWhatsCoversationSendTemplateMessage({
@@ -205,16 +220,30 @@ export default {
         },
         ...mapActions([
             'agtWhatsCoversationSendTemplateMessage',
-            'agtWhatsCoversationSendWhatsappTemplateMessage'
+            'agtWhatsCoversationSendWhatsappTemplateMessage',
+            'agtWhatsCoversationReactiveExpiredConversation'
         ])
     },
     watch: {
         supCampaignTemplates: {
-            handler () {},
+            handler () {
+                if (this.onlyWhatappTemplates) {
+                    this.templates = this.supCampaignTemplates.filter(
+                        (template) => template.type === TEMPLATE_TYPES.WHATSAPP
+                    );
+                } else {
+                    this.templates = this.supCampaignTemplates;
+                }
+            },
             deep: true,
             immediate: true
         },
         agtWhatsCoversationInfo: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        onlyWhatappTemplates: {
             handler () {},
             deep: true,
             immediate: true

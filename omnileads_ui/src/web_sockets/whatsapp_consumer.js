@@ -42,8 +42,6 @@ export class WhatsappConsumer {
 
             this.consumer.onmessage = (event) => {
                 const { type, args } = JSON.parse(event.data);
-                console.log('Whatsapp Consumer MESSAGE');
-                console.log(event.data);
                 if (type === WHATSAPP_EVENTS.NEW_MESSAGE) {
                     this.handleNewMessageEvent(args);
                 } else if (type === WHATSAPP_EVENTS.MESSAGE_STATUS) {
@@ -142,13 +140,17 @@ export class WhatsappConsumer {
         );
     }
 
-    handleChatExpiredEvent (data) {
+    async handleChatExpiredEvent (data) {
         console.log('Whatsapp Consumer CHAT_EXPIRED: ');
         console.log(data);
-        notificationEvent(
-            NOTIFICATION.TITLES.WHATSAPP_CHAT_EXPIRED,
-            'El chat expiro debido a inactividad del agent/cliente',
-            NOTIFICATION.ICONS.WARNING
+        await STORE.dispatch('agtWhatsRestartExpiredCoversation', {
+            conversationId: data.conversation_id,
+            expire: data.expire
+        });
+        await notificationEvent(
+            NOTIFICATION.TITLES.SUCCESS,
+            'La conversacion se reactivo de forma exitosa',
+            NOTIFICATION.ICONS.INFO
         );
     }
 

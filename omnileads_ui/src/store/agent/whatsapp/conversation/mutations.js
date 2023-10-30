@@ -12,9 +12,6 @@ export default {
         state.agtWhatsCoversationInfo = {
             id: conversation ? conversation.id : null,
             conversationId: conversation ? conversation.conversation_id : null,
-            conversationType: conversation
-                ? conversation.conversation_type
-                : null,
             campaignId: conversation ? conversation.campaing_id : null,
             campaignName: conversation ? conversation.campaing_name : null,
             destination: conversation ? conversation.destination : null,
@@ -45,7 +42,8 @@ export default {
                 isNew: true,
                 isMine: false,
                 answered: false,
-                date: new Date(e.timestamp)
+                date: new Date(e.timestamp),
+                expire: new Date(e.expire)
             });
         });
         inProgress.forEach((e) => {
@@ -59,7 +57,8 @@ export default {
                 isNew: false,
                 isMine: true,
                 answered: false,
-                date: new Date(e.timestamp)
+                date: new Date(e.timestamp),
+                expire: new Date(e.expire)
             });
         });
         state.agtWhatsChatsList = chats;
@@ -111,5 +110,14 @@ export default {
             'agtWhatsCoversationInfo',
             JSON.stringify(state.agtWhatsCoversationInfo)
         );
+    },
+    agtWhatsRestartExpiredCoversation (state, info = null) {
+        if (info) {
+            state.agtWhatsCoversationInfo.expire = info.expire;
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(state.agtWhatsCoversationInfo)
+            );
+        }
     }
 };

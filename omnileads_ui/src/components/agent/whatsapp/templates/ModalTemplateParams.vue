@@ -8,11 +8,16 @@
     <template #header>
       <h2>
         {{
-            $t('models.whatsapp.templates.whatsapp_template') + `: (${template.name})`
+          $t("models.whatsapp.templates.whatsapp_template") +
+          `: (${template.name})`
         }}
       </h2>
     </template>
-    <ParamsForm @closeModalEvent="closeModal" :template="template" />
+    <ParamsForm
+      @closeModalEvent="closeModal"
+      :template="template"
+      :onlyWhatappTemplates="onlyWhatappTemplates"
+    />
   </Dialog>
 </template>
 
@@ -23,6 +28,10 @@ import ParamsForm from '@/components/agent/whatsapp/templates/ParamsForm';
 export default {
     props: {
         showModal: {
+            type: Boolean,
+            default: false
+        },
+        onlyWhatappTemplates: {
             type: Boolean,
             default: false
         },

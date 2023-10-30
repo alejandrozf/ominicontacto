@@ -90,7 +90,7 @@ class AgentNotifier:
             message = {
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana,
-                'timestamp': conversation.timestamp,
+                'timestamp': conversation.timestamp.isoformat(),
             }
             print(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id)
             await self.send_message_whatsapp(
@@ -148,7 +148,7 @@ class AgentNotifier:
                 'message_id': message.id,
                 'content': message.content,
                 'origen': message.origen,
-                'timestamp': message.timestamp,
+                'timestamp': message.timestamp.isoformat(),
                 'sender': message.sender,
                 'type': message.type
             }
@@ -163,7 +163,7 @@ class AgentNotifier:
                 'chat_id': message.conversation.id,
                 'message_id': message.id,
                 'status': message.status,
-                'date': message.timestamp
+                'date': message.timestamp.isoformat()
             }
             await self.send_message_whatsapp(
                 self.TYPE_WHATSAPP_MESSAGE_STATUS,
@@ -175,8 +175,8 @@ class AgentNotifier:
         conversation = kwargs.get('conversation', None)
         if conversation:
             message = {
-                "coneversation_id": conversation.id,
-                "expire": conversation.expire,
+                "conversation_id": conversation.id,
+                "expire": conversation.expire.isoformat(),
                 "is_active": conversation.is_active
             }
             await self.send_message_whatsapp(

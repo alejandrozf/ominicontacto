@@ -2,11 +2,7 @@
   <div class="disabled">
     <div class="flex justify-content-between flex-wrap">
       <div class="flex align-items-center justify-content-center">
-        <Avatar
-          icon="pi pi-user"
-          size="xlarge"
-          shape="circle"
-        />
+        <Avatar icon="pi pi-user" size="xlarge" shape="circle" />
         <span class="pl-2">{{ conversationInfo.from }}</span>
       </div>
       <div
@@ -30,12 +26,23 @@
         </small>
       </div>
     </div>
-    <div class="flex justify-content-end flex-wrap mb-2">
+    <div class="flex justify-content-between flex-wrap my-2">
+      <div class="flex align-items-center justify-content-center">
+        <Tag
+          v-if="isExpired"
+          icon="pi pi-clock"
+          :value="`${$t('views.whatsapp.conversations.expired_conversation')}`"
+          severity="warning"
+          rounded
+        ></Tag>
+      </div>
       <div class="flex align-items-center justify-content-center">
         <Tag
           :style="{ background: whatsapp_color }"
           icon="pi pi-sitemap"
-          :value="`${$t('globals.campaign')} (${conversationInfo.campaignName})`"
+          :value="`${$t('globals.campaign')} (${
+            conversationInfo.campaignName
+          })`"
           severity="info"
           rounded
         ></Tag>
@@ -52,7 +59,8 @@ import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 export default {
     data () {
         return {
-            whatsapp_color: COLORS.WHATSAPP.TealGreen
+            whatsapp_color: COLORS.WHATSAPP.TealGreen,
+            isExpired: false
         };
     },
     props: {
@@ -67,7 +75,8 @@ export default {
                     campaignName: '',
                     numMessages: 0,
                     isMine: false,
-                    isNew: false
+                    isNew: false,
+                    expire: null
                 };
             }
         }
@@ -95,11 +104,20 @@ export default {
                     NOTIFICATION.ICONS.ERROR
                 );
             }
+        },
+        checkExpirationDate () {
+            const now = new Date();
+            const expire = new Date(this.conversationInfo.expire);
+            this.isExpired = now > expire;
         }
     },
     watch: {
         conversationInfo: {
-            handler () {},
+            handler () {
+                if (this.conversationInfo.expire) {
+                    this.checkExpirationDate();
+                }
+            },
             deep: true,
             immediate: true
         }

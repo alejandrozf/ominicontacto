@@ -204,7 +204,9 @@ export default {
         },
         conversations: {
             answered: 'جواب داد',
-            new: 'جدید'
+            new: 'جدید',
+            expired_conversation: 'مکالمه منقضی شد',
+            restart_conversation: 'شروع مجدد مکالمه'
         },
         contact: {
             new: 'ایجاد تماس',
