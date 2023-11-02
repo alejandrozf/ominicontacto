@@ -87,20 +87,13 @@ class TemplateWhatsapp(models.Model):
     modificado = models.CharField(max_length=100)
     tipo = models.CharField(max_length=100)
     categoria = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=['linea_id', 'identificador'], name='identificador_unico')
         ]
-
-
-class GrupoTemplateWhatsapp(AuditableModelMixin):
-    nombre = models.CharField(max_length=100)
-    templates = models.ManyToManyField(TemplateWhatsapp)
-
-    def __str__(self):
-        return f"Grupo Template: {self.nombre}"
 
 
 class GrupoPlantillaMensaje(AuditableModelMixin):
@@ -116,8 +109,6 @@ class ConfiguracionWhatsappCampana(AuditableModelMixin):
         Campana, related_name="configuracionwhatsapp", on_delete=models.CASCADE)
     linea = models.ForeignKey(Linea, related_name="configuracionwhatsapp",
                               on_delete=models.CASCADE, blank=True, null=True)
-    grupo_template_whatsapp = models.ForeignKey(
-        GrupoTemplateWhatsapp, related_name="configuracionwhatsapp", on_delete=models.CASCADE)
     grupo_plantilla_whatsapp = models.ForeignKey(
         GrupoPlantillaMensaje, related_name="configuracionwhatsapp", on_delete=models.CASCADE)
     nivel_servicio = models.IntegerField()

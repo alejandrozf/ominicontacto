@@ -2380,10 +2380,9 @@ class AutenticacionExternaForm(forms.Form):
 class CampanaConfiguracionWhatsappForm(forms.ModelForm):
     class Meta:
         model = ConfiguracionWhatsappCampana
-        fields = ('linea', 'grupo_template_whatsapp', 'grupo_plantilla_whatsapp', 'nivel_servicio',)
+        fields = ('linea', 'grupo_plantilla_whatsapp', 'nivel_servicio',)
         widgets = {
             'linea': forms.Select(attrs={'class': 'form-control'}),
-            'grupo_template_whatsapp': forms.Select(attrs={'class': 'form-control'}),
             'grupo_plantilla_whatsapp': forms.Select(attrs={'class': 'form-control'}),
             'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
         }

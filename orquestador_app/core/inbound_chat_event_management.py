@@ -1,3 +1,4 @@
+from django.utils.timezone import timedelta
 from django.contrib.contenttypes.models import ContentType
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 from orquestador_app.core.gupshup_send_menssage import (
@@ -20,7 +21,11 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 campana=campana,
                 destination=origen,
                 is_active=True,
-                agent=None
+                agent=None,
+                expire=(
+                    timestamp + timedelta(days=1)) - timedelta(seconds=timestamp.second,
+                                                               microseconds=timestamp.microsecond),
+                timestamp=timestamp
             )
             if campana:
                 autoresponse_welcome(line, conversation, sender)

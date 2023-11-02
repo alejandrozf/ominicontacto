@@ -42,6 +42,7 @@ class ListSerializer(serializers.Serializer):
     created = serializers.CharField(source='creado')
     updated = serializers.CharField(source='modificado')
     type = serializers.CharField(source='tipo')
+    is_active = serializers.BooleanField(default=True)
 
 
 class RetrieveSerializer(serializers.Serializer):
@@ -55,6 +56,7 @@ class RetrieveSerializer(serializers.Serializer):
     created = serializers.CharField(source='creado')
     updated = serializers.CharField(source='modificado')
     type = serializers.CharField(source='tipo')
+    is_active = serializers.BooleanField(default=True)
 
 
 class ViewSet(viewsets.ViewSet):
@@ -105,22 +107,19 @@ class ViewSet(viewsets.ViewSet):
             proveedor = linea.proveedor
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
                 templates = sync_templates(linea)
-                TemplateWhatsapp.objects.filter(linea=linea).delete()
-                TemplateWhatsapp.objects.bulk_create(
-                    [TemplateWhatsapp(
-                        linea=linea,
-                        identificador=attrs['id'],
-                        nombre=attrs['elementName'],
-                        texto=attrs['data'],
-                        idioma=attrs['languageCode'],
-                        status=attrs['status'],
-                        creado=attrs['createdOn'],
-                        modificado=attrs['modifiedOn'],
-                        tipo=attrs['templateType'],
-                        categoria=attrs['category']
-                    ) for attrs in templates],
-                    ignore_conflicts=False
-                )
+                for attrs in templates:
+                    linea.templates_whatsapp.update_or_create(
+                        identificador=attrs['id'], defaults={
+                            'nombre': attrs['elementName'],
+                            'texto': attrs['data'],
+                            'idioma': attrs['languageCode'],
+                            'status': attrs['status'],
+                            'creado': attrs['createdOn'],
+                            'modificado': attrs['modifiedOn'],
+                            'tipo': attrs['templateType'],
+                            'categoria': attrs['category']
+                        }
+                    )
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
@@ -131,3 +130,70 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=True, methods=["get"], url_path='status_change/(?P<linea_pk>[^/.]+)/')
+    def status_change(self, request, pk, linea_pk):
+        try:
+            linea = Linea.objects.get(pk=linea_pk)
+            template = linea.templates_whatsapp.filter(is_active=True, pk=pk).last()
+            if template:
+                template.is_active = not template.is_active
+                template.save()
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS),
+                    status=status.HTTP_200_OK)
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.SUCCESS,
+                    message=_('No tiene permiso para esta accion'),
+                    data={}),
+                status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            print("********************************", e)
+            return response.Response(
+                data=get_response_data(message=_(str(e))),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # @action(detail=False, methods=["get"], url_path='available_templates/(?P<linea_pk>[^/.]+)/')
+    # def conversation_templates(self, request, linea_pk):
+    #     try:
+    #         linea = Linea.objects.get(pk=linea_pk)
+    #         templates = linea.templates_whatsapp.filter(is_active=True)
+    #         serializer = ListSerializer(templates, many=True)
+    #         return response.Response(
+    #             data=get_response_data(
+    #                 status=HttpResponseStatus.SUCCESS,
+    #                 message=_('Se obtuvieron las plantillas de forma exitosa'),
+    #                 data=serializer.data),
+    #             status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         print("********************************", e)
+    #         return response.Response(
+    #             data=get_response_data(message=_(str(e))),
+    #             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # @action(detail=False, methods=["get"], url_path='campaing_templates/(?P<campaing_pk>[^/.]+)/')
+    # def campaing_templates(self, request, campaing_pk):
+    #     try:
+    #         campana = Campana.objects.get(pk=campaing_pk)
+    #         if campana.linea:
+    #             templates = campana.linea.templates_whatsapp.filter(is_active=True)
+    #             serializer = ListSerializer(templates, many=True)
+    #             return response.Response(
+    #                 data=get_response_data(
+    #                     status=HttpResponseStatus.SUCCESS,
+    #                     message=_('Se obtuvieron los templates de forma exitosa'),
+    #                     data=serializer.data),
+    #                 status=status.HTTP_200_OK)
+    #         return response.Response(
+    #             data=get_response_data(
+    #                 status=HttpResponseStatus.SUCCESS,
+    #                 message=_('No tiene templates disponibles'),
+    #                 data={}),
+    #             status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         print("********************************", e)
+    #         return response.Response(
+    #             data=get_response_data(message=_(str(e))),
+    #             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

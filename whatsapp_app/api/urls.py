@@ -23,12 +23,12 @@ import whatsapp_app.api.v1.plantilla_mensaje
 import whatsapp_app.api.v1.template_whatsapp
 import whatsapp_app.api.v1.campana
 import whatsapp_app.api.v1.grupo_plantilla_whatsapp
-import whatsapp_app.api.v1.grupo_template_whatsapp
 import whatsapp_app.api.v1.configuracion_whatsapp_campana
 import whatsapp_app.api.v1.conversacion
 import whatsapp_app.api.v1.transfer
 import whatsapp_app.api.v1.contacto
 import whatsapp_app.api.v1.calificacion
+import whatsapp_app.api.v1.template
 
 from whatsapp_app.api import ViewSetRouter
 
@@ -42,13 +42,13 @@ routes = (
     (r"templates_whatsapp", whatsapp_app.api.v1.template_whatsapp.ViewSet),
     (r"campaing", whatsapp_app.api.v1.campana.ViewSet),
     (r"group_plantilla_whatsapp", whatsapp_app.api.v1.grupo_plantilla_whatsapp.ViewSet),
-    (r"group_template_whatsapp", whatsapp_app.api.v1.grupo_template_whatsapp.ViewSet),
     (r"configuration_whatsapp", whatsapp_app.api.v1.configuracion_whatsapp_campana.ViewSet),
     (r"chat", whatsapp_app.api.v1.conversacion.ViewSet),
     (r"transfer", whatsapp_app.api.v1.transfer.ViewSet),
     (r"contact/(?P<campana_pk>[^/.]+)/(?P<conversacion_pk>[^/.]+)",
         whatsapp_app.api.v1.contacto.ViewSet),
     (r"disposition_chat", whatsapp_app.api.v1.calificacion.ViewSet),
+    (r"templates/(?P<campana_pk>[^/.]+)", whatsapp_app.api.v1.template.ViewSet),
 )
 
 for route in routes:
