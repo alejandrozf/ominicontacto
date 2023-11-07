@@ -254,6 +254,22 @@ export default {
                 field_is_required: '{field} is required',
                 invalid_field: '{field} has an invalid format'
             }
+        },
+        disposition_chat: {
+            validations: {
+                field_is_required: '{field} is required'
+            },
+            form_types: {
+                management: 'Gestion',
+                schedule: 'Schedule',
+                no_action: 'No action'
+            },
+            field_types: {
+                text: 'Text',
+                date: 'Date',
+                list: 'List',
+                text_box: 'Text box'
+            }
         }
     }
 };

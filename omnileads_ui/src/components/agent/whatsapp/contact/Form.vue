@@ -262,29 +262,20 @@ export default {
                 }
                 if (this.invalidForm) return null;
                 let response = null;
-                this.$swal.fire({
-                    title: this.$t('globals.processing_request'),
-                    timerProgressBar: true,
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        this.$swal.showLoading();
-                    }
-                });
+                this.$helpers.openLoader(this.$t);
+                const formData = {
+                    campaignId: this.agtWhatsCoversationInfo.campaignId,
+                    conversationId: this.agtWhatsCoversationInfo.id,
+                    data: this.getFormData(),
+                    contactId: null
+                };
                 if (this.formToCreate) {
-                    response = await this.agtWhatsContactCreate({
-                        campaignId: this.agtWhatsCoversationInfo.campaignId,
-                        conversationId: this.agtWhatsCoversationInfo.id,
-                        data: this.getFormData()
-                    });
+                    response = await this.agtWhatsContactCreate(formData);
                 } else {
-                    response = await this.agtWhatsContactUpdate({
-                        campaignId: this.agtWhatsCoversationInfo.campaignId,
-                        conversationId: this.agtWhatsCoversationInfo.id,
-                        data: this.getFormData(),
-                        contactId: this.form.id.value
-                    });
+                    formData.contactId = this.form.id.value;
+                    response = await this.agtWhatsContactUpdate(formData);
                 }
-                this.$swal.close();
+                this.$helpers.closeLoader();
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {

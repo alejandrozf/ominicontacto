@@ -164,6 +164,7 @@ export default {
                         this.setParamsToTemplate(template);
                         return;
                     } else {
+                        this.$helpers.openLoader(this.$t);
                         const reqData = {
                             conversationId: this.agtWhatsCoversationInfo.id,
                             templateId: template.id,
@@ -185,6 +186,7 @@ export default {
                         }
                     }
                 } else {
+                    this.$helpers.openLoader(this.$t);
                     result = await this.agtWhatsCoversationSendTemplateMessage({
                         conversationId: this.agtWhatsCoversationInfo.id,
                         templateId: template.id,
@@ -193,6 +195,7 @@ export default {
                         $t: this.$t
                     });
                 }
+                this.$helpers.closeLoader();
                 const { status, message } = result;
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataTable
-      :value="agtWhatsManagements"
+      :value="agtWhatsDispositionChatHistory"
       class="p-datatable-sm"
       showGridlines
       :scrollable="true"
@@ -20,7 +20,7 @@
         })
       "
       :filters="filters"
-      :globalFilterFields="['phone']"
+      :globalFilterFields="['contact.phone']"
     >
       <template #header>
         <div class="flex justify-content-between flex-wrap">
@@ -52,18 +52,7 @@
       <template #empty> {{ $t("globals.without_data") }} </template>
       <template #loading> {{ $t("globals.load_info") }} </template>
       <Column
-        field="phone"
-        style="max-width: 15rem"
-        :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.phone')"
-      >
-        <template #body="slotProps">
-          {{ phoneFormat(slotProps.data.phone) }}
-        </template>
-      </Column>
-      <Column
         field="agent"
-        style="max-width: 15rem"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.agent')"
       >
@@ -72,60 +61,67 @@
         </template>
       </Column>
       <Column
-        field="start_datetime"
+        field="contact.phone"
         :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.start_datetime')"
+        :header="$t('models.whatsapp.disposition_form.contact_phone')"
       >
         <template #body="slotProps">
-          {{ timeFormat(slotProps.data.start_datetime) }}
+          {{ getContactPhone(slotProps.data.contact) }}
         </template>
       </Column>
       <Column
-        field="end_datetime"
-        :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.end_datetime')"
+        field="contact.data"
+        :header="$t('models.whatsapp.disposition_form.contact_data')"
       >
         <template #body="slotProps">
-          {{ timeFormat(slotProps.data.end_datetime) }}
+          {{ getContactData(slotProps.data.contact) }}
         </template>
       </Column>
       <Column
-        field="type"
+        field="disposition_data.type"
         :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.type')"
+        :header="$t('models.whatsapp.disposition_form.disposition_option')"
       >
         <template #body="slotProps">
-          <Tag :value="getType(slotProps.data.type)" rounded></Tag>
+          {{ getDispositionOption(slotProps.data.disposition_data.type) }}
         </template>
       </Column>
       <Column
-        field="mean"
+        field="disposition_data.name"
         :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.mean')"
+        :header="$t('models.whatsapp.disposition_form.disposition')"
       >
         <template #body="slotProps">
-          <Tag :value="getMean(slotProps.data.mean)" rounded></Tag>
+          {{ slotProps.data.disposition_data.name }}
         </template>
       </Column>
       <Column
-        field="result"
-        :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.result')"
+        field="campaign.type"
+        :header="$t('models.whatsapp.disposition_form.campaign_type')"
       >
         <template #body="slotProps">
-          <Tag :value="getResult(slotProps.data.result)" rounded></Tag>
+          {{ getCampaignType(slotProps.data.campaign.type) }}
         </template>
       </Column>
       <Column
-        field="score"
+        field="campaign.name"
         :sortable="true"
-        :header="$t('models.whatsapp.disposition_form.score')"
+        :header="$t('models.whatsapp.disposition_form.campaign')"
       >
         <template #body="slotProps">
-          <Tag :value="getScore(slotProps.data.score)" rounded></Tag>
+          {{ slotProps.data.campaign.name }}
         </template>
       </Column>
-      <Column :header="$tc('globals.option', 2)" style="max-width: 10rem">
+      <Column
+        field="updated_at"
+        :sortable="true"
+        :header="$t('models.whatsapp.disposition_form.created_at')"
+      >
+        <template #body="slotProps">
+          {{ timeFormat(slotProps.data.updated_at) }}
+        </template>
+      </Column>
+      <!-- <Column :header="$tc('globals.option', 2)" style="max-width: 10rem">
         <template #body="slotProps">
           <Button
             icon="pi pi-eye"
@@ -134,7 +130,7 @@
             v-tooltip.top="$t('globals.show')"
           />
         </template>
-      </Column>
+      </Column> -->
     </DataTable>
   </div>
 </template>
@@ -143,53 +139,62 @@
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import {
-    RESULTS,
-    TYPES,
-    SCORES,
-    MEANS
+    FORM_TYPES
 } from '@/globals/agent/whatsapp/disposition';
+import {
+    CAMPAIGN_TYPES
+} from '@/globals';
 
 export default {
     inject: ['$helpers'],
     data () {
         return {
             filters: null,
-            tipos: [
+            types: [
                 { name: '-------', value: null },
                 {
-                    name: this.$t('forms.whatsapp.provider.types.twilio'),
-                    value: TYPES.OPT1
+                    name: this.$t('forms.whatsapp.disposition_chat.form_types.no_action'),
+                    value: FORM_TYPES.OPT1
+                },
+                {
+                    name: this.$t(
+                        'forms.whatsapp.disposition_chat.form_types.management'
+                    ),
+                    value: FORM_TYPES.OPT2
+                },
+                {
+                    name: this.$t('forms.whatsapp.disposition_chat.form_types.schedule'),
+                    value: FORM_TYPES.OPT3
                 }
             ],
-            medios: [
+            campaignTypes: [
                 { name: '-------', value: null },
                 {
-                    name: this.$t('forms.whatsapp.provider.types.twilio'),
-                    value: MEANS.OPT1
-                }
-            ],
-            resultados: [
-                { name: '-------', value: null },
+                    name: this.$t('models.campaign.types.manual'),
+                    value: CAMPAIGN_TYPES.MANUAL
+                },
                 {
-                    name: this.$t('forms.whatsapp.provider.types.twilio'),
-                    value: RESULTS.OPT1
-                }
-            ],
-            calificaciones: [
-                { name: '-------', value: null },
+                    name: this.$t(
+                        'models.campaign.types.dialer'
+                    ),
+                    value: CAMPAIGN_TYPES.DIALER
+                },
                 {
-                    name: this.$t('forms.whatsapp.provider.types.twilio'),
-                    value: SCORES.OPT1
+                    name: this.$t('models.campaign.types.inbound'),
+                    value: CAMPAIGN_TYPES.ENTRANTE
+                },
+                {
+                    name: this.$t('models.campaign.types.preview'),
+                    value: CAMPAIGN_TYPES.PREVIEW
                 }
             ]
         };
     },
     created () {
         this.initFilters();
-        this.agtWhatsTemplatesInit();
     },
     computed: {
-        ...mapState(['agtWhatsManagements', 'agtWhatsManagementAgents'])
+        ...mapState(['agtWhatsDispositionChatHistory'])
     },
     methods: {
         clearFilter () {
@@ -208,34 +213,28 @@ export default {
                 .replace(/\D+/g, '')
                 .replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '+$1 ($2) $3-$4');
         },
-        getType (type) {
-            return this.tipos.find((t) => t.value === type)?.name;
-        },
-        getMean (type) {
-            return this.medios.find((t) => t.value === type)?.name;
-        },
-        getResult (type) {
-            return this.resultados.find((t) => t.value === type)?.name;
-        },
-        getScore (type) {
-            return this.calificaciones.find((t) => t.value === type)?.name;
-        },
         getAgent (agent) {
-            return this.agtWhatsManagementAgents.find((a) => a.agent_id === agent)
-                ?.agent_full_name;
+            return agent?.name || '-------';
+        },
+        getContactPhone (contact) {
+            return this.phoneFormat(contact.phone);
+        },
+        getContactData (contact) {
+            return contact.data;
+        },
+        getDispositionOption (option) {
+            return this.types.find((item) => item.value === option)?.name || '-------';
+        },
+        getCampaignType (type) {
+            return this.campaignTypes.find((item) => item.value === type)?.name || '-------';
         },
         show (template) {
-            this.agtWhatsTemplateSendMsg(template);
+            console.log('===> show detail disposition chat: ', template);
         },
-        ...mapActions(['agtWhatsTemplatesInit', 'agtWhatsTemplateSendMsg'])
+        ...mapActions([''])
     },
     watch: {
-        agtWhatsManagements: {
-            handler () {},
-            deep: true,
-            immediate: true
-        },
-        agtWhatsManagementAgents: {
+        agtWhatsDispositionChatHistory: {
             handler () {},
             deep: true,
             immediate: true

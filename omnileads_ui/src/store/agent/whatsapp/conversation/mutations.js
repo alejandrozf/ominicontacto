@@ -11,14 +11,14 @@ export default {
     agtWhatsConversationInfoInit (state, conversation = null) {
         state.agtWhatsCoversationInfo = {
             id: conversation ? conversation.id : null,
-            conversationId: conversation ? conversation.conversation_id : null,
             campaignId: conversation ? conversation.campaing_id : null,
             campaignName: conversation ? conversation.campaing_name : null,
             destination: conversation ? conversation.destination : null,
             client: {
                 id: conversation.client ? conversation.client.id : null,
                 phone: conversation.client ? conversation.client.phone : null,
-                data: conversation.client ? conversation.client.data : null
+                data: conversation.client ? conversation.client.data : null,
+                dispositionId: conversation.client ? conversation.client.disposition : null
             },
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.is_active : null,
@@ -82,16 +82,14 @@ export default {
     agtWhatsSetCoversationInfo (state, conversation = null) {
         state.agtWhatsCoversationInfo = {
             id: conversation ? conversation.id : null,
-            conversationType: conversation
-                ? conversation.conversationType
-                : null,
             campaignId: conversation ? conversation.campaignId : null,
             campaignName: conversation ? conversation.campaignName : null,
             destination: conversation ? conversation.destination : null,
             client: {
                 id: conversation.client ? conversation.client.id : null,
                 phone: conversation.client ? conversation.client.phone : null,
-                data: conversation.client ? conversation.client.data : null
+                data: conversation.client ? conversation.client.data : null,
+                dispositionId: conversation.client ? conversation.client.disposition : null
             },
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.isActive : null,
@@ -104,8 +102,9 @@ export default {
     },
     agtWhatsSetCoversationClientInfo (state, info = null) {
         state.agtWhatsCoversationInfo.client.id = info ? info.id : null;
-        state.agtWhatsCoversationInfo.client.phone = info ? info.telefono : null;
-        state.agtWhatsCoversationInfo.client.data = info ? info.datos : null;
+        state.agtWhatsCoversationInfo.client.phone = info ? info.phone : null;
+        state.agtWhatsCoversationInfo.client.data = info ? info.data : null;
+        state.agtWhatsCoversationInfo.client.dispositionId = info.disposition || null;
         localStorage.setItem(
             'agtWhatsCoversationInfo',
             JSON.stringify(state.agtWhatsCoversationInfo)

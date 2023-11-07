@@ -1,6 +1,6 @@
 const modalTransferChat = $('#whatsapp-modal-transfer-chat');
 const modalTemplates = $('#whatsapp-modal-templates');
-const modalDispositionForm = $('#whatsapp-modal-managenment-form');
+const modalDispositionForm = $('#whatsapp-modal-disposition-form');
 const modalMediaImageForm = $('#whatsapp-modal-media-image-form');
 const modalMediaFileForm = $('#whatsapp-modal-media-file-form');
 const modalContactForm = $('#whatsapp-modal-contact-form');

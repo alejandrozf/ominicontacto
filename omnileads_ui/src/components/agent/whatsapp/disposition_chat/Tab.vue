@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import Form from '@/components/agent/whatsapp/disposition_form/Form';
-import Historial from '@/components/agent/whatsapp/disposition_form/Historial';
+import Form from '@/components/agent/whatsapp/disposition_chat/Form';
+import Historial from '@/components/agent/whatsapp/disposition_chat/Historial';
 export default {
     components: {
         Form,

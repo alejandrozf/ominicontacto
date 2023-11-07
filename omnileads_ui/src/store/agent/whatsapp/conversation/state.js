@@ -10,7 +10,8 @@ export default {
         client: {
             id: null,
             phone: null,
-            data: null
+            data: null,
+            dispositionId: null
         },
         agent: null,
         isActive: null,

@@ -215,17 +215,21 @@ export default {
             status: 'حالت'
         },
         disposition_form: {
-            from: 'از',
-            to: 'برای',
+            type: 'پسر',
+            option: 'گزینه',
+            observations: 'مشاهدات',
             phone: 'تلفن',
             agent: 'عامل',
-            type: 'پسر',
-            mean: 'نیم',
-            result: 'نتیجه',
-            score: 'صلاحیت',
-            start_datetime: 'تاریخ شروع',
-            end_datetime: 'تاریخ پایان',
-            observation: 'مشاهدات'
+            contact_phone: 'تماس با تلفن',
+            contact_data: 'اطلاعات تماس',
+            campaign: 'زنگ',
+            campaign_type: 'نوع کمپین',
+            disposition_option: 'گزینه صلاحیت',
+            disposition: 'صلاحیت',
+            created_at: 'تاریخ ایجاد',
+            updated_at: 'اخرین بروزرسانی',
+            comments: 'نظرات',
+            form_response: 'پاسخ فرم'
         },
         message_transfer: {
             from: 'از',

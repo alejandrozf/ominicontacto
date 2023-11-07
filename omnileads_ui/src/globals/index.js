@@ -12,3 +12,10 @@ export const COLORS = {
         LightGreen: '#25D366'
     }
 };
+
+export const CAMPAIGN_TYPES = {
+    MANUAL: 1,
+    DIALER: 2,
+    ENTRANTE: 3,
+    PREVIEW: 4
+};

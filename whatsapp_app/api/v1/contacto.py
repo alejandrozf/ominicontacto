@@ -38,6 +38,11 @@ class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
     data = serializers.CharField(source='datos')
+    disposition = serializers.SerializerMethodField()
+
+    def get_disposition(self, obj):
+        disposition = obj.calificacioncliente_set.last()
+        return disposition.id if disposition else None
 
 
 class RetriveSerializer(serializers.ModelSerializer):
@@ -214,7 +219,7 @@ class ViewSet(viewsets.ViewSet):
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
                         message=_('Se creo el nuevo contacto de forma exitosa'),
-                        data=serializer.data),
+                        data=ListSerializer(client).data),
                     status=status.HTTP_201_CREATED)
             return response.Response(
                 data=get_response_data(
@@ -237,12 +242,12 @@ class ViewSet(viewsets.ViewSet):
             serializer = UpdateSerializer(
                 instance, data=data, partial=True, context={'campana': campana})
             if serializer.is_valid():
-                serializer.save()
+                client = serializer.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
                         message=_('Se actualizo el nuevo contacto de forma exitosa'),
-                        data=serializer.data),
+                        data=ListSerializer(client).data),
                     status=status.HTTP_201_CREATED)
             return response.Response(
                 data=get_response_data(

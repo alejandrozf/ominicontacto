@@ -52,7 +52,7 @@ module.exports = {
         agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
         agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),
         agent_whatsapp_templates: getPageConfig('agent_whatsapp_templates'),
-        agent_whatsapp_disposition_form: getPageConfig('agent_whatsapp_disposition_form'),
+        agent_whatsapp_disposition_chat: getPageConfig('agent_whatsapp_disposition_chat'),
         agent_whatsapp_message_transfer: getPageConfig('agent_whatsapp_message_transfer'),
         agent_whatsapp_image_uploader: getPageConfig('agent_whatsapp_image_uploader'),
         agent_whatsapp_file_uploader: getPageConfig('agent_whatsapp_file_uploader'),

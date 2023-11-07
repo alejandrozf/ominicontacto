@@ -17,13 +17,7 @@
         class="p-button-warning"
         disabled
       />
-      <Button
-        icon="pi pi-save"
-        class="ml-2"
-        @click="save"
-        v-tooltip.top="$t('globals.save')"
-        disabled
-      />
+
       <Button
         icon="pi pi-arrows-h"
         class="p-button-secondary ml-2"
@@ -31,6 +25,13 @@
         v-tooltip.top="$t('globals.transfer')"
         disabled
       /> -->
+      <Button
+        v-if="agtWhatsCoversationInfo.client.id"
+        icon="pi pi-save"
+        class="ml-2"
+        @click="qualify"
+        v-tooltip.top="$t('globals.save')"
+      />
       <Button
         v-if="!isExpired"
         icon="pi pi-copy"
@@ -164,14 +165,24 @@ export default {
                 }
             });
             window.parent.document.dispatchEvent(event);
-            // const event = new CustomEvent('onWhatsappUserEditEvent', {
-            //     detail: {
-            //         user_edit: true
-            //     }
-            // });
-            // window.parent.document.dispatchEvent(event);
         },
-        save () {
+        qualify () {
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(this.agtWhatsCoversationInfo)
+            );
+            localStorage.setItem(
+                'agtWhatsDispositionChatFormToCreate',
+                this.agtWhatsCoversationInfo.client.dispositionId === null
+            );
+            const event2 = new CustomEvent('agtWhatsCoversationInfo', {
+                detail: {
+                    type: 'refreshConversationInfo'
+                }
+            });
+            console.log('===> dispatchEvent event2');
+            console.log(event2);
+            window.parent.document.dispatchEvent(event2);
             const event = new CustomEvent('onWhatsappDispositionFormEvent', {
                 detail: {
                     disposition_form: true

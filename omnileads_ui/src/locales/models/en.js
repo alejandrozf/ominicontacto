@@ -215,17 +215,21 @@ export default {
             status: 'Status'
         },
         disposition_form: {
-            from: 'From',
-            to: 'To',
+            type: 'Type',
+            option: 'Option',
+            observations: 'Observations',
             phone: 'Phone',
             agent: 'Agent',
-            type: 'Type',
-            mean: 'Mean',
-            result: 'Result',
-            score: 'Score',
-            start_datetime: 'Start date',
-            end_datetime: 'End date',
-            observation: 'Observations'
+            contact_phone: 'Contact Tel',
+            contact_data: 'Contact information',
+            campaign: 'Bell',
+            campaign_type: 'Campaign type',
+            disposition_option: 'Qualification option',
+            disposition: 'Qualification',
+            created_at: 'Creation date',
+            updated_at: 'Last update',
+            comments: 'Comments',
+            form_response: 'Form response'
         },
         message_transfer: {
             from: 'From',

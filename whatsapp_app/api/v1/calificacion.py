@@ -29,29 +29,95 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from ominicontacto_app.models import Contacto, AgenteProfile
 from ominicontacto_app.models import (
     CalificacionCliente, OpcionCalificacion, FieldFormulario, RespuestaFormularioGestion)
+from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
+from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
+
+
+class AgentSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(source='user.get_full_name')
+    email = serializers.CharField(source='user.email')
 
 
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    idContact = serializers.PrimaryKeyRelatedField(source='contacto', read_only=True)
-    idAgente = serializers.PrimaryKeyRelatedField(
-        source='agente', queryset=AgenteProfile.objects.all())
-    idDispositionOption = serializers.PrimaryKeyRelatedField(
-        source='opcion_calificacion', read_only=True)
+    contact = serializers.SerializerMethodField()
+    agent = serializers.SerializerMethodField()
     comments = serializers.CharField(source='observaciones')
+    respuesta_formulario_gestion = serializers.SerializerMethodField()
+    disposition_data = serializers.SerializerMethodField()
+    created_at = serializers.DateTimeField(source='created')
+    updated_at = serializers.DateTimeField(source='modified')
+    campaign = serializers.SerializerMethodField()
+
+    def get_campaign(self, obj):
+        if obj.opcion_calificacion:
+            serializer = CampaignSerializer(obj.opcion_calificacion.campana)
+            return serializer.data
+
+    def get_disposition_data(self, obj):
+        if obj.opcion_calificacion:
+            serializer = OpcionCalificacionSerializer(obj.opcion_calificacion)
+            return serializer.data
+        return None
+
+    def get_agent(self, obj):
+        if obj.agente:
+            serializer = AgentSerializer(obj.agente)
+            return serializer.data
+        return None
+
+    def get_respuesta_formulario_gestion(self, obj):
+        if obj.opcion_calificacion.tipo == OpcionCalificacion.GESTION:
+            respuesta =\
+                RespuestaFormularioGestion.objects.filter(calificacion=obj.id).last()
+            respuesta_history = respuesta.history.filter(
+                history_change_reason=obj.history_id).last()
+            return RespuestaFormularioGestionSerilializer(respuesta_history).data
+        else:
+            return {}
+
+    def get_contact(self, obj):
+        if obj.contacto:
+            serializer = ContactSerializer(obj.contacto)
+            return serializer.data
+        return None
 
 
 class RetrieveSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    idContact = serializers.PrimaryKeyRelatedField(source='contacto', read_only=True)
-    idAgente = serializers.PrimaryKeyRelatedField(
-        source='agente', queryset=AgenteProfile.objects.all())
-    idDispositionOption = serializers.PrimaryKeyRelatedField(
-        source='opcion_calificacion', read_only=True)
+    agent = serializers.SerializerMethodField()
+    contact = serializers.SerializerMethodField()
     comments = serializers.CharField(source='observaciones')
-    respuestaFormularioGestion = serializers.SerializerMethodField()
+    form_response = serializers.SerializerMethodField()
+    disposition_data = serializers.SerializerMethodField()
+    campaign = serializers.SerializerMethodField()
 
-    def get_respuestaFormularioGestion(self, obj):
+    def get_campaign(self, obj):
+        if obj.opcion_calificacion:
+            serializer = CampaignSerializer(obj.opcion_calificacion.campana)
+            return serializer.data
+        return None
+
+    def get_agent(self, obj):
+        if obj.agente:
+            serializer = AgentSerializer(obj.agente)
+            return serializer.data
+        return None
+
+    def get_contact(self, obj):
+        if obj.contacto:
+            serializer = ContactSerializer(obj.contacto)
+            return serializer.data
+        return None
+
+    def get_disposition_data(self, obj):
+        if obj.opcion_calificacion:
+            serializer = OpcionCalificacionSerializer(obj.opcion_calificacion)
+            return serializer.data
+        return None
+
+    def get_form_response(self, obj):
         if obj.opcion_calificacion.tipo == OpcionCalificacion.GESTION:
             return\
                 RespuestaFormularioGestionSerilializer(
@@ -67,7 +133,7 @@ class CreateSerializer(serializers.ModelSerializer):
         source='agente', queryset=AgenteProfile.objects.all())
     idDispositionOption = serializers.PrimaryKeyRelatedField(
         source='opcion_calificacion', queryset=OpcionCalificacion.objects.all())
-    comments = serializers.CharField(source='observaciones')
+    comments = serializers.CharField(source='observaciones', allow_blank=True, allow_null=True)
 
     class Meta:
         model = CalificacionCliente
@@ -85,7 +151,7 @@ class UpdateSerializer(serializers.ModelSerializer):
         source='agente', queryset=AgenteProfile.objects.all())
     idDispositionOption = serializers.PrimaryKeyRelatedField(
         source='opcion_calificacion', queryset=OpcionCalificacion.objects.all())
-    comments = serializers.CharField(source='observaciones')
+    comments = serializers.CharField(source='observaciones', allow_blank=True, allow_null=True)
 
     class Meta:
         model = CalificacionCliente
@@ -100,23 +166,26 @@ class UpdateSerializer(serializers.ModelSerializer):
 class FieldFormularioSerializer(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField(source="nombre_campo")
-    type = serializers.CharField(source="get_tipo_display")
+    type = serializers.IntegerField(source="tipo")
+    order = serializers.IntegerField(source="orden")
+    values_select = serializers.CharField()
+    is_required = serializers.BooleanField()
 
 
 class OpcionCalificacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(source="nombre")
-    type = serializers.CharField(source="get_tipo_display")
+    type = serializers.IntegerField(source="tipo")
     form_fields = serializers.SerializerMethodField()
 
     def get_form_fields(self, obj):
         field_formulario = FieldFormulario.objects.filter(formulario=obj.formulario)
-        FieldFormularioSerializer(field_formulario, many=True)
         return FieldFormularioSerializer(field_formulario, many=True).data
 
 
 class RespuestaFormularioGestionSerilializer(serializers.Serializer):
     metadata = serializers.CharField()
+    date = serializers.DateTimeField(source="fecha")
 
 
 class RespuestaFormularioGestionCreateSerilializer(serializers.ModelSerializer):
@@ -125,7 +194,7 @@ class RespuestaFormularioGestionCreateSerilializer(serializers.ModelSerializer):
     class Meta:
         model = RespuestaFormularioGestion
         fields = [
-            'id',
+            # 'id',
             'metadata'
         ]
 
@@ -188,13 +257,13 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
-                    message=_('Se obtuvo las calificacion de forma exitosa'),
+                    message=_('Se obtuvo la calificacion de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
         except CalificacionCliente.DoesNotExist:
             return response.Response(
                 data=get_response_data(
-                    message=_('CalificacionCliente no encontrada')),
+                    message=_('Calificacion no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print(e)
@@ -206,9 +275,6 @@ class ViewSet(viewsets.ViewSet):
     def create(self, request):
         try:
             request_data = request.data.copy()
-            id_user = 2  # request.user.id
-            idAgente = AgenteProfile.objects.get(user__id=id_user).id
-            request_data.update({'idAgente': idAgente})
             serializer_calificacion = CreateSerializer(data=request_data)
             if serializer_calificacion.is_valid():
                 opcion_calificacion =\
@@ -263,9 +329,6 @@ class ViewSet(viewsets.ViewSet):
     def update(self, request, pk):
         try:
             request_data = request.data.copy()
-            id_user = 2  # request.user.id
-            idAgente = AgenteProfile.objects.get(user__id=id_user).id
-            request_data.update({'idAgente': idAgente})
             instance = CalificacionCliente.objects.get(pk=pk)
             serializer_calificacion = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer_calificacion.is_valid():
@@ -316,24 +379,16 @@ class ViewSet(viewsets.ViewSet):
             calificacioncliente = CalificacionCliente.objects.get(pk=pk)
             history = calificacioncliente.history.all().order_by('-history_date')
             serializer = ListSerializer(history, many=True)
-            respuesta =\
-                RespuestaFormularioGestion.objects.filter(calificacion=calificacioncliente).last()
-            if respuesta:
-                serializer = ListSerializer(history, many=True)
-                respuesta_history = respuesta.history.all().order_by('-history_date')
-                serializer_respuesta =\
-                    RespuestaFormularioGestionSerilializer(respuesta_history, many=True)
-                return response.Response(
-                    data=get_response_data(
-                        status=HttpResponseStatus.SUCCESS,
-                        data={**{"disposition_history": serializer.data},
-                              **{"engaged_history": serializer_respuesta.data}}),
-                    status=status.HTTP_200_OK)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
                     data=serializer.data),
                 status=status.HTTP_200_OK)
+        except CalificacionCliente.DoesNotExist:
+            return response.Response(
+                data=get_response_data(
+                    message=_('Calificacion no encontrada')),
+                status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print(e)
             return response.Response(
@@ -351,6 +406,7 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
+                    message=_('Se obtuvieron las opciones de calificacion de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
         except Exception as e:

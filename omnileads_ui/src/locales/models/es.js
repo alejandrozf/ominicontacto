@@ -215,17 +215,21 @@ export default {
             status: 'Estado'
         },
         disposition_form: {
-            from: 'De',
-            to: 'Para',
-            phone: 'Telefono',
-            agent: 'Agente',
             type: 'Tipo',
-            mean: 'Medio',
-            result: 'Resultado',
-            score: 'Calificacion',
-            start_datetime: 'Fecha de inicio',
-            end_datetime: 'Fecha de fin',
-            observation: 'Observaciones'
+            option: 'Opción',
+            observations: 'Observaciones',
+            phone: 'Teléfono',
+            agent: 'Agente',
+            contact_phone: 'Tel de Contacto',
+            contact_data: 'Datos de contacto',
+            campaign: 'Campaña',
+            campaign_type: 'Tipo de campaña',
+            disposition_option: 'Opción de calificación',
+            disposition: 'Calificación',
+            created_at: 'Fecha de creación',
+            updated_at: 'Última actualización',
+            comments: 'Comentarios',
+            form_response: 'Respuesta de formulario'
         },
         message_transfer: {
             from: 'De',

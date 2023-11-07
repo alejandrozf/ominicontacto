@@ -68,3 +68,18 @@ export function toasConfig ({
 export function fireNotification (config) {
     return Swal.fire(toasConfig(config));
 }
+
+export function openLoader ($t) {
+    return Swal.fire({
+        title: $t('globals.processing_request'),
+        timerProgressBar: true,
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+}
+
+export function closeLoader () {
+    return Swal.close();
+}
