@@ -45,7 +45,7 @@ pycparser==2.17
 pygal==2.3.0
 -e git+https://github.com/SrMoreno/pyst2@master#egg=pyst2
 python-crontab==2.4.0
-Pygments==2.5.2
+Pygments==2.7.4
 reportlab==3.5.34
 requests==2.12.5
 redis==3.5.3
