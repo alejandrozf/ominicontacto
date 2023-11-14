@@ -17,6 +17,9 @@
 #
 
 # APIs para visualizar destinos
+import operator
+from functools import reduce
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -30,10 +33,11 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
+from whatsapp_app.api.v1.calificacion import RetrieveSerializer as CalificacionSerializer
 from whatsapp_app.models import (
     ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
     ConfiguracionWhatsappCampana, TemplateWhatsapp)
-from ominicontacto_app.models import Campana, AgenteProfile
+from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import send_template_message, send_text_message
 
@@ -62,6 +66,7 @@ class ConversacionSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(default=True)
     expire = serializers.DateTimeField()
     timestamp = serializers.DateTimeField()
+    date_last_interaction = serializers.DateTimeField()
     message_number = serializers.SerializerMethodField()
     messages = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
@@ -83,6 +88,25 @@ class ConversacionSerializer(serializers.Serializer):
             serializer = ContactoSerializer(obj.client)
             return serializer.data
         return None
+
+
+class ConversacionFilterSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    timestamp = serializers.DateTimeField()
+    date_last_interaction = serializers.DateTimeField()
+    destination = serializers.CharField()
+    disposition = serializers.SerializerMethodField()
+    message_number = serializers.SerializerMethodField()
+
+    def get_message_number(self, obj):
+        return obj.mensajes.count()
+
+    def get_disposition(self, obj):
+        if obj.client and obj.campana:
+            calificacion = CalificacionCliente.objects.filter(
+                contacto=obj.client, opcion_calificacion__campana=obj.campana).last()
+            return CalificacionSerializer(calificacion).data
+        return {}
 
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
@@ -168,7 +192,6 @@ class ViewSet(viewsets.ViewSet):
                 "conversation_data": serializer_conversacion.data,
                 "messages": serializer_mensajes.data
             }
-            print(data)
             agentes = conversacion.campana.obtener_agentes()
             agent_notifier = AgentNotifier()
             for agente in agentes:
@@ -182,7 +205,7 @@ class ViewSet(viewsets.ViewSet):
                 agent_notifier.notify_whatsapp_chat_attended(agente.user_id, message)
             return response.Response(
                 data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS, data={},
+                    status=HttpResponseStatus.SUCCESS, data=data,
                     message=_('Se asignó la conversación de forma exitosa')),
                 status=status.HTTP_200_OK
             )
@@ -266,7 +289,7 @@ class ViewSet(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return response.Response(
-                data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
+                data=get_response_data(status=HttpResponseStatus.ERROR, data={}),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # @decorators.action(detail=True, methods=["post"])
@@ -462,5 +485,37 @@ class ViewSet(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return response.Response(
-                data=get_response_data(status=HttpResponseStatus.SUCCESS, data={}),
+                data=get_response_data(status=HttpResponseStatus.ERROR, data={}),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @decorators.action(detail=False,
+                       methods=["get"],
+                       url_path='(?P<campaing_id>[^/.]+)/filter_chats')
+    def filter_chats(self, request, campaing_id):
+        try:
+            campaing = Campana.objects.get(id=campaing_id)
+            chats_of_campaing = campaing.conversaciones.all()
+            start_date_str = request.query_params.get('start_date', None)
+            end_date_str = request.query_params.get('end_date', None)
+            phone = request.query_params.get('phone', None)
+            agent = request.query_params.get('agent', None)
+            list_of_Q = []
+            if start_date_str and end_date_str:
+                list_of_Q.append(
+                    Q(date_last_interaction__date__range=[start_date_str, end_date_str]))
+            if phone:
+                list_of_Q.append(Q(destination=phone))
+            if agent:
+                list_of_Q.append(Q(agent=agent))
+
+            if list_of_Q:
+                chats_of_campaing = chats_of_campaing.filter(reduce(operator.or_, list_of_Q))
+            serializer = ConversacionFilterSerializer(
+                chats_of_campaing, many=True)
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+                status=status.HTTP_200_OK)
+        except Exception:
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.ERROR, data={}),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

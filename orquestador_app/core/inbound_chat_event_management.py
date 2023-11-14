@@ -25,7 +25,8 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 expire=(
                     timestamp + timedelta(days=1)) - timedelta(seconds=timestamp.second,
                                                                microseconds=timestamp.microsecond),
-                timestamp=timestamp
+                timestamp=timestamp,
+                date_last_interaction=timestamp
             )
             if campana:
                 autoresponse_welcome(line, conversation, sender)
@@ -34,11 +35,10 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
         else:
             if not conversation.is_active:
                 conversation.is_active = True
-                conversation.save()
             if conversation.saliente and not conversation.atendida:
                 conversation.atendida = True
-                conversation.save()
-
+            conversation.date_last_interaction = timestamp
+            conversation.save()
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(message_id=message_id, conversation=conversation,
                                                   defaults={

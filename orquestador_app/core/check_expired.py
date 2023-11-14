@@ -7,7 +7,6 @@ async def check_expired(expire, timestamp, message):
             if message.conversation.expire:
                 if message.conversation.expire < expire:  # expired conversation
                     message.conversation.expire = expire
-                    message.conversation.timestamp = timestamp
                     message.conversation.save()
                     await send_notify('notify_whatsapp_chat_expired',
                                       conversation=message.conversation)

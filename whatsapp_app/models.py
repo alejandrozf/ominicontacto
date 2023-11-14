@@ -131,6 +131,7 @@ class ConversacionWhatsapp(models.Model):
     saliente = models.BooleanField(default=False)
     atendida = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
+    date_last_interaction = models.DateTimeField(null=True)
 
     def otorgar_conversacion(self, agent):
         if self.agent:
