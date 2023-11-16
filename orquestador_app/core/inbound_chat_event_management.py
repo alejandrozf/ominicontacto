@@ -12,12 +12,12 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
         campana = None
         if destination_entrante.content_type == ContentType.objects.get(model='campana'):
             campana = destination_entrante.content_object
-        # campana = None
         conversation =\
-            ConversacionWhatsapp.objects.filter(destination=origen, expire__gte=timestamp).last()
-        print(">>>>>> conversation", conversation)
+            ConversacionWhatsapp.objects.filter(
+                line=line, destination=origen, expire__gte=timestamp).last()
         if not conversation:
             conversation = ConversacionWhatsapp.objects.create(
+                line=line,
                 campana=campana,
                 destination=origen,
                 is_active=True,
@@ -31,9 +31,14 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 autoresponse_welcome(line, conversation, sender)
             else:
                 autoreponse_destino_interactivo(line, conversation, sender)  # mensaje con opciones
-        elif not conversation.is_active:
-            conversation.is_active = True
-            conversation.save()
+        else:
+            if not conversation.is_active:
+                conversation.is_active = True
+                conversation.save()
+            if conversation.saliente and not conversation.atendida:
+                conversation.atendida = True
+                conversation.save()
+
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(message_id=message_id, conversation=conversation,
                                                   defaults={

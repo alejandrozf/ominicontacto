@@ -236,10 +236,8 @@ class ViewSet(viewsets.ViewSet):
                     destination = conversation.destination
                     sender = request.user.get_agente_profile()
                     data = request.data.copy()
-                    line = ConfiguracionWhatsappCampana.objects.filter(
-                        campana=conversation.campana).last().linea
+                    line = conversation.line
                     message = {"text": data['message'], "type": "text"}
-
                     orquestador_response = send_text_message(
                         line, destination, message)  # orquestador
                     if orquestador_response["status"] == "submitted":
@@ -299,8 +297,7 @@ class ViewSet(viewsets.ViewSet):
                     destination = conversation.destination
                     sender = request.user.get_agente_profile()
                     data = request.data.copy()  # template_id
-                    line = ConfiguracionWhatsappCampana.objects.filter(
-                        campana=conversation.campana).last().linea
+                    line = conversation.line
                     message = PlantillaMensaje.objects.get(pk=data['template_id']).configuracion
                     orquestador_response = send_text_message(
                         line, destination, message)  # orquestador
@@ -345,8 +342,7 @@ class ViewSet(viewsets.ViewSet):
             template_id = template.identificador
             sender = request.user.get_agente_profile()
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            line = ConfiguracionWhatsappCampana.objects.filter(
-                campana=conversation.campana).last().linea
+            line = conversation.line
             orquestador_response = send_template_message(
                 line, destination, template_id, data['params'])  # orquestador
             if orquestador_response["status"] == "submitted":
@@ -380,8 +376,7 @@ class ViewSet(viewsets.ViewSet):
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             destination = conversation.destination
             sender = request.user.get_agente_profile()
-            line = ConfiguracionWhatsappCampana.objects.filter(
-                campana=conversation.campana).last().linea
+            line = conversation.line
             template = TemplateWhatsapp.objects.get(id=data['template_id'])
             template_id = template.identificador
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
@@ -429,18 +424,21 @@ class ViewSet(viewsets.ViewSet):
                 campana=campana).last().linea
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             conversation_started = ConversacionWhatsapp.objects.filter(
+                line=line,
                 destination=destination,
                 expire__gte=timestamp
             )
             if not conversation_started:
                 orquestador_response = send_template_message(
                     line, destination, template_id, data['params'])  # orquestador
-                print(">>>>", orquestador_response["status"])
                 if orquestador_response["status"] == "submitted":
                     conversation_started = ConversacionWhatsapp.objects.create(
+                        line=line,
                         destination=destination,
                         campana=campana,
-                        agent=sender
+                        agent=sender,
+                        saliente=True,
+                        error=True
                     )
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
