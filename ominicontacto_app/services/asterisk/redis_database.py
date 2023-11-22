@@ -24,8 +24,9 @@ import sys
 from django.conf import settings
 from django.utils.translation import gettext as _
 
+from ominicontacto_app.services.redis.connection import create_redis_connection
 from ominicontacto_app.models import (
-    AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana)
+    AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana, )
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
@@ -33,7 +34,6 @@ from configuracion_telefonia_app.models import (
 )
 
 import logging as _logging
-import redis
 from redis.exceptions import RedisError, ConnectionError
 
 logger = _logging.getLogger(__name__)
@@ -47,10 +47,7 @@ class AbstractRedisFamily(object):
 
     def get_redis_connection(self):
         if not self.redis_connection:
-            self.redis_connection = redis.Redis(
-                host=settings.REDIS_HOSTNAME,
-                port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-                decode_responses=True)
+            self.redis_connection = create_redis_connection()
         return self.redis_connection
 
     def _create_family(self, family_member):
@@ -306,8 +303,7 @@ class AgenteFamily(AbstractRedisFamily):
         agente_timestamp = ''
         if preservar_status:
             redis_connection = self.get_redis_connection()
-            agente_info = redis_connection.hgetall(
-                'OML:AGENT:{0}'.format(agente.pk))
+            agente_info = redis_connection.hgetall(self._get_nombre_family(agente))
             agente_status = agente_info.get('STATUS', '')
             agente_timestamp = agente_info.get('TIMESTAMP', '')
         self.delete_family(agente)
@@ -682,10 +678,7 @@ class BlacklistFamily(object):
     def get_redis_connection(self):
         try:
             if not self.redis_connection:
-                self.redis_connection = redis.Redis(
-                    host=settings.REDIS_HOSTNAME,
-                    port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-                    decode_responses=True)
+                self.redis_connection = create_redis_connection()
         except RedisError as e:
             raise e
         except ConnectionError as e:
@@ -715,10 +708,11 @@ class RegenerarAsteriskFamilysOML(object):
     """
 
     def __init__(self):
-        self.campana_family = CampanaFamily()
-        self.agente_family = AgenteFamily()
-        self.pausa_family = PausaFamily()
-        self.blacklist_family = BlacklistFamily()
+        redis_connection = create_redis_connection()
+        self.campana_family = CampanaFamily(redis_connection=redis_connection)
+        self.agente_family = AgenteFamily(redis_connection=redis_connection)
+        self.pausa_family = PausaFamily(redis_connection=redis_connection)
+        self.blacklist_family = BlacklistFamily(redis_connection=redis_connection)
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()

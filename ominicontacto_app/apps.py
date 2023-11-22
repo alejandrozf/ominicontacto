@@ -641,10 +641,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'sitio_externo_autenticacion_list',
              'roles': ['Administrador', ]},
-            {'nombre': 'queue_member_add',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'queue_member_grupo_agente',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'queue_member_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_template_create',
@@ -1062,10 +1058,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
         'sitio_externo_autenticacion_list':
             {'descripcion': _('Lista Autenticaciones de Sitios Externos'), 'version': '1.23.0'},
-        'queue_member_add':
-            {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
-        'queue_member_grupo_agente':
-            {'descripcion': _('Agregar un Grupo de Agentes a una Campaña'), 'version': '1.7.0'},
         'queue_member_campana':
             {'descripcion': _('Pantalla de asignacion de Agentes a Campaña'), 'version': '1.7.0'},
         'campana_dialer_template_create':

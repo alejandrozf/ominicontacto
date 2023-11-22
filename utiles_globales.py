@@ -28,8 +28,6 @@ from django.utils.translation import gettext as _
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
 
-from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
-
 
 def validar_extension_archivo_audio(valor):
     if valor is not None and not valor.name.endswith('.wav'):
@@ -60,17 +58,6 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
         except Exception as e:
             logger.warn("Error: {0}".format(e))
             raise OmlArchivoImportacionInvalidoError(err_message)
-
-
-def obtener_sip_agentes_sesiones_activas():
-    # TODO: Controlar cantidad de conexiones a Asterisk con AMIManagerConnector
-    agentes_activos_service = SupervisorActivityAmiManager()
-    agentes = list(agentes_activos_service.obtener_agentes_activos())
-    sips_agentes = []
-    for agente in agentes:
-        if agente['status'] != 'OFFLINE':
-            sips_agentes.append(int(agente['sip']))
-    return sips_agentes
 
 
 interface = os.popen("ip route list | awk '/^default/ {print $5}'").read().strip("\n")

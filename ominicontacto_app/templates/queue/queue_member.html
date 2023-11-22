@@ -20,16 +20,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
-{% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/queue_member.js' %}">
-</script>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
-{% endblock head_js %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}"></link>
-{% endblock %}
-
 {% block content %}
     <input type="hidden" id="add_agents_to_campaign" name="campaign_id" value="{{ campana.pk }}">
     {% if campana %}

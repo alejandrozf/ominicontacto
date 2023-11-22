@@ -57,7 +57,7 @@ class SupervisorActivityAmiManager(object):
             decode_responses=True)
         # TODO: cambiar a usar el metodo 'scan' que es mas eficiente con datos muy grandes
         # y realiza una especie de paginación
-        keys_agentes = redis_connection.keys('OML:AGENT*')
+        keys_agentes = redis_connection.keys('OML:AGENT:*')
         agentes_activos = []
         for key in keys_agentes:
             agente_info = redis_connection.hgetall(key)
