@@ -22,13 +22,16 @@ import { mapActions } from 'vuex';
 import WhatsappTemplatesTable from '@/components/supervisor/whatsapp/whatsapp_templates/WhatsappTemplatesTable';
 
 export default {
+    inject: ['$helpers'],
     components: {
         WhatsappTemplatesTable
     },
     async created () {
+        this.$helpers.openLoader(this.$t);
         const id = this.$route.params.id;
         await this.sycnupWhatsappTemplates(id);
         await this.initSupWhatsappTemplates();
+        this.$helpers.closeLoader();
     },
     methods: {
         ...mapActions([

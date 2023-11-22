@@ -16,7 +16,7 @@
     <ParamsForm
       @closeModalEvent="closeModal"
       :template="template"
-      :onlyWhatappTemplates="onlyWhatappTemplates"
+      :onlyWhatsappTemplates="onlyWhatsappTemplates"
     />
   </Dialog>
 </template>
@@ -31,7 +31,7 @@ export default {
             type: Boolean,
             default: false
         },
-        onlyWhatappTemplates: {
+        onlyWhatsappTemplates: {
             type: Boolean,
             default: false
         },

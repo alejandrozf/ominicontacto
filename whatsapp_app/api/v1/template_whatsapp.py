@@ -135,17 +135,18 @@ class ViewSet(viewsets.ViewSet):
     def status_change(self, request, pk, linea_pk):
         try:
             linea = Linea.objects.get(pk=linea_pk)
-            template = linea.templates_whatsapp.filter(is_active=True, pk=pk).last()
+            template = linea.templates_whatsapp.filter(pk=pk).last()
             if template:
                 template.is_active = not template.is_active
                 template.save()
                 return response.Response(
                     data=get_response_data(
+                        message=_('Se cambio el estado del template de forma exitosa'),
                         status=HttpResponseStatus.SUCCESS),
                     status=status.HTTP_200_OK)
             return response.Response(
                 data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS,
+                    status=HttpResponseStatus.ERROR,
                     message=_('No tiene permiso para esta accion'),
                     data={}),
                 status=status.HTTP_403_FORBIDDEN)

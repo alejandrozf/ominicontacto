@@ -4,13 +4,13 @@
     <Table
       ref="tableRef"
       @handleModalEvent="handleModal"
-      :onlyWhatappTemplates="onlyWhatappTemplates"
+      :onlyWhatsappTemplates="onlyWhatsappTemplates"
     />
     <ModalTemplateParams
       :showModal="showModal"
       :template="template"
       :conversationId="conversationId"
-      :onlyWhatappTemplates="onlyWhatappTemplates"
+      :onlyWhatsappTemplates="onlyWhatsappTemplates"
       @handleModalEvent="handleModal"
     />
   </div>
@@ -34,11 +34,11 @@ export default {
             conversationId: null,
             campaignId: null,
             conversationInfo: null,
-            onlyWhatappTemplates: false
+            onlyWhatsappTemplates: false
         };
     },
     mounted () {
-        window.addEventListener('storage', this.updatedLocalStorage);
+        // window.addEventListener('storage', this.updatedLocalStorage);
         this.updatedLocalStorage();
     },
     beforeUnmount () {
@@ -60,8 +60,8 @@ export default {
         updatedLocalStorage () {
             this.conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
-            this.onlyWhatappTemplates =
-        localStorage.getItem('onlyWhatappTemplates').toString() === 'true';
+            this.onlyWhatsappTemplates =
+        localStorage.getItem('onlyWhatsappTemplates')?.toString() === 'true';
             this.agtWhatsSetCoversationInfo(this.conversationInfo);
             this.conversationId = this.conversationInfo
                 ? parseInt(this.conversationInfo.id)
@@ -69,8 +69,9 @@ export default {
             this.campaignId = this.conversationInfo
                 ? parseInt(this.conversationInfo.campaignId)
                 : null;
+            const line = this.conversationInfo?.line;
             if (this.campaignId) {
-                this.initSupCampaignTemplates(this.campaignId);
+                this.initSupCampaignTemplates({ campaignId: this.campaignId, lineId: line ? line.id : null });
             }
         }
     }

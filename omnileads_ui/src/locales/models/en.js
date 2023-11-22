@@ -202,7 +202,8 @@ export default {
             creado: 'Created at',
             modificado: 'Updated at',
             tipo: 'Type',
-            categoria: 'Category'
+            categoria: 'Category',
+            active: 'Active'
         },
         group_of_message_template: {
             nombre: 'Name',

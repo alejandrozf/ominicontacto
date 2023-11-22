@@ -22,7 +22,7 @@ from django.conf.urls import include
 
 from whatsapp_app.views import (
     WhatsappProvidersConfigurationView, WhatsappLinesConfigurationView,
-    MessageTemplatesConfigurationView, MessageTemplateGroupView, WhatsappTemplateGroupView)
+    MessageTemplatesConfigurationView, MessageTemplateGroupView)
 from whatsapp_app.api.urls import api_urls_v1
 
 
@@ -42,10 +42,6 @@ urlpatterns = [
     path('resources/message_template_groups/',
          login_required(MessageTemplateGroupView.as_view()),
          name='whatsapp_message_template_groups',
-         ),
-    path('resources/whatsapp_template_groups/',
-         login_required(WhatsappTemplateGroupView.as_view()),
-         name='whatsapp_template_groups',
          ),
     path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),
 ]

@@ -40,6 +40,7 @@ from whatsapp_app.models import (
 from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import send_template_message, send_text_message
+from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
 
 MESSAGE_SENDERS = {
     'AGENT': 0,
@@ -70,15 +71,20 @@ class ConversacionSerializer(serializers.Serializer):
     message_number = serializers.SerializerMethodField()
     messages = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
-    line_number = serializers.SerializerMethodField()
+    line = serializers.SerializerMethodField()
+
+    def get_line(self, obj):
+        campana = obj.campana
+        configuracion = ConfiguracionWhatsappCampana.objects.filter(campana=campana).last()
+        serializer = LineSerializer(instance=configuracion.linea)
+        return {
+            'id': serializer.data['id'],
+            'name': serializer.data['name'],
+            'number': serializer.data['number'],
+        }
 
     def get_message_number(self, obj):
         return obj.mensajes.count()
-
-    def get_line_number(self, obj):
-        campana = obj.campana
-        configuracion = ConfiguracionWhatsappCampana.objects.filter(campana=campana).last()
-        return configuracion.linea.numero
 
     def get_messages(self, obj):
         return MensajeListSerializer(obj.mensajes.all().order_by('timestamp'), many=True).data

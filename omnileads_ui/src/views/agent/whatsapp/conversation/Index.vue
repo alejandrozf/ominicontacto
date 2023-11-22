@@ -138,7 +138,7 @@ export default {
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
             localStorage.setItem(
-                'onlyWhatappTemplates',
+                'onlyWhatsappTemplates',
                 true
             );
             const event = new CustomEvent('onWhatsappTemplatesEvent', {

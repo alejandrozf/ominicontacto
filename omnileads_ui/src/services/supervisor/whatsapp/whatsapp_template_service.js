@@ -17,4 +17,19 @@ export default class WhatsappTemplateService extends BaseService {
             this.initPayload();
         }
     }
+
+    async changeStatus ({ templateId, lineId }) {
+        try {
+            const resp = await fetch(this.urls.StatusChange(templateId, lineId), this.payload);
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al cambiar status de < Whatsapp Templates >`);
+            return {
+                status: false,
+                message: 'Error al cambiar status de Whatsapp Templates'
+            };
+        } finally {
+            this.initPayload();
+        }
+    }
 }

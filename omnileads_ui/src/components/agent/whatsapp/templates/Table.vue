@@ -98,7 +98,7 @@ import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 export default {
     inject: ['$helpers'],
     props: {
-        onlyWhatappTemplates: {
+        onlyWhatsappTemplates: {
             type: Boolean,
             default: false
         }
@@ -168,12 +168,12 @@ export default {
                         const reqData = {
                             conversationId: this.agtWhatsCoversationInfo.id,
                             templateId: template.id,
-                            phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                            phoneLine: this.agtWhatsCoversationInfo.line.number,
                             params: [],
                             messages,
                             $t: this.$t
                         };
-                        if (this.onlyWhatappTemplates) {
+                        if (this.onlyWhatsappTemplates) {
                             result =
                 await this.agtWhatsCoversationReactiveExpiredConversation(
                     reqData
@@ -190,7 +190,7 @@ export default {
                     result = await this.agtWhatsCoversationSendTemplateMessage({
                         conversationId: this.agtWhatsCoversationInfo.id,
                         templateId: template.id,
-                        phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                        phoneLine: this.agtWhatsCoversationInfo.line.number,
                         messages,
                         $t: this.$t
                     });
@@ -230,7 +230,7 @@ export default {
     watch: {
         supCampaignTemplates: {
             handler () {
-                if (this.onlyWhatappTemplates) {
+                if (this.onlyWhatsappTemplates) {
                     this.templates = this.supCampaignTemplates.filter(
                         (template) => template.type === TEMPLATE_TYPES.WHATSAPP
                     );
@@ -246,7 +246,7 @@ export default {
             deep: true,
             immediate: true
         },
-        onlyWhatappTemplates: {
+        onlyWhatsappTemplates: {
             handler () {},
             deep: true,
             immediate: true

@@ -202,7 +202,8 @@ export default {
             creado: 'Criada',
             modificado: 'Modificado',
             tipo: 'Cara',
-            categoria: 'Categoria'
+            categoria: 'Categoria',
+            active: 'Ativo'
         },
         group_of_message_template: {
             nombre: 'Nome',

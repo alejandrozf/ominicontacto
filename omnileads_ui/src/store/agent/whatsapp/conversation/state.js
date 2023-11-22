@@ -19,6 +19,10 @@ export default {
         timestamp: null,
         messageNumber: null,
         photo: null,
-        lineNumber: null
+        line: {
+            id: null,
+            name: null,
+            number: null
+        }
     }
 };

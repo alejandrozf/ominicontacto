@@ -202,7 +202,8 @@ export default {
             creado: 'ایجاد شده',
             modificado: 'اصلاح شده',
             tipo: 'پسر',
-            categoria: 'دسته بندی'
+            categoria: 'دسته بندی',
+            active: 'دارایی'
         },
         group_of_message_template: {
             nombre: 'نام',

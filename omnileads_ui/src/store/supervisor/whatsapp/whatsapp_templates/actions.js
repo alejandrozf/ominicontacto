@@ -9,5 +9,8 @@ export default {
     },
     async sycnupWhatsappTemplates ({ commit }, lineId) {
         return await service.sycnUp(lineId);
+    },
+    async whatsappTemplateStatusChange ({ commit }, { templateId, lineId }) {
+        return await service.changeStatus({ templateId, lineId });
     }
 };

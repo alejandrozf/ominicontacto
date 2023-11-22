@@ -116,6 +116,8 @@ export default {
     request: 'درخواست',
     config: 'برپایی',
     here: 'اینجا',
+    activate: 'فعال کنید',
+    deactivate: 'از کار انداختن',
     // ----------------
     // --- weekdays ---
     // ----------------

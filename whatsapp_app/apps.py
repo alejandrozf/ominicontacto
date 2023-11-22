@@ -34,8 +34,6 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'whatsapp_message_template_groups',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-            {'nombre': 'whatsapp_template_groups',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'proveedor-list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'proveedor-detail',
@@ -122,9 +120,6 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'whatsapp_message_template_groups':
             {'descripcion': _('whatsapp_message_template_groups'),
-             'version': '1.26.0'},
-        'whatsapp_template_groups':
-            {'descripcion': _('whatsapp_template_groups'),
              'version': '1.26.0'},
         'proveedor-list':
             {'descripcion': _('proveedor-list'),

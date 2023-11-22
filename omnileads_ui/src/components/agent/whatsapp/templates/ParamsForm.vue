@@ -67,7 +67,7 @@ export default {
                 };
             }
         },
-        onlyWhatappTemplates: {
+        onlyWhatsappTemplates: {
             type: Boolean,
             default: false
         }
@@ -167,12 +167,12 @@ export default {
                 const reqData = {
                     conversationId: this.agtWhatsCoversationInfo.id,
                     templateId: this.template.id,
-                    phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                    phoneLine: this.agtWhatsCoversationInfo.line.number,
                     params: this.getFormData(),
                     messages,
                     $t: this.$t
                 };
-                if (this.onlyWhatappTemplates) {
+                if (this.onlyWhatsappTemplates) {
                     result = await this.agtWhatsCoversationReactiveExpiredConversation(
                         reqData
                     );

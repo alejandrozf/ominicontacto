@@ -2,8 +2,12 @@
 import Service from '@/services/agent/whatsapp/disposition_chat_service';
 import { HTTP_STATUS } from '@/globals';
 export default {
-    async agtWhatsDispositionChatHistoryInit ({ commit }, { id }) {
+    async agtWhatsDispositionChatHistoryInit ({ commit }, { id = null }) {
         try {
+            if (!id) {
+                await commit('agtWhatsDispositionChatHistoryInit', []);
+                return;
+            }
             const { status, data } = await Service.history({
                 id
             });
@@ -17,8 +21,12 @@ export default {
             await commit('agtWhatsDispositionChatHistoryInit', []);
         }
     },
-    async agtWhatsDispositionChatOptionsInit ({ commit }, { campaignId }) {
+    async agtWhatsDispositionChatOptionsInit ({ commit }, { campaignId = null }) {
         try {
+            if (!campaignId) {
+                await commit('agtWhatsDispositionChatOptionsInit', []);
+                return;
+            }
             const { status, data } = await Service.options({
                 campaignId
             });
@@ -32,8 +40,12 @@ export default {
             await commit('agtWhatsDispositionChatOptionsInit', []);
         }
     },
-    async agtWhatsDispositionChatDetailInit ({ commit }, { id }) {
+    async agtWhatsDispositionChatDetailInit ({ commit }, { id = null }) {
         try {
+            if (!id) {
+                await commit('agtWhatsDispositionChatDetailInit', null);
+                return;
+            }
             const { status, data } = await Service.detail({
                 id
             });

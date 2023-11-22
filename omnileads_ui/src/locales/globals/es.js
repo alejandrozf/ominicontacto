@@ -116,6 +116,8 @@ export default {
     request: 'Solicitar',
     config: 'Configurar',
     here: 'Aquí',
+    activate: 'Activar',
+    deactivate: 'Desactivar',
     // ----------------
     // --- weekdays ---
     // ----------------

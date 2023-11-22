@@ -49,7 +49,7 @@ export default {
                         message: this.message
                     },
                     conversationId: this.conversationId,
-                    phoneLine: this.agtWhatsCoversationInfo.lineNumber,
+                    phoneLine: this.agtWhatsCoversationInfo.line.number,
                     $t: this.$t
                 };
                 this.agtWhatsCoversationSendTextMessage(data);

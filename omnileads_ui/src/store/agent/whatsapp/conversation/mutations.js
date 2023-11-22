@@ -1,3 +1,20 @@
+const setClientInfo = (info = null) => {
+    return {
+        id: info ? info.id : null,
+        phone: info ? info.phone : null,
+        data: info ? info.data : null,
+        dispositionId: info ? info.disposition : null
+    };
+};
+
+const setLineInfo = (info = null) => {
+    return {
+        id: info ? info.id : null,
+        name: info ? info.name : null,
+        number: info ? info.number : null
+    };
+};
+
 export default {
     agtWhatsCoversationSendMessage (state, message) {
         state.agtWhatsCoversationMessages.push(message);
@@ -14,19 +31,14 @@ export default {
             campaignId: conversation ? conversation.campaing_id : null,
             campaignName: conversation ? conversation.campaing_name : null,
             destination: conversation ? conversation.destination : null,
-            client: {
-                id: conversation.client ? conversation.client.id : null,
-                phone: conversation.client ? conversation.client.phone : null,
-                data: conversation.client ? conversation.client.data : null,
-                dispositionId: conversation.client ? conversation.client.disposition : null
-            },
+            client: setClientInfo(conversation.client),
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.is_active : null,
             expire: conversation ? conversation.expire : null,
             timestamp: conversation ? conversation.timestamp : null,
             messageNumber: conversation ? conversation.message_number : null,
             photo: conversation ? conversation.photo : null,
-            lineNumber: conversation ? conversation.line_number : null
+            line: setLineInfo(conversation.line)
         };
     },
     agtWhatsChatsListInit (state, { isNew, inProgress }) {
@@ -85,19 +97,14 @@ export default {
             campaignId: conversation ? conversation.campaignId : null,
             campaignName: conversation ? conversation.campaignName : null,
             destination: conversation ? conversation.destination : null,
-            client: {
-                id: conversation.client ? conversation.client.id : null,
-                phone: conversation.client ? conversation.client.phone : null,
-                data: conversation.client ? conversation.client.data : null,
-                dispositionId: conversation.client ? conversation.client.disposition : null
-            },
+            client: setClientInfo(conversation.client),
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.isActive : null,
             expire: conversation ? conversation.expire : null,
             timestamp: conversation ? conversation.timestamp : null,
             messageNumber: conversation ? conversation.messageNumber : null,
             photo: conversation ? conversation.photo : null,
-            lineNumber: conversation ? conversation.lineNumber : null
+            line: setLineInfo(conversation.line)
         };
     },
     agtWhatsSetCoversationClientInfo (state, info = null) {

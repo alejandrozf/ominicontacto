@@ -9,14 +9,14 @@ export default {
         state.agtWhatsDispositionChatDetail = {
             id: dispositionChat ? dispositionChat.id : null,
             contact: {
-                id: dispositionChat.contact ? dispositionChat.contact.id : null,
-                phone: dispositionChat.contact ? dispositionChat.contact.phone : null,
-                data: dispositionChat.contact ? dispositionChat.contact.data : null
+                id: dispositionChat ? dispositionChat.contact.id : null,
+                phone: dispositionChat ? dispositionChat.contact.phone : null,
+                data: dispositionChat ? dispositionChat.contact.data : null
             },
             agent: {
-                id: dispositionChat.agent ? dispositionChat.agent.id : null,
-                name: dispositionChat.agent ? dispositionChat.agent.name : null,
-                email: dispositionChat.agent ? dispositionChat.agent.email : null
+                id: dispositionChat ? dispositionChat.agent.id : null,
+                name: dispositionChat ? dispositionChat.agent.name : null,
+                email: dispositionChat ? dispositionChat.agent.email : null
             },
             comments: dispositionChat ? dispositionChat.comments : null,
             form_response: dispositionChat ? dispositionChat.form_response : null,
