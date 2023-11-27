@@ -178,7 +178,13 @@ export default {
                 display_name: 'نام:',
                 display_description: 'شرح:',
                 message: 'پیام ها',
-                destination: 'مقصد'
+                destination: 'مقصد',
+                time_group: 'گروه زمان',
+                empty_options: 'حداقل یک گزینه مقصد باید وجود داشته باشد'
+            },
+            option_form: {
+                new_title: 'گزینه جدید',
+                edit_title: 'گزینه ویرایش'
             }
         },
         group_of_message_template: {

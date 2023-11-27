@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="grid formgrid">
-      <div class="field col-6">
+      <div class="field col-12">
         <Fieldset>
           <template #legend>
             {{ $t("views.whatsapp.line.step2.sender") }}

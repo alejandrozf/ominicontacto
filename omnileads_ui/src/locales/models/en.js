@@ -186,7 +186,20 @@ export default {
             destino: 'Destiny',
             tipo_de_destino: 'Destination type',
             mensaje_bienvenida: 'Welcome message',
-            mensaje_despedida: 'Goodbye message'
+            mensaje_despedida: 'Goodbye message',
+            options: {
+                value: 'Value',
+                description: 'Description',
+                destination_type: 'Destination Type',
+                destination: 'Destination'
+            },
+            interactive_form: {
+                text: 'Text',
+                wrong_answer: 'Wrong answer',
+                success_answer: 'Success response',
+                timeout: 'Wait time',
+                options: 'Options'
+            }
         },
         message_template: {
             nombre: 'Nombre',

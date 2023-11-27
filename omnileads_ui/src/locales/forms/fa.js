@@ -237,6 +237,15 @@ export default {
         line: {
             validations: {
                 field_is_required: '{field} این لازم است'
+            },
+            destination_types: {
+                campaign: 'زنگ'
+            },
+            options: {
+                success_create: 'گزینه مقصد با موفقیت ایجاد شد',
+                success_update: 'گزینه مقصد با موفقیت به روز شد',
+                success_delete: 'گزینه مقصد با موفقیت حذف شد',
+                empty_options: 'هیچ گزینه مقصد پیکربندی نشده است'
             }
         },
         group_of_message_template: {

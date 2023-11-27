@@ -261,7 +261,7 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             'id': value.content_object.id,
         }
         if value.tipo == DestinoEntrante.CAMPANA:
-            pass
+            representation['data'] = value.content_object.id
         elif value.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
             menu = value.content_object
             menu_representation = {
@@ -273,11 +273,12 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             }
             for opcion in value.destinos_siguientes.all():
                 menu_representation['options'].append({
+                    'id': opcion.id,
                     'destination': opcion.destino_siguiente.content_object.id,
                     'value': opcion.valor,
                     'description': opcion.opcion_menu_whatsapp.descripcion,
                 })
-                representation.update(menu_representation)
+            representation['data'] = menu_representation
         else:
             raise Exception('Tipo de destino incorrecto')
 

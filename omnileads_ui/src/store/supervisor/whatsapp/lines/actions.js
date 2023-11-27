@@ -33,5 +33,17 @@ export default {
     async initWhatsappLineCampaigns ({ commit }) {
         const { status, data } = await service.getCampaigns();
         commit('initWhatsappLineCampaigns', status === HTTP_STATUS.SUCCESS ? data : []);
+    },
+    initWhatsappLineOptionForm ({ commit }, option = null) {
+        commit('initWhatsappLineOptionForm', option);
+    },
+    createWhatsappLineOption ({ commit }, { data }) {
+        commit('createWhatsappLineOption', data);
+    },
+    updateWhatsappLineOption ({ commit }, { id, data }) {
+        commit('updateWhatsappLineOption', { id, data });
+    },
+    deleteWhatsappLineOption ({ commit }, { id }) {
+        commit('deleteWhatsappLineOption', id);
     }
 };

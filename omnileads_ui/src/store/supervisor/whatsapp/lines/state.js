@@ -12,10 +12,29 @@ export default {
             destino: null,
             tipo_de_destino: 0
         },
+        destination: {
+            data: null,
+            type: 0
+        },
         horario: null,
         mensaje_bienvenida: null,
         mensaje_despedida: null,
         mensaje_fueradehora: null
     },
-    isFormToCreate: false
+    isFormToCreate: false,
+    supWhatsappLineOptionForm: {
+        id: null,
+        value: '',
+        description: '',
+        destinationType: 0,
+        destination: null
+    },
+    supWhatsappLineOptions: [],
+    supWhatsappLineIteractiveForm: {
+        text: '',
+        wrongAnswer: '',
+        successAnswer: '',
+        timeout: 0,
+        options: []
+    }
 };

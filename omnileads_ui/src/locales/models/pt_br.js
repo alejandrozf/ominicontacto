@@ -186,7 +186,20 @@ export default {
             destino: 'Destino',
             tipo_de_destino: 'Tipo de destino',
             mensaje_bienvenida: 'Mensagem de boas-vindas',
-            mensaje_despedida: 'Mensagem de adeus'
+            mensaje_despedida: 'Mensagem de adeus',
+            options: {
+                value: 'Valor',
+                description: 'Descrição',
+                destination_type: 'Tipo de destino',
+                destination: 'Destino'
+            },
+            interactive_form: {
+                text: 'Texto',
+                wrong_answer: 'Resposta incorreta',
+                success_answer: 'Resposta de sucesso',
+                timeout: 'Tempo de espera',
+                options: 'Opções'
+            }
         },
         message_template: {
             nombre: 'Nome',

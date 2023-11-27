@@ -22,9 +22,11 @@
 </template>
 
 <script>
+import { HTTP_STATUS } from '@/globals';
 import { mapActions, mapState } from 'vuex';
 
 export default {
+    inject: ['$helpers'],
     props: {
         conversationId: {
             type: Number,
@@ -42,7 +44,7 @@ export default {
     },
     methods: {
         ...mapActions(['agtWhatsCoversationSendTextMessage']),
-        sendMessage () {
+        async sendMessage () {
             if (this.message !== '') {
                 const data = {
                     message: {
@@ -52,9 +54,19 @@ export default {
                     phoneLine: this.agtWhatsCoversationInfo.line.number,
                     $t: this.$t
                 };
-                this.agtWhatsCoversationSendTextMessage(data);
                 this.message = '';
-                this.$emit('scrollDownEvent');
+                const { status, message } = await this.agtWhatsCoversationSendTextMessage(data);
+                if (status === HTTP_STATUS.SUCCESS) {
+                    this.$emit('scrollDownEvent');
+                } else {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.error_notification'),
+                            message,
+                            this.$t('globals.icon_error')
+                        )
+                    );
+                }
             }
         }
     },

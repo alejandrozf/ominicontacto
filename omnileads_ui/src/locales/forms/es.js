@@ -237,6 +237,15 @@ export default {
         line: {
             validations: {
                 field_is_required: '{field} es requerido'
+            },
+            destination_types: {
+                campaign: 'Campaña'
+            },
+            options: {
+                success_create: 'Opcion de destino creada exitosamente',
+                success_update: 'Opcion de destino actualizada exitosamente',
+                success_delete: 'Opcion de destino eliminada exitosamente',
+                empty_options: 'No hay opciones de destino configuradas'
             }
         },
         group_of_message_template: {

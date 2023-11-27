@@ -186,7 +186,20 @@ export default {
             destino: 'سرنوشت',
             tipo_de_destino: 'نوع مقصد',
             mensaje_bienvenida: 'پیام خوش امد گویی',
-            mensaje_despedida: 'پیام خداحافظی'
+            mensaje_despedida: 'پیام خداحافظی',
+            options: {
+                value: 'ارزش',
+                description: 'شرح',
+                destination_type: 'نوع مقصد',
+                destination: 'مقصد'
+            },
+            interactive_form: {
+                text: 'متن',
+                wrong_answer: 'جواب اشتباه',
+                success_answer: 'پاسخ موفقیت آمیز',
+                timeout: 'زمان انتظار',
+                options: 'گزینه ها'
+            }
         },
         message_template: {
             nombre: 'نام',

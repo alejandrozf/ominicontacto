@@ -178,7 +178,13 @@ export default {
                 display_name: 'Nome:',
                 display_description: 'Descrição:',
                 message: 'Mensagens',
-                destination: 'Destino'
+                destination: 'Destino',
+                time_group: 'Grupo de tempo',
+                empty_options: 'Deve haver pelo menos uma opção de destino'
+            },
+            option_form: {
+                new_title: 'Nova opção',
+                edit_title: 'Opção de edição'
             }
         },
         group_of_message_template: {

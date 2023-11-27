@@ -193,16 +193,6 @@ export default {
                             )
                         );
                     }
-                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-                    this.$swal(
-                        this.$helpers.getToasConfig(
-                            this.$t('globals.cancelled'),
-                            this.$tc('globals.error_to_deleted_type', {
-                                type: this.$tc('globals.whatsapp.line')
-                            }),
-                            this.$t('globals.icon_error')
-                        )
-                    );
                 }
             });
         },
@@ -234,18 +224,7 @@ export default {
             immediate: true
         },
         supWhatsappProviders: {
-            handler () {
-                if (this.supWhatsappProviders.length > 0) {
-                    this.supWhatsappProviders = this.supWhatsappProviders.map((provider) => {
-                        return {
-                            id: provider.id,
-                            nombre: provider.name,
-                            tipo_proveedor: provider.provider_type,
-                            configuracion: provider.configuration
-                        };
-                    });
-                }
-            },
+            handler () {},
             deep: true,
             immediate: true
         }

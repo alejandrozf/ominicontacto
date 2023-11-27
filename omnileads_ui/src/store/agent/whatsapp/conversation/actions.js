@@ -27,10 +27,11 @@ export default {
         { conversationId, message, phoneLine, $t }
     ) {
         try {
-            const { status, data } = await service.sendTextMessage(
+            const response = await service.sendTextMessage(
                 conversationId,
                 { message: message.message, destination: message.destination }
             );
+            const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
                 const message = {
@@ -46,9 +47,14 @@ export default {
                 };
                 await commit('agtWhatsCoversationSendMessage', message);
             }
+            return response;
         } catch (error) {
             console.error('===> ERROR al enviar mensaje de texto');
             console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: error.message ? `Error al enviar mensaje de Texto: ${error.message}` : 'Error al enviar mensaje de Texto'
+            };
         }
     },
     async agtWhatsCoversationSendTemplateMessage (
