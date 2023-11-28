@@ -24,7 +24,7 @@ from ominicontacto_app.tests.factories import UserFactory
 from ominicontacto_app.tests.factories import CampanaFactory
 from configuracion_telefonia_app.models import DestinoEntrante
 from whatsapp_app.models import (ConfiguracionProveedor, Linea, PlantillaMensaje,
-                                 MenuInteractivoWhatsapp, )
+                                 ConversacionWhatsapp, MensajeWhatsapp, MenuInteractivoWhatsapp, )
 
 
 faker = faker.Factory.create()
@@ -77,3 +77,15 @@ class MenuInteractivoFactory(DjangoModelFactory):
     texto_opcion_incorrecta = lazy_attribute(lambda a: faker.text(15))
     texto_derivacion = lazy_attribute(lambda a: faker.text(15))
     timeout = lazy_attribute(lambda a: faker.random_int(5, 60))
+
+
+class ConversacionFactory(DjangoModelFactory):
+    class Meta:
+        model = ConversacionWhatsapp
+    line = SubFactory(LineaFactory)
+
+
+class MensajeFactory(DjangoModelFactory):
+    class Meta:
+        model = MensajeWhatsapp
+    conversation = SubFactory(ConversacionFactory)

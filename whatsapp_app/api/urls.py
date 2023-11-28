@@ -16,6 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
+from django.urls import path
 import whatsapp_app.api.v1.proveedor
 import whatsapp_app.api.v1.linea
 import whatsapp_app.api.v1.destino
@@ -29,6 +30,7 @@ import whatsapp_app.api.v1.transfer
 import whatsapp_app.api.v1.contacto
 import whatsapp_app.api.v1.calificacion
 import whatsapp_app.api.v1.template
+import whatsapp_app.api.v1.reporte
 
 from whatsapp_app.api import ViewSetRouter
 
@@ -55,3 +57,7 @@ for route in routes:
     router.register(*route)
 
 api_urls_v1 = router.urls
+
+api_urls_v1 += [
+    path("reports/", whatsapp_app.api.v1.reporte.ReportAPIView.as_view(), name="whatsapp_reports"),
+]

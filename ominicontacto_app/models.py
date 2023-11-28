@@ -2821,8 +2821,24 @@ class CalificacionClienteManager(models.Manager):
 
         return calificaciones
 
+    def calificaciones_whatsapp_campanas(self, campana, fecha_desde, fecha_hasta):
+        """Obtiene las calificaciones campaña en un rango de fechas definido"""
+        calificaciones = self.filter(
+            opcion_calificacion__campana__pk=campana.id,
+            canalidad=CalificacionCliente.CANALIDAD_WHATSAPP,
+            modified__date__range=(fecha_desde, fecha_hasta))
+        return\
+            calificaciones.values('opcion_calificacion__nombre').\
+            annotate(total=Count('opcion_calificacion')).order_by('-total')
+
 
 class CalificacionCliente(TimeStampedModel, models.Model):
+    CANALIDAD_TELEFONO = 0
+    CANALIDAD_WHATSAPP = 1
+    TYPE_CANALIDAD_CHOICES = (
+        (CANALIDAD_TELEFONO, _('Teléfono')),
+        (CANALIDAD_WHATSAPP, _('Whatsapp'))
+    )
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2836,7 +2852,8 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     agendado = models.BooleanField(default=False)
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES, null=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
-
+    canalidad = models.PositiveIntegerField(
+        choices=TYPE_CANALIDAD_CHOICES, default=CANALIDAD_TELEFONO)
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
     es_calificacion_manual = models.BooleanField(default=False)
     history = HistoricalRecords()

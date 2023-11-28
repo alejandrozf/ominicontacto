@@ -291,6 +291,7 @@ class ViewSet(viewsets.ViewSet):
                     serializer_respuesta =\
                         RespuestaFormularioGestionCreateSerilializer(data=respuesta)
                     if serializer_respuesta.is_valid():
+                        serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                         calificacion = serializer_calificacion.save()
                         serializer_respuesta.save(calificacion=calificacion)
                     else:
@@ -308,6 +309,7 @@ class ViewSet(viewsets.ViewSet):
                         status=status.HTTP_201_CREATED)
 
                 else:
+                    serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                     serializer_calificacion.save()
                     return response.Response(
                         data=get_response_data(

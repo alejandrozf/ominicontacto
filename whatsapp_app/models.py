@@ -116,6 +116,84 @@ class ConfiguracionWhatsappCampana(AuditableModelMixin):
     nivel_servicio = models.IntegerField()
 
 
+class MensajeWhatsappManager(models.Manager):
+    def mensajes_enviados(self):
+        return self.filter(origen=models.F("conversation__line__numero"))
+
+    def mensajes_recibidos(self):
+        return self.filter(origen=models.F("conversation__destination"))
+
+
+class MensajeWhatsapp(models.Model):
+    message_id = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(default=timezone.now)
+    origen = models.CharField(max_length=100)
+    sender = JSONField(default=dict)
+    conversation = models.ForeignKey(
+        'ConversacionWhatsapp', related_name="mensajes", on_delete=models.CASCADE)
+    content = JSONField(default=dict)
+    type = models.CharField(max_length=100)
+    status = models.CharField(max_length=100)
+    objects = MensajeWhatsappManager()
+
+
+class ConversacionWhatsappQuerySet(models.QuerySet):
+
+    def conversaciones_entrantes(self, start_date_str, end_date_str):
+        return self.filter(saliente=False,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_salientes(self, start_date_str, end_date_str):
+        return self.filter(saliente=True,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_entrantes_atendidas(self, start_date_str, end_date_str):
+        return self.filter(saliente=False, atendida=True,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_entrantes_no_atendidas(self, start_date_str, end_date_str):
+        return self.filter(saliente=False, atendida=False,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_salientes_atendidas(self, start_date_str, end_date_str):
+        return self.filter(saliente=True, atendida=True,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_salientes_no_atendidas(self, start_date_str, end_date_str):
+        return self.filter(saliente=True, atendida=False,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_salientes_con_error(self, start_date_str, end_date_str):
+        return self.filter(saliente=True, error=True,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_salientes_expiradas(self, start_date_str, end_date_str):
+        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+        return self.filter(saliente=True, atendida=False, expire__lte=timestamp,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_entrantes_expiradas_no_atendidas(self, start_date_str, end_date_str):
+        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+        return self.filter(saliente=False, atendida=False, expire__lte=timestamp,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def conversaciones_no_calificadas(self, start_date_str, end_date_str):
+        return self.filter(atendida=True, is_disposition=False,
+                           date_last_interaction__date__range=[start_date_str, end_date_str])
+
+    def numero_mensajes_enviados(self, start_date_str, end_date_str):
+        return MensajeWhatsapp.objects.mensajes_enviados().filter(
+            conversation__in=self.filter(
+                date_last_interaction__date__range=[start_date_str, end_date_str]),
+            timestamp__date__range=[start_date_str, end_date_str]).count()
+
+    def numero_mensajes_recibidos(self, start_date_str, end_date_str):
+        return MensajeWhatsapp.objects.mensajes_recibidos().filter(
+            conversation__in=self.filter(
+                date_last_interaction__date__range=[start_date_str, end_date_str]),
+            timestamp__date__range=[start_date_str, end_date_str]).count()
+
+
 class ConversacionWhatsapp(models.Model):
     line = models.ForeignKey(
         Linea, related_name="conversaciones", on_delete=models.CASCADE)
@@ -134,6 +212,7 @@ class ConversacionWhatsapp(models.Model):
     atendida = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
     date_last_interaction = models.DateTimeField(null=True)
+    objects = ConversacionWhatsappQuerySet.as_manager()
 
     def otorgar_conversacion(self, agent):
         if self.agent:
@@ -142,18 +221,6 @@ class ConversacionWhatsapp(models.Model):
             self.agent = agent
             self.save()
             return True
-
-
-class MensajeWhatsapp(models.Model):
-    message_id = models.CharField(max_length=100)
-    timestamp = models.DateTimeField(default=timezone.now)
-    origen = models.CharField(max_length=100)
-    sender = JSONField(default=dict)
-    conversation = models.ForeignKey(
-        ConversacionWhatsapp, related_name="mensajes", on_delete=models.CASCADE)
-    content = JSONField(default=dict)
-    type = models.CharField(max_length=100)
-    status = models.CharField(max_length=100)
 
 
 class MenuInteractivoWhatsapp(models.Model):
