@@ -252,6 +252,18 @@ export default {
         templates: {
             message_template: 'الگوی پیام',
             whatsapp_template: 'قالب واتساپ'
+        },
+        conversation: {
+            campaign: 'زنگ',
+            campaign_type: 'نوع کمپین',
+            destination: 'مقصد',
+            client: 'مشتری',
+            agent: 'عامل',
+            is_active: 'دارایی',
+            last_interaction: 'آخرین تعامل',
+            expire: 'تاریخ انقضا',
+            message: 'تعداد پیام ها',
+            line: 'خط'
         }
     }
 };

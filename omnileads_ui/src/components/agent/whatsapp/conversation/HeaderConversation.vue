@@ -2,6 +2,7 @@
   <Toolbar>
     <template #start>
       <Button
+        v-if="!viewAsReport"
         @click="back"
         v-tooltip.top="$t('globals.back')"
         icon="pi pi-arrow-left"
@@ -10,7 +11,8 @@
       <Chip :label="clientInfo?.name" icon="pi pi-user" />
     </template>
     <template #end>
-      <!-- <SplitButton
+      <div v-if="!viewAsReport">
+        <!-- <SplitButton
         icon="pi pi-paperclip"
         :model="attachOptions"
         v-tooltip.top="$t('globals.attach')"
@@ -25,33 +27,34 @@
         v-tooltip.top="$t('globals.transfer')"
         disabled
       /> -->
-      <Button
-        v-if="agtWhatsCoversationInfo.client.id"
-        icon="pi pi-save"
-        class="ml-2"
-        @click="qualify"
-        v-tooltip.top="$t('globals.save')"
-      />
-      <Button
-        v-if="!isExpired"
-        icon="pi pi-copy"
-        class="p-button-info ml-2"
-        @click="templates"
-        v-tooltip.top="$tc('globals.whatsapp.template', 2)"
-      />
-      <Button
-        v-if="agtWhatsCoversationInfo.client.id"
-        icon="pi pi-user-edit"
-        class="p-button-secondary ml-2"
-        @click="editUserInfo"
-        v-tooltip.top="$t('views.whatsapp.contact.settings.edit_info')"
-      />
-      <Button
-        icon="pi pi-times"
-        @click="close"
-        class="p-button-danger ml-2"
-        v-tooltip.top="$t('globals.close')"
-      />
+        <Button
+          v-if="agtWhatsCoversationInfo.client.id"
+          icon="pi pi-save"
+          class="ml-2"
+          @click="qualify"
+          v-tooltip.top="$t('globals.save')"
+        />
+        <Button
+          v-if="!isExpired"
+          icon="pi pi-copy"
+          class="p-button-info ml-2"
+          @click="templates"
+          v-tooltip.top="$tc('globals.whatsapp.template', 2)"
+        />
+        <Button
+          v-if="agtWhatsCoversationInfo.client.id"
+          icon="pi pi-user-edit"
+          class="p-button-secondary ml-2"
+          @click="editUserInfo"
+          v-tooltip.top="$t('views.whatsapp.contact.settings.edit_info')"
+        />
+        <Button
+          icon="pi pi-times"
+          @click="close"
+          class="p-button-danger ml-2"
+          v-tooltip.top="$t('globals.close')"
+        />
+      </div>
     </template>
   </Toolbar>
 </template>
@@ -61,6 +64,10 @@ import { mapActions, mapState } from 'vuex';
 export default {
     props: {
         isExpired: {
+            type: Boolean,
+            default: false
+        },
+        viewAsReport: {
             type: Boolean,
             default: false
         }
@@ -232,6 +239,11 @@ export default {
             immediate: true
         },
         isExpired: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        viewAsReport: {
             handler () {},
             deep: true,
             immediate: true

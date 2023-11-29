@@ -17,6 +17,7 @@
 #
 
 from django.views.generic import TemplateView
+from ominicontacto_app.models import Campana
 
 
 class WhatsappProvidersConfigurationView(TemplateView):
@@ -37,3 +38,20 @@ class MessageTemplatesConfigurationView(TemplateView):
 class MessageTemplateGroupView(TemplateView):
     """Configuración para grupos de plantillas de mensajes"""
     template_name = "message_template_groups.html"
+
+
+class CampaignReportConversationsListView(TemplateView):
+    """
+    Esta vista es obtener reportes de conversaciones de Whatsapp
+    para una campana <pk_campana>
+    """
+    template_name = "campaigns/report_conversations.html"
+
+    def get_object(self, queryset=None):
+        campaign = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campaign
+
+    def get_context_data(self, **kwargs):
+        context = super(CampaignReportConversationsListView, self).get_context_data(**kwargs)
+        context['campaign'] = self.get_object()
+        return context

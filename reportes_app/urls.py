@@ -29,6 +29,7 @@ from reportes_app import (
     views_campanas_dialer_reportes,
     views_reportes
 )
+from whatsapp_app import views as whatsapp_views
 
 urlpatterns = [
     # ==========================================================================
@@ -136,6 +137,11 @@ urlpatterns = [
          login_required(
              ReporteDeResultadosView.as_view()),
          name='reporte_de_resultados',
+         ),
+    path('campana/<int:pk_campana>/whatsapp_conversations_report/',
+         login_required(
+             whatsapp_views.CampaignReportConversationsListView.as_view()),
+         name='campaign_whatsapp_report_conversations',
          ),
     re_path(r'^resultados_de_base_campana/(?P<pk_campana>\d+)/(?P<all_data>\d+)/$',
             login_required(

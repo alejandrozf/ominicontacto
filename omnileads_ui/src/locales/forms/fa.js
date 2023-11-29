@@ -263,6 +263,44 @@ export default {
                 field_is_required: '{field} این لازم است',
                 invalid_field: '{field} دارای قالب نامعتبر است'
             }
+        },
+        disposition_chat: {
+            validations: {
+                field_is_required: '{field} این لازم است'
+            },
+            form_types: {
+                management: 'مدیریت',
+                schedule: 'دفتر خاطرات',
+                no_action: 'هیچ اقدامی'
+            },
+            field_types: {
+                text: 'متن',
+                date: 'تاریخ',
+                list: 'فهرست کنید',
+                text_box: 'جعبه متن'
+            }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    form_filters: {
+                        start_date: 'تاریخ شروع',
+                        end_date: 'تاریخ پایان',
+                        phone: 'تلفن',
+                        agent: 'عامل',
+                        placeholders: {
+                            start_date: 'تاریخ را انتخاب کنید',
+                            end_date: 'تاریخ را انتخاب کنید',
+                            phone: 'گوشی را وارد کنید',
+                            agent: 'نمایندگان را انتخاب کنید',
+                            without_agent: 'هیچ عاملی'
+                        }
+                    },
+                    validatios: {
+                        biggest_start_data: 'تاریخ شروع نمی تواند بزرگتر از تاریخ پایان باشد'
+                    }
+                }
+            }
         }
     }
 };

@@ -223,6 +223,15 @@ export default {
                 show_info: 'Mostrar informações',
                 edit_info: 'Editar contato'
             }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    title: 'Relatório de conversa',
+                    table_title: 'Lista de conversas',
+                    detail_title: 'Detalhe da conversa'
+                }
+            }
         }
     }
 };

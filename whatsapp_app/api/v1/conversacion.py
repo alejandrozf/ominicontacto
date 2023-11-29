@@ -74,9 +74,7 @@ class ConversacionSerializer(serializers.Serializer):
     line = serializers.SerializerMethodField()
 
     def get_line(self, obj):
-        campana = obj.campana
-        configuracion = ConfiguracionWhatsappCampana.objects.filter(campana=campana).last()
-        serializer = LineSerializer(instance=configuracion.linea)
+        serializer = LineSerializer(instance=obj.line)
         return {
             'id': serializer.data['id'],
             'name': serializer.data['name'],
@@ -98,14 +96,53 @@ class ConversacionSerializer(serializers.Serializer):
 
 class ConversacionFilterSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    timestamp = serializers.DateTimeField()
-    date_last_interaction = serializers.DateTimeField()
+    campaign = serializers.SerializerMethodField()
     destination = serializers.CharField()
     disposition = serializers.SerializerMethodField()
+    client = serializers.SerializerMethodField()
+    agent = serializers.SerializerMethodField()
+    is_active = serializers.BooleanField(default=True)
+    expire = serializers.DateTimeField()
+    timestamp = serializers.DateTimeField()
+    date_last_interaction = serializers.DateTimeField()
     message_number = serializers.SerializerMethodField()
+    photo = serializers.CharField(default="")
+    line = serializers.SerializerMethodField()
+
+    def get_line(self, obj):
+        serializer = LineSerializer(instance=obj.line)
+        return {
+            'id': serializer.data['id'],
+            'name': serializer.data['name'],
+            'number': serializer.data['number'],
+        }
+
+    def get_campaign(self, obj):
+        if obj.campana:
+            campana = obj.campana
+            return {
+                'id': campana.id,
+                'name': campana.nombre,
+                'type': campana.type,
+            }
+        return {}
+
+    def get_agent(self, obj):
+        if obj.agent:
+            return {
+                'id': obj.agent.user.id,
+                'name': obj.agent.user.get_full_name(),
+            }
+        return None
 
     def get_message_number(self, obj):
         return obj.mensajes.count()
+
+    def get_client(self, obj):
+        if obj.client:
+            serializer = ContactoSerializer(obj.client)
+            return serializer.data
+        return None
 
     def get_disposition(self, obj):
         if obj.client and obj.campana:
@@ -464,6 +501,7 @@ class ViewSet(viewsets.ViewSet):
                     conversation_started = ConversacionWhatsapp.objects.create(
                         line=line,
                         destination=destination,
+                        date_last_interaction=timestamp,
                         campana=campana,
                         agent=sender,
                         saliente=True,
@@ -495,33 +533,40 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False,
-                       methods=["get"],
+                       methods=["POST"],
                        url_path='(?P<campaing_id>[^/.]+)/filter_chats')
     def filter_chats(self, request, campaing_id):
         try:
             campaing = Campana.objects.get(id=campaing_id)
             chats_of_campaing = campaing.conversaciones.all()
-            start_date_str = request.query_params.get('start_date', None)
-            end_date_str = request.query_params.get('end_date', None)
-            phone = request.query_params.get('phone', None)
-            agent = request.query_params.get('agent', None)
+            start_date_str = request.data.get('start_date', None)
+            end_date_str = request.data.get('end_date', None)
+            phone = request.data.get('phone', None)
+            agents = request.data.get('agents', None)
+            list_of_Q = []
+            if agents:
+                if -1 in agents:
+                    list_of_Q.append(Q(agent__isnull=True))
+                    agents.remove(-1)
+                if agents:
+                    list_of_Q.append(Q(agent__in=agents))
+            if list_of_Q:
+                chats_of_campaing = chats_of_campaing.filter(reduce(operator.or_, list_of_Q))
             list_of_Q = []
             if start_date_str and end_date_str:
                 list_of_Q.append(
                     Q(date_last_interaction__date__range=[start_date_str, end_date_str]))
             if phone:
-                list_of_Q.append(Q(destination=phone))
-            if agent:
-                list_of_Q.append(Q(agent=agent))
-
+                list_of_Q.append(Q(destination__contains=phone))
             if list_of_Q:
-                chats_of_campaing = chats_of_campaing.filter(reduce(operator.or_, list_of_Q))
+                chats_of_campaing = chats_of_campaing.filter(reduce(operator.and_, list_of_Q))
             serializer = ConversacionFilterSerializer(
                 chats_of_campaing, many=True)
             return response.Response(
                 data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
                 status=status.HTTP_200_OK)
-        except Exception:
+        except Exception as e:
             return response.Response(
-                data=get_response_data(status=HttpResponseStatus.ERROR, data={}),
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={}, message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

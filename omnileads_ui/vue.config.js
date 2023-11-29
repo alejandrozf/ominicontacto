@@ -41,13 +41,14 @@ module.exports = {
         supervisor_group_of_hours: getPageConfig('supervisor_group_of_hours'),
         supervisor_ivrs: getPageConfig('supervisor_ivrs'),
         supervisor_register_server: getPageConfig('supervisor_register_server'),
-        // WhatsApp
+        // Supervisor WhatsApp Pages
         supervisor_whatsapp_providers: getPageConfig('supervisor_whatsapp_providers'),
         supervisor_whatsapp_lines: getPageConfig('supervisor_whatsapp_lines'),
         supervisor_whatsapp_message_templates: getPageConfig('supervisor_whatsapp_message_templates'),
         supervisor_whatsapp_templates: getPageConfig('supervisor_whatsapp_templates'),
         supervisor_whatsapp_group_of_message_templates: getPageConfig('supervisor_whatsapp_group_of_message_templates'),
-        // Agent Pages
+        supervisor_whatsapp_report_campaign_conversations: getPageConfig('supervisor_whatsapp_report_campaign_conversations'),
+        // Agent Whatsapp Pages
         agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
         agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),
         agent_whatsapp_templates: getPageConfig('agent_whatsapp_templates'),

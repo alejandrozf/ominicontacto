@@ -223,6 +223,15 @@ export default {
                 show_info: 'نمایش اطلاعات',
                 edit_info: 'ویرایش کنید'
             }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    title: 'گزارش گفتگو',
+                    table_title: 'لیست گفتگو',
+                    detail_title: 'جزئیات گفتگو'
+                }
+            }
         }
     }
 };

@@ -279,6 +279,28 @@ export default {
                 list: 'List',
                 text_box: 'Text box'
             }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    form_filters: {
+                        start_date: 'Start date',
+                        end_date: 'Ending date',
+                        phone: 'Phone',
+                        agent: 'Agent',
+                        placeholders: {
+                            start_date: 'Select the date',
+                            end_date: 'Select the date',
+                            phone: 'Enter the phone',
+                            agent: 'Select agents',
+                            without_agent: 'No agent'
+                        }
+                    },
+                    validatios: {
+                        biggest_start_data: 'The start date cannot be greater than the end date'
+                    }
+                }
+            }
         }
     }
 };

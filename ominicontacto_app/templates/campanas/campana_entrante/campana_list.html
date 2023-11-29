@@ -74,6 +74,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
+                            {% if campana.whatsapp_habilitado %}
+                            <a class="dropdown-item" href="{% url 'campaign_whatsapp_report_conversations' campana.pk %}">
+                                <span class="icon icon-graph"></span>{% trans 'Conversaciones Whatsapp' %}
+                            </a>
+                            {% endif %}
                             <a class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
                             </a>

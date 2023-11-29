@@ -96,6 +96,8 @@ class ReportesAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'exporta_reporte_resultados_de_base_contactaciones',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'campaign_whatsapp_report_conversations',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
         ]
 
     informacion_de_permisos = {
@@ -156,5 +158,8 @@ class ReportesAppConfig(AppConfig):
              'version': '1.19.0'},
         'exporta_reporte_resultados_de_base_contactaciones':
             {'descripcion': _('Descargar reporte de resultados en una Campaña'),
+             'version': '1.19.0'},
+        'campaign_whatsapp_report_conversations':
+            {'descripcion': _('Vista de reporte de conversaciones de Whatsapp para Campaña'),
              'version': '1.19.0'},
     }

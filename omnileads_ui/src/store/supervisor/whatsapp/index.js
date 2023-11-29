@@ -16,6 +16,11 @@ import GroupOfMessageTemplateState from './group_of_message_templates/state';
 import ConfigurationCampaignActions from './configuration_campaign/actions';
 import ConfigurationCampaignMutations from './configuration_campaign/mutations';
 import ConfigurationCampaignState from './configuration_campaign/state';
+import {
+    SupervisorWhatsappReportActions,
+    SupervisorWhatsappReportMutations,
+    SupervisorWhatsappReportState
+} from './reports';
 
 export const SupervisorWhatsappState = {
     ...ProvidersState,
@@ -23,7 +28,8 @@ export const SupervisorWhatsappState = {
     ...MessageTemplateState,
     ...WhatsappTemplateState,
     ...GroupOfMessageTemplateState,
-    ...ConfigurationCampaignState
+    ...ConfigurationCampaignState,
+    ...SupervisorWhatsappReportState
 };
 
 export const SupervisorWhatsappMutations = {
@@ -32,7 +38,8 @@ export const SupervisorWhatsappMutations = {
     ...MessageTemplateMutations,
     ...WhatsappTemplateMutations,
     ...GroupOfMessageTemplateMutations,
-    ...ConfigurationCampaignMutations
+    ...ConfigurationCampaignMutations,
+    ...SupervisorWhatsappReportMutations
 };
 
 export const SupervisorWhatsappActions = {
@@ -41,5 +48,6 @@ export const SupervisorWhatsappActions = {
     ...MessageTemplateActions,
     ...WhatsappTemplateActions,
     ...GroupOfMessageTemplateActions,
-    ...ConfigurationCampaignActions
+    ...ConfigurationCampaignActions,
+    ...SupervisorWhatsappReportActions
 };

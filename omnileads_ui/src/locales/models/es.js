@@ -252,6 +252,18 @@ export default {
         templates: {
             message_template: 'Plantilla de mensaje',
             whatsapp_template: 'Template de Whatsapp'
+        },
+        conversation: {
+            campaign: 'Campaña',
+            campaign_type: 'Tipo de campaña',
+            destination: 'Destino',
+            client: 'Cliente',
+            agent: 'Agente',
+            is_active: 'Activo',
+            last_interaction: 'Última interacción',
+            expire: 'Fecha de expiracion',
+            message: 'Numero de mensajes',
+            line: 'Linea'
         }
     }
 };

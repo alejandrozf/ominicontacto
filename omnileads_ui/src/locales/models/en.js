@@ -252,6 +252,18 @@ export default {
         templates: {
             message_template: 'Message template',
             whatsapp_template: 'Whatsapp template'
+        },
+        conversation: {
+            campaign: 'Campaign',
+            campaign_type: 'Campaign type',
+            destination: 'Destination',
+            client: 'Customer',
+            agent: 'Agent',
+            is_active: 'Is active?',
+            last_interaction: 'Last interaction',
+            expire: 'Expiration date',
+            message: 'Messages number',
+            line: 'Line'
         }
     }
 };

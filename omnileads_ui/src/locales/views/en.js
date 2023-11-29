@@ -232,6 +232,15 @@ export default {
                 show_info: 'Show information',
                 edit_info: 'Edit user'
             }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    title: 'Conversation report',
+                    table_title: 'Conversation list',
+                    detail_title: 'Detail of the conversation'
+                }
+            }
         }
     }
 };

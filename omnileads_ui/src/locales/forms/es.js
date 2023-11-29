@@ -279,6 +279,28 @@ export default {
                 list: 'Lista',
                 text_box: 'Caja de texto'
             }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    form_filters: {
+                        start_date: 'Fecha de inicio',
+                        end_date: 'Fecha de fin',
+                        phone: 'Telefono',
+                        agent: 'Agente',
+                        placeholders: {
+                            start_date: 'Selecciona la fecha',
+                            end_date: 'Selecciona la fecha',
+                            phone: 'Ingresa el teléfono',
+                            agent: 'Selecciona agentes',
+                            without_agent: 'Sin agente'
+                        }
+                    },
+                    validatios: {
+                        biggest_start_data: 'La fecha de inicio no puede ser mayor a la fecha de fin'
+                    }
+                }
+            }
         }
     }
 };

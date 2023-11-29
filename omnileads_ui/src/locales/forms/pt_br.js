@@ -263,6 +263,44 @@ export default {
                 field_is_required: '{field} é necessário',
                 invalid_field: '{field} tem um formato inválido'
             }
+        },
+        disposition_chat: {
+            validations: {
+                field_is_required: '{field} é necessário'
+            },
+            form_types: {
+                management: 'Gerenciamento',
+                schedule: 'Diário',
+                no_action: 'Nenhuma ação'
+            },
+            field_types: {
+                text: 'Texto',
+                date: 'Data',
+                list: 'Lista',
+                text_box: 'Caixa de texto'
+            }
+        },
+        reports: {
+            campaign: {
+                conversation: {
+                    form_filters: {
+                        start_date: 'Data de início',
+                        end_date: 'Data de término',
+                        phone: 'Telefone',
+                        agent: 'Agente',
+                        placeholders: {
+                            start_date: 'Selecione a data',
+                            end_date: 'Selecione a data',
+                            phone: 'Digite o telefone',
+                            agent: 'Selecionar agentes',
+                            without_agent: 'nenhum agente'
+                        }
+                    },
+                    validatios: {
+                        biggest_start_data: 'A data de início não pode ser posterior à data de término'
+                    }
+                }
+            }
         }
     }
 };
