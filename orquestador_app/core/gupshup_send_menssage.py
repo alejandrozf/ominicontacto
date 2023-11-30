@@ -1,6 +1,8 @@
 import requests
 import json
 from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
 from orquestador_app.core.apis_urls import (
     URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES,
     URL_SEND_MENU_OPTION)
@@ -13,106 +15,77 @@ headers = {
 }
 
 
-def autoresponse_out_of_time(line, destination, sender):
+def autoresponse_welcome(line, conversation, timestamp):
     try:
-        headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        template = line.mensaje_fueradehora
-        params = [sender['name']]
-        data = {
-            'source': line.numero,
-            'destination': destination,
-            'template': json.dumps({"id": template.identificador, "params": [sender['name']]})
-        }
-        response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data).json()
-        if response["status"] == "submitted":
-            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            text = template.texto.replace('{{', '{').replace('}}', '}').format("", *params)
-            MensajeWhatsapp.objects.create(
-                message_id=response['messageId'],
-                origen=line.numero,
-                timestamp=timestamp,
-                sender={},
-                content={"text": text, "type": "template"},
-                type="template",
-            )
-        return response
+        if is_out_of_time(line, timestamp):
+            message = line.fuera.mensaje_fueradehora.configuracion
+        else:
+            message = line.mensaje_bienvenida.configuracion
+        if message:
+            headers.update({'apikey': line.proveedor.configuracion['api_key']})
+            response = send_text_message(line, conversation.destination, message)
+            if response['status'] == "submitted":
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=response['messageId'],
+                    conversation=conversation,
+                    defaults={
+                        'origen': line.numero,
+                        'timestamp': timestamp,
+                        'sender': {},
+                        'content': message,
+                        'type': "text"
+                    }
+                )
     except Exception as e:
-        print(e)
+        print("autoresponse_welcome >>>>>>>>", e)
 
 
-def autoresponse_welcome(line, conversation, sender):
+def autoreponse_destino_interactivo(line, conversation):
     try:
-        headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        template = line.mensaje_bienvenida
-        params = [sender['name']]
-        data = {
-            'source': line.numero,
-            'destination': conversation.destination,
-            'template': json.dumps({"id": template.identificador, "params": params})
-        }
-        message_outbound = None
-        response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data).json()
-        if response['status'] == "submitted":
-            text = template.texto.replace('{{', '{').replace('}}', '}').format("", *params)
-            content = {"text": text, "type": "template"},
-            message_outbound = MensajeWhatsapp.objects.create(
-                message_id=response['messageId'],
-                conversation=conversation,
-                origen=line.numero,
-                sender={},
-                content=content,
-                type='template',
-            )
-        return message_outbound
+        destination_entrante = line.destino
+        if destination_entrante.content_type == ContentType\
+                .objects.get(model='menuinteractivowhatsapp'):
+            texto_opciones = destination_entrante.content_object.texto_opciones
+            message = {
+                'type': 'list',
+                'title': _(texto_opciones),
+                'body': _('Click Menu Interactivo'),
+                'globalButtons': [{'type': 'text', 'title': _('Menu Interactivo')}],
+                'items': [{
+                    'title': _('Opciones'), 'subtitle': _('Seleccione una opción'),
+                    'options': [
+                        {'type': 'text',
+                         'title': opt.opcion_menu_whatsapp.opcion.valor,
+                         'description': opt.opcion_menu_whatsapp.descripcion}
+                        for opt in destination_entrante.destinos_siguientes.all()
+                    ]
+                }]
+            }
+            headers.update({'apikey': line.proveedor.configuracion['api_key']})
+            data = {
+                'channel': 'whatsapp',
+                'source': line.numero,
+                'src.name': line.configuracion['app_name'],
+                'destination': conversation.destination,
+                'message': json.dumps(message, default=str)
+            }
+            response = requests.post(URL_SEND_MENU_OPTION, headers=headers, data=data).json()
+            if response['status'] == 'submitted':
+                timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                content = {"text": json.dumps(message, default=str), 'type': 'list'},
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=response['messageId'],
+                    conversation=conversation,
+                    defaults={
+                        'origen': line.numero,
+                        'timestamp': timestamp,
+                        'sender': {},
+                        'content': content,
+                        'type': 'list'
+                    }
+                )
     except Exception as e:
-        print(">>>>>>>>", e)
-
-
-def autoreponse_destino_interactivo(line, conversation, sender):
-    try:
-        message = {
-            'type': 'list',
-            'title': 'Seleccione un destino',
-            'body': 'Click Main Menu',
-            'globalButtons': [{'type': 'text', 'title': 'Main Menu'}],
-            'items': [{
-                'title': 'Destinos', 'subtitle': 'Seleccione un destino',
-                'options': [
-                    {'type': 'text', 'title': 'Book 1', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 2', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 3', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 4', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 5', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 6', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 7', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 8', 'description': 'Book description'},
-                    {'type': 'text', 'title': 'Book 9', 'description': 'Book description'},
-                ]
-            }]
-        }
-        headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        data = {
-            "channel": "whatsapp",
-            "source": line.numero,
-            "src.name": line.configuracion['app_name'],
-            "destination": conversation.destination,
-            "message": json.dumps(message)
-        }
-        response = requests.post(URL_SEND_MENU_OPTION, headers=headers, data=data).json()
-        message_outbound = None
-        if response['status'] == "submitted":
-            content = {"text": json.dumps(message), "type": "list"},
-            message_outbound = MensajeWhatsapp.objects.create(
-                message_id=response['messageId'],
-                conversation=conversation,
-                origen=line.numero,
-                sender={},
-                content=content,
-                type='list',
-            )
-        return message_outbound
-    except Exception as e:
-        print(e)
+        print("autoreponse_destino_interactivo >>>>>>>>>>>>", e)
 
 
 def autoresponse_goodbye(line, destination):
@@ -148,7 +121,7 @@ def send_template_message(line, destination, template_id, params):
         print(response.json())
         return response.json()
     except Exception as e:
-        print(e)
+        print("send_template_message >>>>>>>", e)
 
 
 def send_text_message(line, destination, message):
@@ -164,7 +137,7 @@ def send_text_message(line, destination, message):
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
         return response.json()
     except Exception as e:
-        print(e)
+        print("send_text_message >>>>>>", e)
 
 
 def is_out_of_time(line, timestamp):
