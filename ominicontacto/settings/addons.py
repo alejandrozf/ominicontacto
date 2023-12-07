@@ -71,6 +71,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     },
     'Omnileads': {
         'fields': ('WOMBAT_DIALER_ALLOW_REFRESH', 'WOMBAT_DIALER_STATE', 'WOMBAT_DIALER_UP_SINCE',
+                   'EXTERNAL_AUTH_TYPE', 'EXTERNAL_AUTH_SERVER', 'EXTERNAL_AUTH_DN',
+                   'EXTERNAL_AUTH_ACTIVATION',
                    ),
         'collapse': True
     },
