@@ -57,7 +57,8 @@ export default {
             not_empty_list: 'A lista não pode estar vazia',
             field_already_in_form: 'O campo já existe no formulário',
             option_already_in_list: 'A opção já está na lista',
-            not_empty_form_field: 'Deve haver pelo menos um campo no formulário',
+            not_empty_form_field:
+                'Deve haver pelo menos um campo no formulário',
             repeated_form_name: 'Já existe um formulário com esse nome'
         }
     },
@@ -96,16 +97,21 @@ export default {
         enter_name: 'Digite o nome',
         enter_ring_time: 'Digite o tempo de toque',
         enter_dial_option: 'Digite a opção de discagem',
-        on_row_reorder: 'Rotas reordenadas, para finalizar a mudança execute a ação reordenar',
+        on_row_reorder:
+            'Rotas reordenadas, para finalizar a mudança execute a ação reordenar',
         validations: {
-            not_empty_dial_patterns: 'Deve haver pelo menos um padrão de discagem',
+            not_empty_dial_patterns:
+                'Deve haver pelo menos um padrão de discagem',
             not_empty_trunks: 'Deve haver pelo menos um tronco',
             repeated_route_name: 'A rota de saída com esse nome já existe',
             invalid_route_name: 'O nome do caminho é inválido',
             trunk_already_exists: 'O tronco já existe',
-            orphan_trunks: 'Ao eliminar a rota de saída, os seguintes Sip Trunks permanecerão sem uso pelas rotas de saída',
-            repeated_dial_pattern_prefix: 'Já existe um padrão de discagem com esse prefixo',
-            repeated_dial_pattern_rule: 'Já existe um padrão de discagem com essa regra'
+            orphan_trunks:
+                'Ao eliminar a rota de saída, os seguintes Sip Trunks permanecerão sem uso pelas rotas de saída',
+            repeated_dial_pattern_prefix:
+                'Já existe um padrão de discagem com esse prefixo',
+            repeated_dial_pattern_rule:
+                'Já existe um padrão de discagem com essa regra'
         }
     },
     dial_pattern: {
@@ -114,7 +120,8 @@ export default {
     group_of_hour: {
         enter_name: 'Digite o nome',
         validations: {
-            not_empty_time_validations: 'Deve haver pelo menos uma validação de tempo',
+            not_empty_time_validations:
+                'Deve haver pelo menos uma validação de tempo',
             repeated_group_name: 'Já existe um grupo de tempo com esse nome',
             time_validation_already_exists: 'A validação de tempo já existe'
         }
@@ -136,16 +143,19 @@ export default {
         },
         validations: {
             name_already_exist: 'Nome já existe',
-            invalid_campo_duracion: 'Se não houver duração, o campo de duração deve existir.',
+            invalid_campo_duracion:
+                'Se não houver duração, o campo de duração deve existir.',
             invalid_name_campo_token: 'O nome do campo de token é inválido',
-            invalid_name_campo_duracion: 'O nome do campo de duração é inválido'
+            invalid_name_campo_duracion:
+                'O nome do campo de duração é inválido'
         }
     },
     ivr: {
         enter_name: 'Digite o nome',
         enter_description: 'Digite a descrição',
         validations: {
-            not_empty_time_validations: 'Deve haver pelo menos uma validação de tempo',
+            not_empty_time_validations:
+                'Deve haver pelo menos uma validação de tempo',
             repeated_ivr_name: 'IVR com esse nome já existe',
             destination_option_already_exists: 'A opção de destino já existe'
         },
@@ -159,7 +169,8 @@ export default {
         },
         audios: {
             external: {
-                drag_and_drop: 'Arraste e solte os arquivos aqui para fazer upload'
+                drag_and_drop:
+                    'Arraste e solte os arquivos aqui para fazer upload'
             },
             validations: {
                 required_internal_file: 'O arquivo interno é obrigatório',
@@ -170,7 +181,8 @@ export default {
     destination_option: {
         validations: {
             repeated_dtmf: 'Já existe uma opção de destino com esse DTMF',
-            invalid_dtmf: 'O valor DTMF deve ser um dígito (0-9) ou um caractere (#, -, *)'
+            invalid_dtmf:
+                'O valor DTMF deve ser um dígito (0-9) ou um caractere (#, -, *)'
         }
     },
     register_server: {
@@ -179,7 +191,8 @@ export default {
         enter_email: 'Digite o e-mail',
         enter_phone: 'Exemplo: 5555555555',
         validations: {
-            forbidden: 'Você não tem permissões para registrar a instância. Entre em contato com seu administrador'
+            forbidden:
+                'Você não tem permissões para registrar a instância. Entre em contato com seu administrador'
         }
     },
     whatsapp: {
@@ -281,6 +294,17 @@ export default {
             }
         },
         reports: {
+            general: {
+                form_filters: {
+                    start_date: 'Data de início',
+                    end_date: 'Data de término'
+                },
+                validations: {
+                    biggest_start_data:
+                        'A data de início não pode ser posterior à data de término',
+                    campaign_required: 'A campanha é obrigatória'
+                }
+            },
             campaign: {
                 conversation: {
                     form_filters: {
@@ -296,8 +320,9 @@ export default {
                             without_agent: 'nenhum agente'
                         }
                     },
-                    validatios: {
-                        biggest_start_data: 'A data de início não pode ser posterior à data de término'
+                    validations: {
+                        biggest_start_data:
+                            'A data de início não pode ser posterior à data de término'
                     }
                 }
             }

@@ -225,6 +225,22 @@ export default {
             }
         },
         reports: {
+            general: {
+                title: 'گزارش کلی واتس اپ',
+                general_report: 'گزارش کلی',
+                sent_messages: 'پیام های ارسال شده',
+                received_messages: 'پیام های دریافت شده',
+                interactions_started: 'تعاملات شروع شد',
+                attended_chats: 'چت ها شرکت کردند',
+                not_attended_chats: 'چت های بدون نظارت',
+                inbound_chats_attended: 'چت های ورودی شرکت کردند',
+                inbound_chats_not_attended: 'چت های ورودی بدون نظارت',
+                inbound_chats_expired: 'چت های ورودی منقضی شده است',
+                outbound_chats_attended: 'چت های خروجی شرکت کردند',
+                outbound_chats_not_attended: 'چت های خروجی بدون نظارت',
+                outbound_chats_expired: 'چت های خروجی منقضی شده است',
+                outbound_chats_failed: 'چت های خروجی ناموفق'
+            },
             campaign: {
                 conversation: {
                     title: 'گزارش گفتگو',

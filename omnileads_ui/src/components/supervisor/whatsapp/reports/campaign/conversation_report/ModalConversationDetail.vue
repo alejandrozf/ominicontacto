@@ -4,6 +4,7 @@
     :style="{ width: '70vw' }"
     :closable="false"
     :modal="false"
+    :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
   >
     <ConversationDetail />
     <template #footer>

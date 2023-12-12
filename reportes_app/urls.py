@@ -143,6 +143,11 @@ urlpatterns = [
              whatsapp_views.CampaignReportConversationsListView.as_view()),
          name='campaign_whatsapp_report_conversations',
          ),
+    path('campana/<int:pk_campana>/whatsapp_general_report/',
+         login_required(
+             whatsapp_views.GeneralReportListView.as_view()),
+         name='campaign_whatsapp_report_general',
+         ),
     re_path(r'^resultados_de_base_campana/(?P<pk_campana>\d+)/(?P<all_data>\d+)/$',
             login_required(
                 views_reportes.ExportaReporteResultadosDeBaseView.as_view()),

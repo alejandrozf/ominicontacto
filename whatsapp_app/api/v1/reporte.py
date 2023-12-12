@@ -116,15 +116,23 @@ class ReportAPIView(APIView):
     permission_classes = [TienePermisoOML]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
-    def get(self, request):
+    def post(self, request):
         try:
+            start_date = request.data.get('start_date')
+            end_date = request.data.get('end_date')
+            campaing = request.data.get('campaign')
             params_serializer =\
-                ReporteParamsSerializer(data=request.GET, context={"request": request})
+                ReporteParamsSerializer(data={
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'campaing': campaing
+                }, context={"request": request})
             params_serializer.is_valid(raise_exception=True)
             params = params_serializer.save()
             data = ReporteCampanaWhatsapp(params)
             serializer = ReporteCampanaWhatsappSerializer(instance=data)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener el reporte')),
@@ -132,5 +140,6 @@ class ReportAPIView(APIView):
         return response.Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,
+                message=_('Reporte obtenido exitosamente'),
                 data=serializer.data),
             status=status.HTTP_200_OK)

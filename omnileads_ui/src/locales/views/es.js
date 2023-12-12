@@ -234,6 +234,22 @@ export default {
             }
         },
         reports: {
+            general: {
+                title: 'Reporte general de Whatsapp',
+                general_report: 'Reporte general',
+                sent_messages: 'Mensajes enviados',
+                received_messages: 'Mensajes recibidos',
+                interactions_started: 'Interacciones iniciadas',
+                attended_chats: 'Chats atendidos',
+                not_attended_chats: 'Chats no atendidos',
+                inbound_chats_attended: 'Chats entrantes atendidos',
+                inbound_chats_not_attended: 'Chats entrantes no atendidos',
+                inbound_chats_expired: 'Chats entrantes expirados',
+                outbound_chats_attended: 'Chats salientes atendidos',
+                outbound_chats_not_attended: 'Chats salientes no atendidos',
+                outbound_chats_expired: 'Chats salientes expirados',
+                outbound_chats_failed: 'Chats salientes fallidos'
+            },
             campaign: {
                 conversation: {
                     title: 'Reporte de conversaciones',

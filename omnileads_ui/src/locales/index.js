@@ -5,7 +5,8 @@ import pt from './locales.pt_br';
 
 export default {
     es,
-    'en-US': en,
+    en,
     fa,
+    'en-US': en,
     'pt-br': pt
 };

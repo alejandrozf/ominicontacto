@@ -57,7 +57,8 @@ export default {
             not_empty_list: 'The list cannot be empty',
             field_already_in_form: 'The field already exists in the form',
             option_already_in_list: 'The option is already on the list',
-            not_empty_form_field: 'There must be at least one field in the form',
+            not_empty_form_field:
+                'There must be at least one field in the form',
             repeated_form_name: 'There is already a form with that name'
         }
     },
@@ -96,16 +97,20 @@ export default {
         enter_name: 'Enter the name',
         enter_ring_time: 'Enter the ring time',
         enter_dial_option: 'Enter the dial option',
-        on_row_reorder: 'Reordered routes, to finalize the change execute the reorder action',
+        on_row_reorder:
+            'Reordered routes, to finalize the change execute the reorder action',
         validations: {
             not_empty_dial_patterns: 'There must be at least one dial pattern',
             not_empty_trunks: 'There must be at least one trunk',
             repeated_route_name: 'Outgoing route with that name already exists',
             invalid_route_name: 'The path name is invalid',
-            repeated_dial_pattern_prefix: 'There is already a dial pattern with that prefix',
-            repeated_dial_pattern_rule: 'There is already a dial pattern with that rule',
+            repeated_dial_pattern_prefix:
+                'There is already a dial pattern with that prefix',
+            repeated_dial_pattern_rule:
+                'There is already a dial pattern with that rule',
             trunk_already_exists: 'Trunk already exists',
-            orphan_trunks: 'By eliminating the outgoing route the following Sip Trunks will remain unused by Outgoing routes'
+            orphan_trunks:
+                'By eliminating the outgoing route the following Sip Trunks will remain unused by Outgoing routes'
         }
     },
     dial_pattern: {
@@ -114,9 +119,11 @@ export default {
     group_of_hour: {
         enter_name: 'Enter the name',
         validations: {
-            not_empty_time_validations: 'There must be at least one time validation',
+            not_empty_time_validations:
+                'There must be at least one time validation',
             repeated_group_name: 'There is already a time group with that name',
-            time_validation_already_exists: 'The time validation already exists'
+            time_validation_already_exists:
+                'The time validation already exists'
         }
     },
     external_site_authentication: {
@@ -136,7 +143,8 @@ export default {
         },
         validations: {
             name_already_exist: 'Name already exists',
-            invalid_campo_duracion: 'If there is no duration, the duration field must exist.',
+            invalid_campo_duracion:
+                'If there is no duration, the duration field must exist.',
             invalid_name_campo_token: 'The token field name is invalid',
             invalid_name_campo_duracion: 'The duration field name is invalid'
         }
@@ -145,9 +153,11 @@ export default {
         enter_name: 'Enter the name',
         enter_description: 'Enter the description',
         validations: {
-            not_empty_time_validations: 'There must be at least one time validation',
+            not_empty_time_validations:
+                'There must be at least one time validation',
             repeated_ivr_name: 'IVR with that name already exists',
-            destination_option_already_exists: 'Destination option already exists'
+            destination_option_already_exists:
+                'Destination option already exists'
         },
         destination_types: {
             campaign: 'Inbound campaign',
@@ -169,8 +179,10 @@ export default {
     },
     destination_option: {
         validations: {
-            repeated_dtmf: 'There is already a destination option with that DTMF',
-            invalid_dtmf: 'The DTMF value must be a digit (0-9) or a character (#, -, *)'
+            repeated_dtmf:
+                'There is already a destination option with that DTMF',
+            invalid_dtmf:
+                'The DTMF value must be a digit (0-9) or a character (#, -, *)'
         }
     },
     register_server: {
@@ -179,7 +191,8 @@ export default {
         enter_email: 'Enter the email',
         enter_phone: 'Example: 5555555555',
         validations: {
-            forbidden: 'You do not have permissions to register the instance. Please contact your Administrator'
+            forbidden:
+                'You do not have permissions to register the instance. Please contact your Administrator'
         }
     },
     whatsapp: {
@@ -281,6 +294,17 @@ export default {
             }
         },
         reports: {
+            general: {
+                form_filters: {
+                    start_date: 'Start date',
+                    end_date: 'Ending date'
+                },
+                validations: {
+                    biggest_start_data:
+                        'The start date cannot be greater than the end date',
+                    campaign_required: 'Campaign is required'
+                }
+            },
             campaign: {
                 conversation: {
                     form_filters: {
@@ -296,8 +320,9 @@ export default {
                             without_agent: 'No agent'
                         }
                     },
-                    validatios: {
-                        biggest_start_data: 'The start date cannot be greater than the end date'
+                    validations: {
+                        biggest_start_data:
+                            'The start date cannot be greater than the end date'
                     }
                 }
             }

@@ -225,6 +225,22 @@ export default {
             }
         },
         reports: {
+            general: {
+                title: 'Relatório geral do WhatsApp',
+                general_report: 'Relatório geral',
+                sent_messages: 'Mensagens enviadas',
+                received_messages: 'Mensagens recebidas',
+                interactions_started: 'Interações iniciadas',
+                attended_chats: 'Bate-papos atendidos',
+                not_attended_chats: 'Bate-papos autônomos',
+                inbound_chats_attended: 'Bate-papos recebidos atendidos',
+                inbound_chats_not_attended: 'Bate-papos recebidos não supervisionados',
+                inbound_chats_expired: 'Bate-papos recebidos expirados',
+                outbound_chats_attended: 'Bate-papos de saída atendidos',
+                outbound_chats_not_attended: 'Bate-papos de saída autônomos',
+                outbound_chats_expired: 'Bate-papos de saída expirados',
+                outbound_chats_failed: 'Bate-papos de saída com falha'
+            },
             campaign: {
                 conversation: {
                     title: 'Relatório de conversa',

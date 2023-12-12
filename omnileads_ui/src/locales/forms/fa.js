@@ -96,16 +96,21 @@ export default {
         enter_name: 'نام را وارد کنید',
         enter_ring_time: 'زمان زنگ را وارد کنید',
         enter_dial_option: 'وارد گزینه شماره گیری شوید',
-        on_row_reorder: 'مسیرهای مرتب شده مجدد، برای نهایی کردن تغییر، اقدام ترتیب مجدد را اجرا کنید',
+        on_row_reorder:
+            'مسیرهای مرتب شده مجدد، برای نهایی کردن تغییر، اقدام ترتیب مجدد را اجرا کنید',
         validations: {
-            not_empty_dial_patterns: 'باید حداقل یک الگوی شماره گیری وجود داشته باشد',
+            not_empty_dial_patterns:
+                'باید حداقل یک الگوی شماره گیری وجود داشته باشد',
             not_empty_trunks: 'باید حداقل یک تنه وجود داشته باشد',
             repeated_route_name: 'مسیر خروجی با آن نام از قبل وجود دارد',
             invalid_route_name: 'نام مسیر نامعتبر است',
             trunk_already_exists: 'تنه از قبل وجود دارد',
-            orphan_trunks: 'با حذف مسیر خروجی، سیپ ترانک های زیر توسط مسیرهای خروجی بلااستفاده می مانند',
-            repeated_dial_pattern_prefix: 'قبلاً یک الگوی شماره گیری با آن پیشوند وجود دارد',
-            repeated_dial_pattern_rule: 'در حال حاضر یک الگوی شماره گیری با آن قانون وجود دارد'
+            orphan_trunks:
+                'با حذف مسیر خروجی، سیپ ترانک های زیر توسط مسیرهای خروجی بلااستفاده می مانند',
+            repeated_dial_pattern_prefix:
+                'قبلاً یک الگوی شماره گیری با آن پیشوند وجود دارد',
+            repeated_dial_pattern_rule:
+                'در حال حاضر یک الگوی شماره گیری با آن قانون وجود دارد'
         }
     },
     dial_pattern: {
@@ -114,8 +119,10 @@ export default {
     group_of_hour: {
         enter_name: 'نام را وارد کنید',
         validations: {
-            not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
-            repeated_group_name: 'در حال حاضر یک گروه زمانی با آن نام وجود دارد',
+            not_empty_time_validations:
+                'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
+            repeated_group_name:
+                'در حال حاضر یک گروه زمانی با آن نام وجود دارد',
             time_validation_already_exists: 'اعتبار زمانی از قبل وجود دارد'
         }
     },
@@ -136,7 +143,8 @@ export default {
         },
         validations: {
             name_already_exist: 'نام از قبل وجود دارد',
-            invalid_campo_duracion: 'اگر مدت زمان وجود نداشته باشد، قسمت duration باید وجود داشته باشد.',
+            invalid_campo_duracion:
+                'اگر مدت زمان وجود نداشته باشد، قسمت duration باید وجود داشته باشد.',
             invalid_name_campo_token: 'نام فیلد نشانه نامعتبر است',
             invalid_name_campo_duracion: 'نام فیلد مدت نامعتبر است'
         }
@@ -145,7 +153,8 @@ export default {
         enter_name: 'نام را وارد کنید',
         enter_description: 'توضیحات را وارد کنید',
         validations: {
-            not_empty_time_validations: 'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
+            not_empty_time_validations:
+                'باید حداقل یک بار اعتبارسنجی وجود داشته باشد',
             repeated_ivr_name: 'تلفن گویا با این نام از قبل وجود دارد',
             destination_option_already_exists: 'گزینه مقصد از قبل وجود دارد'
         },
@@ -159,7 +168,8 @@ export default {
         },
         audios: {
             external: {
-                drag_and_drop: 'برای آپلود فایل ها را به اینجا بکشید و رها کنید'
+                drag_and_drop:
+                    'برای آپلود فایل ها را به اینجا بکشید و رها کنید'
             },
             validations: {
                 required_internal_file: 'فایل داخلی مورد نیاز است',
@@ -170,7 +180,8 @@ export default {
     destination_option: {
         validations: {
             repeated_dtmf: 'در حال حاضر یک گزینه مقصد با آن DTMF وجود دارد',
-            invalid_dtmf: 'مقدار DTMF باید یک رقم (0-9) یا یک کاراکتر (#، -، *) باشد.'
+            invalid_dtmf:
+                'مقدار DTMF باید یک رقم (0-9) یا یک کاراکتر (#، -، *) باشد.'
         }
     },
     register_server: {
@@ -179,7 +190,8 @@ export default {
         enter_email: 'ایمیل را وارد کنید',
         enter_phone: 'مثال: 5555555555',
         validations: {
-            forbidden: 'شما مجوز ثبت نمونه را ندارید. لطفا با مدیر خود تماس بگیرید'
+            forbidden:
+                'شما مجوز ثبت نمونه را ندارید. لطفا با مدیر خود تماس بگیرید'
         }
     },
     whatsapp: {
@@ -281,6 +293,17 @@ export default {
             }
         },
         reports: {
+            general: {
+                form_filters: {
+                    start_date: 'تاریخ شروع',
+                    end_date: 'تاریخ پایان'
+                },
+                validations: {
+                    biggest_start_data:
+                        'تاریخ شروع نمی تواند بزرگتر از تاریخ پایان باشد',
+                    campaign_required: 'کمپین الزامی است'
+                }
+            },
             campaign: {
                 conversation: {
                     form_filters: {
@@ -296,8 +319,9 @@ export default {
                             without_agent: 'هیچ عاملی'
                         }
                     },
-                    validatios: {
-                        biggest_start_data: 'تاریخ شروع نمی تواند بزرگتر از تاریخ پایان باشد'
+                    validations: {
+                        biggest_start_data:
+                            'تاریخ شروع نمی تواند بزرگتر از تاریخ پایان باشد'
                     }
                 }
             }

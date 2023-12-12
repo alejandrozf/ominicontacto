@@ -48,6 +48,7 @@ module.exports = {
         supervisor_whatsapp_templates: getPageConfig('supervisor_whatsapp_templates'),
         supervisor_whatsapp_group_of_message_templates: getPageConfig('supervisor_whatsapp_group_of_message_templates'),
         supervisor_whatsapp_report_campaign_conversations: getPageConfig('supervisor_whatsapp_report_campaign_conversations'),
+        supervisor_whatsapp_report_general: getPageConfig('supervisor_whatsapp_report_general'),
         // Agent Whatsapp Pages
         agent_whatsapp_index: getPageConfig('agent_whatsapp_index'),
         agent_whatsapp_conversation: getPageConfig('agent_whatsapp_conversation'),

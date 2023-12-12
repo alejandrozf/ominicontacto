@@ -2,7 +2,7 @@
   <div class="card">
     <DataTable
       :value="supWhatsReportCampaignConversations"
-      class="p-datatable-md"
+      class="p-datatable-sm"
       showGridlines
       :scrollable="true"
       scrollHeight="900px"
@@ -112,7 +112,7 @@
         <template #body="{ data }">
           <Tag
             icon="pi pi-calendar"
-            severity="success"
+            style="background-color: #e5e5e5; color: #000000; font-weight: bold;"
             :value="getDatetimeFormat(data.date_last_interaction)"
             rounded
           ></Tag>
@@ -244,7 +244,9 @@ export default {
             if (agent) {
                 return agent.name;
             } else {
-                return 'Sin agente';
+                return this.$t(
+                    'forms.whatsapp.reports.campaign.conversation.form_filters.placeholders.without_agent'
+                );
             }
         },
         getColor (expired) {

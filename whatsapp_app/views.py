@@ -55,3 +55,20 @@ class CampaignReportConversationsListView(TemplateView):
         context = super(CampaignReportConversationsListView, self).get_context_data(**kwargs)
         context['campaign'] = self.get_object()
         return context
+
+
+class GeneralReportListView(TemplateView):
+    """
+    Esta vista es obtener el reporte general de Whatsapp
+    para una campana <pk_campana>
+    """
+    template_name = "whatsapp_report_general.html"
+
+    def get_object(self, queryset=None):
+        campaign = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        return campaign
+
+    def get_context_data(self, **kwargs):
+        context = super(GeneralReportListView, self).get_context_data(**kwargs)
+        context['campaign'] = self.get_object()
+        return context

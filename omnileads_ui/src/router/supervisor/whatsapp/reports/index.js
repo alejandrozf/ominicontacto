@@ -1,2 +1,7 @@
 import SupWhatsReportCampaignRoutes from './campaign';
-export default [...SupWhatsReportCampaignRoutes];
+import SupWhatsReportGeneralRoutes from './general_report_routes';
+
+export default [
+    ...SupWhatsReportCampaignRoutes,
+    ...SupWhatsReportGeneralRoutes
+];
