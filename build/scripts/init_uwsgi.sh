@@ -34,4 +34,5 @@ $COMMAND actualizar_permisos
 echo "Run django command regenerar_asterisk"
 $COMMAND regenerar_asterisk
 echo "Init uWSGI"
+$COMMAND listening_whatsapp_events &
 exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
