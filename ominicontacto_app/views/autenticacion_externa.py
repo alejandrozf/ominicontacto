@@ -39,6 +39,7 @@ class ConfigurarAutenticacionExternaView(FormView):
         initial['servidor'] = config_constance.EXTERNAL_AUTH_SERVER
         initial['base_dn'] = config_constance.EXTERNAL_AUTH_DN
         initial['activacion'] = config_constance.EXTERNAL_AUTH_ACTIVATION
+        initial['ms_simple_auth'] = config_constance.EXTERNAL_AUTH_MS_SIMPLE_AUTH
         kwargs['initial'] = initial
         return kwargs
 
@@ -49,6 +50,8 @@ class ConfigurarAutenticacionExternaView(FormView):
         config_constance.EXTERNAL_AUTH_DN = form.cleaned_data.get('base_dn')
         activacion = form.cleaned_data.get('activacion')
         config_constance.EXTERNAL_AUTH_ACTIVATION = activacion
+        ms_simple_auth = form.cleaned_data.get('ms_simple_auth')
+        config_constance.EXTERNAL_AUTH_MS_SIMPLE_AUTH = ms_simple_auth
 
         if tipo == 'LDAP':
             if activacion == AutenticacionExternaDeUsuario.MANUAL_ACTIVO:
