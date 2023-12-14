@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0102_campana_add_whatsapp_habilitado'),
+        ('ominicontacto_app', '0103_campana_add_whatsapp_habilitado'),
         ('whatsapp_app', '0003_create_configuracion_whatsapp_campana'),
     ]
 

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0101_historicalcalificacioncliente_index'),
+        ('ominicontacto_app', '0102_autenticacion_externa_usuario'),
     ]
 
     operations = [

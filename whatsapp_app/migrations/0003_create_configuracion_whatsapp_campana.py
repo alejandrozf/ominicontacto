@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('ominicontacto_app', '0102_campana_add_whatsapp_habilitado'),
+        ('ominicontacto_app', '0103_campana_add_whatsapp_habilitado'),
         ('whatsapp_app', '0002_remove_plantillamensaje_linea'),
     ]
 

@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0102_campana_add_whatsapp_habilitado'),
+        ('ominicontacto_app', '0103_campana_add_whatsapp_habilitado'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='calificacioncliente',
             name='canalidad',
-            field=models.PositiveIntegerField(choices=[(0, 'Teléfono'), (1, 'Whatsapp')], default=0),
+            field=models.PositiveIntegerField(
+                choices=[(0, 'Teléfono'), (1, 'Whatsapp')], default=0),
         ),
         migrations.AddField(
             model_name='historicalcalificacioncliente',
             name='canalidad',
-            field=models.PositiveIntegerField(choices=[(0, 'Teléfono'), (1, 'Whatsapp')], default=0),
+            field=models.PositiveIntegerField(
+                choices=[(0, 'Teléfono'), (1, 'Whatsapp')], default=0),
         ),
     ]
