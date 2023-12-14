@@ -2336,6 +2336,8 @@ class AutenticacionExternaForm(forms.Form):
                  (AutenticacionExternaDeUsuario.MANUAL_ACTIVO, _('Manual (default activo)')),
                  (AutenticacionExternaDeUsuario.MANUAL_INACTIVO, _('Manual (default inactivo)'))
                  ))
+    ms_simple_auth = forms.BooleanField(
+        required=False, label=_('MicroSoft AD DS Simple Authentication'))
 
     def clean(self):
         # no tiene sentido q se seleccione aleatoriamente si no se seleccionó

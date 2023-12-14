@@ -17,15 +17,27 @@
 #
 
 import ldap3
+import re
 from constance import config as config_constance
+
+
+def parse_ms_simple_user(username, dn):
+    nodes = re.findall(r"(?i)(?<=DC=)[^,]+", dn)
+    return '{0}@{1}'.format(username, '.'.join(nodes))
+
+
+def parse_ldap_user(username):
+    if not config_constance.EXTERNAL_AUTH_MS_SIMPLE_AUTH:
+        return 'cn={0},{1}'.format(username, config_constance.EXTERNAL_AUTH_DN)
+    return parse_ms_simple_user(username, config_constance.EXTERNAL_AUTH_DN)
 
 
 def authenticate_in_ldap(username, password):
     authentication_ok = False
     service_error = False
 
-    server = config_constance.EXTERNAL_AUTH_SERVER
-    user = 'cn={0},{1}'.format(username, config_constance.EXTERNAL_AUTH_DN)
+    user = parse_ldap_user(username)
+    server = ldap3.Server(config_constance.EXTERNAL_AUTH_SERVER, connect_timeout=5)
     conn = ldap3.Connection(server, user, password)
     try:
         conn.bind()
