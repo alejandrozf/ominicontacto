@@ -112,6 +112,9 @@ export class WhatsappConsumer {
     handleMessageStatusEvent (data) {
         console.log('Whatsapp Consumer MESSAGE_STATUS: ');
         console.log(data);
+        if (data) {
+            STORE.dispatch('agtWhatSendMessageStatus', data);
+        }
     }
 
     handleNewChatEvent (data) {

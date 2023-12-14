@@ -53,9 +53,7 @@ export default {
             }
         },
         getIconMessageStatus (status) {
-            if (status === WHATSAPP_MESSAGE.STATUS.SENDING) {
-                return 'pi pi-clock';
-            } else if (status === WHATSAPP_MESSAGE.STATUS.SENT) {
+            if (status === WHATSAPP_MESSAGE.STATUS.SENT) {
                 return 'pi pi-check';
             } else if (status === WHATSAPP_MESSAGE.STATUS.DELIVERED) {
                 return 'pi pi-check-circle';

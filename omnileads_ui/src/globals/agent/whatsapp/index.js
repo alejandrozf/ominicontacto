@@ -11,11 +11,10 @@ export const WHATSAPP_MESSAGE = {
         CLIENT: 1
     },
     STATUS: {
-        SENDING: 0,
-        SENT: 1,
-        DELIVERED: 2,
-        READ: 3,
-        ERROR: 4
+        SENT: 'sent',
+        DELIVERED: 'delivered',
+        READ: 'read',
+        ERROR: 'failed'
     }
 };
 export const NOTIFICATION = {

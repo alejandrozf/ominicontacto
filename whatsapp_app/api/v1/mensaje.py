@@ -39,6 +39,7 @@ class MensajeListSerializer(serializers.Serializer):
     origen = serializers.CharField()
     sender = serializers.JSONField()
     type = serializers.CharField()
+    status = serializers.CharField()
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):
