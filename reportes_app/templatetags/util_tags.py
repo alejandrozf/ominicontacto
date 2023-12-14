@@ -50,3 +50,8 @@ def get_class(value):
 @register.filter(name='interaccion_crm')
 def interaccion_crm(value):
     return value in [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
+
+
+@register.filter(name='interaccion_solo_crm')
+def interaccion_solo_crm(value):
+    return value == Campana.SITIO_EXTERNO

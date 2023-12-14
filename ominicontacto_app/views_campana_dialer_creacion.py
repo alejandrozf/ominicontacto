@@ -234,7 +234,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ACTUACION_VIGENTE, ActuacionVigenteForm), ]
 
-    TEMPLATES = {INICIAL: 'campanas/campana_dialer/edita_campana.html',
+    TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
                  PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',

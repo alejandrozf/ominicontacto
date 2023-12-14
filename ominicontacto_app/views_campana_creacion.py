@@ -195,12 +195,8 @@ class CampanaTemplateDeleteMixin(object):
 
 
 def mostrar_form_parametros_crm_form(wizard):
-    campana = wizard.get_form_instance(wizard.INICIAL)
-    if campana:
-        interaccion = campana.tipo_interaccion
-    else:
-        cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
-        interaccion = cleaned_data.get('tipo_interaccion', '')
+    cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
+    interaccion = cleaned_data.get('tipo_interaccion', '')
     return interaccion in [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
 
 
@@ -313,17 +309,12 @@ class CampanaWizardMixin(object):
     def get_context_data(self, form, *args, **kwargs):
         context = super(CampanaWizardMixin, self).get_context_data(form, *args, **kwargs)
         context['interaccion_crm'] = False
-        pk = self.kwargs.get('pk_campana', False)
         current_step = self.steps.current
-        if pk:
-            campana = get_object_or_404(Campana, pk=pk)
-            context['interaccion_crm'] = campana.tiene_interaccion_con_sitio_externo
-        else:
-            if current_step != self.INICIAL:
-                cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
-                tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
-                context['interaccion_crm'] = tipo_interaccion in \
-                    [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
+        if current_step != self.INICIAL:
+            cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
+            tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
+            context['interaccion_crm'] = tipo_interaccion in \
+                [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
 
         # se adiciona el formulario de los grupos para etapa de asignación de agentes
         if current_step == self.ADICION_AGENTES:

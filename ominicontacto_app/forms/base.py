@@ -783,11 +783,28 @@ class AuditoriaCalificacionForm(forms.ModelForm):
 
 
 class CampanaMixinForm(object):
+
+    INTERACCION_CON_FORMULARIO = (
+        (Campana.FORMULARIO, Campana.TIPO_FORMULARIO_DISPLAY),
+        (Campana.FORMULARIO_Y_SITIO_EXTERNO, Campana.TIPO_FORMULARIO_Y_SITIO_EXTERNO)
+    )
+    INTERACCION_SITIO_EXTERNO = (
+        (Campana.SITIO_EXTERNO, Campana.TIPO_SITIO_EXTERNO_DISPLAY),
+    )
+
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None:
+            if instance.tipo_interaccion == Campana.SITIO_EXTERNO:
+                self.fields['tipo_interaccion'].disabled = True
+                self.fields['tipo_interaccion'].required = False
+                self.fields['tipo_interaccion'].choices = self.INTERACCION_SITIO_EXTERNO
+            else:
+                self.fields['tipo_interaccion'].choices = self.INTERACCION_CON_FORMULARIO
 
     def requiere_bd_contacto(self):
         raise NotImplementedError()
@@ -873,8 +890,6 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['tipo_interaccion'].disabled = True
-            self.fields['tipo_interaccion'].required = False
 
     def requiere_bd_contacto(self):
         return False
@@ -1562,7 +1577,6 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         if self.instance.pk:
             self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
-            self.fields['tipo_interaccion'].required = False
 
     def requiere_bd_contacto(self):
         return True
@@ -1593,7 +1607,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         }
 
         widgets = {
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
             'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1920,7 +1934,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['tipo_interaccion'].required = False
+            # self.fields['tipo_interaccion'].required = False
 
     class Meta:
         model = Campana
@@ -1934,7 +1948,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
             'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
@@ -1958,7 +1972,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
-            self.fields['tipo_interaccion'].required = False
+            # self.fields['tipo_interaccion'].required = False
 
     class Meta:
         model = Campana
@@ -1967,7 +1981,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
-            'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
             'control_de_duplicados': forms.Select(attrs={'class': 'form-control'}),
             'campo_direccion': forms.Select(attrs={'class': 'form-control'}),
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),

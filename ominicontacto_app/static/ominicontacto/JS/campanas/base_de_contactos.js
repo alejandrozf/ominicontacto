@@ -15,18 +15,18 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
-/* global Urls $selectDBContactos */
+/* global Urls */
 const $modalDBContactos = $('#modalDBContactos');
-// const $selectDBContactos = $('#camp_bd_contactos');
+const selectorDBContactos = '#camp_bd_contactos';
 const $modalContentDBContactos = $('#modalContentDBContactos');
 const $modalTitle = $('#modalTitle');
 const $cancelModal = $('#cancelModal');
 
 $(function() {
-    $selectDBContactos.change(checkDatabaseCampaigns);
+    $(selectorDBContactos).change(checkDatabaseCampaigns);
 
     $cancelModal.click(function () {
-        $selectDBContactos.val(null);
+        $(selectorDBContactos).val(null);
         $modalDBContactos.modal('hide');
     });
 });

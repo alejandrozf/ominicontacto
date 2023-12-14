@@ -915,7 +915,6 @@ class SupervisorCampanaTests(CampanasTests):
          post_step6_data,
          post_step7_data, __) = self._obtener_post_data_wizard_creacion_campana_dialer(
             nombre_campana, audio_ingreso, destino)
-        post_step0_data.pop('0-tipo_interaccion')
         post_step0_data.pop('campana_dialer_create_view-current_step')
         post_step2_data.pop('campana_dialer_create_view-current_step')
         post_step3_data.pop('campana_dialer_create_view-current_step')
