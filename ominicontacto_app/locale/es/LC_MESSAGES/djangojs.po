@@ -326,8 +326,7 @@ msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:131
 msgid ""
-"La exportación a .csv del reporte de  ha sido completada completada "
-"exitosamente."
+"La exportación a .csv del reporte ha sido completada exitosamente."
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:79
@@ -339,7 +338,7 @@ msgid "Operación completa"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:138
-msgid "La operación ha sido completada completada exitosamente."
+msgid "La operación ha sido completada exitosamente."
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/campanas/campana_dialer/campana_list.js:146

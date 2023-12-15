@@ -85,7 +85,7 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, taskId, urlExportacion, $ba
                         body: gettext(
                             'La exportación a .csv del reporte de ' +
                             sufijoUrl +
-                            ' ha sido completada completada exitosamente.')
+                            ' ha sido completada exitosamente.')
                     });
                 setTimeout(function() {
                     notification.close();

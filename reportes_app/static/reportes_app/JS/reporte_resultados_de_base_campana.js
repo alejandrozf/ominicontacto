@@ -93,7 +93,7 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion,
                         body: gettext(
                             'La exportación a .csv del reporte de ' +
                             sufijoUrl +
-                            ' ha sido completada completada exitosamente.')
+                            ' ha sido completada exitosamente.')
                     });
                 setTimeout(function() {
                     notification.close();
