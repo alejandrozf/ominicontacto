@@ -289,5 +289,13 @@ export default {
             console.error(error);
             commit('agtWhatsRestartExpiredCoversation', null);
         }
+    },
+    async agtWhatsInitNewConversation ({ commit }, data) {
+        try {
+            return await service.initNewConversation(data);
+        } catch (error) {
+            console.error('===> ERROR al iniciar nueva conversacion');
+            console.error(error);
+        }
     }
 };

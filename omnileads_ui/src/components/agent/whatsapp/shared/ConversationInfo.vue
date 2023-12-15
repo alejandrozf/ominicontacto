@@ -108,7 +108,7 @@ export default {
         checkExpirationDate () {
             const now = new Date();
             const expire = new Date(this.conversationInfo.expire);
-            this.isExpired = now > expire;
+            this.isExpired = expire > now;
         }
     },
     watch: {

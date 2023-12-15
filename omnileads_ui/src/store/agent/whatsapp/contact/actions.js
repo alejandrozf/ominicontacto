@@ -3,7 +3,7 @@ import Service from '@/services/agent/whatsapp/contact_service';
 import { HTTP_STATUS } from '@/globals';
 const service = new Service();
 export default {
-    async agtWhatsContactList ({ commit }, { campaignId, conversationId }) {
+    async agtWhatsContactListInit ({ commit }, { campaignId, conversationId }) {
         try {
             const { status, data } = await service.getContacts({
                 campaignId,

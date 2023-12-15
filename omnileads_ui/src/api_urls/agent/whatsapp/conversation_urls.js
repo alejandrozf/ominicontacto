@@ -9,5 +9,6 @@ export default {
     ChatAgentReactiveExpiredConversation: (chatId) => `${BASE_ROUTE}/${chatId}/reactive_expired_conversation`,
     ChatAgentConversationsList: () => `${BASE_ROUTE}`,
     ChatAgentConversationsDetail: (chatId) => `${BASE_ROUTE}/${chatId}`,
-    ChatAgentConversationRequest: (chatId) => `${BASE_ROUTE}/${chatId}/attend_chat`
+    ChatAgentConversationRequest: (chatId) => `${BASE_ROUTE}/${chatId}/attend_chat`,
+    ChatAgentNewConversation: () => `${BASE_ROUTE}/send_initing_conversation`
 };

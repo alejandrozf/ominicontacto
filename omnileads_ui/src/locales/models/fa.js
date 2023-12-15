@@ -263,7 +263,15 @@ export default {
             last_interaction: 'آخرین تعامل',
             expire: 'تاریخ انقضا',
             message: 'تعداد پیام ها',
-            line: 'خط'
+            line: 'خط',
+            new: {
+                title: 'گفتگوی جدید',
+                model: {
+                    campaign: 'زنگ',
+                    contact: 'مخاطب',
+                    template: 'قالب'
+                }
+            }
         }
     }
 };

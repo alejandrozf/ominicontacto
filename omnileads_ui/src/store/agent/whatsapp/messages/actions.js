@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 export default {
-    agtWhatSendMessageStatus({ commit }, info = null) {
+    agtWhatSendMessageStatus ({ commit }, info = null) {
         try {
             commit('agtWhatSendMessageStatus', info);
         } catch (error) {

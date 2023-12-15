@@ -53,7 +53,7 @@ class WhatsappAppConfig(AppConfig):
             {'nombre': 'template-whatsapp-sincronizar-templates',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'campana-list',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'grupo-plantilla-whatsapp-list',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'grupo-plantilla-whatsapp-detail',

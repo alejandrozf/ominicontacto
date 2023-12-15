@@ -37,9 +37,27 @@ export default {
     async created () {
         this.consumer = new WhatsappConsumer();
         await this.agtWhatsChatsListInit();
+        localStorage.setItem('agtWhatsCoversationCreatedId', null);
+    },
+    mounted () {
+        window.addEventListener('storage', this.updatedLocalStorage);
+        this.updatedLocalStorage();
+    },
+    beforeUnmount () {
+        window.removeEventListener('storage', this.updatedLocalStorage);
     },
     methods: {
-        ...mapActions(['agtWhatsChatsListInit'])
+        ...mapActions(['agtWhatsChatsListInit']),
+        updatedLocalStorage () {
+            const conversationId = localStorage.getItem('agtWhatsCoversationCreatedId');
+            if (conversationId !== 'null') {
+                this.$router.push({
+                    name: 'agent_whatsapp_conversation_detail',
+                    params: { id: parseInt(conversationId) }
+                });
+                localStorage.setItem('agtWhatsCoversationCreatedId', null);
+            }
+        }
     },
     data () {
         return {

@@ -137,4 +137,23 @@ export default class WhatsappConversationService extends BaseService {
             this.initPayload();
         }
     }
+
+    async initNewConversation (data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatAgentNewConversation(),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al iniciar nueva conversacion`);
+            return {
+                success: false,
+                message: 'Error al iniciar nueva conversacion'
+            };
+        } finally {
+            this.initPayload();
+        }
+    }
 }

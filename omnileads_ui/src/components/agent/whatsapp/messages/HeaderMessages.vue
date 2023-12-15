@@ -5,12 +5,12 @@
       <h2 class="font-bold">{{ $t('globals.whatsapp.title') }}</h2>
     </template>
     <template #end>
-      <!-- <Button
-      icon="pi pi-comment"
-      class="p-button-secondary"
+      <Button
+      icon="pi pi-plus"
+      class="p-button-success"
       @click="newConversation"
       v-tooltip.top="'Nueva conversarion'"
-      /> -->
+      />
       <Button
       icon="pi pi-times"
       class="p-button-danger ml-2"
@@ -31,9 +31,10 @@ export default {
     },
     methods: {
         newConversation () {
-            const event = new CustomEvent('onWhatsappNewConversationEvent', {
+            localStorage.setItem('agtWhatsConversationNewResetForm', true);
+            const event = new CustomEvent('onWhatsappConversationNewEvent', {
                 detail: {
-                    new_conversation: false
+                    conversation_new: true
                 }
             });
             window.parent.document.dispatchEvent(event);

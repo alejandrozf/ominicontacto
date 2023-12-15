@@ -4,6 +4,7 @@ const modalDispositionForm = $('#whatsapp-modal-disposition-form');
 const modalMediaImageForm = $('#whatsapp-modal-media-image-form');
 const modalMediaFileForm = $('#whatsapp-modal-media-file-form');
 const modalContactForm = $('#whatsapp-modal-contact-form');
+const modalConversationNew = $('#whatsapp-modal-conversation-new');
 const whatsappWrapper = $('#wrapperWhatsapp');
 
 const onWhatsappTransferChatEvent = ($event) => {
@@ -43,6 +44,11 @@ const onWhatsappContactFormEvent = ($event) => {
     modalContactForm.modal(contact_form === true ? 'show' : 'hide');
 };
 
+const onWhatsappConversationNewEvent = ($event) => {
+    const { conversation_new } = $event.detail;
+    modalConversationNew.modal(conversation_new === true ? 'show' : 'hide');
+};
+
 const onWhatsappCloseContainerEvent = ($event) => {
     whatsappWrapper.addClass('hidden');
 };
@@ -54,6 +60,7 @@ const setEventListeners = () => {
     window.document.addEventListener('onWhatsappDispositionFormEvent', onWhatsappDispositionFormEvent, false);
     window.document.addEventListener('onWhatsappMediaFormEvent', onWhatsappMediaFormEvent, false);
     window.document.addEventListener('onWhatsappContactFormEvent', onWhatsappContactFormEvent, false);
+    window.document.addEventListener('onWhatsappConversationNewEvent', onWhatsappConversationNewEvent, false);
     $('#whatsappChat').on('click', function () {
         $('#wrapperWhatsapp').toggleClass('hidden');
         $('#wrapperWebphone').removeClass('active');

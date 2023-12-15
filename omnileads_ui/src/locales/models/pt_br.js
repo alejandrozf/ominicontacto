@@ -263,7 +263,15 @@ export default {
             expire: 'Data de expiração',
             last_interaction: 'Última interação',
             message: 'Número de mensagens',
-            line: 'Linha'
+            line: 'Linha',
+            new: {
+                title: 'Nova conversa',
+                model: {
+                    campaign: 'Campainha',
+                    contact: 'Contato',
+                    template: 'Modelo'
+                }
+            }
         }
     }
 };
