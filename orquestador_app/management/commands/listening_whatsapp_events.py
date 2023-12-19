@@ -15,41 +15,99 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
 import logging
+import threading
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from orquestador_app.core.argtype import redis_host
 from orquestador_app.core.asyncio import get_event_loop
+from orquestador_app.core.asyncio import create_task
+from orquestador_app.core.asyncio import run
 from orquestador_app.core.asyncio import Loop
 from orquestador_app.core.argtype import RedisServer
-from orquestador_app.core.redis import subscribe, unsubscribe
+from orquestador_app.core.redis import subscribe, unsubscribe  # noqa: F401
 from whatsapp_app.models import Linea
 
 logger = logging.getLogger(__name__)
 
 
-async def linea_handler(line: Linea, redis_host: RedisServer, loop: Loop):
-    try:
-        await subscribe(line, redis_host, loop)
-    finally:
-        await unsubscribe(line)
+def wrap_async_func(func, *args):
+    method = eval(func)
+    run(method(*args))
 
 
-def start(redis_host):
-    loop = get_event_loop()
+async def start(redis_host, lines_id, loop):
+    enabled_lines = Linea.objects.filter(id__in=lines_id)
+    for ws_linea in enabled_lines:
+        if ws_linea.is_active:
+            print("subscribe lineas activas...")
+            args = ['subscribe', ws_linea, redis_host, loop]
+        else:
+            print("unbscribe lineas inactivas...")
+            args = ['unsubscribe', ws_linea]
+
+        _thread_line = threading.Thread(
+            target=wrap_async_func,
+            args=args
+        )
+        _thread_line.setDaemon(True)
+        _thread_line.start()
+
+
+async def searching_enabled_lines(stream_name, redis_host: RedisServer, loop: Loop):
     try:
-        for ws_linea in Linea.objects.filter(is_active=True):
-            loop.run_until_complete(linea_handler(ws_linea, redis_host, loop))
+        redis = redis_host.client()
+        streams = {
+            stream_name: "0"
+        }
+        while True:
+            try:
+                lines = []
+                for stream, msgs in await redis.xread(streams=streams, block=300):
+                    stream = stream.decode("utf-8")
+                    for msg_id, msg in msgs:
+                        msg_id = msg_id.decode("utf-8")
+                        payload = list(msg.items())[0][1].decode("utf-8")
+                        lines.append(payload)
+                    streams[stream] = msg_id
+                    if lines:
+                        _thread_lines = threading.Thread(
+                            target=wrap_async_func,
+                            args=[
+                                'start',
+                                redis,
+                                lines,
+                                loop
+                            ]
+                        )
+                        _thread_lines.setDaemon(True)
+                        _thread_lines.start()
+            except TimeoutError:
+                pass
+    except Exception as exception:
+        print(">>>>>>>>", exception)
     finally:
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
+        await redis.close(close_connection_pool=True)
+
+
+async def subscribe_stream(stream_name, redis, loop):
+    tname = f"redis-stream {stream_name}"
+    create_task(loop, await searching_enabled_lines(stream_name, redis, loop), tname)
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            redis = redis_host("redis://redis:6379")
-            start(redis)
+            host = settings.REDIS_HOSTNAME
+            port = settings.CONSTANCE_REDIS_CONNECTION['port']
+            redis = redis_host("redis://{}:{}".format(host, port))
+            loop = get_event_loop()
+            try:
+                stream_name = 'whatsapp_enabled_lines'
+                loop.run_until_complete(subscribe_stream(stream_name, redis, loop))
+            finally:
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
         except Exception as e:
             logger.error('Fallo del comando: {0}'.format(e))

@@ -92,7 +92,6 @@ class AgentNotifier:
                 'campaing_id': conversation.campana,
                 'timestamp': conversation.timestamp.isoformat(),
             }
-            print(self.TYPE_WHATSAPP_NEW_CHAT, message, user_id)
             await self.send_message_whatsapp(
                 self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
 

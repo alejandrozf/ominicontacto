@@ -1,26 +1,41 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 from json import loads
 from redis.exceptions import TimeoutError
 from orquestador_app.core.argtype import RedisServer
 from orquestador_app.core.asyncio import CancelledError
 from orquestador_app.core.asyncio import Loop
 from orquestador_app.core.asyncio import create_task
-# from orquestador_app.core.gupshup_send_menssage import handler_autoresponses
 from orquestador_app.core.outbound_chat_event_management import outbound_chat_event
 from orquestador_app.core.inbound_chat_event_management import inbound_chat_event
-# from django.contrib.contenttypes.models import ContentType
 from whatsapp_app.models import Linea
-#     Linea, ConversacionWhatsapp, MensajeWhatsapp)
 
 from django.utils import timezone
 from datetime import datetime
 
 
-streams = {}
+streams = dict()
 
 
-async def connect_to_stream(name: str, line: Linea, redis_host: RedisServer):
+async def connect_to_stream(name: str, line: Linea, redis: RedisServer):
+    redis = redis.client()
     try:
-        redis = redis_host.client()
+        print("connect to stream for line >>>", line.nombre)
         streams = {
             name: "0-0"
         }
@@ -42,9 +57,7 @@ async def connect_to_stream(name: str, line: Linea, redis_host: RedisServer):
     except CancelledError:
         pass
     except Exception as exception:
-        print(">>>>>>>>", exception)
-    finally:
-        await redis.close(close_connection_pool=True)
+        print("error connect_to_stream >>>>>>>>", exception)
 
 
 def get_stream_name(line):
@@ -54,17 +67,17 @@ def get_stream_name(line):
 async def subscribe(line: Linea, redis_host: RedisServer, loop: Loop):
     cname = get_stream_name(line)
     tname = f"redis-stream id={line.id} name={cname}"
-    create_task(loop, await connect_to_stream(cname, line, redis_host), tname)
+    streams[line.id] = create_task(loop, connect_to_stream(cname, line, redis_host), tname)
 
 
 async def unsubscribe(line):
-    task = streams.pop(line)
-    task.cancel()
-    del task
-
-
-def get_streams_status():
-    return [task.get_name() for task in streams.values()]
+    try:
+        print("unsubscribe to stream line >>>", line.nombre)
+        task = streams.pop(line.id)
+        task.cancel()
+        del task
+    except Exception as e:
+        print("error >>>", e)
 
 
 async def handler_messages(line, payloads):

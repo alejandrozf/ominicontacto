@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
-# APIs para visualizar lineas
 from django.utils.translation import ugettext as _
 from django.contrib.postgres.fields import JSONField
 from django.db.models import F
@@ -28,12 +26,15 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from whatsapp_app.models import Linea
 from whatsapp_app.api.v1.linea_serializers import (
     ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
     DestinoDeLineaCreateSerializer, )
+
+lines_stream_name = 'whatsapp_enabled_lines'
 
 
 class ViewSet(viewsets.ViewSet):
@@ -92,13 +93,14 @@ class ViewSet(viewsets.ViewSet):
                 if serializer_destino.is_valid():
                     serializer_destino.save()
                     destino = serializer_destino.destino
-                    serializer.save(
+                    line = serializer.save(
                         destino=destino,
                         created_by=request.user,
                         updated_by=request.user,
                     )
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.serialize_data()
+                    RedisStreams().write_stream(lines_stream_name, line.id)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -217,7 +219,9 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = Linea.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            instance.delete()
+            instance.is_active = False
+            instance.save()
+            RedisStreams().write_stream(lines_stream_name, instance.id)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
