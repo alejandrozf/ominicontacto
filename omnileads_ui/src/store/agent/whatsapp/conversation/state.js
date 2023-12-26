@@ -19,6 +19,7 @@ export default {
         timestamp: null,
         messageNumber: null,
         photo: null,
+        error: false,
         line: {
             id: null,
             name: null,

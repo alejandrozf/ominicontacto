@@ -68,6 +68,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
             if conversation.agent:
                 await send_notify('notify_whatsapp_new_message',
                                   conversation=conversation,
+                                  line=line,
                                   message=message_inbound)
             elif conversation.campana:
                 await send_notify('notify_whatsapp_new_chat', conversation=conversation)

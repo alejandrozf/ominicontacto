@@ -26,21 +26,19 @@ export default {
             this.$refs.tabRef.closeEvent();
         },
         async updatedLocalStorage (event) {
-            console.log('===> updatedLocalStorage disposition chat');
-            console.log(event);
             const conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
             await this.agtWhatsSetCoversationInfo(conversationInfo);
             await this.agtWhatsDispositionChatDetailInit({
-                id: conversationInfo.client.dispositionId
+                id: conversationInfo?.client?.dispositionId || null
             });
             await this.agtWhatsDispositionChatOptionsInit({
-                campaignId: conversationInfo.campaignId
+                campaignId: conversationInfo?.campaignId || null
             });
             await this.agtWhatsDispositionChatHistoryInit({
-                id: conversationInfo.client.dispositionId
+                id: conversationInfo?.client?.dispositionId || null
             });
-            await this.agtWhatsDispositionChatSetFormFlag(conversationInfo.client.dispositionId === null);
+            await this.agtWhatsDispositionChatSetFormFlag(conversationInfo?.client?.dispositionId === null);
         },
         async updateFlag () {
             const formToCreate =

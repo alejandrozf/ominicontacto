@@ -221,7 +221,9 @@ export default {
             answered: 'Answered',
             new: 'New',
             expired_conversation: 'Expired conversation',
-            restart_conversation: 'Restart conversation'
+            restart_conversation: 'Restart conversation',
+            error_conversation_detail: 'Could not start the Conversation correctly',
+            error_conversation: 'Wrong conversation'
         },
         contact: {
             new: 'Create contact',

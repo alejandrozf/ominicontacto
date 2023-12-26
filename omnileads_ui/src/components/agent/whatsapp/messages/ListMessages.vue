@@ -40,7 +40,8 @@ export default {
                 numMessages: data.numMessages,
                 isMine: data.isMine,
                 isNew: data.isNew,
-                expire: data.expire
+                expire: data.expire,
+                error: data.error
             };
         },
         conversationDetail ({ id, isNew, isMine }) {

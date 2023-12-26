@@ -1,8 +1,23 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 import Service from '@/services/agent/whatsapp/conversation_service';
 import { HTTP_STATUS } from '@/globals';
 import { resetStoreDataByAction } from '@/utils';
 const service = new Service();
+
+const getMessageInfo = ({$t, data = null, itsMine = true}) => {
+    const senderName = data.sender ? data.sender.name : '';
+    return {
+        id: data.id,
+        from: itsMine
+            ? `${$t('globals.agent')} (${senderName})`
+            : senderName,
+        conversationId: data ? data.conversation : null,
+        itsMine,
+        message: data.content ? data.content.text : '',
+        status: data ? data.status : null,
+        date: data.timestamp ? new Date(data.timestamp) : null
+    };
+};
 
 export default {
     async agtWhatsCoversationSendAttachmentMessage (
@@ -34,17 +49,7 @@ export default {
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = {
-                    id: data.id,
-                    from: itsMine
-                        ? `${$t('globals.agent')} (${data.sender.name})`
-                        : data.sender.name,
-                    conversationId: data.conversation,
-                    itsMine,
-                    message: data.content.text,
-                    status: data.status || null,
-                    date: new Date(data.timestamp)
-                };
+                const message = getMessageInfo({ $t, data, itsMine });
                 await commit('agtWhatsCoversationSendMessage', message);
             }
             return response;
@@ -68,17 +73,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = {
-                    id: data.id,
-                    from: itsMine
-                        ? `${$t('globals.agent')} (${data.sender.name})`
-                        : data.sender.name,
-                    conversationId: data.conversation,
-                    itsMine,
-                    message: data.content.text,
-                    status: data.status || null,
-                    date: new Date(data.timestamp)
-                };
+                const message = getMessageInfo({ $t, data, itsMine });;
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -108,17 +103,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = {
-                    id: data.id,
-                    from: itsMine
-                        ? `${$t('globals.agent')} (${data.sender.name})`
-                        : data.sender.name,
-                    conversationId: data.conversation,
-                    itsMine,
-                    message: data.content.text,
-                    status: data.status || null,
-                    date: new Date(data.timestamp)
-                };
+                const message = getMessageInfo({ $t, data, itsMine });;
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -147,17 +132,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = {
-                    id: data.id,
-                    from: itsMine
-                        ? `${$t('globals.agent')} (${data.sender.name})`
-                        : data.sender.name,
-                    conversationId: data.conversation,
-                    itsMine,
-                    message: data.content.text,
-                    status: data.status || null,
-                    date: new Date(data.timestamp)
-                };
+                const message = getMessageInfo({ $t, data, itsMine });;
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -191,18 +166,8 @@ export default {
                 commit(
                     'agtWhatsConversationInitMessages',
                     data.messages.map((msg) => {
-                        const itsMine = msg.origen === data.line_number;
-                        return {
-                            id: msg.id,
-                            from: itsMine
-                                ? `${$t('globals.agent')} (${msg.sender.name})`
-                                : msg.sender.name,
-                            conversationId: msg.conversation,
-                            itsMine,
-                            message: msg.content.text,
-                            status: msg.status || null,
-                            date: new Date(msg.timestamp)
-                        };
+                        const itsMine = msg.origen === data.line.number;
+                        return getMessageInfo({ $t, data: msg, itsMine });
                     })
                 );
                 commit('agtWhatsConversationInfoInit', data);

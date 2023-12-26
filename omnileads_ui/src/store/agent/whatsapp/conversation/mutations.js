@@ -31,14 +31,15 @@ export default {
             campaignId: conversation ? conversation.campaing_id : null,
             campaignName: conversation ? conversation.campaing_name : null,
             destination: conversation ? conversation.destination : null,
-            client: setClientInfo(conversation.client),
+            client: setClientInfo(conversation ? conversation.client : null),
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.is_active : null,
             expire: conversation ? conversation.expire : null,
             timestamp: conversation ? conversation.timestamp : null,
             messageNumber: conversation ? conversation.message_number : null,
             photo: conversation ? conversation.photo : null,
-            line: setLineInfo(conversation.line)
+            line: setLineInfo(conversation ? conversation.line : null),
+            error: conversation ? conversation.error : false
         };
     },
     agtWhatsChatsListInit (state, { isNew, inProgress }) {
@@ -54,8 +55,9 @@ export default {
                 isNew: true,
                 isMine: false,
                 answered: false,
-                date: new Date(e.timestamp),
-                expire: new Date(e.expire)
+                date: e.timestamp ? new Date(e.timestamp) : null,
+                expire: e.expire ? new Date(e.expire) : null,
+                error: e.error ? e.error : false
             });
         });
         inProgress.forEach((e) => {
@@ -69,8 +71,9 @@ export default {
                 isNew: false,
                 isMine: true,
                 answered: false,
-                date: new Date(e.timestamp),
-                expire: new Date(e.expire)
+                date: e.timestamp ? new Date(e.timestamp) : null,
+                expire: e.expire ? new Date(e.expire) : null,
+                error: e.error ? e.error : false
             });
         });
         state.agtWhatsChatsList = chats;
@@ -87,7 +90,9 @@ export default {
                 isNew: true,
                 isMine: false,
                 answered: false,
-                date: new Date(chat.date)
+                date: chat.date ? new Date(chat.date) : null,
+                expire: chat.expire ? new Date(chat.expire) : null,
+                error: chat.error ? chat.error : false
             });
         }
     },
@@ -97,14 +102,15 @@ export default {
             campaignId: conversation ? conversation.campaignId : null,
             campaignName: conversation ? conversation.campaignName : null,
             destination: conversation ? conversation.destination : null,
-            client: setClientInfo(conversation.client),
+            client: setClientInfo(conversation ? conversation.client : null),
             agent: conversation ? conversation.agent : null,
             isActive: conversation ? conversation.isActive : null,
             expire: conversation ? conversation.expire : null,
             timestamp: conversation ? conversation.timestamp : null,
             messageNumber: conversation ? conversation.messageNumber : null,
             photo: conversation ? conversation.photo : null,
-            line: setLineInfo(conversation.line)
+            line: setLineInfo(conversation ? conversation.line : null),
+            error: conversation ? conversation.error : false
         };
     },
     agtWhatsSetCoversationClientInfo (state, info = null) {

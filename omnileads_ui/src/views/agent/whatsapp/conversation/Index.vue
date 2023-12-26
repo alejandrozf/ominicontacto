@@ -1,16 +1,25 @@
 <template>
   <div>
-    <HeaderConversation :isExpired='isExpired' />
-    <Message
-      v-if="!agtWhatsCoversationInfo.client.id"
-      severity="warn"
-      :closable="false"
-      class="mt-0 mb-3"
-      >{{ $t("views.whatsapp.contact.info") }}
-      <b
-        ><a @click="createContact">{{ $t("globals.here").toUpperCase() }}</a></b
-      >
-    </Message>
+    <HeaderConversation :isExpired="isExpired" />
+    <div v-if="agtWhatsCoversationInfo.error">
+      <Message severity="error" :closable="false" class="mt-0 mb-3"
+        >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
+      </Message>
+    </div>
+    <div v-else>
+      <Message
+        v-if="!agtWhatsCoversationInfo.client.id"
+        severity="warn"
+        :closable="false"
+        class="mt-0 mb-3"
+        >{{ $t("views.whatsapp.contact.info") }}
+        <b
+          ><a @click="createContact">{{
+            $t("globals.here").toUpperCase()
+          }}</a></b
+        >
+      </Message>
+    </div>
     <div class="flex justify-content-between flex-wrap my-2">
       <div class="flex align-items-center justify-content-center">
         <Tag
@@ -34,20 +43,22 @@
       </div>
     </div>
     <ListMessages id="listMessages" class="scroll" />
-    <TextBox
-      v-if="!isExpired"
-      class="footer"
-      :conversationId="id"
-      @scrollDownEvent="scrollDown"
-    />
-    <Button
-      v-else
-      :label="
-        $t('views.whatsapp.conversations.restart_conversation').toUpperCase()
-      "
-      class="w-full btn-border mt-2 p-button-warning"
-      @click="openModalToRestart()"
-    />
+    <div v-if="!agtWhatsCoversationInfo.error">
+      <TextBox
+        v-if="!isExpired"
+        class="footer"
+        :conversationId="id"
+        @scrollDownEvent="scrollDown"
+      />
+      <Button
+        v-else
+        :label="
+          $t('views.whatsapp.conversations.restart_conversation').toUpperCase()
+        "
+        class="w-full btn-border mt-2 p-button-warning"
+        @click="openModalToRestart()"
+      />
+    </div>
   </div>
 </template>
 
@@ -137,10 +148,7 @@ export default {
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
-            localStorage.setItem(
-                'onlyWhatsappTemplates',
-                true
-            );
+            localStorage.setItem('onlyWhatsappTemplates', true);
             const event = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
                     templates: true,

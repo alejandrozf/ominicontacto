@@ -11,7 +11,7 @@
       <Chip :label="clientInfo?.name" icon="pi pi-user" />
     </template>
     <template #end>
-      <div v-if="!viewAsReport">
+      <div v-if="!viewAsReport && !agtWhatsCoversationInfo.error">
         <!-- <SplitButton
         icon="pi pi-paperclip"
         :model="attachOptions"

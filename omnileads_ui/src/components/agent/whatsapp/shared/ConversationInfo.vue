@@ -28,13 +28,25 @@
     </div>
     <div class="flex justify-content-between flex-wrap my-2">
       <div class="flex align-items-center justify-content-center">
-        <Tag
-          v-if="isExpired"
-          icon="pi pi-clock"
-          :value="`${$t('views.whatsapp.conversations.expired_conversation')}`"
-          severity="warning"
-          rounded
-        ></Tag>
+        <div class="grid">
+          <div class="col-12">
+            <Tag
+              v-if="isExpired"
+              icon="pi pi-clock"
+              :value="`${$t('views.whatsapp.conversations.expired_conversation')}`"
+              severity="warning"
+              rounded
+            ></Tag>
+          </div>
+          <div class="col-12" v-if="conversationInfo.error">
+            <Tag
+              icon="pi pi-times"
+              :value="`${$t('views.whatsapp.conversations.error_conversation')}`"
+              severity="danger"
+              rounded
+            ></Tag>
+          </div>
+        </div>
       </div>
       <div class="flex align-items-center justify-content-center">
         <Tag
@@ -76,7 +88,8 @@ export default {
                     numMessages: 0,
                     isMine: false,
                     isNew: false,
-                    expire: null
+                    expire: null,
+                    error: false
                 };
             }
         }
@@ -108,13 +121,13 @@ export default {
         checkExpirationDate () {
             const now = new Date();
             const expire = new Date(this.conversationInfo.expire);
-            this.isExpired = expire > now;
+            this.isExpired = expire < now;
         }
     },
     watch: {
         conversationInfo: {
             handler () {
-                if (this.conversationInfo.expire) {
+                if (this.conversationInfo.expire !== null) {
                     this.checkExpirationDate();
                 }
             },

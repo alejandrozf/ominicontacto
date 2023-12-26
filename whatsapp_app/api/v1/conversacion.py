@@ -342,7 +342,9 @@ class ViewSet(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return response.Response(
-                data=get_response_data(status=HttpResponseStatus.ERROR, data={}),
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={},
+                    errors=str(e), message=_('Error al enviar el mensaje')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # @decorators.action(detail=True, methods=["post"])
@@ -530,7 +532,6 @@ class ViewSet(viewsets.ViewSet):
                         campana=campana,
                         agent=sender,
                         saliente=True,
-                        error=True
                     )
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])

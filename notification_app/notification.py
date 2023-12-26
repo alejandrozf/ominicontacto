@@ -89,7 +89,7 @@ class AgentNotifier:
         if conversation:
             message = {
                 'chat_id': conversation.id,
-                'campaing_id': conversation.campana,
+                'campaing_id': conversation.campana.id if conversation.campana else "",
                 'timestamp': conversation.timestamp.isoformat(),
             }
             await self.send_message_whatsapp(
@@ -139,6 +139,7 @@ class AgentNotifier:
 
     async def notify_whatsapp_new_message(self, user_id, **kwargs):
         message = kwargs.get('message', None)
+        line = kwargs.get('line', None)
         if message:
             message_json = {
                 'chat_id': message.conversation.id,
@@ -149,7 +150,8 @@ class AgentNotifier:
                 'origen': message.origen,
                 'timestamp': message.timestamp.isoformat(),
                 'sender': message.sender,
-                'type': message.type
+                'type': message.type,
+                'line_phone': line.numero if line else ''
             }
             print(self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id)
             await self.send_message_whatsapp(

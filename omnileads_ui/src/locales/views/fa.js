@@ -212,7 +212,9 @@ export default {
             answered: 'جواب داد',
             new: 'جدید',
             expired_conversation: 'مکالمه منقضی شد',
-            restart_conversation: 'شروع مجدد مکالمه'
+            restart_conversation: 'شروع مجدد مکالمه',
+            error_conversation_detail: 'نمی توان مکالمه را به درستی شروع کرد',
+            error_conversation: 'مکالمه اشتباه'
         },
         contact: {
             new: 'ایجاد تماس',

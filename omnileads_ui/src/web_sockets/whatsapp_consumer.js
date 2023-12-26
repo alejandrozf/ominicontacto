@@ -94,7 +94,7 @@ export class WhatsappConsumer {
         console.log('Whatsapp Consumer NEW_MESSAGE: ');
         console.log(data);
         if (data) {
-            const itsMine = data.origen === '5493764962109';
+            const itsMine = data.origen === data.line_phone;
             STORE.dispatch('agtWhatsCoversationReciveMessage', {
                 id: data.message_id,
                 from: itsMine

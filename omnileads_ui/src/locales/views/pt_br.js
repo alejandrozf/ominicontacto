@@ -212,7 +212,9 @@ export default {
             answered: 'respondidas',
             new: 'Novo',
             expired_conversation: 'A conversa expirou',
-            restart_conversation: 'Reiniciar conversa'
+            restart_conversation: 'Reiniciar conversa',
+            error_conversation_detail: 'Não foi possível iniciar a conversa corretamente',
+            error_conversation: 'Conversa errada'
         },
         contact: {
             new: 'Criar contato',
