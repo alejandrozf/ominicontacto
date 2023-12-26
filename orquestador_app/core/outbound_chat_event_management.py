@@ -20,10 +20,12 @@ from orquestador_app.core.notify_agents import send_notify
 from orquestador_app.core.check_expired import check_expired
 
 
-async def outbound_chat_event(timestamp, message_id, status, expire):
+async def outbound_chat_event(timestamp, message_id, status, expire, destination):
     try:
         message = MensajeWhatsapp.objects.get(message_id=message_id)
         message.status = status
+        if not message.conversation.whatsapp_id:
+            message.conversation.whatsapp_id = destination
         message.save()
         if status != 'failed' and message.conversation.error:
             message.conversation.error = False

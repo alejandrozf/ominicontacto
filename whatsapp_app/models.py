@@ -200,6 +200,7 @@ class ConversacionWhatsapp(models.Model):
     campana = models.ForeignKey(
         Campana, null=True, related_name="conversaciones", on_delete=models.CASCADE)
     destination = models.CharField(max_length=100)
+    whatsapp_id = models.CharField(max_length=100, null=True)
     client = models.ForeignKey(
         Contacto, null=True, related_name="conversaciones", on_delete=models.CASCADE)
     agent = models.ForeignKey(

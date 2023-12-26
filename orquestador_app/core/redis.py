@@ -90,12 +90,14 @@ async def handler_messages(line, payloads):
                     and not msg_json['payload']['type'] == 'enqueued':  # salientes
                 message_id = msg_json['payload']['gsId']
                 status = msg_json['payload']['type']
+                destination = msg_json['payload']['destination']
                 expire = None
                 if status == 'sent':
                     expire = datetime.fromtimestamp(
                         msg_json['payload']['conversation']['expiresAt'],
                         timezone.get_current_timezone())
-                await outbound_chat_event(timestamp, message_id, status, expire=expire)
+                await outbound_chat_event(
+                    timestamp, message_id, status, expire=expire, destination=destination)
             if msg_json['type'] == 'message':  # entrante
                 message_id = msg_json['payload']['id']
                 origen = msg_json['payload']['source']

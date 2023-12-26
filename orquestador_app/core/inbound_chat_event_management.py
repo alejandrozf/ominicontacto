@@ -25,11 +25,11 @@ from orquestador_app.core.notify_agents import send_notify
 
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, type):
     try:
-        print("mensaje entrante por la linea >>>", line.id)
+        print("mensaje entrante por la linea >>>", line.nombre)
         destination_entrante = line.destino
         conversation =\
             ConversacionWhatsapp.objects.filter(
-                line=line, destination=origen, expire__gte=timestamp).last()
+                line=line, whatsapp_id=origen, expire__gte=timestamp).last()
         if not conversation:
             campana = None
             if destination_entrante.content_type == ContentType.objects.get(model='campana'):
@@ -38,6 +38,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 line=line,
                 campana=campana,
                 destination=origen,
+                whatsapp_id=origen,
                 is_active=True,
                 agent=None,
                 expire=(
