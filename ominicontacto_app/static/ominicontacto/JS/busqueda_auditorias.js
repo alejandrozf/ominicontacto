@@ -128,8 +128,8 @@ function wsProcess() {
                 var notification = new Notification(
                     gettext('Exportación completa'), {
                         body: gettext(
-                            'La exportación a .csv del reporte de ' +
-                            ' ha sido completada completada exitosamente.')
+                            'La exportación a .csv del reporte ha sido ' +
+                            'completada exitosamente.')
                     });
                 setTimeout(function() {
                     notification.close();

@@ -76,7 +76,7 @@ class Command(BaseCommand):
             else:
                 creados += 1
 
-        msg = _('Actualizando {0}  y creando {1} AgentesEnContacto para la campana con id:'
+        msg = _('Actualizando {0} y creando {1} AgentesEnContacto para la campana con id:'
                 ' {2}').format(modificados, creados, campaign_id)
         print(msg)
         logger.info(msg)

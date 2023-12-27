@@ -24,12 +24,21 @@ from django.utils.timezone import datetime, timedelta
 from datetime import timezone
 
 # TODO: Ver si es posible Moverlo a defaults.py
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'disabled_str': ['django.forms.fields.CharField', {
+        'widget': 'django.forms.PasswordInput',
+        'disabled': True,
+        'required': False,
+    }],
+}
+
 CONSTANCE_CONFIG = {
     # Key Server data:
     'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
     'CLIENT_NAME': ('', 'CLIENT_NAME', str),
-    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
+    'CLIENT_KEY': ('', 'CLIENT_KEY', 'disabled_str'),
     'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
     'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
     'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
