@@ -28,6 +28,10 @@ from whatsapp_app.models import Linea
 from django.utils import timezone
 from datetime import datetime
 
+import logging as _logging
+
+logger = _logging.getLogger(__name__)
+
 
 streams = dict()
 
@@ -92,6 +96,8 @@ async def handler_messages(line, payloads):
                 status = msg_json['payload']['type']
                 destination = msg_json['payload']['destination']
                 expire = None
+                if status == 'failed':
+                    logger.error(msg_json['payload']['payload']['reason'])
                 if status == 'sent':
                     expire = datetime.fromtimestamp(
                         msg_json['payload']['conversation']['expiresAt'],

@@ -30,6 +30,9 @@ async def outbound_chat_event(timestamp, message_id, status, expire, destination
         if status != 'failed' and message.conversation.error:
             message.conversation.error = False
             message.conversation.save()
+        if status == 'failed' and not message.conversation.error:
+            message.conversation.error = True
+            message.conversation.save()
         if status == 'delivered':
             if not message.conversation.saliente and not message.conversation.atendida:
                 message.conversation.atendida = True
