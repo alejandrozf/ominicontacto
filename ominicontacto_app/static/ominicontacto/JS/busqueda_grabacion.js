@@ -135,7 +135,7 @@ function wsProcess() {
             var notification = new Notification(
                 gettext('Operación completa'), {
                     body: gettext(
-                        'La operación ha sido completada completada exitosamente.')
+                        'La operación ha sido completada exitosamente.')
                 });
             setTimeout(function() {
                 notification.close();

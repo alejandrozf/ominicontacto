@@ -20,6 +20,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% load static %}
 {% load widget_tweaks %}
+{% load util_tags %}
+
 
 {% block head_js %}
   <script type="text/javascript"
@@ -118,20 +120,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.id_externo.errors }}
             </div>
 
-        {% block tipo_interaccion %}
             {{ form.tipo_interaccion.errors }}
-            <div class="col-md-2">
-              <label> {% trans "Tipo de Interacción" %}</label>
-                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
-                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
-                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
-            </div>
-            <div class="col-md-3">
-                <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
+            {% if form.instance.pk %}
+                {% if form.instance.tipo_interaccion|interaccion_solo_crm %}
+                  <div class="col-md-2">
+                    <label> {% trans "Tipo de Interacción" %}</label>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                  </div>
+                {% else %}
+                  <div class="col-md-2">
+                    <label> {% trans "Tipo de Interacción" %}</label>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
+                  </div>
+                {% endif %}
+            {% else %}
+                <div class="col-md-2">
+                  <label> {% trans "Tipo de Interacción" %}</label>
+                    <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                    <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
+                    <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
+                </div>
+            {% endif %}
+            <div class="col-md-5">
+                <label><div class="myradio" id="url_externa">
+                {% trans "Url Externa" %}</div> </label>
                 {{ form.sitio_externo.errors }}
                 {{ form.sitio_externo }}
             </div>
-        {% endblock %}
             <div class="col-md-3">
                 <label for="{{ form.outr.id_for_label }}">{% trans 'Ruta Saliente: ' %}</label>
                 {{form.outr}}

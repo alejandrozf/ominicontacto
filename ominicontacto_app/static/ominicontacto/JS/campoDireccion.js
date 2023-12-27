@@ -18,9 +18,11 @@
 
 /*global google Urls*/
 
-const $selectDBContactos = $('#camp_bd_contactos');
+var $selectDBContactos = undefined;
 
 $(function () {
+    $selectDBContactos = $('#camp_bd_contactos');
+
     $selectDBContactos.change(actualizarOpcionesCampoDireccion);
     $('#id_0-campo_direccion_choice').on('change', actualizarCampoDireccion);
     actualizarOpcionesCampoDireccion();

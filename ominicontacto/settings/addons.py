@@ -24,12 +24,21 @@ from django.utils.timezone import datetime, timedelta
 from datetime import timezone
 
 # TODO: Ver si es posible Moverlo a defaults.py
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'disabled_str': ['django.forms.fields.CharField', {
+        'widget': 'django.forms.PasswordInput',
+        'disabled': True,
+        'required': False,
+    }],
+}
+
 CONSTANCE_CONFIG = {
     # Key Server data:
     'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
     'CLIENT_NAME': ('', 'CLIENT_NAME', str),
-    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
+    'CLIENT_KEY': ('', 'CLIENT_KEY', 'disabled_str'),
     'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
     'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
     'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
@@ -43,6 +52,7 @@ CONSTANCE_CONFIG = {
     'EXTERNAL_AUTH_SERVER': ('', 'EXTERNAL_AUTH_SERVER', str),
     'EXTERNAL_AUTH_DN': ('', 'EXTERNAL_AUTH_DN', str),
     'EXTERNAL_AUTH_ACTIVATION': ('', 'EXTERNAL_AUTH_ACTIVATION', str),
+    'EXTERNAL_AUTH_MS_SIMPLE_AUTH': (False, 'EXTERNAL_AUTH_MS_SIMPLE_AUTH', bool),
 
     # Addons configs
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
@@ -71,6 +81,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     },
     'Omnileads': {
         'fields': ('WOMBAT_DIALER_ALLOW_REFRESH', 'WOMBAT_DIALER_STATE', 'WOMBAT_DIALER_UP_SINCE',
+                   'EXTERNAL_AUTH_TYPE', 'EXTERNAL_AUTH_SERVER', 'EXTERNAL_AUTH_DN',
+                   'EXTERNAL_AUTH_ACTIVATION', 'EXTERNAL_AUTH_MS_SIMPLE_AUTH',
                    ),
         'collapse': True
     },

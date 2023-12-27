@@ -79,12 +79,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
             {{ form.tipo_interaccion.errors }}
             {% if form.instance.pk %}
-                {% if form.instance.tipo_interaccion|interaccion_crm %}
-                    <div class="col-md-6">
-                        <label>{% trans "Sitio Externo" %}</label>
-                        {{ form.sitio_externo }}
-                        {{ form.sitio_externo.errors }}
-                    </div>
+                {% if form.instance.tipo_interaccion|interaccion_solo_crm %}
+                  <div class="col-md-2">
+                    <label> {% trans "Tipo de Interacción" %}</label>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                  </div>
+                {% else %}
+                  <div class="col-md-2">
+                    <label> {% trans "Tipo de Interacción" %}</label>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                      <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
+                  </div>
                 {% endif %}
             {% else %}
                 <div class="col-md-2">
@@ -93,12 +98,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
                 </div>
-                <div class="col-md-5">
-                    <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
-                    {{ form.sitio_externo.errors }}
-                    {{ form.sitio_externo }}
-                </div>
             {% endif %}
+            <div class="col-md-5">
+                <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
+                {{ form.sitio_externo.errors }}
+                {{ form.sitio_externo }}
+            </div>
             <div class="col-md-5">
                 {{ form.campo_direccion.as_hidden }}
                 <label for="{{ form.campo_direccion_choice.id_for_label }}">{% trans 'Campo para dirección:' %}</label>
