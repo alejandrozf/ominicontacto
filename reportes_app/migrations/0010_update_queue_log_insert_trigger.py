@@ -32,7 +32,7 @@ def borrar_trigger(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reportes_app', '0006_new_llamadalog_indexes'),
+        ('reportes_app', '0009_actividadagentelog_time_autoadd'),
     ]
 
     operations = [

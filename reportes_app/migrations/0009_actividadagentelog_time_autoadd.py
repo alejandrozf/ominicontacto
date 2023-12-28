@@ -15,26 +15,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-from __future__ import unicode_literals
 
-from django.db import migrations, connection
-
-
-def borrar_trigger(apps, schema_editor):
-    cursor = connection.cursor()
-    sql = "DROP TRIGGER IF EXISTS trigger_queue_log ON queue_log"
-    cursor.execute(sql)
-    cursor = connection.cursor()
-    sql = "DROP FUNCTION IF EXISTS insert_queue_log_ominicontacto_queue_log()"
-    cursor.execute(sql)
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reportes_app', '0006_new_llamadalog_indexes'),
+        ('reportes_app', '0008_transferenciaaencuestalog'),
     ]
 
     operations = [
-        migrations.RunPython(borrar_trigger, borrar_trigger),
+        migrations.AlterField(
+            model_name='actividadagentelog',
+            name='time',
+            field=models.DateTimeField(auto_now_add=True, db_index=True),
+        ),
     ]

@@ -1,18 +1,21 @@
+#### This project is part of OMniLeads
+
+![Diagrama deploy tool](./png/omnileads_logo_1.png)
+
+#### 100% Open-Source Contact Center Software
+#### [Community Forum](https://forum.omnileads.net/)
+
 ## What is OMniLeads (OML)?
 
-<p align="center"><img src="docs/images/logo_full_dark.png" /></p>
+<p>OMniLeads (OML) is an Open Source software solution based on WebRTC technology(https://webrtc.org/) designed to support the management, operation and administration of a Contact Center using multiple comunication channels. At present it allows the management and phone attention deployment using: Inbound Campaigns, Preview Campaigns and Manual Outbound Campaigns natively. Also it have with the option to administrate Predictive/Progressive Dialer Campaigns using integrations APIs. Additionally, since version 1.25.0, it supports video call campaigns from web pages.</p>
 
-<p>OMniLeads (OML) is an Open Source software solution based on WebRTC technology(https://webrtc.org/) designed to support the management, operation and administration of a Contact Center using multiple comunication channels. At present it allows the management and phone attention deployment using: Inbound Campaigns, Preview Campaigns and Manual Outbound Campaigns natively. Also it have with the option to administrate Predictive/Progressive Dialer Campaigns using integrations APIs.</p>
-
-As part of the roadmap of the develop we are planning to include SMS Send/Reception, Social Networks integration and Chat Campaigns from the web page, IVR Campaigns (press one) and many other features
-
-El system requires only the GNU/Linux OS distributions described in the installation manual.
+As part of the roadmap of the develop we are planning to include WhatsApp (r), SMS Send/Reception, Social Networks integration and Chat Campaigns from the web page, and many other features
 
 ## Features
 
 * Agente & Supervisor console based on WebRTC
 * Differents user profiles: administrator, supervisor admin, supervisor client, agent
-* Multiple campaigns management
+* Multiple campaigns (voice and video) management
 * Answering machine detection
 * Full Recording
 * Productivity reports
@@ -34,17 +37,17 @@ The main technologies involved in OMniLeads (OML) are also part of Open Source p
 * Nginx
 * Postgres
 * Python
-* Javascript
-
-## License
-GPLv3. Every source code file contains the license preamble and copyright details.
+* VueJS
+* Docker
+* Podman
 
 ## Documentation
-Official documentation for the proyect can be found in two languages: [Spanish](https://documentacion-omnileads.readthedocs.io/es/stable/) or [English](https://documentacion-omnileads.readthedocs.io/en/stable/).
 
-## Installation
+OMniLeads documentation: https://docs.omnileads.net/
 
-You can go directly to Installation section in Documentation
+## License
+
+GPLv3. Every source code file contains the license preamble and copyright details.
 
 ## OMniLeads (OML) repository:
 The official project repository is in Gitlab: https://gitlab.com/omnileads/ominicontacto

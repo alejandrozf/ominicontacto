@@ -33,7 +33,7 @@ class StorageService(object):
         self.secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
         self.bucket_name = os.getenv('S3_BUCKET_NAME')
         self.url = os.getenv('S3_ENDPOINT') or None
-        self.internal_url = os.getenv('S3_ENDPOINT_MINIO') or 'https://minio:9000'
+        self.internal_url = os.getenv('S3_ENDPOINT_MINIO') or 'http://minio:9000'
         self.region_name = os.getenv('S3_REGION_NAME') or 'us-east-1'
         self.storage_type = os.getenv('CALLREC_DEVICE')
 
@@ -57,11 +57,19 @@ class StorageService(object):
                                            endpoint_url=self.url,
                                            region_name=self.region_name,
                                            verify=False)
+        elif self.storage_type == 's3-no-check-cert':
+            self.client = boto3.client("s3",
+                                       aws_access_key_id=self.access_key_id,
+                                       aws_secret_access_key=self.secret_access_key,
+                                       config=Config(signature_version='s3v4'),
+                                       endpoint_url=self.url,
+                                       region_name=self.region_name,
+                                       verify=False)
         else:
             self.client = boto3.client("s3",
                                        aws_access_key_id=self.access_key_id,
                                        aws_secret_access_key=self.secret_access_key,
-                                       endpoint_url=self.internal_url,
+                                       endpoint_url=self.url,
                                        region_name=self.region_name)
 
     def get_file_url(self, filename):

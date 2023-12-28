@@ -1,0 +1,16 @@
+# para usarlo individualmente, 'docker pull alejandrozf/docker-stuff:postgres-plpython-template1'
+FROM python:3.10.4-slim-bullseye
+
+ENV LANG en_US.utf8
+ENV NOTVISIBLE "in users profile"
+
+RUN apt update \
+    && apt install -y curl sox lame awscli \
+    && apt autoremove -y \
+    && apt clean -y \
+    && apt purge -y \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY converter.sh /usr/local/bin
+
+CMD [""]
