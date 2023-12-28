@@ -19,7 +19,7 @@
 from django.db import models
 from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from ominicontacto_app.models import AgenteProfile, Campana, Contacto
 from django.utils import timezone
 
