@@ -30,7 +30,7 @@ test:
     - python manage.py test --failfast
     - python manage.py compilemessages
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop-2.0"'
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
     - if: '$RUN_TEST == "true"'
 
 container-image:
@@ -64,7 +64,7 @@ container-image:
         exit 1
       fi
 
-      if [ "${CI_COMMIT_BRANCH}" == "master-2.0" ] || [[ "${CI_COMMIT_BRANCH}" == pre-release-* ]]; then
+      if [ "${CI_COMMIT_BRANCH}" == "master" ] || [[ "${CI_COMMIT_BRANCH}" == pre-release-* ]]; then
         echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
         IMAGE_VERSION=$(cat .omnileads_version)
         docker tag run omnileads/omlapp:$IMAGE_VERSION
@@ -76,5 +76,5 @@ container-image:
         docker push docker.io/freetechsolutions/omlapp:$IMAGE_VERSION
       fi
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master-2.0"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
     - if: $CI_PIPELINE_SOURCE == "web"
