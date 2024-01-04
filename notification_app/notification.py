@@ -89,7 +89,10 @@ class AgentNotifier:
         if conversation:
             message = {
                 'chat_id': conversation.id,
-                'campaing_id': conversation.campana.id if conversation.campana else "",
+                'campaing_id': conversation.campana.id,
+                'campaing_name': conversation.campana.nombre,
+                'from': conversation.destination,
+                'expire': conversation.expire.isoformat(),
                 'timestamp': conversation.timestamp.isoformat(),
             }
             await self.send_message_whatsapp(
