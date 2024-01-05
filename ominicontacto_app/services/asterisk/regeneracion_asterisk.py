@@ -42,6 +42,8 @@ from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfi
     PlaylistsConfigCreator, QueuesCreator, SipConfigCreator
 from configuracion_telefonia_app.models import AudiosAsteriskConf
 from ominicontacto_app.models import ArchivoDeAudio
+from whatsapp_app.services.redis.linea import StreamDeLineas
+
 import requests
 import tempfile
 import base64
@@ -134,6 +136,10 @@ class RegeneracionAsteriskService(object):
             self.sincronizador_config_telefonica.sincronizar_en_asterisk()
             self.asterisk_database.regenerar_asterisk()
             self.reload_asterisk_config.reload_asterisk()
+
+    def _regenerar_redis_data(self):
+        """ Regenera información que debe estar disponible en redis """
+        StreamDeLineas().regenerar_stream()
 
     def _generar_tarea_script_logout_agentes_inactivos(self):
         """Adiciona una tarea programada que llama al script de que desloguea
@@ -380,6 +386,7 @@ class RegeneracionAsteriskService(object):
 
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
+        self._regenerar_redis_data()
         self._reenviar_archivos_playlist_asterisk()
         self._reenviar_archivos_audio_asterisk()
         self._reenviar_paquetes_idioma()

@@ -26,15 +26,12 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
-from ominicontacto_app.services.redis.redis_streams import RedisStreams
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-
+from whatsapp_app.services.redis.linea import StreamDeLineas
 from whatsapp_app.models import Linea
 from whatsapp_app.api.v1.linea_serializers import (
     ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
     DestinoDeLineaCreateSerializer, )
-
-lines_stream_name = 'whatsapp_enabled_lines'
 
 
 class ViewSet(viewsets.ViewSet):
@@ -100,7 +97,7 @@ class ViewSet(viewsets.ViewSet):
                     )
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.serialize_data()
-                    RedisStreams().write_stream(lines_stream_name, line.id)
+                    StreamDeLineas().notificar_nueva_linea(line)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -221,7 +218,7 @@ class ViewSet(viewsets.ViewSet):
             instance = queryset.get(pk=pk)
             instance.is_active = False
             instance.save()
-            RedisStreams().write_stream(lines_stream_name, instance.id)
+            StreamDeLineas.notificar_linea_eliminada(instance)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,

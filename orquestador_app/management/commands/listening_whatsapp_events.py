@@ -43,7 +43,7 @@ async def start(redis_host, lines_id, loop):
             print("subscribe lineas activas...")
             args = ['subscribe', ws_linea, redis_host, loop]
         else:
-            print("unbscribe lineas inactivas...")
+            print("unsubscribe lineas inactivas...")
             args = ['unsubscribe', ws_linea]
 
         _thread_line = threading.Thread(
@@ -62,13 +62,13 @@ async def searching_enabled_lines(stream_name, redis_host: RedisServer, loop: Lo
         }
         while True:
             try:
-                lines = []
+                lines = set()
                 for stream, msgs in await redis.xread(streams=streams, block=300):
                     stream = stream.decode("utf-8")
                     for msg_id, msg in msgs:
                         msg_id = msg_id.decode("utf-8")
                         payload = list(msg.items())[0][1].decode("utf-8")
-                        lines.append(payload)
+                        lines.add(payload)
                     streams[stream] = msg_id
                     if lines:
                         _thread_lines = threading.Thread(

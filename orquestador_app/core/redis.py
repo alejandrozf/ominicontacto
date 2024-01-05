@@ -69,12 +69,16 @@ def get_stream_name(line):
 
 
 async def subscribe(line: Linea, redis_host: RedisServer, loop: Loop):
+    if line.id in streams:
+        return
     cname = get_stream_name(line)
     tname = f"redis-stream id={line.id} name={cname}"
     streams[line.id] = create_task(loop, connect_to_stream(cname, line, redis_host), tname)
 
 
 async def unsubscribe(line):
+    if line.id not in streams:
+        return
     try:
         print("unsubscribe to stream line >>>", line.nombre)
         task = streams.pop(line.id)
