@@ -64,6 +64,7 @@ const setEventListeners = () => {
     $('#whatsappChat').on('click', function () {
         $('#wrapperWhatsapp').toggleClass('hidden');
         $('#wrapperWebphone').removeClass('active');
+        $('#newChat').addClass('invisible');
     });
 };
 

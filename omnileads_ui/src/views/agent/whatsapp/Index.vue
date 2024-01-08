@@ -37,7 +37,14 @@ export default {
     async created () {
         this.consumer = new WhatsappConsumer();
         await this.agtWhatsChatsListInit();
-        localStorage.setItem('agtWhatsCoversationCreatedId', null);
+        localStorage.setItem('agtWhatsConversationCreatedId', null);
+        localStorage.setItem('agtWhatsappConversationAttending', null);
+        localStorage.setItem('agtWhatsappConversationId', null);
+        localStorage.setItem('agtWhatsappConversationMessages', null);
+        localStorage.setItem('agtWhatsMessageInfo', null);
+        localStorage.setItem('onlyWhatsappTemplates', null);
+        localStorage.setItem('agtWhatsConversationNewResetForm', null);
+        localStorage.setItem('agtWhatsCoversationInfo', null);
     },
     mounted () {
         window.addEventListener('storage', this.updatedLocalStorage);

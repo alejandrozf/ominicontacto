@@ -91,6 +91,7 @@ class AgentNotifier:
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
+                'number_messages': conversation.mensajes.count(),
                 'from': conversation.destination,
                 'expire': conversation.expire.isoformat(),
                 'timestamp': conversation.timestamp.isoformat(),

@@ -81,18 +81,17 @@ export default {
     agtWhatsReceiveNewChat (state, chat = null) {
         if (chat) {
             state.agtWhatsChatsList.push({
-                id: chat.id,
-                from: chat.client_name,
+                id: chat.chat_id,
+                from: chat.from,
                 campaignId: chat.campaing_id,
                 campaignName: chat.campaing_name,
                 numMessages: chat.number_messages,
-                photo: chat.photo,
                 isNew: true,
                 isMine: false,
                 answered: false,
-                date: chat.date ? new Date(chat.date) : null,
+                date: chat.timestamp ? new Date(chat.timestamp) : null,
                 expire: chat.expire ? new Date(chat.expire) : null,
-                error: chat.error ? chat.error : false
+                error: false
             });
         }
     },

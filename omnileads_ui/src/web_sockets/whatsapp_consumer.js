@@ -106,6 +106,14 @@ export class WhatsappConsumer {
                 status: data.status || null,
                 date: new Date(data.timestamp)
             });
+            if (localStorage.getItem('agtWhatsappConversationAttending') != data.chat_id){
+                notificationEvent(
+                    NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
+                    `Mensaje Nuevo de ${data.sender.name || data.sender.phone}`,
+                    NOTIFICATION.ICONS.INFO
+                );
+            }
+
         }
     }
 
@@ -120,6 +128,11 @@ export class WhatsappConsumer {
     handleNewChatEvent (data) {
         console.log('Whatsapp Consumer NEW_CHAT: ');
         console.log(data);
+        notificationEvent(
+            NOTIFICATION.TITLES.WHATSAPP_NEW_CHAT,
+            'Nueva conversacion en espera de ser atendida',
+            NOTIFICATION.ICONS.INFO
+        );
         STORE.dispatch('agtWhatsReceiveNewChat', data);
     }
 

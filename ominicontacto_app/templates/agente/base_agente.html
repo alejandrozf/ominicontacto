@@ -955,18 +955,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
         {% if tiene_whatsapp %}
         <div>
+          <i id="newChat" class="fa fa-bell invisible" style="position:fixed; color:red; z-index:1;"></i>
           <div class="iconApp" id="whatsappChat">
             <span class="icon icon-solid-chat"></span>
           </div>
-          <div class="hidden">{% trans 'Whatsapp' %}</div>
+          <div class="hidden">{% trans 'Whatsapp'%} </div>
         </div>
+
         {% endif %}
-        <div>
+        <!-- <div>
           <div class="iconApp" id="webChat">
             <span class="icon icon-solid-chat"></span>
           </div>
           <div class="hidden">{% trans 'Webchat' %}</div>
-        </div>
+        </div> -->
         <div>
           <div class="iconApp" id="facebookChat">
             <span class="icon icon-solid-fb-chat"></span>

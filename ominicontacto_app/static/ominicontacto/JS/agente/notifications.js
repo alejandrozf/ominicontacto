@@ -53,3 +53,30 @@ class NotificationSocket
     }
 
 }
+
+class NotificationSocketWhatsapp
+{
+    constructor() {
+        /* eventsCallbacks */
+        this.eventsCallbacks = {
+            onNotificationNewChat: $.Callbacks(),
+        };
+    }
+
+    startNotificationSocketWhatsapp() {
+        const url = 'wss://' + window.location.host + '/channels/agent-console-whatsapp';
+        const rws = new ReconnectingWebSocket(url, [], {
+            connectionTimeout: 10000,
+            maxReconnectionDelay: 3000,
+            minReconnectionDelay: 1000,
+        });
+        var self = this;
+        rws.addEventListener('message', function(e) {
+            const data = JSON.parse(e.data);
+            if (data.type == 'whatsapp_new_chat' || data.type == 'whatsapp_new_message')
+                self.eventsCallbacks.onNotificationNewChat.fire(data.args);
+        });
+      
+    }
+
+}

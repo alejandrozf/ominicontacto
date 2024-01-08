@@ -46,6 +46,7 @@ export default {
         },
         conversationDetail ({ id, isNew, isMine }) {
             if (!isNew && isMine) {
+                localStorage.setItem('agtWhatsappConversationAttending', id);
                 this.$router.push({
                     name: 'agent_whatsapp_conversation_detail',
                     params: { id }
