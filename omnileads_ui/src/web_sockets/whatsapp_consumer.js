@@ -7,10 +7,20 @@ import STORE from '@/store';
 const MAX_RECONNECT_ATTEMPTS = 5;
 
 export class WhatsappConsumer {
+    static #instance = null;
+
     constructor (url = `wss://${window.location.host}/channels/agent-console-whatsapp`) {
         this.url = url;
         this.reconnectIntent = 0;
+        this.consumer = null;
         this.openSocket();
+    }
+
+    static getInstance (url = `wss://${window.location.host}/channels/agent-console-whatsapp`) {
+        if (!WhatsappConsumer.#instance) {
+            WhatsappConsumer.#instance = new WhatsappConsumer(url);
+        }
+        return WhatsappConsumer.#instance;
     }
 
     setConsumerEvents () {

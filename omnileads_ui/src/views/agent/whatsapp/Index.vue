@@ -36,7 +36,7 @@ export default {
     },
     async created () {
         if (!this.consumer) {
-            this.consumer = new WhatsappConsumer();
+            this.consumer = WhatsappConsumer.getInstance();
         }
         await this.agtWhatsChatsListInit();
         localStorage.setItem('agtWhatsConversationCreatedId', null);
@@ -70,6 +70,7 @@ export default {
     },
     data () {
         return {
+            consumer: null,
             newMessages: [],
             answeredMessages: [],
             numNewMessages: 0,
