@@ -31,8 +31,20 @@ export default {
         commit('initFormFlag', flag);
     },
     async initWhatsappLineCampaigns ({ commit }) {
-        const { status, data } = await service.getCampaigns();
-        commit('initWhatsappLineCampaigns', status === HTTP_STATUS.SUCCESS ? data : []);
+        try {
+            const response = await service.getCampaigns();
+            const { status, data } = response;
+            commit('initWhatsappLineCampaigns', status === HTTP_STATUS.SUCCESS ? data : []);
+            return response;
+        } catch (error) {
+            console.error('Error al obtener las campañas');
+            console.error(error);
+            commit('initWhatsappLineCampaigns', []);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al obtener las campañas'
+            };
+        }
     },
     initWhatsappLineOptionForm ({ commit }, option = null) {
         commit('initWhatsappLineOptionForm', option);

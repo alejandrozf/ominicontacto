@@ -320,13 +320,21 @@ export default {
             this.submitted = false;
         },
         initFormToUpdate () {
-            const dispositionData = this.agtWhatsDispositionChatDetail.disposition_data || null;
-            this.formResponseMetadata = JSON.parse(this.agtWhatsDispositionChatDetail.form_response.metadata) || null;
+            const dispositionData =
+        this.agtWhatsDispositionChatDetail?.disposition_data || null;
+            this.formResponseMetadata = this.agtWhatsDispositionChatDetail
+                ?.form_response?.metadata
+                ? JSON.parse(
+            this.agtWhatsDispositionChatDetail?.form_response?.metadata
+                )
+                : null;
             this.form = {
                 id: null,
-                type: dispositionData ? dispositionData.type : null,
-                optionByType: dispositionData ? dispositionData.id : null,
-                comments: this.agtWhatsDispositionChatDetail.comments || ''
+                type:
+          dispositionData && dispositionData?.type ? dispositionData?.type : null,
+                optionByType:
+          dispositionData && dispositionData?.id ? dispositionData?.id : null,
+                comments: this.agtWhatsDispositionChatDetail?.comments || ''
             };
             this.getOptionsByType();
             this.getFormFieldsByOption();

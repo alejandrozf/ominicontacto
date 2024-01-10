@@ -30,18 +30,18 @@ export default {
         }
     },
     methods: {
-        getConversationInfo (data) {
+        getConversationInfo (data = null) {
             return {
-                id: data.id,
-                from: data.from,
-                date: data.date.toLocaleString(),
-                campaignId: data.campaignId,
-                campaignName: data.campaignName,
-                numMessages: data.numMessages,
-                isMine: data.isMine,
-                isNew: data.isNew,
-                expire: data.expire,
-                error: data.error
+                id: data && data.id ? data.id : null,
+                from: data && data.from ? data.from : null,
+                date: data && data.date ? data.date.toLocaleString() : null,
+                campaignId: data && data.campaignId ? data.campaignId : null,
+                campaignName: data && data.campaignName ? data.campaignName : null,
+                numMessages: data && data.numMessages ? data.numMessages : null,
+                isMine: data && data.isMine ? data.isMine : null,
+                isNew: data && data.isNew ? data.isNew : null,
+                expire: data && data.expire ? data.expire : null,
+                error: data && data.error ? data.error : false
             };
         },
         conversationDetail ({ id, isNew, isMine }) {

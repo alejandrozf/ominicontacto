@@ -6,15 +6,19 @@
 
 <script>
 import Cookies from 'universal-cookie';
-const cookies = new Cookies();
 
 export default {
     name: 'app',
+    data () {
+        return {
+            cookies: new Cookies()
+        };
+    },
     methods: {
         listenCookieChange (callback, interval = 1000) {
-            let lastCookie = cookies.get('django_language');
+            let lastCookie = this.cookies.get('django_language');
             setInterval(() => {
-                const cookie = cookies.get('django_language');
+                const cookie = this.cookies.get('django_language');
                 if (cookie !== lastCookie) {
                     try {
                         // eslint-disable-next-line node/no-callback-literal

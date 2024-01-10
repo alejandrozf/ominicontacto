@@ -35,7 +35,9 @@ export default {
         ...mapState(['agtWhatsChatsList'])
     },
     async created () {
-        this.consumer = new WhatsappConsumer();
+        if (!this.consumer) {
+            this.consumer = new WhatsappConsumer();
+        }
         await this.agtWhatsChatsListInit();
         localStorage.setItem('agtWhatsConversationCreatedId', null);
         localStorage.setItem('agtWhatsappConversationAttending', null);

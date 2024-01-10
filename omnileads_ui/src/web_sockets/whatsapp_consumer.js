@@ -7,7 +7,8 @@ import STORE from '@/store';
 const MAX_RECONNECT_ATTEMPTS = 5;
 
 export class WhatsappConsumer {
-    constructor () {
+    constructor (url = `wss://${window.location.host}/channels/agent-console-whatsapp`) {
+        this.url = url;
         this.reconnectIntent = 0;
         this.openSocket();
     }
@@ -68,8 +69,8 @@ export class WhatsappConsumer {
         if (!this.consumer || this.consumer.readyState === WebSocket.CLOSED) {
             this.consumer =
                 new WebSocket(
-                    `wss://${window.location.host}/channels/agent-console-whatsapp`
-                ) || null;
+                    this.url
+                );
             if (this.consumer) {
                 this.setConsumerEvents();
             } else {
@@ -91,54 +92,23 @@ export class WhatsappConsumer {
     }
 
     handleNewMessageEvent (data = null) {
-        console.log('Whatsapp Consumer NEW_MESSAGE: ');
-        console.log(data);
-        if (data) {
-            const itsMine = data.origen === data.line_phone;
-            STORE.dispatch('agtWhatsCoversationReciveMessage', {
-                id: data.message_id,
-                from: itsMine
-                    ? `Agente (${data.sender.name})`
-                    : data.sender.name || data.sender.phone,
-                conversationId: data.chat_id,
-                itsMine,
-                message: data.content.text,
-                status: data.status || null,
-                date: new Date(data.timestamp)
-            });
-            if (localStorage.getItem('agtWhatsappConversationAttending') != data.chat_id){
-                notificationEvent(
-                    NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
-                    `Mensaje Nuevo de ${data.sender.name || data.sender.phone}`,
-                    NOTIFICATION.ICONS.INFO
-                );
-            }
-
-        }
+        if (data) STORE.dispatch('agtWhatsCoversationReciveMessage', data);
     }
 
-    handleMessageStatusEvent (data) {
-        console.log('Whatsapp Consumer MESSAGE_STATUS: ');
-        console.log(data);
-        if (data) {
-            STORE.dispatch('agtWhatSendMessageStatus', data);
-        }
+    handleMessageStatusEvent (data = null) {
+        if (data) STORE.dispatch('agtWhatSendMessageStatus', data);
     }
 
-    handleNewChatEvent (data) {
-        console.log('Whatsapp Consumer NEW_CHAT: ');
-        console.log(data);
+    handleNewChatEvent (data = null) {
         notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_NEW_CHAT,
             'Nueva conversacion en espera de ser atendida',
             NOTIFICATION.ICONS.INFO
         );
-        STORE.dispatch('agtWhatsReceiveNewChat', data);
+        if (data) STORE.dispatch('agtWhatsReceiveNewChat', data);
     }
 
     handleChatAttendedEvent (data) {
-        console.log('Whatsapp Consumer CHAT_ATTENDED: ');
-        console.log(data);
         notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_CHAT_ATTENDED,
             `El chat de la campana (${data.campaign_name}), se atendio`,
@@ -147,8 +117,6 @@ export class WhatsappConsumer {
     }
 
     handleChatTransferedEvent (data) {
-        console.log('Whatsapp Consumer CHAT_TRANSFERED: ');
-        console.log(data);
         notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_CHAT_TRANSFERED,
             `El chat del cliente (${data.chat_info.client_name}), se te transfirio`,
@@ -156,12 +124,10 @@ export class WhatsappConsumer {
         );
     }
 
-    async handleChatExpiredEvent (data) {
-        console.log('Whatsapp Consumer CHAT_EXPIRED: ');
-        console.log(data);
+    async handleChatExpiredEvent (data = null) {
         await STORE.dispatch('agtWhatsRestartExpiredCoversation', {
-            conversationId: data.conversation_id,
-            expire: data.expire
+            conversationId: data && data.conversation_id ? data.conversation_id : null,
+            expire: data && data.expire ? data.expire : null
         });
         await notificationEvent(
             NOTIFICATION.TITLES.SUCCESS,

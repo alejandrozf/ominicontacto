@@ -69,6 +69,7 @@ import TextBox from '@/components/agent/whatsapp/conversation/TextBox';
 import ListMessages from '@/components/agent/whatsapp/conversation/ListMessages';
 import { listenerStoreDataByAction } from '@/utils';
 import { COLORS } from '@/globals';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
     components: {
         HeaderConversation,
@@ -83,7 +84,6 @@ export default {
         };
     },
     async created () {
-        window.parent.addEventListener('message', this.refreshConversationInfo);
         await this.listenerEvents();
         await this.agtWhatsConversationDetail({
             conversationId: this.id,
@@ -118,24 +118,19 @@ export default {
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
-            const event = new CustomEvent('onWhatsappContactFormEvent', {
+            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA);
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
                     contact_form: true
                 }
             });
-            window.parent.document.dispatchEvent(event);
-        },
-        async refreshConversationInfo (event) {
-            if (event.data.type === 'refreshConversationInfo') {
-                const info =
-          JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
-                await this.agtWhatsSetCoversationInfo(info);
-            }
+            window.parent.document.dispatchEvent(modalEvent);
         },
         checkExpirationDate () {
-            if (this.agtWhatsCoversationInfo.expire) {
+            if (this.agtWhatsCoversationInfo?.expire) {
                 const now = new Date();
-                const expire = new Date(this.agtWhatsCoversationInfo.expire);
+                const expire = new Date(this.agtWhatsCoversationInfo?.expire);
                 this.isExpired = now > expire;
             }
         },

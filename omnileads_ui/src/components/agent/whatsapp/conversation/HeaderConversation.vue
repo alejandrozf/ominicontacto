@@ -61,6 +61,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
+
 export default {
     props: {
         isExpired: {
@@ -136,13 +138,17 @@ export default {
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
             localStorage.setItem('onlyWhatsappTemplates', false);
-            const event = new CustomEvent('onWhatsappTemplatesEvent', {
+            const event = new Event(
+                WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT
+            );
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onWhatsappTemplatesEvent', {
                 detail: {
                     templates: true,
                     conversationId: parseInt(this.$route.params.id)
                 }
             });
-            window.parent.document.dispatchEvent(event);
+            window.parent.document.dispatchEvent(modalEvent);
         },
         attach (fileType = 'img') {
             const event = new CustomEvent('onWhatsappMediaFormEvent', {
@@ -166,12 +172,14 @@ export default {
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
-            const event = new CustomEvent('onWhatsappContactFormEvent', {
+            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA);
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
                     contact_form: true
                 }
             });
-            window.parent.document.dispatchEvent(event);
+            window.parent.document.dispatchEvent(modalEvent);
         },
         qualify () {
             localStorage.setItem(
@@ -182,20 +190,14 @@ export default {
                 'agtWhatsDispositionChatFormToCreate',
                 this.agtWhatsCoversationInfo.client.dispositionId === null
             );
-            const event2 = new CustomEvent('agtWhatsCoversationInfo', {
-                detail: {
-                    type: 'refreshConversationInfo'
-                }
-            });
-            console.log('===> dispatchEvent event2');
-            console.log(event2);
-            window.parent.document.dispatchEvent(event2);
-            const event = new CustomEvent('onWhatsappDispositionFormEvent', {
+            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA);
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onWhatsappDispositionFormEvent', {
                 detail: {
                     disposition_form: true
                 }
             });
-            window.parent.document.dispatchEvent(event);
+            window.parent.document.dispatchEvent(modalEvent);
         },
         async transfer () {
             await this.agtWhatsTransferChatInitData(1);

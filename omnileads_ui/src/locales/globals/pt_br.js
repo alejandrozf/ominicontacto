@@ -54,6 +54,7 @@ export default {
     group_of_hour: 'Grupo de tempo | Grupos de tempo',
     time_validation: 'Validação de tempo | Validações de tempo',
     ivr: 'IVR | IVRs',
+    phone: 'Telefone | telefones',
     whatsapp: {
         title: 'Whatsapp',
         provider: 'Proveedor de Whatsapp | Proveedores de Whatsapp',
@@ -62,7 +63,8 @@ export default {
         whatsapp_template: 'Modelo do WhatsApp | Modelo de whatsapp',
         group_of_message_template: 'Grupo de modelos de mensagem | Grupos de modelo de mensagem',
         group_of_whatsapp_template: 'Grupo de modelos do Whatsapp | grupos de modelos de whatsapp',
-        template: 'Plantilla | Plantillas'
+        template: 'Plantilla | Plantillas',
+        automatic_agent: 'Automático | Automáticos'
     },
     // -------------
     // -- Actions --

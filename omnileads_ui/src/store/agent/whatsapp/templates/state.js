@@ -1,3 +1,1 @@
-export default {
-    agtWhatsTemplates: []
-};
+export default {};

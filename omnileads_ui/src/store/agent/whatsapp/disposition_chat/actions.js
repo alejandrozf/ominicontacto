@@ -6,57 +6,84 @@ export default {
         try {
             if (!id) {
                 await commit('agtWhatsDispositionChatHistoryInit', []);
-                return;
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al obtener historial de calificaciones'
+                };
             }
-            const { status, data } = await Service.history({
+            const response = await Service.history({
                 id
             });
+            const { status, data } = response;
             await commit(
                 'agtWhatsDispositionChatHistoryInit',
                 status === HTTP_STATUS.SUCCESS ? data : []
             );
+            return response;
         } catch (error) {
             console.error('===> ERROR al obtener historial de calificaciones');
             console.error(error);
             await commit('agtWhatsDispositionChatHistoryInit', []);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al obtener historial de calificaciones'
+            };
         }
     },
     async agtWhatsDispositionChatOptionsInit ({ commit }, { campaignId = null }) {
         try {
             if (!campaignId) {
                 await commit('agtWhatsDispositionChatOptionsInit', []);
-                return;
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al obtener opciones de calificacion'
+                };
             }
-            const { status, data } = await Service.options({
+            const response = await Service.options({
                 campaignId
             });
+            const { status, data } = response;
             await commit(
                 'agtWhatsDispositionChatOptionsInit',
                 status === HTTP_STATUS.SUCCESS ? data : []
             );
+            return response;
         } catch (error) {
             console.error('===> ERROR al obtener opciones de calificacion');
             console.error(error);
             await commit('agtWhatsDispositionChatOptionsInit', []);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al obtener opciones de calificacion'
+            };
         }
     },
     async agtWhatsDispositionChatDetailInit ({ commit }, { id = null }) {
         try {
             if (!id) {
                 await commit('agtWhatsDispositionChatDetailInit', null);
-                return;
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al obtener el detalle de la calificacion'
+                };
             }
-            const { status, data } = await Service.detail({
+            const response = await Service.detail({
                 id
             });
+            const { status, data } = response;
             await commit(
                 'agtWhatsDispositionChatDetailInit',
                 status === HTTP_STATUS.SUCCESS ? data : null
             );
+            return response;
         } catch (error) {
             console.error('===> ERROR al obtener el detalle de la calificacion');
             console.error(error);
             await commit('agtWhatsDispositionChatDetailInit', null);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al obtener el detalle de la calificacion'
+            };
         }
     },
     async agtWhatsDispositionChatCreate (
@@ -78,9 +105,15 @@ export default {
     },
     async agtWhatsDispositionChatUpdate (
         { commit },
-        { id, data }
+        { id = null, data }
     ) {
         try {
+            if (!id) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al actualizar calificacion'
+                };
+            }
             return await Service.update({
                 id,
                 data

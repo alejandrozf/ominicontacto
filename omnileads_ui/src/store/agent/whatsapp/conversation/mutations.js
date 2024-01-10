@@ -1,122 +1,229 @@
+import {
+    notificationEvent,
+    NOTIFICATION
+} from '@/globals/agent/whatsapp';
+
 const setClientInfo = (info = null) => {
     return {
-        id: info ? info.id : null,
-        phone: info ? info.phone : null,
-        data: info ? info.data : null,
-        dispositionId: info ? info.disposition : null
+        id: info && info.id ? info.id : null,
+        phone: info && info.phone ? info.phone : null,
+        data: info && info.data ? info.data : null,
+        dispositionId: info && info.disposition ? info.disposition : null
     };
 };
 
 const setLineInfo = (info = null) => {
     return {
-        id: info ? info.id : null,
-        name: info ? info.name : null,
-        number: info ? info.number : null
+        id: info && info.id ? info.id : null,
+        name: info && info.name ? info.name : null,
+        number: info && info.number ? info.number : null
     };
+};
+
+const setFromInfo = (info = null) => {
+    if (info && info.client) {
+        if (info.client.name) {
+            return info.client.name || '-------';
+        } else if (info.client.phone) {
+            return info.client.phone || '-------';
+        }
+    } else if (info && info.destination) {
+        return info.destination || '-------';
+    }
+    return '-------';
 };
 
 export default {
     agtWhatsCoversationSendMessage (state, message) {
         state.agtWhatsCoversationMessages.push(message);
     },
-    agtWhatsCoversationReciveMessage (state, message) {
-        state.agtWhatsCoversationMessages.push(message);
+    agtWhatsCoversationReciveMessage (state, data = null) {
+        const itsMine = data && data.origen ? data.origen === data.line_phone : false;
+        const senderName = data && data.sender && data.sender.name ? data.sender.name : '------';
+        const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
+        const message = {
+            id: data && data.message_id ? data.message_id : null,
+            from: itsMine
+                ? `Agente (${senderName})`
+                : senderName || senderPhone,
+            conversationId: data && data.chat_id ? data.chat_id : null,
+            itsMine,
+            message: data && data.content && data.content.text ? data.content.text : '',
+            status: data && data.status ? data.status : null,
+            date: data && data.timestamp ? new Date(data.timestamp) : new Date()
+        };
+        const messages = state.agtWhatsCoversationMessages;
+        const alreadyExists = messages.find(m => m.id === message.id);
+        if (message && !alreadyExists) {
+            state.agtWhatsCoversationMessages.push(message);
+            if (localStorage.getItem('agtWhatsappConversationAttending') !== data.chat_id) {
+                notificationEvent(
+                    NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
+                    `Mensaje Nuevo de ${senderName || senderPhone}`,
+                    NOTIFICATION.ICONS.INFO
+                );
+            }
+        }
     },
     agtWhatsConversationInitMessages (state, messages) {
         state.agtWhatsCoversationMessages = messages;
     },
     agtWhatsConversationInfoInit (state, conversation = null) {
         state.agtWhatsCoversationInfo = {
-            id: conversation ? conversation.id : null,
-            campaignId: conversation ? conversation.campaing_id : null,
-            campaignName: conversation ? conversation.campaing_name : null,
-            destination: conversation ? conversation.destination : null,
-            client: setClientInfo(conversation ? conversation.client : null),
-            agent: conversation ? conversation.agent : null,
-            isActive: conversation ? conversation.is_active : null,
-            expire: conversation ? conversation.expire : null,
-            timestamp: conversation ? conversation.timestamp : null,
-            messageNumber: conversation ? conversation.message_number : null,
-            photo: conversation ? conversation.photo : null,
-            line: setLineInfo(conversation ? conversation.line : null),
-            error: conversation ? conversation.error : false
+            id: conversation && conversation.id ? conversation.id : null,
+            campaignId:
+                conversation && conversation.campaing_id
+                    ? conversation.campaing_id
+                    : null,
+            campaignName:
+                conversation && conversation.campaing_name
+                    ? conversation.campaing_name
+                    : null,
+            destination:
+                conversation && conversation.destination
+                    ? conversation.destination
+                    : null,
+            agent:
+                conversation && conversation.agent ? conversation.agent : null,
+            isActive:
+                conversation && conversation.is_active
+                    ? conversation.is_active
+                    : null,
+            expire:
+                conversation && conversation.expire
+                    ? conversation.expire
+                    : null,
+            timestamp:
+                conversation && conversation.timestamp
+                    ? conversation.timestamp
+                    : null,
+            messageNumber:
+                conversation && conversation.message_number
+                    ? conversation.message_number
+                    : null,
+            photo:
+                conversation && conversation.photo ? conversation.photo : null,
+            client: setClientInfo(
+                conversation && conversation.client ? conversation.client : null
+            ),
+            line: setLineInfo(
+                conversation && conversation.line ? conversation.line : null
+            ),
+            error:
+                conversation && conversation.error ? conversation.error : false
         };
     },
     agtWhatsChatsListInit (state, { isNew, inProgress }) {
         const chats = [];
-        isNew.forEach((e) => {
-            chats.push({
-                id: e.id,
-                from: e.client ? (e.client.name || e.client.phone) : e.destination,
-                campaignId: e.campaing_id,
-                campaignName: e.campaing_name,
-                numMessages: e.message_number,
-                photo: e.photo,
-                isNew: true,
-                isMine: false,
-                answered: false,
-                date: e.timestamp ? new Date(e.timestamp) : null,
-                expire: e.expire ? new Date(e.expire) : null,
-                error: e.error ? e.error : false
-            });
+        isNew.forEach((e = null) => {
+            if (e) {
+                chats.push({
+                    id: e.id ? e.id : null,
+                    from: setFromInfo(e),
+                    campaignId: e.campaing_id ? e.campaing_id : null,
+                    campaignName: e.campaing_name ? e.campaing_name : '-------',
+                    numMessages: e.message_number ? e.message_number : 0,
+                    photo: e.photo ? e.photo : '',
+                    isNew: true,
+                    isMine: false,
+                    answered: false,
+                    date: e.timestamp ? new Date(e.timestamp) : null,
+                    expire: e.expire ? new Date(e.expire) : null,
+                    error: e.error ? e.error : false
+                });
+            }
         });
-        inProgress.forEach((e) => {
-            chats.push({
-                id: e.id,
-                from: e.client ? (e.client.name || e.client.phone) : e.destination,
-                campaignId: e.campaing_id,
-                campaignName: e.campaing_name,
-                numMessages: e.message_number,
-                photo: e.photo,
-                isNew: false,
-                isMine: true,
-                answered: false,
-                date: e.timestamp ? new Date(e.timestamp) : null,
-                expire: e.expire ? new Date(e.expire) : null,
-                error: e.error ? e.error : false
-            });
+        inProgress.forEach((e = null) => {
+            if (e) {
+                chats.push({
+                    id: e.id ? e.id : null,
+                    from: setFromInfo(e),
+                    campaignId: e.campaing_id ? e.campaing_id : null,
+                    campaignName: e.campaing_name ? e.campaing_name : '-------',
+                    numMessages: e.message_number ? e.message_number : 0,
+                    photo: e.photo,
+                    isNew: false,
+                    isMine: true,
+                    answered: false,
+                    date: e.timestamp ? new Date(e.timestamp) : null,
+                    expire: e.expire ? new Date(e.expire) : null,
+                    error: e.error ? e.error : false
+                });
+            }
         });
         state.agtWhatsChatsList = chats;
     },
     agtWhatsReceiveNewChat (state, chat = null) {
-        if (chat) {
-            state.agtWhatsChatsList.push({
-                id: chat.chat_id,
-                from: chat.from,
-                campaignId: chat.campaing_id,
-                campaignName: chat.campaing_name,
-                numMessages: chat.number_messages,
-                isNew: true,
-                isMine: false,
-                answered: false,
-                date: chat.timestamp ? new Date(chat.timestamp) : null,
-                expire: chat.expire ? new Date(chat.expire) : null,
-                error: false
-            });
-        }
+        state.agtWhatsChatsList.push({
+            id: chat && chat.chat_id ? chat.chat_id : null,
+            from: chat && chat.from ? chat.from : '-------',
+            campaignId: chat && chat.campaing_id ? chat.campaing_id : null,
+            campaignName: chat && chat.campaing_name ? chat.campaing_name : '-------',
+            numMessages:
+                chat && chat.number_messages ? chat.number_messages : 1,
+            photo: chat && chat.photo ? chat.photo : '',
+            isNew: true,
+            isMine: false,
+            answered: false,
+            date: chat && chat.timestamp ? new Date(chat.timestamp) : new Date(),
+            expire: chat && chat.expire ? new Date(chat.expire) : null,
+            error: chat && chat.error ? chat.error : false
+        });
     },
     agtWhatsSetCoversationInfo (state, conversation = null) {
         state.agtWhatsCoversationInfo = {
-            id: conversation ? conversation.id : null,
-            campaignId: conversation ? conversation.campaignId : null,
-            campaignName: conversation ? conversation.campaignName : null,
-            destination: conversation ? conversation.destination : null,
-            client: setClientInfo(conversation ? conversation.client : null),
-            agent: conversation ? conversation.agent : null,
-            isActive: conversation ? conversation.isActive : null,
-            expire: conversation ? conversation.expire : null,
-            timestamp: conversation ? conversation.timestamp : null,
-            messageNumber: conversation ? conversation.messageNumber : null,
-            photo: conversation ? conversation.photo : null,
-            line: setLineInfo(conversation ? conversation.line : null),
-            error: conversation ? conversation.error : false
+            id: conversation && conversation.id ? conversation.id : null,
+            campaignId:
+                conversation && conversation.campaignId
+                    ? conversation.campaignId
+                    : null,
+            campaignName:
+                conversation && conversation.campaignName
+                    ? conversation.campaignName
+                    : null,
+            destination:
+                conversation && conversation.destination
+                    ? conversation.destination
+                    : null,
+            client: setClientInfo(
+                conversation && conversation.client ? conversation.client : null
+            ),
+            agent:
+                conversation && conversation.agent ? conversation.agent : null,
+            isActive:
+                conversation && conversation.isActive
+                    ? conversation.isActive
+                    : null,
+            expire:
+                conversation && conversation.expire
+                    ? conversation.expire
+                    : null,
+            timestamp:
+                conversation && conversation.timestamp
+                    ? conversation.timestamp
+                    : null,
+            messageNumber:
+                conversation && conversation.messageNumber
+                    ? conversation.messageNumber
+                    : null,
+            photo:
+                conversation && conversation.photo ? conversation.photo : null,
+            line: setLineInfo(
+                conversation && conversation.line ? conversation.line : null
+            ),
+            error:
+                conversation && conversation.error ? conversation.error : false
         };
     },
     agtWhatsSetCoversationClientInfo (state, info = null) {
-        state.agtWhatsCoversationInfo.client.id = info ? info.id : null;
-        state.agtWhatsCoversationInfo.client.phone = info ? info.phone : null;
-        state.agtWhatsCoversationInfo.client.data = info ? info.data : null;
-        state.agtWhatsCoversationInfo.client.dispositionId = info.disposition || null;
+        state.agtWhatsCoversationInfo.client.id =
+            info && info.id ? info.id : null;
+        state.agtWhatsCoversationInfo.client.phone =
+            info && info.phone ? info.phone : null;
+        state.agtWhatsCoversationInfo.client.data =
+            info && info.data ? info.data : null;
+        state.agtWhatsCoversationInfo.client.dispositionId =
+            info.disposition || null;
         localStorage.setItem(
             'agtWhatsCoversationInfo',
             JSON.stringify(state.agtWhatsCoversationInfo)

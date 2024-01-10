@@ -15,8 +15,11 @@
 <script>
 import Header from '@/components/agent/whatsapp/contact/Header';
 import Form from '@/components/agent/whatsapp/contact/Form';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
+import { HTTP_STATUS } from '@/globals';
 import { mapActions } from 'vuex';
 export default {
+    inject: ['$helpers'],
     components: {
         Header,
         Form
@@ -29,11 +32,30 @@ export default {
         closeEvent () {
             this.$refs.formRef.clearForm();
         },
-        updatedLocalStorage () {
+        async updatedLocalStorage () {
             this.conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
-            this.formToCreate = !this.conversationInfo.client.id;
+            if (this.conversationInfo && this.conversationInfo?.client) {
+                this.formToCreate = !this.conversationInfo?.client?.id;
+            } else {
+                this.formToCreate = false;
+            }
             this.agtWhatsSetCoversationInfo(this.conversationInfo);
+            this.$helpers.openLoader(this.$t);
+            const { status, message } = await this.agtWhatsContactDBFieldsInit({
+                campaignId: this.conversationInfo?.campaignId || null,
+                conversationId: this.conversationInfo?.id || null
+            });
+            this.$helpers.closeLoader();
+            if (status !== HTTP_STATUS.SUCCESS) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
         }
     },
     data () {
@@ -43,18 +65,19 @@ export default {
         };
     },
     mounted () {
-        window.addEventListener('storage', this.updatedLocalStorage);
-        this.updatedLocalStorage();
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA,
+            this.updatedLocalStorage
+        );
     },
     beforeUnmount () {
-        window.removeEventListener('storage', this.updatedLocalStorage);
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA,
+            this.updatedLocalStorage
+        );
     },
     async created () {
         await this.updatedLocalStorage();
-        await this.agtWhatsContactDBFieldsInit({
-            campaignId: this.conversationInfo.campaignId,
-            conversationId: this.conversationInfo.id
-        });
     }
 };
 </script>

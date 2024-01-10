@@ -20,8 +20,11 @@
 import Header from '@/components/agent/whatsapp/templates/Header';
 import Table from '@/components/agent/whatsapp/templates/Table';
 import ModalTemplateParams from '@/components/agent/whatsapp/templates/ModalTemplateParams';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 import { mapActions, mapState } from 'vuex';
+import { HTTP_STATUS } from '@/globals';
 export default {
+    inject: ['$helpers'],
     components: {
         Header,
         Table,
@@ -37,12 +40,22 @@ export default {
             onlyWhatsappTemplates: false
         };
     },
+    async created () {
+        await this.updatedLocalStorage();
+    },
     mounted () {
-        // window.addEventListener('storage', this.updatedLocalStorage);
-        this.updatedLocalStorage();
+        setTimeout(() => {
+            window.parent.document.addEventListener(
+                WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
+                this.updatedLocalStorage
+            );
+        }, 2000);
     },
     beforeUnmount () {
-        window.removeEventListener('storage', this.updatedLocalStorage);
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
+            this.updatedLocalStorage
+        );
     },
     computed: {
         ...mapState(['agtWhatsCoversationInfo'])
@@ -57,7 +70,7 @@ export default {
             this.template = template;
             this.conversationId = conversationId;
         },
-        updatedLocalStorage () {
+        async updatedLocalStorage () {
             this.conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
             this.onlyWhatsappTemplates =
@@ -69,9 +82,25 @@ export default {
             this.campaignId = this.conversationInfo
                 ? parseInt(this.conversationInfo.campaignId)
                 : null;
-            const line = this.conversationInfo?.line;
+            const line = this.conversationInfo?.line || null;
             if (this.campaignId) {
-                this.initSupCampaignTemplates({ campaignId: this.campaignId, lineId: line ? line.id : null });
+                this.$helpers.openLoader(this.$t);
+                setTimeout(async () => {
+                    const { status, message } = await this.initSupCampaignTemplates({
+                        campaignId: this.campaignId,
+                        lineId: line ? line.id : null
+                    });
+                    this.$helpers.closeLoader();
+                    if (status !== HTTP_STATUS.SUCCESS) {
+                        this.$swal(
+                            this.$helpers.getToasConfig(
+                                this.$t('globals.error_notification'),
+                                message,
+                                this.$t('globals.icon_error')
+                            )
+                        );
+                    }
+                }, 2000);
             }
         }
     }

@@ -23,7 +23,8 @@ export default {
     formatTime,
     getDatetimeFormat,
     isPhoneValid: (phone) => {
-        const regex = /^(\+\d{1,2}\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/;
+        // const regex = /^(\+\d{1,2}\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/;
+        const regex = /^[\d()+\s-]{0,15}$/;
         return regex.test(phone);
     },
     getRandomColors

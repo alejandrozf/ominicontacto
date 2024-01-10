@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="grid formgrid mt-4">
-      <div v-for="(field, index) in form" :key="index" class="field col-12">
+      <div v-for="(field, index) in form" :key="index" class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <div v-if="field.name !== 'id'">
           <div v-if="field.mandatory">
             <label
@@ -280,10 +280,6 @@ export default {
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
                     await this.agtWhatsSetCoversationClientInfo(response.data);
-                    window.parent.postMessage(
-                        { type: 'refreshConversationInfo', data: null },
-                        '*'
-                    );
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
                         message,

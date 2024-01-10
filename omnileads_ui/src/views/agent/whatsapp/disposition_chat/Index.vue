@@ -9,6 +9,7 @@
 import Header from '@/components/agent/whatsapp/disposition_chat/Header';
 import Tab from '@/components/agent/whatsapp/disposition_chat/Tab';
 import { mapActions } from 'vuex';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
     components: {
         Header,
@@ -46,28 +47,20 @@ export default {
             await this.agtWhatsDispositionChatSetFormFlag(formToCreate);
         }
     },
-    // async mounted () {
-    //     console.log('===> mounted disposition chat');
-    //     window.document.addEventListener(
-    //         'agtWhatsCoversationInfo',
-    //         this.updatedLocalStorage
-    //     );
-    //     window.document.addEventListener(
-    //         'agtWhatsDispositionChatFormFlag',
-    //         this.updateFlag
-    //     );
-    // },
-    // beforeUnmount () {
-    //     console.log('===> beforeUnmount disposition chat');
-    //     window.addEventListener(
-    //         'agtWhatsCoversationInfo',
-    //         this.updatedLocalStorage
-    //     );
-    //     window.addEventListener('agtWhatsDispositionChatFormFlag', this.updateFlag);
-    // },
+    mounted () {
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA,
+            this.updatedLocalStorage
+        );
+    },
+    beforeUnmount () {
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA,
+            this.updatedLocalStorage
+        );
+    },
     async created () {
         await this.updatedLocalStorage();
-    // await this.agtWhatsDispositionChatHistoryInit({ id: this.conversationInfo.dispositionChatId });
     }
 };
 </script>

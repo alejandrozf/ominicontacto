@@ -54,6 +54,7 @@ export default {
     group_of_hour: 'گروه زمانی | گروه زمانی',
     time_validation: 'اعتبار سنجی زمانی | اعتبار سنجی زمانی',
     ivr: 'تلفن گویا | تلفن گویا',
+    phone: 'تلفن | گوشی ها',
     whatsapp: {
         title: 'واتس اپ',
         provider: 'ارائه دهنده واتساپ | ارائه دهندگان واتساپ',
@@ -62,7 +63,8 @@ export default {
         whatsapp_template: 'قالب واتس اپ | قالب واتساپ',
         group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام',
         group_of_whatsapp_template: 'گروه قالب واتساپ | گروه های قالب واتساپ',
-        template: 'الگو | قالب ها'
+        template: 'الگو | قالب ها',
+        automatic_agent: 'اتوماتیک | خودکار'
     },
     // -------------
     // -- Actions --

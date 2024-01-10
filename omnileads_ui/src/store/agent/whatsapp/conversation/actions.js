@@ -4,48 +4,65 @@ import { HTTP_STATUS } from '@/globals';
 import { resetStoreDataByAction } from '@/utils';
 const service = new Service();
 
-const getMessageInfo = ({$t, data = null, itsMine = true}) => {
-    const senderName = data.sender ? data.sender.name : '';
+const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
+    const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
+    const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : $t('globals.whatsapp.automatic_agent');
     return {
         id: data.id,
-        from: itsMine
-            ? `${$t('globals.agent')} (${senderName})`
-            : senderName,
-        conversationId: data ? data.conversation : null,
+        from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : senderPhone,
+        conversationId: data && data.conversation ? data.conversation : null,
         itsMine,
-        message: data.content ? data.content.text : '',
-        status: data ? data.status : null,
-        date: data.timestamp ? new Date(data.timestamp) : null
+        message: data && data.content && data.content.text ? data.content.text : '',
+        status: data && data.status ? data.status : null,
+        date: data && data.timestamp ? new Date(data.timestamp) : null
     };
 };
 
 export default {
     async agtWhatsCoversationSendAttachmentMessage (
         { commit },
-        { conversationId, message }
+        { conversationId = null, message }
     ) {
         try {
-            const { status, data } = await service.sendAttachmentMessage(
+            if (!conversationId || !message) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al enviar mensaje multimedia'
+                };
+            }
+            const response = await service.sendAttachmentMessage(
                 conversationId,
                 message
             );
+            const { status } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await commit('agtWhatsCoversationSendMessage', message);
             }
+            return response;
         } catch (error) {
             console.error('===> ERROR al enviar mensaje multimedia');
             console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al enviar mensaje multimedia'
+            };
         }
     },
     async agtWhatsCoversationSendTextMessage (
         { commit },
-        { conversationId, message, phoneLine, $t }
+        { conversationId = null, message = null, phoneLine = null, $t }
     ) {
         try {
-            const response = await service.sendTextMessage(
-                conversationId,
-                { message: message.message, destination: message.destination }
-            );
+            if (!conversationId || !message || !phoneLine) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al enviar mensaje de Texto'
+                };
+            }
+            const response = await service.sendTextMessage(conversationId, {
+                message: message.message ? message.message : '',
+                destination: message.destination ? message.destination : ''
+            });
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
@@ -58,22 +75,28 @@ export default {
             console.error(error);
             return {
                 status: HTTP_STATUS.ERROR,
-                message: error.message ? `Error al enviar mensaje de Texto: ${error.message}` : 'Error al enviar mensaje de Texto'
+                message: 'Error al enviar mensaje de Texto'
             };
         }
     },
     async agtWhatsCoversationSendTemplateMessage (
         { commit },
-        { conversationId, templateId, phoneLine, messages, $t }
+        { conversationId = null, templateId = null, phoneLine = null, messages = null, $t }
     ) {
         try {
+            if (!conversationId || !templateId || !phoneLine) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al enviar template de Texto'
+                };
+            }
             const result = await service.sendTemplateMessage(conversationId, {
                 template_id: templateId
             });
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });;
+                const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -93,9 +116,15 @@ export default {
     },
     async agtWhatsCoversationSendWhatsappTemplateMessage (
         { commit },
-        { conversationId, templateId, params, phoneLine, messages, $t }
+        { conversationId = null, templateId = null, params, phoneLine, messages, $t }
     ) {
         try {
+            if (!conversationId || !templateId) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al enviar Template de Whatsapp'
+                };
+            }
             const result = await service.sendWhatsappTemplateMessage(
                 conversationId,
                 { template_id: templateId, params }
@@ -103,7 +132,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });;
+                const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -122,9 +151,15 @@ export default {
     },
     async agtWhatsCoversationReactiveExpiredConversation (
         { commit },
-        { conversationId, templateId, params, phoneLine, messages, $t }
+        { conversationId = null, templateId = null, params, phoneLine, messages, $t }
     ) {
         try {
+            if (!conversationId || !templateId) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al reactivar conversacion expirada'
+                };
+            }
             const result = await service.reactiveExpiredConversation(
                 conversationId,
                 { template_id: templateId, params }
@@ -132,7 +167,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origen === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });;
+                const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -157,8 +192,16 @@ export default {
             console.error(error);
         }
     },
-    async agtWhatsConversationDetail ({ commit }, { conversationId, $t }) {
+    async agtWhatsConversationDetail ({ commit }, { conversationId = null, $t }) {
         try {
+            if (!conversationId) {
+                commit('agtWhatsConversationInitMessages', []);
+                commit('agtWhatsConversationInfoInit', {});
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al obtener detalle de la conversacion'
+                };
+            }
             const { status, data } = await service.getConversationDetail(
                 conversationId
             );
@@ -177,6 +220,10 @@ export default {
             console.error(error);
             commit('agtWhatsConversationInitMessages', []);
             commit('agtWhatsConversationInfoInit', {});
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al obtener detalle de la conversacion'
+            };
         }
     },
     async agtWhatsChatsListInit ({ commit }) {
@@ -200,7 +247,7 @@ export default {
             commit('agtWhatsChatsListInit', { isNew: [], inProgress: [] });
         }
     },
-    agtWhatsReceiveNewChat ({ commit }, chat) {
+    agtWhatsReceiveNewChat ({ commit }, chat = null) {
         try {
             commit('agtWhatsReceiveNewChat', chat);
         } catch (error) {
@@ -209,14 +256,24 @@ export default {
             commit('agtWhatsReceiveNewChat', null);
         }
     },
-    async agtWhatsCoversationRequest ({ commit }, conversationId) {
+    async agtWhatsCoversationRequest ({ commit }, conversationId = null) {
         try {
+            if (!conversationId) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al pedir una conversacion'
+                };
+            }
             return await service.requestConversation({
                 id: conversationId
             });
         } catch (error) {
             console.error('===> ERROR al pedir una conversacion');
             console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al pedir una conversacion'
+            };
         }
     },
     agtWhatsSetCoversationMessages ({ commit }, messages = []) {
@@ -241,7 +298,9 @@ export default {
         try {
             commit('agtWhatsSetCoversationClientInfo', info);
         } catch (error) {
-            console.error('===> ERROR al settear info del cliente de la conversacion');
+            console.error(
+                '===> ERROR al settear info del cliente de la conversacion'
+            );
             console.error(error);
             commit('agtWhatsSetCoversationClientInfo', null);
         }
@@ -250,7 +309,9 @@ export default {
         try {
             commit('agtWhatsRestartExpiredCoversation', info);
         } catch (error) {
-            console.error('===> ERROR al actualizar la fecha de expiracion de la conversacion');
+            console.error(
+                '===> ERROR al actualizar la fecha de expiracion de la conversacion'
+            );
             console.error(error);
             commit('agtWhatsRestartExpiredCoversation', null);
         }
@@ -261,6 +322,10 @@ export default {
         } catch (error) {
             console.error('===> ERROR al iniciar nueva conversacion');
             console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al iniciar nueva conversacion'
+            };
         }
     }
 };

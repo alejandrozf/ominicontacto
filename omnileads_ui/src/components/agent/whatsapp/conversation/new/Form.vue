@@ -117,7 +117,7 @@
               optionLabel="phone"
               :emptyFilterMessage="$t('globals.without_data')"
               v-bind:filterPlaceholder="
-                $t('globals.find_by', { field: $tc('globals.name') }, 1)
+                $t('globals.find_by', { field: $tc('globals.phone') }, 1)
               "
             >
               <template #value="slotProps">

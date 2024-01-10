@@ -44,3 +44,15 @@ export const WHATSAPP_EVENTS = {
     MESSAGE_STATUS: 'whatsapp_message_status',
     CHAT_EXPIRED: 'whatsapp_chat_expired'
 };
+export const WHATSAPP_LOCALSTORAGE_EVENTS = {
+    TEMPLATES_INIT_EVENT: 'whatsapp-localstorage-templates-init-data-event',
+    CONVERSATION: {
+        NEW_INIT_DATA: 'whatsapp-localstorage-conversation-new-init-data-event'
+    },
+    CONTACT: {
+        FORM_INIT_DATA: 'whatsapp-localstorage-contact-form-init-data-event'
+    },
+    DISPOSITION: {
+        FORM_INIT_DATA: 'whatsapp-localstorage-disposition-form-init-data-event'
+    }
+};
