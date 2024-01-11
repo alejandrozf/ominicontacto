@@ -28,7 +28,8 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from ominicontacto_app.models import Contacto, AgenteProfile
 from ominicontacto_app.models import (
-    CalificacionCliente, OpcionCalificacion, FieldFormulario, RespuestaFormularioGestion)
+    CalificacionCliente, OpcionCalificacion, FieldFormulario, RespuestaFormularioGestion,
+    HistoricalRespuestaFormularioGestion)
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
 from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
 
@@ -69,11 +70,9 @@ class ListSerializer(serializers.Serializer):
 
     def get_respuesta_formulario_gestion(self, obj):
         if obj.opcion_calificacion.tipo == OpcionCalificacion.GESTION:
-            respuesta =\
-                RespuestaFormularioGestion.objects.filter(calificacion=obj.id).last()
-            respuesta_history = respuesta.history.filter(
-                history_change_reason=obj.history_id).last()
-            return RespuestaFormularioGestionSerilializer(respuesta_history).data
+            respuesta_history = HistoricalRespuestaFormularioGestion.objects.filter(
+                history_change_reason=obj.history_id)
+            return RespuestaFormularioGestionSerilializer(respuesta_history, many=True).data
         else:
             return {}
 
@@ -335,23 +334,38 @@ class ViewSet(viewsets.ViewSet):
             serializer_calificacion = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer_calificacion.is_valid():
                 calificacion = serializer_calificacion.save()
-                instance =\
-                    RespuestaFormularioGestion.objects.filter(calificacion=calificacion).last()
-                if instance and 'respuestaFormularioGestion' in request_data:
-                    respuestaFormularioGestion = request_data.pop('respuestaFormularioGestion')
-                    data = {
-                        'metadata': respuestaFormularioGestion
-                    }
-                    serializer_respuesta = \
-                        RespuestaFormularioGestionUpdateSerilializer(instance, data, partial=True)
-                    if serializer_respuesta.is_valid():
-                        serializer_respuesta.save()
-                    else:
-                        return response.Response(
-                            data=get_response_data(
-                                message=_('Error en los datos del formulario'),
-                                errors=serializer_respuesta.errors),
-                            status=status.HTTP_400_BAD_REQUEST)
+                """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
+                if calificacion.opcion_calificacion.tipo != OpcionCalificacion.GESTION \
+                        and calificacion.get_venta():
+                    calificacion.get_venta().delete()
+                else:
+                    if 'respuestaFormularioGestion' in request_data:
+                        respuestaFormularioGestion = request_data.pop('respuestaFormularioGestion')
+                        instance =\
+                            RespuestaFormularioGestion.objects.filter(
+                                calificacion=calificacion).last()
+                        if instance:
+                            data = {
+                                'metadata': respuestaFormularioGestion
+                            }
+                            serializer_respuesta = \
+                                RespuestaFormularioGestionUpdateSerilializer(
+                                    instance, data, partial=True)
+                        else:
+                            respuesta = {
+                                'metadata': respuestaFormularioGestion,
+                                'formulario': calificacion.opcion_calificacion.formulario
+                            }
+                            serializer_respuesta =\
+                                RespuestaFormularioGestionCreateSerilializer(data=respuesta)
+                        if serializer_respuesta.is_valid():
+                            serializer_respuesta.save(calificacion=calificacion)
+                        else:
+                            return response.Response(
+                                data=get_response_data(
+                                    message=_('Error en los datos del formulario'),
+                                    errors=serializer_respuesta.errors),
+                                status=status.HTTP_400_BAD_REQUEST)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,

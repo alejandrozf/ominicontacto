@@ -44,12 +44,10 @@ export default {
         await this.updatedLocalStorage();
     },
     mounted () {
-        setTimeout(() => {
-            window.parent.document.addEventListener(
-                WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
-                this.updatedLocalStorage
-            );
-        }, 2000);
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
+            this.updatedLocalStorage
+        );
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
@@ -76,31 +74,29 @@ export default {
             this.onlyWhatsappTemplates =
         localStorage.getItem('onlyWhatsappTemplates')?.toString() === 'true';
             this.agtWhatsSetCoversationInfo(this.conversationInfo);
-            this.conversationId = this.conversationInfo
-                ? parseInt(this.conversationInfo.id)
+            this.conversationId = this.conversationInfo?.id
+                ? parseInt(this.conversationInfo?.id)
                 : null;
-            this.campaignId = this.conversationInfo
-                ? parseInt(this.conversationInfo.campaignId)
+            this.campaignId = this.conversationInfo?.campaignId
+                ? parseInt(this.conversationInfo?.campaignId)
                 : null;
             const line = this.conversationInfo?.line || null;
             if (this.campaignId) {
                 this.$helpers.openLoader(this.$t);
-                setTimeout(async () => {
-                    const { status, message } = await this.initSupCampaignTemplates({
-                        campaignId: this.campaignId,
-                        lineId: line ? line.id : null
-                    });
-                    this.$helpers.closeLoader();
-                    if (status !== HTTP_STATUS.SUCCESS) {
-                        this.$swal(
-                            this.$helpers.getToasConfig(
-                                this.$t('globals.error_notification'),
-                                message,
-                                this.$t('globals.icon_error')
-                            )
-                        );
-                    }
-                }, 2000);
+                const { status, message } = await this.initSupCampaignTemplates({
+                    campaignId: this.campaignId,
+                    lineId: line ? line.id : null
+                });
+                this.$helpers.closeLoader();
+                if (status !== HTTP_STATUS.SUCCESS) {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.error_notification'),
+                            message,
+                            this.$t('globals.icon_error')
+                        )
+                    );
+                }
             }
         }
     }

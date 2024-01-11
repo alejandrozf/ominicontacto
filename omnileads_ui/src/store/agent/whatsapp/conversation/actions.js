@@ -294,17 +294,6 @@ export default {
             commit('agtWhatsSetCoversationInfo', null);
         }
     },
-    agtWhatsSetCoversationClientInfo ({ commit }, info = null) {
-        try {
-            commit('agtWhatsSetCoversationClientInfo', info);
-        } catch (error) {
-            console.error(
-                '===> ERROR al settear info del cliente de la conversacion'
-            );
-            console.error(error);
-            commit('agtWhatsSetCoversationClientInfo', null);
-        }
-    },
     agtWhatsRestartExpiredCoversation ({ commit }, info = null) {
         try {
             commit('agtWhatsRestartExpiredCoversation', info);

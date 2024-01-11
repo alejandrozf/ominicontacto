@@ -3,7 +3,8 @@ const getContactData = (contact =  null) => {
     return {
         id: contact && contact.id ? contact.id : null,
         phone: contact && contact.phone ? contact.phone : null,
-        data: contact && contact.data ? contact.data : null
+        data: contact && contact.data ? contact.data : null,
+        disposition: contact && contact.disposition ? contact.disposition : null
     };
 };
 

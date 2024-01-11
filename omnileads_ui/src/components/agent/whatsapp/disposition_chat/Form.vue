@@ -3,74 +3,28 @@
     <div class="grid formgrid mt-1">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
-          id="form_type"
           :class="{
-            'p-error': v$.form.type.$invalid && submitted,
+            'p-error': v$.form.dispositionOption.$invalid && submitted,
           }"
-          >{{ $t("models.whatsapp.disposition_form.type") }}*</label
-        >
+          >{{ $t("models.whatsapp.disposition_form.disposition_option") }} *
+        </label>
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
           <Dropdown
-            id="form_type"
-            v-model="v$.form.type.$model"
+            v-model="v$.form.dispositionOption.$model"
             class="w-full"
             :class="{
-              'p-invalid': v$.form.type.$invalid && submitted,
-            }"
-            :options="types"
-            @change="getOptionsByType"
-            placeholder="-----"
-            optionLabel="name"
-            optionValue="value"
-            :emptyFilterMessage="$t('globals.without_data')"
-            :filter="true"
-            v-bind:filterPlaceholder="
-              $t('globals.find_by', { field: $tc('globals.name') }, 1)
-            "
-          />
-        </div>
-        <small
-          v-if="
-            (v$.form.type.$invalid && submitted) ||
-            v$.form.type.$pending.$response
-          "
-          class="p-error"
-        >
-          {{
-            v$.form.type.required.$message.replace(
-              "Value",
-              $t("models.whatsapp.disposition_form.type")
-            )
-          }}
-        </small>
-      </div>
-      <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          id="form_type"
-          :class="{
-            'p-error': v$.form.optionByType.$invalid && submitted,
-          }"
-          >{{ $t("models.whatsapp.disposition_form.option") }}*</label
-        >
-        <div class="p-inputgroup mt-2">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-list"></i>
-          </span>
-          <Dropdown
-            id="form_type"
-            v-model="v$.form.optionByType.$model"
-            class="w-full"
-            :class="{
-              'p-invalid': v$.form.optionByType.$invalid && submitted,
+              'p-invalid': v$.form.dispositionOption.$invalid && submitted,
             }"
             @change="getFormFieldsByOption"
-            :options="optionsByType"
+            :options="dispositionOptions"
             placeholder="-----"
             optionLabel="name"
-            optionValue="value"
+            optionValue="id"
+            optionGroupLabel="label"
+            optionGroupChildren="items"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
             v-bind:filterPlaceholder="
@@ -80,15 +34,15 @@
         </div>
         <small
           v-if="
-            (v$.form.optionByType.$invalid && submitted) ||
-            v$.form.optionByType.$pending.$response
+            (v$.form.dispositionOption.$invalid && submitted) ||
+            v$.form.dispositionOption.$pending.$response
           "
           class="p-error"
         >
           {{
-            v$.form.optionByType.required.$message.replace(
+            v$.form.dispositionOption.required.$message.replace(
               "Value",
-              $t("models.whatsapp.disposition_form.option")
+              $t("models.whatsapp.disposition_form.disposition_option")
             )
           }}
         </small>
@@ -152,9 +106,12 @@
           </div>
           <div v-if="isEmptyField(field.value) && submitted">
             <small class="p-error">{{
-              $t("forms.whatsapp.disposition_chat.validations.field_is_required", {
-                field: field.name,
-              })
+              $t(
+                "forms.whatsapp.disposition_chat.validations.field_is_required",
+                {
+                  field: field.name,
+                }
+              )
             }}</small>
             <br />
           </div>
@@ -231,15 +188,13 @@ import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { FORM_TYPES, FIELD_TYPES } from '@/globals/agent/whatsapp/disposition';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
-
+import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
     setup: () => ({ v$: useVuelidate() }),
     validations () {
         return {
             form: {
-                type: { required },
-                optionByType: { required }
+                dispositionOption: { required }
             }
         };
     },
@@ -249,8 +204,7 @@ export default {
             fieldTypes: FIELD_TYPES,
             form: {
                 id: null,
-                type: null,
-                optionByType: null,
+                dispositionOption: null,
                 comments: ''
             },
             formByType: {},
@@ -258,24 +212,27 @@ export default {
             invalidForm: false,
             filters: null,
             formResponseMetadata: null,
-            types: [
-                { name: '-------', value: null },
+            dispositionOptions: [
                 {
-                    name: this.$t('forms.whatsapp.disposition_chat.form_types.no_action'),
-                    value: FORM_TYPES.OPT1
+                    type: FORM_TYPES.OPT1,
+                    label: this.$t(
+                        'forms.whatsapp.disposition_chat.form_types.no_action'
+                    ),
+                    items: []
                 },
                 {
-                    name: this.$t(
+                    type: FORM_TYPES.OPT2,
+                    label: this.$t(
                         'forms.whatsapp.disposition_chat.form_types.management'
                     ),
-                    value: FORM_TYPES.OPT2
+                    items: []
                 },
                 {
-                    name: this.$t('forms.whatsapp.disposition_chat.form_types.schedule'),
-                    value: FORM_TYPES.OPT3
+                    type: FORM_TYPES.OPT3,
+                    label: this.$t('forms.whatsapp.disposition_chat.form_types.schedule'),
+                    items: []
                 }
             ],
-            optionsByType: [{ name: '-------', value: null }],
             formFields: [],
             dropdownOptions: [{ name: '-------', value: null }]
         };
@@ -299,8 +256,7 @@ export default {
         resetData () {
             this.form = {
                 id: null,
-                type: null,
-                optionByType: null,
+                dispositionOption: null,
                 comments: ''
             };
             this.submitted = false;
@@ -308,12 +264,12 @@ export default {
         closeModal () {
             this.resetData();
             this.$emit('clearForm');
-            const event = new CustomEvent('onWhatsappDispositionFormEvent', {
+            const modalEvent = new CustomEvent('onWhatsappDispositionFormEvent', {
                 detail: {
                     disposition_form: false
                 }
             });
-            window.parent.document.dispatchEvent(event);
+            window.parent.document.dispatchEvent(modalEvent);
         },
         initializeData () {
             this.initFormData();
@@ -330,20 +286,15 @@ export default {
                 : null;
             this.form = {
                 id: null,
-                type:
-          dispositionData && dispositionData?.type ? dispositionData?.type : null,
-                optionByType:
-          dispositionData && dispositionData?.id ? dispositionData?.id : null,
+                dispositionOption: dispositionData?.id || null,
                 comments: this.agtWhatsDispositionChatDetail?.comments || ''
             };
-            this.getOptionsByType();
             this.getFormFieldsByOption();
         },
         initFormToCreate () {
             this.form = {
                 id: null,
-                type: null,
-                optionByType: null,
+                dispositionOption: null,
                 comments: ''
             };
         },
@@ -392,29 +343,13 @@ export default {
             ];
             return dropdownOptions;
         },
-        getOptionsByType () {
-            this.formByType = {};
-            this.formFields = [];
-            this.optionsByType = [{ name: '-------', value: null }];
-            const options = this.agtWhatsDispositionChatOptions?.filter(
-                (item) => item.type === this.form.type
-            );
-            if (options) {
-                options.forEach((item) => {
-                    this.optionsByType.push({
-                        name: item.name || '',
-                        value: item.id || null
-                    });
-                });
-            }
-        },
         getFormFieldsByOption () {
             this.formFields = [];
             const option = this.agtWhatsDispositionChatOptions?.find(
-                (item) => item.id === this.form.optionByType
+                (item) => item.id === this.form.dispositionOption
             );
             if (option) {
-                this.formFields = option.form_fields || [];
+                this.formFields = option?.form_fields || [];
             }
             this.initFormByTypeData();
         },
@@ -425,17 +360,20 @@ export default {
                     const field = this.formFields[i];
                     let value = null;
                     if (!this.agtWhatsDispositionChatFormToCreate) {
-                        if (field.type === this.fieldTypes.OPT2) {
-                            value = new Date(this.formResponseMetadata[field.name] || null);
+                        const response = this.formResponseMetadata
+                            ? this.formResponseMetadata[field?.name] || null
+                            : null;
+                        if (field?.type === this.fieldTypes.OPT2) {
+                            value = response ? new Date(response) : null;
                         } else {
-                            value = this.formResponseMetadata[field.name] || null;
+                            value = response;
                         }
                     } else {
-                        value = field.type === this.fieldTypes.OPT2 ? new Date() : null;
+                        value = field?.type === this.fieldTypes.OPT2 ? new Date() : null;
                     }
                     this.formByType[`field_${i}`] = {
                         ...field,
-                        selectOptions: this.getDropdownOptions(field.values_select),
+                        selectOptions: this.getDropdownOptions(field?.values_select),
                         empty: false,
                         invalid: false,
                         value
@@ -472,14 +410,16 @@ export default {
                     return null;
                 }
                 const formData = {
-                    idContact: this.agtWhatsCoversationInfo.client.id || null,
-                    idAgente: this.agtWhatsCoversationInfo.agent || null,
-                    idDispositionOption: this.form.optionByType || null,
-                    comments: this.form.comments,
-                    respuestaFormularioGestion: null
+                    idContact: this.agtWhatsCoversationInfo?.client?.id || null,
+                    idAgente: this.agtWhatsCoversationInfo?.agent || null,
+                    idDispositionOption: this.form?.dispositionOption || null,
+                    comments: this.form?.comments || null
                 };
                 // Si es de GESTION hay que mandar respuestaFormularioGestion
-                if (this.form.type === FORM_TYPES.OPT2) {
+                const dispositionType = this.agtWhatsDispositionChatOptions?.find(
+                    (c) => c?.id === this.form?.dispositionOption
+                )?.type;
+                if (dispositionType === FORM_TYPES.OPT2) {
                     formData.respuestaFormularioGestion = this.getManageFormResponse();
                 }
                 let response = null;
@@ -505,6 +445,8 @@ export default {
                 const { status, message } = response;
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
+                    const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA);
+                    window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
                         message,
@@ -530,12 +472,58 @@ export default {
     },
     watch: {
         agtWhatsDispositionChatDetail: {
-            handler () {},
+            handler () {
+                this.initFormData();
+            },
             deep: true,
             immediate: true
         },
         agtWhatsDispositionChatOptions: {
-            handler () {},
+            handler () {
+                if (this.agtWhatsDispositionChatOptions.length > 0) {
+                    const noAction =
+            this.agtWhatsDispositionChatOptions.filter(
+                (c) => c.type === FORM_TYPES.OPT1
+            ) || [];
+                    const management =
+            this.agtWhatsDispositionChatOptions.filter(
+                (c) => c.type === FORM_TYPES.OPT2
+            ) || [];
+                    const schedule =
+            this.agtWhatsDispositionChatOptions.filter(
+                (c) => c.type === FORM_TYPES.OPT3
+            ) || [];
+                    if (noAction.length > 0) {
+                        this.dispositionOptions.find(
+                            (c) => c.type === FORM_TYPES.OPT1
+                        ).items = noAction;
+                    } else {
+                        this.dispositionOptions = this.dispositionOptions.filter(
+                            (c) => c.type !== FORM_TYPES.OPT1
+                        );
+                    }
+
+                    if (management.length > 0) {
+                        this.dispositionOptions.find(
+                            (c) => c.type === FORM_TYPES.OPT2
+                        ).items = management;
+                    } else {
+                        this.dispositionOptions = this.dispositionOptions.filter(
+                            (c) => c.type !== FORM_TYPES.OPT2
+                        );
+                    }
+
+                    if (schedule.length > 0) {
+                        this.dispositionOptions.find(
+                            (c) => c.type === FORM_TYPES.OPT3
+                        ).items = schedule;
+                    } else {
+                        this.dispositionOptions = this.dispositionOptions.filter(
+                            (c) => c.type !== FORM_TYPES.OPT3
+                        );
+                    }
+                }
+            },
             deep: true,
             immediate: true
         },

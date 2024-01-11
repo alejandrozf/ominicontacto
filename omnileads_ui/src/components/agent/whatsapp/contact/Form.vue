@@ -122,8 +122,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
-
+import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
     inject: ['$helpers'],
     props: {
@@ -154,8 +153,7 @@ export default {
     methods: {
         ...mapActions([
             'agtWhatsContactCreate',
-            'agtWhatsContactUpdate',
-            'agtWhatsSetCoversationClientInfo'
+            'agtWhatsContactUpdate'
         ]),
         initializeData () {
             this.initFormData();
@@ -179,15 +177,15 @@ export default {
             this.submitted = false;
         },
         initFormData () {
-            if (this.agtWhatsContactDBFields.length > 0) {
+            if (this.agtWhatsContactDBFields?.length > 0) {
                 this.form = {};
                 for (let i = 0; i < this.agtWhatsContactDBFields.length; i++) {
                     const field = this.agtWhatsContactDBFields[i];
                     let value = null;
                     if (i === 0) {
-                        value = this.contact.phone;
+                        value = this.contact?.phone;
                     } else {
-                        value = this.contact.id ? this.contact.data[i - 1] : null;
+                        value = this.contact?.id ? this.contact?.data[i - 1] : null;
                     }
                     this.form[`${field.name}`] = {
                         ...field,
@@ -204,7 +202,7 @@ export default {
                     is_phone_field: false,
                     invalid: false,
                     empty: false,
-                    value: this.contact.id
+                    value: this.contact?.id
                 };
             }
         },
@@ -238,25 +236,25 @@ export default {
                 this.invalidForm = false;
                 for (const clave in this.form) {
                     const field = this.form[clave];
-                    this.form[`${field.name}`].empty = false;
-                    this.form[`${field.name}`].invalid = false;
-                    if (field.name !== 'id') {
-                        if (field.mandatory) {
-                            if (this.isEmptyField(field.value)) {
+                    this.form[`${field?.name}`].empty = false;
+                    this.form[`${field?.name}`].invalid = false;
+                    if (field?.name !== 'id') {
+                        if (field?.mandatory) {
+                            if (this.isEmptyField(field?.value)) {
                                 this.invalidForm = true;
-                                this.form[`${field.name}`].empty = true;
+                                this.form[`${field?.name}`].empty = true;
                             } else if (
-                                field.is_phone_field &&
-                !this.isPhoneValid(field.value)
+                                field?.is_phone_field &&
+                !this.isPhoneValid(field?.value)
                             ) {
                                 this.invalidForm = true;
-                                this.form[`${field.name}`].invalid = true;
+                                this.form[`${field?.name}`].invalid = true;
                             }
                         } else if (
-                            field.is_phone_field &&
-              !this.isPhoneValid(field.value)
+                            field?.is_phone_field &&
+              !this.isPhoneValid(field?.value)
                         ) {
-                            this.form[`${field.name}`].invalid = true;
+                            this.form[`${field?.name}`].invalid = true;
                         }
                     }
                 }
@@ -279,7 +277,8 @@ export default {
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
-                    await this.agtWhatsSetCoversationClientInfo(response.data);
+                    const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA);
+                    window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
                         message,
@@ -315,9 +314,9 @@ export default {
         },
         agtWhatsCoversationInfo: {
             handler () {
-                if (this.agtWhatsCoversationInfo.client) {
-                    this.contact.id = this.agtWhatsCoversationInfo.client.id || null;
-                    this.contact.phone = this.agtWhatsCoversationInfo.client.phone || '';
+                if (this.agtWhatsCoversationInfo?.client) {
+                    this.contact.id = this.agtWhatsCoversationInfo?.client?.id || null;
+                    this.contact.phone = this.agtWhatsCoversationInfo?.client?.phone || this.agtWhatsCoversationInfo?.destination || null;
                     this.contact.data = this.agtWhatsCoversationInfo.client.data
                         ? JSON.parse(this.agtWhatsCoversationInfo.client.data)
                         : [];

@@ -47,7 +47,8 @@ export const WHATSAPP_EVENTS = {
 export const WHATSAPP_LOCALSTORAGE_EVENTS = {
     TEMPLATES_INIT_EVENT: 'whatsapp-localstorage-templates-init-data-event',
     CONVERSATION: {
-        NEW_INIT_DATA: 'whatsapp-localstorage-conversation-new-init-data-event'
+        NEW_INIT_DATA: 'whatsapp-localstorage-conversation-new-init-data-event',
+        DETAIL_INIT_DATA: 'whatsapp-localstorage-conversation-detail-init-data-event'
     },
     CONTACT: {
         FORM_INIT_DATA: 'whatsapp-localstorage-contact-form-init-data-event'

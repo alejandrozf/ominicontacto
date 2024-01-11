@@ -215,20 +215,6 @@ export default {
                 conversation && conversation.error ? conversation.error : false
         };
     },
-    agtWhatsSetCoversationClientInfo (state, info = null) {
-        state.agtWhatsCoversationInfo.client.id =
-            info && info.id ? info.id : null;
-        state.agtWhatsCoversationInfo.client.phone =
-            info && info.phone ? info.phone : null;
-        state.agtWhatsCoversationInfo.client.data =
-            info && info.data ? info.data : null;
-        state.agtWhatsCoversationInfo.client.dispositionId =
-            info.disposition || null;
-        localStorage.setItem(
-            'agtWhatsCoversationInfo',
-            JSON.stringify(state.agtWhatsCoversationInfo)
-        );
-    },
     agtWhatsRestartExpiredCoversation (state, info = null) {
         if (info) {
             state.agtWhatsCoversationInfo.expire = info.expire;

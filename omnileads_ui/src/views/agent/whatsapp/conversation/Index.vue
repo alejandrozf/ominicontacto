@@ -85,17 +85,22 @@ export default {
     },
     async created () {
         await this.listenerEvents();
-        await this.agtWhatsConversationDetail({
-            conversationId: this.id,
-            $t: this.$t
-        });
-        await this.scrollDown();
+        await this.initData();
     },
     computed: {
         ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
     },
+    mounted () {
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA,
+            this.updatedLocalStorage
+        );
+    },
     beforeUnmount () {
-        window.parent.removeEventListener('message', () => {});
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA,
+            this.updatedLocalStorage
+        );
     },
     methods: {
         ...mapActions([
@@ -107,11 +112,21 @@ export default {
             const scroll = document.getElementById('listMessages');
             scroll.scrollTop = scroll.scrollHeight;
         },
+        async initData () {
+            await this.agtWhatsConversationDetail({
+                conversationId: this.id,
+                $t: this.$t
+            });
+            this.scrollDown();
+        },
         listenerEvents () {
             listenerStoreDataByAction(
                 'agtWhatsSetCoversationMessages',
                 this.agtWhatsSetCoversationMessages
             );
+        },
+        async updatedLocalStorage () {
+            await this.initData();
         },
         createContact () {
             localStorage.setItem(
