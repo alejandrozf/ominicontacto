@@ -129,7 +129,7 @@ class RegeneracionAsteriskService(object):
                                "configuracion Playlists (MOH) en Asterisk. ")
 
         if not proceso_ok:
-            raise(RestablecerDialplanError(mensaje_error))
+            raise RestablecerDialplanError(mensaje_error)
         else:
             self.sincronizador_config_telefonica.sincronizar_en_asterisk()
             self.asterisk_database.regenerar_asterisk()

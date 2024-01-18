@@ -70,7 +70,7 @@ class CreacionBaseDatosService(object):
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn(_("La extension {0} no es CSV. ".format(extension)))
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+            raise OmlArchivoImportacionInvalidoError(file_invalid_msg)
         base_datos_contacto.save()
 
     def obtener_telefono_y_datos(self, lista_dato, posicion_primer_telefono,
@@ -138,10 +138,10 @@ class CreacionBaseDatosService(object):
                     # El id_externo no puede estar repetido
                     if id_externo in ids_externos:
                         base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
-                        raise(CreacionBaseDatosServiceIdExternoError(numero_fila,
+                        raise CreacionBaseDatosServiceIdExternoError(numero_fila,
                                                                      columna_id_externo,
                                                                      lista_dato,
-                                                                     id_externo))
+                                                                     id_externo)
                     else:
                         ids_externos.add(id_externo)
 
@@ -310,18 +310,18 @@ class PredictorMetadataService(object):
 
         if len(lineas) < 2:
             logger.debug(_("Se deben proveer al menos 2 lineas: {0}".format(lineas)))
-            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+            raise NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
                                                   "lineas para poder inferir "
-                                                  "los metadatos")))
+                                                  "los metadatos"))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug(_("Distintas cantidades "
                            "de columnas: {0}".format(set_cant_columnas)))
-            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+            raise NoSePuedeInferirMetadataError(_("Las lineas recibidas "
                                                   "poseen distintas cantidades "
-                                                  "de columnas")))
+                                                  "de columnas"))
 
         primer_linea = lineas[0]
         otras_lineas = lineas[1:]
@@ -331,8 +331,8 @@ class PredictorMetadataService(object):
         if len(primer_linea) == 0:
             logger.debug(_("Las lineas no poseen ninguna "
                            "columna: {0}".format(primer_linea)))
-            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
-                                                  "columna")))
+            raise NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna"))
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
@@ -394,8 +394,8 @@ class PredictorMetadataService(object):
             # no creo q' valga la pena devolver la instancia de mentadata,
             # me parece mas significativo reportar el hecho de que
             # no se pudo inferir el metadato.
-            raise(NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
-                                                  "tipo de dato")))
+            raise NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
+                                                  "tipo de dato"))
 
         # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la
@@ -471,18 +471,18 @@ class PredictorMetadataService(object):
 
         if len(lineas) < 2:
             logger.debug(_("Se deben proveer al menos 2 lineas: {0}".format(lineas)))
-            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+            raise NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
                                                   "lineas para poder inferir "
-                                                  "los metadatos")))
+                                                  "los metadatos"))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+            raise NoSePuedeInferirMetadataError(_("Las lineas recibidas "
                                                   "poseen distintas cantidades "
-                                                  "de columnas")))
+                                                  "de columnas"))
 
         primer_linea = lineas[0]
         otras_lineas = lineas[1:]
@@ -492,8 +492,8 @@ class PredictorMetadataService(object):
         if len(primer_linea) == 0:
             logger.debug("Las lineas no poseen ninguna "
                          "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
-                                                  "columna")))
+            raise NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna"))
 
         if metadata.cantidad_de_columnas != len(primer_linea):
             logger.debug("Distintas cantidades "
@@ -563,8 +563,8 @@ class PredictorMetadataService(object):
             # no creo q' valga la pena devolver la instancia de mentadata,
             # me parece mas significativo reportar el hecho de que
             # no se pudo inferir el metadato.
-            raise(NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
-                                                  "tipo de dato")))
+            raise NoSePuedeInferirMetadataError(_("No se pudo inferir ningun "
+                                                  "tipo de dato"))
 
         # ======================================================================
         # Si detectamos telefono, fecha u hora podemos verificar si la

@@ -380,7 +380,7 @@ class DestinoEntrante(models.Model):
         elif isinstance(info_nodo_entrante, DestinoPersonalizado):
             tipo = cls.CUSTOM_DST
         elif isinstance(info_nodo_entrante, HangUp):
-            raise(_('Error: El nodo HangUp es único.'))
+            raise _('Error: El nodo HangUp es único.')
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,

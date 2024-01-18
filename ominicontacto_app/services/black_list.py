@@ -66,7 +66,7 @@ class CreacionBlacklistService(object):
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn(_("La extension {0} no es CSV. ".format(extension)))
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+            raise OmlArchivoImportacionInvalidoError(file_invalid_msg)
         file_obj = codecs.iterdecode(
             black_list.archivo_importacion, 'utf-8', errors='ignore')
         data = csv.reader(file_obj, skipinitialspace=True)
@@ -147,18 +147,18 @@ class ValidaDataService(object):
 
         if len(lineas) < 2:
             logger.debug("Se deben proveer al menos 2 lineas: %s", lineas)
-            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+            raise NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
                                                   "lineas para poder inferir "
-                                                  "los metadatos")))
+                                                  "los metadatos"))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+            raise NoSePuedeInferirMetadataError(_("Las lineas recibidas "
                                                   "poseen distintas cantidades "
-                                                  "de columnas")))
+                                                  "de columnas"))
 
         primer_linea = lineas[0]
 
@@ -166,8 +166,8 @@ class ValidaDataService(object):
         if len(primer_linea) == 0:
             logger.debug("Las lineas no poseen ninguna "
                          "columna: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
-                                                  "columna")))
+            raise NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
+                                                  "columna"))
 
         if str(primer_linea[0]).lower() != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "

@@ -61,7 +61,7 @@ class ActivacionAgenteService(object):
                                "configuracion del config sip de Asterisk. ")
 
         if not proceso_ok:
-            raise(RestablecerConfigSipError(mensaje_error))
+            raise RestablecerConfigSipError(mensaje_error)
         else:
             self.reload_asterisk_config.reload_asterisk()
             if regenerar_families:

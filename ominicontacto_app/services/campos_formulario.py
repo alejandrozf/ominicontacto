@@ -46,8 +46,8 @@ class OrdenCamposCampanaService(object):
 
         campo_superior = campo_de_formulario.obtener_campo_siguiente()
         if not campo_superior:
-            raise(NoSePuedeModificarOrdenError(_("No se encontro un siguiente "
-                                                 "campo para cambiar el orden.")))
+            raise NoSePuedeModificarOrdenError(_("No se encontro un siguiente "
+                                                 "campo para cambiar el orden."))
 
         orden_campo_de_formulario = campo_de_formulario.orden
         orden_campo_de_formulario_superior = campo_superior.orden
@@ -68,9 +68,9 @@ class OrdenCamposCampanaService(object):
 
         campo_inferior = campo_de_formulario.obtener_campo_anterior()
         if not campo_inferior:
-            raise(NoSePuedeModificarOrdenError(_("No se encontro un campo "
+            raise NoSePuedeModificarOrdenError(_("No se encontro un campo "
                                                  "anterior para cambiar el "
-                                                 "orden.")))
+                                                 "orden."))
 
         orden_campo_de_formulario = campo_de_formulario.orden
         orden_campo_de_formulario_inferior = campo_inferior.orden
