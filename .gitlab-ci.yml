@@ -35,8 +35,8 @@ test:
 
 container-image:
   services:
-    - docker:20.10.15-dind-alpine3.15
-  image: docker:20.10.15-alpine3.15
+    - docker:24.0.7-dind-alpine3.19
+  image: docker:24.0.7-alpine3.19
   stage: build
   before_script:
     - apk add --no-cache docker-cli-buildx
