@@ -53,11 +53,12 @@ class AgendaContactoUpdateView(UpdateView):
 
     def form_valid(self, form):
         try:
-            super(AgendaContactoUpdateView, self).form_valid(form)
+            self.object = form.save(commit=False)
+            self.object.agente = self.request.user.get_agente_profile()
+            self.object.save()
             calificaciones = CalificacionCliente.objects.filter(
                 opcion_calificacion__campana=self.object.campana,
-                contacto__pk=self.object.contacto.pk,
-                agente__pk=self.object.agente.id)
+                contacto__pk=self.object.contacto.pk)
             if calificaciones.first().tipo_agenda != self.object.tipo_agenda:
                 # para no crear una nueva historia calificación(solo se actuliaza tipo de agenda)
                 calificaciones.update(tipo_agenda=self.object.tipo_agenda)
@@ -126,8 +127,7 @@ class AgendaContactoCreateView(CreateView):
                 self.object.save()
             # Después de agendado el contacto se marca como agendado en la calificación
             calificacion = CalificacionCliente.objects.filter(
-                opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
-                agente__pk=self.object.agente.id)
+                opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'])
             if calificacion:
                 calificacion.update(agendado=True, tipo_agenda=self.object.tipo_agenda)
                 # se actuliza la última historia creada
