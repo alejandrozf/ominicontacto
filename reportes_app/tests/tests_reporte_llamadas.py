@@ -24,7 +24,7 @@ from django.urls import reverse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia, fecha_hora_local
 from ominicontacto_app.models import Campana
-from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgenteProfileFactory,\
+from ominicontacto_app.tests.factories import SupervisorProfileFactory, AgenteProfileFactory, \
     CampanaFactory, ContactoFactory, UserFactory
 
 from reportes_app.reportes.reporte_llamadas import ReporteDeLlamadas

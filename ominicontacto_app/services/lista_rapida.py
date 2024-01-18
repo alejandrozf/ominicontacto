@@ -53,7 +53,7 @@ class ListaRapidaService(object):
             return predictor_metadata.inferir_metadata_desde_lineas(
                 estructura_archivo, permitir_ext_pbx=True)
         except Exception as e:
-            raise(NoSePuedeInferirMetadataError(e))
+            raise NoSePuedeInferirMetadataError(e)
 
     def _existe_lista_rapida(self, nombre) -> bool:
         return ListasRapidas.objects.filter(nombre=nombre).exists()
@@ -67,7 +67,7 @@ class ListaRapidaService(object):
         if not self.parser.es_valida_extension() or not self.parser.es_valido_archivo():
             file_invalid_msg = _("El archivo especificado para realizar la importación de "
                                  "contactos no es válido.")
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+            raise OmlArchivoImportacionInvalidoError(file_invalid_msg)
 
     def importa_contactos(self, lista_rapida):
 
@@ -100,7 +100,7 @@ class ListaRapidaService(object):
         """ Creacion de la lista rapida en el modelo
         """
         if self._existe_lista_rapida(nombre_lista):
-            raise(OmlError(_("Ya existe una lista rapida de contactos con ese nombre")))
+            raise OmlError(_("Ya existe una lista rapida de contactos con ese nombre"))
 
         model_lista_rapida = ListasRapidas()
 
@@ -238,18 +238,18 @@ class ValidaListaRapidaService(object):
 
         if len(lineas) < 2:
             logger.debug("Se deben proveer al menos 2 lineas: %s", lineas)
-            raise(NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
+            raise NoSePuedeInferirMetadataError(_("Se deben proveer al menos 2 "
                                                   "lineas para poder inferir "
-                                                  "los metadatos")))
+                                                  "los metadatos"))
 
         # Primero chequeamos q' haya igual cant. de columnas
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug("Distintas cantidades "
                          "de columnas: %s", set_cant_columnas)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
+            raise NoSePuedeInferirMetadataError(_("Las lineas recibidas "
                                                   "poseen distintas cantidades "
-                                                  "de columnas")))
+                                                  "de columnas"))
 
         primer_linea = lineas[0]
 
@@ -257,18 +257,18 @@ class ValidaListaRapidaService(object):
         if len(primer_linea) != 2:
             logger.debug("Las lineas no poseen 2 "
                          "columnas: %s", primer_linea)
-            raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen 2 "
-                                                  "columnas")))
+            raise NoSePuedeInferirMetadataError(_("Las lineas no poseen 2 "
+                                                  "columnas"))
 
     def valida_lista_rapida(self, archivo, nombre_archivo, nombre_lista):
         if self._existe_lista_rapida(nombre_lista):
-            raise(OmlError(_("Ya existe una lista de contactos rapida con ese nombre")))
+            raise OmlError(_("Ya existe una lista de contactos rapida con ese nombre"))
         self.parser = ListaRapidaArchivoCSVParser(nombre_archivo, archivo)
 
         if not self.parser.es_valida_extension() or not self.parser.es_valido_archivo():
             file_invalid_msg = _("El archivo especificado para realizar la importación de "
                                  "contactos no es válido.")
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+            raise OmlArchivoImportacionInvalidoError(file_invalid_msg)
 
         if not self.parser.headers_no_repetidos():
             raise OmlParserRepeatedColumnsError(_("El archivo a procesar tiene nombres de columnas "

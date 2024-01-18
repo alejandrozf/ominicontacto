@@ -59,7 +59,7 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
                 int(row[0])
         except Exception as e:
             logger.warn("Error: {0}".format(e))
-            raise(OmlArchivoImportacionInvalidoError(err_message))
+            raise OmlArchivoImportacionInvalidoError(err_message)
 
 
 def obtener_sip_agentes_sesiones_activas():

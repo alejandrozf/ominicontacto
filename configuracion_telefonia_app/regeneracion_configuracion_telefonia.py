@@ -108,7 +108,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                                "configuracion de trunks registration de Asterisk. ")
 
         if not proceso_ok:
-            raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
+            raise RestablecerConfiguracionTelefonicaError(mensaje_error)
         else:
             self.reload_asterisk_config.reload_asterisk()
 
@@ -283,6 +283,6 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(AbstractConfiguracion
             mensaje_error += _("Hubo un inconveniente al crear el archivo de "
                                "configuracion de rutas de Asterisk. ")
         if not proceso_ok:
-            raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
+            raise RestablecerConfiguracionTelefonicaError(mensaje_error)
         else:
             self.reload_asterisk_config.reload_asterisk()

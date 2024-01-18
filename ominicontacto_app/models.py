@@ -1038,8 +1038,8 @@ class CampanaManager(models.Manager):
             return self.filter(
                 estado=Campana.ESTADO_TEMPLATE_ACTIVO).get(pk=campana_id)
         except Campana.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro campana/template %s en "
-                                      "estado ESTADO_TEMPLATE_ACTIVO"))
+            raise SuspiciousOperation("No se encontro campana/template %s en "
+                                      "estado ESTADO_TEMPLATE_ACTIVO")
 
     def replicar_campana_queue(self, campana):
         # TODO: No se esta usando
@@ -1939,8 +1939,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_EN_DEFINICION).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation(_("No se encontro base datos en "
-                                        "estado ESTADO_EN_DEFINICION")))
+            raise SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION"))
 
     def obtener_en_actualizada_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
@@ -1952,8 +1952,8 @@ class BaseDatosContactoManager(models.Manager):
             return self.filter(
                 estado__in=definicion).get(pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation(_("No se encontro base datos en "
-                                        "estado ESTADO_EN_DEFINICION o ACTULIZADA")))
+            raise SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION o ACTULIZADA"))
 
     def obtener_definida_para_depurar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser
@@ -1965,8 +1965,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_DEFINIDA).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation(_("No se encontro base datos en "
-                                        "estado ESTADO_EN_DEFINICION")))
+            raise SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION"))
 
 
 def upload_to(instance, filename):
@@ -1991,7 +1991,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['cant_col']
         except KeyError:
-            raise(ValueError(_("La cantidad de columnas no ha sido seteada")))
+            raise ValueError(_("La cantidad de columnas no ha sido seteada"))
 
     @cantidad_de_columnas.setter
     def cantidad_de_columnas(self, cant):
@@ -2010,7 +2010,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['col_telefono']
         except KeyError:
-            raise(ValueError(_("No se ha seteado 'columna_con_telefono'")))
+            raise ValueError(_("No se ha seteado 'columna_con_telefono'"))
 
     @columna_con_telefono.setter
     def columna_con_telefono(self, columna):
@@ -2192,8 +2192,8 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['prim_fila_enc']
         except KeyError:
-            raise(ValueError(_("No se ha seteado si primer "
-                               "fila es encabezado")))
+            raise ValueError(_("No se ha seteado si primer "
+                               "fila es encabezado"))
 
     @primer_fila_es_encabezado.setter
     def primer_fila_es_encabezado(self, es_encabezado):
@@ -2475,10 +2475,10 @@ class BaseDatosContacto(models.Model):
     #     """
     #
     #     if self.estado != BaseDatosContacto.ESTADO_DEFINIDA:
-    #         raise(SuspiciousOperation("La BD {0} NO se puede depurar porque "
+    #         raise SuspiciousOperation("La BD {0} NO se puede depurar porque "
     #                                   "no esta en estado ESTADO_DEFINIDA. "
     #                                   "Estado: {1}".format(self.pk,
-    #                                                        self.estado)))
+    #                                                        self.estado))
     #
     #     # 1) Cambio de estado BaseDatoContacto (ESTADO_EN_DEPURACION).
     #     logger.info("Iniciando el proceso de depurado de BaseDatoContacto:"

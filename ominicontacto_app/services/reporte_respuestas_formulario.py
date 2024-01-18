@@ -29,7 +29,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import gettext as _
 
-from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion,\
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion, \
     RespuestaFormularioGestion
 
 from ominicontacto_app.services.reporte_campana_csv import ReporteCSV

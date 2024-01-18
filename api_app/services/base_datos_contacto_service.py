@@ -41,13 +41,13 @@ class BaseDatosContactoService(object):
     def crear_bd_contactos(self, archivo, nombre_archivo, nombre_bd) -> int:
         model_base_contactos = BaseDatosContacto()
         if self._existe_bd_contactos(nombre_bd):
-            raise(OmlError(_("Ya existe una base de datos de contactos con ese nombre")))
+            raise OmlError(_("Ya existe una base de datos de contactos con ese nombre"))
         self.parser = BaseDatosContactoArchivoCSVParser(nombre_archivo, archivo)
 
         if not self.parser.es_valida_extension() or not self.parser.es_valido_archivo():
             file_invalid_msg = _("El archivo especificado para realizar la importación de "
                                  "contactos no es válido.")
-            raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
+            raise OmlArchivoImportacionInvalidoError(file_invalid_msg)
 
         if not self.parser.headers_no_repetidos():
             raise OmlParserRepeatedColumnsError(_("El archivo a procesar tiene nombres de columnas "

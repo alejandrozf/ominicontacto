@@ -40,10 +40,10 @@ class GeneradorDePedazo(object):
     """Generador de pedazo generico"""
 
     def get_template(self):
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_parametros(self):
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def _reportar_key_error(self):
         logger.exception("Clase: %s.\nTemplate:\n%s\n Params: %s",

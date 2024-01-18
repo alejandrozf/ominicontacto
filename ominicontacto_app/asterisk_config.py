@@ -72,7 +72,7 @@ class SipConfigCreator(object):
             context = 'from-pstn'
 
         # assert agente is not None, "AgenteProfile == None"
-        assert agente.user.get_full_name() is not None,\
+        assert agente.user.get_full_name() is not None, \
             "agente.user.get_full_name() == None"
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
 

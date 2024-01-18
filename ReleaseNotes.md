@@ -1,16 +1,15 @@
 # Release Notes
-2023-11-15
+2024-01-17
 
 ## Added
 
 
 ## Changed
 
-oml-414 Se quitan las migraciones inherentes al trigger plperl.
 
 ## Fixed
 
-oml-414 Se añade el logging de django a stdout.
+oml-2555 Se corrige error al reagendar contacto anteriormente calificado por otro agente.
 
 ## Removed
 

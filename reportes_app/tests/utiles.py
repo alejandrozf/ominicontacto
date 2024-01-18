@@ -63,7 +63,7 @@ class GeneradorDeLlamadaLogs():
                                     time=time, callid=callid, es_transfer=es_transfer)
 
         elif campana.type == Campana.TYPE_DIALER:
-            assert finalizacion in FINALIZACIONES or (es_transfer and finalizacion is None),\
+            assert finalizacion in FINALIZACIONES or (es_transfer and finalizacion is None), \
                 'Finalizacion incorrecta: %s' % finalizacion
             self._generar_logs_dial(campana, tipo_llamada, finalizacion, numero_marcado,
                                     agente_id=-1, contacto_id=contacto_id,
