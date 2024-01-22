@@ -32,6 +32,7 @@ from ominicontacto_app.models import (
     HistoricalRespuestaFormularioGestion)
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
 from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
+from whatsapp_app.models import ConversacionWhatsapp
 
 
 class AgentSerializer(serializers.Serializer):
@@ -193,18 +194,18 @@ class RespuestaFormularioGestionCreateSerilializer(serializers.ModelSerializer):
     class Meta:
         model = RespuestaFormularioGestion
         fields = [
-            # 'id',
             'metadata'
         ]
 
     def to_internal_value(self, data):
-        if not data['metadata']:
+        formulario = data['formulario']
+        campos = formulario.campos.all()
+        if not data['metadata'] and campos:
             raise serializers.ValidationError(
                 {'Error': _('respuestaFormularioGestion es obligatorio')})
-        formulario = data['formulario']
         nombres_campos = []
         campos_requeridos = []
-        for campo in formulario.campos.all().values_list("nombre_campo", "is_required"):
+        for campo in campos.values_list("nombre_campo", "is_required"):
             nombres_campos.append(campo[0])
             if campo[1]:
                 campos_requeridos.append(campo[0])
@@ -274,6 +275,7 @@ class ViewSet(viewsets.ViewSet):
     def create(self, request):
         try:
             request_data = request.data.copy()
+            conversation_id = request_data.pop('idConversation')
             serializer_calificacion = CreateSerializer(data=request_data)
             if serializer_calificacion.is_valid():
                 opcion_calificacion =\
@@ -293,6 +295,9 @@ class ViewSet(viewsets.ViewSet):
                         serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                         calificacion = serializer_calificacion.save()
                         serializer_respuesta.save(calificacion=calificacion)
+                        conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                        conversation.is_disposition = True
+                        conversation.save()
                     else:
                         return response.Response(
                             data=get_response_data(
@@ -310,6 +315,9 @@ class ViewSet(viewsets.ViewSet):
                 else:
                     serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                     serializer_calificacion.save()
+                    conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                    conversation.is_disposition = True
+                    conversation.save()
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,

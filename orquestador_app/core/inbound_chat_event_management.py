@@ -29,7 +29,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
         destination_entrante = line.destino
         conversation =\
             ConversacionWhatsapp.objects.filter(
-                line=line, whatsapp_id=origen, expire__gte=timestamp).last()
+                line=line, whatsapp_id=origen, expire__gte=timestamp, is_disposition=False).last()
         if not conversation:
             campana = None
             if destination_entrante.content_type == ContentType.objects.get(model='campana'):

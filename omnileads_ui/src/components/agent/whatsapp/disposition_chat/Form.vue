@@ -413,7 +413,8 @@ export default {
                     idContact: this.agtWhatsCoversationInfo?.client?.id || null,
                     idAgente: this.agtWhatsCoversationInfo?.agent || null,
                     idDispositionOption: this.form?.dispositionOption || null,
-                    comments: this.form?.comments || null
+                    comments: this.form?.comments || null,
+                    idConversation: this.agtWhatsCoversationInfo.id
                 };
                 // Si es de GESTION hay que mandar respuestaFormularioGestion
                 const dispositionType = this.agtWhatsDispositionChatOptions?.find(
