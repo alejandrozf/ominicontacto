@@ -97,7 +97,7 @@ class AgentNotifier:
                 'timestamp': conversation.timestamp.isoformat(),
             }
             await self.send_message_whatsapp(
-                self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id, whatsapp_event=True)
+                self.TYPE_WHATSAPP_NEW_CHAT, message, user_id=user_id)
 
     def notify_whatsapp_chat_attended(self, user_id, message):
         self.send_message(
@@ -159,7 +159,7 @@ class AgentNotifier:
             }
             print(self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id)
             await self.send_message_whatsapp(
-                self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id=user_id, whatsapp_event=True)
+                self.TYPE_WHATSAPP_NEW_MESSAGE, message_json, user_id=user_id)
 
     async def notify_whatsapp_message_status(self, user_id, **kwargs):
         message = kwargs.get('message', None)
@@ -173,8 +173,7 @@ class AgentNotifier:
             await self.send_message_whatsapp(
                 self.TYPE_WHATSAPP_MESSAGE_STATUS,
                 message_json,
-                user_id=user_id,
-                whatsapp_event=True)
+                user_id=user_id)
 
     async def notify_whatsapp_chat_expired(self, user_id, **kwargs):
         conversation = kwargs.get('conversation', None)
@@ -185,7 +184,7 @@ class AgentNotifier:
                 "is_active": conversation.is_active
             }
             await self.send_message_whatsapp(
-                self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id, whatsapp_event=True)
+                self.TYPE_WHATSAPP_CHAT_EXPIRED, message, user_id=user_id)
 
     def send_message(self, type, message, user_id=None, whatsapp_event=False):
         # si user_id=None se envia mensaje a todos los agentes conectados
@@ -199,10 +198,10 @@ class AgentNotifier:
             }
         )
 
-    async def send_message_whatsapp(self, type, message, user_id=None, whatsapp_event=False):
+    async def send_message_whatsapp(self, type, message, user_id=None):
         # si user_id=None se envia mensaje a todos los agentes conectados
         await get_channel_layer().group_send(
-            self.get_group_name(user_id, whatsapp_event),
+            self.get_group_name(user_id, whatsapp_event=True),
             {
                 'type': 'broadcast',
                 'payload': {

@@ -9,7 +9,7 @@ const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
     const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : $t('globals.whatsapp.automatic_agent');
     return {
         id: data.id,
-        from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : senderPhone,
+        from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : senderName,
         conversationId: data && data.conversation ? data.conversation : null,
         itsMine,
         message: data && data.content && data.content.text ? data.content.text : '',

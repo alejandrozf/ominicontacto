@@ -27,8 +27,8 @@ const setFromInfo = (info = null) => {
         } else if (info.client.phone) {
             return info.client.phone || '-------';
         }
-    } else if (info && info.destination) {
-        return info.destination || '-------';
+    } else if (info && info.client_alias) {
+        return info.client_alias + ' (' + info.destination + ')' || '-------';
     }
     return '-------';
 };
@@ -56,7 +56,7 @@ export default {
         const alreadyExists = messages.find(m => m.id === message.id);
         if (message && !alreadyExists) {
             state.agtWhatsCoversationMessages.push(message);
-            if (localStorage.getItem('agtWhatsappConversationAttending') !== data.chat_id) {
+            if (localStorage.getItem('agtWhatsappConversationAttending') != data.chat_id) {
                 notificationEvent(
                     NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
                     `Mensaje Nuevo de ${senderName || senderPhone}`,
@@ -110,7 +110,9 @@ export default {
                 conversation && conversation.line ? conversation.line : null
             ),
             error:
-                conversation && conversation.error ? conversation.error : false
+                conversation && conversation.error ? conversation.error : false,
+            client_alias:
+                conversation && conversation.client_alias ? conversation.client_alias : null
         };
     },
     agtWhatsChatsListInit (state, { isNew, inProgress }) {

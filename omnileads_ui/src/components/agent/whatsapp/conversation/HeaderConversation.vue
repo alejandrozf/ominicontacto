@@ -8,7 +8,7 @@
         icon="pi pi-arrow-left"
         class="p-button-rounded p-button-secondary p-button-text"
       />
-      <Chip :label="clientInfo?.name" icon="pi pi-user" />
+      <Chip :label="clientInfo?.name + ' (' + clientInfo?.phone + ')'" icon="pi pi-user" />
     </template>
     <template #end>
       <div v-if="!viewAsReport && !agtWhatsCoversationInfo.error">
@@ -223,11 +223,11 @@ export default {
                 if (this.agtWhatsCoversationInfo) {
                     if (this.agtWhatsCoversationInfo.client.id) {
                         this.clientInfo.name =
-              this.agtWhatsCoversationInfo.client.name ||
-              this.agtWhatsCoversationInfo.client.phone;
+              this.agtWhatsCoversationInfo.client_alias ||
+              this.agtWhatsCoversationInfo.destination;
                         this.clientInfo.phone = this.agtWhatsCoversationInfo.client.phone;
                     } else {
-                        this.clientInfo.name = this.agtWhatsCoversationInfo.destination;
+                        this.clientInfo.name = this.agtWhatsCoversationInfo.client_alias;
                         this.clientInfo.phone = this.agtWhatsCoversationInfo.destination;
                     }
                 }
