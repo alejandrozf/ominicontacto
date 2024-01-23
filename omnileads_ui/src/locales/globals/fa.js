@@ -64,7 +64,11 @@ export default {
         group_of_message_template: 'گروه الگوهای پیام | گروه های قالب پیام',
         group_of_whatsapp_template: 'گروه قالب واتساپ | گروه های قالب واتساپ',
         template: 'الگو | قالب ها',
-        automatic_agent: 'اتوماتیک | خودکار'
+        automatic_agent: 'اتوماتیک | خودکار',
+        validations: {
+            socket_disconnect: 'سوکت واتساپ: اتصال برقرار نشد، لطفاً صفحه را دوباره بارگیری کنید',
+            contact_admin: 'اگر مشکل ادامه داشت، با مدیر تماس بگیرید'
+        }
     },
     // -------------
     // -- Actions --

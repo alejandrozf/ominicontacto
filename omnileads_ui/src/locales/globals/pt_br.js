@@ -64,7 +64,11 @@ export default {
         group_of_message_template: 'Grupo de modelos de mensagem | Grupos de modelo de mensagem',
         group_of_whatsapp_template: 'Grupo de modelos do Whatsapp | grupos de modelos de whatsapp',
         template: 'Plantilla | Plantillas',
-        automatic_agent: 'Automático | Automáticos'
+        automatic_agent: 'Automático | Automáticos',
+        validations: {
+            socket_disconnect: 'Soquete Whatsapp: Não foi possível estabelecer conexão, recarregue a página',
+            contact_admin: 'Se o problema persistir, entre em contato com o administrador'
+        }
     },
     // -------------
     // -- Actions --

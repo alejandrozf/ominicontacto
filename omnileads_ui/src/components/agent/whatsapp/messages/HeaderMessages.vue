@@ -28,6 +28,7 @@
 import { COLORS } from '@/globals';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
+    inject: ['$helpers'],
     data () {
         return {
             whatsapp_color: COLORS.WHATSAPP.TealGreen
@@ -35,17 +36,19 @@ export default {
     },
     methods: {
         newConversation () {
-            localStorage.setItem('agtWhatsConversationNewResetForm', true);
-            const modalEvent = new CustomEvent('onWhatsappConversationNewEvent', {
-                detail: {
-                    conversation_new: true
-                }
-            });
-            window.parent.document.dispatchEvent(modalEvent);
-            const event = new Event(
-                WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.NEW_INIT_DATA
-            );
-            window.parent.document.dispatchEvent(event);
+            if (this.$helpers.isSocketConnected(this.$t)) {
+                localStorage.setItem('agtWhatsConversationNewResetForm', true);
+                const modalEvent = new CustomEvent('onWhatsappConversationNewEvent', {
+                    detail: {
+                        conversation_new: true
+                    }
+                });
+                window.parent.document.dispatchEvent(modalEvent);
+                const event = new Event(
+                    WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.NEW_INIT_DATA
+                );
+                window.parent.document.dispatchEvent(event);
+            }
         },
         close () {
             const event = new CustomEvent('onWhatsappCloseContainerEvent', {

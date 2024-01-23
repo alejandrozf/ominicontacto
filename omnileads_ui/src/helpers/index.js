@@ -1,5 +1,6 @@
 import { getToasConfig, openLoader, closeLoader } from './sweet_alerts_helper';
 import { formatTime, getDatetimeFormat } from './time_format_helper';
+import { isSocketConnected } from './whatsapp_helper';
 
 function getRandomColors (numColors) {
     const randomColor = () => Math.floor(Math.random() * 256); // Genera un número aleatorio entre 0 y 255
@@ -27,5 +28,6 @@ export default {
         const regex = /^[\d()+\s-]{0,15}$/;
         return regex.test(phone);
     },
-    getRandomColors
+    getRandomColors,
+    isSocketConnected
 };

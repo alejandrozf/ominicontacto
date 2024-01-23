@@ -64,7 +64,11 @@ export default {
         group_of_message_template: 'Grupo de plantillas de mensaje | Grupos de plantillas de mensaje',
         group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp',
         template: 'Plantilla | Plantillas',
-        automatic_agent: 'Automático | Automáticos'
+        automatic_agent: 'Automático | Automáticos',
+        validations: {
+            socket_disconnect: 'Whatsapp Socket: No se pudo establecer la conexión, por favor recarga la página',
+            contact_admin: 'Si el problema persiste, contacte al administrador'
+        }
     },
     // -------------
     // -- Actions --

@@ -45,27 +45,29 @@ export default {
     methods: {
         ...mapActions(['agtWhatsCoversationSendTextMessage']),
         async sendMessage () {
-            if (this.message !== '') {
-                const data = {
-                    message: {
-                        message: this.message
-                    },
-                    conversationId: this.conversationId,
-                    phoneLine: this.agtWhatsCoversationInfo.line.number,
-                    $t: this.$t
-                };
-                this.message = '';
-                const { status, message } = await this.agtWhatsCoversationSendTextMessage(data);
-                if (status === HTTP_STATUS.SUCCESS) {
-                    this.$emit('scrollDownEvent');
-                } else {
-                    this.$swal(
-                        this.$helpers.getToasConfig(
-                            this.$t('globals.error_notification'),
-                            message,
-                            this.$t('globals.icon_error')
-                        )
-                    );
+            if (this.$helpers.isSocketConnected(this.$t)) {
+                if (this.message !== '') {
+                    const data = {
+                        message: {
+                            message: this.message
+                        },
+                        conversationId: this.conversationId,
+                        phoneLine: this.agtWhatsCoversationInfo.line.number,
+                        $t: this.$t
+                    };
+                    this.message = '';
+                    const { status, message } = await this.agtWhatsCoversationSendTextMessage(data);
+                    if (status === HTTP_STATUS.SUCCESS) {
+                        this.$emit('scrollDownEvent');
+                    } else {
+                        this.$swal(
+                            this.$helpers.getToasConfig(
+                                this.$t('globals.error_notification'),
+                                message,
+                                this.$t('globals.icon_error')
+                            )
+                        );
+                    }
                 }
             }
         }

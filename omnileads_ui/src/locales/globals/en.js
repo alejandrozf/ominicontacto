@@ -64,7 +64,11 @@ export default {
         group_of_message_template: 'Group of message templates | Message template groups',
         group_of_whatsapp_template: 'Whatsapp template group | Whatsapp template groups',
         template: 'Template | Templates',
-        automatic_agent: 'Automatic | Automatic'
+        automatic_agent: 'Automatic | Automatic',
+        validations: {
+            socket_disconnect: 'Whatsapp Socket: Connection could not be established, please reload the page',
+            contact_admin: 'If the problem persists, contact the administrator'
+        }
     },
     // -------------
     // -- Actions --
@@ -188,7 +192,7 @@ export default {
     success_reactive_type: '{type} successfully reactivated | {type} successfully reactivated',
     confirm_to_delete: 'Are you sure you want to delete?',
     success_notification: 'Successful operation!',
-    error_notification: 'Wrong operation!',
+    error_notification: 'Error operation!',
     warning_notification: 'Warning!',
     sure_notification: 'You\'re sure?',
     cancelled: 'Operation cancelled',

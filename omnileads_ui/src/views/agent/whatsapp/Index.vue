@@ -36,7 +36,9 @@ export default {
     },
     async created () {
         if (!this.consumer) {
-            this.consumer = WhatsappConsumer.getInstance();
+            this.consumer = WhatsappConsumer.getInstance({
+                $t: this.$t
+            });
         }
         await this.agtWhatsChatsListInit();
         localStorage.setItem('agtWhatsConversationCreatedId', null);

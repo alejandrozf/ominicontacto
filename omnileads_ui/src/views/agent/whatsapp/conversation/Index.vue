@@ -71,6 +71,7 @@ import { listenerStoreDataByAction } from '@/utils';
 import { COLORS } from '@/globals';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
+    inject: ['$helpers'],
     components: {
         HeaderConversation,
         ListMessages,
@@ -150,22 +151,24 @@ export default {
             }
         },
         openModalToRestart () {
-            localStorage.setItem(
-                'agtWhatsappConversationMessages',
-                JSON.stringify(this.agtWhatsCoversationMessages)
-            );
-            localStorage.setItem(
-                'agtWhatsCoversationInfo',
-                JSON.stringify(this.agtWhatsCoversationInfo)
-            );
-            localStorage.setItem('onlyWhatsappTemplates', true);
-            const event = new CustomEvent('onWhatsappTemplatesEvent', {
-                detail: {
-                    templates: true,
-                    conversationId: parseInt(this.$route.params.id)
-                }
-            });
-            window.parent.document.dispatchEvent(event);
+            if (this.$helpers.isSocketConnected(this.$t)) {
+                localStorage.setItem(
+                    'agtWhatsappConversationMessages',
+                    JSON.stringify(this.agtWhatsCoversationMessages)
+                );
+                localStorage.setItem(
+                    'agtWhatsCoversationInfo',
+                    JSON.stringify(this.agtWhatsCoversationInfo)
+                );
+                localStorage.setItem('onlyWhatsappTemplates', true);
+                const event = new CustomEvent('onWhatsappTemplatesEvent', {
+                    detail: {
+                        templates: true,
+                        conversationId: parseInt(this.$route.params.id)
+                    }
+                });
+                window.parent.document.dispatchEvent(event);
+            }
         }
     },
     watch: {

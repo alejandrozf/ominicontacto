@@ -64,6 +64,7 @@ import { mapActions, mapState } from 'vuex';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 
 export default {
+    inject: ['$helpers'],
     props: {
         isExpired: {
             type: Boolean,
@@ -129,26 +130,28 @@ export default {
             this.$router.push({ name: 'agent_whatsapp' });
         },
         templates () {
-            localStorage.setItem(
-                'agtWhatsappConversationMessages',
-                JSON.stringify(this.agtWhatsCoversationMessages)
-            );
-            localStorage.setItem(
-                'agtWhatsCoversationInfo',
-                JSON.stringify(this.agtWhatsCoversationInfo)
-            );
-            localStorage.setItem('onlyWhatsappTemplates', false);
-            const event = new Event(
-                WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT
-            );
-            window.parent.document.dispatchEvent(event);
-            const modalEvent = new CustomEvent('onWhatsappTemplatesEvent', {
-                detail: {
-                    templates: true,
-                    conversationId: parseInt(this.$route.params.id)
-                }
-            });
-            window.parent.document.dispatchEvent(modalEvent);
+            if (this.$helpers.isSocketConnected(this.$t)) {
+                localStorage.setItem(
+                    'agtWhatsappConversationMessages',
+                    JSON.stringify(this.agtWhatsCoversationMessages)
+                );
+                localStorage.setItem(
+                    'agtWhatsCoversationInfo',
+                    JSON.stringify(this.agtWhatsCoversationInfo)
+                );
+                localStorage.setItem('onlyWhatsappTemplates', false);
+                const event = new Event(
+                    WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT
+                );
+                window.parent.document.dispatchEvent(event);
+                const modalEvent = new CustomEvent('onWhatsappTemplatesEvent', {
+                    detail: {
+                        templates: true,
+                        conversationId: parseInt(this.$route.params.id)
+                    }
+                });
+                window.parent.document.dispatchEvent(modalEvent);
+            }
         },
         attach (fileType = 'img') {
             const event = new CustomEvent('onWhatsappMediaFormEvent', {
@@ -200,13 +203,15 @@ export default {
             window.parent.document.dispatchEvent(modalEvent);
         },
         async transfer () {
-            await this.agtWhatsTransferChatInitData(1);
-            const event = new CustomEvent('onWhatsappTransferChatEvent', {
-                detail: {
-                    transfer_chat: true
-                }
-            });
-            window.parent.document.dispatchEvent(event);
+            if (this.$helpers.isSocketConnected(this.$t)) {
+                await this.agtWhatsTransferChatInitData(1);
+                const event = new CustomEvent('onWhatsappTransferChatEvent', {
+                    detail: {
+                        transfer_chat: true
+                    }
+                });
+                window.parent.document.dispatchEvent(event);
+            }
         },
         close () {
             const event = new CustomEvent('onWhatsappCloseContainerEvent', {
