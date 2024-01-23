@@ -36,8 +36,8 @@ from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 from whatsapp_app.api.v1.calificacion import RetrieveSerializer as CalificacionSerializer
 from whatsapp_app.models import (
     ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
-    ConfiguracionWhatsappCampana, TemplateWhatsapp)
-from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente
+    TemplateWhatsapp)
+from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente, Contacto
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import send_template_message, send_text_message
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
@@ -98,7 +98,7 @@ class ConversacionSerializer(serializers.Serializer):
     def get_client_alias(self, obj):
         try:
             return obj.mensajes.mensajes_recibidos().first().sender['name']
-        except:
+        except Exception:
             return ""
 
 
@@ -514,15 +514,51 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=False, methods=["post"])
     def send_initing_conversation(self, request):
         try:
-            data = request.data.copy()  # Id Template
             sender = request.user.get_agente_profile()
-            campana = Campana.objects.get(id=data['campaing'])
-            template = TemplateWhatsapp.objects.get(id=data['template_id'])
+            data = request.data.copy()  # Id Template
+            # Verifico parametros
+            required_fields = {'campaign', 'template_id', 'destination', 'params', 'contact', }
+            missing_fields = required_fields.difference(data.keys())
+            if missing_fields:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Campos esperados: {0}').format(', '.join(missing_fields))),
+                    status=status.HTTP_400_BAD_REQUEST)
+            # Verifico campaña
+            try:
+                campana = Campana.objects.get(id=data['campaign'])
+            except Campana.DoesNotExist:
+                return response.Response(
+                    data=get_response_data(message=_('Campaña inválida')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            configuracion = campana.configuracionwhatsapp.filter(is_active=True).last()
+            if not configuracion:
+                return response.Response(
+                    data=get_response_data(message=_('Campaña inválida')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            line = configuracion.linea
+            if not line or not campana.whatsapp_habilitado:
+                return response.Response(
+                    data=get_response_data(message=_('Campaña inválida')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            try:
+                template = TemplateWhatsapp.objects.get(id=data['template_id'])
+            except TemplateWhatsapp.DoesNotExist:
+                return response.Response(
+                    data=get_response_data(message=_('Template inválido')),
+                    status=status.HTTP_400_BAD_REQUEST)
             template_id = template.identificador
             destination = data['destination']
-            line = ConfiguracionWhatsappCampana.objects.filter(
-                campana=campana).last().linea
+            contact_id = data['contact']
+            try:
+                contact = campana.bd_contacto.contactos.get(id=contact_id)
+            except Contacto.DoesNotExist:
+                return response.Response(
+                    data=get_response_data(message=_('Contacto inválido')),
+                    status=status.HTTP_400_BAD_REQUEST)
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            # TODO: Mientras no haya expirado solo el agente que atendio puede escribirle.
+            # Falta metodo para "finalizar" la conversación ¿Calificar?
             conversation_started = ConversacionWhatsapp.objects.filter(
                 line=line,
                 destination=destination,
@@ -539,6 +575,7 @@ class ViewSet(viewsets.ViewSet):
                         campana=campana,
                         agent=sender,
                         saliente=True,
+                        client=contact
                     )
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
