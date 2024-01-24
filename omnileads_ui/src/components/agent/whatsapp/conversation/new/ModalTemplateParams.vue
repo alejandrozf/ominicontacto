@@ -18,6 +18,7 @@
       :template="template"
       :contactPhone="contactPhone"
       :campaignId="campaignId"
+      :contactId="contactId"
     />
   </Dialog>
 </template>
@@ -37,6 +38,10 @@ export default {
             default: ''
         },
         campaignId: {
+            type: Number,
+            default: null
+        },
+        contactId: {
             type: Number,
             default: null
         },
@@ -81,6 +86,11 @@ export default {
             immediate: true
         },
         campaignId: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        contactId: {
             handler () {},
             deep: true,
             immediate: true

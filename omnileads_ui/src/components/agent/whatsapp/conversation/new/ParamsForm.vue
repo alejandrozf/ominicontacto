@@ -61,6 +61,10 @@ export default {
             type: Number,
             default: null
         },
+        contactId: {
+            type: Number,
+            default: null
+        },
         template: {
             type: Object,
             default: () => {
@@ -167,13 +171,14 @@ export default {
                     destination: this.contactPhone,
                     template_id: this.template.id,
                     params: this.getFormData(),
-                    campaing: this.campaignId
+                    campaign: this.campaignId,
+                    contact: this.contactId
                 };
                 const result = await this.agtWhatsInitNewConversation(reqData);
                 const { status, data } = result;
                 localStorage.setItem(
                     'agtWhatsCoversationCreatedId',
-                    status === HTTP_STATUS.SUCCESS ? data.conversation : null
+                    status === HTTP_STATUS.SUCCESS ? data?.conversation || null : null
                 );
                 this.closeModal(result);
             } catch (error) {
@@ -194,6 +199,11 @@ export default {
             immediate: true
         },
         campaignId: {
+            handler () {},
+            deep: true,
+            immediate: true
+        },
+        contactId: {
             handler () {},
             deep: true,
             immediate: true

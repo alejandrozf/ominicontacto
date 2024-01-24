@@ -174,6 +174,7 @@
       :template="template"
       :contactPhone="contactPhone"
       :campaignId="campaignId"
+      :contactId="contactId"
       @handleModalEvent="handleModal"
     />
   </div>
@@ -219,6 +220,7 @@ export default {
             showModal: false,
             template: null,
             campaignId: null,
+            contactId: null,
             contactPhone: null,
             campaigns: [
                 {
@@ -271,12 +273,14 @@ export default {
             showModal = false,
             template = null,
             campaignId = null,
+            contactId = null,
             contactPhone = null,
             response = null
         }) {
             this.showModal = showModal;
             this.template = template;
             this.campaignId = campaignId;
+            this.contactId = contactId;
             this.contactPhone = contactPhone;
             localStorage.setItem('agtWhatsConversationsList', true);
             if (response) {
@@ -354,8 +358,10 @@ export default {
             this.handleModal({
                 showModal: true,
                 template: this.templates.find((t) => t.id === this.form.template),
-                campaignId: this.form.campaign,
-                contactPhone: this.form.contact.phone
+                campaignId: this.form?.campaign || null,
+                contactId: this.form?.contact?.id || null,
+                contactPhone: this.form?.contact?.phone || ''
+
             });
         }
     },

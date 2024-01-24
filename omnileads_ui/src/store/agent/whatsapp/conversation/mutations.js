@@ -56,7 +56,7 @@ export default {
         const alreadyExists = messages.find(m => m.id === message.id);
         if (message && !alreadyExists) {
             state.agtWhatsCoversationMessages.push(message);
-            if (localStorage.getItem('agtWhatsappConversationAttending') != data.chat_id) {
+            if (Number(localStorage.getItem('agtWhatsappConversationAttending')) !== data.chat_id) {
                 notificationEvent(
                     NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
                     `Mensaje Nuevo de ${senderName || senderPhone}`,
