@@ -8,15 +8,15 @@
 /* General */
 body {
   font-family: 'Asap', sans-serif;
-  color: #2F342F;
+  color: #333333;
 }
 
 a {
-  color: #8FC641;
+  color: #f71883;
 }
 
 a, a:hover, a:focus {
-  color: #76AA2E;
+  color: #89468b;
   text-decoration: none;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -57,13 +57,13 @@ h4 {
 */
 .btn-primary {
   color: #FFFFFF;
-  background-color: #8FC641;
-  border-color: #8FC641;
+  background-color: #f71883;
+  border-color: #f71883;
 }
 
 .btn-primary:hover {
-  background-color: #76AA2E;
-  border-color: #76AA2E;
+  background-color: #89468b;
+  border-color: #89468b;
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
@@ -104,13 +104,13 @@ h4 {
 }
 
 .btn-outline-primary {
-  color: #8FC641;
-  border-color: #8FC641;
+  color: #f71883;
+  border-color: #f71883;
 }
 
 .btn-outline-primary:hover {
-  color: #8FC641;
-  border-color: #8FC641;
+  color: #f71883;
+  border-color: #f71883;
   background-color: #F9FDF3;
 }
 
@@ -182,7 +182,7 @@ a.btn .icon {
 /* ///// Pills
 */
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #2F342F;
+  color: #333333;
   background: #ECEEEA;
 }
 
@@ -205,13 +205,13 @@ ul.nav-indicators a {
 }
 
 ul.nav-indicators li.active a {
-  color: #8FC641;
+  color: #f71883;
   font-weight: 500;
-  border-bottom: 4px solid #8FC641;
+  border-bottom: 4px solid #f71883;
 }
 
 ul.nav-indicators li.active a:hover {
-  color: #8FC641;
+  color: #f71883;
   background-color: transparent;
 }
 
@@ -344,22 +344,21 @@ ul.errorlist li {
 }
 
 .typetransf-secondcolumn-number {
-  margin-left: 30px;
+  margin-left: 33px;
   width: 250px !important;
 }
 
 .typetransf-secondcolumn-agent {
-  margin-left: 30px;
-  min-width: 300px !important;
+  margin-left: 45px;
 }
 
 .typetransf-firstcolumn {
-  margin-left: 25px;
+  margin-left: 50px;
 }
 
 /* Select widget */
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #8FC641 !important;
+  background-color: #f71883 !important;
   color: white;
 }
 
@@ -367,7 +366,7 @@ ul.errorlist li {
 .daterangepicker .ranges li {
   background: #FFFFFF;
   border: 1px solid transparent;
-  color: #2F342F;
+  color: #333333;
   padding: 6px 12px;
   margin-bottom: 2px;
 }
@@ -377,35 +376,35 @@ ul.errorlist li {
 }
 
 .daterangepicker .btn-success {
-  background-color: #8FC641;
-  border-color: #8FC641;
+  background-color: #f71883;
+  border-color: #f71883;
 }
 
 .daterangepicker .btn-success:hover {
-  background-color: #9FD84E;
-  border-color: #8FC641;
+  background-color: #fa4da0;
+  border-color: #f71883;
 }
 
 .daterangepicker .ranges li.active {
-  background: #8FC641;
-  border: 1px solid #8FC641;
+  background: #f71883;
+  border: 1px solid #f71883;
   color: #fff;
 }
 
 .daterangepicker .ranges li.active {
-  background: #8FC641;
-  border: 1px solid #8FC641;
+  background: #f71883;
+  border: 1px solid #f71883;
   color: #fff;
 }
 
 .daterangepicker .ranges li:hover {
-  background: #8FC641;
-  border: 1px solid #8FC641;
+  background: #f71883;
+  border: 1px solid #f71883;
   color: #fff;
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 /* Datetime picker widget */
@@ -414,11 +413,11 @@ ul.errorlist li {
 }
 
 .bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 .bootstrap-datetimepicker-widget table td span.active {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 /* Modals */
@@ -453,7 +452,7 @@ ul.errorlist li {
   }
   #navBar ul li a {
     padding: 8px 12px 8px 2px;
-    color: #2F342F;
+    color: #333333;
     text-transform: uppercase;
   }
   #navBar .icon {
@@ -734,7 +733,7 @@ body > h1 {
 }
 
 #phoneKeysNumbers button {
-  color: #8FC641;
+  color: #f71883;
 }
 
 #phoneKeysNumbers .astBtn {
@@ -927,10 +926,6 @@ body > h1 {
   color: #52C159;
 }
 
-#bottomBar #whatsappChat {
-  color: #52C159;
-}
-
 #bottomBar #webChat {
   color: #6A716A;
 }
@@ -1051,7 +1046,7 @@ body > h1 {
     padding-left: 34px;
   }
   #navBar ul a.active {
-    background-color: #8FC641;
+    background-color: #f71883;
     color: #ffffff;
   }
   #navBar .main-menu-li {
