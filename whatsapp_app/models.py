@@ -181,6 +181,15 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
         return self.filter(atendida=True, is_disposition=False,
                            date_last_interaction__date__range=[start_date_str, end_date_str])
 
+    def conversaciones_en_curso(
+            self, start_date_str=None, end_date_str=None):
+        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+        if start_date_str and end_date_str:
+            return self.filter(
+                expire__gte=timestamp, is_disposition=False,
+                date_last_interaction__date__range=[start_date_str, end_date_str])
+        return self.filter(expire__gte=timestamp, is_disposition=False)
+
     def numero_mensajes_enviados(self, start_date_str, end_date_str):
         return MensajeWhatsapp.objects.mensajes_enviados().filter(
             conversation__in=self.filter(

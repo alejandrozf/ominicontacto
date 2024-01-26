@@ -124,6 +124,7 @@ export default {
     here: 'Here',
     activate: 'Activate',
     deactivate: 'Deactivate',
+    use: 'Use',
     // ----------------
     // --- weekdays ---
     // ----------------

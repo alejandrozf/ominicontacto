@@ -114,7 +114,7 @@ export default {
     },
     async agtWhatsContactSearch (
         { commit },
-        { campaignId = null, conversationId = null, data }
+        { campaignId = null, conversationId = null, filterData }
     ) {
         try {
             if (!campaignId || !conversationId) {
@@ -123,14 +123,18 @@ export default {
                     message: 'Error al buscar contactos'
                 };
             }
-            return await service.searchOnContactDB({
+            const response = await service.searchOnContactDB({
                 campaignId,
                 conversationId,
-                data
+                data: filterData
             });
+            const { status, data } = response;
+            await commit('agtWhatsContactSearchInit', status === HTTP_STATUS.SUCCESS ? data : []);
+            return response;
         } catch (error) {
             console.error('===> ERROR al buscar los contactos');
-            console.error(error);
+            console.error(error?.message);
+            await commit('agtWhatsContactSearchInit', []);
             return {
                 status: HTTP_STATUS.ERROR,
                 message: 'Error al buscar contactos'

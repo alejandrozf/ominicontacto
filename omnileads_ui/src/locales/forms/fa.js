@@ -325,6 +325,15 @@ export default {
                     }
                 }
             }
+        },
+        conversation: {
+            new: {
+                validations: {
+                    search_contact: {
+                        empty_campaign: 'برای جستجوی مخاطبین باید کمپینی را انتخاب کنید'
+                    }
+                }
+            }
         }
     }
 };

@@ -301,16 +301,26 @@ class ViewSet(viewsets.ViewSet):
                 q_list.append(Q(telefono__contains=request.data['dial_code']))
             if 'phone' in request.data:
                 q_list.append(Q(telefono=request.data['phone']))
+            if 'name' in request.data:
+                q_list.append(Q(datos__icontains=request.data['name']))
             campana = Campana.objects.get(id=campana_pk)
+            ids_contactos_en_curso = ConversacionWhatsapp.objects\
+                .conversaciones_en_curso()\
+                .filter(campana_id=campana.pk, client_id__isnull=False)\
+                .values_list('client_id', flat=True)
             contactos = Contacto.objects.filter(
                 reduce(or_, q_list), bd_contacto=campana.bd_contacto)
+            if ids_contactos_en_curso.exists():
+                contactos = contactos.exclude(id__in=list(ids_contactos_en_curso))
             serializer = ListSerializer(contactos, many=True)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
+                    message=_('Se obtuvieron los contactos de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener contactos')),

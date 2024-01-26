@@ -130,11 +130,14 @@ export default {
             await this.initData();
         },
         createContact () {
+            localStorage.setItem('agtWhatsInconmingConversation', true);
             localStorage.setItem(
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
-            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA);
+            const event = new Event(
+                WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA
+            );
             window.parent.document.dispatchEvent(event);
             const modalEvent = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {

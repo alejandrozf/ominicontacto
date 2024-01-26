@@ -277,13 +277,45 @@ class ViewSet(viewsets.ViewSet):
 
     @decorators.action(detail=True, methods=["post"])
     def assign_contact(self, request, pk):
-        contact_pk = request.data.get('contact_pk')
-        conversacion = ConversacionWhatsapp.objects.get(pk=pk)
-        conversacion.contacto = contact_pk
-        conversacion.save()
-        return response.Response(
-            data=get_response_data(status=HttpResponseStatus.SUCCESS,),
-            status=status.HTTP_200_OK)
+        try:
+            contact_pk = request.data.get('contact_pk')
+            conversacion = ConversacionWhatsapp.objects.get(pk=pk)
+            contact = Contacto.objects.get(pk=contact_pk)
+            if contact.bd_contacto != conversacion.campana.bd_contacto:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('El contacto no pertenece a la base de datos de la campaña')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            if ConversacionWhatsapp.objects.conversaciones_en_curso()\
+                    .filter(client_id=contact.pk, line_id=conversacion.line.pk).exists():
+                return response.Response(
+                    data=get_response_data(
+                        message=_('El contacto ya tiene una conversación activa')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            conversacion.client = contact
+            conversacion.save()
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.SUCCESS,
+                    message=_('Se asigno el contacto a la conversacion de forma satisfactoria')),
+                status=status.HTTP_200_OK)
+        except ConversacionWhatsapp.DoesNotExist:
+            return response.Response(
+                data=get_response_data(
+                    message=_('No se puede asignar una conversación que no existe')),
+                status=status.HTTP_404_NOT_FOUND)
+        except Contacto.DoesNotExist:
+            return response.Response(
+                data=get_response_data(
+                    message=_('No existe el contacto que se quiere asignar')),
+                status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print("Error al asignar el contacto a la conversación")
+            print(e)
+            return response.Response(
+                data=get_response_data(
+                    message=_('Error al asignar el contacto a la conversación')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=["get"])
     def messages(self, request, pk):
@@ -471,37 +503,47 @@ class ViewSet(viewsets.ViewSet):
         try:
             data = request.data.copy()  # Id Template
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            if not conversation.error:
-                destination = conversation.destination
-                sender = request.user.get_agente_profile()
-                line = conversation.line
-                template = TemplateWhatsapp.objects.get(id=data['template_id'])
-                template_id = template.identificador
-                timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                orquestador_response = send_template_message(
-                    line, destination, template_id, data['params'])  # orquestador
-                if orquestador_response["status"] == "submitted":
-                    text = template.texto.replace('{{', '{').\
-                        replace('}}', '}').format("", *data['params'])
-                    mensaje = MensajeWhatsapp.objects.create(
-                        conversation=conversation,
-                        message_id=orquestador_response['messageId'],
-                        origen=line.numero,
-                        timestamp=timestamp,
-                        sender={"name": sender.user.username, "agent_id": sender.user.id},
-                        content={"text": text, "type": "template"},
-                        type="template",
-                    )
-                    serializer = MensajeListSerializer(mensaje)
+            or_filter = Q(destination=conversation.destination)\
+                | Q(client_id=conversation.client.pk)
+            conversation_already_taken = ConversacionWhatsapp.objects\
+                .conversaciones_en_curso().filter(line_id=conversation.line.pk)\
+                .filter(or_filter).exists()
+            if conversation.error:
                 return response.Response(
                     data=get_response_data(
-                        message=_('Se envio el mensaje de forma exitosa'),
-                        status=HttpResponseStatus.SUCCESS, data=serializer.data),
-                    status=status.HTTP_200_OK)
+                        message=_('Conversacion erronea')),
+                    status=status.HTTP_401_UNAUTHORIZED)
+            if conversation_already_taken:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Ya existe una conversacion iniciada con el cliente')),
+                    status=status.HTTP_401_UNAUTHORIZED)
+            destination = conversation.destination
+            sender = request.user.get_agente_profile()
+            line = conversation.line
+            template = TemplateWhatsapp.objects.get(id=data['template_id'])
+            template_id = template.identificador
+            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            orquestador_response = send_template_message(
+                line, destination, template_id, data['params'])  # orquestador
+            if orquestador_response["status"] == "submitted":
+                text = template.texto.replace('{{', '{').\
+                    replace('}}', '}').format("", *data['params'])
+                mensaje = MensajeWhatsapp.objects.create(
+                    conversation=conversation,
+                    message_id=orquestador_response['messageId'],
+                    origen=line.numero,
+                    timestamp=timestamp,
+                    sender={"name": sender.user.username, "agent_id": sender.user.id},
+                    content={"text": text, "type": "template"},
+                    type="template",
+                )
+                serializer = MensajeListSerializer(mensaje)
             return response.Response(
                 data=get_response_data(
-                    message=_('Conversacion erronea')),
-                status=status.HTTP_401_UNAUTHORIZED)
+                    message=_('Se envio el mensaje de forma exitosa'),
+                    status=HttpResponseStatus.SUCCESS, data=serializer.data),
+                status=status.HTTP_200_OK)
         except Exception as e:
             print('\n\n===> Error al reactivar la conversacion')
             print(e)
@@ -564,6 +606,9 @@ class ViewSet(viewsets.ViewSet):
                 destination=destination,
                 expire__gte=timestamp
             )
+            or_filter = Q(destination=destination) | Q(client_id=contact.pk)
+            conversation_started = ConversacionWhatsapp.objects\
+                .conversaciones_en_curso().filter(line_id=line.pk).filter(or_filter)
             if not conversation_started:
                 orquestador_response = send_template_message(
                     line, destination, template_id, data['params'])  # orquestador

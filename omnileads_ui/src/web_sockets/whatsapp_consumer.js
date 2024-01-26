@@ -7,6 +7,7 @@ import STORE from '@/store';
 import { fireNotification } from '@/helpers/sweet_alerts_helper';
 const MAX_RECONNECT_ATTEMPTS = 5;
 const TIME_TO_RETRY = 15; // Segs
+const TIME_WAITING_CONNECTION = 5; // Segs
 
 export class WhatsappConsumer {
     static #instance = null;
@@ -21,8 +22,7 @@ export class WhatsappConsumer {
     }
 
     static getInstance ({
-        url = `wss://${window.location.host}/channels/agent-console-whatsapp`,
-        $t = null
+        url = `wss://${window.location.host}/channels/agent-console-whatsapp`
     }) {
         if (!WhatsappConsumer.#instance) {
             WhatsappConsumer.#instance = new WhatsappConsumer(url);
@@ -43,55 +43,68 @@ export class WhatsappConsumer {
         });
     }
 
-    setConsumerEvents () {
-        if (this.consumer) {
-            this.consumer.onopen = () => {
-                console.log('Whatsapp Consumer OPEN: Conexión establecida');
-            };
-            this.consumer.onclose = (event) => {
-                this.close();
-                if (event?.wasClean) {
-                    console.log(
-                        'Whatsapp Consumer CLOSE: Conexión cerrada limpiamente'
-                    );
-                } else {
-                    console.error(
-                        'Whatsapp Consumer CLOSE: La conexión se cayó'
-                    );
-                    this.handleReconnect();
+    setBaseSocketEvents () {
+        return new Promise((resolve) => {
+            try {
+                if (this.consumer) {
+                    this.consumer.onopen = () => {
+                        console.log('Whatsapp Consumer OPEN: Connection established OK');
+                    };
+                    this.consumer.onclose = (event) => {
+                        this.close();
+                        if (event?.wasClean) {
+                            console.log(
+                                'Whatsapp Consumer CLOSE: Conection closed cleanly'
+                            );
+                        } else {
+                            console.error(
+                                `Whatsapp Consumer CLOSE: Conection closed uncleanly (code: ${event?.code}), trying connect again...`
+                            );
+                            console.error(event?.reason);
+                            this.handleReconnect();
+                        }
+                    };
+                    this.consumer.onmessage = (event) => {
+                        const { type, args } = JSON.parse(event.data);
+                        this.handleEventByType(type, args);
+                    };
+                    this.consumer.onerror = (error) => {
+                        console.error('Whatsapp Consumer ERROR:');
+                        console.error(error);
+                    };
+                    resolve(true);
                 }
-            };
-
-            this.consumer.onmessage = (event) => {
-                const { type, args } = JSON.parse(event.data);
-                this.handleEventByType(type, args);
-            };
-
-            this.consumer.onerror = (error) => {
-                console.error('Whatsapp Consumer ERROR:');
-                console.error(error);
-            };
-        }
+            } catch (error) {
+                console.error('Whatsapp Consumer Error on set base socket events');
+                console.error(error?.message);
+                resolve(false);
+            }
+        });
     }
 
     open () {
         try {
             if (!this.consumer || this.consumer.readyState === WebSocket.CLOSED) {
                 this.consumer = new WebSocket(this.url);
-                if (this.consumer && this.consumer.readyState === WebSocket.OPEN) {
-                    this.setConsumerEvents();
-                } else {
-                    console.error(
-                        'Whatsapp Consumer: No se pudo establecer la conexión'
-                    );
-                    this.handleReconnect();
-                }
+                console.log('Whatsapp Consumer: Waiting connection...');
+                setTimeout(async () => {
+                    if (this.consumer && this.consumer.readyState === WebSocket.OPEN) {
+                        console.log('Whatsapp Consumer: Connection established OK');
+                        await this.setBaseSocketEvents();
+                    } else {
+                        console.error(
+                            'Whatsapp Consumer: Connection could not be established, trying again...'
+                        );
+                        this.handleReconnect();
+                    }
+                }, TIME_WAITING_CONNECTION * 1000);
             } else {
-                console.log('Whatsapp Consumer: Ya existe una conexión abierta');
+                console.log('Whatsapp Consumer: Already exists a connection, using it...');
             }
         } catch (error) {
             console.error('Whatsapp Consumer OPEN ERROR');
             console.error(error?.message);
+            this.handleReconnect();
         }
     }
 
@@ -102,9 +115,9 @@ export class WhatsappConsumer {
             if (this.reconnectIntent >= MAX_RECONNECT_ATTEMPTS) {
                 console.warn('Whatsapp Consumer MAX_RECONNECT_ATTEMPTS');
             }
-            console.log('Whatsapp Consumer CLOSE: Conexión cerrada');
+            console.log('Whatsapp Consumer CLOSE: Connection closed');
         } else {
-            console.log('No hay una conexión WebSocket activa para cerrar.');
+            console.log('Whatsapp Consumer CLOSE: Not exists a connection to close');
         }
     }
 
@@ -153,8 +166,8 @@ export class WhatsappConsumer {
         if (data) STORE.dispatch('agtWhatSendMessageStatus', data);
     }
 
-    handleNewChatEvent (data = null) {
-        notificationEvent(
+    async handleNewChatEvent (data = null) {
+        await notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_NEW_CHAT,
             'Nueva conversacion en espera de ser atendida',
             NOTIFICATION.ICONS.INFO
@@ -162,16 +175,16 @@ export class WhatsappConsumer {
         if (data) STORE.dispatch('agtWhatsReceiveNewChat', data);
     }
 
-    handleChatAttendedEvent (data) {
-        notificationEvent(
+    async handleChatAttendedEvent (data) {
+        await notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_CHAT_ATTENDED,
             `El chat de la campana (${data.campaign_name}), se atendio`,
             NOTIFICATION.ICONS.INFO
         );
     }
 
-    handleChatTransferedEvent (data) {
-        notificationEvent(
+    async handleChatTransferedEvent (data) {
+        await notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_CHAT_TRANSFERED,
             `El chat del cliente (${data.chat_info.client_name}), se te transfirio`,
             NOTIFICATION.ICONS.INFO

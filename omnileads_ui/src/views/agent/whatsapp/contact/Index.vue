@@ -8,13 +8,25 @@
           : $t('views.whatsapp.contact.edit')
       "
     />
-    <Form ref="formRef" :formToCreate="formToCreate" />
+    <SearchTable
+      v-if="inconmingConversation"
+      @selectPreviewContactEvent="selectPreviewContact"
+      ref="searchTableRef"
+      :conversationInfo="{ campaignId: conversationInfo?.campaignId }"
+    />
+    <Form
+      ref="formRef"
+      @cleanFilterSearchEvent="cleanFilterSearch"
+      :formToCreate="formToCreate"
+      :previewContact="previewContact"
+    />
   </div>
 </template>
 
 <script>
 import Header from '@/components/agent/whatsapp/contact/Header';
 import Form from '@/components/agent/whatsapp/contact/Form';
+import SearchTable from '@/components/agent/whatsapp/contact/SearchTable';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 import { HTTP_STATUS } from '@/globals';
 import { mapActions } from 'vuex';
@@ -22,17 +34,35 @@ export default {
     inject: ['$helpers'],
     components: {
         Header,
-        Form
+        Form,
+        SearchTable
+    },
+    data () {
+        return {
+            conversationInfo: null,
+            formToCreate: true,
+            previewContact: null,
+            inconmingConversation: false
+        };
     },
     methods: {
         ...mapActions([
             'agtWhatsContactDBFieldsInit',
             'agtWhatsSetCoversationInfo'
         ]),
+        cleanFilterSearch () {
+            this.previewContact = null;
+            this.$refs.searchTableRef.clearFilter();
+        },
+        selectPreviewContact (contact) {
+            this.previewContact = contact;
+        },
         closeEvent () {
             this.$refs.formRef.clearForm();
         },
         async updatedLocalStorage () {
+            this.inconmingConversation =
+        localStorage.getItem('agtWhatsInconmingConversation') === 'true';
             this.conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
             if (this.conversationInfo && this.conversationInfo?.client) {
@@ -57,12 +87,6 @@ export default {
                 );
             }
         }
-    },
-    data () {
-        return {
-            conversationInfo: null,
-            formToCreate: true
-        };
     },
     mounted () {
         window.parent.document.addEventListener(

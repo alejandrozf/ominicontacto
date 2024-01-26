@@ -171,6 +171,7 @@ export default {
             window.parent.document.dispatchEvent(event);
         },
         editUserInfo () {
+            localStorage.setItem('agtWhatsInconmingConversation', false);
             localStorage.setItem(
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)

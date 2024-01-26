@@ -112,31 +112,16 @@
               }"
               :options="contacts"
               :filter="true"
+              @filter="searchContacts"
               :showClear="true"
               placeholder="-----"
-              optionLabel="phone"
+              :optionLabel="getContactInfo"
+              optionValue="id"
               :emptyFilterMessage="$t('globals.without_data')"
               v-bind:filterPlaceholder="
-                $t('globals.find_by', { field: $tc('globals.phone') }, 1)
+                $t('globals.find_by', { field: `${$tc('globals.phone')}/${$tc('globals.name')}` }, 1)
               "
             >
-              <template #value="slotProps">
-                <div v-if="slotProps.value" class="flex align-items-center">
-                  <div>
-                    {{ getContactInfo(slotProps.value) }}
-                  </div>
-                </div>
-                <span v-else>
-                  {{ slotProps.placeholder }}
-                </span>
-              </template>
-              <template #option="slotProps">
-                <div class="flex align-items-center">
-                  <div>
-                    {{ getContactInfo(slotProps.option) }}
-                  </div>
-                </div>
-              </template>
             </Dropdown>
           </div>
           <small
@@ -253,7 +238,7 @@ export default {
         ...mapState([
             'supWhatsappLineCampaigns',
             'supCampaignTemplates',
-            'agtWhatsContactList'
+            'agtWhatsContactSearchResults'
         ])
     },
     mounted () {
@@ -261,7 +246,39 @@ export default {
         this.updatedLocalStorage();
     },
     methods: {
-        ...mapActions(['initSupCampaignTemplates', 'agtWhatsContactListInit']),
+        ...mapActions(['initSupCampaignTemplates', 'agtWhatsContactSearch']),
+        async searchContacts (event) {
+            const searchKey = event?.value?.toString() || null;
+            if (!this.form?.campaign) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.warning_notification'),
+                        this.$t('forms.whatsapp.conversation.new.validations.search_contact.empty_campaign'),
+                        this.$t('globals.icon_warning')
+                    )
+                );
+                this.contacts = [];
+                return;
+            }
+            if (!searchKey || searchKey.length <= 0) {
+                this.contacts = [];
+                return;
+            }
+            const { status, message } = await this.agtWhatsContactSearch({
+                campaignId: this.form?.campaign || null,
+                conversationId: 'tes',
+                filterData: { phone: searchKey, name: searchKey }
+            });
+            if (status !== HTTP_STATUS.SUCCESS) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
+        },
         updatedLocalStorage () {
             const resetForm = localStorage.getItem('agtWhatsConversationNewResetForm') === 'true';
             if (resetForm) {
@@ -291,7 +308,6 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 this.closeModal();
-                // this.$router.push({ name: 'supervisor_whatsapp_providers' });
                 await notificationEvent(
                     NOTIFICATION.TITLES.SUCCESS,
                     message,
@@ -309,7 +325,6 @@ export default {
         },
         async getDataByCampaign (campaignId) {
             await this.getTemplatesByCampaign(campaignId);
-            await this.getContactsByCampaign(campaignId);
         },
         async getTemplatesByCampaign (campaignId) {
             const campaign = this.supWhatsappLineCampaigns.find(
@@ -320,12 +335,9 @@ export default {
                 lineId: campaign.line_id
             });
         },
-        async getContactsByCampaign (campaignId) {
-            await this.agtWhatsContactListInit({ campaignId, conversationId: 'tes' });
-        },
         getContactInfo (contact) {
-            const data = JSON.parse(contact.data);
-            return `${data[0]} (${contact.phone})`;
+            const data = contact?.data;
+            return `${data[0] || '-----'} (${contact?.phone || '-----'})`;
         },
         closeModal () {
             this.$emit('closeModalEvent');
@@ -355,17 +367,33 @@ export default {
             if (!isFormValid) {
                 return null;
             }
+            const contact = this.contacts.find((c) => c.id === this.form.contact);
             this.handleModal({
                 showModal: true,
                 template: this.templates.find((t) => t.id === this.form.template),
                 campaignId: this.form?.campaign || null,
-                contactId: this.form?.contact?.id || null,
-                contactPhone: this.form?.contact?.phone || ''
+                contactId: contact?.id || null,
+                contactPhone: contact?.phone || ''
 
             });
         }
     },
     watch: {
+        agtWhatsContactSearchResults: {
+            handler () {
+                this.contacts = this.agtWhatsContactSearchResults.map(
+                    (contact) => {
+                        return {
+                            id: contact?.id || null,
+                            data: contact?.data ? JSON.parse(contact?.data) : [],
+                            phone: contact?.phone || ''
+                        };
+                    }
+                );
+            },
+            deep: true,
+            immediate: true
+        },
         supWhatsappLineCampaigns: {
             handler () {
                 if (this.supWhatsappLineCampaigns.length > 0) {
@@ -432,17 +460,6 @@ export default {
                     );
                 } else {
                     this.templates = [];
-                }
-            },
-            deep: true,
-            immediate: true
-        },
-        agtWhatsContactList: {
-            handler () {
-                if (this.agtWhatsContactList.length > 0) {
-                    this.contacts = this.agtWhatsContactList;
-                } else {
-                    this.contacts = [];
                 }
             },
             deep: true,

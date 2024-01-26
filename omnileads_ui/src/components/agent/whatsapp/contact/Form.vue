@@ -1,7 +1,11 @@
 <template>
   <div class="card">
     <div class="grid formgrid mt-4">
-      <div v-for="(field, index) in form" :key="index" class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
+      <div
+        v-for="(field, index) in form"
+        :key="index"
+        class="field sm:col-12 md:col-6 lg:col-6 xl:col-6"
+      >
         <div v-if="field.name !== 'id'">
           <div v-if="field.mandatory">
             <label
@@ -122,13 +126,27 @@
 import { FilterMatchMode } from 'primevue/api';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
+import {
+    notificationEvent,
+    NOTIFICATION,
+    WHATSAPP_LOCALSTORAGE_EVENTS
+} from '@/globals/agent/whatsapp';
 export default {
     inject: ['$helpers'],
     props: {
         formToCreate: {
             type: Boolean,
             default: true
+        },
+        previewContact: {
+            type: Object,
+            default: () => {
+                return {
+                    id: null,
+                    phone: '',
+                    data: []
+                };
+            }
         }
     },
     data () {
@@ -151,10 +169,7 @@ export default {
         ...mapState(['agtWhatsContactDBFields', 'agtWhatsCoversationInfo'])
     },
     methods: {
-        ...mapActions([
-            'agtWhatsContactCreate',
-            'agtWhatsContactUpdate'
-        ]),
+        ...mapActions(['agtWhatsContactCreate', 'agtWhatsContactUpdate']),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -162,6 +177,7 @@ export default {
         closeModal () {
             this.clearForm();
             this.$emit('clearForm');
+            this.$emit('cleanFilterSearchEvent');
             const event = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
                     contact_form: false
@@ -244,14 +260,14 @@ export default {
                                 this.invalidForm = true;
                                 this.form[`${field?.name}`].empty = true;
                             } else if (
-                                field?.is_phone_field &&
+                field?.is_phone_field &&
                 !this.isPhoneValid(field?.value)
                             ) {
                                 this.invalidForm = true;
                                 this.form[`${field?.name}`].invalid = true;
                             }
                         } else if (
-                            field?.is_phone_field &&
+              field?.is_phone_field &&
               !this.isPhoneValid(field?.value)
                         ) {
                             this.form[`${field?.name}`].invalid = true;
@@ -277,7 +293,9 @@ export default {
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
-                    const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA);
+                    const event = new Event(
+                        WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA
+                    );
                     window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
@@ -316,11 +334,24 @@ export default {
             handler () {
                 if (this.agtWhatsCoversationInfo?.client) {
                     this.contact.id = this.agtWhatsCoversationInfo?.client?.id || null;
-                    this.contact.phone = this.agtWhatsCoversationInfo?.client?.phone || this.agtWhatsCoversationInfo?.destination || null;
+                    this.contact.phone =
+            this.agtWhatsCoversationInfo?.client?.phone ||
+            this.agtWhatsCoversationInfo?.destination ||
+            null;
                     this.contact.data = this.agtWhatsCoversationInfo.client.data
                         ? JSON.parse(this.agtWhatsCoversationInfo.client.data)
                         : [];
                 }
+                this.initFormData();
+            },
+            deep: true,
+            immediate: true
+        },
+        previewContact: {
+            handler () {
+                this.contact.id = this.previewContact?.id || null;
+                this.contact.phone = this.previewContact?.phone || '';
+                this.contact.data = this.previewContact?.data || [];
                 this.initFormData();
             },
             deep: true,

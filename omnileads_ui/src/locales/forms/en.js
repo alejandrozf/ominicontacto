@@ -326,6 +326,15 @@ export default {
                     }
                 }
             }
+        },
+        conversation: {
+            new: {
+                validations: {
+                    search_contact: {
+                        empty_campaign: 'You must select a campaign to search for contacts'
+                    }
+                }
+            }
         }
     }
 };
