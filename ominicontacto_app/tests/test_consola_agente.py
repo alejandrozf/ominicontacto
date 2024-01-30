@@ -25,7 +25,7 @@ from django.urls import reverse
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
-    GrupoFactory, CampanaFactory, QueueFactory)
+    GrupoFactory, CampanaFactory, QueueFactory, ActividadAgenteLogFactory)
 from ominicontacto_app.models import (
     Campana)
 
@@ -37,7 +37,7 @@ def request_host_port(request):
 class TestConsolaAgente (OMLBaseTest):
     def setUp(self, *args, **kwargs):
         super(TestConsolaAgente, self).setUp(*args, **kwargs)
-        self.url = reverse('index')
+        self.url = reverse('consola_de_agente')
         self.grupo = GrupoFactory(nombre='grupo_test')
         self.usr_agente = self.crear_user_agente(username='agente1')
         self.usr_agente.set_password(PASSWORD)
@@ -45,6 +45,7 @@ class TestConsolaAgente (OMLBaseTest):
         self.agente.grupo = self.grupo
         self.agente.save()
         self.client.login(username=self.agente.user.username, password=PASSWORD)
+        ActividadAgenteLogFactory(agente_id=self.agente.id, event='ADDMEMBER')
         self.campana_preview = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA,
                                                      type=Campana.TYPE_PREVIEW)
         self.queue = QueueFactory.create(campana=self.campana_preview)
