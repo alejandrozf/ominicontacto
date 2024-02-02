@@ -38,23 +38,25 @@ export default {
         state.agtWhatsCoversationMessages.push(message);
     },
     agtWhatsCoversationReciveMessage (state, data = null) {
-        const itsMine = data && data.origen ? data.origen === data.line_phone : false;
-        const senderName = data && data.sender && data.sender.name ? data.sender.name : '------';
-        const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
-        const message = {
-            id: data && data.message_id ? data.message_id : null,
-            from: itsMine
-                ? `Agente (${senderName})`
-                : senderName || senderPhone,
-            conversationId: data && data.chat_id ? data.chat_id : null,
-            itsMine,
-            message: data && data.content && data.content.text ? data.content.text : '',
-            status: data && data.status ? data.status : null,
-            date: data && data.timestamp ? new Date(data.timestamp) : new Date()
-        };
+        if (!data) return;
         const messages = state.agtWhatsCoversationMessages;
-        const alreadyExists = messages.find(m => m.id === message.id);
-        if (message && !alreadyExists) {
+        const newMessageId = data && data.message_id ? data.message_id : null;
+        const alreadyExists = messages.find(m => m.id === newMessageId);
+        if (!alreadyExists) {
+            const itsMine = data && data.origen ? data.origen === data.line_phone : false;
+            const senderName = data && data.sender && data.sender.name ? data.sender.name : '------';
+            const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
+            const message = {
+                id: newMessageId,
+                from: itsMine
+                    ? `Agente (${senderName})`
+                    : senderName || senderPhone,
+                conversationId: data && data.chat_id ? data.chat_id : null,
+                itsMine,
+                message: data && data.content && data.content.text ? data.content.text : '',
+                status: data && data.status ? data.status : null,
+                date: data && data.timestamp ? new Date(data.timestamp) : new Date()
+            };
             state.agtWhatsCoversationMessages.push(message);
             if (Number(localStorage.getItem('agtWhatsappConversationAttending')) !== data.chat_id) {
                 notificationEvent(

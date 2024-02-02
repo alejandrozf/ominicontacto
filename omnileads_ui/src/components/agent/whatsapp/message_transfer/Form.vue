@@ -3,43 +3,6 @@
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
         <label
-          id="message_transfer_from"
-          :class="{
-            'p-error': v$.form.from.$invalid && submitted,
-          }"
-          >{{ $t("models.whatsapp.message_transfer.from") }}*</label
-        >
-        <div class="p-inputgroup mt-2">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-user"></i>
-          </span>
-          <InputText
-            disabled
-            :class="{
-              'p-invalid': v$.form.from.$invalid && submitted,
-            }"
-            :placeholder="fromLabel"
-          />
-        </div>
-        <small
-          v-if="
-            (v$.form.from.$invalid && submitted) ||
-            v$.form.from.$pending.$response
-          "
-          class="p-error"
-        >
-          {{
-            v$.form.from.required.$message.replace(
-              "Value",
-              $t("models.whatsapp.message_transfer.from")
-            )
-          }}
-        </small>
-      </div>
-    </div>
-    <div class="grid formgrid">
-      <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
-        <label
           id="message_transfer_to"
           :class="{
             'p-error': v$.form.to.$invalid && submitted,
@@ -113,8 +76,6 @@ export default {
     validations () {
         return {
             form: {
-                conversationId: { required },
-                from: { required },
                 to: { required }
             }
         };
@@ -129,9 +90,7 @@ export default {
     data () {
         return {
             form: {
-                from: null,
-                to: null,
-                conversationId: null
+                to: null
             },
             agents: [],
             submitted: false,
@@ -143,7 +102,7 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsTransferChatForm'])
+        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsCoversationInfo'])
     },
     methods: {
         ...mapActions(['agtWhatsTransferChatSend']),
@@ -161,16 +120,12 @@ export default {
             this.submitted = false;
         },
         clearData () {
-            this.fromLabel = '';
-            this.form.from = null;
             this.form.to = null;
             this.form.conversationId = null;
             this.submitted = false;
         },
         initFormData () {
-            this.form.from = this.agtWhatsTransferChatForm?.from;
             this.form.to = this.agtWhatsTransferChatForm?.to;
-            this.form.conversationId = this.agtWhatsTransferChatForm?.conversationId;
         },
         clearFilter () {
             this.initFilters();
@@ -186,9 +141,13 @@ export default {
                 if (!isFormValid) {
                     return null;
                 }
-                const { status, message } = await this.agtWhatsTransferChatSend(
-                    this.form
-                );
+                const conversationId = JSON.parse(
+                    localStorage.getItem('agtWhatsCoversationInfo')
+                ).id;
+                const { status, message } = await this.agtWhatsTransferChatSend({
+                    to: this.form?.to || null,
+                    conversationId: conversationId
+                });
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
                     await notificationEvent(
@@ -215,20 +174,6 @@ export default {
         }
     },
     watch: {
-        agtWhatsTransferChatForm: {
-            handler () {
-                this.initFormData();
-                if (this.agents.length > 0) {
-                    this.fromLabel =
-            this.agents.find((a) => a.agent_id === this.form?.from)
-                ?.agent_full_name || '';
-                } else {
-                    this.fromLabel = '';
-                }
-            },
-            deep: true,
-            immediate: true
-        },
         agtWhatsTransferChatAgents: {
             handler () {
                 if (this.agtWhatsTransferChatAgents) {

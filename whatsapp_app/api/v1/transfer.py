@@ -27,7 +27,9 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, AgenteProfile
+from whatsapp_app.models import ConversacionWhatsapp
+from notification_app.notification import AgentNotifier
 
 
 class ListSerializer(serializers.Serializer):
@@ -37,8 +39,8 @@ class ListSerializer(serializers.Serializer):
 
 
 class AgenteListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    username = serializers.CharField(source='user.username')
+    agent_id = serializers.IntegerField(source='user_id')
+    agent_full_name = serializers.CharField(source='user.username')
     status = serializers.CharField(source='estado')
 
 
@@ -64,15 +66,28 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(
-        detail=False, methods=["post"],
-        url_path='(?P<chat_id>[^/.]+)/to_agent/(?P<agent_id>[^/.]+)')
-    def to_agent(self, request, chat_id, agent_id):
+        detail=False, methods=["post"])
+    def to_agent(self, request):
         try:
+            print("---->", request.data)
+            chat_id = request.data.get('conversationId')
+            agent_id = request.data.get('to')
+            conversacion = ConversacionWhatsapp.objects.get(id=chat_id)
+            agent = AgenteProfile.objects.get(user__id=agent_id)
+            success = conversacion.otorgar_conversacion(agent)
+            if success:
+                AgentNotifier().notify_whatsapp_chat_transfered(
+                    request.user.username, agent_id, conversacion)
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS),
+                    status=status.HTTP_200_OK)
             return response.Response(
                 data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS),
-                status=status.HTTP_200_OK)
-        except Exception:
+                    message=_('Error al tranferir conversacion')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al tranferir conversacion')),

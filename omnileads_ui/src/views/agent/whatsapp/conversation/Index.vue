@@ -125,6 +125,7 @@ export default {
                 'agtWhatsSetCoversationMessages',
                 this.agtWhatsSetCoversationMessages
             );
+            listenerStoreDataByAction('agtWhatsCoversationDetailInit', this.initData);
         },
         async updatedLocalStorage () {
             await this.initData();
@@ -164,13 +165,17 @@ export default {
                     JSON.stringify(this.agtWhatsCoversationInfo)
                 );
                 localStorage.setItem('onlyWhatsappTemplates', true);
-                const event = new CustomEvent('onWhatsappTemplatesEvent', {
+                const event = new Event(
+                    WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.RESTART_EXPIRED_CHAT
+                );
+                window.parent.document.dispatchEvent(event);
+                const modalEvent = new CustomEvent('onWhatsappTemplatesEvent', {
                     detail: {
                         templates: true,
                         conversationId: parseInt(this.$route.params.id)
                     }
                 });
-                window.parent.document.dispatchEvent(event);
+                window.parent.document.dispatchEvent(modalEvent);
             }
         }
     },

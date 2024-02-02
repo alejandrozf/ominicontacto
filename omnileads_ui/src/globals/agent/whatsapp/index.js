@@ -48,12 +48,16 @@ export const WHATSAPP_LOCALSTORAGE_EVENTS = {
     TEMPLATES_INIT_EVENT: 'whatsapp-localstorage-templates-init-data-event',
     CONVERSATION: {
         NEW_INIT_DATA: 'whatsapp-localstorage-conversation-new-init-data-event',
-        DETAIL_INIT_DATA: 'whatsapp-localstorage-conversation-detail-init-data-event'
+        DETAIL_INIT_DATA: 'whatsapp-localstorage-conversation-detail-init-data-event',
+        RESTART_EXPIRED_CHAT: 'whatsapp-localstorage-conversation-restart-expired-chat-init-data-event'
     },
     CONTACT: {
         FORM_INIT_DATA: 'whatsapp-localstorage-contact-form-init-data-event'
     },
     DISPOSITION: {
         FORM_INIT_DATA: 'whatsapp-localstorage-disposition-form-init-data-event'
+    },
+    TRANSFER: {
+        FORM_INIT_DATA: 'whatsapp-localstorage-transfer-form-init-data-event'
     }
 };

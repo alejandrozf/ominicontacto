@@ -225,12 +225,12 @@ class ConversacionWhatsapp(models.Model):
     objects = ConversacionWhatsappQuerySet.as_manager()
 
     def otorgar_conversacion(self, agent):
-        if self.agent:
-            return False
-        else:
+        try:
             self.agent = agent
             self.save()
             return True
+        except:
+            return False
 
 
 class MenuInteractivoWhatsapp(models.Model):

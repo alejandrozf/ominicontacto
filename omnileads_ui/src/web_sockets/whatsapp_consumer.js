@@ -186,9 +186,10 @@ export class WhatsappConsumer {
     async handleChatTransferedEvent (data) {
         await notificationEvent(
             NOTIFICATION.TITLES.WHATSAPP_CHAT_TRANSFERED,
-            `El chat del cliente (${data.chat_info.client_name}), se te transfirio`,
+            `El agente ${data.transfer_agent} te transfirió una conversación del ${data.from}`,
             NOTIFICATION.ICONS.INFO
         );
+        if (data) STORE.dispatch('agtWhatsReceiveNewChat', data);
     }
 
     async handleChatExpiredEvent (data = null) {

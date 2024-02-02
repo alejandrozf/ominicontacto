@@ -601,11 +601,6 @@ class ViewSet(viewsets.ViewSet):
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             # TODO: Mientras no haya expirado solo el agente que atendio puede escribirle.
             # Falta metodo para "finalizar" la conversación ¿Calificar?
-            conversation_started = ConversacionWhatsapp.objects.filter(
-                line=line,
-                destination=destination,
-                expire__gte=timestamp
-            )
             or_filter = Q(destination=destination) | Q(client_id=contact.pk)
             conversation_started = ConversacionWhatsapp.objects\
                 .conversaciones_en_curso().filter(line_id=line.pk).filter(or_filter)

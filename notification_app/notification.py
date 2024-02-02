@@ -103,41 +103,18 @@ class AgentNotifier:
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_ATTENDED, message, user_id=user_id, whatsapp_event=True)
 
-    def notify_whatsapp_chat_transfered(self, user_id, id_conversacion):
-        message = {
-            'chat_info': {
-                'id': id_conversacion,
-                'campaing_id': 'id_campana',
-                'campaing_name': 'nombre_campana',
-                'client_name': 'Cliente Transferido',
-                "client_number": "7221313052",
-                'photo': 'foto.jpg',
-                'date': str(datetime.datetime.now()),
-                'message_number': 2
-            },
-            'messages': [
-                {
-                    'chat_id': id_conversacion,
-                    'message_id': 1,
-                    'campaing_id': None,
-                    'content': 'contenido1',
-                    'message_id': 1,
-                    'status': MESSAGE_STATUS['READ'],
-                    'date': str(datetime.datetime.now()),
-                    'sender': MESSAGE_SENDERS['CLIENT'],
-                },
-                {
-                    'chat_id': id_conversacion,
-                    'message_id': 2,
-                    'campaing_id': None,
-                    'content': 'contenido2',
-                    'message_id': 2,
-                    'status': MESSAGE_STATUS['READ'],
-                    'date': str(datetime.datetime.now()),
-                    'sender': MESSAGE_SENDERS['AGENT']
-                },
-            ]
-        }
+    def notify_whatsapp_chat_transfered(self, transfer_agent, user_id, conversation):
+        if conversation:
+            message = {
+                'chat_id': conversation.id,
+                'campaing_id': conversation.campana.id,
+                'campaing_name': conversation.campana.nombre,
+                'number_messages': conversation.mensajes.count(),
+                'from': conversation.destination,
+                'expire': conversation.expire.isoformat(),
+                'timestamp': conversation.timestamp.isoformat(),
+                'transfer_agent': transfer_agent
+            }
         self.send_message(
             self.TYPE_WHATSAPP_CHAT_TRANSFERED, message, user_id=user_id, whatsapp_event=True)
 

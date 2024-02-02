@@ -174,6 +174,10 @@ export default {
                 action: 'agtWhatsSetCoversationMessages',
                 data: messages
             });
+            await resetStoreDataByAction({
+                action: 'agtWhatsCoversationDetailInit',
+                data: null
+            });
             return result;
         } catch (error) {
             console.error('===> ERROR al reactivar conversacion expirada');

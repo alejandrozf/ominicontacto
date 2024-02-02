@@ -48,10 +48,18 @@ export default {
             WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
             this.updatedLocalStorage
         );
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.RESTART_EXPIRED_CHAT,
+            this.updatedLocalStorage
+        );
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
             WHATSAPP_LOCALSTORAGE_EVENTS.TEMPLATES_INIT_EVENT,
+            this.updatedLocalStorage
+        );
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.RESTART_EXPIRED_CHAT,
             this.updatedLocalStorage
         );
     },

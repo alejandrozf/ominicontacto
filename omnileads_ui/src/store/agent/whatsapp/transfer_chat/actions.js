@@ -1,38 +1,45 @@
 /* eslint-disable no-unused-vars */
-import AgentService from '@/services/supervisor/agents_campaign_service';
-// import Service from '@/services/agent/whatsapp/management_service';
-const agentService = new AgentService();
-// const service = new Service();
+import WhatsappTransferChatService from '@/services/agent/whatsapp/transfer_service';
+import { HTTP_STATUS } from '@/globals';
+const transferService = new WhatsappTransferChatService();
 
 export default {
-    async agtWhatsTransferChatInitData ({ commit }, conversationId) {
+    async agtWhatsTransferChatInitData ({ commit }, { campaingId = null }) {
         try {
-            const { activeAgents, status } = await agentService.getActiveAgents();
-            await commit('agtWhatsTransferChatInitAgents', status === 'SUCCESS' ? activeAgents : []);
-            const data = {
-                from: 20,
-                to: null,
-                conversationId
-            };
-            await commit('agtWhatsTransferChatInitData', data);
+            if (!campaingId) {
+                await commit('agtWhatsTransferChatInitAgents', []);
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al obtener Agentes'
+                };
+            }
+            const response = await transferService.getActiveAgents({
+                campaingId
+            });
+            const { status, data } = response;
+            await commit(
+                'agtWhatsTransferChatInitAgents',
+                status === HTTP_STATUS.SUCCESS ? data : []
+            );
+            return response;
         } catch (error) {
             console.error('agtWhatsTransferChatInitData');
             console.error(error);
             await commit('agtWhatsTransferChatInitAgents', []);
-            await commit('agtWhatsTransferChatInitData', {
-                from: null,
-                to: null,
-                conversationId: null
-            });
         }
     },
-    agtWhatsTransferChatSend ({ commit }, data) {
-        // return await service.create(data);
-        console.log('Transfer Chat');
-        console.log(data);
-        return {
-            status: 'SUCCESS',
-            message: 'Se transfirio satisfactoriamente el chat'
-        };
+    async agtWhatsTransferChatSend ({ commit }, postData) {
+        const { status } = await transferService.transferToagent(postData);
+        if (status === HTTP_STATUS.SUCCESS) {
+            return {
+                status: HTTP_STATUS.SUCCESS,
+                message: 'Se transfirio satisfactoriamente el chat'
+            };
+        } else {
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'No se pudo transferir el chat'
+            };
+        }
     }
 };

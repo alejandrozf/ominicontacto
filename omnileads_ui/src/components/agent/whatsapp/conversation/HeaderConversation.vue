@@ -8,7 +8,10 @@
         icon="pi pi-arrow-left"
         class="p-button-rounded p-button-secondary p-button-text"
       />
-      <Chip :label="clientInfo?.name + ' (' + clientInfo?.phone + ')'" icon="pi pi-user" />
+      <Chip
+        :label="clientInfo?.name + ' (' + clientInfo?.phone + ')'"
+        icon="pi pi-user"
+      />
     </template>
     <template #end>
       <div v-if="!viewAsReport && !agtWhatsCoversationInfo.error">
@@ -18,15 +21,14 @@
         v-tooltip.top="$t('globals.attach')"
         class="p-button-warning"
         disabled
-      />
-
-      <Button
-        icon="pi pi-arrows-h"
-        class="p-button-secondary ml-2"
-        @click="transfer"
-        v-tooltip.top="$t('globals.transfer')"
-        disabled
-      /> -->
+      />-->
+        <Button
+          v-if="!isExpired"
+          icon="pi pi-arrows-h"
+          class="p-button-secondary ml-2"
+          @click="transfer"
+          v-tooltip.top="$t('globals.transfer')"
+        />
         <Button
           v-if="agtWhatsCoversationInfo.client.id"
           icon="pi pi-save"
@@ -122,10 +124,7 @@ export default {
         ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
     },
     methods: {
-        ...mapActions([
-            'agtWhatsTransferChatInitData',
-            'agtWhatsSetCoversationMessages'
-        ]),
+        ...mapActions(['agtWhatsSetCoversationMessages']),
         back () {
             this.$router.push({ name: 'agent_whatsapp' });
         },
@@ -176,7 +175,9 @@ export default {
                 'agtWhatsCoversationInfo',
                 JSON.stringify(this.agtWhatsCoversationInfo)
             );
-            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA);
+            const event = new Event(
+                WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA
+            );
             window.parent.document.dispatchEvent(event);
             const modalEvent = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
@@ -194,7 +195,9 @@ export default {
                 'agtWhatsDispositionChatFormToCreate',
                 this.agtWhatsCoversationInfo.client.dispositionId === null
             );
-            const event = new Event(WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA);
+            const event = new Event(
+                WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA
+            );
             window.parent.document.dispatchEvent(event);
             const modalEvent = new CustomEvent('onWhatsappDispositionFormEvent', {
                 detail: {
@@ -203,16 +206,21 @@ export default {
             });
             window.parent.document.dispatchEvent(modalEvent);
         },
-        async transfer () {
-            if (this.$helpers.isSocketConnected(this.$t)) {
-                await this.agtWhatsTransferChatInitData(1);
-                const event = new CustomEvent('onWhatsappTransferChatEvent', {
-                    detail: {
-                        transfer_chat: true
-                    }
-                });
-                window.parent.document.dispatchEvent(event);
-            }
+        transfer () {
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(this.agtWhatsCoversationInfo)
+            );
+            const event = new Event(
+                WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.FORM_INIT_DATA
+            );
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onWhatsappTransferChatEvent', {
+                detail: {
+                    transfer_chat: true
+                }
+            });
+            window.parent.document.dispatchEvent(modalEvent);
         },
         close () {
             const event = new CustomEvent('onWhatsappCloseContainerEvent', {
