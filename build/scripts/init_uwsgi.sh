@@ -21,8 +21,16 @@ max-requests=2000
 EOF
 fi
 
+
 echo "Run django command compilemessages"
 $COMMAND compilemessages
+echo "Run django command colllect_static"
+echo 'yes' | $COMMAND collectstatic
+$COMMAND collectstatic_js_reverse
+echo "Run django command compress"
+$COMMAND compress --force
+echo "Run actualizar_permisos"
+$COMMAND actualizar_permisos
 echo "Run django command regenerar_asterisk"
 $COMMAND regenerar_asterisk
 echo "Init uWSGI"

@@ -13,13 +13,5 @@ $COMMAND migrate --noinput
 $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
 echo "Run django command populate_history"
 $COMMAND populate_history
-echo "Run django command colllect_static"
-echo 'yes' | $COMMAND collectstatic
-$COMMAND collectstatic_js_reverse
-echo "Run django command compress"
-$COMMAND compress --force
-echo "Run actualizar_permisos"
-$COMMAND actualizar_permisos
 echo "Run adicionar_perfil_supervisor_admin"
 $COMMAND adicionar_perfil_supervisor_admin
-
