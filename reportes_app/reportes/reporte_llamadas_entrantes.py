@@ -69,6 +69,14 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
             estadisticas_campana = self.estadisticas[log.campana_id]
             self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
 
+        # Envío datos de la campaña vacíos para refrescar al iniciar el dia para
+        # reiniciar estadisticas de campañas que todavía no tienen logs para esta fecha
+        # TODO: Podría hacerse la 1ra vez del dia que se llame el reporte para evitar enviar
+        # datos de campañas vacías (sin llamadas en el dia) todo el tiempo.
+        ids_sin_estadisticas = set(self.campanas.keys()) - set(self.estadisticas.keys())
+        for campana_id in ids_sin_estadisticas:
+            self._inicializar_conteo_de_campana(self.campanas[campana_id])
+
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.using('replica').filter(time__gte=self.desde,
                                                           time__lte=self.hasta,
