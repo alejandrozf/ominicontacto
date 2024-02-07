@@ -32,6 +32,7 @@ from whatsapp_app.models import Linea
 from whatsapp_app.api.v1.linea_serializers import (
     ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
     DestinoDeLineaCreateSerializer, )
+from ominicontacto_app.models import Campana
 
 
 class ViewSet(viewsets.ViewSet):
@@ -216,14 +217,20 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = Linea.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            instance.is_active = False
-            instance.save()
-            StreamDeLineas.notificar_linea_eliminada(instance)
-            return response.Response(
-                data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS,
-                    message=_('Se elimino la línea de forma exitosa')),
-                status=status.HTTP_200_OK)
+            if not instance.configuracionwhatsapp.exclude(campana__estado=Campana.ESTADO_BORRADA):
+                instance.is_active = False
+                instance.save()
+                StreamDeLineas().notificar_linea_eliminada(instance)
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Se elimino la línea de forma exitosa')),
+                    status=status.HTTP_200_OK)
+            else:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Esta línea está siendo usada por alguna campaña activa.')),
+                    status=status.HTTP_401_UNAUTHORIZED)
         except Linea.DoesNotExist:
             return response.Response(
                 data=get_response_data(message=_('Línea no encontrado')),

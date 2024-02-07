@@ -211,7 +211,6 @@ export default {
     watch: {
         supWhatsappProviders: {
             handler () {
-                if (this.supWhatsappProviders.length > 0) {
                     this.providers = this.supWhatsappProviders.map((provider) => {
                         return {
                             id: provider.id,
@@ -220,7 +219,6 @@ export default {
                             configuracion: provider.configuration
                         };
                     });
-                }
             },
             deep: true,
             immediate: true
