@@ -165,7 +165,8 @@ class Command(BaseCommand):
         # crear campaña dialer
         campana = CampanaFactory(
             nombre=nombre_campana, bd_contacto=self.bd_contacto,
-            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
+            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA,
+            tiempo_desconexion=10
         )
         # crear Queue para la campaña
         Queue.objects.create(

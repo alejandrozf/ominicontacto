@@ -323,6 +323,7 @@ class CampanaWizardMixin(object):
             tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
             context['interaccion_crm'] = tipo_interaccion in \
                 [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
+            context['whatsapp_habilitado'] = cleaned_data_step_initial['whatsapp_habilitado']
         else:
             pk = self.kwargs.get('pk_campana', False)
             if pk:
