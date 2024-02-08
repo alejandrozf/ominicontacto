@@ -38,7 +38,17 @@ class ConfiguracionProveedor(AuditableModelMixin, models.Model):
     configuracion = JSONField(default=dict)  # gupshup: Apikey
 
 
+class LineaManager(models.Manager):
+
+    def get_queryset(self):
+        return super(LineaManager, self).get_queryset().exclude(
+            is_active=False)
+
+
 class Linea(AuditableModelMixin):
+    objects = LineaManager()
+    objects_default = models.Manager()
+
     nombre = models.CharField(max_length=100)  # appname requerido y unico
     proveedor = models.ForeignKey(
         ConfiguracionProveedor, on_delete=models.CASCADE, related_name="lineas")
