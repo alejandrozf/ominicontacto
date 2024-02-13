@@ -294,6 +294,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador']},
             {'nombre': 'api_register_server_create',
              'roles': ['Administrador']},
+            {'nombre': 'api_database_create_view',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_contact_database_campaings',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_log_survey_transfer',
@@ -678,6 +680,9 @@ class ApiAppConfig(AppConfig):
         'api_register_server_create':
             {'descripcion': _('Registrar la instancia'),
              'version': '1.29.0'},
+        'api_database_create_view':
+            {'descripcion': _('Crear una base de datos de contactos'),
+             'version': '1.33.4'},
         'api_contact_database_campaings':
             {'descripcion': _('Campañas asociadas a una base de datos de contactos'),
              'version': '1.29.0'},

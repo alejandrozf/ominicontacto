@@ -23,8 +23,10 @@ from django.urls import include, re_path, path
 from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
-from api_app.views.base import (
-    login, ContactoCreateView, CampaignDatabaseMetadataView, CamposDireccionView)
+from api_app.views.base import login
+from api_app.views.base_de_contactos import (
+    CampaingsOnDB, ContactoCreateView, CampaignDatabaseMetadataView, CamposDireccionView,
+    BaseDatosContactoCreateView, )
 from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
@@ -81,7 +83,6 @@ from api_app.views.ivr import (
 from api_app.views.register_server import (
     RegisterServerCreate,
     RegisterServerList)
-from api_app.views.base_de_contactos import (CampaingsOnDB)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -132,16 +133,7 @@ urlpatterns = [
 
     # ###########   TODOS/BASE    ############ #
     re_path(r'^', include(router.urls)),
-    re_path(r'api/v1/login', login, name='api_login'),
-
-    re_path(r'api/v1/new_contact/', ContactoCreateView.as_view(),
-            name='api_new_contact'),
-    re_path(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
-            name='api_campaign_database_metadata'),
-
-    re_path(r'api/v1/campaign/database_metadata_columns_fields/(?P<pk>\d+)/$',
-            CamposDireccionView.as_view(), name='api_database_metadata_columns_fields'),
-
+    path('api/v1/login', login, name='api_login'),
     # ###########   ADMINISTRADOR    ############ #
     re_path(r'api/v1/permissions/new_role/$',
             CrearRolView.as_view(),
@@ -476,9 +468,17 @@ urlpatterns = [
     # =========================
     # Base de contactos
     # =========================
+    path('api/v1/contacto_database/create/',
+         BaseDatosContactoCreateView.as_view(), name='api_database_create_view'),
     path('api/v1/contact_database/<int:pk>/campaings/',
          CampaingsOnDB.as_view(),
          name='api_contact_database_campaings'),
+    path('api/v1/new_contact/', ContactoCreateView.as_view(),
+         name='api_new_contact'),
+    path('api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
+         name='api_campaign_database_metadata'),
+    path('api/v1/campaign/database_metadata_columns_fields/<int:pk>/',
+         CamposDireccionView.as_view(), name='api_database_metadata_columns_fields'),
     # ###########     AGENTE      ############ #
     path('api/v1/campaign/<int:pk_campana>/contacts/',
          API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
