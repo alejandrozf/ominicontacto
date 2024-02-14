@@ -70,7 +70,7 @@
                         <i class="pi pi-file"></i>
                       </span>
                       <Dropdown
-                        v-model="supWhatsappLine.mensaje_bienvenida"
+                        v-model="v$.form.mensaje_bienvenida.$model"
                         class="w-full"
                         :options="messageTemplates"
                         @change="msgBienvenidaChange"
@@ -118,7 +118,7 @@
                         <i class="pi pi-file"></i>
                       </span>
                       <Dropdown
-                        v-model="supWhatsappLine.mensaje_fueradehora"
+                        v-model="v$.form.mensaje_fueradehora.$model"
                         class="w-full"
                         :options="messageTemplates"
                         @change="msgFueraHoraChange"
@@ -166,7 +166,7 @@
                         <i class="pi pi-file"></i>
                       </span>
                       <Dropdown
-                        v-model="supWhatsappLine.mensaje_despedida"
+                        v-model="v$.form.mensaje_despedida.$model"
                         class="w-full"
                         :options="messageTemplates"
                         @change="msgDespedidaChange"
@@ -574,7 +574,10 @@ export default {
                     destino: { required },
                     tipo_de_destino: { required }
                 },
-                horario: { required }
+                horario: { required },
+                mensaje_bienvenida: { required },
+                mensaje_despedida: { required },
+                mensaje_fueradehora: { required },
             }
         };
     },
@@ -597,7 +600,10 @@ export default {
                     destino: null,
                     tipo_de_destino: 0
                 },
-                horario: null
+                horario: null,
+                mensaje_bienvenida: null,
+                mensaje_despedida: null,
+                mensaje_fueradehora: null,
             },
             showModal: false,
             formToCreate: false,
@@ -666,6 +672,9 @@ export default {
         },
         initFormBase () {
             this.form.horario = this.supWhatsappLine.horario;
+            this.form.mensaje_bienvenida = this.supWhatsappLine.mensaje_bienvenida;
+            this.form.mensaje_despedida = this.supWhatsappLine.mensaje_despedida;
+            this.form.mensaje_fueradehora = this.supWhatsappLine.mensaje_fueradehora;
             this.form.configuracion.tipo_de_destino =
         this.supWhatsappLine.configuracion.tipo_de_destino;
             this.form.configuracion.destino =
