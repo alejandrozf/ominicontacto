@@ -72,9 +72,11 @@ class ReporteCampanaWhatsapp:
         self.interactions_started =\
             chats_of_campaing.conversaciones_salientes(*args).count()
         self.attended_chats =\
-            chats_of_campaing.conversaciones_entrantes_atendidas(*args).count()
+            chats_of_campaing.conversaciones_entrantes_atendidas(*args).count() +\
+            chats_of_campaing.conversaciones_salientes_atendidas(*args).count()
         self.not_attended_chats =\
-            chats_of_campaing.conversaciones_entrantes_no_atendidas(*args).count()
+            chats_of_campaing.conversaciones_entrantes_no_atendidas(*args).count() +\
+            chats_of_campaing.conversaciones_salientes_no_atendidas(*args).count()
         self.inbound_chats_attended =\
             chats_of_campaing.conversaciones_entrantes_atendidas(*args).count()
         self.inbound_chats_not_attended =\
