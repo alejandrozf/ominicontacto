@@ -5,7 +5,7 @@
         <span
           ><b class="text-lg">{{ message?.from }}</b></span
         >
-        <p class="mt-2 mb-3">
+        <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
           {{ message?.message }}
         </p>
         <div class="flex justify-content-end flex-wrap">

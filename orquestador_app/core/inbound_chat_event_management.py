@@ -47,6 +47,16 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 timestamp=timestamp,
                 date_last_interaction=timestamp
             )
+            message_inbound, created_message =\
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=message_id, conversation=conversation, defaults={
+                        'origen': origen,
+                        'timestamp': timestamp,
+                        'sender': sender,
+                        'content': content,
+                        'type': type
+                    }
+                )
             autoresponse_welcome(line, conversation, timestamp)
         else:
             if not conversation.is_active:
@@ -56,14 +66,15 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
             conversation.date_last_interaction = timestamp
             conversation.save()
 
-        message_inbound, created_message =\
-            MensajeWhatsapp.objects.get_or_create(message_id=message_id, conversation=conversation,
-                                                  defaults={
-                                                      'origen': origen,
-                                                      'timestamp': timestamp,
-                                                      'sender': sender,
-                                                      'content': content,
-                                                      'type': type})
+            message_inbound, created_message =\
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=message_id, conversation=conversation, defaults={
+                        'origen': origen,
+                        'timestamp': timestamp,
+                        'sender': sender,
+                        'content': content,
+                        'type': type
+                    })
         if created_message:
             if conversation.agent:
                 await send_notify('notify_whatsapp_new_message',
@@ -75,7 +86,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
 
         if not conversation.campana:
             if type == 'list_reply':
-                asignar_campana(line, conversation, content)
+                await asignar_campana(line, conversation, content)
             else:
                 autoreponse_destino_interactivo(line, conversation)
 
@@ -83,7 +94,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
         print("inbound_chat_event >>>>>>>> Error: ", e)
 
 
-def asignar_campana(line, conversation, content):
+async def asignar_campana(line, conversation, content):
     try:
         destination_entrante = line.destino
         destino = destination_entrante.destinos_siguientes.filter(
@@ -92,6 +103,7 @@ def asignar_campana(line, conversation, content):
         if destino:
             conversation.campana = destino.destino_siguiente.content_object
             conversation.save()
+            await send_notify('notify_whatsapp_new_chat', conversation=conversation)
             if destination_entrante.content_object.texto_derivacion:
                 auto_response = {"text": destination_entrante.content_object.texto_derivacion}
         else:

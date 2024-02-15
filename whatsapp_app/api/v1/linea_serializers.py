@@ -163,9 +163,9 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         menu_data = self.menu_serializer.data
         self.destino = instance
         self.menu = instance.content_object
-        self.menu.texto_opciones = menu_data['text'],
-        self.menu.texto_opcion_incorrecta = menu_data['wrong_answer'],
-        self.menu.texto_derivacion = menu_data['success'],
+        self.menu.texto_opciones = menu_data['text']
+        self.menu.texto_opcion_incorrecta = menu_data['wrong_answer']
+        self.menu.texto_derivacion = menu_data['success']
         self.menu.timeout = menu_data['timeout']
         self.menu.save()
 
