@@ -122,7 +122,8 @@ class ConfiguracionWhatsappCampana(AuditableModelMixin):
     linea = models.ForeignKey(Linea, related_name="configuracionwhatsapp",
                               on_delete=models.CASCADE, blank=True, null=True)
     grupo_plantilla_whatsapp = models.ForeignKey(
-        GrupoPlantillaMensaje, related_name="configuracionwhatsapp", on_delete=models.PROTECT)
+        GrupoPlantillaMensaje, related_name="configuracionwhatsapp",
+        blank=True, null=True, on_delete=models.PROTECT)
     nivel_servicio = models.IntegerField()
 
 

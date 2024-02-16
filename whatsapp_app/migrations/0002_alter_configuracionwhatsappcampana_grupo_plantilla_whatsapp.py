@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='configuracionwhatsappcampana',
             name='grupo_plantilla_whatsapp',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='configuracionwhatsapp', to='whatsapp_app.grupoplantillamensaje'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='configuracionwhatsapp', to='whatsapp_app.grupoplantillamensaje'),
         ),
     ]

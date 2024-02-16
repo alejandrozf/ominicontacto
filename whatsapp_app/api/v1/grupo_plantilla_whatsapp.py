@@ -30,6 +30,7 @@ from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.plantilla_mensaje import ListSerializer as PlantillaMensajeListSerializer
 from whatsapp_app.models import GrupoPlantillaMensaje
 from whatsapp_app.models import PlantillaMensaje
+from ominicontacto_app.models import Campana
 
 
 class ListSerializer(serializers.Serializer):
@@ -169,12 +170,18 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = GrupoPlantillaMensaje.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            instance.delete()
-            return response.Response(
-                data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS,
-                    message=_('Se elimino grupo plantilla mensaje de forma exitosa')),
-                status=status.HTTP_200_OK)
+            if not instance.configuracionwhatsapp.exclude(campana__estado=Campana.ESTADO_BORRADA):
+                instance.delete()
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Se elimino grupo plantilla mensaje de forma exitosa')),
+                    status=status.HTTP_200_OK)
+            else:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Grupo plantilla está siendo usado por alguna campaña activa')),
+                    status=status.HTTP_401_UNAUTHORIZED)
         except GrupoPlantillaMensaje.DoesNotExist:
             return response.Response(
                 data=get_response_data(message=_('Grupo plantilla mensaje no encontrado')),
