@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <div class="col-md-3">
         <form method="GET" action="{% url 'grupo_list' %}" class="filter-flex">
-            <input type="text" class="form-control" name="search" placeholder="Busca por nombre" value="{{ search }}">
+            <input type="text" class="form-control" name="search" placeholder="{% trans 'Busca por nombre' %}" value="{{ search }}">
             <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
         </form>
     </div>

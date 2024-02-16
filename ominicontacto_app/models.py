@@ -296,6 +296,7 @@ class Grupo(models.Model):
         'Acceso a las campañas preview como agente'))
     conjunto_de_pausa = models.ForeignKey(
         ConjuntoDePausa,
+        verbose_name=_('Conjunto de pausas'),
         related_name='grupos',
         null=True, blank=True,
         on_delete=models.SET_NULL
