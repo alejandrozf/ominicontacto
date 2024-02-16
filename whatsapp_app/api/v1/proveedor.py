@@ -250,12 +250,18 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = ConfiguracionProveedor.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            instance.delete()
-            return response.Response(
-                data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS,
-                    message=_('Se elimino la Configuración del proveedor de forma exitosa')),
-                status=status.HTTP_200_OK)
+            if not instance.lineas.filter(is_active=True):
+                instance.delete()
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Se elimino la Configuración del proveedor de forma exitosa')),
+                    status=status.HTTP_200_OK)
+            else:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Proveedor con líneas activas.')),
+                    status=status.HTTP_401_UNAUTHORIZED)
         except ConfiguracionProveedor.DoesNotExist:
             return response.Response(
                 data=get_response_data(message=_('Configuración del proveedor no encontrado')),
