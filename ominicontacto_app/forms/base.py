@@ -2322,15 +2322,18 @@ class ConfiguracionDeAgentesDeCampanaForm(forms.ModelForm):
 class AutenticacionExternaForm(forms.Form):
     tipo = forms.ChoiceField(
         required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Tipo'),
         choices=(('0', '--------'), ('LDAP', _('LDAP Server'))))
     servidor = forms.CharField(
         max_length=255, required=False, validators=[URLValidator],
+        label=_('Servidor'),
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     base_dn = forms.CharField(
         max_length=255, required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     activacion = forms.ChoiceField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Activación'),
         choices=((AutenticacionExternaDeUsuario.TODOS, _('Todos')),
                  (AutenticacionExternaDeUsuario.TODOS_NO_ADMIN, _('Todos menos Admin')),
                  (AutenticacionExternaDeUsuario.MANUAL_ACTIVO, _('Manual (default activo)')),

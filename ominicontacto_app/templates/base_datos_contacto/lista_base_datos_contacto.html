@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
         <div class="col-md-3">
             <form method="GET" action="{% url 'lista_base_datos_contacto' page=1 %}" class="filter-flex">
-                <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="Busca por nombre">
+                <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="{% trans 'Busca por nombre' %}">
                 <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
             </form>
         </div>
