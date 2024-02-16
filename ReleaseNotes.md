@@ -9,7 +9,8 @@
 
 ## Fixed
 
-oml-2555 Se corrige error al reagendar contacto anteriormente calificado por otro agente.
+- oml-463 [WEB] Startup scripts for the web app (django commands) have been modified.
+- Minor text translations
 
 ## Removed
 
