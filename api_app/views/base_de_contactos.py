@@ -29,7 +29,7 @@ from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers.base_de_contactos import (CampaingsOnDBSerializer)
 from ominicontacto_app.forms.base import FormularioNuevoContacto
-from ominicontacto_app.models import SistemaExterno, Campana, BaseDatosContacto
+from ominicontacto_app.models import SistemaExterno, Campana, BaseDatosContacto, Contacto
 from ominicontacto_app.utiles import (
     validar_solo_alfanumericos_o_guiones, validar_longitud_nombre_base_de_contactos, elimina_tildes)
 
@@ -68,7 +68,7 @@ class CampaingsOnDB(APIView):
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class ContactoCreateView(APIView):
+class ContactoDeCampanaCreateView(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
     http_method_names = ['post']
@@ -389,3 +389,121 @@ class BaseDatosContactoCreateView(APIView):
             return Response(data={'message': _('Error en los datos'),
                                   'errors': serializer.errors, },
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class ContactoCreateSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        self.bd_contacto = kwargs.pop('context', {}).get('bd_contacto')
+        self.ids_externos = []
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Contacto
+        fields = [
+            'id',
+            'telefono',
+            'datos',
+            'bd_contacto',
+            'id_externo'
+        ]
+
+    def validar_telefono(self, field, value):
+        if not value.isdigit():
+            msg = _('Debe ser solo numérico.')
+            raise serializers.ValidationError({field: msg})
+        if not 3 <= len(value) <= 20:
+            msg = _('Solo se permiten de 3-20 dígitos.')
+            raise serializers.ValidationError({field: msg})
+        return value
+
+    def validar_id_externo(self, field, value):
+        if value in self.bd_contacto.contactos.all().values_list('id_externo', flat=True)\
+           or value in self.ids_externos:
+            msg = _('El id externo debe ser único en la base de datos - {}'.format(value))
+            raise serializers.ValidationError({field: msg})
+        self.ids_externos.append(value)
+        return value
+
+    def to_internal_value(self, data):
+        bd_contacto = self.bd_contacto
+        fields = bd_contacto.get_metadata().nombres_de_columnas
+        if set(data.keys()).issubset(set(fields)):
+            contact = {}
+            metadata = bd_contacto.get_metadata()
+            nombre_campo_telefono = metadata.nombre_campo_telefono
+            nombre_campo_id_externo = metadata.nombre_campo_id_externo
+            fields = metadata.nombres_de_columnas
+
+            if nombre_campo_telefono in data:
+                telefono = data.pop(nombre_campo_telefono)
+                contact['telefono'] = self.validar_telefono(nombre_campo_telefono, telefono)
+            else:
+                raise serializers.ValidationError({nombre_campo_telefono: _('campo requerido')})
+
+            if nombre_campo_id_externo in data:
+                id_externo = data.pop(nombre_campo_id_externo)
+                contact['id_externo'] =\
+                    self.validar_id_externo(nombre_campo_id_externo, id_externo)
+
+            contact_datos = []
+            for field in fields:
+                if field not in [nombre_campo_telefono, nombre_campo_id_externo]:
+                    value = data.get(field, '')
+                    contact_datos.append(value)
+            contact['datos'] = json.dumps(contact_datos)
+            contact['bd_contacto'] = self.bd_contacto.id
+        else:
+            raise serializers.ValidationError(
+                {'Error': _('Campos invalidos: {}'.format(
+                    list(set(data.keys()).difference(set(fields)))))})
+
+        return super(ContactoCreateSerializer, self).to_internal_value(contact)
+
+
+class ContactoListSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    telefono = serializers.CharField()
+    datos = serializers.CharField()
+    bd_contacto = serializers.PrimaryKeyRelatedField(queryset=BaseDatosContacto.objects.all())
+    id_externo = serializers.CharField()
+
+
+class ContactoCreateView(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
+    http_method_names = ['post', 'get']
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, db_pk):
+        try:
+            bd_contacto = BaseDatosContacto.objects.get(id=db_pk)
+        except BaseDatosContacto.DoesNotExist:
+            return Response(data={'error': _('Base de datos inexistente')},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = ContactoCreateSerializer(
+            data=request.data, context={'bd_contacto': bd_contacto}, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            # TODO: OML-1016 - Agregar en Wombat si quien lo crea es supervisor.
+            # TODO: Agrego la relación de AgenteEnContacto para todas las campañas preview?
+            return Response(data={'status': 'SUCCESS',
+                                  'data': serializer.data,
+                                  'message': _('Se crearon los contactos de forma exitosa'), },
+                            status=status.HTTP_201_CREATED)
+        else:
+            return Response(data={'message': _('Error en los datos'),
+                                  'errors': serializer.errors, },
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, db_pk):
+        try:
+            bd_contacto = BaseDatosContacto.objects.get(id=db_pk)
+            contactos = bd_contacto.contactos.all()
+            serializer = ContactoListSerializer(contactos, many=True)
+            return Response(data={'status': 'SUCCESS',
+                                  'data': serializer.data,
+                                  'message': _('Se obtuvieron los contactos de forma exitosa')},
+                            status=status.HTTP_200_OK)
+        except BaseDatosContacto.DoesNotExist:
+            return Response(data={'error': _('Base de datos inexistente')},
+                            status=status.HTTP_404_NOT_FOUND)

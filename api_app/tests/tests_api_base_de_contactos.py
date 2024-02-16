@@ -22,6 +22,7 @@ from django.urls import reverse
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import CampanaFactory, BaseDatosContactoFactory
 from ominicontacto_app.models import User, Campana, BaseDatosContacto
+from rest_framework import status
 
 
 class APITest(OMLBaseTest):
@@ -121,3 +122,136 @@ class BaseDatosContactoCreateTest(APITest):
         self.assertEqual(post_data['external_id_field'], metadata.nombre_campo_id_externo)
         todos = post_data['phone_fields'] + post_data['data_fields'] + ['dni']
         self.assertEqual(set(todos), set(metadata.nombres_de_columnas))
+
+    def test_crea_contacto_ok(self):
+        self.client.login(username=self.sup.username, password=PASSWORD)
+        nombre = 'test-db' if self.db.nombre != 'test-db' else 'otro-nombre'
+        post_data = {
+            'name': nombre,
+            'phone_fields': ['tel', 'cel'],
+            'data_fields': ['nombre', 'apellido'],
+            'external_id_field': 'dni'
+        }
+        URL = reverse('api_database_create_view',)
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_json = response.json()
+        id = response_json['data']['id']
+        db = BaseDatosContacto.objects.get(id=id)
+        post_data = [
+            {
+                "tel": "09090900",
+                "cel": "09889900",
+                "nombre": "contacto1",
+                "apellido": "contacto1",
+                "dni": "35353530"
+            },
+            {
+                "tel": "09090901",
+                "cel": "09889900",
+                "nombre": "contacto2",
+                "apellido": "contacto2",
+                "dni": "35353531"
+            }
+        ]
+        URL = reverse('api_database_create_contact_view', args=[db.pk, ])
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_crea_contacto_nombre_de_campo_erroneo(self):
+        self.client.login(username=self.sup.username, password=PASSWORD)
+        nombre = 'test-db' if self.db.nombre != 'test-db' else 'otro-nombre'
+        post_data = {
+            'name': nombre,
+            'phone_fields': ['tel', 'cel'],
+            'data_fields': ['nombre', 'apellido'],
+            'external_id_field': 'dni'
+        }
+        URL = reverse('api_database_create_view',)
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_json = response.json()
+        id = response_json['data']['id']
+        db = BaseDatosContacto.objects.get(id=id)
+        post_data = [
+            {
+                "telefono": "09090900",  # nombre de campo erroneo
+                "cel": "09889900",
+                "nombre": "contacto1",
+                "apellido": "contacto1",
+                "dni": "35353530"
+            },
+        ]
+        URL = reverse('api_database_create_contact_view', args=[db.pk, ])
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_crea_contacto_sin_campo_requerido(self):
+        self.client.login(username=self.sup.username, password=PASSWORD)
+        nombre = 'test-db' if self.db.nombre != 'test-db' else 'otro-nombre'
+        post_data = {
+            'name': nombre,
+            'phone_fields': ['tel', 'cel'],
+            'data_fields': ['nombre', 'apellido'],
+            'external_id_field': 'dni'
+        }
+        URL = reverse('api_database_create_view',)
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_json = response.json()
+        id = response_json['data']['id']
+        db = BaseDatosContacto.objects.get(id=id)
+        post_data = [
+            {
+                "cel": "09889900",
+                "nombre": "contacto1",
+                "apellido": "contacto1",
+                "dni": "35353530"
+            },
+        ]
+        URL = reverse('api_database_create_contact_view', args=[db.pk, ])
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_crea_contacto_id_externo_repetido(self):
+        self.client.login(username=self.sup.username, password=PASSWORD)
+        nombre = 'test-db' if self.db.nombre != 'test-db' else 'otro-nombre'
+        post_data = {
+            'name': nombre,
+            'phone_fields': ['tel', 'cel'],
+            'data_fields': ['nombre', 'apellido'],
+            'external_id_field': 'dni'
+        }
+        URL = reverse('api_database_create_view',)
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_json = response.json()
+        id = response_json['data']['id']
+        db = BaseDatosContacto.objects.get(id=id)
+        post_data = [
+            {
+                "telefono": "09090900",
+                "cel": "09889900",
+                "nombre": "contacto1",
+                "apellido": "contacto1",
+                "dni": "35353530"
+            },
+            {
+                "telefono": "09090900",
+                "cel": "09889900",
+                "nombre": "contacto1",
+                "apellido": "contacto1",
+                "dni": "35353530"
+            },
+        ]
+        URL = reverse('api_database_create_contact_view', args=[db.pk, ])
+        response = self.client.post(URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

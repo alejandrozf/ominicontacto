@@ -25,8 +25,8 @@ from django.contrib.auth.decorators import login_required
 
 from api_app.views.base import login
 from api_app.views.base_de_contactos import (
-    CampaingsOnDB, ContactoCreateView, CampaignDatabaseMetadataView, CamposDireccionView,
-    BaseDatosContactoCreateView, )
+    CampaingsOnDB, ContactoDeCampanaCreateView, CampaignDatabaseMetadataView, CamposDireccionView,
+    BaseDatosContactoCreateView, ContactoCreateView, )
 from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
@@ -468,12 +468,14 @@ urlpatterns = [
     # =========================
     # Base de contactos
     # =========================
-    path('api/v1/contacto_database/create/',
+    path('api/v1/contact_database/create/',
          BaseDatosContactoCreateView.as_view(), name='api_database_create_view'),
+    path('api/v1/contact_database/<int:db_pk>/contact/',
+         ContactoCreateView.as_view(), name='api_database_create_contact_view'),
     path('api/v1/contact_database/<int:pk>/campaings/',
          CampaingsOnDB.as_view(),
          name='api_contact_database_campaings'),
-    path('api/v1/new_contact/', ContactoCreateView.as_view(),
+    path('api/v1/new_contact/', ContactoDeCampanaCreateView.as_view(),
          name='api_new_contact'),
     path('api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
          name='api_campaign_database_metadata'),
