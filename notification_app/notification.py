@@ -92,7 +92,10 @@ class AgentNotifier:
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
                 'number_messages': conversation.mensajes.count(),
-                'from': conversation.destination,
+                'from': conversation.client_alias
+                if conversation.client_alias else conversation.destination,
+                'contact_data': conversation.client.obtener_datos()
+                if conversation.client else "",
                 'expire': conversation.expire.isoformat(),
                 'timestamp': conversation.timestamp.isoformat(),
             }
@@ -111,6 +114,8 @@ class AgentNotifier:
                 'campaing_name': conversation.campana.nombre,
                 'number_messages': conversation.mensajes.count(),
                 'from': conversation.destination,
+                'contact_data': conversation.client.obtener_datos()
+                if conversation.client else "",
                 'expire': conversation.expire.isoformat(),
                 'timestamp': conversation.timestamp.isoformat(),
                 'transfer_agent': transfer_agent
@@ -126,9 +131,11 @@ class AgentNotifier:
                 'chat_id': message.conversation.id,
                 'campaing_id': message.conversation.campana.id
                 if message.conversation.campana else "",
+                'contact_data': message.conversation.client.obtener_datos()
+                if message.conversation.client else "",
                 'message_id': message.id,
                 'content': message.content,
-                'origen': message.origen,
+                'origin': message.origen,
                 'timestamp': message.timestamp.isoformat(),
                 'sender': message.sender,
                 'type': message.type,

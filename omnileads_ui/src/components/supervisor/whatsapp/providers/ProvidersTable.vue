@@ -211,7 +211,8 @@ export default {
     watch: {
         supWhatsappProviders: {
             handler () {
-                    this.providers = this.supWhatsappProviders.map((provider) => {
+                    this.providers = this.supWhatsappProviders.map(
+                      (provider) => {
                         return {
                             id: provider.id,
                             nombre: provider.name,

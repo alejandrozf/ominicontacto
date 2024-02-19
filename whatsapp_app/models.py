@@ -141,7 +141,7 @@ class MensajeWhatsapp(models.Model):
     origen = models.CharField(max_length=100)
     sender = JSONField(default=dict)
     conversation = models.ForeignKey(
-        'ConversacionWhatsapp', related_name="mensajes", on_delete=models.CASCADE)
+        'ConversacionWhatsapp', related_name="mensajes", on_delete=models.CASCADE, null=True)
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
@@ -233,6 +233,7 @@ class ConversacionWhatsapp(models.Model):
     atendida = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
     date_last_interaction = models.DateTimeField(null=True)
+    client_alias = models.CharField(max_length=100, null=True)
     objects = ConversacionWhatsappQuerySet.as_manager()
 
     def otorgar_conversacion(self, agent):
