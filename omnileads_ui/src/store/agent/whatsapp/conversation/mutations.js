@@ -22,15 +22,13 @@ const setLineInfo = (info = null) => {
 
 const setFromInfo = (info = null) => {
     if (info && info.client) {
-        if (info.client.name) {
-            return info.client.name || '-------';
-        } else if (info.client.phone) {
-            return info.client.phone || '-------';
+        if (info.client.data.nombre) {
+            return info.client.data.nombre;
         }
     } else if (info && info.client_alias) {
-        return info.client_alias + ' (' + info.destination + ')' || '-------';
+        return info.client_alias;
     }
-    return '-------';
+    return info.destination;
 };
 
 export default {
@@ -43,14 +41,15 @@ export default {
         const newMessageId = data && data.message_id ? data.message_id : null;
         const alreadyExists = messages.find(m => m.id === newMessageId);
         if (!alreadyExists) {
-            const itsMine = data && data.origen ? data.origen === data.line_phone : false;
-            const senderName = data && data.sender && data.sender.name ? data.sender.name : '------';
+            const itsMine = data && data.origin ? data.origin === data.line_phone : false;
+            const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
             const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
+            const clientName = data && data.contact_data && data.contact_data.nombre ? data.contact_data.nombre : null;
             const message = {
                 id: newMessageId,
                 from: itsMine
                     ? `Agente (${senderName})`
-                    : senderName || senderPhone,
+                    : clientName || senderPhone,
                 conversationId: data && data.chat_id ? data.chat_id : null,
                 itsMine,
                 message: data && data.content && data.content.text ? data.content.text : '',
@@ -61,7 +60,7 @@ export default {
             if (Number(localStorage.getItem('agtWhatsappConversationAttending')) !== data.chat_id) {
                 notificationEvent(
                     NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
-                    `Mensaje Nuevo de ${senderName || senderPhone}`,
+                    `Mensaje Nuevo de ${clientName || senderName || senderPhone}`,
                     NOTIFICATION.ICONS.INFO
                 );
             }
@@ -158,9 +157,11 @@ export default {
         state.agtWhatsChatsList = chats;
     },
     agtWhatsReceiveNewChat (state, chat = null) {
+        const from = chat && chat.from ? chat.from : null;
+        const contactData = chat && chat.contact_data && chat.contact_data.nombre ? chat.contact_data.nombre : null;
         state.agtWhatsChatsList.push({
             id: chat && chat.chat_id ? chat.chat_id : null,
-            from: chat && chat.from ? chat.from : '-------',
+            from: contactData || from,
             campaignId: chat && chat.campaing_id ? chat.campaing_id : null,
             campaignName: chat && chat.campaing_name ? chat.campaing_name : '-------',
             numMessages:

@@ -73,7 +73,7 @@ class ConversacionSerializer(serializers.Serializer):
     photo = serializers.CharField(default="")
     line = serializers.SerializerMethodField()
     error = serializers.BooleanField(default=False)
-    client_alias = serializers.SerializerMethodField()
+    client_alias = serializers.CharField(default="")
 
     def get_line(self, obj):
         serializer = LineSerializer(instance=obj.line)
@@ -87,19 +87,13 @@ class ConversacionSerializer(serializers.Serializer):
         return obj.mensajes.count()
 
     def get_messages(self, obj):
-        return MensajeListSerializer(obj.mensajes.all().order_by('timestamp'), many=True).data
+        return MensajeListSerializer(obj.mensajes.all().order_by('timestamp', 'id'), many=True).data
 
     def get_client(self, obj):
         if obj.client:
             serializer = ContactoSerializer(obj.client)
             return serializer.data
         return None
-
-    def get_client_alias(self, obj):
-        try:
-            return obj.mensajes.mensajes_recibidos().first().sender['name']
-        except Exception:
-            return ""
 
 
 class ConversacionFilterSerializer(serializers.Serializer):

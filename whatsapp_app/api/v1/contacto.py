@@ -37,12 +37,15 @@ from whatsapp_app.models import ConversacionWhatsapp
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
-    data = serializers.CharField(source='datos')
+    data = serializers.SerializerMethodField()
     disposition = serializers.SerializerMethodField()
 
     def get_disposition(self, obj):
         disposition = obj.calificacioncliente_set.last()
         return disposition.id if disposition else None
+
+    def get_data(self, obj):
+        return obj.obtener_datos()
 
 
 class RetriveSerializer(serializers.ModelSerializer):

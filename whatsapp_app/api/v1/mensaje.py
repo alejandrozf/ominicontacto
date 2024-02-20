@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar destinos
+import json
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -27,19 +28,41 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import ConversacionWhatsapp
+from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 
 
 class MensajeListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     message_id = serializers.CharField()
     conversation = serializers.PrimaryKeyRelatedField(queryset=ConversacionWhatsapp.objects.all())
-    # contact_data = serializers.JSONField(source='conversation.client')
+    contact_data = serializers.SerializerMethodField()
     timestamp = serializers.DateTimeField()
-    content = serializers.JSONField()
-    origen = serializers.CharField()
+    content = serializers.SerializerMethodField()
+    origin = serializers.CharField(source='origen')
     sender = serializers.JSONField()
     type = serializers.CharField()
     status = serializers.CharField()
+
+    def get_contact_data(self, obj):
+        if obj.conversation.client:
+            serializer = ContactoSerializer(obj.conversation.client)
+            return serializer.data
+        return {}
+
+    def get_content(self, obj):
+        if obj.content:
+            if obj.type == 'list':
+                content = json.loads(obj.content[0]['text'])
+                text = content['title'] + '\n'
+                options = content['items'][0]['options']
+                for option in options:
+                    text += f"{option['title']}- {option['description']} \n"
+                return {'text': text}
+            elif obj.type == 'list_reply':
+                text = f"Reply-option:\n {obj.content['title']}-{obj.content['description']}"
+                return {'text': text}
+            return obj.content
+        return {}
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):

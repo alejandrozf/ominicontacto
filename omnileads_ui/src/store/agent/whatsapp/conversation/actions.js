@@ -7,9 +7,10 @@ const service = new Service();
 const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
     const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
     const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : $t('globals.whatsapp.automatic_agent');
+    const clientName =  data && data.contact_data && data.contact_data && data.contact_data.data && data.contact_data.data.nombre ? data.contact_data.data.nombre : null;
     return {
         id: data.id,
-        from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : senderName,
+        from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : clientName || senderName || senderPhone,
         conversationId: data && data.conversation ? data.conversation : null,
         itsMine,
         message: data && data.content && data.content.text ? data.content.text : '',
@@ -65,7 +66,7 @@ export default {
             });
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
-                const itsMine = data.origen === phoneLine;
+                const itsMine = data.origin === phoneLine;
                 const message = getMessageInfo({ $t, data, itsMine });
                 await commit('agtWhatsCoversationSendMessage', message);
             }
@@ -95,7 +96,7 @@ export default {
             });
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
-                const itsMine = data.origen === phoneLine;
+                const itsMine = data.origin === phoneLine;
                 const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
@@ -131,7 +132,7 @@ export default {
             );
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
-                const itsMine = data.origen === phoneLine;
+                const itsMine = data.origin === phoneLine;
                 const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
@@ -166,7 +167,7 @@ export default {
             );
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
-                const itsMine = data.origen === phoneLine;
+                const itsMine = data.origin === phoneLine;
                 const message = getMessageInfo({ $t, data, itsMine });
                 messages.push(message);
             }
@@ -213,7 +214,7 @@ export default {
                 commit(
                     'agtWhatsConversationInitMessages',
                     data.messages.map((msg) => {
-                        const itsMine = msg.origen === data.line.number;
+                        const itsMine = msg.origin === data.line.number;
                         return getMessageInfo({ $t, data: msg, itsMine });
                     })
                 );

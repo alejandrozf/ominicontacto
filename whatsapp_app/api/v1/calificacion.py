@@ -338,6 +338,7 @@ class ViewSet(viewsets.ViewSet):
     def update(self, request, pk):
         try:
             request_data = request.data.copy()
+            conversation_id = request_data.pop('idConversation')
             instance = CalificacionCliente.objects.get(pk=pk)
             serializer_calificacion = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer_calificacion.is_valid():
@@ -374,6 +375,9 @@ class ViewSet(viewsets.ViewSet):
                                     message=_('Error en los datos del formulario'),
                                     errors=serializer_respuesta.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
+                conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                conversation.is_disposition = True
+                conversation.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
