@@ -4,6 +4,7 @@
       :value="supWhatsReportCampaignConversations"
       class="p-datatable-sm"
       showGridlines
+      tableStyle="min-width: 1600px"
       :scrollable="true"
       scrollHeight="900px"
       responsiveLayout="scroll"
@@ -152,6 +153,11 @@
           />
         </template>
       </Column>
+      <Column
+        field="disposition.disposition_data.name"
+        :sortable="true"
+        :header="$t('models.whatsapp.conversation.disposition')"
+      ></Column>
       <Column
         :header="$tc('globals.option', 2)"
         style="max-width: 8rem; text-align: center"
