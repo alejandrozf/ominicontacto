@@ -263,6 +263,7 @@ export default {
             last_interaction: 'Last interaction',
             expire: 'Expiration date',
             message: 'Messages number',
+            disposition: 'Disposition',
             line: 'Line',
             new: {
                 title: 'New conversation',
