@@ -715,7 +715,7 @@ export default {
         },
         msgBienvenidaChange () {
             const messageTemplate = this.supWhatsappMessageTemplates.find(
-                (mt) => mt.id === this.supWhatsappLine.mensaje_bienvenida
+                (mt) => mt.id === this.form.mensaje_bienvenida
             );
             if (messageTemplate) {
                 this.msgBienvenidaContent = JSON.stringify(
@@ -727,7 +727,7 @@ export default {
         },
         msgFueraHoraChange () {
             const messageTemplate = this.supWhatsappMessageTemplates.find(
-                (mt) => mt.id === this.supWhatsappLine.mensaje_fueradehora
+                (mt) => mt.id === this.form.mensaje_fueradehora
             );
             if (messageTemplate) {
                 this.msgFueraHoraContent = JSON.stringify(
@@ -739,7 +739,7 @@ export default {
         },
         msgDespedidaChange () {
             const messageTemplate = this.supWhatsappMessageTemplates.find(
-                (mt) => mt.id === this.supWhatsappLine.mensaje_despedida
+                (mt) => mt.id === this.form.mensaje_despedida
             );
             if (messageTemplate) {
                 this.msgDespedidaContent = JSON.stringify(
@@ -873,9 +873,9 @@ export default {
                 },
                 destination: this.form.configuracion.destino,
                 schedule: this.form.horario,
-                welcome_message: this.supWhatsappLine.mensaje_bienvenida,
-                farewell_message: this.supWhatsappLine.mensaje_despedida,
-                afterhours_message: this.supWhatsappLine.mensaje_fueradehora
+                welcome_message: this.form.mensaje_bienvenida,
+                farewell_message: this.form.mensaje_despedida,
+                afterhours_message: this.form.mensaje_fueradehora
             };
             if (this.isFormToCreate) {
                 response = await this.createWhatsappLine(form);
