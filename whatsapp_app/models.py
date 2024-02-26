@@ -20,7 +20,9 @@ from django.db import models
 from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import JSONField
-from ominicontacto_app.models import AgenteProfile, Campana, Contacto
+from ominicontacto_app.models import (
+    AgenteProfile, Campana, Contacto, HistoricalCalificacionCliente)
+
 from django.utils import timezone
 
 
@@ -227,6 +229,9 @@ class ConversacionWhatsapp(models.Model):
         AgenteProfile, null=True, related_name="conversaciones", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     is_disposition = models.BooleanField(default=False)
+    conversation_disposition = models.ForeignKey(
+        HistoricalCalificacionCliente, related_name="conversaciones",
+        null=True, on_delete=models.CASCADE)
     expire = models.DateTimeField(null=True)
     timestamp = models.DateTimeField(default=timezone.now)
     saliente = models.BooleanField(default=False)

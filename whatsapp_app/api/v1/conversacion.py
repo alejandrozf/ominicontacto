@@ -33,11 +33,11 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
-from whatsapp_app.api.v1.calificacion import RetrieveSerializer as CalificacionSerializer
+from whatsapp_app.api.v1.calificacion import OpcionCalificacionSerializer
 from whatsapp_app.models import (
     ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
     TemplateWhatsapp)
-from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente, Contacto
+from ominicontacto_app.models import Campana, AgenteProfile, Contacto
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import send_template_message, send_text_message
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
@@ -148,11 +148,14 @@ class ConversacionFilterSerializer(serializers.Serializer):
         return None
 
     def get_disposition(self, obj):
-        if obj.client and obj.campana:
-            calificacion = CalificacionCliente.objects.filter(
-                contacto=obj.client, opcion_calificacion__campana=obj.campana).last()
-            return CalificacionSerializer(calificacion).data
-        return {}
+        try:
+            if obj.is_disposition and obj.conversation_disposition:
+                serializer = OpcionCalificacionSerializer(
+                    obj.conversation_disposition.opcion_calificacion)
+                return serializer.data
+            return {}
+        except Exception as e:
+            print(e)
 
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
