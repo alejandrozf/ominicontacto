@@ -297,6 +297,7 @@ class ViewSet(viewsets.ViewSet):
                         serializer_respuesta.save(calificacion=calificacion)
                         conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
                         conversation.is_disposition = True
+                        conversation.conversation_disposition = calificacion.history.first()
                         conversation.save()
                     else:
                         return response.Response(
@@ -317,6 +318,7 @@ class ViewSet(viewsets.ViewSet):
                     serializer_calificacion.save()
                     conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
                     conversation.is_disposition = True
+                    conversation.conversation_disposition = calificacion.history.first()
                     conversation.save()
                     return response.Response(
                         data=get_response_data(
@@ -377,6 +379,7 @@ class ViewSet(viewsets.ViewSet):
                                 status=status.HTTP_400_BAD_REQUEST)
                 conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
                 conversation.is_disposition = True
+                conversation.conversation_disposition = calificacion.history.first()
                 conversation.save()
                 return response.Response(
                     data=get_response_data(

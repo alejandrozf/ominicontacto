@@ -154,7 +154,7 @@
         </template>
       </Column>
       <Column
-        field="disposition.disposition_data.name"
+        field="disposition.name"
         :sortable="true"
         :header="$t('models.whatsapp.conversation.disposition')"
       ></Column>
