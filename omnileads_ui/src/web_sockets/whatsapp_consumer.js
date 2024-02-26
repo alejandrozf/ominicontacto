@@ -181,6 +181,7 @@ export class WhatsappConsumer {
             `El chat de la campana (${data.campaign_name}), se atendio`,
             NOTIFICATION.ICONS.INFO
         );
+        if (data) STORE.dispatch('agtWhatsChatsListInit', data); 
     }
 
     async handleChatTransferedEvent (data) {

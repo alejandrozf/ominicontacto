@@ -229,34 +229,39 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def attend_chat(self, request, pk):
         try:
-            agente = request.user.get_agente_profile()
             conversacion = ConversacionWhatsapp.objects.get(pk=pk)
-            conversation_granted = conversacion.otorgar_conversacion(agente),
-            mensajes = conversacion.mensajes.all()
-            serializer_conversacion = ConversacionSerializer(conversacion)
-            serializer_mensajes = MensajeListSerializer(mensajes, many=True)
-            data = {
-                "conversation_granted": conversation_granted,
-                "conversation_data": serializer_conversacion.data,
-                "messages": serializer_mensajes.data
-            }
-            agentes = conversacion.campana.obtener_agentes()
-            agent_notifier = AgentNotifier()
-            for agente in agentes:
-                print("attend_chat...")
-                message = {
-                    'chat_id': conversacion.id,
-                    'campaign_id': conversacion.campana.pk,
-                    'campaign_name': conversacion.campana.nombre,
-                    'agent': agente.user.pk
+            agente = request.user.get_agente_profile()
+            if not conversacion.agent or conversacion.agent == agente:
+                conversation_granted = conversacion.otorgar_conversacion(agente),
+                mensajes = conversacion.mensajes.all()
+                serializer_conversacion = ConversacionSerializer(conversacion)
+                serializer_mensajes = MensajeListSerializer(mensajes, many=True)
+                data = {
+                    "conversation_granted": conversation_granted,
+                    "conversation_data": serializer_conversacion.data,
+                    "messages": serializer_mensajes.data
                 }
-                agent_notifier.notify_whatsapp_chat_attended(agente.user_id, message)
+                agentes = conversacion.campana.obtener_agentes()
+                agent_notifier = AgentNotifier()
+                for agente in agentes:
+                    print("attend_chat...")
+                    message = {
+                        'chat_id': conversacion.id,
+                        'campaign_id': conversacion.campana.pk,
+                        'campaign_name': conversacion.campana.nombre,
+                        'agent': agente.user.pk
+                    }
+                    agent_notifier.notify_whatsapp_chat_attended(agente.user_id, message)
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS, data=data,
+                        message=_('Se asignó la conversación de forma exitosa')),
+                    status=status.HTTP_200_OK
+                )
             return response.Response(
                 data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS, data=data,
-                    message=_('Se asignó la conversación de forma exitosa')),
-                status=status.HTTP_200_OK
-            )
+                    message=_('Esta conversación ya está siendo atendida por otro agente')),
+                status=status.HTTP_401_UNAUTHORIZED)
         except ConversacionWhatsapp.DoesNotExist:
             return response.Response(
                 data=get_response_data(
