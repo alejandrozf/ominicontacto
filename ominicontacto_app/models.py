@@ -1512,6 +1512,8 @@ class Campana(models.Model):
                                     'si selecciono un formulario.'))
         else:
             super(Campana, self).save(*args, **kwargs)
+        if self.whatsapp_habilitado is False and self.configuracionwhatsapp.all():
+            self.configuracionwhatsapp.all().delete()
 
     def obtener_agentes(self):
         return self.queue_campana.members.all()
