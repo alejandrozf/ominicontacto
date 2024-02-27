@@ -9,7 +9,6 @@ import Helpers from '@/helpers';
 // Primevue
 import PrimeVue from 'primevue/config';
 import 'primeflex/primeflex.css';
-import '@/assets/primevue/3.12.0/resources/themes/saga-dark-pink/theme.css'; // theme
 import 'primevue/resources/primevue.min.css'; // core css
 import 'primeicons/primeicons.css'; // icons
 
