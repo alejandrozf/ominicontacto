@@ -336,8 +336,10 @@ export default {
             });
         },
         getContactInfo (contact) {
-            const data = contact?.data;
-            return `${data[0] || '-----'} (${contact?.phone || '-----'})`;
+            const firstname = contact?.data?.nombre || '-----'
+            const lastname = contact?.data?.apellido || '-----'
+            const phone = contact?.phone || '-----'
+            return `${firstname} ${lastname} (${phone})`;
         },
         closeModal () {
             this.$emit('closeModalEvent');
@@ -385,7 +387,7 @@ export default {
                     (contact) => {
                         return {
                             id: contact?.id || null,
-                            data: contact?.data ? JSON.parse(contact?.data) : [],
+                            data: contact?.data ? contact.data : {},
                             phone: contact?.phone || ''
                         };
                     }
