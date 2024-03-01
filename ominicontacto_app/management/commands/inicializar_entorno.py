@@ -48,7 +48,7 @@ from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
 
 logger = logging.getLogger(__name__)
 
-PASSWORD = 'usuario0*'
+PASSWORD = '098098ZZZ'
 
 
 class Command(BaseCommand):
@@ -165,8 +165,7 @@ class Command(BaseCommand):
         # crear campaña dialer
         campana = CampanaFactory(
             nombre=nombre_campana, bd_contacto=self.bd_contacto,
-            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA,
-            tiempo_desconexion=10
+            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
         )
         # crear Queue para la campaña
         Queue.objects.create(
@@ -252,7 +251,7 @@ class Command(BaseCommand):
         self.cliente_webphone = self._crear_cliente_webphone('webphone')
 
         # crear grupo
-        grupo = GrupoFactory()
+        grupo = GrupoFactory(auto_unpause=0)
 
         agentes_creados = []  # Esta lista almacenará los agentes que crees
 
@@ -272,7 +271,8 @@ class Command(BaseCommand):
         # ArchivoDeAudioFactory()
 
         # crear pausa
-        PausaFactory()
+        PausaFactory(nombre="break", tipo='R')
+        PausaFactory(nombre="gestion", tipo='P')
 
         # crear formulario (2 campos)
         form = FormularioFactory()
@@ -280,7 +280,8 @@ class Command(BaseCommand):
 
         # crear califs.(1 gestion y 1 normal)
         self.success = NombreCalificacionFactory(nombre='Success')
-        self.angry = NombreCalificacionFactory(nombre='Hangs up angry')
+        self.success = NombreCalificacionFactory(nombre='ventas_Lee PLC')        
+        self.angry = NombreCalificacionFactory(nombre='hangup')
 
         # crear BD (100 contactos)
         self.bd_contacto = BaseDatosContactoFactory()
@@ -299,7 +300,7 @@ class Command(BaseCommand):
         activacion_queue_service.activar()
 
         caller_id = '01177660010'
-        remote_host = 'pbxemulator:5060'
+        remote_host = 'pbxemulator:5070'
         if qa_devops:
             caller_id = '99999999'
             remote_host = '190.19.150.8:6066'
@@ -328,7 +329,8 @@ class Command(BaseCommand):
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)
         ruta_saliente = RutaSalienteFactory(ring_time=25, dial_options="Tt")
-        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="X.")
+        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="1234567[0-9][0-9]")
+        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="88887777")
         OrdenTroncalFactory(ruta_saliente=ruta_saliente, orden=0, troncal=troncal_pbx_emulator)
         sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador_ruta_saliente.regenerar_asterisk(ruta_saliente)
