@@ -32,6 +32,7 @@ def global_settings(request):
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
         'GOOGLE_MAPS_API_KEY': os.getenv('GOOGLE_MAPS_API_KEY'),
         'GOOGLE_MAPS_CENTER': os.getenv('GOOGLE_MAPS_CENTER'),
+        'ENTERPRISE': os.getenv('ENTERPRISE'),
     }
 
 
