@@ -27,6 +27,7 @@ from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import User
 from reportes_app.models import ActividadAgenteLog
+from ominicontacto_app.tests.factories import ActividadAgenteLogFactory
 
 
 def request_host_port(request):
@@ -73,6 +74,7 @@ class LoginTests(OMLBaseTest):
     @patch('utiles_globales.obtener_request_host_port', request_host_port)
     def test_redirects_agent_to_agent_view(self, generar_sip_password, generar_sip_user):
         self.client.login(username=self.agente.user.username, password=PASSWORD)
+        ActividadAgenteLogFactory(agente_id=self.agente.id, event='ADDMEMBER')
         index_url = reverse('index')
         consola_agente_url = reverse('consola_de_agente')
         response = self.client.get(index_url, follow=True)
