@@ -122,8 +122,8 @@ export default {
             },
             pausesTypeSelected: 1,
             pausesType: [
-                { label: 'Productiva', value: 1 },
-                { label: 'Recreativa', value: 0 }
+                { label: this.$t('forms.pause.types.opt1'), value: 1 },
+                { label: this.$t('forms.pause.types.opt2'), value: 0 }
             ],
             title:
         this.$tc('globals.new', 2) + ' ' + this.$tc('globals.pause_config'),

@@ -74,7 +74,7 @@
         :header="$t('models.pause.type')"
       >
         <template #body="{ data }">
-          {{ data.tipo == 'P' ? 'Productiva': 'Recreativa'}}
+          {{ data.tipo == 'P' ?  $t('forms.pause.types.opt1') : $t('forms.pause.types.opt2') }}
         </template>
       </Column>
       <Column

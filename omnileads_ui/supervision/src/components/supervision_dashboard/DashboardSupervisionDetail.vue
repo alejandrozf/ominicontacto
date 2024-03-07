@@ -20,7 +20,7 @@
           <template #content>
               <div>
                   <div class="col-12">
-                      <h5 class="text-center">Agentes</h5>
+                      <h5 class="text-center">{{ $t("views.dashboard_home_page.authenticated_agents") }}</h5>
                       <StateAgentsChartLine
                           :chartLineInterval="chartLineIntervalAuth"
                           :chartLineEventYesterdayData="chartLineAuthEventYesterdayData"
@@ -29,7 +29,7 @@
                       </StateAgentsChartLine>
                   </div>
                   <div class="col-12">
-                      <h5 class="text-center">Gestiones</h5>
+                      <h5 class="text-center">{{ $t("views.dashboard_home_page.califications") }}</h5>
                       <StateAgentsChartLine
                           :chartLineInterval="chartLineIntervalCalification"
                           :chartLineEventYesterdayData="chartLineCalificationEventYesterdayData"
@@ -39,12 +39,10 @@
                   </div>
                   <div class="grid">
                       <StateAgentsChart
-                        :chartName="state_agents"
                         :chartData="reportData.state_agents"
                         class="col-12 md:col-6 lg:col-6"
                       />
                       <ContactedCallsChart
-                        :chartName="contacted_calls"
                         :chartData="reportData.contacted_calls"
                         class="col-12 md:col-6 lg:col-6"
                       />
