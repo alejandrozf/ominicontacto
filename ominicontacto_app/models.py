@@ -246,6 +246,18 @@ class User(AbstractUser):
                 return True
         return False
 
+    @classmethod
+    def nombre_rol(cls, rol):
+        nombre = rol.name
+        return {
+            User.ADMINISTRADOR: _('Administrador'),
+            User.GERENTE: _('Gerente'),
+            User.SUPERVISOR: _('Supervisor'),
+            User.REFERENTE: _('Referente'),
+            User.AGENTE: _('Agente'),
+            User.CLIENTE_WEBPHONE: _('Cliente Webphone')
+        }.get(nombre, rol.name)
+
 
 class ConjuntoDePausa(models.Model):
     nombre = models.CharField(max_length=128)

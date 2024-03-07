@@ -690,7 +690,7 @@ class UserRoleManagementView(TemplateView):
             roles.append({
                 'id': rol.id,
                 'is_immutable': rol.name in roles_inmutables,
-                'name': rol.name,  # TODO: Mostrar nombres de Roles de OML traducidos
+                'name': str(User.nombre_rol(rol)),
                 'permissions': list(rol.permissions.values_list('id', flat=True))
             })
         return roles

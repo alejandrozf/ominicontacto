@@ -111,6 +111,8 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password2'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].widget.attrs['class'] = 'form-control'
         self.fields['rol'].queryset = roles_queryset
+        self.fields['rol'].label_from_instance = self.label_para_group
+
         if grupo_queryset:
             self.fields['grupo'].queryset = grupo_queryset
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
@@ -130,6 +132,10 @@ class CustomUserCreationForm(UserCreationForm):
         if rol and rol.name == User.AGENTE and not grupo:
             self.add_error("grupo", _("Este campo es requerido para un usuario de tipo Agente."))
         return cleaned_data
+
+    @staticmethod
+    def label_para_group(obj):
+        return User.nombre_rol(obj)
 
 
 class UserChangeForm(forms.ModelForm):
