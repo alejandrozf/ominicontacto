@@ -2,7 +2,16 @@ export default {
     dashboard_home_page: {
         active_campaign_by_type: 'Active {type} Campaigns',
         agent_status: 'Agent Status',
-        call_sumary: 'Call Sumary'
+        agent_status_oncall: 'On call',
+        agent_status_pause: 'Pause',
+        agent_status_ready: 'Ready',
+        authenticated_agents: 'Authenticated Agents',
+        califications: 'Dispositions',
+        today: 'Today',
+        yesterday: 'Yesterday',
+        call_sumary: 'Call Sumary',
+        call_sumary_attended: 'Attended',
+        call_sumary_failed: 'Failed',
     },
     add_agents_to_campaign: {
         already_agent_in_campaign: 'The agent is already in the campaign',

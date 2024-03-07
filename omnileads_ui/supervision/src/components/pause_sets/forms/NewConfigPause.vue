@@ -120,8 +120,8 @@ export default {
             },
             pausesTypeSelected: 1,
             pausesType: [
-                { label: 'Productiva', value: 1 },
-                { label: 'Recreativa', value: 0 }
+                { label: this.$t('forms.pause.types.opt1'), value: 1 },
+                { label: this.$t('forms.pause.types.opt2'), value: 0 }
             ],
             title:
         this.$tc('globals.new', 2) + ' ' + this.$tc('globals.pause_config'),
@@ -166,8 +166,9 @@ export default {
             ) {
                 this.newPauseConfig.timeToEndPause = 0;
             }
-            this.newPauseConfig.type =
-        this.pausesTypeSelected === 1 ? 'Productiva' : 'Recreativa';
+            this.newPauseConfig.type = this.pausesTypeSelected === 1
+                ?  this.$t('forms.pause.types.opt1')
+                :  this.$t('forms.pause.types.opt2');
             this.newPauseConfig.name = this.pauses.find(
                 (p) => p.id === this.newPauseConfig.pauseId
             ).nombre;

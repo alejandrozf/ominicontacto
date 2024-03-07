@@ -12,13 +12,14 @@
 </template>
 <script>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n'
 
 export default {
     props: {
         chartData: Object,
-        chartName: String
     },
     setup (props) {
+        const { t } = useI18n()
         const chartOptions = ref({
             animation: {
                 duration: 0
@@ -39,7 +40,7 @@ export default {
             const colors = ['#8FC641', '#196F3D'];
             return Object.entries(props.chartData).reduce(
                 function (prev, [key, val], currIdx) {
-                    prev.labels.push(key);
+                    prev.labels.push(t(`views.dashboard_home_page.call_sumary_${key}`));
                     prev.datasets[0].data.push(val);
                     prev.datasets[0].backgroundColor.push(colors[currIdx % 2]);
                     return prev;
