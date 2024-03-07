@@ -11,7 +11,7 @@ export default {
         yesterday: 'Yesterday',
         call_sumary: 'Call Sumary',
         call_sumary_attended: 'Attended',
-        call_sumary_failed: 'Failed',
+        call_sumary_failed: 'Failed'
     },
     add_agents_to_campaign: {
         already_agent_in_campaign: 'The agent is already in the campaign',

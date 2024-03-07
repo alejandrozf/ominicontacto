@@ -167,8 +167,8 @@ export default {
                 this.newPauseConfig.timeToEndPause = 0;
             }
             this.newPauseConfig.type = this.pausesTypeSelected === 1
-                ?  this.$t('forms.pause.types.opt1')
-                :  this.$t('forms.pause.types.opt2');
+                ? this.$t('forms.pause.types.opt1')
+                : this.$t('forms.pause.types.opt2');
             this.newPauseConfig.name = this.pauses.find(
                 (p) => p.id === this.newPauseConfig.pauseId
             ).nombre;

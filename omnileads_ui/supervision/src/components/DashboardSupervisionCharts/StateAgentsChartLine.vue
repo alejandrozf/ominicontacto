@@ -6,7 +6,7 @@
 
 <script>
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 
 export default {
     props: {
@@ -17,7 +17,7 @@ export default {
         chartLineEventTodayData: Object
     },
     setup (props) {
-        const { t } = useI18n()
+        const { t } = useI18n();
         const basicData = computed(() => {
             return {
                 labels: props.chartLineInterval,
