@@ -41,6 +41,10 @@ export default {
     pause: {
         enter_name: 'Digite o nome',
         edit_pause: 'Edite a pausa',
+        types: {
+            opt1: 'Productiva',
+            opt2: 'Recreativa'
+        },
         new_pause: 'nova pausa'
     },
     inbound_route: {
