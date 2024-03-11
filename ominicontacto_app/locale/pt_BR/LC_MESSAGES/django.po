@@ -1348,10 +1348,8 @@ msgid "Únicamente revisadas por Agente"
 msgstr "Somente revisada por Agente"
 
 #: ominicontacto_app/forms/base.py:788
-#, fuzzy
-#| msgid "Únicamente revisadas por Agente"
 msgid "Revisada por Agente"
-msgstr "Somente revisada por Agente"
+msgstr "Revisada por Agente"
 
 #: ominicontacto_app/forms/base.py:824
 msgid ""
@@ -1377,16 +1375,10 @@ msgstr "Você deve selecionar um local externo"
 #: ominicontacto_app/tests/tests_campanas.py:257
 #: ominicontacto_app/tests/tests_campanas.py:270
 #: ominicontacto_app/tests/tests_campanas.py:274
-#, fuzzy
-#| msgid "No se puede elegir un URL externo si selecciona un formulario."
 msgid "No se puede elegir un URL externo si selecciono un formulario."
-msgstr "Você não pode escolher uma URL externa se selecionar um formulário."
+msgstr "Você não pode escolher uma URL externa se selecionou um formulário."
 
 #: ominicontacto_app/forms/base.py:854
-#, fuzzy
-#| msgid ""
-#| "Para este tipo de interacción no puede elegir un sitio externo con "
-#| "\"Objetivo\" embebido"
 msgid ""
 "Para este tipo de interacción no puede elegir un sitio                 "
 "externo con \"Objetivo\" embebido"
@@ -1516,11 +1508,11 @@ msgstr "Os campos obrigatórios não podem estar bloqueados"
 
 #: ominicontacto_app/forms/base.py:1451
 msgid "Demasiados campos bloqueados seleccionados."
-msgstr ""
+msgstr "Muitos campos bloqueados selecionados."
 
 #: ominicontacto_app/forms/base.py:1456
 msgid "Demasiados campos obligatorios seleccionados."
-msgstr ""
+msgstr "Muitos campos obrigatorios selecionados"
 
 #: ominicontacto_app/forms/base.py:1598 ominicontacto_app/forms/base.py:2018
 #: ominicontacto_app/tests/tests_campanas.py:296
@@ -1530,7 +1522,7 @@ msgstr "Você não pode selecionar um BD vazio"
 
 #: ominicontacto_app/forms/base.py:1612
 msgid "Valor entre 1 y 100"
-msgstr ""
+msgstr "Valor entre 1 e 100"
 
 #: ominicontacto_app/forms/base.py:1645
 msgid "Debe seleccionar algun día"
@@ -1541,10 +1533,6 @@ msgid "Los nombres de los estados de las reglas deben ser distintos"
 msgstr "Os nomes dos estados das regras devem ser diferentes"
 
 #: ominicontacto_app/forms/base.py:1832
-#, fuzzy
-#| msgid ""
-#| "Es recomendable que este valor sea menor al dial timeout\n"
-#| "definido en la ruta saliente. En segundos"
 msgid ""
 " Es recomendable que este valor sea menor al dial timeout\n"
 "            definido en la ruta saliente. En segundos"
@@ -1654,20 +1642,14 @@ msgid "Nombre"
 msgstr "Nome"
 
 #: ominicontacto_app/forms/base.py:2148
-#, fuzzy
-#| msgid "O valor deve corresponder a um campo na base de dados de contatos"
 msgid "El valor debe corresponder a un campo de la base de datos de contactos"
 msgstr "O valor deve corresponder a um campo na base de dados de contatos"
 
 #: ominicontacto_app/forms/base.py:2151
-#, fuzzy
-#| msgid "O valor deve corresponder a um campo válido na campanha"
 msgid "El valor debe corresponder a un campo válido de la campaña"
 msgstr "O valor deve corresponder a um campo válido na campanha"
 
 #: ominicontacto_app/forms/base.py:2154
-#, fuzzy
-#| msgid "O valor deve corresponder a um dado válido da chamada"
 msgid "El valor debe corresponder a un dato válido de la llamada"
 msgstr "O valor deve corresponder a um dado válido da chamada"
 
@@ -1694,20 +1676,14 @@ msgstr ""
 "\"{1}\""
 
 #: ominicontacto_app/forms/base.py:2196
-#, fuzzy
-#| msgid "Os agentes devem ser diferentes"
 msgid "Los agentes deben ser distintos"
 msgstr "Os agentes devem ser diferentes"
 
 #: ominicontacto_app/forms/base.py:2209
-#, fuzzy
-#| msgid "Insira o seu nome ou empresa"
 msgid "Inserte su nombre o empresa"
 msgstr "Insira o seu nome ou empresa"
 
 #: ominicontacto_app/forms/base.py:2212
-#, fuzzy
-#| msgid "Insira a sua senha de acesso"
 msgid "Inserte su contraseña de acceso"
 msgstr "Insira a sua senha de acesso"
 
@@ -1728,10 +1704,6 @@ msgid "En orden aleatorio"
 msgstr "Em ordem aleatória"
 
 #: ominicontacto_app/forms/base.py:2246
-#, fuzzy
-#| msgid ""
-#| "Debe seleccionar la asignación proporcional si quiere escoger la "
-#| "asignación en orden aleatorio"
 msgid ""
 "Debe seleccionar la asignación proporcional si quiere escogerla asignación "
 "en orden aleatorio"
@@ -1763,10 +1735,8 @@ msgid "Servidor"
 msgstr "Servidor"
 
 #: ominicontacto_app/forms/base.py:2342
-#, fuzzy
-#| msgid "Acción"
 msgid "Activación"
-msgstr "Ação"
+msgstr "Ativação"
 
 #: ominicontacto_app/forms/base.py:2343
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:42
@@ -1972,10 +1942,8 @@ msgstr "Acesso às campanhas de pré-visualização como agente"
 
 #: ominicontacto_app/models.py:311
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:24
-#, fuzzy
-#| msgid "Listado de pausas"
 msgid "Conjunto de pausas"
-msgstr "Lista de pausas"
+msgstr "Conjunto de pausas"
 
 #: ominicontacto_app/models.py:321 ominicontacto_app/models.py:403
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:38
@@ -2331,6 +2299,8 @@ msgid ""
 "Ud. ya ha alcanzado el número límite de Agendas Personales.Consulte con su "
 "Administrador"
 msgstr ""
+"Você já atingiu o número limite de Agendas pessoais. Verifique com seu "
+"Administrador"
 
 #: ominicontacto_app/models.py:2974
 msgid "Aprobada"
@@ -2347,7 +2317,7 @@ msgstr "Comentários"
 #: ominicontacto_app/models.py:3002
 #, python-brace-format
 msgid "Auditoría de calificacion con id={0} fue {1}"
-msgstr ""
+msgstr "Auditoría de classificação com id={0} foi {1}"
 
 #: ominicontacto_app/models.py:3030
 msgid "No se encontraron eventos en el dia de la fecha"
@@ -2358,6 +2328,8 @@ msgid ""
 "La fecha de agenda propuesta supera la ventana permitida ({} días). Consulte "
 "con el Administrador."
 msgstr ""
+"A data da agenda proposta excede a janela permitida ({} dias). Consulte "
+"com o Administrador."
 
 #: ominicontacto_app/models.py:3175
 msgid "Fecha de modificación"
@@ -3362,22 +3334,16 @@ msgid "list en WOMBAT OK"
 msgstr "lista em WOMBAT OK"
 
 #: ominicontacto_app/services/wombat_service.py:128
-#, fuzzy
-#| msgid "list en WOMBAT OK"
 msgid "Set extStatus en WOMBAT OK"
-msgstr "lista em WOMBAT OK"
+msgstr "Set extStatus em WOMBAT OK"
 
 #: ominicontacto_app/services/wombat_service.py:151
-#, fuzzy
-#| msgid "list en WOMBAT OK"
 msgid "POST en WOMBAT OK"
-msgstr "lista em WOMBAT OK"
+msgstr "POST em WOMBAT OK"
 
 #: ominicontacto_app/services/wombat_service.py:167
-#, fuzzy
-#| msgid "No se obtuvieron resultados del discador"
 msgid "No se pudo obtener el estado del dialer"
-msgstr "Nenhum resultado foi obtido com o discador"
+msgstr "Não foi possível obter o status do discador"
 
 #: ominicontacto_app/templates/400.html:26
 msgid "Omnileads - Bad Request"
@@ -3476,10 +3442,8 @@ msgid "Deploy date: "
 msgstr "Deploy date"
 
 #: ominicontacto_app/templates/addons.html:24
-#, fuzzy
-#| msgid "Canales No disponibles"
 msgid "Addons comerciales disponibles"
-msgstr "Canais não disponíveis"
+msgstr "Addons comerciais não disponíveis"
 
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:44
 #: ominicontacto_app/templates/agenda_contacto/listar_agendas_campana.html:36
@@ -3528,10 +3492,8 @@ msgid "No existen eventos agendados para el día de hoy"
 msgstr "Não há eventos agendados para hoje"
 
 #: ominicontacto_app/templates/agenda_contacto/listar_agendas_campana.html:33
-#, fuzzy
-#| msgid "Gestionado"
 msgid "Gestionar Agendas"
-msgstr "Gerenciado"
+msgstr "Gerenciar Agendas"
 
 #: ominicontacto_app/templates/agenda_contacto/listar_agendas_campana.html:53
 msgid "hora"
@@ -3760,7 +3722,7 @@ msgstr "Feito"
 
 #: ominicontacto_app/templates/agente/base_agente.html:316
 msgid "No puede hacer una nueva llamada hasta calificar la ultima llamada."
-msgstr ""
+msgstr "Você não pode fazer uma nova chamada até classificar a última chamada."
 
 #: ominicontacto_app/templates/agente/base_agente.html:320
 #: ominicontacto_app/templates/agente/campanas_preview.html:111
@@ -3773,6 +3735,8 @@ msgid ""
 "No puede hacer una nueva llamada hasta que se complete el formulario de "
 "gestion."
 msgstr ""
+"Você não pode fazer uma nova chamada até que o formulário de gerenciamento "
+"seja preenchido"
 
 #: ominicontacto_app/templates/agente/base_agente.html:335
 msgid "Completar"
@@ -3903,6 +3867,8 @@ msgid ""
 "Los datos del contacto que está por transferir no han sido guardados. ¿Desea "
 "continuar?"
 msgstr ""
+"Os dados de contato que você está prestes a transferir não foram salvos. Deseja "
+"continuar?"
 
 #: ominicontacto_app/templates/agente/base_agente.html:602
 msgid "Si"
@@ -4091,7 +4057,7 @@ msgstr "Contatos da campanha"
 
 #: ominicontacto_app/templates/agente/contactos_content.html:92
 msgid "Total contactos:"
-msgstr "Total de contactos:"
+msgstr "Total de contatos:"
 
 #: ominicontacto_app/templates/agente/contactos_content.html:93
 msgid "Contactos sin calificar:"
@@ -4134,10 +4100,8 @@ msgid "Agenda para el contacto con el teléfono"
 msgstr "Lista telefónica para contactar o telefone"
 
 #: ominicontacto_app/templates/agente/frame/agenda_contacto/create_agenda_contacto.html:30
-#, fuzzy
-#| msgid "Agenda para el contacto con el teléfono"
 msgid "Agenda para el contacto con el teléfono "
-msgstr "Lista telefónica para contactar o telefone"
+msgstr "Agenda para o contato com o telefone "
 
 #: ominicontacto_app/templates/agente/frame/agenda_contacto/create_agenda_contacto.html:36
 msgid "Volver a Calificación"
@@ -4150,10 +4114,8 @@ msgstr "Buscar gravação"
 
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:48
 #: ominicontacto_app/templates/busqueda_grabacion.html:67
-#, fuzzy
-#| msgid "Teléfono Cliente"
 msgid "Teléfono cliente"
-msgstr "Telefone do Cliente"
+msgstr "Telefone cliente"
 
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:50
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:39
@@ -4229,10 +4191,8 @@ msgstr "Seguinte"
 #: ominicontacto_app/templates/user/user_list.html:181
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:147
 #: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:99
-#, fuzzy
-#| msgid "Finalizar"
 msgid "Final"
-msgstr "Finalizar"
+msgstr "Final"
 
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:160
 #: ominicontacto_app/templates/busqueda_grabacion.html:289
@@ -4320,28 +4280,22 @@ msgstr "Opções"
 
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:186
 #: ominicontacto_app/templates/busqueda_grabacion.html:188
-#, fuzzy
-#| msgid "Resultados en discador"
 msgid "Resultado Auditoria"
-msgstr "Resultados no discador"
+msgstr "Resultado Auditoria"
 
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:192
 #: ominicontacto_app/templates/busqueda_grabacion.html:194
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:107
 #: ominicontacto_app/templates/formulario/calificacion_create_update_supervisor.html:81
-#, fuzzy
-#| msgid "Resultados en discador"
 msgid "Resultado Auditoria: "
-msgstr "Resultados no discador"
+msgstr "Resultados Auditoria: "
 
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:193
 #: ominicontacto_app/templates/busqueda_grabacion.html:195
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:108
 #: ominicontacto_app/templates/formulario/calificacion_create_update_supervisor.html:82
-#, fuzzy
-#| msgid "Observaciones:"
 msgid "Observaciones: "
-msgstr "Comentários:"
+msgstr "Comentários: "
 
 #: ominicontacto_app/templates/agente/update_agent_password.html:73
 #: ominicontacto_app/templates/base.html:86
@@ -4350,10 +4304,8 @@ msgid "Deslogueo"
 msgstr "Logout"
 
 #: ominicontacto_app/templates/agente/update_agent_password.html:82
-#, fuzzy
-#| msgid "Actualizar formulario"
 msgid "Actualizar contraseña"
-msgstr "Atualizar formulário"
+msgstr "Atualizar contrasenha"
 
 #: ominicontacto_app/templates/archivo_audio/elimina_archivo_audio.html:27
 #, python-format
@@ -4462,16 +4414,12 @@ msgstr "voltar"
 
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:22
 #: ominicontacto_app/templates/busqueda_auditorias.html:103
-#, fuzzy
-#| msgid "Eliminar calificación"
 msgid "Auditar calificación"
-msgstr "Remover qualificação"
+msgstr "Auditar classificação"
 
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:26
-#, fuzzy
-#| msgid "Dato de Contacto"
 msgid "Ver datos de Contacto"
-msgstr "Informações de contato"
+msgstr "Ver dados de Contato"
 
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:62
 #: ominicontacto_app/templates/historico_calificaciones.html:43
@@ -4479,16 +4427,12 @@ msgid "No tiene calificaciones anteriores"
 msgstr "Nenhuma qualificação prévia"
 
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:75
-#, fuzzy
-#| msgid "Dato de Contacto"
 msgid "Datos de Contacto"
 msgstr "Informações de contato"
 
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:96
-#, fuzzy
-#| msgid "Horario de actuación:"
 msgid "Formulario de gestión"
-msgstr "Horários de atuação:"
+msgstr "Formulario de gerenciamento"
 
 #: ominicontacto_app/templates/autenticacion_externa.html:26
 msgid "Servicios de autenticación externa"
@@ -4627,16 +4571,12 @@ msgid "Cantidad Contactos"
 msgstr "Número de Contatos"
 
 #: ominicontacto_app/templates/base_datos_contacto/lista_base_datos_contacto.html:80
-#, fuzzy
-#| msgid "Base de Datos de Contactos:"
 msgid "Borrar Base de Contactos"
-msgstr "Banco de dados de contatos:"
+msgstr "Excluir Banco de dados de Contatos"
 
 #: ominicontacto_app/templates/base_datos_contacto/nueva_edita_base_datos_contacto.html:29
-#, fuzzy
-#| msgid "Base de datos de contactos"
 msgid "Base de datos de contacto"
-msgstr "Bases de contatos"
+msgstr "Banco de dados de contatos"
 
 #: ominicontacto_app/templates/base_datos_contacto/nueva_edita_base_datos_contacto.html:34
 msgid "Definir Base Datos"
@@ -4647,20 +4587,14 @@ msgid "bajar base de datos de ejemplo"
 msgstr "baixar amostra de base de dados"
 
 #: ominicontacto_app/templates/black_list/black_list.html:37
-#, fuzzy
-#| msgid "Acerca de la Aplicación"
 msgid "Fecha de creación"
-msgstr "Sobre a Aplicação"
+msgstr "Data de criação"
 
 #: ominicontacto_app/templates/black_list/black_list.html:38
-#, fuzzy
-#| msgid "Acerca de la Aplicación"
 msgid "Fecha de edición"
-msgstr "Sobre a Aplicação"
+msgstr "Data de edição"
 
 #: ominicontacto_app/templates/black_list/black_list.html:80
-#, fuzzy
-#| msgid "No se encontraron Backlist creadas."
 msgid "No se encontraron Blacklist creadas."
 msgstr "Não foi encontrada nenhuma Backlist criada."
 
@@ -4672,22 +4606,16 @@ msgstr "Nova blacklist"
 #: ominicontacto_app/templates/black_list/contactos/new.html:39
 #: ominicontacto_app/templates/lista_rapida/contactos/new.html:39
 #: ominicontacto_app/templates/user/user_role_management.html:87
-#, fuzzy
-#| msgid "Creada"
 msgid "Crear"
-msgstr "Criado em"
+msgstr "Criar"
 
 #: ominicontacto_app/templates/black_list/delete_black_list.html:28
-#, fuzzy
-#| msgid "¿Está seguro que desea eliminar esta Pausa?"
 msgid "¿Está seguro que desea eliminar esta blacklist?"
-msgstr "Tem certeza que quer remover esta pausa?"
+msgstr "Tem certeza que quer remover esta blacklist?"
 
 #: ominicontacto_app/templates/black_list/nueva_edita_black_list.html:43
-#, fuzzy
-#| msgid "Definir Backlist"
 msgid "Definir Blacklist"
-msgstr "Definir blacklist"
+msgstr "Definir Blacklist"
 
 #: ominicontacto_app/templates/black_list/nueva_edita_black_list.html:46
 msgid "Baja ejemplo de Blacklist"
@@ -4699,11 +4627,11 @@ msgstr "Buscar classificações de gestão"
 
 #: ominicontacto_app/templates/busqueda_auditorias.html:52
 msgid "Generar csv de auditoria"
-msgstr ""
+msgstr "Gerar csv de auditoria"
 
 #: ominicontacto_app/templates/busqueda_auditorias.html:53
 msgid "Descargar archivo de auditoria (CSV)"
-msgstr ""
+msgstr "Baixar arquivo de auditoria (CSV)"
 
 #: ominicontacto_app/templates/busqueda_auditorias.html:62
 msgid "Agregar los detalles de calificación:"
@@ -4715,6 +4643,8 @@ msgid ""
 "¡Advertencia! Esta acción puede consumir más recursos de los esperados, "
 "según el rango de fecha seleccionado."
 msgstr ""
+"¡Aviso! Esta ação pode consumir mais recursos do que o esperado, "
+"de acordo com o intervalo de data selecionado."
 
 #: ominicontacto_app/templates/busqueda_auditorias.html:72
 msgid "Fecha/Hora"
@@ -5070,7 +5000,7 @@ msgstr "Encerrar campanhas sem contatos a serem discados"
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:113
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:75
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:65
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:163
@@ -5216,10 +5146,8 @@ msgstr "Regras de incidência"
 #: ominicontacto_app/templates/campanas/campana_entrante/campana_list.html:90
 #: ominicontacto_app/templates/campanas/campana_manual/campana_list.html:66
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:89
-#, fuzzy
-#| msgid "Adicionar agentes"
 msgid "Configuraciones para agentes"
-msgstr "Adicionar agentes"
+msgstr "Configurações para agentes"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:151
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:238
@@ -5375,10 +5303,8 @@ msgstr "Dial timeout:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/create_update_queue.html:131
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:125
-#, fuzzy
-#| msgid "Anuncios para llamantes"
 msgid "Anuncio de entrada para el agente:"
-msgstr "Anúncios de Chamada"
+msgstr "Anúncio de ingresso para o agente:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/create_update_queue.html:136
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:85
@@ -5488,10 +5414,8 @@ msgid "Llamadas efectuadas:"
 msgstr "Chamadas feitas:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/detalle_campana.html:43
-#, fuzzy
-#| msgid "Cantidad Contactos"
 msgid "Cantidad de contactos llamados"
-msgstr "Número de Contatos"
+msgstr "Número de Contatos chamados"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/elimina_actuacion_campana.html:31
 msgid "¿Está seguro que desea eliminar la Actuación:"
@@ -5535,10 +5459,8 @@ msgstr "Mostrar nome quando chamando"
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:76
 #: ominicontacto_app/templates/campanas/campana_manual/nueva_edita_campana.html:79
 #: ominicontacto_app/templates/campanas/campana_preview/campana_preview.html:76
-#, fuzzy
-#| msgid "Contactos calificados:"
 msgid "Control de contactos duplicados:"
-msgstr "Contatos qualificados:"
+msgstr "Controle de contatos duplicados:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:94
 msgid "Fecha inicio:"
@@ -5553,7 +5475,7 @@ msgstr "Data de fim:"
 #: ominicontacto_app/templates/campanas/campana_manual/nueva_edita_campana.html:115
 #: ominicontacto_app/templates/campanas/campana_preview/campana_preview.html:111
 msgid "Campo para dirección:"
-msgstr ""
+msgstr "Campo para dirección:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:113
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:135
@@ -5596,16 +5518,14 @@ msgstr "Url externa"
 #: ominicontacto_app/templates/campanas/campana_manual/nueva_edita_campana.html:140
 #: ominicontacto_app/templates/campanas/campana_preview/campana_preview.html:136
 msgid "Ruta Saliente: "
-msgstr ""
+msgstr "Rota Saínte: "
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:157
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:150
 #: ominicontacto_app/templates/campanas/campana_manual/nueva_edita_campana.html:145
 #: ominicontacto_app/templates/campanas/campana_preview/campana_preview.html:141
-#, fuzzy
-#| msgid "ID de Cliente"
 msgid " CID Ruta Saliente"
-msgstr "Identificação do cliente"
+msgstr "CID Rota Saínte"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:162
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:114
@@ -5616,7 +5536,7 @@ msgstr "Objetivo:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:167
 msgid "Prioridad:"
-msgstr ""
+msgstr "Prioridade"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/nueva_edita_campana.html:173
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:155
@@ -5624,7 +5544,7 @@ msgstr ""
 #: ominicontacto_app/templates/campanas/campana_preview/campana_preview.html:158
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:127
 msgid "Speech:"
-msgstr ""
+msgstr "Speech:"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/opcion_calificacion.html:23
 msgid "Campaña Dialer: Opciones de calificación"
@@ -5658,45 +5578,38 @@ msgid "Intento max.(En cantidades)"
 msgstr "Tentativa máxima (em quantidades)"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_delete.html:26
-#, fuzzy
-#| msgid "Cantidad por calificacion"
 msgid "Regla de incidencia por calificación: "
-msgstr "Quantidade por qualificação"
+msgstr "Regra de incidência por classificação"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_delete.html:27
-#, fuzzy
-#| msgid "¿Está seguro que desea eliminar esta calificación?"
 msgid ""
 "¿Esta seguro que desea eliminar esta Regla de incidencia por calificación?"
-msgstr "Tem certeza de que quer remover esta classificação?"
+msgstr ""
+"Tem certeza de que quer remover esta Regra de incidência por classificação?"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:25
-#, fuzzy
-#| msgid "Reglas de incidencia"
 msgid "Reglas de incidencia para la campaña: "
-msgstr "Regras de incidência"
+msgstr "Regras de incidência para a campanha: "
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:31
 msgid "ID en wombat"
-msgstr ""
+msgstr "ID em wombat"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:33
-#, fuzzy
-#| msgid "Reintentar más tarde(En segundos)"
 msgid "Reintentar en (segundos)"
-msgstr "Tente novamente mais tarde (em segundos)"
+msgstr "Tentar novamente em (segundos)"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:76
 msgid "No hay Reglas de Incidencia por Calificación configuradas"
-msgstr ""
+msgstr "Não há regras de Incidência por Classificação configuradas"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:83
 msgid "Agregar Regla de Incidencia por Calificación"
-msgstr ""
+msgstr "Adicionar Regra de Incidência por Classificação"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:84
 msgid "Agregar Regla de Incidencia por estado del sistema"
-msgstr ""
+msgstr "Adicionar Regra de Incidência por estado do sistema"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/sincronizar_lista.html:23
 msgid "Campaña Dialer: Sincronizar"
@@ -5778,10 +5691,8 @@ msgid "IVR de escape:"
 msgstr "URA de escape:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:110
-#, fuzzy
-#| msgid "Destino en caso de timeout"
 msgid "Destino en caso de timeout:"
-msgstr "Destino em caso de timeout"
+msgstr "Destino em caso de timeout:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:134
 msgid "Anuncios para llamantes"
@@ -5798,23 +5709,19 @@ msgstr "Anunciar o tempo médio de espera:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:148
 msgid "Anunciar Posición:"
-msgstr ""
+msgstr "Anunciar Posição:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:153
-#, fuzzy
-#| msgid "Frecuencia del anuncio:"
 msgid "Frecuencia de anuncios de espera/posición"
-msgstr "Frequência do anúncio:"
+msgstr "Frequência de anúncios de espera/posição:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:161
 msgid "Anuncio periódico:"
 msgstr "Anúncio periódico:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:166
-#, fuzzy
-#| msgid "Frecuencia del anuncio:"
 msgid "Frecuencia de anuncio periodico:"
-msgstr "Frequência do anúncio:"
+msgstr "Frequência do anúncio periódico:"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:177
 msgid "Parámetros de agentes"
@@ -5934,20 +5841,16 @@ msgid "Campaña Entrante: Datos Básicos"
 msgstr "Campanha de Entrada: Dados Básicos"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:123
-#, fuzzy
-#| msgid "Mostrar nombre al recibir llamado"
 msgid "Mostrar DID al recibir llamado"
-msgstr "Mostrar nome quando chamando"
+msgstr "Mostrar DID quando chamando"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:127
-#, fuzzy
-#| msgid "Mostrar nombre al recibir llamado"
 msgid "Mostrar nombre ruta entrante"
-msgstr "Mostrar nome quando chamando"
+msgstr "Mostrar nome rota entrante"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/nueva_edita_campana.html:131
 msgid "Habilitar video"
-msgstr ""
+msgstr "Habilitar video"
 
 #: ominicontacto_app/templates/campanas/campana_entrante/opcion_calificacion.html:23
 msgid "Campaña Entrante: Opciones de calificación"
@@ -6099,10 +6002,8 @@ msgstr "Ver Contatos Atribuídos"
 
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:75
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:152
-#, fuzzy
-#| msgid "Agregar contactos"
 msgid "Ordenar entrega contactos"
-msgstr "Acrescentar contatos"
+msgstr "Ordenar entrega contatos"
 
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:126
 msgid "ver detalles"
@@ -6110,10 +6011,8 @@ msgstr "ver detalhes"
 
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:153
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:156
-#, fuzzy
-#| msgid "Se ha modificado la campaña."
 msgid "Se reactivará la campaña"
-msgstr "A campanha foi modificada."
+msgstr "A campanha sera reativada."
 
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:231
 msgid ""
@@ -6147,36 +6046,28 @@ msgid "Campaña Preview: Editar Datos Básicos"
 msgstr "Campanha Pré-visualização: Editar Dados Básicos"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:54
-#, fuzzy
-#| msgid "Contactos de la campaña"
 msgid "Reservar o liberar Contactos de la Campaña"
-msgstr "Contatos da campanha"
+msgstr "Reservar ou liberar Contatos da campanha"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:59
-#, fuzzy
-#| msgid "Filtrar por este rango"
 msgid "Filtrar por agente"
-msgstr "Filtrar por esta faixa"
+msgstr "Filtrar por agente"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:71
 msgid "* Tiene que seleccionar minimo 1 contacto"
-msgstr ""
+msgstr "* Deve selecionar mínimo 1 contato"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:79
-#, fuzzy
-#| msgid "Sitio Externo"
 msgid "Id Externo"
-msgstr "Site externo"
+msgstr "Id externo"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:86
-#, fuzzy
-#| msgid "Debe seleccionar un destino"
 msgid "* Tiene que seleccionar un Agente"
-msgstr "Você deve selecionar um destino"
+msgstr "* Você deve selecionar um Agente"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:105
 msgid "Reservar"
-msgstr ""
+msgstr "Reservar"
 
 #: ominicontacto_app/templates/campanas/campana_preview/detalle.html:48
 #: ominicontacto_app/templates/campanas/campana_preview/detalle_express.html:45
@@ -6215,52 +6106,44 @@ msgid "Campaña Preview: Opciones de calificación"
 msgstr "Pré-visualização da Campanha: Opções de Qualificação"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:29
-#, fuzzy
-#| msgid "Contactos de la campaña"
 msgid "Gestionar contactos de Campaña"
-msgstr "Contatos da campanha"
+msgstr "Gerenciar contatos da Campanha"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:45
 msgid "Exportar status actual contactos"
-msgstr ""
+msgstr "Exportar status atual contatos"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:49
-#, fuzzy
-#| msgid "desactivar"
 msgid "Exportar y desactivar"
-msgstr "desativar"
+msgstr "Exportar e desativar"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:53
-#, fuzzy
-#| msgid "Mostrar contactos"
 msgid "Importar status contactos"
-msgstr "Mostrar contatos"
+msgstr "Importar status contatos"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:57
 msgid "Seleccionar archivo .csv:"
-msgstr ""
+msgstr "Selecionar arquivo .csv:"
 
 #: ominicontacto_app/templates/campanas/campana_preview/ordenar_asignacion_contactos.html:62
-#, fuzzy
-#| msgid "desactivar"
 msgid "Importar y desactivar"
-msgstr "desativar"
+msgstr "Importar e desativar"
 
 #: ominicontacto_app/templates/campanas/campana_preview/parametros_crm_sitio_externo.html:23
 msgid "Campaña Preview: Parámetros extra para web form"
 msgstr "Campanha pré-visualização: Parâmetros adicionais para o formulário web"
 
 #: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:30
-#, fuzzy
-#| msgid "Actualizando {0} asignaciones de contactos a agentes en campaña {1}"
 msgid "Configuracion de comportamiento de agentes en campaña"
-msgstr "Atualização {0} atribuição de contactos a agentes em campanha {1}"
+msgstr "Configuração de comportamento de agentes em campanha"
 
 #: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:38
 msgid ""
 "Seleccione las opciones a configurar para cambiar el comportamiento de los "
 "agentes en esta campaña."
 msgstr ""
+"Selecione as opções de configuração para alterar o comportamento dos "
+"agentes nesta campanha."
 
 #: ominicontacto_app/templates/campanas/wizard_base.html:46
 msgid "first step"
@@ -6324,18 +6207,16 @@ msgstr "Você quer qualificar o contato?"
 
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:106
 #: ominicontacto_app/templates/formulario/calificacion_create_update_supervisor.html:80
-#, fuzzy
-#| msgid "Calificación campana"
 msgid "Calificación Auditada"
-msgstr "Qualificação campanha"
+msgstr "Qualificação Auditada"
 
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:113
 msgid "Revisada"
-msgstr ""
+msgstr "Revisada"
 
 #: ominicontacto_app/templates/formulario/calificacion_create_update_agente.html:117
 msgid "No revisada"
-msgstr ""
+msgstr "Não revisada"
 
 #: ominicontacto_app/templates/formulario/formulario_preview.html:26
 msgid "Nuevo formulario"
@@ -6384,29 +6265,23 @@ msgstr "Sobre"
 
 #: ominicontacto_app/templates/gestor/sidebar_gestion.html:75
 msgid "Market Place"
-msgstr ""
+msgstr "Market Place"
 
 #: ominicontacto_app/templates/grupo_agentes.html:7
 msgid "Agregar grupo de agentes"
 msgstr "Adicionar grupo de agentes"
 
 #: ominicontacto_app/templates/lista_rapida/contactos/delete.html:27
-#, fuzzy
-#| msgid "¿Está seguro que desea eliminar este contacto?"
 msgid "¿Está seguro que desea eliminar el contacto?"
-msgstr "Tem certeza de remover este contacto?"
+msgstr "Tem certeza de remover o contacto?"
 
 #: ominicontacto_app/templates/lista_rapida/contactos/edit.html:35
-#, fuzzy
-#| msgid "Mostrar contactos"
 msgid "Editar contacto"
-msgstr "Mostrar contatos"
+msgstr "Editar contatos"
 
 #: ominicontacto_app/templates/lista_rapida/contactos/edit.html:39
-#, fuzzy
-#| msgid "Actualizar formulario"
 msgid "Actualizar"
-msgstr "Atualizar formulário"
+msgstr "Atualizar"
 
 #: ominicontacto_app/templates/lista_rapida/contactos/index.html:51
 #: ominicontacto_app/templates/user/user_create_form.html:78
@@ -6416,56 +6291,40 @@ msgid "ID"
 msgstr "ID"
 
 #: ominicontacto_app/templates/lista_rapida/define_lista_rapida.html:101
-#, fuzzy
-#| msgid "volver"
 msgid "Volver"
-msgstr "voltar"
+msgstr "Voltar"
 
 #: ominicontacto_app/templates/lista_rapida/define_lista_rapida.html:105
-#, fuzzy
-#| msgid "Guardar y llamar"
 msgid "Guardar lista rapida"
-msgstr "Salvar e Chamar"
+msgstr "Salvar lista rápida"
 
 #: ominicontacto_app/templates/lista_rapida/delete_lista_rapida.html:27
 msgid "Lista Rápida"
-msgstr ""
+msgstr "Lista Rápida"
 
 #: ominicontacto_app/templates/lista_rapida/delete_lista_rapida.html:28
-#, fuzzy
-#| msgid "¿Está seguro que desea eliminar este usuario?"
 msgid "¿Está seguro que desea eliminar esta lista rápida?"
-msgstr "Tem certeza que quer apagar este utilizador?"
+msgstr "Tem certeza que quer apagar essa lista rápida?"
 
 #: ominicontacto_app/templates/lista_rapida/listas_rapidas.html:41
-#, fuzzy
-#| msgid "Vista Previa"
 msgid "Lista rápida"
-msgstr "Pré-visualização"
+msgstr "Lista rápida"
 
 #: ominicontacto_app/templates/lista_rapida/listas_rapidas.html:84
-#, fuzzy
-#| msgid "No se encontraron Backlist creadas."
 msgid "No se encontraron listas rápidas creadas."
-msgstr "Não foi encontrada nenhuma Backlist criada."
+msgstr "Não foi encontrada nenhuma lista rápida criada."
 
 #: ominicontacto_app/templates/lista_rapida/nueva_edita_lista_rapida.html:36
-#, fuzzy
-#| msgid "Nueva base de datos de contacto"
 msgid "Nueva lista rapida de contacto"
-msgstr "Nova base de dados de contatos"
+msgstr "Nova lista rápida de contatos"
 
 #: ominicontacto_app/templates/lista_rapida/nueva_edita_lista_rapida.html:41
-#, fuzzy
-#| msgid "Definir Backlist"
 msgid "Definir lista rapida"
-msgstr "Definir blacklist"
+msgstr "Definir lista rápida"
 
 #: ominicontacto_app/templates/lista_rapida/nueva_edita_lista_rapida.html:44
-#, fuzzy
-#| msgid "bajar base de datos de ejemplo"
 msgid "bajar lista rapida de ejemplo"
-msgstr "baixar amostra de base de dados"
+msgstr "baixar amostra de lista rápida"
 
 #: ominicontacto_app/templates/messages.html:27
 msgid "¡Error!"
@@ -6507,7 +6366,7 @@ msgstr "Já está registado."
 
 #: ominicontacto_app/templates/registro.html:36
 msgid "Reenviar llave"
-msgstr ""
+msgstr "Reenviar chave"
 
 #: ominicontacto_app/templates/user/cliente_webphone_list.html:36
 #: ominicontacto_app/templates/user/user_list.html:51
@@ -6558,7 +6417,7 @@ msgstr "Tem certeza que quer apagar este utilizador?"
 
 #: ominicontacto_app/templates/user/force_password_change.html:82
 msgid "Usted debe modificar su contraseña"
-msgstr ""
+msgstr "Deve modificar sua senha"
 
 #: ominicontacto_app/templates/user/user_create_form.html:50
 #: ominicontacto_app/templates/user/user_create_form.html:55
@@ -6567,10 +6426,8 @@ msgstr "Dados básicos"
 
 #: ominicontacto_app/templates/user/user_create_form.html:52
 #: ominicontacto_app/templates/user/user_create_form.html:56
-#, fuzzy
-#| msgid "Listado de campañas"
 msgid "Selección de campañas"
-msgstr "Lista de campanhas"
+msgstr "Seleção de campanhas"
 
 #: ominicontacto_app/templates/user/user_create_form.html:80
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:107
@@ -6578,16 +6435,12 @@ msgid "Objetivo"
 msgstr "Objetivo"
 
 #: ominicontacto_app/templates/user/user_list.html:29
-#, fuzzy
-#| msgid "Activa"
 msgid "Activos:"
-msgstr "Ativa"
+msgstr "Ativos:"
 
 #: ominicontacto_app/templates/user/user_list.html:42
-#, fuzzy
-#| msgid "Lista de usuarios"
 msgid "Descargar lista de usuarios (CSV)"
-msgstr "Lista de usuários"
+msgstr "Baixar lista de usuários (CSV)"
 
 #: ominicontacto_app/templates/user/user_list.html:52
 msgid "username"
@@ -6615,56 +6468,44 @@ msgstr "Cliente WebPhone"
 
 #: ominicontacto_app/templates/user/user_list.html:106
 msgid "Clonar"
-msgstr ""
+msgstr "Clonar"
 
 #: ominicontacto_app/templates/user/user_list.html:144
 msgid "No existen usuarios"
 msgstr "Não há usuários"
 
 #: ominicontacto_app/templates/user/user_role_management.html:38
-#, fuzzy
-#| msgid "Asignación inicial de contactos a agentes"
 msgid "Asignación de permisos a Roles"
-msgstr "Atribuição inicial dos contatos aos agentes"
+msgstr "Atribuição de permissões a Cargos"
 
 #: ominicontacto_app/templates/user/user_role_management.html:42
 #: ominicontacto_app/templates/user/user_role_management.html:78
 msgid "Crear Rol"
-msgstr ""
+msgstr "Criar Cargo"
 
 #: ominicontacto_app/templates/user/user_role_management.html:48
-#, fuzzy
-#| msgid "Mostrar"
 msgid "Mostrar:"
-msgstr "Mostrar"
+msgstr "Mostrar:"
 
 #: ominicontacto_app/templates/user/user_role_management.html:61
-#, fuzzy
-#| msgid "Permiso denegado"
 msgid "Permiso"
-msgstr "Permissão negada"
+msgstr "Permissão"
 
 #: ominicontacto_app/templates/user/user_role_management.html:99
 msgid "Copiar Permisos de Rol"
-msgstr ""
+msgstr "Copiar permissões de Cargo"
 
 #: ominicontacto_app/templates/user/user_role_management.html:111
-#, fuzzy
-#| msgid "Calificar"
 msgid "Aplicar"
-msgstr "Qualificar"
+msgstr "Aplicar"
 
 #: ominicontacto_app/templates/user/user_role_management.html:123
-#, fuzzy
-#| msgid "¿Desea calificar al contacto?"
 msgid "¿Desea eliminar el rol?"
-msgstr "Você quer qualificar o contato?"
+msgstr "Você quer apagar o Cargo?"
 
 #: ominicontacto_app/templates/user/user_role_management.html:133
-#, fuzzy
-#| msgid "Borrada"
 msgid "Borrar"
-msgstr "Eliminada"
+msgstr "Eliminar"
 
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:51
 msgid "nombre del agente"
@@ -6679,10 +6520,8 @@ msgid "campañas"
 msgstr "campanhas"
 
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:67
-#, fuzzy
-#| msgid "a Campaña"
 msgid "Mostrar Campañas"
-msgstr "a Campanha"
+msgstr "Mostrar Campanhas"
 
 #: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:72
 msgid "Agente Inactivo"
@@ -6706,8 +6545,6 @@ msgid "¿Está seguro que desea eliminar este grupo?"
 msgstr "Tem certeza que quer apagar este grupo?"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_create_update.html:39
-#, fuzzy
-#| msgid "Nuevo Grupo de agentes"
 msgid "Nuevo grupo de agentes"
 msgstr "Novo grupo de agentes"
 
@@ -6717,58 +6554,44 @@ msgid "Auto unpause"
 msgstr "Auto sair da pausa"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:32
-#, fuzzy
-#| msgid "Llamar"
 msgid "Llamadas"
-msgstr "Ligar"
+msgstr "Telefonemas"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:53
-#, fuzzy
-#| msgid "Llamada fuera de Campaña"
 msgid "Llamadas fuera de campaña"
-msgstr "Chamada Fora da Campanha"
+msgstr "TelefonemafFora da campanha"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:130
-#, fuzzy
-#| msgid "Parámetros de agentes"
 msgid "Permisos en consola de agente"
-msgstr "Parâmetros de agentes"
+msgstr "Permissões do console de agentes"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:133
 msgid "Acceso al dashboard"
-msgstr ""
+msgstr "Acesso ao dashboard"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:142
-#, fuzzy
-#| msgid "No existen grabaciones"
 msgid "Acceso a las grabaciones"
-msgstr "Não há gravações"
+msgstr "Acesso as gravações"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:152
 msgid "Ver timers"
-msgstr ""
+msgstr "Ver timers"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:161
-#, fuzzy
-#| msgid "Total contactos:"
 msgid "Acceso a los contactos"
-msgstr "Total de contactos:"
+msgstr "Acesso aos contatos:"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:170
 msgid "Acceso a las agendas"
-msgstr ""
+msgstr "Acesso as agendas"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:179
-#, fuzzy
-#| msgid "Listado de calificaciones"
 msgid "Acceso a las calificaciones"
-msgstr "Lista de qualificações"
+msgstr "Acesso as Classificações"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_detalle.html:188
-#, fuzzy
-#| msgid "Templates campañas preview"
 msgid "Acceso a las campañas preview"
-msgstr "Templates de campanhas pré-visualização"
+msgstr "Acesso as campanhas pré-visualização"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:48
 msgid "Auto attend inbound"
@@ -6779,32 +6602,24 @@ msgid "Auto attend dialer"
 msgstr "Auto atender dialer"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:50
-#, fuzzy
-#| msgid "Volver a Calificación"
 msgid "Forzar Calificación"
-msgstr "Voltar para Qualificação"
+msgstr "Forzar Classificação"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:91
-#, fuzzy
-#| msgid "ver detalles"
 msgid "Ver detalle"
-msgstr "ver detalhes"
+msgstr "Ver detalhe"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:106
 msgid "No existen grupos"
 msgstr "Não há grupos"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:113
-#, fuzzy
-#| msgid "Nuevo audio"
 msgid "Nuevo grupo"
-msgstr "Novo áudio"
+msgstr "Novo grupo"
 
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:159
-#, fuzzy
-#| msgid "Información"
 msgid "Información del Grupo"
-msgstr "Informação"
+msgstr "Informação do Grupo"
 
 #: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:40
 msgid "nombre del supervisor"
@@ -6838,64 +6653,48 @@ msgstr "Versão atual: {0}"
 
 #: ominicontacto_app/tests/tests_abm_usuarios.py:111
 #: ominicontacto_app/views_user_profiles.py:124
-#, fuzzy
-#| msgid "Nuevo Usuario: Perfil de Supervisor"
 msgid "Nuevo Usuario: Selección de Campañas"
-msgstr "Novo Usuário: Perfil de Supervisor"
+msgstr "Novo Usuário: Seleção de Campanhas"
 
 #: ominicontacto_app/tests/tests_abm_usuarios.py:235
 #: ominicontacto_app/tests/tests_abm_usuarios.py:257
 #: ominicontacto_app/views_user_profiles.py:423
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para eliminar al usuario {}"
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a eliminar o usuário. {}"
 
 #: ominicontacto_app/tests/tests_abm_usuarios.py:320
 #: ominicontacto_app/tests/tests_abm_usuarios.py:338
 #: ominicontacto_app/views_user_profiles.py:299
 #: ominicontacto_app/views_user_profiles.py:527
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para editar al usuario {}"
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a editar o usuário {}"
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:61
 #: ominicontacto_app/views_auditorias.py:167
-#, fuzzy
-#| msgid "Opciones de calificación de gestión"
 msgid "Sólo pueden auditarse calificaciones de gestión."
-msgstr "Opções de qualificação de gestão"
+msgstr "Somente podem ser audatadas classificações de gestão"
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:79
 #: ominicontacto_app/views_auditorias.py:159
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para auditar calificaciones de esta campaña."
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a auditar classificações dessa campanha."
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:97
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:116
 #: ominicontacto_app/views_auditorias.py:217
-#, fuzzy
-#| msgid "Opciones de calificación"
 msgid "Auditoría de calificación guardada."
-msgstr "Opções de qualificação"
+msgstr "Auditoria de classificação salva."
 
 #: ominicontacto_app/tests/tests_base_datos_campana_agregar_contactos.py:60
 #: ominicontacto_app/tests/tests_base_datos_campana_agregar_contactos.py:73
 #: ominicontacto_app/views_contacto.py:256
-#, fuzzy
-#| msgid "Contacto creado satisfactoriamente. Efectuando llamada."
 msgid "Contacto creado satisfactoriamente."
-msgstr "Contato criado com sucesso. Efetuando uma chamada."
+msgstr "Contato criado com sucesso."
 
 #: ominicontacto_app/tests/tests_base_datos_campana_agregar_contactos.py:85
 #: ominicontacto_app/views_contacto.py:214
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para agregar contactos a la Campaña."
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a adicionar contatos nessa campanha."
 
 #: ominicontacto_app/tests/tests_calificacion.py:138
 #: ominicontacto_app/views_calificacion_cliente.py:173
@@ -6920,16 +6719,12 @@ msgstr "Você deve digitar um mínimo de {0} minutos"
 
 #: ominicontacto_app/tests/tests_campanas_supervisores.py:92
 #: ominicontacto_app/views_campana.py:181
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para asignar supervisores a esta campaña."
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a atribuir supervisores a esta campanha."
 
 #: ominicontacto_app/tests/tests_contactos_preview.py:181
-#, fuzzy
-#| msgid "Haga click para llamar al contacto"
 msgid "No es posible llamar al contacto."
-msgstr "Clique para ligar para o contato"
+msgstr "Nãe o e possível ligar para o contato"
 
 #: ominicontacto_app/utiles.py:402
 #, python-brace-format
@@ -6943,7 +6738,7 @@ msgstr "A url não pôde ser acessada devido a: {0}"
 
 #: ominicontacto_app/views/autenticacion_externa.py:65
 msgid "Configuración de autenticación actualizada"
-msgstr ""
+msgstr "Configuração de autenticação atualizada"
 
 #: ominicontacto_app/views/base.py:118
 #, python-brace-format
@@ -6958,7 +6753,7 @@ msgstr ""
 
 #: ominicontacto_app/views/base.py:146
 msgid "usuario/contraseña inválidos. Consulte con su administrador LDAP"
-msgstr ""
+msgstr "usuário/contrasenha inválidos. Consulte seu administrador LDAP"
 
 #: ominicontacto_app/views/base.py:151
 msgid "Este tipo de usuario no puede loguearse en este momento."
@@ -6973,8 +6768,6 @@ msgstr ""
 "seu supervisor"
 
 #: ominicontacto_app/views/instancia.py:81
-#, fuzzy
-#| msgid "No tiene settings de conexión configurados"
 msgid "No tiene settings de conexion configurados"
 msgstr "Nenhuma configuração de conexão criada"
 
@@ -6989,30 +6782,30 @@ msgstr ""
 "Registrado com sucesso, foi-lhe enviado um e-mail com a sua chave de registo."
 
 #: ominicontacto_app/views_agenda_contacto.py:215
-#, fuzzy
-#| msgid "La acción indicada no existe"
 msgid "La campana indicada no existe."
-msgstr "A ação indicada não existe"
+msgstr "A campanha indicada não existe"
 
 #: ominicontacto_app/views_agenda_contacto.py:222
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para ver las agendas de esta campaña."
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a ver as agendas dessa campanha."
 
 #: ominicontacto_app/views_agente.py:210
 msgid "No es posible llamar al contacto. No se pudo identificar al contacto."
 msgstr ""
+"Não é possível ligar para o contato. Não foi possível identificar o contato."
 
 #: ominicontacto_app/views_agente.py:216
 msgid "No es posible llamar al contacto. No se pudo identificar un teléfono."
 msgstr ""
+"Não é possível ligar para o contato. Não foi possível identificar um telefone."
 
 #: ominicontacto_app/views_agente.py:232
 msgid ""
 "No es posible llamar al contacto. La campaña no se encuentra activa o no "
 "existe en el sistema."
 msgstr ""
+"Não é possível ligar para o contato. A campanha não se encontra ativada ou "
+"não existe no sistema."
 
 #: ominicontacto_app/views_agente.py:241
 msgid ""
@@ -7092,10 +6885,8 @@ msgstr ""
 "realizada com sucesso."
 
 #: ominicontacto_app/views_auditorias.py:151
-#, fuzzy
-#| msgid "Calificación"
 msgid "Calificación Inexistente"
-msgstr "Qualifacação"
+msgstr "Classificação Inexistente"
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:201
 #: ominicontacto_app/views_base_de_datos_contacto.py:586
@@ -7103,19 +6894,13 @@ msgid "<strong>¡Cuidado!</strong> "
 msgstr "<strong>Cuidado!</strong> "
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:202
-#, fuzzy
-#| msgid ""
-#| "La Base Datos Contacto que intenta depurar esta siendo utilizada por "
-#| "alguna campaña. No se llevará a cabo la depuración la misma mientras esté "
-#| "siendo utilizada."
 msgid ""
 "La Base Datos Contacto que intenta eliminar esta siendo utilizada por alguna "
 "campaña. No se llevará a cabo el borrado la misma mientras esté siendo "
 "utilizada."
 msgstr ""
-"A Base de Dados de Contatos que você está tentando depurar está sendo usada "
-"por alguma campanha. A depuração não será efetuada enquanto estiver sendo "
-"utilizada."
+"A Base de Dados de Contatos que você está tentando apagar está sendo usada "
+"por alguma campanha. Não pode ser apagada enquanto estiver sendo utilizada."
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:224
 #: ominicontacto_app/views_base_de_datos_contacto.py:600
@@ -7124,10 +6909,8 @@ msgid "<strong>¡Operación Errónea!</strong> "
 msgstr "<strong>Operação Errada!</strong> "
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:225
-#, fuzzy
-#| msgid "La Base Datos Contacto no se pudo depurar."
 msgid "La Base Datos de Contactoa no se pudo eliminar."
-msgstr "O Banco de Dados de Contatos não pôde ser depurado."
+msgstr "O Banco de Dados de Contatos não pôde ser apagado."
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:233
 #: ominicontacto_app/views_base_de_datos_contacto.py:529
@@ -7138,10 +6921,8 @@ msgid "<strong>Operación Exitosa!</strong> "
 msgstr "<strong>Operação Efetuada!</strong> "
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:234
-#, fuzzy
-#| msgid "Se llevó a cabo con éxito la depuración de la Base de Datos."
 msgid "Se llevó a cabo con éxito el borrado de la Base de Datos."
-msgstr "A limpeza da base de dados foi concluída com sucesso."
+msgstr "A base de dados foi apagada com sucesso."
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:286
 #: ominicontacto_app/views_base_de_datos_contacto.py:673
@@ -7248,7 +7029,7 @@ msgstr "A limpeza da base de dados foi concluída com sucesso."
 #: ominicontacto_app/views_base_de_datos_contacto.py:702
 #, python-brace-format
 msgid "Error al procesar el archivo de base de contactos: {0}"
-msgstr ""
+msgstr "Erro ao processar o arquivo de base de contatos: {0}"
 
 #: ominicontacto_app/views_base_de_datos_contacto.py:766
 #, python-brace-format
@@ -7261,34 +7042,26 @@ msgid "El nombre de la columna debe ser {0} en vez de {1}"
 msgstr "O nome da coluna deve ser {0} em vez de {1}"
 
 #: ominicontacto_app/views_black_list.py:338
-#, fuzzy
-#| msgid ""
-#| "<strong>Operación Exitosa!</strong>                         Se llevó a "
-#| "cabo con éxito la activación dela Campaña."
 msgid ""
 "<strong>Operación Exitosa:</strong>                     Se llevó a cabo con "
 "éxito la eliminación de la blacklist."
 msgstr ""
-"<strong>Operação Efetuada!</strong>                         A ativação da "
-"Campanha foi realizada com sucesso."
+"<strong>Operação Efetuada!</strong>                         A blacklist foi "
+"eliminada com sucesso."
 
 #: ominicontacto_app/views_black_list.py:384
-#, fuzzy
-#| msgid ""
-#| "<strong>Operación Exitosa!</strong>Se llevó a cabo con éxito la "
-#| "eliminación del Template."
 msgid ""
 "<strong>Operación Exitosa:</strong> Se llevó a cabo con éxito la creación "
 "del contacto."
 msgstr ""
-"<strong>Operação Efetuada!</strong> A eliminação do Template foi realizada "
-"com sucesso."
+"<strong>Operação Efetuada!</strong> O Template foi criado com sucesso."
 
 #: ominicontacto_app/views_calificacion_cliente.py:95
 #, python-brace-format
 msgid ""
 "El Identificador de contacto recibido no permite definir al contacto: {0}"
 msgstr ""
+"O Identificador de contato recibido não permite definir o contacto: {0}"
 
 #: ominicontacto_app/views_calificacion_cliente.py:436
 msgid ""
@@ -7329,10 +7102,8 @@ msgstr ""
 
 #: ominicontacto_app/views_campana.py:235
 #: ominicontacto_app/views_contacto.py:362
-#, fuzzy
-#| msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgid "No tiene permiso para editar esa campaña."
-msgstr "Não está autorizado a classificar as chamadas dessa campanha."
+msgstr "Não está autorizado a editar eessa campanha."
 
 #: ominicontacto_app/views_campana_creacion.py:186
 msgid ""
@@ -7342,7 +7113,7 @@ msgstr "Operação Efetuada: a eliminação do Template foi realizada com sucess
 
 #: ominicontacto_app/views_campana_creacion.py:346
 msgid "QueueAdd failed "
-msgstr ""
+msgstr "QueueAdd falido "
 
 #: ominicontacto_app/views_campana_creacion.py:376
 msgid "La campaña tiene agentes no asociados al sistema externo."
@@ -7461,17 +7232,13 @@ msgstr ""
 
 #: ominicontacto_app/views_campana_dialer.py:508
 #: ominicontacto_app/views_campana_dialer.py:639
-#, fuzzy
-#| msgid "Reglas de incidencia"
 msgid "Regla de incidencia eliminada."
-msgstr "Regras de incidência"
+msgstr "Regra de incidência apagada."
 
 #: ominicontacto_app/views_campana_dialer.py:547
 #: ominicontacto_app/views_campana_dialer.py:682
-#, fuzzy
-#| msgid "Reglas de incidencia"
 msgid "Error al registrar regla de incidencia: "
-msgstr "Regras de incidência"
+msgstr "Erro ao registrar regra de incidência: "
 
 #: ominicontacto_app/views_campana_dialer.py:549
 #: ominicontacto_app/views_campana_dialer.py:589
@@ -7479,17 +7246,13 @@ msgstr "Regras de incidência"
 #: ominicontacto_app/views_campana_dialer.py:684
 #: ominicontacto_app/views_campana_dialer.py:726
 #: ominicontacto_app/views_campana_dialer.py:733
-#, fuzzy
-#| msgid "No se pudo llevar a cabo la creacion de campo."
 msgid "No se pudo guardar la regla de incidencia."
-msgstr "A criação do campo não pôde ser realizada."
+msgstr "A regra de incidência não pôde ser salva."
 
 #: ominicontacto_app/views_campana_dialer.py:594
 #: ominicontacto_app/views_campana_dialer.py:731
-#, fuzzy
-#| msgid "Reglas de incidencia"
 msgid "Error al editar regla de incidencia: "
-msgstr "Regras de incidência"
+msgstr "Erro ao editar regra de incidência: "
 
 #: ominicontacto_app/views_campana_dialer.py:626
 #, python-brace-format
@@ -7632,43 +7395,28 @@ msgid "La grabación no tiene descripción asociada"
 msgstr "A gravação não tem descrição associada"
 
 #: ominicontacto_app/views_lista_rapida.py:96
-#, fuzzy
-#| msgid ""
-#| "Operación Exitosa! Se llevó a cabo con éxito la creación del contacto"
 msgid ""
 "Operación Exitosa: Se llevó a cabo con éxito la actualización del contacto."
-msgstr "Operação Efetuada! A criação do contato foi realizada com sucesso"
+msgstr "Operação Efetuada! A atualização do contato foi concluída com sucesso."
 
 #: ominicontacto_app/views_lista_rapida.py:127
-#, fuzzy
-#| msgid ""
-#| "Operación Exitosa! Se llevó a cabo con éxito la creación del contacto"
 msgid ""
 "Operación Exitosa: Se llevó a cabo con éxito la eliminación del contacto."
-msgstr "Operação Efetuada! A criação do contato foi realizada com sucesso"
+msgstr "Operação Efetuada! O contato foi apagado com sucesso."
 
 #: ominicontacto_app/views_lista_rapida.py:169
-#, fuzzy
-#| msgid ""
-#| "Operación Exitosa! Se llevó a cabo con éxito la creación del contacto"
 msgid "Operación Exitosa: Se llevó a cabo con éxito la creación del contacto."
-msgstr "Operação Efetuada! A criação do contato foi realizada com sucesso"
+msgstr "Operação Efetuada! A criação do contato foi concluída com sucesso."
 
 #: ominicontacto_app/views_lista_rapida.py:362
-#, fuzzy
-#| msgid "Se llevó a cabo con éxito la depuración de la Base de Datos."
 msgid "Se llevó a cabo con éxito la creación de la lista rapida."
-msgstr "A limpeza da base de dados foi concluída com sucesso."
+msgstr "A criação da lista rápida foi concluída com sucesso."
 
 #: ominicontacto_app/views_lista_rapida.py:457
-#, fuzzy
-#| msgid ""
-#| "Operación Exitosa:        se llevó a cabo con éxito la eliminación del "
-#| "Template."
 msgid ""
 "Operación Exitosa:                    se llevó a cabo con éxito la "
 "eliminación de la lista rápida."
-msgstr "Operação Efetuada: a eliminação do Template foi realizada com sucesso."
+msgstr "Operação Efetuada: a eliminação da lista rápida foi concluída com sucesso."
 
 #: ominicontacto_app/views_queue_member.py:57
 #, python-brace-format
