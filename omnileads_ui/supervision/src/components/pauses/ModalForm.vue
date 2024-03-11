@@ -139,8 +139,8 @@ export default {
             submitted: false,
             repeatedName: false,
             pauseTypes: [
-                { option: 'Productiva', value: 'P' },
-                { option: 'Recreativa', value: 'R' }
+                { option: this.$t('forms.pause.types.opt1'), value: 'P' },
+                { option: this.$t('forms.pause.types.opt2'), value: 'R' }
             ]
         };
     },
