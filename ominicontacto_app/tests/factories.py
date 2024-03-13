@@ -140,7 +140,7 @@ class GrupoFactory(DjangoModelFactory):
     auto_unpause = lazy_attribute(lambda a: faker.random_number(2))
     auto_attend_inbound = True
     auto_attend_dialer = True
-    
+
 
 class AgenteProfileFactory(DjangoModelFactory):
     class Meta:

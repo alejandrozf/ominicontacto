@@ -39,7 +39,7 @@ streams = dict()
 async def connect_to_stream(name: str, line: Linea, redis: RedisServer):
     redis = redis.client()
     try:
-        print("connect to stream for line >>>", line.nombre)
+        print("connect to stream for line >>>", line.nombre, line.destino)
         streams = {
             name: "0-0"
         }
@@ -70,7 +70,9 @@ def get_stream_name(line):
 
 async def subscribe(line: Linea, redis_host: RedisServer, loop: Loop):
     if line.id in streams:
-        return
+        task = streams.pop(line.id)
+        task.cancel()
+        del task
     cname = get_stream_name(line)
     tname = f"redis-stream id={line.id} name={cname}"
     streams[line.id] = create_task(loop, connect_to_stream(cname, line, redis_host), tname)

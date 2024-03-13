@@ -30,6 +30,7 @@ async def send_notify(notify_type, **kwargs):
             elif kwargs['conversation'].campana:
                 agents = kwargs['conversation'].campana.obtener_agentes()
             for agent in agents:
+                print("notify agent >>>", agent)
                 await notify(agent.user_id, **kwargs)
     except Exception as e:
         print('error en send_notify >>>>', e)

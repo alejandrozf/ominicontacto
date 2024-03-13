@@ -315,7 +315,7 @@ class ViewSet(viewsets.ViewSet):
 
                 else:
                     serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
-                    serializer_calificacion.save()
+                    calificacion = serializer_calificacion.save()
                     conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
                     conversation.is_disposition = True
                     conversation.conversation_disposition = calificacion.history.first()
