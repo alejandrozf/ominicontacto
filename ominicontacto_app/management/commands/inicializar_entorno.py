@@ -331,7 +331,7 @@ class Command(BaseCommand):
 
         # crear califs.(1 gestion y 1 normal)
         self.success = NombreCalificacionFactory(nombre='Success')
-        self.success = NombreCalificacionFactory(nombre='ventas_Lee PLC')        
+        self.success = NombreCalificacionFactory(nombre='ventas_Lee PLC')
         self.angry = NombreCalificacionFactory(nombre='hangup')
 
         self._crear_dbs_contactos()

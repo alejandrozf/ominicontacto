@@ -187,6 +187,7 @@ class ViewSet(viewsets.ViewSet):
                     serializer_destino.borrar_destino_sobrante(destino_previo, destino)
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.serialize_data()
+                    StreamDeLineas().notificar_nueva_linea(instance)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
