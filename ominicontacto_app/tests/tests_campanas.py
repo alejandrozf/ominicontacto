@@ -33,12 +33,12 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino
 
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
                                       ParametrosCrm)
 from ominicontacto_app.forms.base import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
-                                          CampanaDialerForm, CampanaEntranteForm)
+                                          CampanaDialerForm, CampanaEntranteForm, CampanaMixinForm)
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
@@ -58,7 +58,8 @@ from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, IVRFactory
-
+from whatsapp_app.tests.factories import LineaFactory, MenuInteractivoFactory
+from whatsapp_app.models import OpcionMenuInteractivoWhatsapp
 
 def test_concurrently(args_list):
     """
@@ -2028,3 +2029,34 @@ class SupervisorCampanaTests(CampanasTests):
         opcion_calificacion_form = response.context_data['form'].forms[0]
         self.assertEqual(opcion_calificacion_form.errors['formulario'],
                          [_("Debe elegir un formulario para la gestión.")])
+
+    def test_no_permitir_desactivar_canalidad_whatsapp_si_es_destino_de_linea(self):
+        self.campana.whatsapp_habilitado = True
+        self.campana.save()
+        nodo_campana = DestinoEntrante.crear_nodo_ruta_entrante(self.campana)
+        admin = self.usuario_admin_supervisor
+        linea1 = LineaFactory(destino=nodo_campana, created_by=admin, updated_by=admin)
+        menu = MenuInteractivoFactory()
+        destino_menu = DestinoEntrante.crear_nodo_ruta_entrante(menu)
+        opcion_destino_1 = OpcionDestino.crear_opcion_destino(
+            destino_anterior=destino_menu, destino_siguiente=nodo_campana,
+            valor='Campana 1')
+        OpcionMenuInteractivoWhatsapp.objects.create(
+            opcion=opcion_destino_1, descripcion='Descripcion opcion 1')
+        linea2 = LineaFactory(destino=destino_menu, created_by=admin, updated_by=admin)
+
+        url = reverse('campana_update', args=[self.campana.id, ])
+        post_step0_data = {
+            '0-nombre': self.campana.nombre,
+            '0-bd_contacto': self.campana.bd_contacto.id,
+            '0-tipo_interaccion': self.campana.tipo_interaccion,
+            '0-control_de_duplicados': self.campana.control_de_duplicados,
+            '0-objetivo': self.campana.objetivo,
+            '0-whatsapp_habilitado': False,
+            'campana_entrante_update_view-current_step': ['0'],
+        }
+        response = self.client.post(url, post_step0_data, follow=True)
+        error = response.context['form'].errors['whatsapp_habilitado'][0]
+        self.assertIn(CampanaMixinForm.ERROR_WHATSAPP_DESTINO.format(''), error)
+        self.assertIn(linea1.nombre, error)
+        self.assertIn(linea2.nombre, error)

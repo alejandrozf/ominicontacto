@@ -27,7 +27,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
-from whatsapp_app.models import MenuInteractivoWhatsapp
+from whatsapp_app.models import MenuInteractivoWhatsapp, Linea
 
 import os
 import re
@@ -422,6 +422,17 @@ class DestinoEntrante(models.Model):
         """Determina si el nodo destino es usado como failover de alguna campaña
         """
         return self.campanas_destino_failover.exists()
+
+    def lineas_destino_whatsapp(self):
+        """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un 
+            Menu Interactivo de WhatsApp. 
+            Nota: Cuando el menú tenga más profundidad habrá que recorrer todo el arbol
+        """
+        nodos_anteriores = self.destinos_anteriores.filter(
+            destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
+        destinos_menu = list(nodos_anteriores.values_list('destino_anterior', flat=True).distinct())
+        lineas = Linea.objects.filter(destino_id__in=destinos_menu + [self.id, ])
+        return lineas
 
 
 class OpcionDestino(models.Model):

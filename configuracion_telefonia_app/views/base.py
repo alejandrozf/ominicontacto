@@ -330,6 +330,8 @@ class DeleteNodoDestinoMixin(object):
     """
     imposible_eliminar = _('No se puede eliminar un objeto que es destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado el Nodo.')
+    ERROR_DESTINO_LINEA = _("No se puede eliminar la campaña. Es usada como destino de las "
+                            "siguientes Lineas de Whatsapp: {0}")
 
     def eliminar_nodos_y_asociaciones(self):
         nodo = self.get_object()
@@ -350,7 +352,12 @@ class DeleteNodoDestinoMixin(object):
         self.object = self.get_object()
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
         permitido_eliminar = True
-        if nodo.es_destino_en_flujo_de_llamada():
+        lineas_whatsapp = nodo.lineas_destino_whatsapp()
+        if lineas_whatsapp:
+            permitido_eliminar = False
+            nombres_lineas = lineas_whatsapp.values_list('nombre', flat=True)
+            message = self.ERROR_DESTINO_LINEA.format(", ".join(nombres_lineas))
+        elif nodo.es_destino_en_flujo_de_llamada():
             message = self.imposible_eliminar
             permitido_eliminar = False
         elif nodo.es_destino_failover():
@@ -358,7 +365,7 @@ class DeleteNodoDestinoMixin(object):
             campanas_failover = nodo.campanas_destino_failover.values_list('name', flat=True)
             imposible_failover = _(
                 'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
-                ' {0}').format(",".join(campanas_failover))
+                ' {0}').format(", ".join(campanas_failover))
             message = imposible_failover
         if not permitido_eliminar:
             messages.add_message(
@@ -374,7 +381,13 @@ class DeleteNodoDestinoMixin(object):
         # pues es muy similar al del método 'dispatch' y al parecer no sería necesario
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
         permitido_eliminar = True
-        if nodo.es_destino_en_flujo_de_llamada():
+        lineas_whatsapp = nodo.lineas_destino_whatsapp()
+        if lineas_whatsapp:
+            permitido_eliminar = False
+            nombres_lineas = lineas_whatsapp.values_list('nombre', flat=True)
+            msg = self.ERROR_DESTINO_LINEA.format(", ".join(nombres_lineas))
+            messages.error(request, msg)
+        elif nodo.es_destino_en_flujo_de_llamada():
             permitido_eliminar = False
             messages.error(request, self.imposible_eliminar)
         elif nodo.es_destino_failover():
@@ -382,8 +395,9 @@ class DeleteNodoDestinoMixin(object):
             campanas_failover = nodo.campanas_destino_failover.values_list('nombre', flat=True)
             imposible_failover = _(
                 'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
-                ' {0}').format(",".join(campanas_failover))
+                ' {0}').format(", ".join(campanas_failover))
             messages.error(request, imposible_failover)
+
         if not permitido_eliminar:
             return redirect(self.url_eliminar_name, self.get_object().id)
 

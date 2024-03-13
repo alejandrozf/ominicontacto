@@ -18,7 +18,8 @@
 from __future__ import unicode_literals
 import faker
 import string
-from factory import (DjangoModelFactory, fuzzy, lazy_attribute, Sequence, SubFactory)
+from factory.django import DjangoModelFactory
+from factory import (fuzzy, lazy_attribute, Sequence, SubFactory)
 
 from ominicontacto_app.tests.factories import UserFactory
 from ominicontacto_app.tests.factories import CampanaFactory
