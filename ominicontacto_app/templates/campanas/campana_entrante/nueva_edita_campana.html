@@ -65,7 +65,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6">
                 <label for="{{ form.telefono_habilitado.id_for_label }}"> {{ form.telefono_habilitado }} {% trans 'Telefono' %}</label>
                 <label for="{{ form.video_habilitado.id_for_label }}"> {{ form.video_habilitado }} {% trans 'Video' %}</label>
-                <label for="{{ form.whatsapp_habilitado.id_for_label }}"> {{ form.whatsapp_habilitado }} {% trans 'Whatsapp' %}</label>
+                <label for="{{ form.whatsapp_habilitado.id_for_label }}"> {{ form.whatsapp_habilitado }} {% trans 'Whatsapp' %}
+                    {{ form.whatsapp_habilitado.errors }}
+                </label>
             </div>
         </div>
         <div class="form-row">

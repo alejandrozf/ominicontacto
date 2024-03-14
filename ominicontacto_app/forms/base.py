@@ -799,6 +799,9 @@ class CampanaMixinForm(object):
         (Campana.SITIO_EXTERNO, Campana.TIPO_SITIO_EXTERNO_DISPLAY),
     )
 
+    ERROR_WHATSAPP_DESTINO = _("Debe mantener la canalidad Whatsapp habilitada ya que la "
+                               "campaña es destino de las siguientes Lineas de Whatsapp: {0}")
+
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
@@ -881,6 +884,19 @@ class CampanaMixinForm(object):
             msg = _("No se puede indicar una Ruta Saliente sin un CID de Ruta Saliente.")
             raise forms.ValidationError(msg)
         return id_ruta_saliente
+
+    def clean_whatsapp_habilitado(self):
+        instance = getattr(self, 'instance', None)
+        whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
+        if instance is not None:
+            if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
+                nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
+                antecesores_linea = nodo.lineas_destino_whatsapp()
+                if antecesores_linea:
+                    nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                    raise forms.ValidationError(self.ERROR_WHATSAPP_DESTINO.format(
+                        ', '.join(nombres_lineas)))
+        return whatsapp_habilitado
 
 
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
