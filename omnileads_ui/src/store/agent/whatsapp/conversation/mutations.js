@@ -90,6 +90,10 @@ export default {
                 conversation && conversation.is_active
                     ? conversation.is_active
                     : null,
+            isDisposition:
+                conversation && conversation.is_disposition
+                    ? conversation.is_disposition
+                    : null,
             expire:
                 conversation && conversation.expire
                     ? conversation.expire
@@ -198,6 +202,10 @@ export default {
             isActive:
                 conversation && conversation.isActive
                     ? conversation.isActive
+                    : null,
+            isDisposition:
+                conversation && conversation.isDisposition
+                    ? conversation.isDisposition
                     : null,
             expire:
                 conversation && conversation.expire
