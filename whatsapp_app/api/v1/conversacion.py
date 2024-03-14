@@ -65,6 +65,7 @@ class ConversacionSerializer(serializers.Serializer):
     client = serializers.SerializerMethodField()
     agent = serializers.PrimaryKeyRelatedField(queryset=AgenteProfile.objects.all())
     is_active = serializers.BooleanField(default=True)
+    is_disposition = serializers.BooleanField()
     expire = serializers.DateTimeField()
     timestamp = serializers.DateTimeField()
     date_last_interaction = serializers.DateTimeField()

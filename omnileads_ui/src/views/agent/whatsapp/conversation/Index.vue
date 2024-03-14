@@ -45,13 +45,13 @@
     <ListMessages id="listMessages" class="scroll" />
     <div v-if="!agtWhatsCoversationInfo.error">
       <TextBox
-        v-if="!isExpired"
+        v-if="!isExpired && !isDisposition"
         class="footer"
         :conversationId="id"
         @scrollDownEvent="scrollDown"
       />
       <Button
-        v-else
+        v-if="isExpired"
         :label="
           $t('views.whatsapp.conversations.restart_conversation').toUpperCase()
         "
@@ -81,6 +81,7 @@ export default {
         return {
             id: parseInt(this.$route.params.id),
             whatsapp_color: COLORS.WHATSAPP.TealGreen,
+            isDisposition: false,
             isExpired: false
         };
     },
@@ -154,6 +155,9 @@ export default {
                 this.isExpired = now > expire;
             }
         },
+        checkIsDisposition () {
+            this.isDisposition = this.agtWhatsCoversationInfo?.isDisposition;
+        },
         openModalToRestart () {
             if (this.$helpers.isSocketConnected(this.$t)) {
                 localStorage.setItem(
@@ -183,6 +187,7 @@ export default {
         agtWhatsCoversationInfo: {
             handler () {
                 this.checkExpirationDate();
+                this.checkIsDisposition();
             },
             deep: true,
             immediate: true
