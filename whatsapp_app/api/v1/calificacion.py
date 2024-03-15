@@ -33,6 +33,7 @@ from ominicontacto_app.models import (
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
 from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
 from whatsapp_app.models import ConversacionWhatsapp
+from orquestador_app.core.gupshup_send_menssage import autoresponse_goodbye
 
 
 class AgentSerializer(serializers.Serializer):
@@ -305,6 +306,7 @@ class ViewSet(viewsets.ViewSet):
                                 message=_('Error en los datos del formulario'),
                                 errors=serializer_respuesta.errors),
                             status=status.HTTP_400_BAD_REQUEST)
+                    autoresponse_goodbye(conversation)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -320,6 +322,7 @@ class ViewSet(viewsets.ViewSet):
                     conversation.is_disposition = True
                     conversation.conversation_disposition = calificacion.history.first()
                     conversation.save()
+                    autoresponse_goodbye(conversation)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -381,6 +384,7 @@ class ViewSet(viewsets.ViewSet):
                 conversation.is_disposition = True
                 conversation.conversation_disposition = calificacion.history.first()
                 conversation.save()
+                autoresponse_goodbye(conversation)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
