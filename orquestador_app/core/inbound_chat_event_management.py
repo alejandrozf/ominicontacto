@@ -19,7 +19,9 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 from orquestador_app.core.gupshup_send_menssage import (
-    autoresponse_welcome, autoreponse_destino_interactivo, send_text_message)
+    autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
+    send_text_message)
+from orquestador_app.core.check_out_of_time import is_out_of_time
 from orquestador_app.core.notify_agents import send_notify
 
 
@@ -67,7 +69,10 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     date_last_interaction=timestamp,
                     client_alias=client_alias
                 )
-                autoresponse_welcome(line, conversation, timestamp)
+                if is_out_of_time(line, timestamp):
+                    autoresponse_out_of_time(line, conversation, timestamp)
+                else:
+                    autoresponse_welcome(line, conversation, timestamp)
             else:
                 if not conversation.is_active:
                     conversation.is_active = True
@@ -77,8 +82,11 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 if not conversation.client_alias:
                     conversation.client_alias = sender['name'] if 'name' in sender else ""
                 conversation.save()
+                if is_out_of_time(line, timestamp):
+                    autoresponse_out_of_time(line, conversation, timestamp)
             message_inbound.conversation = conversation
             message_inbound.save()
+            #  ## notificar a agentes
             if conversation.agent:
                 await send_notify('notify_whatsapp_new_message', conversation=conversation,
                                   line=line,

@@ -34,12 +34,8 @@ headers = {
 
 def autoresponse_welcome(line, conversation, timestamp):
     try:
-        if is_out_of_time(line, timestamp):
-            message = line.mensaje_fueradehora.configuracion
-        else:
-            message = line.mensaje_bienvenida.configuracion
+        message = line.mensaje_bienvenida.configuracion
         if message:
-            headers.update({'apikey': line.proveedor.configuracion['api_key']})
             response = send_text_message(line, conversation.destination, message)
             if response['status'] == "submitted":
                 MensajeWhatsapp.objects.get_or_create(
@@ -105,20 +101,47 @@ def autoreponse_destino_interactivo(line, conversation):
         print("autoreponse_destino_interactivo >>>>>>>>>>>>", e)
 
 
-def autoresponse_goodbye(line, destination):
+def autoresponse_goodbye(conversation):
     try:
-        headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        data = {
-            "channel": "whatsapp",
-            "source": line.numero,
-            "src.name": line.configuracion['app_name'],
-            "destination": destination,
-            "message": json.dumps(line.mensaje_despedida.configuracion)
-        }
-        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
-        return response
+        message = conversation.line.mensaje_despedida.configuracion
+        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+        if message:
+            response = send_text_message(conversation.line, conversation.destination, message)
+            if response['status'] == "submitted":
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=response['messageId'],
+                    conversation=conversation,
+                    defaults={
+                        'origen': conversation.line.numero,
+                        'timestamp': timestamp,
+                        'sender': {},
+                        'content': message,
+                        'type': "text"
+                    }
+                )
     except Exception as e:
-        print(e)
+        print("autoresponse_goobye >>>>>>>>", e)
+
+
+def autoresponse_out_of_time(line, conversation, timestamp):
+    try:
+        message = line.mensaje_fueradehora.configuracion
+        if message:
+            response = send_text_message(line, conversation.destination, message)
+            if response['status'] == "submitted":
+                MensajeWhatsapp.objects.get_or_create(
+                    message_id=response['messageId'],
+                    conversation=conversation,
+                    defaults={
+                        'origen': line.numero,
+                        'timestamp': timestamp,
+                        'sender': {},
+                        'content': message,
+                        'type': "text"
+                    }
+                )
+    except Exception as e:
+        print("autoresponse_out_of_time >>>>>>>>", e)
 
 
 def send_template_message(line, destination, template_id, params):
@@ -155,34 +178,6 @@ def send_text_message(line, destination, message):
         return response.json()
     except Exception as e:
         print("send_text_message >>>>>>", e)
-
-
-def is_out_of_time(line, timestamp):
-    if line.horario:
-        time = timestamp.time()
-        weekday = timestamp.weekday()
-        monthday = timestamp.day
-        month = timestamp.month
-        validaciones_tiempo = line.horario.validaciones_tiempo.all()
-
-        for validacion in validaciones_tiempo:
-            if validacion.tiempo_inicial and validacion.tiempo_inicial > time:
-                return True
-            if validacion.tiempo_final and validacion.tiempo_final < time:
-                return True
-            if validacion.dia_semana_inicial and validacion.dia_semana_inicial > weekday:
-                return True
-            if validacion.dia_semana_final and validacion.dia_semana_final < weekday:
-                return True
-            if validacion.dia_mes_inicio and validacion.dia_mes_inicio > monthday:
-                return True
-            if validacion.dia_mes_final and validacion.dia_mes_final < monthday:
-                return True
-            if validacion.mes_inicio and validacion.mes_inicio > month:
-                return True
-            if validacion.mes_final and validacion.mes_final < month:
-                return True
-    return False
 
 
 def sync_templates(line):
