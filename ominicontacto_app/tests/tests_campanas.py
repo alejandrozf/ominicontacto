@@ -565,12 +565,15 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
+           '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service'
            '.obtener_sip_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto_proporcionalmente(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            registrar_agentes_en_campana,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         contacto2 = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
@@ -1887,11 +1890,14 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
+           '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            registrar_agentes_en_campana,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -1911,11 +1917,14 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
+           '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            registrar_agentes_en_campana,
             _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)

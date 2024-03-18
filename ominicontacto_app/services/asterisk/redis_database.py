@@ -701,6 +701,70 @@ class BlacklistFamily(object):
         self.redis_connection.delete(self.BLACKLIST_KEY)
 
 
+class CampanasDeAgenteFamily(object):
+    """ Mantiene información de a que campañas está asociado cada agente """
+    def __init__(self, redis_connection=None) -> None:
+        self.redis_connection = redis_connection
+
+    def get_redis_connection(self):
+        if not self.redis_connection:
+            self.redis_connection = create_redis_connection()
+
+    def get_agentes_keys(self):
+        return 'OML:AGENT-CAMPAIGNS:'
+
+    def get_agente_key(self, agente_id):
+        return "{0}{1}".format(self.get_agentes_keys(), agente_id)
+
+    def eliminar_datos_de_agentes(self):
+        self.get_redis_connection()
+        keys = self.redis_connection.keys(self.get_agentes_keys() + '*')
+        if keys:
+            self.redis_connection.delete(*keys)
+
+    def eliminar_datos_de_agente(self, agente_id):
+        self.get_redis_connection()
+        key = self.get_agente_key(agente_id)
+        self.redis_connection.delete(key)
+
+    def regenerar_datos_de_agentes(self):
+        self.eliminar_datos_de_agentes()
+        self.registrar_campanas_para_agentes()
+
+    def registrar_campanas_para_agentes(self):
+        """ Registra Todas las campanas en todos los agentes """
+        campanas_por_agente = {}
+        for member in QueueMember.objects.all():
+            agente_id = member.member.id
+            campana_id = str(member.id_campana).split('_')[0]
+            try:
+                campanas_por_agente[agente_id].add(campana_id)
+            except KeyError:
+                campanas_por_agente[agente_id] = set((campana_id, ))
+        for agente_id, campanas_ids in campanas_por_agente.items():
+            self.registrar_campanas_a_agente(agente_id, campanas_ids)
+
+    def registrar_campanas_a_agente(self, agente_id, campanas_ids):
+        """ Registra N campanas ids a un agente """
+        self.get_redis_connection()
+        key = self.get_agente_key(agente_id)
+        self.redis_connection.sadd(key, *campanas_ids)
+
+    def registrar_agentes_en_campana(self, campana_id, agentes_ids):
+        for agente_id in agentes_ids:
+            self.registrar_agente_en_campana(campana_id, agente_id)
+
+    def registrar_agente_en_campana(self, campana_id, agente_id):
+        self.get_redis_connection()
+        key = self.get_agente_key(agente_id)
+        self.redis_connection.sadd(key, campana_id)
+
+    def borrar_agente_de_campana(self, campana_id, agente_id):
+        self.get_redis_connection()
+        key = self.get_agente_key(agente_id)
+        self.redis_connection.srem(key, campana_id)
+
+
 class RegenerarAsteriskFamilysOML(object):
     """
     Regenera las Families en Asterisk para los objetos que no tienen un Sincronizador como los de
@@ -713,9 +777,11 @@ class RegenerarAsteriskFamilysOML(object):
         self.agente_family = AgenteFamily(redis_connection=redis_connection)
         self.pausa_family = PausaFamily(redis_connection=redis_connection)
         self.blacklist_family = BlacklistFamily(redis_connection=redis_connection)
+        self.campanas_de_agente_family = CampanasDeAgenteFamily(redis_connection=redis_connection)
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()
         self.agente_family.regenerar_families()
         self.pausa_family.regenerar_families()
         self.blacklist_family.regenerar_families()
+        self.campanas_de_agente_family.regenerar_datos_de_agentes()
