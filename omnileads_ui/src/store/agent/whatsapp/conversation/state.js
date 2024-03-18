@@ -20,6 +20,7 @@ export default {
         messageNumber: null,
         photo: null,
         error: false,
+        errorEx: {},
         line: {
             id: null,
             name: null,

@@ -42,6 +42,7 @@
             <Tag
               icon="pi pi-times"
               :value="`${$t('views.whatsapp.conversations.error_conversation')}`"
+              v-tooltip="`${conversationInfo.errorEx.reason} [${conversationInfo.errorEx.code}]`"
               severity="danger"
               rounded
             ></Tag>
@@ -89,6 +90,7 @@ export default {
                     isMine: false,
                     isNew: false,
                     expire: null,
+                    errorEx: {},
                     error: false
                 };
             }

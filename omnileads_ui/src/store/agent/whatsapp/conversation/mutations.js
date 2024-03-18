@@ -116,6 +116,8 @@ export default {
             ),
             error:
                 conversation && conversation.error ? conversation.error : false,
+            errorEx:
+                conversation && conversation.error_ex ? conversation.error_ex : null,
             client_alias:
                 conversation && conversation.client_alias ? conversation.client_alias : null
         };
@@ -136,6 +138,7 @@ export default {
                     answered: false,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
+                    errorEx: e.error_ex ? e.error_ex : null,
                     error: e.error ? e.error : false
                 });
             }
@@ -154,6 +157,7 @@ export default {
                     answered: false,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
+                    errorEx: e.error_ex ? e.error_ex : null,
                     error: e.error ? e.error : false
                 });
             }
@@ -176,6 +180,7 @@ export default {
             answered: false,
             date: chat && chat.timestamp ? new Date(chat.timestamp) : new Date(),
             expire: chat && chat.expire ? new Date(chat.expire) : null,
+            errorEx: chat && chat.error_ex ? chat.error_ex : null,
             error: chat && chat.error ? chat.error : false
         });
     },
@@ -224,6 +229,8 @@ export default {
             line: setLineInfo(
                 conversation && conversation.line ? conversation.line : null
             ),
+            errorEx:
+                conversation && conversation.errorEx ? conversation.errorEx : null,
             error:
                 conversation && conversation.error ? conversation.error : false
         };

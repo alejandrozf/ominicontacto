@@ -57,6 +57,15 @@
           v-tooltip.top="$t('globals.close')"
         />
       </div>
+      <div v-if="!viewAsReport && agtWhatsCoversationInfo.error">
+        <Button
+          v-if="agtWhatsCoversationInfo.client.id"
+          icon="pi pi-save"
+          class="ml-2"
+          @click="qualify"
+          v-tooltip.top="$t('globals.save')"
+        />
+      </div>
     </template>
   </Toolbar>
 </template>
