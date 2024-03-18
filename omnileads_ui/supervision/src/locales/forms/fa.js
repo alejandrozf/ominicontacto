@@ -41,6 +41,10 @@ export default {
     pause: {
         enter_name: 'نام را وارد کنید',
         edit_pause: 'مکث را ویرایش کنید',
+        types: {
+            opt1: 'سازنده',
+            opt2: 'تفریحی'
+        },
         new_pause: 'مکث جدید'
     },
     inbound_route: {

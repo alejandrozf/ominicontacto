@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-15 17:07-0300\n"
+"POT-Creation-Date: 2024-03-08 18:03-0300\n"
 "PO-Revision-Date: 2020-03-21 23:00-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -77,8 +77,8 @@ msgid ""
 "Para el ordenamiento por varias columnas mentenga presionada la tecla Shift "
 "y haga clic en el encabezado de la columna que desea ordenar."
 msgstr ""
-"Para ordenar por múltiplas colunas, mantenha pressionada a tecla Shift"
-"e clique no cabeçalho da coluna que deseja ordenar."
+"Para ordenar por múltiplas colunas, mantenha pressionada a tecla Shifte "
+"clique no cabeçalho da coluna que deseja ordenar."
 
 #: supervision_app/templates/supervision_agentes.html:104
 #: supervision_app/templates/supervision_campanas_dialers.html:56
@@ -110,6 +110,14 @@ msgstr "Ações"
 #: supervision_app/templates/supervision_campanas_dialers.html:32
 msgid "Filtrar por estado"
 msgstr "Filtrar por estado"
+
+#: supervision_app/templates/supervision_campanas_dialers.html:34
+msgid "Todas"
+msgstr "Todas"
+
+#: supervision_app/templates/supervision_campanas_dialers.html:35
+msgid "Activas"
+msgstr "Ativas"
 
 #: supervision_app/templates/supervision_campanas_dialers.html:49
 #: supervision_app/templates/supervision_campanas_entrantes.html:40

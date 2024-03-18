@@ -86,7 +86,7 @@ export default {
         name: 'Name',
         phone: 'Number DID',
         caller_id: 'Caller Id',
-        idiom: 'Idiom',
+        idiom: 'Language',
         destiny: 'Destiny',
         destiny_type: 'Destiny type'
     },

@@ -6,6 +6,7 @@
 
 <script>
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default {
     props: {
@@ -16,18 +17,19 @@ export default {
         chartLineEventTodayData: Object
     },
     setup (props) {
+        const { t } = useI18n();
         const basicData = computed(() => {
             return {
                 labels: props.chartLineInterval,
                 datasets: [
                     {
-                        label: 'Hoy',
+                        label: t('views.dashboard_home_page.today'),
                         data: props.chartLineEventTodayData,
                         fill: false,
                         borderColor: '#42A5F5'
                     },
                     {
-                        label: 'Ayer',
+                        label: t('views.dashboard_home_page.yesterday'),
                         data: props.chartLineEventYesterdayData,
                         fill: false,
                         borderColor: '#FFA726'
