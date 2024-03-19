@@ -832,7 +832,7 @@ class DashboardSupervision(APIView):
         redis_connection = redis.Redis(
             host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
             decode_responses=True)
-        keys_agentes = redis_connection.keys('OML:AGENT*')
+        keys_agentes = redis_connection.keys('OML:AGENT:*')
         cant_agentes_actives = 0
         for key in keys_agentes:
             agente_info = redis_connection.hgetall(key)

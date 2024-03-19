@@ -864,18 +864,10 @@ urlpatterns = [
     # ==========================================================================
     # QueueMember
     # ==========================================================================
-    re_path(r'^campana/(?P<pk_campana>\d+)/queue_member/$',
-            login_required(views_queue_member.QueueMemberCreateView.as_view()),
-            name='queue_member_add',
-            ),
-    re_path(r'^campana/(?P<pk_campana>\d+)/grupo_agente/$',
-            login_required(views_queue_member.GrupoAgenteCreateView.as_view()),
-            name='queue_member_grupo_agente',
-            ),
-    re_path(r'^queue_member/(?P<pk_campana>\d+)/queue_member_campana/$',
-            login_required(views_queue_member.QueueMemberCampanaView.as_view()),
-            name='queue_member_campana',
-            ),
+    path('queue_member/<int:pk_campana>/queue_member_campana/',
+         login_required(views_queue_member.QueueMemberCampanaView.as_view()),
+         name='queue_member_campana',
+         ),
 
     # ==========================================================================
     # Campana Dialer Template

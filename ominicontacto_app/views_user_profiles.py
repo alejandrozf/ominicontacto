@@ -39,22 +39,20 @@ from django.views.generic import (
 
 from constance import config
 
+from ominicontacto_app.services.queue_member_service import QueueMemberService
 from ominicontacto_app.forms.base import (
     CustomUserCreationForm, SupervisorProfileForm, UserChangeForm, AgenteProfileForm,
     ForcePasswordChangeForm, CampaingsByTypeForm
 )
 
 from ominicontacto_app.models import (
-    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo, Campana,
+    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, Grupo, Campana,
     AutenticacionExternaDeUsuario
 )
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
-from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
-
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
-from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
-    AmiManagerClient
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError
 
 import logging as logging_
 import os
@@ -181,18 +179,6 @@ class CustomUserWizard(SessionWizardView):
                 message,
             )
 
-    def _save_agent_to_campaigns(self, agent, campaigns):
-        try:
-            for campaign in campaigns:
-                QueueMember.objects.get_or_create(
-                    member=agent,
-                    penalty=0,
-                    queue_name=campaign.queue_campana,
-                    defaults=QueueMember.get_defaults(agent, campaign))
-        except Exception as e:
-            logger.exception(_("Error al adicionar agente a la cola de la campaña"))
-            print(e)
-
     def _save_agente(self, user, grupo):
         agente_profile = AgenteProfile.objects.create(
             user=user,
@@ -256,7 +242,10 @@ class CustomUserWizard(SessionWizardView):
                 campaigns_pks = [Campana.get_id_from_queue_id_name(name) for name in queue_names]
             campaigns = Campana.objects.filter(pk__in=campaigns_pks)
             agent = self._save_agente(user, grupo)
-            self._save_agent_to_campaigns(agent, campaigns)
+            # Se Delega la responsabilidad de crear/eliminar y actualizar asterisk/redis
+            queue_service = QueueMemberService(conectar_ami=False)
+            queue_service.agregar_agente_a_campanas(agent, campaigns,
+                                                    verificar_sesion_activa=False)
 
         elif rol.name == User.CLIENTE_WEBPHONE:
             self._save_cliente_webphone(user)
@@ -449,19 +438,13 @@ class UserDeleteView(DeleteView):
         if self.object.is_agente and self.object.get_agente_profile():
             agente_profile = self.object.get_agente_profile()
             agente_profile.borrar()
-            # ahora vamos a remover el agente de la cola de asterisk
-            queues_member_agente = agente_profile.campana_member.all()
+            # Delego la responsabilidad de crear/eliminar y actualizar asterisk/redis
             try:
-                client = AmiManagerClient()
-                client.connect()
+                queue_service = QueueMemberService()
+                queue_service.eliminar_agente_de_colas_asignadas(agente_profile)
             except AMIManagerConnectorError:
                 logger.exception(_("QueueRemove failed "))
-            for queue_member in queues_member_agente:
-                campana = queue_member.queue_name.campana
-                remover_agente_cola_asterisk(campana, agente_profile, client)
-            client.disconnect()
-            activar_cola()
-            QueueMember.objects.borrar_member_queue(agente_profile)
+            queue_service.disconnect()
 
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             self.object.get_supervisor_profile().borrar()

@@ -20,11 +20,11 @@ import os
 
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 from constance import config as constance_config
 from api_app.utils.routes.inbound import escribir_ruta_entrante_config
+from ominicontacto_app.services.queue_member_service import QueueMemberService
 
-from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion, QueueMember,
+from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion,
                                       SupervisorProfile, ClienteWebPhoneProfile)
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                # ArchivoDeAudioFactory,
@@ -45,11 +45,6 @@ from configuracion_telefonia_app.models import DestinoEntrante
 
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
-
-from ominicontacto_app.views_queue_member import adicionar_agente_activo_cola, activar_cola
-
-from utiles_globales import obtener_sip_agentes_sesiones_activas
-from ominicontacto_app.services.asterisk.asterisk_ami import AmiManagerClient
 
 logger = logging.getLogger(__name__)
 
@@ -80,30 +75,6 @@ class Command(BaseCommand):
             nombre=self.success.nombre, campana=campana, tipo=OpcionCalificacion.GESTION)
         OpcionCalificacionFactory(
             nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
-
-    def _asignar_agente_a_campana(self, agente, campana, penalty=0):
-        try:
-            client = AmiManagerClient()
-            client.connect()
-            with transaction.atomic():
-                queue_member = QueueMember(penalty=penalty)
-                queue_member_defaults = QueueMember.get_defaults(agente, campana)
-                queue_member.member = agente
-                queue_member.queue_name = campana.queue_campana
-                queue_member.id_campana = queue_member_defaults['id_campana']
-                queue_member.membername = queue_member_defaults['membername']
-                queue_member.interface = queue_member_defaults['interface']
-                # por ahora no definimos 'paused'
-                queue_member.paused = queue_member_defaults['paused']
-                queue_member.save()
-                # adicionamos el agente a la cola actual que esta corriendo
-                sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-                adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados, client)
-                activar_cola()
-            client.disconnect()
-        except Exception as e:
-            print("Can't assign agent to campaign due to {0}".error(e))
-            raise e
 
     def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual
@@ -366,13 +337,17 @@ class Command(BaseCommand):
         self._crear_ruta_entrante(campana_entrante_2, '01177660011')
 
         # Asigno agentes a campañas (no entrantes)
+        queue_service = QueueMemberService()
         campanas = [campana_manual, campana_dialer, campana_preview]
         for agente in agentes_creados:
             for campana in campanas:
-                self._asignar_agente_a_campana(agente, campana)
+                queue_service.agregar_agentes_en_cola(campana, agentes_creados)
         # Asigno 1 Agente por campaña entrante
-        self._asignar_agente_a_campana(agentes_creados[0], campana_entrante)
-        self._asignar_agente_a_campana(agentes_creados[1], campana_entrante_2)
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[0], ))
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[1], ))
+
+        # Luego de agregar los agentes refresco datos en asterisk
+        queue_service.activar_cola()
 
         # Asigno campañas a gerente
         campanas.extend([campana_entrante, campana_entrante_2])

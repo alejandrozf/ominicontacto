@@ -534,6 +534,7 @@ class OMLBaseTest(TestCase, OMLTestUtilsMixin):
     """Clase base para tests"""
 
     databases = {'default', 'replica'}
+    omitir_actualizar_permisos = False
 
     def setUp(self, *args, **kwargs):
         super(OMLBaseTest, self).setUp(*args, **kwargs)
@@ -545,7 +546,8 @@ class OMLBaseTest(TestCase, OMLTestUtilsMixin):
             Group.objects.create(name=User.SUPERVISOR)
             Group.objects.create(name=User.REFERENTE)
             Group.objects.create(name=User.AGENTE)
-        call_command('actualizar_permisos')
+        if not self.omitir_actualizar_permisos:
+            call_command('actualizar_permisos')
 
         connections['replica']._orig_cursor = connections['replica'].cursor
         connections['replica'].cursor = connections['default'].cursor

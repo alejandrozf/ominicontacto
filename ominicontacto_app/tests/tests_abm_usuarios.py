@@ -90,8 +90,10 @@ class CreacionUsuariosTest(ABMUsuariosTest):
         self.assertFalse(supervisor.is_administrador)
         self.assertFalse(supervisor.is_customer)
 
+    @patch('ominicontacto_app.services.queue_member_service.'
+           'QueueMemberService.agregar_agente_a_campanas')
     @patch.object(ActivacionAgenteService, 'activar_agente')
-    def test_crear_agente(self, activar_agente):
+    def test_crear_agente(self, activar_agente, agregar_agente_a_campanas):
         url = reverse('user_nuevo')
         response = self.client.get(url, follow=True)
 
@@ -116,6 +118,7 @@ class CreacionUsuariosTest(ABMUsuariosTest):
             '1-campaigns_by_type': [self.campana.id],
         }
         response = self.client.post(url, data, follow=True)
+
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, reverse('user_list', kwargs={"page": 1}))
 
@@ -124,6 +127,12 @@ class CreacionUsuariosTest(ABMUsuariosTest):
         self.assertFalse(user_agente.is_supervisor)
         agente = user_agente.get_agente_profile()
         self.assertEqual(agente.grupo, self.grupo1)
+
+        activar_agente.assert_called_with(agente)
+        agregar_agente_a_campanas.assert_called()
+        args, kwargs = agregar_agente_a_campanas.call_args
+        self.assertEqual(agente, args[0])
+        self.assertEqual([self.campana, ], list(args[1]))
 
     def test_deshabilitar_is_agente_si_no_hay_grupo(self):
         url = reverse('user_nuevo')
@@ -258,30 +267,32 @@ class BorrarUsuariosTest(ABMUsuariosTest):
             user_agente.get_full_name()))
         self.assertContains(response, message)
 
+    @patch('ominicontacto_app.services.queue_member_service.'
+           'QueueMemberService.eliminar_agente_de_colas_asignadas')
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    @patch('ominicontacto_app.views_user_profiles.remover_agente_cola_asterisk')
     def test_supervisor_puede_borrar_agentes_asignados_a_sus_campanas(
-            self, remover_agente_cola_asterisk, activar, connect):
+            self, connect, disconnect, eliminar_agente_de_colas_asignadas):
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         self.campana.supervisors.add(self.supervisor.user)
         user_agente = self.agente.user
         url = reverse('agent_delete', kwargs={'pk': user_agente.id})
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
-        remover_agente_cola_asterisk.assert_called()
-        activar.assert_called()
         connect.assert_called()
+        disconnect.assert_called()
+        eliminar_agente_de_colas_asignadas.assert_called_with(self.agente)
         self.assertRedirects(response, reverse('user_list', kwargs={"page": 1}))
 
         user_agente.refresh_from_db()
         self.assertTrue(user_agente.borrado)
 
+    @patch('ominicontacto_app.services.queue_member_service.'
+           'QueueMemberService.eliminar_agente_de_colas_asignadas')
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    @patch('ominicontacto_app.views_user_profiles.remover_agente_cola_asterisk')
     def test_supervisor_puede_borrar_agentes_propios_no_asignados_a_sus_campanas(
-            self, remover_agente_cola_asterisk, activar, connect):
+            self, connect, disconnect, eliminar_agente_de_colas_asignadas):
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         user_agente = self.agente.user
         self.agente.reported_by = self.supervisor.user
@@ -289,9 +300,9 @@ class BorrarUsuariosTest(ABMUsuariosTest):
         url = reverse('agent_delete', kwargs={'pk': user_agente.id})
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
-        remover_agente_cola_asterisk.assert_called()
-        activar.assert_called()
         connect.assert_called()
+        disconnect.assert_called()
+        eliminar_agente_de_colas_asignadas.assert_called_with(self.agente)
         self.assertRedirects(response, reverse('user_list', kwargs={"page": 1}))
 
         user_agente.refresh_from_db()

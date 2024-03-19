@@ -32,24 +32,20 @@ from django.utils.translation import gettext as _
 
 from formtools.wizard.views import SessionWizardView
 
+from ominicontacto_app.services.queue_member_service import QueueMemberService
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms.base import (
     CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
     CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SitioExterno, SupervisorProfile,
-                                      AgenteProfile, QueueMember)
+                                      AgenteProfile)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
 from ominicontacto_app.utiles import cast_datetime_part_date, obtener_opciones_columnas_bd
-from ominicontacto_app.views_queue_member import adicionar_agente_cola
-
-from utiles_globales import obtener_sip_agentes_sesiones_activas
-
 
 import logging as logging_
-from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
-    AmiManagerClient
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError
 
 logger = logging_.getLogger(__name__)
 
@@ -334,35 +330,21 @@ class CampanaWizardMixin(object):
         queue_member_formset = list(form_list)[index_form_agentes]
         queue_member_formset.instance = campana.queue_campana
         if queue_member_formset.is_valid():
-            # obtenemos los agentes que estan logueados
-            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-
-            # se asignan valores por defecto en cada una de las instancias
-            # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
-            try:
-                client = AmiManagerClient()
-                client.connect()
-            except AMIManagerConnectorError:
-                logger.exception(_("QueueAdd failed "))
-
+            # Delego a queue_member_service
+            agentes = set()
+            penalties = {}
             for queue_form in queue_member_formset.forms:
                 if queue_form.cleaned_data != {}:
-                    # no se tienen en cuenta formularios vacíos
                     agente = queue_form.instance.member
-                    queue_member_defaults = QueueMember.get_defaults(agente, campana)
-                    queue_form.instance.id_campana = queue_member_defaults['id_campana']
-                    queue_form.instance.membername = queue_member_defaults['membername']
-                    queue_form.instance.interface = queue_member_defaults['interface']
-                    # por ahora no definimos 'paused'
-                    queue_form.instance.paused = queue_member_defaults['paused']
-                    queue_form_created = True
-                    if queue_form.instance.pk is not None:
-                        queue_form_created = False
-                    queue_form.save(commit=False)
-                    if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                        adicionar_agente_cola(agente, queue_form.instance, campana, client)
-            client.disconnect()
-            queue_member_formset.save()
+                    agentes.add(agente)
+                    penalties[agente.id] = queue_form.instance.penalty
+            try:
+                queue_service = QueueMemberService()
+                queue_service.agregar_agentes_en_cola(campana, agentes, penalties)
+                queue_service.disconnect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueAdd failed "))
+            queue_service.disconnect()
 
     def alertas_por_sistema_externo(self, campana):
         if campana.sistema_externo:
