@@ -4,6 +4,8 @@
     <div v-if="agtWhatsCoversationInfo.error">
       <Message severity="error" :closable="false" class="mt-0 mb-3"
         >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
+        <br>
+        {{ agtWhatsCoversationInfo.errorEx.reason }} [{{ agtWhatsCoversationInfo.errorEx.code }}]
       </Message>
     </div>
     <div v-else>

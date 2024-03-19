@@ -41,6 +41,7 @@ export default {
                 isMine: data && data.isMine ? data.isMine : null,
                 isNew: data && data.isNew ? data.isNew : null,
                 expire: data && data.expire ? data.expire : null,
+                errorEx: data && data.errorEx ? data.errorEx : null,
                 error: data && data.error ? data.error : false
             };
         },

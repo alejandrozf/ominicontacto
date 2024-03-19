@@ -237,6 +237,7 @@ class ConversacionWhatsapp(models.Model):
     saliente = models.BooleanField(default=False)
     atendida = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
+    error_ex = models.JSONField(default=dict)
     date_last_interaction = models.DateTimeField(null=True)
     client_alias = models.CharField(max_length=100, null=True)
     objects = ConversacionWhatsappQuerySet.as_manager()

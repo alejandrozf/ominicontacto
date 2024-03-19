@@ -101,15 +101,17 @@ async def handler_messages(line, payloads):
                 message_id = msg_json['payload']['gsId']
                 status = msg_json['payload']['type']
                 destination = msg_json['payload']['destination']
+                error_ex = {}
                 expire = None
                 if status == 'failed':
                     logger.error(msg_json['payload']['payload']['reason'])
+                    error_ex = msg_json['payload']['payload']
                 if status == 'sent':
                     expire = datetime.fromtimestamp(
                         msg_json['payload']['conversation']['expiresAt'],
                         timezone.get_current_timezone())
                 await outbound_chat_event(
-                    timestamp, message_id, status, expire=expire, destination=destination)
+                    timestamp, message_id, status, expire=expire, destination=destination, error_ex=error_ex)
             if msg_json['type'] == 'message':  # entrante
                 message_id = msg_json['payload']['id']
                 origen = msg_json['payload']['source']

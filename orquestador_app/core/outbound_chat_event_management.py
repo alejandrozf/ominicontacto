@@ -20,7 +20,7 @@ from orquestador_app.core.notify_agents import send_notify
 from orquestador_app.core.check_expired import check_expired
 
 
-async def outbound_chat_event(timestamp, message_id, status, expire, destination):
+async def outbound_chat_event(timestamp, message_id, status, expire, destination, error_ex):
     try:
         print("status de mensaje saliente ====>", status)
         message = MensajeWhatsapp.objects.get(message_id=message_id)
@@ -30,9 +30,11 @@ async def outbound_chat_event(timestamp, message_id, status, expire, destination
         message.save()
         if status != 'failed' and message.conversation.error:
             message.conversation.error = False
+            message.conversation.error_ex = {}
             message.conversation.save()
         if status == 'failed' and not message.conversation.error:
             message.conversation.error = True
+            message.conversation.error_ex = error_ex
             message.conversation.save()
         if status == 'delivered':
             if not message.conversation.saliente and not message.conversation.atendida:

@@ -74,6 +74,7 @@ class ConversacionSerializer(serializers.Serializer):
     photo = serializers.CharField(default="")
     line = serializers.SerializerMethodField()
     error = serializers.BooleanField(default=False)
+    error_ex = serializers.JSONField()
     client_alias = serializers.CharField(default="")
 
     def get_line(self, obj):
