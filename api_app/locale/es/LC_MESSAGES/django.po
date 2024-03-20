@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 18:03-0300\n"
+"POT-Creation-Date: 2024-04-09 08:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -626,16 +626,16 @@ msgstr ""
 msgid "Error al parsear el archivo csv"
 msgstr ""
 
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:89
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:99
-#: api_app/views/campaigns/add_agents_to_campaign.py:50
-#: api_app/views/campaigns/add_agents_to_campaign.py:201
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:98
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:108
+#: api_app/views/campaigns/add_agents_to_campaign.py:47
+#: api_app/views/campaigns/add_agents_to_campaign.py:147
 #: api_app/views/external_system.py:173
 msgid "Se obtuvieron los agentes de forma exitosa"
 msgstr ""
 
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:118
-#: api_app/views/campaigns/add_agents_to_campaign.py:137
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:127
+#: api_app/views/campaigns/add_agents_to_campaign.py:93
 msgid "Se agregaron los agentes de forma exitosa a la campaña"
 msgstr ""
 
@@ -1190,7 +1190,7 @@ msgstr ""
 msgid "Pendiente"
 msgstr ""
 
-#: api_app/views/auditoria.py:145
+#: api_app/views/auditoria.py:146
 msgid "Exportación de auditoria a .csv en proceso"
 msgstr ""
 
@@ -1293,46 +1293,28 @@ msgstr ""
 msgid "Error al eliminar la calificacion"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:62
+#: api_app/views/campaigns/add_agents_to_campaign.py:59
 #: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
 msgid "No existe la campaña"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:82
-#, python-brace-format
-msgid "QueueAdd failed - agente: {0} de la campana: {1} "
-msgstr ""
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:111
-#, python-brace-format
-msgid "QueueRemove failed - agente: {0} de la campana: {1}"
-msgstr ""
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:122
-msgid "No existe el agente en cola"
-msgstr ""
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:144
+#: api_app/views/campaigns/add_agents_to_campaign.py:100
 msgid "No existe la campaña, no se pueden agregar agentes"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:160
-msgid ""
-"No existe el agente,                                        no se puede "
-"eliminar de la member queue"
+#: api_app/views/campaigns/add_agents_to_campaign.py:114
+msgid "No existe el agente, no se puede eliminar de la member queue"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:172
-msgid ""
-"No existe el agente,                                        no se puede "
-"crear la member queue"
+#: api_app/views/campaigns/add_agents_to_campaign.py:120
+msgid "No existe el agente, no se puede crear la member queue"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:188
+#: api_app/views/campaigns/add_agents_to_campaign.py:134
 msgid "No se pudo confirmar la creación del dialplan"
 msgstr ""
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:220
+#: api_app/views/campaigns/add_agents_to_campaign.py:166
 msgid "Error al obtener los agentes activos"
 msgstr ""
 
@@ -1949,6 +1931,6 @@ msgstr ""
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr ""
 
-#: utiles_globales.py:36
+#: utiles_globales.py:34
 msgid "Archivos permitidos: .wav"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-15 12:16-0300\n"
+"POT-Creation-Date: 2024-04-09 07:55-0300\n"
 "PO-Revision-Date: 2020-03-21 23:05-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -223,8 +223,7 @@ msgid ""
 "Se ha registrado un intento de salir de esta pantalla. Su llamado ha "
 "finalizado."
 msgstr ""
-"Foi registrada uma tentativa de sair dessa tela. Sua chamada tem "
-"finalizado."
+"Foi registrada uma tentativa de sair dessa tela. Sua chamada tem finalizado."
 
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:83
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:84

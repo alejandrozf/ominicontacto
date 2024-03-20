@@ -111,14 +111,14 @@ class ActualizaAgentesCampana(APIView):
             if agentes_a_eliminar.count() < len(agent_ids_to_delete):
                 logger.error('Falta AgenteProfile para QueueMember. Campana: ' + campaign_id)
                 data['status'] = 'ERROR'
-                data['message'] = _(u'No existe el agente,\
-                                    no se puede eliminar de la member queue')
+                data['message'] = _(u'No existe el agente, '
+                                    'no se puede eliminar de la member queue')
                 return Response(data=data, status=status.HTTP_404_NOT_FOUND)
             agentes_a_agregar = AgenteProfile.objects.filter(id__in=new_agent_ids)
             if agentes_a_agregar.count() < len(new_agent_ids):
                 data['status'] = 'ERROR'
-                data['message'] = _(u'No existe el agente,\
-                                    no se puede crear la member queue')
+                data['message'] = _(u'No existe el agente, '
+                                    'no se puede crear la member queue')
                 return Response(data=data, status=status.HTTP_404_NOT_FOUND)
 
             # Se Delega la responsabilidad de crear/eliminar y actualizar asterisk/redis
