@@ -53,6 +53,8 @@ class ViewSet(viewsets.ViewSet):
         try:
             # filtrar por permiso de whatsapp
             queryset = Campana.objects.get(id=campana_pk).obtener_agentes()
+            if request.user.is_agente:
+                queryset = queryset.exclude(user_id=request.user.id)
             serializer = AgenteListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
