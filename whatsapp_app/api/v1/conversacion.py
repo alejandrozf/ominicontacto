@@ -349,6 +349,8 @@ class ViewSet(viewsets.ViewSet):
                     if conversation.is_active:
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
+                        if not conversation.agent or conversation.agent != sender:
+                            raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
                         data = request.data.copy()
                         line = conversation.line
                         message = {"text": data['message'], "type": "text"}
@@ -418,6 +420,8 @@ class ViewSet(viewsets.ViewSet):
                     if conversation.is_active:
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
+                        if not conversation.agent or conversation.agent != sender:
+                            raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
                         data = request.data.copy()  # template_id
                         line = conversation.line
                         message = PlantillaMensaje.objects.get(pk=data['template_id']).configuracion
@@ -457,7 +461,7 @@ class ViewSet(viewsets.ViewSet):
             print("Error al enviar el mensaje")
             print(e)
             return response.Response(
-                data=get_response_data(message=_('Error al enviar el mensaje')),
+                data=get_response_data(message=_('Error al enviar el mensaje'), status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=["post"])
@@ -465,6 +469,13 @@ class ViewSet(viewsets.ViewSet):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             if not conversation.error:
+                destination = conversation.destination
+                data = request.data.copy()  # Id Template
+                template = TemplateWhatsapp.objects.get(id=data['template_id'])
+                template_id = template.identificador
+                sender = request.user.get_agente_profile()
+                if not conversation.agent or conversation.agent != sender:
+                    raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
                 if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
@@ -508,9 +519,9 @@ class ViewSet(viewsets.ViewSet):
                 data=get_response_data(
                     message=_('Conversacion erronea')),
                 status=status.HTTP_401_UNAUTHORIZED)
-        except Exception:
+        except Exception as e:
             return response.Response(
-                data=get_response_data(message=_('Error al enviar el mensaje')),
+                data=get_response_data(message=_('Error al enviar el mensaje'), status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=["post"])

@@ -47,7 +47,7 @@
     <ListMessages id="listMessages" class="scroll" />
     <div v-if="!agtWhatsCoversationInfo.error">
       <TextBox
-        v-if="!isExpired && !isDisposition"
+        v-if="!isExpired && !isDisposition && !isTransferred"
         class="footer"
         :conversationId="id"
         @scrollDownEvent="scrollDown"
@@ -84,6 +84,7 @@ export default {
             id: parseInt(this.$route.params.id),
             whatsapp_color: COLORS.WHATSAPP.TealGreen,
             isDisposition: false,
+            isTransferred: false,
             isExpired: false
         };
     },
@@ -99,11 +100,19 @@ export default {
             WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA,
             this.updatedLocalStorage
         );
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
+            this.transferDone
+        );
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
             WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA,
             this.updatedLocalStorage
+        );
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
+            this.transferDone
         );
     },
     methods: {
@@ -132,6 +141,11 @@ export default {
         },
         async updatedLocalStorage () {
             await this.initData();
+        },
+        transferDone (event) {
+            if (event.detail.conversationId === this.id) {
+                this.isTransferred = true
+            }
         },
         createContact () {
             localStorage.setItem('agtWhatsInconmingConversation', true);

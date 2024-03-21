@@ -69,7 +69,7 @@ import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
+import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -144,12 +144,18 @@ export default {
                 const conversationId = JSON.parse(
                     localStorage.getItem('agtWhatsCoversationInfo')
                 ).id;
+                const to = this.form?.to || null;
                 const { status, message } = await this.agtWhatsTransferChatSend({
-                    to: this.form?.to || null,
+                    to: to,
                     conversationId: conversationId
                 });
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
+                    const event = new CustomEvent(WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE, { detail: {
+                        to,
+                        conversationId,
+                    }});
+                    window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
                         message,
