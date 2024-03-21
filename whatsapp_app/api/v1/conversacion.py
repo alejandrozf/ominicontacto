@@ -345,7 +345,7 @@ class ViewSet(viewsets.ViewSet):
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             if not conversation.error:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                if conversation.expire >= timestamp:
+                if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
@@ -414,7 +414,7 @@ class ViewSet(viewsets.ViewSet):
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             if not conversation.error:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                if conversation.expire >= timestamp:
+                if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
@@ -465,34 +465,45 @@ class ViewSet(viewsets.ViewSet):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             if not conversation.error:
-                destination = conversation.destination
-                data = request.data.copy()  # Id Template
-                template = TemplateWhatsapp.objects.get(id=data['template_id'])
-                template_id = template.identificador
-                sender = request.user.get_agente_profile()
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                line = conversation.line
-                orquestador_response = send_template_message(
-                    line, destination, template_id, data['params'])  # orquestador
-                if orquestador_response["status"] == "submitted":
-                    text = template.texto.replace('{{', '{').\
-                        replace('}}', '}').format("", *data['params'])
-                    mensaje = MensajeWhatsapp.objects.create(
-                        message_id=orquestador_response['messageId'],
-                        conversation=conversation,
-                        origen=line.numero,
-                        timestamp=timestamp,
-                        sender={"name": sender.user.username, "agent_id": sender.user.id},
-                        content={"text": text, "type": "template"},
-                        type="template",
-                    )
-                    serializer = MensajeListSerializer(mensaje)
-                return response.Response(
-                    data=get_response_data(
-                        status=HttpResponseStatus.SUCCESS, data=serializer.data,
-                        message=_('Se envió el mensaje de forma exitosa')
-                    ),
-                    status=status.HTTP_200_OK)
+                if conversation.expire and conversation.expire >= timestamp:
+                    if conversation.is_active:
+                        destination = conversation.destination
+                        data = request.data.copy()  # Id Template
+                        template = TemplateWhatsapp.objects.get(id=data['template_id'])
+                        template_id = template.identificador
+                        sender = request.user.get_agente_profile()
+                        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                        line = conversation.line
+                        orquestador_response = send_template_message(
+                            line, destination, template_id, data['params'])  # orquestador
+                        if orquestador_response["status"] == "submitted":
+                            text = template.texto.replace('{{', '{').\
+                                replace('}}', '}').format("", *data['params'])
+                            mensaje = MensajeWhatsapp.objects.create(
+                                message_id=orquestador_response['messageId'],
+                                conversation=conversation,
+                                origen=line.numero,
+                                timestamp=timestamp,
+                                sender={"name": sender.user.username, "agent_id": sender.user.id},
+                                content={"text": text, "type": "template"},
+                                type="template",
+                            )
+                            serializer = MensajeListSerializer(mensaje)
+                        return response.Response(
+                            data=get_response_data(
+                                status=HttpResponseStatus.SUCCESS, data=serializer.data,
+                                message=_('Se envió el mensaje de forma exitosa')
+                            ),
+                            status=status.HTTP_200_OK)
+                    return response.Response(
+                        data=get_response_data(
+                            message=_(
+                                'La conversacion esta inactiva hasta que el cliente responda')),
+                        status=status.HTTP_401_UNAUTHORIZED)
+                return response.Response(data=get_response_data(
+                    message=_('La conversacion ha expirado. Inicie una nueva conversacion.')),
+                    status=status.HTTP_401_UNAUTHORIZED)
             return response.Response(
                 data=get_response_data(
                     message=_('Conversacion erronea')),
