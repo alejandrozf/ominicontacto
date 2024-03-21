@@ -381,10 +381,11 @@ class ViewSet(viewsets.ViewSet):
                                     errors=serializer_respuesta.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
                 conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
-                conversation.is_disposition = True
+                if not conversation.is_disposition:
+                    conversation.is_disposition = True
+                    autoresponse_goodbye(conversation)
                 conversation.conversation_disposition = calificacion.history.first()
                 conversation.save()
-                autoresponse_goodbye(conversation)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
