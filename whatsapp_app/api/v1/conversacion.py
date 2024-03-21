@@ -178,7 +178,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             agente = request.user.get_agente_profile()
             conversaciones_nuevas = ConversacionWhatsapp.objects.filter(
-                agent=None).order_by('-date_last_interaction')
+                agent=None, is_disposition=False).order_by('-date_last_interaction')
             conversaciones_en_curso = ConversacionWhatsapp.objects.filter(
                 agent=agente, is_disposition=False).order_by('-date_last_interaction')
             conversaciones_nuevas = ConversacionSerializer(conversaciones_nuevas, many=True)

@@ -161,12 +161,15 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
                            date_last_interaction__date__range=[start_date_str, end_date_str])
 
     def conversaciones_entrantes_atendidas(self, start_date_str, end_date_str):
-        return self.filter(saliente=False, atendida=True,
+        return self.filter(saliente=False, atendida=True, agent__isnull=False,
                            date_last_interaction__date__range=[start_date_str, end_date_str])
 
     def conversaciones_entrantes_no_atendidas(self, start_date_str, end_date_str):
-        return self.filter(saliente=False, atendida=False,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+        return self.filter(saliente=False, atendida=False, date_last_interaction__date__range=[
+            start_date_str, end_date_str]) | self.filter(saliente=False, is_disposition=True,
+                                                         agent__isnull=True,
+                                                         date_last_interaction__date__range=[
+                                                             start_date_str, end_date_str])
 
     def conversaciones_salientes_atendidas(self, start_date_str, end_date_str):
         return self.filter(saliente=True, atendida=True,
