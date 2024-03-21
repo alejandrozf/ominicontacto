@@ -28,6 +28,7 @@ from orquestador_app.core.notify_agents import send_notify
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, type):
     try:
         print("mensaje entrante por la linea >>>", line.nombre, "content >>>>", content)
+        is_out_of_time_chat = is_out_of_time(line, timestamp)
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(
                 message_id=message_id, defaults={
@@ -69,9 +70,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     date_last_interaction=timestamp,
                     client_alias=client_alias
                 )
-                if is_out_of_time(line, timestamp):
-                    autoresponse_out_of_time(line, conversation, timestamp)
-                else:
+                if not is_out_of_time_chat:
                     autoresponse_welcome(line, conversation, timestamp)
             else:
                 if not conversation.is_active:
@@ -82,10 +81,13 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 if not conversation.client_alias:
                     conversation.client_alias = sender['name'] if 'name' in sender else ""
                 conversation.save()
-                if is_out_of_time(line, timestamp):
-                    autoresponse_out_of_time(line, conversation, timestamp)
             message_inbound.conversation = conversation
             message_inbound.save()
+            if is_out_of_time_chat:
+                autoresponse_out_of_time(line, conversation, timestamp)
+                conversation.is_disposition = True
+                conversation.save()
+                return
             #  ## notificar a agentes
             if conversation.agent:
                 await send_notify('notify_whatsapp_new_message', conversation=conversation,
