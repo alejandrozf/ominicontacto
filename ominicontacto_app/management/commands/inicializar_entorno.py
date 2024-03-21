@@ -324,6 +324,7 @@ class Command(BaseCommand):
         # crear pausa
         PausaFactory(nombre="break", tipo='R')
         PausaFactory(nombre="gestion", tipo='P')
+        PausaFactory(nombre="Pausa_0", tipo='P')
 
         # crear formulario (2 campos)
         form = FormularioFactory()
