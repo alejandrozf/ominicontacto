@@ -533,8 +533,9 @@ class ViewSet(viewsets.ViewSet):
         try:
             data = request.data.copy()  # Id Template
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            or_filter = Q(destination=conversation.destination)\
-                | Q(client_id=conversation.client.pk)
+            or_filter = Q(destination=conversation.destination)
+            if conversation.client:
+                or_filter |= Q(client_id=conversation.client.pk)
             conversation_already_taken = ConversacionWhatsapp.objects\
                 .conversaciones_en_curso().filter(line_id=conversation.line.pk)\
                 .filter(or_filter).exists()
