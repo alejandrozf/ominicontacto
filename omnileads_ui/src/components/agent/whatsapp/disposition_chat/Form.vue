@@ -276,20 +276,13 @@ export default {
             this.submitted = false;
         },
         initFormToUpdate () {
-            const dispositionData =
-        this.agtWhatsDispositionChatDetail?.disposition_data || null;
-            this.formResponseMetadata = this.agtWhatsDispositionChatDetail
-                ?.form_response?.metadata
-                ? JSON.parse(
-            this.agtWhatsDispositionChatDetail?.form_response?.metadata
-                )
-                : null;
             this.form = {
                 id: null,
-                dispositionOption: dispositionData?.id || null,
-                comments: this.agtWhatsDispositionChatDetail?.comments || ''
+                dispositionOption: null,
+                comments: ''
             };
-            this.getFormFieldsByOption();
+            this.formFields = [];
+            this.initFormByTypeData();
         },
         initFormToCreate () {
             this.form = {

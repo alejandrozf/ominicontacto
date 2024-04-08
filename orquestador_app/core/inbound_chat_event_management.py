@@ -39,7 +39,8 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     'type': type
                 }
             )
-        if created_message:
+        if created_message or not message_inbound.conversation:
+            created_conversation = False
             destination_entrante = line.destino
             conversations_from_origen = ConversacionWhatsapp.objects.filter(
                 line=line, whatsapp_id=origen)
@@ -70,6 +71,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     date_last_interaction=timestamp,
                     client_alias=client_alias
                 )
+                created_conversation = True
                 if not is_out_of_time_chat:
                     autoresponse_welcome(line, conversation, timestamp)
             else:
@@ -89,12 +91,12 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 conversation.save()
                 return
             #  ## notificar a agentes
-            if conversation.agent:
+            if created_conversation and conversation.campana:
+                await send_notify('notify_whatsapp_new_chat', conversation=conversation)
+            elif created_message and conversation.agent:
                 await send_notify('notify_whatsapp_new_message', conversation=conversation,
                                   line=line,
                                   message=message_inbound)
-            elif conversation.campana:
-                await send_notify('notify_whatsapp_new_chat', conversation=conversation)
 
             if not conversation.campana:
                 if type == 'list_reply':
