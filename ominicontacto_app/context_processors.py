@@ -23,12 +23,15 @@ from operator import itemgetter
 from django.conf import settings
 from django.apps import apps
 
+from ominicontacto.settings.omnileads import ASTERISK_TM, OMNILEADS_TM
 from ominicontacto_app.permisos import PermisoOML
 import os
 
 
 def global_settings(request):
     return {
+        'ASTERISK_TM': ASTERISK_TM,
+        'OMNILEADS_TM': OMNILEADS_TM,
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
         'GOOGLE_MAPS_API_KEY': os.getenv('GOOGLE_MAPS_API_KEY'),
         'GOOGLE_MAPS_CENTER': os.getenv('GOOGLE_MAPS_CENTER'),

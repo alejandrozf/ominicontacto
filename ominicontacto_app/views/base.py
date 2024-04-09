@@ -41,6 +41,7 @@ from constance import config as config_constance
 from defender import utils
 from defender import config
 
+from ominicontacto.settings.omnileads import SUGGEST_REGISTER
 from ominicontacto_app.models import (
     AgenteProfile, Pausa, AgendaContacto, User,
     ClienteWebPhoneProfile, ContactoListaRapida
@@ -68,7 +69,7 @@ def index_view(request):
         showRegisterPopUp = False
         if 'showRegisterPopUp' not in request.session.keys():
             if not admin_registered:
-                showRegisterPopUp = True
+                showRegisterPopUp = True and SUGGEST_REGISTER
             request.session['showRegisterPopUp'] = showRegisterPopUp
         else:
             showRegisterPopUp = False
