@@ -250,6 +250,11 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
                     'name': pause.nombre,
                     'timeToEndPause': 0
                 })
+        pausas.append({
+            'id': 'OW',
+            'name': _('On-Whatsapp'),
+            'timeToEndPause': 0
+        })
         return pausas
 
     def get_context_data(self, **kwargs):
@@ -278,6 +283,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['event_fin_conexion'] = LlamadaLog.EVENTOS_FIN_CONEXION
         context['campanas_preview_activas'] = campanas_preview_activas
         context['agente_profile'] = agente_profile
+        context['tiene_whatsapp'] = agente_profile.grupo.whatsapp_habilitado
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)

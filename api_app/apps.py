@@ -145,7 +145,7 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_update_agents_campaign',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_pause_set_pause_options',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pause_set_list',

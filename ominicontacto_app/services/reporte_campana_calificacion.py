@@ -102,7 +102,8 @@ class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
             opcion_calificacion_nombre = "{} {}".\
                 format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
         lista_opciones.append(opcion_calificacion_nombre)
-        lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
+        if calificacion.observaciones:
+            lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         if calificacion.contacto.es_originario:
             lista_opciones.append(calificacion.contacto.bd_contacto)
         else:

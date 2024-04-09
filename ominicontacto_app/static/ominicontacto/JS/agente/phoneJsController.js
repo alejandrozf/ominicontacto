@@ -35,13 +35,15 @@ var ACW_PAUSE_NAME = 'ACW';
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp
+        ) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
         this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
         this.notification_agent = notification_agent;
+        this.notification_agent_whatsapp = notification_agent_whatsapp;
         this.agent_config = new AgentConfig();
         this.pause_manager = new PauseManager();
         this.click_2_call_dispatcher = click_2_call_dispatcher;
@@ -146,7 +148,7 @@ class PhoneJSController {
 
         this.view.setPauseButton.click(function() {
             const pause_data = $('#pauseType').val().split(',');
-            var pause_id = parseInt(pause_data[0]);
+            var pause_id = pause_data[0];
             var pause_name = pause_data[1];
             var pause_time = parseInt(pause_data[2]);
             clearTimeout(self.ACW_pause_timeout_handler);
@@ -658,7 +660,10 @@ class PhoneJSController {
                 self.phone.session_data.remote_call.id_contacto=args['contact_id'];
             }
         });
-
+        this.notification_agent_whatsapp.eventsCallbacks.onNotificationNewChat.add(function(args){
+            console.log("===================================> NEW CHAT")
+            $('#newChat').removeClass('invisible');
+        });
     }
 
     subscribeToNavigatorEvents() {

@@ -23,6 +23,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
     <input type="hidden" id="add_agents_to_campaign" name="campaign_id" value="{{ campana.pk }}">
     {% if campana %}
-        <iframe src="{% static 'omnileads-ui-supervision/add_agents_to_campaign.html' %}" class="crm" name="crm"></iframe>
+        <iframe src="{% static 'omnileads-frontend/supervisor_add_agents_to_campaign.html' %}" class="crm" name="crm"></iframe>
     {% endif %}
 {% endblock %}

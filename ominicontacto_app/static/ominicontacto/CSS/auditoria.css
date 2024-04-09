@@ -3,7 +3,8 @@
 /* ---Color que no hay que modificar para los rebrands---*/
 /* Gris oscuro */
 /* Gris claro */
-/*Gris muy clarito*/
+/* Gris muy clarito */
+/* naranja clarito */
 .pendiente {
   background: #cfcbca;
 }
@@ -13,7 +14,7 @@
 }
 
 .aprobada {
-  background: #9FD84E;
+  background: #fa4da0;
 }
 
 .observada {
@@ -28,7 +29,7 @@
 Resultados de Auditoria en calificacion styles
 */
 .calificacion_auditada {
-  border: 1px solid #8FC641;
+  border: 1px solid #f71883;
   border-radius: 10px;
   padding-left: 10%;
   padding-top: 3%;
@@ -36,21 +37,21 @@ Resultados de Auditoria en calificacion styles
 
 .calificacion_auditada h2 {
   text-decoration: underline;
-  text-decoration-color: #8FC641;
+  text-decoration-color: #f71883;
   text-transform: uppercase;
   color: gray;
 }
 
 .modalAuditoria .modal-header,
 .modalAuditoria .modal-header span {
-  background-color: #8FC641;
+  background-color: #f71883;
   color: white;
   text-transform: uppercase;
 }
 
 .calificacion_auditada b,
 .modalAuditoria .modal-body b {
-  color: #8FC641;
+  color: #f71883;
 }
 
 #calificacion_form textarea {

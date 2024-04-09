@@ -23,12 +23,17 @@ from django.conf import settings
 
 class RedisStreams(object):
 
-    def __init__(self):
+    def __init__(self, connection=None):
         super().__init__()
-        self.connection = redis.Redis(host=settings.REDIS_HOSTNAME,
-                                      port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-                                      decode_responses=True)
+        self.connection = connection
+        if connection is None:
+            self.connection = redis.Redis(host=settings.REDIS_HOSTNAME,
+                                          port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+                                          decode_responses=True)
 
     def write_stream(self, stream_name, content, max_stream_length=100):
         self.connection.execute_command('XADD', stream_name, 'MAXLEN',
                                         '~', max_stream_length, '*', 'value', content)
+
+    def flush(self, stream_name):
+        self.connection.xtrim(name=stream_name, maxlen=0, approximate=False)

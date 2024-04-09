@@ -306,6 +306,8 @@ class Grupo(models.Model):
         'Acceso a las calificaciones como agente'))
     acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso a las campañas preview como agente'))
+    whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
+        'Permiso de uso de la canalidad WhatsApp'))
     conjunto_de_pausa = models.ForeignKey(
         ConjuntoDePausa,
         verbose_name=_('Conjunto de pausas'),
@@ -1260,6 +1262,7 @@ class Campana(models.Model):
         choices=CONTROL_DE_DUPLICADOS,
         default=PERMITIR_DUPLICADOS,
     )
+    whatsapp_habilitado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre
@@ -1509,6 +1512,8 @@ class Campana(models.Model):
                                     'si selecciono un formulario.'))
         else:
             super(Campana, self).save(*args, **kwargs)
+        if self.whatsapp_habilitado is False and self.configuracionwhatsapp.all():
+            self.configuracionwhatsapp.all().delete()
 
     def obtener_agentes(self):
         return self.queue_campana.members.all()
@@ -2818,8 +2823,24 @@ class CalificacionClienteManager(models.Manager):
 
         return calificaciones
 
+    def calificaciones_whatsapp_campanas(self, campana, fecha_desde, fecha_hasta):
+        """Obtiene las calificaciones campaña en un rango de fechas definido"""
+        calificaciones = self.filter(
+            opcion_calificacion__campana__pk=campana.id,
+            canalidad=CalificacionCliente.CANALIDAD_WHATSAPP,
+            modified__date__range=(fecha_desde, fecha_hasta))
+        return\
+            calificaciones.values('opcion_calificacion__nombre').\
+            annotate(total=Count('opcion_calificacion')).order_by('-total')
+
 
 class CalificacionCliente(TimeStampedModel, models.Model):
+    CANALIDAD_TELEFONO = 0
+    CANALIDAD_WHATSAPP = 1
+    TYPE_CANALIDAD_CHOICES = (
+        (CANALIDAD_TELEFONO, _('Teléfono')),
+        (CANALIDAD_WHATSAPP, _('Whatsapp'))
+    )
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2833,7 +2854,8 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     agendado = models.BooleanField(default=False)
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES, null=True)
     callid = models.CharField(max_length=32, blank=True, null=True)
-
+    canalidad = models.PositiveIntegerField(
+        choices=TYPE_CANALIDAD_CHOICES, default=CANALIDAD_TELEFONO)
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
     es_calificacion_manual = models.BooleanField(default=False)
     history = HistoricalRecords()

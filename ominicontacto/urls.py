@@ -47,6 +47,8 @@ urlpatterns = [
     re_path(r'^', include('supervision_app.urls')),
     re_path(r'^notification/message/', include('notification_app.message.urls')),
     re_path(r'^', include('api_app.urls')),
+    re_path(r'^', include('whatsapp_app.urls')),
+    re_path(r'^', include('orquestador_app.urls')),
     re_path(r'^accounts/logout/$', auth_views.LogoutView.as_view(next_page='/accounts/login/'),
             name="logout"),
 ]

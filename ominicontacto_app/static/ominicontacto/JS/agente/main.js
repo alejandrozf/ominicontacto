@@ -74,10 +74,14 @@ function startPhoneJs() {
     var notification_agent = new NotificationSocket();
     notification_agent.startNotificationSocket();
 
+    var notification_agent_whatsapp = new NotificationSocketWhatsapp();
+    notification_agent_whatsapp.startNotificationSocketWhatsapp();
+
     click2call = new Click2CallDispatcher(oml_api, agent_id);
     keep_alive_sender = new KeepAliveSender(max_session_age);
     phone_controller = new PhoneJSController(
-        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender, video_domain, notification_agent);
+        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender, video_domain, notification_agent,
+        notification_agent_whatsapp);
 
     subscribirEventosBotonesGenerales(oml_api, agent_id, timers);
     subscribirEventosBotonesOtrosMedios(oml_api);

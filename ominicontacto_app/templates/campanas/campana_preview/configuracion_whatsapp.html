@@ -1,0 +1,45 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+
+{% extends "campanas/configuracion_whatsapp.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Entrante: Configuración de Whatsapp' %}</h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        {% if whatsapp_habilitado %}
+            <li class="active"><a>{% trans 'Configuración de Whatsapp' %}</a></li>
+        {% endif %}
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endif %}
+        {% if not es_template and create %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+            {% if create %}
+                <li class="disabled"><a>{% trans 'Asignación inicial de contactos a agentes' %}</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
+{% endblock %}
