@@ -27,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block titles %}
     <div class="row">
         <div class="col-md-6">
-            <h1>{% trans 'Adicionar audios de Asterisk' %}</h1>
+            <h1>{% blocktranslate %} Adicionar audios de {{ ASTERISK_TM }} {% endblocktranslate %}</h1>
         </div>
         <div class="col-md-6"><b>{% trans 'Instalados:' %}</b> {{ form.idiomas_instalados|join:"," }}</div>
     </div>

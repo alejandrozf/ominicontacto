@@ -31,7 +31,7 @@
 
 var ACW_PAUSE_ID = '0';
 var ACW_PAUSE_NAME = 'ACW';
-
+var ASTERISK_TM = $('#asterisk_tm').val() == undefined? 'asterisk':$('#asterisk_tm').val();
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
@@ -440,10 +440,16 @@ class PhoneJSController {
             self.phone_fsm.registered();
 
             if (self.phone_fsm.state == 'LoggingToAsterisk') {
-                self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
+                let msg = gettext('Conectado a %(ASTERISK_TM)s');
+                msg = interpolate(msg, {ASTERISK_TM:ASTERISK_TM},true);
+                self.view.setCallStatus(msg, 'yellowgreen');
                 var login_ok = function(){self.goToReadyAfterLogin();};
                 var login_error = function(){
-                    self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
+                    let msg = gettext(
+                        'Agente no conectado a %(ASTERISK_TM)s, contacte a su administrador');
+                    msg = interpolate(msg, {ASTERISK_TM:ASTERISK_TM},true);
+
+                    self.view.setCallStatus(msg, 'red');
                     self.phone_fsm.logToAsteriskError();
                 };
                 self.oml_api.asteriskLogin(login_ok, login_error);

@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html lang='es'>
 <head>
     <meta charset="utf-8">
-    <title>{% trans 'OmniLeads' %}</title>
+    <title>{{ OMNILEADS_TM }}</title>
     <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,6 +83,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
   <!-- Hidden Data -->
     <input type="hidden" value="{{ fechas_agendas_json }}" id='agendas_dates_json'>
+
+  <!-- Constants -->
+    <input type="hidden" value="{{ ASTERISK_TM }}" id="asterisk_tm">
 
 <!-- Modal de Pausa -->
 <div class="modal fade" id="modalPause" role="dialog">

@@ -27,6 +27,7 @@ import logging
 
 from django.utils.translation import gettext as _
 
+from ominicontacto.settings.omnileads import ASTERISK_TM
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
     AsteriskConfigReloader, QueuesCreator)
@@ -59,8 +60,8 @@ class ActivacionQueueService(object):
                                "intentar queues_config_creator()"))
 
             proceso_ok = False
-            mensaje_error += (_("Hubo un inconveniente al crear el archivo de "
-                                "configuracion del queues de Asterisk. "))
+            mensaje_error += (_('Hubo un inconveniente al crear el archivo de '
+                                'configuracion del queues de {0}. '.format(ASTERISK_TM)))
 
         if not proceso_ok:
             raise RestablecerDialplanError(mensaje_error)
