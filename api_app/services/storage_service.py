@@ -93,9 +93,10 @@ class StorageService(object):
             s3_file_path = file_name
             if root_s3_folder is not None:
                 s3_file_path = f'{root_s3_folder}/{s3_file_path}'
+            logger.info(f'Intentando descargar el archivo: {s3_file_path} desde S3 bucket: {self.bucket_name}')
             self.client.download_file(self.bucket_name, s3_file_path, file_dest)
         except Exception as e:
-            logger.error(f'Error descargando archivo desde S3 {e.__str__()}')
+            logger.error(f'Error descargando archivo {s3_file_path} desde S3 {e.__str__()}')
             return False
         return True
 

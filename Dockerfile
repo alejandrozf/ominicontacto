@@ -69,6 +69,7 @@ RUN apk add bash \
         gcc \
         wget \
         coreutils \
+        sudo  \
     && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
     &&  tar xzvf libffi-3.3.tar.gz \
     && cd libffi-3.3/ \
@@ -78,7 +79,6 @@ RUN apk add bash \
     && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h $INSTALL_PREFIX -s /bin/bash \
     && cd $INSTALL_PREFIX \
     && mkdir -p wombat-json bin backup media_root/reporte_campana static log run addons ominicontacto asterisk/var/spool/monitor \
-    && chown -R omnileads.omnileads $INSTALL_PREFIX /var/spool/cron/ /var/spool/cron/crontabs/ \
     && wget https://keys-server.freetech.com.ar:20852/cert --no-check-certificate
 
 #Copia el codigo de rama actual
@@ -100,3 +100,4 @@ COPY build/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY --from=vuejs /omnileads_ui/supervision/dist/ $INSTALL_PREFIX/ominicontacto/omnileads_ui/supervision/dist
 COPY build/scripts/* $INSTALL_PREFIX/bin/
 RUN chmod +x $INSTALL_PREFIX/bin/*
+RUN chown -R omnileads:omnileads $INSTALL_PREFIX /var/spool/cron/ /var/spool/cron/crontabs/ \
