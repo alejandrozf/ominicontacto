@@ -264,6 +264,7 @@ export default {
             expire: 'Expiration date',
             message: 'Messages number',
             disposition: 'Disposition',
+            timestamp: 'Start date',
             line: 'Line',
             new: {
                 title: 'New conversation',

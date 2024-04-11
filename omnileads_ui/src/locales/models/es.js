@@ -263,6 +263,7 @@ export default {
             last_interaction: 'Última interacción',
             expire: 'Fecha de expiracion',
             message: 'Numero de mensajes',
+            timestamp: 'Fecha de inicio',
             line: 'Linea',
             new: {
                 title: 'Nueva conversación',
