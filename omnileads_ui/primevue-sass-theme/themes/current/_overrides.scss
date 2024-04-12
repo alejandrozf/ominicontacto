@@ -1,0 +1,30 @@
+// rebrands override file
+// any variable from ./_variables.scss and ../saga/_variables can be
+// customized here since they use the `!default` Sass flag.
+
+// All the variants of the saga theme: blue, dark-pink, green,
+// orange and purple only customize the value of two variables: 
+// $primaryColor and $highlightBg.
+
+// @import '../../../../ominicontacto_app/static/ominicontacto/SCSS/_variables';
+
+// saga-blue      #2196F3
+// saga-dark-pink #F71883
+// saga-green     #4CAF50
+// saga-orange    #FFC107
+// saga-purple    #9C27B0
+// $primaryColor: $primary-color; // from ominicontacto/SCSS/_variables
+$primaryColor: null;
+
+// $primaryLightColor: $primary-light-color; // from ominicontacto/SCSS/_variables
+$primaryLightColor: null;
+
+// $textSecondaryColor: $secondary-color; // from ominicontacto/SCSS/_variables
+$textSecondaryColor: null;
+
+// saga-blue      #E3F2FD
+// saga-dark-pink #F3E5F5
+// saga-green     #E8F5E9
+// saga-orange    #FFF3E0
+// saga-purple    #F3E5F5
+// $highlightBg: null;
