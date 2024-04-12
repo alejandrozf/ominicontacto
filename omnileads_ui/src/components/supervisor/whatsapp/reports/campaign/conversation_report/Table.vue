@@ -59,6 +59,15 @@
         </template>
       </Column>
       <Column
+        field="timestamp"
+        :sortable="true"
+        :header="$t('models.whatsapp.conversation.timestamp')"
+        >
+        <template #body="{ data }">
+          {{ getDatetimeFormat(data.timestamp) }}
+        </template>
+      </Column>
+      <Column
         field="campaign.name"
         :sortable="true"
         :header="$t('models.whatsapp.conversation.campaign')"

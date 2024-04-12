@@ -139,7 +139,7 @@ class MensajeWhatsappManager(models.Manager):
 
 class MensajeWhatsapp(models.Model):
     message_id = models.CharField(max_length=100)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
     origen = models.CharField(max_length=100)
     sender = JSONField(default=dict)
     conversation = models.ForeignKey(
@@ -154,69 +154,63 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
 
     def conversaciones_entrantes(self, start_date_str, end_date_str):
         return self.filter(saliente=False,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_salientes(self, start_date_str, end_date_str):
         return self.filter(saliente=True,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_entrantes_atendidas(self, start_date_str, end_date_str):
         return self.filter(saliente=False, atendida=True, agent__isnull=False,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_entrantes_no_atendidas(self, start_date_str, end_date_str):
-        return self.filter(saliente=False, atendida=False, date_last_interaction__date__range=[
+        return self.filter(saliente=False, atendida=False, timestamp__range=[
             start_date_str, end_date_str]) | self.filter(saliente=False, is_disposition=True,
                                                          agent__isnull=True,
-                                                         date_last_interaction__date__range=[
-                                                             start_date_str, end_date_str])
+                                                         timestamp__range=[
+                                                            start_date_str, end_date_str])
 
     def conversaciones_salientes_atendidas(self, start_date_str, end_date_str):
         return self.filter(saliente=True, atendida=True,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_salientes_no_atendidas(self, start_date_str, end_date_str):
         return self.filter(saliente=True, atendida=False,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_salientes_con_error(self, start_date_str, end_date_str):
         return self.filter(saliente=True, error=True,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_salientes_expiradas(self, start_date_str, end_date_str):
         timestamp = timezone.now().astimezone(timezone.get_current_timezone())
         return self.filter(saliente=True, atendida=False, expire__lte=timestamp,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_entrantes_expiradas_no_atendidas(self, start_date_str, end_date_str):
         timestamp = timezone.now().astimezone(timezone.get_current_timezone())
         return self.filter(saliente=False, atendida=False, expire__lte=timestamp,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
     def conversaciones_no_calificadas(self, start_date_str, end_date_str):
         return self.filter(atendida=True, is_disposition=False,
-                           date_last_interaction__date__range=[start_date_str, end_date_str])
+                           timestamp__range=[start_date_str, end_date_str])
 
-    def conversaciones_en_curso(
-            self, start_date_str=None, end_date_str=None):
+    def conversaciones_en_curso(self, start_date_str, end_date_str):
         timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-        if start_date_str and end_date_str:
-            return self.filter(
+        return self.filter(
                 expire__gte=timestamp, is_disposition=False,
-                date_last_interaction__date__range=[start_date_str, end_date_str])
-        return self.filter(expire__gte=timestamp, is_disposition=False)
+                timestamp__range=[start_date_str, end_date_str])
 
     def numero_mensajes_enviados(self, start_date_str, end_date_str):
         return MensajeWhatsapp.objects.mensajes_enviados().filter(
-            conversation__in=self.filter(
-                date_last_interaction__date__range=[start_date_str, end_date_str]),
-            timestamp__date__range=[start_date_str, end_date_str]).count()
+            timestamp__range=[start_date_str, end_date_str]).count()
 
     def numero_mensajes_recibidos(self, start_date_str, end_date_str):
         return MensajeWhatsapp.objects.mensajes_recibidos().filter(
-            conversation__in=self.filter(
-                date_last_interaction__date__range=[start_date_str, end_date_str]),
-            timestamp__date__range=[start_date_str, end_date_str]).count()
+            timestamp__range=[start_date_str, end_date_str]).count()
+
 
 
 class ConversacionWhatsapp(models.Model):
@@ -236,7 +230,7 @@ class ConversacionWhatsapp(models.Model):
         HistoricalCalificacionCliente, related_name="conversaciones",
         null=True, on_delete=models.CASCADE)
     expire = models.DateTimeField(null=True)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
     saliente = models.BooleanField(default=False)
     atendida = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
