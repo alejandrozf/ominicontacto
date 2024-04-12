@@ -87,16 +87,22 @@ class AbstractRedisFamily(object):
             logger.exception(e)
             sys.exit(1)
 
+    def _get_families_pattern(self):
+        """ Devuelve un pattern que haga match con todas las familias del tipo """
+        # TODO: deberia levantar raise (NotImplementedError())
+        #       pero por defecto se utilizaba este valor
+        return self.get_nombre_families() + ':*'
+
     def _delete_tree_family(self):
         """Elimina todos los objetos de la family """
 
-        nombre_families = self.get_nombre_families() + ':*'
+        families_pattern = self._get_families_pattern()
         finalizado = False
         index = 0
         while not finalizado:
             redis_connection = self.get_redis_connection()
             try:
-                result = redis_connection.scan(index, nombre_families)
+                result = redis_connection.scan(index, families_pattern)
                 index = result[0]
                 keys = result[1]
                 for key in keys:
@@ -105,7 +111,7 @@ class AbstractRedisFamily(object):
                     finalizado = True
             except (RedisError, ConnectionError) as e:
                 logger.exception(_("Error al intentar Eliminar families de {0}. Error: {1}".format(
-                    nombre_families, e)))
+                    families_pattern, e)))
                 sys.exit(1)
 
     def _create_dict(self, family_member):
