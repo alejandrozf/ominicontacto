@@ -1,5 +1,5 @@
 # Release Notes
-2024-01-17
+2024-04-10
 
 ## Added
 
@@ -9,8 +9,7 @@
 
 ## Fixed
 
-- oml-463 [WEB] Startup scripts for the web app (django commands) have been modified.
-- Minor text translations
+- oml-509 [WEB] Startup script init_uwsgi.sh regenerar_asterisk have been modified in order to exec with omnileads user.
 
 ## Removed
 
