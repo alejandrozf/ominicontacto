@@ -21,6 +21,8 @@ max-requests=2000
 EOF
 fi
 
+chown omnileads:omnileads ${INSTALL_PREFIX}/run/oml_uwsgi.ini
+su omnileads -c "touch  /var/spool/cron/crontabs/omnileads"
 
 echo "Run django command compilemessages"
 $COMMAND compilemessages
@@ -32,7 +34,7 @@ $COMMAND compress --force
 echo "Run actualizar_permisos"
 $COMMAND actualizar_permisos
 echo "Run django command regenerar_asterisk"
-$COMMAND regenerar_asterisk
+su omnileads -c "$COMMAND regenerar_asterisk"
 echo "Init uWSGI"
-$COMMAND listening_whatsapp_events &
+su omnileads -c "$COMMAND listening_whatsapp_events &"
 exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT}
