@@ -568,3 +568,14 @@ class TransferenciaAEncuestaLog(models.Model):
     campana_id = models.IntegerField(db_index=True, blank=True, null=True)
     encuesta_id = models.IntegerField(db_index=True, blank=True, null=True)
     callid = models.CharField(db_index=True, max_length=32, blank=True, null=True)
+
+
+class AnalisisSentimiento(models.Model):
+    """
+    Registro de analis de sentimientos
+    """
+    time = models.DateTimeField(db_index=True, auto_now_add=True)
+    callid = models.CharField(max_length=32, unique=True)
+    result = models.CharField(max_length=32, null=True, blank=True)
+    url_audio = models.TextField(null=True, blank=True)
+    url_transcription = models.TextField(null=True, blank=True)
