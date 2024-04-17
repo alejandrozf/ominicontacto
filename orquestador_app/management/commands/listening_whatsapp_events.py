@@ -37,13 +37,13 @@ def wrap_async_func(func, *args):
 
 
 async def start(redis_host, lines_id, loop):
-    enabled_lines = Linea.objects.filter(id__in=lines_id)
+    enabled_lines = Linea.objects_default.filter(id__in=lines_id)
     for ws_linea in enabled_lines:
         if ws_linea.is_active:
-            print("subscribe lineas activas...")
+            print("subscribe linea activa con id:", ws_linea.id)
             args = ['subscribe', ws_linea, redis_host, loop]
         else:
-            print("unsubscribe lineas inactivas...")
+            print("unsubscribe linea inactiva con id:", ws_linea.id)
             args = ['unsubscribe', ws_linea]
 
         _thread_line = threading.Thread(
@@ -52,6 +52,8 @@ async def start(redis_host, lines_id, loop):
         )
         _thread_line.setDaemon(True)
         _thread_line.start()
+    if len(enabled_lines) < len(lines_id):
+        print("No se encontraron todas las lineas: ", lines_id, enabled_lines)
 
 
 async def searching_enabled_lines(stream_name, redis_host: RedisServer, loop: Loop):

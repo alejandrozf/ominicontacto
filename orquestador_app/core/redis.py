@@ -40,6 +40,7 @@ async def connect_to_stream(name: str, line: Linea, redis: RedisServer):
     redis = redis.client()
     try:
         print("connect to stream for line >>>", line.nombre, line.destino)
+        print("connect to stream >>>", name)
         streams = {
             name: "0-0"
         }
@@ -70,6 +71,7 @@ def get_stream_name(line):
 
 async def subscribe(line: Linea, redis_host: RedisServer, loop: Loop):
     if line.id in streams:
+        print("cancelling old subcription task for line >>>", line.nombre)
         task = streams.pop(line.id)
         task.cancel()
         del task
