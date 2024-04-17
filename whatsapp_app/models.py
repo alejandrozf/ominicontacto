@@ -43,8 +43,7 @@ class ConfiguracionProveedor(AuditableModelMixin, models.Model):
 class LineaManager(models.Manager):
 
     def get_queryset(self):
-        return super(LineaManager, self).get_queryset().exclude(
-            is_active=False)
+        return super(LineaManager, self).get_queryset().exclude(is_active=False)
 
 
 class Linea(AuditableModelMixin):
@@ -169,7 +168,7 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
             start_date_str, end_date_str]) | self.filter(saliente=False, is_disposition=True,
                                                          agent__isnull=True,
                                                          timestamp__range=[
-                                                            start_date_str, end_date_str])
+                                                             start_date_str, end_date_str])
 
     def conversaciones_salientes_atendidas(self, start_date_str, end_date_str):
         return self.filter(saliente=True, atendida=True,
@@ -200,8 +199,8 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
     def conversaciones_en_curso(self, start_date_str, end_date_str):
         timestamp = timezone.now().astimezone(timezone.get_current_timezone())
         return self.filter(
-                expire__gte=timestamp, is_disposition=False,
-                timestamp__range=[start_date_str, end_date_str])
+            expire__gte=timestamp, is_disposition=False,
+            timestamp__range=[start_date_str, end_date_str])
 
     def numero_mensajes_enviados(self, start_date_str, end_date_str):
         return MensajeWhatsapp.objects.mensajes_enviados().filter(
@@ -210,7 +209,6 @@ class ConversacionWhatsappQuerySet(models.QuerySet):
     def numero_mensajes_recibidos(self, start_date_str, end_date_str):
         return MensajeWhatsapp.objects.mensajes_recibidos().filter(
             timestamp__range=[start_date_str, end_date_str]).count()
-
 
 
 class ConversacionWhatsapp(models.Model):
