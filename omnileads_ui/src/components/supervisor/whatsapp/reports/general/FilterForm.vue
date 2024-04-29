@@ -135,8 +135,8 @@ export default {
     data () {
         return {
             form: {
-                startDate: new Date(),
-                endDate: new Date()
+                startDate: new Date(new Date().setHours(0,0,0,0)),
+                endDate: new Date(new Date().setHours(23,59,59,999))
             },
             maxDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
         };
@@ -150,8 +150,8 @@ export default {
     methods: {
         ...mapActions(['initSupWhatsReportGeneral']),
         cleanFilters () {
-            this.form.startDate = new Date();
-            this.form.endDate = new Date();
+            this.form.startDate = new Date(new Date().setHours(0,0,0,0));
+            this.form.endDate = new Date(new Date().setHours(23,59,59,999));
             this.search();
         },
         getFormatDate (date = null) {
@@ -194,8 +194,8 @@ export default {
             const response = await this.initSupWhatsReportGeneral({
                 campaignId: this.campaignId,
                 filters: {
-                    startDate: this.getFormatDate(this.form.startDate),
-                    endDate: this.getFormatDate(this.form.endDate)
+                    startDate: this.form.startDate,
+                    endDate: this.form.endDate
                 }
             });
             const { status, message } = response;
