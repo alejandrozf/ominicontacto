@@ -1050,3 +1050,23 @@ body.wrapper-page-error {
 #registro {
   color: #f71883;
 }
+
+.popup_container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  border: none;
+}
+
+.main-menu-beta::after {
+  content: "beta";
+  float: right;
+  margin-left: 5px;
+  margin-right: 15px;
+  color: #000000;
+  font-size: 12px;
+  background-color: #15ff00;
+  padding: 2px 5px;
+  border-radius: 3px;
+}

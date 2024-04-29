@@ -424,8 +424,8 @@ class DestinoEntrante(models.Model):
         return self.campanas_destino_failover.exists()
 
     def lineas_destino_whatsapp(self):
-        """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un 
-            Menu Interactivo de WhatsApp. 
+        """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un
+            Menu Interactivo de WhatsApp.
             Nota: Cuando el menú tenga más profundidad habrá que recorrer todo el arbol
         """
         nodos_anteriores = self.destinos_anteriores.filter(

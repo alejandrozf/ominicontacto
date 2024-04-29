@@ -88,6 +88,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if whatsapp:
             conexiones.append({
                 'label': _('WhatsApp'),
+                'class': "main-menu-beta",
                 'icon': 'icon-audio-file',
                 'id': 'menuWhatsapp',
                 'children': whatsapp

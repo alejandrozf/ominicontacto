@@ -61,6 +61,7 @@ from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, 
 from whatsapp_app.tests.factories import LineaFactory, MenuInteractivoFactory
 from whatsapp_app.models import OpcionMenuInteractivoWhatsapp
 
+
 def test_concurrently(args_list):
     """
     Add this decorator to small pieces of code that you want to test
