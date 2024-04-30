@@ -354,7 +354,8 @@ class ViewSet(viewsets.ViewSet):
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
                         if not conversation.agent or conversation.agent != sender:
-                            raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
+                            raise Exception(
+                                _('Esta conversación ya está siendo atendida por otro agente'))
                         data = request.data.copy()
                         line = conversation.line
                         message = {"text": data['message'], "type": "text"}
@@ -425,7 +426,8 @@ class ViewSet(viewsets.ViewSet):
                         destination = conversation.destination
                         sender = request.user.get_agente_profile()
                         if not conversation.agent or conversation.agent != sender:
-                            raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
+                            raise Exception(
+                                _('Esta conversación ya está siendo atendida por otro agente'))
                         data = request.data.copy()  # template_id
                         line = conversation.line
                         message = PlantillaMensaje.objects.get(pk=data['template_id']).configuracion
@@ -465,7 +467,8 @@ class ViewSet(viewsets.ViewSet):
             print("Error al enviar el mensaje")
             print(e)
             return response.Response(
-                data=get_response_data(message=_('Error al enviar el mensaje'), status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
+                data=get_response_data(message=_('Error al enviar el mensaje'),
+                                       status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=["post"])
@@ -525,7 +528,8 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return response.Response(
-                data=get_response_data(message=_('Error al enviar el mensaje'), status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
+                data=get_response_data(message=_('Error al enviar el mensaje'),
+                                       status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=["post"])

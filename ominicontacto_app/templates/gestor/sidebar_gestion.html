@@ -32,7 +32,7 @@
                 {% endif %}
                 {% if child_item.children %}
                   <li>
-                    <a href="#{{ child_item.id }}" role="button" data-toggle="collapse" aria-expanded="false">{{ child_item.label }}</a>
+                    <a href="#{{ child_item.id }}" role="button" class="{{ child_item.class }}" data-toggle="collapse" aria-expanded="false">{{ child_item.label }}</a>
                     <ul class="collapse list-unstyled submenu-two" id="{{ child_item.id }}" data-parent=".nav-submenu">
 
                     {% for grandchild_item in child_item.children %}
