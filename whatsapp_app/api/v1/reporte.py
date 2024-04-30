@@ -37,8 +37,8 @@ class ReportParams:
 
 
 class ReporteParamsSerializer(serializers.Serializer):
-    start_date = serializers.DateField()
-    end_date = serializers.DateField()
+    start_date = serializers.DateTimeField()
+    end_date = serializers.DateTimeField()
     campaing = serializers.IntegerField()
 
     def create(self, validated_data):
