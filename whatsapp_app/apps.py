@@ -68,6 +68,8 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'configuracion-whatsapp-campana-detail',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'whatsapp_reports',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'conversacion-list',
              'roles': ['Agente']},
             {'nombre': 'conversacion-agent-chats-lists',
@@ -228,5 +230,8 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'calificacion-history':
             {'descripcion': _('calificacion-history'),
+             'version': '1.26.0'},
+        'whatsapp_reports':
+            {'descripcion': _('whatsapp_reports'),
              'version': '1.26.0'},
     }

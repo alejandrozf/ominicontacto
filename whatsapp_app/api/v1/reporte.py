@@ -33,13 +33,13 @@ from ominicontacto_app.models import Campana, CalificacionCliente
 class ReportParams:
     start_date: datetime.datetime
     end_date: datetime.datetime
-    campaing: int
+    campaign: int
 
 
 class ReporteParamsSerializer(serializers.Serializer):
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
-    campaing = serializers.IntegerField()
+    campaign = serializers.IntegerField()
 
     def create(self, validated_data):
         return ReportParams(**validated_data)
@@ -62,40 +62,40 @@ class ReporteCampanaWhatsapp:
     dispositions: dict
 
     def __init__(self, params: ReportParams):
-        campana = Campana.objects.get(id=params.campaing)
-        chats_of_campaing = campana.conversaciones
+        campana = Campana.objects.get(id=params.campaign)
+        chats_of_campaign = campana.conversaciones
         args = (params.start_date, params.end_date)
         self.sent_messages =\
-            chats_of_campaing.numero_mensajes_enviados(*args)
+            chats_of_campaign.numero_mensajes_enviados(*args)
         self.received_messages =\
-            chats_of_campaing.numero_mensajes_recibidos(*args)
+            chats_of_campaign.numero_mensajes_recibidos(*args)
         self.interactions_started =\
-            chats_of_campaing.conversaciones_salientes(*args).count()
+            chats_of_campaign.conversaciones_salientes(*args).count()
         self.attended_chats =\
-            chats_of_campaing.conversaciones_entrantes_atendidas(*args).count() +\
-            chats_of_campaing.conversaciones_salientes_atendidas(*args).count()
+            chats_of_campaign.conversaciones_entrantes_atendidas(*args).count() +\
+            chats_of_campaign.conversaciones_salientes_atendidas(*args).count()
         self.not_attended_chats =\
-            chats_of_campaing.conversaciones_entrantes_no_atendidas(*args).count() +\
-            chats_of_campaing.conversaciones_salientes_no_atendidas(*args).count()
+            chats_of_campaign.conversaciones_entrantes_no_atendidas(*args).count() +\
+            chats_of_campaign.conversaciones_salientes_no_atendidas(*args).count()
         self.inbound_chats_attended =\
-            chats_of_campaing.conversaciones_entrantes_atendidas(*args).count()
+            chats_of_campaign.conversaciones_entrantes_atendidas(*args).count()
         self.inbound_chats_not_attended =\
-            chats_of_campaing.conversaciones_entrantes_no_atendidas(*args).count()
+            chats_of_campaign.conversaciones_entrantes_no_atendidas(*args).count()
         self.inbound_chats_expired =\
-            chats_of_campaing.conversaciones_entrantes_expiradas_no_atendidas(*args).count()
+            chats_of_campaign.conversaciones_entrantes_expiradas_no_atendidas(*args).count()
         self.outbound_chats_attended =\
-            chats_of_campaing.conversaciones_salientes_atendidas(*args).count()
+            chats_of_campaign.conversaciones_salientes_atendidas(*args).count()
         self.outbound_chats_not_attended =\
-            chats_of_campaing.conversaciones_salientes_no_atendidas(*args).count()
+            chats_of_campaign.conversaciones_salientes_no_atendidas(*args).count()
         self.outbound_chats_expired =\
-            chats_of_campaing.conversaciones_salientes_expiradas(*args).count()
+            chats_of_campaign.conversaciones_salientes_expiradas(*args).count()
         self.outbound_chats_failed =\
-            chats_of_campaing.conversaciones_salientes_con_error(*args).count()
+            chats_of_campaign.conversaciones_salientes_con_error(*args).count()
         self.dispositions = {
             'done': [{item['opcion_calificacion__nombre']: item['total']}
                      for item in CalificacionCliente.objects.calificaciones_whatsapp_campanas(
                          campana, *args)],
-            'not_done': chats_of_campaing.conversaciones_no_calificadas(*args).count()}
+            'not_done': chats_of_campaign.conversaciones_no_calificadas(*args).count()}
 
 
 class ReporteCampanaWhatsappSerializer(serializers.Serializer):
@@ -122,12 +122,12 @@ class ReportAPIView(APIView):
         try:
             start_date = request.data.get('start_date')
             end_date = request.data.get('end_date')
-            campaing = request.data.get('campaign')
+            campaign = request.data.get('campaign')
             params_serializer =\
                 ReporteParamsSerializer(data={
                     'start_date': start_date,
                     'end_date': end_date,
-                    'campaing': campaing
+                    'campaign': campaign
                 }, context={"request": request})
             params_serializer.is_valid(raise_exception=True)
             params = params_serializer.save()
