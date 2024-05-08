@@ -19,6 +19,7 @@ RUN apk add --virtual .buildeps \
       py3-flake8 \
       cargo \
       openssl-dev \
+      libsass-dev \
       npm
 
 COPY requirements/requirements.txt ./
