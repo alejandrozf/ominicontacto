@@ -23,7 +23,6 @@ from django.utils.timezone import now, localtime
 from django.db.models import Count
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia
-from ominicontacto_app.models import Campana
 from reportes_app.models import LlamadaLog
 
 logger = _logging.getLogger(__name__)
@@ -34,10 +33,9 @@ class CallDataGenerator(object):
          Las Estadísticas se usarán para efectuar cálculos más eficiente sin acceder a psql
     """
     # Keys de los valores en Redis a regenerar
-    CAMP_KEY = 'OML:CALLDATA:CAMP:'
-    WAIT_TIME_KEY = 'OML:CALLDATA:WAIT-TIME:CAMP:'
-    AGENT_KEY = 'OML:CALLDATA:AGENT:'
-    SLA_KEY = 'OML:CALLDATA:SLA:CAMP:'
+    CALLDATA_CAMP_KEY = 'OML:CALLDATA:CAMP:{0}'
+    CALLDATA_WAIT_KEY = 'OML:CALLDATA:WAIT-TIME:CAMP:{0}'
+    # CALLDATA_AGENT_KEY = 'OML:CALLDATA:AGENT:{0}'
 
     EVENTOS_FIN_CONEXION_ORIGINAL = [
         'COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-TRY', 'BTOUT-TRY',
@@ -50,25 +48,13 @@ class CallDataGenerator(object):
 
     def get_redis_connection(self):
         if not self.redis_connection:
-            self.redis_connection = create_redis_connection()
+            self.redis_connection = create_redis_connection(2)
         return self.redis_connection
 
-    def get_camp_key(self, campana_id, event):
-        return '{0}{1}:{2}'.format(self.CAMP_KEY, campana_id, event)
-
-    def get_wait_time_key(self, campana_id):
-        return '{0}{1}'.format(self.WAIT_TIME_KEY, campana_id)
-
-    def get_agent_key(self, agente_id, event):
-        return '{0}{1}:{2}'.format(self.AGENT_KEY, agente_id, event)
-
-    def get_sla_key(self, campana_id):
-        return '{0}{1}'.format(self.SLA_KEY, campana_id)
-
     def eliminar_datos(self):
-        base_keys = [self.CAMP_KEY, self.WAIT_TIME_KEY, self.AGENT_KEY, self.SLA_KEY]
+        base_keys = [self.CALLDATA_CAMP_KEY, self.CALLDATA_WAIT_KEY]  # , self.CALLDATA_AGENT_KEY]
         for base_key in base_keys:
-            keys = self.redis_connection.keys(base_key + '*')
+            keys = self.redis_connection.keys(base_key.format('*'))
             if keys:
                 self.redis_connection.delete(*keys)
 
@@ -76,9 +62,10 @@ class CallDataGenerator(object):
         self.get_redis_connection()
         self.eliminar_datos()
 
-        self.regenerar_eventos_por_campaña()
-        self.regenerar_eventos_por_agente()
-        self.regenerar_wait_times_y_sla()
+        self.regenerar_eventos_por_campana()
+        self.regenerar_wait_times()
+        # Actualmente no se genera ni se usa esta estadística
+        # self.regenerar_eventos_por_agente()
 
     @property
     def desde(self):
@@ -87,32 +74,28 @@ class CallDataGenerator(object):
             self._desde = datetime_hora_minima_dia(hoy)
         return self._desde
 
-    def regenerar_eventos_por_campaña(self):
+    def regenerar_eventos_por_campana(self):
         """ Cantidad de ocurrencias de eventos "relevantes" en LlamadaLog para cada campaña """
-        columna = 'campana_id'
         # TODO: Filtrar eventos "relevantes únicamente"
-        cantidades = LlamadaLog.objects.filter(time__gt=self.desde).values(columna, 'event')\
-            .annotate(cantidad=Count(columna)).order_by(columna)
+        cantidades = LlamadaLog.objects.filter(time__gt=self.desde)\
+            .values('campana_id', 'tipo_llamada', 'event')\
+            .annotate(cantidad=Count('campana_id')).order_by('campana_id')
+        eventos_por_campana = {}
         for cantidad in cantidades:
-            key = self.get_camp_key(cantidad[columna], cantidad['event'])
-            self.redis_connection.set(key, cantidad['cantidad'])
+            campana_id = cantidad['campana_id']
+            tipo_llamada = cantidad['tipo_llamada']
+            evento = cantidad['event']
+            key_evento = f'CALLTYPE:{tipo_llamada}:{evento}'
+            if campana_id not in eventos_por_campana:
+                eventos_por_campana[campana_id] = {}
+            eventos_por_campana[campana_id][key_evento] = cantidad['cantidad']
 
-    def regenerar_eventos_por_agente(self):
-        """ Cantidad de ocurrencias de eventos "relevantes" en LlamadLog para cada agente """
-        columna = 'agente_id'
-        # TODO: Filtrar eventos "relevantes únicamente"
-        cantidades = LlamadaLog.objects.filter(time__gt=self.desde).values(columna, 'event')\
-            .annotate(cantidad=Count(columna)).order_by(columna)
-        for cantidad in cantidades:
-            key = self.get_agent_key(cantidad[columna], cantidad['event'])
-            self.redis_connection.set(key, cantidad['cantidad'])
+        for campana_id, eventos in eventos_por_campana.items():
+            camp_key = self.CALLDATA_CAMP_KEY.format(campana_id)
+            self.redis_connection.hset(camp_key, mapping=eventos)
 
-    def regenerar_wait_times_y_sla(self):
+    def regenerar_wait_times(self):
         wait_times_por_campana = {}
-        self._regenerar_wait_time(wait_times_por_campana)
-        self._regenerar_sla(wait_times_por_campana)
-
-    def _regenerar_wait_time(self, wait_times_por_campana):
         llamadas = LlamadaLog.objects.using('replica')\
             .filter(time__gt=self.desde,
                     event__in=self.EVENTOS_FIN_CONEXION_ORIGINAL)\
@@ -123,23 +106,5 @@ class CallDataGenerator(object):
             wait_times_por_campana[log.campana_id].append(log.bridge_wait_time)
 
         for campana_id, wait_times in wait_times_por_campana.items():
-            key = self.get_wait_time_key(campana_id)
-            self.redis_connection.sadd(key, *wait_times)
-
-    def _regenerar_sla(self, wait_times_por_campana):
-        sla_por_campana = dict(Campana.objects.filter(id__in=wait_times_por_campana.keys())
-                               .values_list('id', 'queue_campana__servicelevel'))
-        for campana_id, sla in sla_por_campana.items():
-            sla_data = self._calcular_sla(sla, wait_times_por_campana[campana_id])
-            key = self.get_sla_key(campana_id)
-            self.redis_connection.hset(key, mapping=sla_data)
-
-    def _calcular_sla(self, sla, wait_times):
-        total = len(wait_times)
-        ok = sum(1 for x in wait_times if x <= sla)
-        return {
-            'OK': ok,
-            'BAD': total - ok,
-            'SUM': sum(wait_times),
-            'MAX': max(wait_times),
-        }
+            key = self.CALLDATA_WAIT_KEY.format(campana_id)
+            self.redis_connection.rpush(key, *wait_times)
