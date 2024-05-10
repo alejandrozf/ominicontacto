@@ -142,7 +142,7 @@ class PlaylistDeleteView(DeleteView):
     template_name = 'playlist/eliminar_playlist.html'
 
     def get_success_url(self):
-        return reverse('lista_playlist')
+        return reverse('lista_playlist', kwargs={'page': 1})
 
     def dispatch(self, request, *args, **kwargs):
         playlist = self.get_object()
@@ -212,7 +212,7 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
         try:
             self.playlist = Playlist.objects.get(id=kwargs.get('pk'))
         except Playlist.DoesNotExist:
-            return redirect('lista_playlist')
+            return redirect(reverse('lista_playlist', kwargs={'page': 1}))
         return super(MusicaDeEsperaCreateView, self).dispatch(request, *args, **kwargs)
 
     def get_initial(self):

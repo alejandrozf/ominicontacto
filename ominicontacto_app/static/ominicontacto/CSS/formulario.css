@@ -3,9 +3,10 @@
 /* ---Color que no hay que modificar para los rebrands---*/
 /* Gris oscuro */
 /* Gris claro */
-/*Gris muy clarito*/
+/* Gris muy clarito */
+/* naranja clarito */
 #text_line {
-  text-decoration-color: #8FC641;
+  text-decoration-color: #f71883;
   text-decoration-line: underline;
   text-underline-position: under;
   padding-bottom: 10px;

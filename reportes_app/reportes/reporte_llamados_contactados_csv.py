@@ -345,7 +345,8 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
         numero_marcado = log_llamada.numero_marcado
         lista_opciones.append(numero_marcado)
         lista_opciones.append(calificacion.opcion_calificacion.nombre)
-        lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
+        if calificacion.observaciones:
+            lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         lista_opciones.append(calificacion.agente)
         if calificacion.contacto.es_originario:
             lista_opciones.append(calificacion.contacto.bd_contacto)

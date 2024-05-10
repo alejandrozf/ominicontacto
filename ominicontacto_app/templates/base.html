@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %} {% trans 'OmniLeads' %} {% endblock %}</title>
+        <title>{% block title %} {{ OMNILEADS_TM }} {% endblock %}</title>
         <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /    >
         <!-- Bootstrap -->
@@ -35,6 +35,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/daterangepicker.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
+        <!-- Sweetalert2 -->
+        <link rel="stylesheet" href="{% static 'CSS/ext/sweetalert2.min.css' %}">
         {% block extra_css %}{% endblock %}
         <!-- Fonts -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
@@ -101,13 +103,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <div class="modal-dialog modal-dialog-scrollable" id="sizeModalRegisterServer">
                                             <div class="modal-content">
                                                 <div class="modal-body" style="padding: 5px">
-                                                    <iframe class="popup_container" id="iframeRegisterServer" src="{% static 'omnileads-ui-supervision/register_server.html' %}"></iframe>
+                                                    <iframe class="popup_container" id="iframeRegisterServer" src="{% static 'omnileads-frontend/supervisor_register_server.html' %}"></iframe>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     {% endif %}
-                                    <iframe src="{% static 'omnileads-ui-supervision/supervision_dashboard.html' %}" class="crm" name="crm"></iframe>
+                                    <iframe src="{% static 'omnileads-frontend/supervisor_supervision_dashboard.html' %}" class="crm" name="crm"></iframe>
                                     <!-- <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
                                             <div id="mostrarInfoRelease">
@@ -134,7 +136,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
         {% block extra_js %}{% endblock %}
-
+        <script type="text/javascript" src="{% static 'JS/ext/sweetalert2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/whatsapp_notifications.js' %}"></script>
         <!-- Cambiar idioma -->
         <script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/register_server.js' %}"></script>

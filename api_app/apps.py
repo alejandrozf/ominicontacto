@@ -19,6 +19,7 @@ from __future__ import unicode_literals
 
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
+from ominicontacto.settings.omnileads import ASTERISK_TM, OMNILEADS_TM, WOMBAT_TM
 
 
 class ApiAppConfig(AppConfig):
@@ -145,7 +146,7 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_update_agents_campaign',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
-             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_pause_set_pause_options',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_pause_set_list',
@@ -378,11 +379,13 @@ class ApiAppConfig(AppConfig):
         'api_hangup_call':
             {'descripcion': _('Ejecuta un hangup call via AMI'), 'version': '1.32.0'},
         'api_agent_asterisk_login':
-            {'descripcion': _('Ejecuta el login del agente en Asterisk.'), 'version': '1.7.0'},
+            {'descripcion': _('Ejecuta el login del agente en {0}.'.format(ASTERISK_TM)),
+             'version': '1.7.0'},
         'api_agent_asterisk_logout':
-            {'descripcion': _('Ejecuta el logout del agente en Asterisk'), 'version': '1.7.0'},
+            {'descripcion': _('Ejecuta el logout del agente en {0}'.format(ASTERISK_TM)),
+             'version': '1.7.0'},
         'api_agente_logout':
-            {'descripcion': _('Logout del agente en OML'), 'version': '1.7.0'},
+            {'descripcion': _('Logout del agente en {0}'.format(OMNILEADS_TM)), 'version': '1.7.0'},
         'api_make_pause':
             {'descripcion': _('Pone al agente en una pausa'), 'version': '1.7.0'},
         'api_make_unpause':
@@ -446,10 +449,10 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Listas de nombres de columnas para Base de datos de Contactos'),
              'version': '1.20.0'},
         'api_restart_wombat':
-            {'descripcion': _('Reinicia servicio Wombat Dialer'),
+            {'descripcion': _('Reinicia servicio {0} Dialer'.format(WOMBAT_TM)),
              'version': '1.22.0'},
         'api_wombat_state':
-            {'descripcion': _('Estado del servicio Wombat Dialer'),
+            {'descripcion': _('Estado del servicio {0} Dialer'.format(WOMBAT_TM)),
              'version': '1.22.0'},
         'api_agents_campaign':
             {'descripcion': _('Lista de agentes por campaña'),

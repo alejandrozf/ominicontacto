@@ -1,15 +1,20 @@
 # Release Notes
-2024-04-10
+2024-05-09
 
 ## Added
 
+- oml-2310 Nueva canalidad Whatsapp
 
 ## Changed
 
+- oml-2605 Refactor QueueMember, redis connection, remove deprecated views.
+- oml-2616 Centralización de 
+- oml-2626 vuejs scss for css
 
 ## Fixed
-
-- oml-509 [WEB] Startup script init_uwsgi.sh regenerar_asterisk have been modified in order to exec with omnileads user.
+- oml-2623 Fix bad redirections, url refactoring
+- oml-2624 Fix timezone change days bug
+- Text translations
 
 ## Removed
 

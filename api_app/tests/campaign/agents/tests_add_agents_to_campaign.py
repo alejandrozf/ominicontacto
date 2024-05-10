@@ -26,7 +26,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
     SistemaExternoFactory, QueueMemberFactory
 )
-from ominicontacto_app.models import Campana, User
+from ominicontacto_app.models import Campana, User, AgenteProfile
 
 
 class APITest(OMLBaseTest):
@@ -41,6 +41,10 @@ class APITest(OMLBaseTest):
 
         usr_agente = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(usr_agente)
+        usr_agente2 = self.crear_user_agente(username='agente2')
+        self.agente2 = self.crear_agente_profile(usr_agente2)
+        usr_agente3 = self.crear_user_agente(username='agente3')
+        self.agente3 = self.crear_agente_profile(usr_agente3)
         self.client.login(username=usr_supervisor.username, password=PASSWORD)
         # Campaña
         bd_contacto = self.crear_base_datos_contacto(cant_contactos=3, columna_id_externo='id_ext')
@@ -53,6 +57,7 @@ class APITest(OMLBaseTest):
         self.campana.save()
 
         QueueMemberFactory.create(member=self.agente, queue_name=self.campana.queue_campana)
+        QueueMemberFactory.create(member=self.agente2, queue_name=self.campana.queue_campana)
 
         # self.queue = QueueFactory.create(campana=self.campana)
 
@@ -71,7 +76,11 @@ class APITest(OMLBaseTest):
                 {
                     "agent_id": self.agente.pk,
                     "agent_penalty": "5"
-                }
+                },
+                {
+                    "agent_id": self.agente3.pk,
+                    "agent_penalty": "3"
+                },
             ],
             "campaign_id": self.campana.pk
         }
@@ -98,15 +107,15 @@ class AddAgentsToCampaignTest(APITest):
             response_json['message'],
             _('Se obtuvieron los agentes de forma exitosa'))
 
+    @patch('ominicontacto_app.services.queue_member_service.QueueMemberService.'
+           'agregar_agentes_en_cola')
+    @patch('ominicontacto_app.services.queue_member_service.QueueMemberService.'
+           'eliminar_agentes_de_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    @patch('asterisk.manager.Manager.send_action')
-    @patch('api_app.views.campaigns.add_agents_to_campaign.obtener_sip_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_actualizar_agentes_de_campana(
-            self, connect, obtener_sip_agentes_sesiones_activas,
-            send_action, activar, disconnect):
-        obtener_sip_agentes_sesiones_activas.return_value = [self.agente.sip_extension]
+            self, ami_connect, ami_disconnect, eliminar_agentes_de_cola,
+            agregar_agentes_en_cola):
         URL = reverse(self.urls_api['UpdateAgentsCampaign'])
         response = self.client.post(URL, json.dumps(self.post_update_agents_campaign),
                                     format='json', content_type='application/json')
@@ -116,3 +125,14 @@ class AddAgentsToCampaignTest(APITest):
         self.assertEqual(
             response_json['message'],
             _('Se agregaron los agentes de forma exitosa a la campaña'))
+        ami_connect.assert_called()
+        ami_disconnect.assert_called()
+        args, kwargs = eliminar_agentes_de_cola.call_args
+        self.assertEqual(self.campana, args[0])
+        query_agente2 = AgenteProfile.objects.filter(id=self.agente2.id)
+        self.assertEqual(set(args[1]), set(query_agente2))
+        args, kwargs = agregar_agentes_en_cola.call_args
+        self.assertEqual(self.campana, args[0])
+        self.assertEqual(set((self.agente, self.agente3, )), set(args[1]))
+        penalties = {self.agente.id: 5, self.agente3.id: 3}
+        self.assertEqual(penalties, args[2])

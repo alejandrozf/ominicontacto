@@ -37,11 +37,14 @@ from crontab import CronTab
 from django.conf import settings
 from django.utils.translation import gettext as _
 
+from ominicontacto.settings.omnileads import ASTERISK_TM
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfigFile, \
     PlaylistsConfigCreator, QueuesCreator, SipConfigCreator
 from configuracion_telefonia_app.models import AudiosAsteriskConf
 from ominicontacto_app.models import ArchivoDeAudio
+from whatsapp_app.services.redis.linea import StreamDeLineas
+
 import requests
 import tempfile
 import base64
@@ -105,8 +108,8 @@ class RegeneracionAsteriskService(object):
                                "intentar queues_config_creator()"))
 
             proceso_ok = False
-            mensaje_error += _("Hubo un inconveniente al crear el archivo de "
-                               "configuracion del queues de Asterisk. ")
+            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
+                               'configuracion del queues de {0}. '.format(ASTERISK_TM))
 
         try:
             self.sip_config_creator.create_config_sip()
@@ -115,8 +118,8 @@ class RegeneracionAsteriskService(object):
                                "intentar create_config_sip()"))
 
             proceso_ok = False
-            mensaje_error += _("Hubo un inconveniente al crear el archivo de "
-                               "configuracion del config sip de Asterisk. ")
+            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
+                               'configuracion del config sip de {0}. '.format(ASTERISK_TM))
 
         try:
             self.playlist_config_creator.create_config_asterisk()
@@ -125,8 +128,8 @@ class RegeneracionAsteriskService(object):
                                "intentar create_config_sip()"))
 
             proceso_ok = False
-            mensaje_error += _("Hubo un inconveniente al crear el archivo de "
-                               "configuracion Playlists (MOH) en Asterisk. ")
+            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
+                               'configuracion Playlists (MOH) en {0}. '.format(ASTERISK_TM))
 
         if not proceso_ok:
             raise RestablecerDialplanError(mensaje_error)
@@ -134,6 +137,10 @@ class RegeneracionAsteriskService(object):
             self.sincronizador_config_telefonica.sincronizar_en_asterisk()
             self.asterisk_database.regenerar_asterisk()
             self.reload_asterisk_config.reload_asterisk()
+
+    def _regenerar_redis_data(self):
+        """ Regenera información que debe estar disponible en redis """
+        StreamDeLineas().regenerar_stream()
 
     def _generar_tarea_script_logout_agentes_inactivos(self):
         """Adiciona una tarea programada que llama al script de que desloguea
@@ -380,6 +387,7 @@ class RegeneracionAsteriskService(object):
 
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
+        self._regenerar_redis_data()
         self._reenviar_archivos_playlist_asterisk()
         self._reenviar_archivos_audio_asterisk()
         self._reenviar_paquetes_idioma()

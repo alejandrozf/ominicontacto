@@ -25,7 +25,6 @@ Init_UWSGI() {
     cat > /var/spool/cron/crontabs/omnileads << EOF
 SHELL=/bin/bash
 * * * * * flock -n /opt/omnileads/actualizar_campanas_preview.lock /usr/local/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview
-0 1 * * * flock -n /opt/omnileads/callrec_converter.lock /opt/omnileads/bin/callrec_converter.sh
 EOF
     exec crond &
   fi

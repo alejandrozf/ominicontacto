@@ -31,17 +31,19 @@
 
 var ACW_PAUSE_ID = '0';
 var ACW_PAUSE_NAME = 'ACW';
-
+var ASTERISK_TM = $('#asterisk_tm').val() == undefined? 'asterisk':$('#asterisk_tm').val();
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp
+        ) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
         this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
         this.notification_agent = notification_agent;
+        this.notification_agent_whatsapp = notification_agent_whatsapp;
         this.agent_config = new AgentConfig();
         this.pause_manager = new PauseManager();
         this.click_2_call_dispatcher = click_2_call_dispatcher;
@@ -146,7 +148,7 @@ class PhoneJSController {
 
         this.view.setPauseButton.click(function() {
             const pause_data = $('#pauseType').val().split(',');
-            var pause_id = parseInt(pause_data[0]);
+            var pause_id = pause_data[0];
             var pause_name = pause_data[1];
             var pause_time = parseInt(pause_data[2]);
             clearTimeout(self.ACW_pause_timeout_handler);
@@ -438,10 +440,16 @@ class PhoneJSController {
             self.phone_fsm.registered();
 
             if (self.phone_fsm.state == 'LoggingToAsterisk') {
-                self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
+                let msg = gettext('Conectado a %(ASTERISK_TM)s');
+                msg = interpolate(msg, {ASTERISK_TM:ASTERISK_TM},true);
+                self.view.setCallStatus(msg, 'yellowgreen');
                 var login_ok = function(){self.goToReadyAfterLogin();};
                 var login_error = function(){
-                    self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
+                    let msg = gettext(
+                        'Agente no conectado a %(ASTERISK_TM)s, contacte a su administrador');
+                    msg = interpolate(msg, {ASTERISK_TM:ASTERISK_TM},true);
+
+                    self.view.setCallStatus(msg, 'red');
                     self.phone_fsm.logToAsteriskError();
                 };
                 self.oml_api.asteriskLogin(login_ok, login_error);
@@ -658,7 +666,10 @@ class PhoneJSController {
                 self.phone.session_data.remote_call.id_contacto=args['contact_id'];
             }
         });
-
+        this.notification_agent_whatsapp.eventsCallbacks.onNotificationNewChat.add(function(args){
+            console.log("===================================> NEW CHAT")
+            $('#newChat').removeClass('invisible');
+        });
     }
 
     subscribeToNavigatorEvents() {

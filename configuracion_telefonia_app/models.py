@@ -27,6 +27,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
+from whatsapp_app.models import MenuInteractivoWhatsapp, Linea
 
 import os
 import re
@@ -343,6 +344,7 @@ class DestinoEntrante(models.Model):
     CUSTOM_DST = 7
     VOICEMAIL = 8
     IDENTIFICADOR_CLIENTE = 9
+    MENU_INTERACTIVO_WHATSAPP = 10
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
@@ -351,6 +353,7 @@ class DestinoEntrante(models.Model):
         (HANGUP, _('HangUp')),
         (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
         (CUSTOM_DST, _('Destino personalizado')),
+        (MENU_INTERACTIVO_WHATSAPP, _('Menú Interactivo de Whatsapp')),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -381,6 +384,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.CUSTOM_DST
         elif isinstance(info_nodo_entrante, HangUp):
             raise _('Error: El nodo HangUp es único.')
+        elif isinstance(info_nodo_entrante, MenuInteractivoWhatsapp):
+            tipo = cls.MENU_INTERACTIVO_WHATSAPP
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -418,6 +423,17 @@ class DestinoEntrante(models.Model):
         """
         return self.campanas_destino_failover.exists()
 
+    def lineas_destino_whatsapp(self):
+        """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un
+            Menu Interactivo de WhatsApp.
+            Nota: Cuando el menú tenga más profundidad habrá que recorrer todo el arbol
+        """
+        nodos_anteriores = self.destinos_anteriores.filter(
+            destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
+        destinos_menu = list(nodos_anteriores.values_list('destino_anterior', flat=True).distinct())
+        lineas = Linea.objects.filter(destino_id__in=destinos_menu + [self.id, ])
+        return lineas
+
 
 class OpcionDestino(models.Model):
     """Representa una relación entre dos nodos de una ruta entrante de una llamada"""
@@ -436,7 +452,7 @@ class OpcionDestino(models.Model):
         kwargs = {'destino_anterior': destino_anterior,
                   'destino_siguiente': destino_siguiente,
                   'valor': valor}
-        cls.objects.create(**kwargs)
+        return cls.objects.create(**kwargs)
 
     class Meta:
         unique_together = ('destino_anterior', 'valor')

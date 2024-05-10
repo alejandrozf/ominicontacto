@@ -20,11 +20,11 @@ import os
 
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 from constance import config as constance_config
 from api_app.utils.routes.inbound import escribir_ruta_entrante_config
+from ominicontacto_app.services.queue_member_service import QueueMemberService
 
-from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion, QueueMember,
+from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion,
                                       SupervisorProfile, ClienteWebPhoneProfile)
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                # ArchivoDeAudioFactory,
@@ -46,14 +46,9 @@ from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
 
-from ominicontacto_app.views_queue_member import adicionar_agente_activo_cola, activar_cola
-
-from utiles_globales import obtener_sip_agentes_sesiones_activas
-from ominicontacto_app.services.asterisk.asterisk_ami import AmiManagerClient
-
 logger = logging.getLogger(__name__)
 
-PASSWORD = 'usuario0*'
+PASSWORD = '098098ZZZ'
 
 
 class Command(BaseCommand):
@@ -80,30 +75,6 @@ class Command(BaseCommand):
             nombre=self.success.nombre, campana=campana, tipo=OpcionCalificacion.GESTION)
         OpcionCalificacionFactory(
             nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
-
-    def _asignar_agente_a_campana(self, agente, campana, penalty=0):
-        try:
-            client = AmiManagerClient()
-            client.connect()
-            with transaction.atomic():
-                queue_member = QueueMember(penalty=penalty)
-                queue_member_defaults = QueueMember.get_defaults(agente, campana)
-                queue_member.member = agente
-                queue_member.queue_name = campana.queue_campana
-                queue_member.id_campana = queue_member_defaults['id_campana']
-                queue_member.membername = queue_member_defaults['membername']
-                queue_member.interface = queue_member_defaults['interface']
-                # por ahora no definimos 'paused'
-                queue_member.paused = queue_member_defaults['paused']
-                queue_member.save()
-                # adicionamos el agente a la cola actual que esta corriendo
-                sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-                adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados, client)
-                activar_cola()
-            client.disconnect()
-        except Exception as e:
-            print("Can't assign agent to campaign due to {0}".error(e))
-            raise e
 
     def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual
@@ -165,7 +136,8 @@ class Command(BaseCommand):
         # crear campaña dialer
         campana = CampanaFactory(
             nombre=nombre_campana, bd_contacto=self.bd_contacto,
-            type=Campana.TYPE_DIALER, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
+            type=Campana.TYPE_DIALER, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA,
+            tiempo_desconexion=10
         )
         # crear Queue para la campaña
         Queue.objects.create(
@@ -190,11 +162,14 @@ class Command(BaseCommand):
 
         return campana
 
-    def _crear_campana_preview(self, nombre_campana):
-        # crear campaña dialer
+    def _crear_campana_preview(self, nombre_campana, bd_contacto, es_template=False):
+        # crear campaña preview
+        estado = Campana.ESTADO_ACTIVA
+        if es_template:
+            estado = Campana.ESTADO_TEMPLATE_ACTIVO
         campana = CampanaFactory(
-            nombre=nombre_campana, bd_contacto=self.bd_contacto,
-            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=Campana.ESTADO_ACTIVA
+            nombre=nombre_campana, bd_contacto=bd_contacto,
+            type=Campana.TYPE_PREVIEW, reported_by=self.admin, estado=estado
         )
         # crear Queue para la campaña
         Queue.objects.create(
@@ -216,7 +191,8 @@ class Command(BaseCommand):
         )
         self._crear_opciones_calificacion(campana)
 
-        campana.establecer_valores_iniciales_agente_contacto(False, False)
+        if not es_template:
+            campana.establecer_valores_iniciales_agente_contacto(False, False)
 
         return campana
 
@@ -273,6 +249,52 @@ class Command(BaseCommand):
         cliente_webphone.save()
         return user
 
+    def _crear_dbs_contactos(self):
+        # crear BD default (100 contactos)
+        self.bd_contacto = BaseDatosContactoFactory()
+        ContactoFactory.create_batch(100, bd_contacto=self.bd_contacto)
+
+        # Crear DBs Preview
+        metadata = '{"cant_col": 4, "cols_telefono": [0], ' + \
+            '"nombres_de_columnas": ["telefono", "nombre", "direccion", "localidad"]}'
+        self.bd_contacto_prw1 = BaseDatosContactoFactory(
+            nombre='PRW1', nombre_archivo_importacion='',
+            metadata=metadata, cantidad_contactos=7
+        )
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='123456721',
+                        datos='["Jorge Success", "CORD", "SANLUIS"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='88887777',
+                        datos='["Luis Blacklist","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='9999',
+                        datos='["Graciela No Route","NAVARROSUR1132S","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='123456729',
+                        datos='["Alfredo Congestion","ABERASTAINSUR655","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='123456725',
+                        datos='["Oscar No Answer","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='123456720',
+                        datos='["Cecilia Busy","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw1, telefono='123456725',
+                        datos='["Ricardo Cancel","ABERASTAINSUR655","SANJUAN"]')
+
+        self.bd_contacto_prw_success = BaseDatosContactoFactory(
+            nombre='PRW1-SUCCESS', nombre_archivo_importacion='',
+            metadata=metadata, cantidad_contactos=7
+        )
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456721',
+                        datos='["Jorge Success", "CORD", "SANLUIS"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456731',
+                        datos='["Luis Blacklist","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456741',
+                        datos='["Graciela No Route","NAVARROSUR1132S","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456751',
+                        datos='["Alfredo Congestion","ABERASTAINSUR655","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456761',
+                        datos='["Oscar No Answer","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456771',
+                        datos='["Cecilia Busy","CATAMARCASUR178","SANJUAN"]')
+        ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456781',
+                        datos='["Ricardo Cancel","ABERASTAINSUR655","SANJUAN"]')
+
     def _crear_datos_entorno(self, qa_devops):
 
         self.admin = User.objects.filter(is_staff=True).first()
@@ -280,7 +302,7 @@ class Command(BaseCommand):
         self.cliente_webphone = self._crear_cliente_webphone('webphone')
 
         # crear grupo
-        grupo = GrupoFactory()
+        grupo = GrupoFactory(auto_unpause=0)
 
         agentes_creados = []  # Esta lista almacenará los agentes que crees
 
@@ -300,7 +322,9 @@ class Command(BaseCommand):
         # ArchivoDeAudioFactory()
 
         # crear pausa
-        PausaFactory()
+        PausaFactory(nombre="break", tipo='R')
+        PausaFactory(nombre="gestion", tipo='P')
+        PausaFactory(nombre="Pausa_0", tipo='P')
 
         # crear formulario (2 campos)
         form = FormularioFactory()
@@ -308,11 +332,10 @@ class Command(BaseCommand):
 
         # crear califs.(1 gestion y 1 normal)
         self.success = NombreCalificacionFactory(nombre='Success')
-        self.angry = NombreCalificacionFactory(nombre='Hangs up angry')
+        self.success = NombreCalificacionFactory(nombre='ventas_Lee PLC')
+        self.angry = NombreCalificacionFactory(nombre='hangup')
 
-        # crear BD (100 contactos)
-        self.bd_contacto = BaseDatosContactoFactory()
-        ContactoFactory.create_batch(100, bd_contacto=self.bd_contacto)
+        self._crear_dbs_contactos()
 
         # Crear campañas
         campana_manual = self._crear_campana_manual('test_manual_01')
@@ -321,13 +344,15 @@ class Command(BaseCommand):
         campana_entrante_2.videocall_habilitada = True
         campana_entrante_2.save()
         campana_dialer = self._crear_campana_dialer('test_dialer_01')
-        campana_preview = self._crear_campana_preview('test_preview_01')
+        campana_preview = self._crear_campana_preview('test_preview_01', self.bd_contacto)
+        self._crear_campana_preview('PRW_TEMPLATE', self.bd_contacto_prw1, True)
+        self._crear_campana_preview('PRW_SUCCESS_TEMPLATE', self.bd_contacto_prw_success, True)
 
         activacion_queue_service = ActivacionQueueService()
         activacion_queue_service.activar()
 
         caller_id = '01177660010'
-        remote_host = 'pbxemulator:5060'
+        remote_host = 'pbxemulator:5070'
         if qa_devops:
             caller_id = '99999999'
             remote_host = '190.19.150.8:6066'
@@ -356,7 +381,8 @@ class Command(BaseCommand):
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)
         ruta_saliente = RutaSalienteFactory(ring_time=25, dial_options="Tt")
-        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="X.")
+        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="1234567[0-9][0-9]")
+        PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="88887777")
         OrdenTroncalFactory(ruta_saliente=ruta_saliente, orden=0, troncal=troncal_pbx_emulator)
         sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador_ruta_saliente.regenerar_asterisk(ruta_saliente)
@@ -366,13 +392,17 @@ class Command(BaseCommand):
         self._crear_ruta_entrante(campana_entrante_2, '01177660011')
 
         # Asigno agentes a campañas (no entrantes)
+        queue_service = QueueMemberService()
         campanas = [campana_manual, campana_dialer, campana_preview]
         for agente in agentes_creados:
             for campana in campanas:
-                self._asignar_agente_a_campana(agente, campana)
+                queue_service.agregar_agentes_en_cola(campana, agentes_creados)
         # Asigno 1 Agente por campaña entrante
-        self._asignar_agente_a_campana(agentes_creados[0], campana_entrante)
-        self._asignar_agente_a_campana(agentes_creados[1], campana_entrante_2)
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[0], ))
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[1], ))
+
+        # Luego de agregar los agentes refresco datos en asterisk
+        queue_service.activar_cola()
 
         # Asigno campañas a gerente
         campanas.extend([campana_entrante, campana_entrante_2])

@@ -19,6 +19,7 @@ RUN apk add --virtual .buildeps \
       py3-flake8 \
       cargo \
       openssl-dev \
+      libsass-dev \
       npm
 
 COPY requirements/requirements.txt ./
@@ -32,8 +33,8 @@ RUN mkdir -p $INSTALL_PREFIX/virtualenv \
 # Stage build VueJS
 FROM freetechsolutions/vue-cli:develop as vuejs
 
-WORKDIR /omnileads_ui/supervision/
-COPY omnileads_ui/supervision/ ./
+WORKDIR /omnileads_ui/oml_frontend
+COPY omnileads_ui/ ./
 RUN npm install
 RUN npm run build
 
@@ -96,8 +97,11 @@ COPY slowsql $INSTALL_PREFIX/ominicontacto/slowsql
 COPY notification_app $INSTALL_PREFIX/ominicontacto/notification_app
 COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 COPY omnileads_ui $INSTALL_PREFIX/ominicontacto/omnileads_ui
+COPY orquestador_app $INSTALL_PREFIX/ominicontacto/orquestador_app
+COPY whatsapp_app $INSTALL_PREFIX/ominicontacto/whatsapp_app
 COPY build/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
-COPY --from=vuejs /omnileads_ui/supervision/dist/ $INSTALL_PREFIX/ominicontacto/omnileads_ui/supervision/dist
 COPY build/scripts/* $INSTALL_PREFIX/bin/
+COPY omnileads_ui/ $INSTALL_PREFIX/ominicontacto/omnileads_ui
+COPY --from=vuejs  /omnileads_ui/oml_frontend/dist/ $INSTALL_PREFIX/ominicontacto/omnileads_ui/dist
 RUN chmod +x $INSTALL_PREFIX/bin/*
-RUN chown -R omnileads:omnileads $INSTALL_PREFIX /var/spool/cron/ /var/spool/cron/crontabs/ \
+RUN chown -R omnileads:omnileads $INSTALL_PREFIX /var/spool/cron/ /var/spool/cron/crontabs/

@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html lang='es'>
 <head>
     <meta charset="utf-8">
-    <title>{% trans 'OmniLeads' %}</title>
+    <title>{{ OMNILEADS_TM }}</title>
     <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,6 +42,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    <!-- Sweetalert2 -->
+    <link rel="stylesheet" href="{% static 'CSS/ext/sweetalert2.min.css' %}">
     <!-- Scripts -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     {% compress js %}
@@ -81,6 +83,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
   <!-- Hidden Data -->
     <input type="hidden" value="{{ fechas_agendas_json }}" id='agendas_dates_json'>
+
+  <!-- Constants -->
+    <input type="hidden" value="{{ ASTERISK_TM }}" id="asterisk_tm">
 
 <!-- Modal de Pausa -->
 <div class="modal fade" id="modalPause" role="dialog">
@@ -577,6 +582,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </div>
 </div> <!-- FIN FACEBOOK CHAT -->
 
+<!-- WHATSAPP MODALS -->
+{% include "agente/modals/whatsapp/index.html" %}
+
 <!-- modal informacion -->
 <div class="modal fade" id="modalMensaje" role="dialog">
   <div class="modal-dialog modal-sm">
@@ -925,6 +933,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <img src="{% static 'ominicontacto/Img/reddot.png' %}" style="display:none;">
             </div> <!-- webphone Wrapper -->
 
+            <!-- Wrapper Whatsapp Panel -->
+            <div class="hidden" id="wrapperWhatsapp">
+                <iframe class="whatsapp_panel_view" src="{% static 'omnileads-frontend/agent_whatsapp_index.html' %}"></iframe>
+            </div>
         </div> <!-- wrapper Inner Content -->
     </div> <!-- wrapper-content -->
 </div> <!-- wrapper-main -->
@@ -944,12 +956,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           </div>
           <div class="hidden">{% trans 'SMS' %}</div>
         </div>
+        {% if tiene_whatsapp %}
         <div>
+          <i id="newChat" class="fa fa-bell invisible" style="position:fixed; color:red; z-index:1;"></i>
+          <div class="iconApp" id="whatsappChat">
+            <span class="icon icon-solid-chat"></span>
+          </div>
+          <div class="hidden">{% trans 'Whatsapp'%} </div>
+        </div>
+
+        {% endif %}
+        <!-- <div>
           <div class="iconApp" id="webChat">
             <span class="icon icon-solid-chat"></span>
           </div>
           <div class="hidden">{% trans 'Webchat' %}</div>
-        </div>
+        </div> -->
         <div>
           <div class="iconApp" id="facebookChat">
             <span class="icon icon-solid-fb-chat"></span>
@@ -1004,15 +1026,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endcompress %}
 <script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/seleccionContactosPreview.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/sweetalert2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/whatsapp_modals.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/whatsapp_notifications.js' %}"></script>
 <script type="text/javascript">
-
- $(document).ready(function () {
+$(document).ready(function () {
     $('select.form-control').each(function() {
         $(this).select2({
             width: '100%',
             placeholder: '----------'
         });
     });
+
    /* Toggle sidebar */
    $('#sidebarCollapse').on('click',function(){
      $('#navBar').toggleClass('active');
@@ -1021,11 +1046,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    /* Toggle webphone from bottom bar and close button */
    $('#btnCloseWebphone').on('click',function(){
      $('#wrapperWebphone').removeClass('active');
+     $('#wrapperWhatsapp').addClass('hidden');
    });
 
    /* Toggle webphone from bottom bar and close button */
    $('#webCall').on('click',function(){
      $('#wrapperWebphone').toggleClass('active');
+     $('#wrapperWhatsapp').addClass('hidden');
    });
 
    // Get current window path
@@ -1040,6 +1067,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
    // Add active class to sidebar icon
    $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
+   // Whatsapp Icon Status
+   var tiene_whatsapp = '{{ tiene_whatsapp|safe }}';
+   setWhatsappStatusIcon(tiene_whatsapp === 'True');
  });
 
 </script>

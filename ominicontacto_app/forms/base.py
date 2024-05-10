@@ -53,6 +53,7 @@ from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_ca
                                       contiene_solo_alfanumericos_o_guiones,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
+from whatsapp_app.models import ConfiguracionWhatsappCampana
 from ominicontacto_app.parser import is_valid_length
 
 from utiles_globales import validar_extension_archivo_audio
@@ -798,6 +799,9 @@ class CampanaMixinForm(object):
         (Campana.SITIO_EXTERNO, Campana.TIPO_SITIO_EXTERNO_DISPLAY),
     )
 
+    ERROR_WHATSAPP_DESTINO = _("Debe mantener la canalidad Whatsapp habilitada ya que la "
+                               "campaña es destino de las siguientes Lineas de Whatsapp: {0}")
+
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
@@ -881,11 +885,26 @@ class CampanaMixinForm(object):
             raise forms.ValidationError(msg)
         return id_ruta_saliente
 
+    def clean_whatsapp_habilitado(self):
+        instance = getattr(self, 'instance', None)
+        whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
+        if instance is not None:
+            if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
+                nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
+                antecesores_linea = nodo.lineas_destino_whatsapp()
+                if antecesores_linea:
+                    nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                    raise forms.ValidationError(self.ERROR_WHATSAPP_DESTINO.format(
+                        ', '.join(nombres_lineas)))
+        return whatsapp_habilitado
+
 
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    telefono_habilitado = forms.BooleanField(required=False, disabled=True)
+    video_habilitado = forms.BooleanField(required=False, disabled=True)
 
     def __init__(self, *args, **kwargs):
         super(CampanaEntranteForm, self).__init__(*args, **kwargs)
@@ -919,7 +938,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
-                  'videocall_habilitada', 'speech', 'control_de_duplicados')
+                  'videocall_habilitada', 'whatsapp_habilitado', 'speech', 'control_de_duplicados')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1569,6 +1588,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    telefono_habilitado = forms.BooleanField(required=False, disabled=True)
+    video_habilitado = forms.BooleanField(required=False, disabled=True)
 
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
@@ -1603,7 +1624,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'control_de_duplicados',
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'speech', 'prioridad')
+                  'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1931,6 +1952,9 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
+    telefono_habilitado = forms.BooleanField(required=False, disabled=True)
+    video_habilitado = forms.BooleanField(required=False, disabled=True)
+
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
@@ -1946,7 +1970,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
                   'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
-                  'objetivo', 'outcid', 'outr', 'speech')
+                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1969,6 +1993,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    telefono_habilitado = forms.BooleanField(required=False, disabled=True)
+    video_habilitado = forms.BooleanField(required=False, disabled=True)
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
@@ -1984,7 +2010,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech')
+                  'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech',
+                  'whatsapp_habilitado')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
@@ -2070,7 +2097,7 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
-                  'obligar_despausa')
+                  'obligar_despausa', 'whatsapp_habilitado')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
@@ -2364,3 +2391,14 @@ class AutenticacionExternaForm(forms.Form):
                 self.add_error('activacion',
                                _('Seleccione un tipo de activación válido.'))
         return cleaned_data
+
+
+class CampanaConfiguracionWhatsappForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionWhatsappCampana
+        fields = ('linea', 'grupo_plantilla_whatsapp', 'nivel_servicio',)
+        widgets = {
+            'linea': forms.Select(attrs={'class': 'form-control'}),
+            'grupo_plantilla_whatsapp': forms.Select(attrs={'class': 'form-control'}),
+            'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

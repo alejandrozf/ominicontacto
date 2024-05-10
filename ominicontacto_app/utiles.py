@@ -273,8 +273,8 @@ def datetime_hora_minima_dia(fecha):
         return timezone.make_aware(minima, timezone.get_current_timezone())
     except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
         return timezone.make_aware(
-            datetime.fromtimestamp(minima) + timezone.timedelta(hours=1),
-            timezone=pytz.timezone(settings.TIME_ZONE)
+            minima + timezone.timedelta(hours=1),
+            timezone=timezone.get_current_timezone()
         )
 
 
@@ -284,8 +284,8 @@ def datetime_hora_maxima_dia(fecha):
         return timezone.make_aware(maxima, timezone.get_current_timezone())
     except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
         return timezone.make_aware(
-            datetime.fromtimestamp(maxima) + timezone.timedelta(hours=1),
-            timezone=pytz.timezone(settings.TIME_ZONE)
+            maxima + timezone.timedelta(hours=1),
+            timezone=timezone.get_current_timezone()
         )
 
 

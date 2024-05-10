@@ -3,7 +3,8 @@
 /* ---Color que no hay que modificar para los rebrands---*/
 /* Gris oscuro */
 /* Gris claro */
-/*Gris muy clarito*/
+/* Gris muy clarito */
+/* naranja clarito */
 /*///// General */
 html {
   height: 100%;
@@ -12,15 +13,15 @@ html {
 body {
   height: 100%;
   font-family: 'Asap', sans-serif;
-  color: #2F342F;
+  color: #333333;
 }
 
 a {
-  color: #8FC641;
+  color: #f71883;
 }
 
 a, a:hover, a:focus {
-  color: #76AA2E;
+  color: #89468b;
   text-decoration: none;
   transition: all 0.3s;
 }
@@ -64,13 +65,13 @@ h4 {
 /* ///// Button styles */
 .btn-primary {
   color: #FFFFFF !important;
-  background-color: #8FC641;
-  border-color: #8FC641;
+  background-color: #f71883;
+  border-color: #f71883;
 }
 
 .btn-primary:hover {
-  background-color: #9FD84E;
-  border-color: #8FC641;
+  background-color: #fa4da0;
+  border-color: #f71883;
 }
 
 .btn-light {
@@ -83,13 +84,13 @@ h4 {
 }
 
 .btn-outline-primary {
-  color: #8FC641 !important;
-  border-color: #8FC641;
+  color: #f71883 !important;
+  border-color: #f71883;
 }
 
 .btn-outline-primary:hover {
-  color: #8FC641 !important;
-  border-color: #8FC641;
+  color: #f71883 !important;
+  border-color: #f71883;
   background-color: #F9FDF3;
 }
 
@@ -177,13 +178,13 @@ ul.nav-indicators a {
 }
 
 ul.nav-indicators li.active a {
-  color: #8FC641;
+  color: #f71883;
   font-weight: 500;
-  border-bottom: 4px solid #8FC641;
+  border-bottom: 4px solid #f71883;
 }
 
 ul.nav-indicators li.active a:hover {
-  color: #8FC641;
+  color: #f71883;
   background-color: transparent;
 }
 
@@ -355,12 +356,12 @@ ul.errorlist li {
 /* ///// Pagination
 */
 .page-link, .page-link:hover {
-  color: #8FC641;
+  color: #f71883;
 }
 
 .page-item.active .page-link {
-  background-color: #8FC641;
-  border-color: #8FC641;
+  background-color: #f71883;
+  border-color: #f71883;
 }
 
 /* ///// Modals
@@ -375,14 +376,14 @@ ul.errorlist li {
 
 /* ///// Modals
 */
-input.form-control[type=file] {
+input[type=file].form-control {
   padding: .27rem .3rem;
 }
 
 /* ///// Select widget
 */
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #8FC641 !important;
+  background-color: #f71883 !important;
   color: white;
 }
 
@@ -391,7 +392,7 @@ input.form-control[type=file] {
 .daterangepicker .ranges li {
   background: #FFFFFF;
   border: 1px solid transparent;
-  color: #2F342F;
+  color: #333333;
   padding: 6px 12px;
   margin-bottom: 2px;
 }
@@ -401,29 +402,29 @@ input.form-control[type=file] {
 }
 
 .daterangepicker .btn-success {
-  background-color: #8FC641;
-  border-color: #8FC641;
+  background-color: #f71883;
+  border-color: #f71883;
 }
 
 .daterangepicker .btn-success:hover {
-  background-color: #9FD84E;
-  border-color: #8FC641;
+  background-color: #fa4da0;
+  border-color: #f71883;
 }
 
 .daterangepicker .ranges li.active {
-  background: #8FC641;
-  border: 1px solid #8FC641;
+  background: #f71883;
+  border: 1px solid #f71883;
   color: #fff;
 }
 
 .daterangepicker .ranges li:hover {
-  background: #8FC641;
-  border: 1px solid #8FC641;
+  background: #f71883;
+  border: 1px solid #f71883;
   color: #fff;
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 /*///// Datetime picker widget
@@ -433,11 +434,11 @@ input.form-control[type=file] {
 }
 
 .bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 .bootstrap-datetimepicker-widget table td span.active {
-  background-color: #8FC641;
+  background-color: #f71883;
 }
 
 /*///// Welcome screen
@@ -552,12 +553,12 @@ input.form-control[type=file] {
 }
 
 #sidebar ul a.active {
-  background-color: #8FC641;
+  background-color: #f71883;
   color: #ffffff;
 }
 
 #sidebar ul a.active:hover {
-  background-color: #76AA2E;
+  background-color: #89468b;
 }
 
 #sidebar .submenu, #sidebar .submenu-two, #sidebar a[aria-expanded="true"] {
@@ -602,11 +603,11 @@ input.form-control[type=file] {
     background-color: #DFE1DD;
   }
   #sidebar.active .menu-link.active {
-    background-color: #8FC641;
+    background-color: #f71883;
     color: #ffffff;
   }
   #sidebar.active .menu-link.active:hover {
-    background-color: #76AA2E;
+    background-color: #89468b;
   }
   #sidebar.active .menu-header {
     background-color: #C9CBC7;
@@ -638,7 +639,7 @@ input.form-control[type=file] {
   #sidebar.active .icon {
     width: 100%;
     font-size: 16px;
-    color: #2F342F;
+    color: #333333;
     padding: 14px 22px;
     display: block;
     position: initial;
@@ -734,7 +735,7 @@ input.form-control[type=file] {
 
 /* Campaign list */
 a span.fa-play, a span.fa-pause-circle {
-  color: #76AA2E;
+  color: #89468b;
 }
 
 /* Campaign dialer */
@@ -981,7 +982,7 @@ body.wrapper-page-error {
 }
 
 #permiso_resp thead {
-  background-color: #8FC641;
+  background-color: #f71883;
   color: white;
 }
 
@@ -990,7 +991,7 @@ body.wrapper-page-error {
 }
 
 #main_grid .btn-secondary {
-  background-color: #8FC641;
+  background-color: #f71883;
   color: white;
   height: 20px;
 }
@@ -1043,11 +1044,11 @@ body.wrapper-page-error {
 }
 
 .add_supervisor h3 {
-  color: #8FC641;
+  color: #f71883;
 }
 
 #registro {
-  color: #8FC641;
+  color: #f71883;
 }
 
 .popup_container {
@@ -1056,4 +1057,16 @@ body.wrapper-page-error {
   width: 100%;
   display: block;
   border: none;
+}
+
+.main-menu-beta::after {
+  content: "beta";
+  float: right;
+  margin-left: 5px;
+  margin-right: 15px;
+  color: #000000;
+  font-size: 12px;
+  background-color: #15ff00;
+  padding: 2px 5px;
+  border-radius: 3px;
 }

@@ -107,7 +107,8 @@ class ReporteCalificacionesCampanaCSV(ReporteCSV):
                 opcion_calificacion_nombre = "{} {}".\
                     format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
             lista_opciones.append(opcion_calificacion_nombre)
-            lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
+            if calificacion.observaciones:
+                lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         lista_datos_utf8 = [force_text(item) for item in lista_opciones]
         self.datos.append(lista_datos_utf8)
 

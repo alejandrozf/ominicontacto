@@ -59,6 +59,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% with form as form %}
     {{ form.non_field_errors }}
         <div class="form-row">
+            <div class="col-md-2">
+                <label>{% trans 'Canalidad de la campana:' %}</label>
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.telefono_habilitado.id_for_label }}"> {{ form.telefono_habilitado }} {% trans 'Telefono' %}</label>
+                <label for="{{ form.video_habilitado.id_for_label }}"> {{ form.video_habilitado }} {% trans 'Video' %}</label>
+                <label for="{{ form.whatsapp_habilitado.id_for_label }}"> {{ form.whatsapp_habilitado }} {% trans 'Whatsapp' %}
+                    {{ form.whatsapp_habilitado.errors }}
+                </label>
+            </div>
+        </div>
+        <div class="form-row">
             <div class="col-md-6">
                 <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
                 {{ form.nombre }}
@@ -156,7 +168,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.speech }}
                 {{ form.speech.errors }}
             </div>
-
         </div>
     {% endwith %}
 {% endblock %}

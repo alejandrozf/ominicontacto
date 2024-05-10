@@ -19,6 +19,7 @@ from django.template import Library
 
 from django.utils.translation import gettext as _
 
+from ominicontacto.settings.omnileads import OMNILEADS_TM
 from ominicontacto_app.utiles import get_oml_last_release
 from ominicontacto_app import version
 
@@ -33,7 +34,7 @@ def advertencia_release_desactualizado():
     last_release_info = get_oml_last_release()
     if version.OML_COMMIT != DEVELOP_MARK_VERSION and current_release not in last_release_info \
        and last_release_info != []:
-        return [_("Tienes una version antigua de OMniLeads."),
+        return [_("Tienes una version antigua de {0}.".format(OMNILEADS_TM)),
                 _("Te recomendamos actualizar tu sistema"),
                 _("Tu versión: {0}".format(current_release)),
                 _("Versión actual: {0}".format(last_release_info[0]))]

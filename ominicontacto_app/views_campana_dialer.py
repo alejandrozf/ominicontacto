@@ -33,6 +33,7 @@ from django.views.generic import ListView, DeleteView, FormView, CreateView, Upd
 
 from constance import config as config_constance
 
+from ominicontacto.settings.omnileads import WOMBAT_TM
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
 from ominicontacto_app.forms.base import (
@@ -159,7 +160,7 @@ class PausarCampanaDialerView(View):
                 message,
             )
         except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio Wombat')
+            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -199,7 +200,7 @@ class ActivarCampanaDialerView(View):
                 message,
             )
         except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio Wombat')
+            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -423,7 +424,7 @@ class FinalizarCampanaDialerView(View):
                 message,
             )
         except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio Wombat')
+            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(

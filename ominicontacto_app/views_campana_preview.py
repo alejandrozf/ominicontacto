@@ -42,7 +42,8 @@ from ominicontacto_app.forms.base import (CampanaPreviewForm, OpcionCalificacion
                                           ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
                                           QueueMemberFormset, AsignacionContactosForm,
                                           OrdenarAsignacionContactosForm,
-                                          CampanaPreviewCampoDesactivacion)
+                                          CampanaPreviewCampoDesactivacion,
+                                          CampanaConfiguracionWhatsappForm)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -60,13 +61,15 @@ logger = logging_.getLogger(__name__)
 class CampanaPreviewMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
-    OPCIONES_CALIFICACION = '1'
-    PARAMETROS_CRM = '2'
-    ADICION_SUPERVISORES = '3'
-    ADICION_AGENTES = '4'
-    ASIGNACION_CONTACTOS = '5'
+    CONFIGURACION_WHATSAPP = '1'
+    OPCIONES_CALIFICACION = '2'
+    PARAMETROS_CRM = '3'
+    ADICION_SUPERVISORES = '4'
+    ADICION_AGENTES = '5'
+    ASIGNACION_CONTACTOS = '6'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
+             (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
@@ -74,6 +77,7 @@ class CampanaPreviewMixin(CampanaWizardMixin):
              (ASIGNACION_CONTACTOS, AsignacionContactosForm)]
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
@@ -136,14 +140,17 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
 
     INICIAL = '0'
     COLA = None
-    OPCIONES_CALIFICACION = '1'
-    PARAMETROS_CRM = '2'
+    CONFIGURACION_WHATSAPP = '1'
+    OPCIONES_CALIFICACION = '2'
+    PARAMETROS_CRM = '3'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
+             (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html"}
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 18:03-0300\n"
+"POT-Creation-Date: 2024-04-09 19:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,551 +17,556 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: api_app/apps.py:309
+#: api_app/apps.py:310
 msgid "Lista de agentes activos de un Grupo"
 msgstr "Lista de agentes ativos de um Grupo"
 
-#: api_app/apps.py:311
+#: api_app/apps.py:312
 msgid "Campañas relacionadas a un supervisor"
 msgstr "Campanhas relacionadas a um supervisor"
 
-#: api_app/apps.py:313
+#: api_app/apps.py:314
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr "Opções de qualificação de uma campanha (ID de campanha externo)"
 
-#: api_app/apps.py:316
+#: api_app/apps.py:317
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr "Opções de qualificação de uma campanha (ID da campanha OML)"
 
-#: api_app/apps.py:319
+#: api_app/apps.py:320
 msgid "Ver/editar calificación cliente"
 msgstr "Ver/editar avaliação do cliente"
 
-#: api_app/apps.py:321
+#: api_app/apps.py:322
 msgid "Crear calificacion cliente"
 msgstr "Criar avaliação do cliente"
 
-#: api_app/apps.py:323
+#: api_app/apps.py:324
 msgid "Crear contacto"
 msgstr "Criar contato"
 
-#: api_app/apps.py:325
+#: api_app/apps.py:326
 msgid "Metadata de la base de datos de una campaña"
 msgstr "Metadados da base de dados de uma campanha"
 
-#: api_app/apps.py:327
+#: api_app/apps.py:328
 msgid "Crear nuevo rol"
 msgstr "Criar novo papel"
 
-#: api_app/apps.py:329
+#: api_app/apps.py:330
 msgid "Eliminar rol"
 msgstr "Eliminar papel"
 
-#: api_app/apps.py:331
+#: api_app/apps.py:332
 msgid "Actualizar permisos de Rol"
 msgstr "Atualizar permissões do papel"
 
-#: api_app/apps.py:333
+#: api_app/apps.py:334
 msgid "Devuelve información de los agentes en el sistema"
 msgstr "Retorna informação dos agentes no sistema"
 
-#: api_app/apps.py:336
+#: api_app/apps.py:337
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr "Relatório de chamadas recebidas de supervisão."
 
-#: api_app/apps.py:338
+#: api_app/apps.py:339
 msgid "Reporte de llamadas salientes no dialer de supervisión."
 msgstr "Relatório de chamadas de saída não dialer de supervisão."
 
-#: api_app/apps.py:342
+#: api_app/apps.py:343
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr "Executa ações de supervisão sobre o agente (Desconexão, pausas, etc.)"
 
-#: api_app/apps.py:345
+#: api_app/apps.py:346
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr "Quantidades por tipos de chamada em uma campanha"
 
-#: api_app/apps.py:348
+#: api_app/apps.py:349
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr "Quantidades por tipo de qualificação em uma campanha"
 
-#: api_app/apps.py:351
+#: api_app/apps.py:352
 msgid "Reasignar una Agenda a otro Agente"
 msgstr "Reatribuir uma Agenda para outro Agente"
 
-#: api_app/apps.py:353
+#: api_app/apps.py:354
 msgid "Información de contacto de una  Agenda"
 msgstr "Informação de contato de uma Agenda"
 
-#: api_app/apps.py:355
+#: api_app/apps.py:356
 msgid "Exportar reporte de contactados de una campaña a csv"
 msgstr "Exportar relatório de contatados de uma campanha para csv"
 
-#: api_app/apps.py:358
+#: api_app/apps.py:359
 msgid "Exportar reporte de calificados de una campaña a csv"
 msgstr "Exportar relatório de qualificados de uma campanha para csv"
 
-#: api_app/apps.py:361
+#: api_app/apps.py:362
 msgid "Exportar reporte de no atendidos de una campaña a csv"
 msgstr "Exportar relatório de não atendidos de uma campanha para csv"
 
-#: api_app/apps.py:364 api_app/apps.py:367
+#: api_app/apps.py:365 api_app/apps.py:368
 msgid "Exportar reporte de calificaciones de una campaña a csv"
 msgstr "Exportar relatório de avaliações de uma campanha para csv"
 
-#: api_app/apps.py:370
+#: api_app/apps.py:371
 msgid "API para exportar resultados de base contactados a csv"
 msgstr "API para exportar resultados de base de contatados para csv"
 
-#: api_app/apps.py:373
+#: api_app/apps.py:374
 msgid "Contactos de una campaña"
 msgstr "Contatos de uma campanha"
 
-#: api_app/apps.py:375
+#: api_app/apps.py:376
 msgid "Ejecuta un click 2 call a una campaña"
 msgstr "Executa um clique para chamar em uma campanha"
 
-#: api_app/apps.py:377
+#: api_app/apps.py:378
 msgid "Ejecuta un click 2 call fuera de campaña"
 msgstr "Executa um clique para chamar fora de campanha"
 
-#: api_app/apps.py:379
+#: api_app/apps.py:380
 msgid "Ejecuta un hangup call via AMI"
 msgstr "Executa um hangup call via AMI"
 
-#: api_app/apps.py:381
-msgid "Ejecuta el login del agente en Asterisk."
-msgstr "Executa o login do agente no Asterisk."
-
-#: api_app/apps.py:383
-msgid "Ejecuta el logout del agente en Asterisk"
-msgstr "Executa o logout do agente no Asterisk"
+#: api_app/apps.py:382
+#, python-brace-format
+msgid "Ejecuta el login del agente en {0}."
+msgstr "Executa o login do agente no {0}."
 
 #: api_app/apps.py:385
-msgid "Logout del agente en OML"
-msgstr "Logout do agente no OML"
+#, python-brace-format
+msgid "Ejecuta el logout del agente en {0}"
+msgstr "Executa o logout do agente no {0}"
 
-#: api_app/apps.py:387
+#: api_app/apps.py:388
+#, python-brace-format
+msgid "Logout del agente en {0}"
+msgstr "Logout do agente no {0}"
+
+#: api_app/apps.py:390
 msgid "Pone al agente en una pausa"
 msgstr "Coloca o agente em uma pausa"
 
-#: api_app/apps.py:389
+#: api_app/apps.py:392
 msgid "Saca al agente de una pausa"
 msgstr "Retira o agente de uma pausa"
 
-#: api_app/apps.py:391
+#: api_app/apps.py:394
 msgid "Establece el estado Ringing del Agente"
 msgstr "Estabelece o estado de Chamando do Agente"
 
-#: api_app/apps.py:393
+#: api_app/apps.py:396
 msgid "Establece el estado Reject del Agente"
 msgstr "Estabelece o estado de Rejeição do Agente"
 
-#: api_app/apps.py:395
+#: api_app/apps.py:398
 msgid "Establece el estado Disabled del Agente"
 msgstr "Estabelece o estado Desabilitado do Agente"
 
-#: api_app/apps.py:397
+#: api_app/apps.py:400
 msgid "Devuelve credenciales SIP de un agente"
 msgstr "Devolve credenciais SIP de um agente"
 
-#: api_app/apps.py:399
+#: api_app/apps.py:402
 msgid "Establece el estado de revisión de una Auditoría"
 msgstr "Estabelece o estado de revisão de uma Auditoria"
 
-#: api_app/apps.py:402
+#: api_app/apps.py:405
 msgid "Almacena en la base de datos los contactos subidos en archivo csv"
 msgstr "Armazena no banco de dados os contatos carregados em arquivo csv"
 
-#: api_app/apps.py:405
+#: api_app/apps.py:408
 msgid "Detecta si una llamada esta calificada."
 msgstr "Detecta se uma chamada está qualificada."
 
-#: api_app/apps.py:408
+#: api_app/apps.py:411
 msgid "Reenvía la llave de la instancia registrada por email"
 msgstr "Reenvia a chave da instância registrada por email"
 
-#: api_app/apps.py:410
+#: api_app/apps.py:413
 msgid "Retorna el archivo csv de auditoria"
 msgstr "Retorna o arquivo csv de auditoria"
 
-#: api_app/apps.py:413
+#: api_app/apps.py:416
 msgid "Retorna el archivo de grabación especificado"
 msgstr "Retorna o arquivo de gravação especificado"
 
-#: api_app/apps.py:416
+#: api_app/apps.py:419
 msgid "Retorna Zip con archivos de grabación especificados"
 msgstr "Retorna Zip com arquivos de gravação especificados"
 
-#: api_app/apps.py:419
+#: api_app/apps.py:422
 msgid "Retorna URL del archivos de grabación asociado al callid"
 msgstr "Retorna URL dos arquivos de gravação associados ao callid"
 
-#: api_app/apps.py:422
+#: api_app/apps.py:425
 msgid "Devuelve los contactos asignados de una campaña preview"
 msgstr "Devolve os contatos atribuídos de uma campanha prévia"
 
-#: api_app/apps.py:425
+#: api_app/apps.py:428
 msgid "Loggea el evento hold o unhold"
 msgstr "Registra o evento de retenção ou liberação"
 
-#: api_app/apps.py:428
+#: api_app/apps.py:431
 msgid "Lista de agentes para transferir llamadas"
 msgstr "Lista de agentes para transferir chamadas"
 
-#: api_app/apps.py:431
+#: api_app/apps.py:434
 msgid "Lista audios de asterisk"
 msgstr "Lista áudios do asterisk"
 
-#: api_app/apps.py:434
+#: api_app/apps.py:437
 msgid "Lista de grupos de agentes"
 msgstr "Lista de grupos de agentes"
 
-#: api_app/apps.py:437
+#: api_app/apps.py:440
 msgid "Lista de Agentes"
 msgstr "Lista de Agentes"
 
-#: api_app/apps.py:440
+#: api_app/apps.py:443
 msgid "Dashboard de supervision"
 msgstr "Painel de supervisão"
 
-#: api_app/apps.py:443
+#: api_app/apps.py:446
 msgid "Auditoría a supervisores"
 msgstr "Auditoria de supervisores"
 
-#: api_app/apps.py:446
+#: api_app/apps.py:449
 msgid "Listas de nombres de columnas para Base de datos de Contactos"
 msgstr "Listas de nomes de colunas para Banco de dados de Contatos"
 
-#: api_app/apps.py:449
-msgid "Reinicia servicio Wombat Dialer"
-msgstr "Reinicia serviço Wombat Dialer"
-
 #: api_app/apps.py:452
-msgid "Estado del servicio Wombat Dialer"
-msgstr "Estado do serviço Wombat Dialer"
+#, python-brace-format
+msgid "Reinicia servicio {0} Dialer"
+msgstr "Reinicia serviço {0} Dialer"
 
 #: api_app/apps.py:455
+#, python-brace-format
+msgid "Estado del servicio {0} Dialer"
+msgstr "Estado do serviço {0} Dialer"
+
+#: api_app/apps.py:458
 msgid "Lista de agentes por campaña"
 msgstr "Lista de agentes por campanha"
 
-#: api_app/apps.py:458
+#: api_app/apps.py:461
 msgid "Actualiza los agentes de una campaña"
 msgstr "Atualiza os agentes de uma campanha"
 
-#: api_app/apps.py:461
+#: api_app/apps.py:464
 msgid "Obtiene todos los agentes activos"
 msgstr "Obtém todos os agentes ativos"
 
-#: api_app/apps.py:464
+#: api_app/apps.py:467
 msgid "Obtiene las pausas que no estan eliminadas"
 msgstr "Obtém as pausas que não estão eliminadas"
 
-#: api_app/apps.py:467
+#: api_app/apps.py:470
 msgid "Lista los conjuntos de pausas"
 msgstr "Lista os conjuntos de pausas"
 
-#: api_app/apps.py:470
+#: api_app/apps.py:473
 msgid "Obtiene el detalle de un conjunto de pausas"
 msgstr "Obtém o detalhe de um conjunto de pausas"
 
-#: api_app/apps.py:473
+#: api_app/apps.py:476
 msgid "Crea un conjunto de pausas"
 msgstr "Cria um conjunto de pausas"
 
-#: api_app/apps.py:476
+#: api_app/apps.py:479
 msgid "Actualiza un conjunto de pausas"
 msgstr "Atualiza um conjunto de pausas"
 
-#: api_app/apps.py:479
+#: api_app/apps.py:482
 msgid "Elimina un conjunto de pausas"
 msgstr "Elimina um conjunto de pausas"
 
-#: api_app/apps.py:482
+#: api_app/apps.py:485
 msgid "Crea una configuracion de pausa"
 msgstr "Cria uma configuração de pausa"
 
-#: api_app/apps.py:485
+#: api_app/apps.py:488
 msgid "Actualiza una configuracion de pausa"
 msgstr "Atualiza uma configuração de pausa"
 
-#: api_app/apps.py:488
+#: api_app/apps.py:491
 msgid "Elimina una configuracion de pausa"
 msgstr "Elimina uma configuração de pausa"
 
-#: api_app/apps.py:491
+#: api_app/apps.py:494
 msgid "Lista los sitios externos"
 msgstr "Lista os sites externos"
 
-#: api_app/apps.py:494
+#: api_app/apps.py:497
 msgid "Obtiene el detalle de un sitio externo"
 msgstr "Obtém o detalhe de um site externo"
 
-#: api_app/apps.py:497
+#: api_app/apps.py:500
 msgid "Crea un sitio externo"
 msgstr "Cria um site externo"
 
-#: api_app/apps.py:500
+#: api_app/apps.py:503
 msgid "Actualiza un sitio externo"
 msgstr "Atualiza um site externo"
 
-#: api_app/apps.py:503
+#: api_app/apps.py:506
 msgid "Elimina un sitio externo"
 msgstr "Elimina um site externo"
 
-#: api_app/apps.py:506
+#: api_app/apps.py:509
 msgid "Lista las autenticaciones para sitios externos"
 msgstr "Lista as autenticações para sites externos"
 
-#: api_app/apps.py:509
+#: api_app/apps.py:512
 msgid "Obtiene el detalle de una autenticacion para sitio externo"
 msgstr "Obtém o detalhe de uma autenticação para site externo"
 
-#: api_app/apps.py:512
+#: api_app/apps.py:515
 msgid "Crea una autenticacion para sitio externo"
 msgstr "Cria uma autenticação para site externo"
 
-#: api_app/apps.py:515
+#: api_app/apps.py:518
 msgid "Actualiza una autenticacion para sitio externo"
 msgstr "Atualiza uma autenticação para site externo"
 
-#: api_app/apps.py:518
+#: api_app/apps.py:521
 msgid "Elimina una autenticacion para sitio externo"
 msgstr "Elimina uma autenticação para site externo"
 
-#: api_app/apps.py:521
+#: api_app/apps.py:524
 msgid "Oculta un sitio externo"
 msgstr "Oculta um site externo"
 
-#: api_app/apps.py:524
+#: api_app/apps.py:527
 msgid "Desoculta un sitio externo"
 msgstr "Revela um site externo"
 
-#: api_app/apps.py:527
+#: api_app/apps.py:530
 msgid "Lista las calificaciones"
 msgstr "Lista as qualificações"
 
-#: api_app/apps.py:530
+#: api_app/apps.py:533
 msgid "Crea una calificacion"
 msgstr "Cria uma qualificação"
 
-#: api_app/apps.py:533
+#: api_app/apps.py:536
 msgid "Actualiza una calificacion"
 msgstr "Atualiza uma qualificação"
 
-#: api_app/apps.py:536
+#: api_app/apps.py:539
 msgid "Elimina una calificacion"
 msgstr "Elimina uma qualificação"
 
-#: api_app/apps.py:539
+#: api_app/apps.py:542
 msgid "Obtiene detalle de una calificacion"
 msgstr "Obtém detalhe de uma qualificação"
 
-#: api_app/apps.py:542
+#: api_app/apps.py:545
 msgid "Lista los destinos entrantes"
 msgstr "Lista os destinos de entrada"
 
-#: api_app/apps.py:545
+#: api_app/apps.py:548
 msgid "Lista tipos de destinos entrantes"
 msgstr "Lista tipos de destinos de entrada"
 
-#: api_app/apps.py:548
+#: api_app/apps.py:551
 msgid "Lista los sistemas externos"
 msgstr "Lista os sistemas externos"
 
-#: api_app/apps.py:551
+#: api_app/apps.py:554
 msgid "Crea un sistema externo"
 msgstr "Cria um sistema externo"
 
-#: api_app/apps.py:554
+#: api_app/apps.py:557
 msgid "Actualiza un sistema externo"
 msgstr "Atualiza um sistema externo"
 
-#: api_app/apps.py:557
+#: api_app/apps.py:560
 msgid "Obtiene detalle de un sistema externo"
 msgstr "Obtém detalhe de um sistema externo"
 
-#: api_app/apps.py:560
+#: api_app/apps.py:563
 msgid "Obtiene los agentes para asignar a un sistema externo"
 msgstr "Obtém os agentes para atribuir a um sistema externo"
 
-#: api_app/apps.py:563
+#: api_app/apps.py:566
 msgid "Lista los formularios"
 msgstr "Lista os formulários"
 
-#: api_app/apps.py:566
+#: api_app/apps.py:569
 msgid "Crea un formulario"
 msgstr "Cria um formulário"
 
-#: api_app/apps.py:569
+#: api_app/apps.py:572
 msgid "Actualiza un formulario"
 msgstr "Atualiza um formulário"
 
-#: api_app/apps.py:572
+#: api_app/apps.py:575
 msgid "Obtiene detalle de un formulario"
 msgstr "Obtém detalhe de um formulário"
 
-#: api_app/apps.py:575
+#: api_app/apps.py:578
 msgid "Elimina un formulario"
 msgstr "Elimina um formulário"
 
-#: api_app/apps.py:578
+#: api_app/apps.py:581
 msgid "Oculta un formulario"
 msgstr "Oculta um formulário"
 
-#: api_app/apps.py:581
+#: api_app/apps.py:584
 msgid "Desoculta un formulario"
 msgstr "Revela um formulário"
 
-#: api_app/apps.py:584
+#: api_app/apps.py:587
 msgid "Lista las pausas"
 msgstr "Lista as pausas"
 
-#: api_app/apps.py:587
+#: api_app/apps.py:590
 msgid "Crea una pausa"
 msgstr "Cria uma pausa"
 
-#: api_app/apps.py:590
+#: api_app/apps.py:593
 msgid "Actualiza una pausa"
 msgstr "Atualiza uma pausa"
 
-#: api_app/apps.py:593
+#: api_app/apps.py:596
 msgid "Obtiene detalle de una pausa"
 msgstr "Obtém detalhe de uma pausa"
 
-#: api_app/apps.py:596
+#: api_app/apps.py:599
 msgid "Elimina una pausa"
 msgstr "Elimina uma pausa"
 
-#: api_app/apps.py:599
+#: api_app/apps.py:602
 msgid "Reactiva una pausa"
 msgstr "Reativa uma pausa"
 
-#: api_app/apps.py:602
+#: api_app/apps.py:605
 msgid "Lista las rutas entrantes"
 msgstr "Lista as rotas de entrada"
 
-#: api_app/apps.py:605
+#: api_app/apps.py:608
 msgid "Crea una ruta entrante"
 msgstr "Cria uma rota de entrada"
 
-#: api_app/apps.py:608
+#: api_app/apps.py:611
 msgid "Actualiza una ruta entrante"
 msgstr "Atualiza uma rota de entrada"
 
-#: api_app/apps.py:611
+#: api_app/apps.py:614
 msgid "Obtiene detalle de una ruta entrante"
 msgstr "Obtém detalhe de uma rota de entrada"
 
-#: api_app/apps.py:614
+#: api_app/apps.py:617
 msgid "Elimina una ruta entrante"
 msgstr "Elimina uma rota de entrada"
 
-#: api_app/apps.py:617
+#: api_app/apps.py:620
 msgid "Obtiene los destinos disponibles"
 msgstr "Obtém os destinos disponíveis"
 
-#: api_app/apps.py:620
+#: api_app/apps.py:623
 msgid "Lista las rutas salientes"
 msgstr "Lista as rotas de saída"
 
-#: api_app/apps.py:623
+#: api_app/apps.py:626
 msgid "Crea una ruta saliente"
 msgstr "Cria uma rota de saída"
 
-#: api_app/apps.py:626
+#: api_app/apps.py:629
 msgid "Actualiza una ruta saliente"
 msgstr "Atualiza uma rota de saída"
 
-#: api_app/apps.py:629
+#: api_app/apps.py:632
 msgid "Obtiene detalle de una ruta saliente"
 msgstr "Obtém detalhe de uma rota de saída"
 
-#: api_app/apps.py:632
+#: api_app/apps.py:635
 msgid "Elimina una ruta saliente"
 msgstr "Elimina uma rota de saída"
 
-#: api_app/apps.py:635
+#: api_app/apps.py:638
 msgid "Obtiene las troncales sip para rutas salientes"
 msgstr "Obtém as troncos SIP para rotas de saída"
 
-#: api_app/apps.py:638
+#: api_app/apps.py:641
 msgid "Obtiene las troncales huerfanas de una ruta saliente"
 msgstr "Obtém as troncos órfãs de uma rota de saída"
 
-#: api_app/apps.py:641
+#: api_app/apps.py:644
 msgid "Reordena las rutas salientes"
 msgstr "Reorganiza as rotas de saída"
 
-#: api_app/apps.py:644
+#: api_app/apps.py:647
 msgid "Lista los grupos horarios"
 msgstr "Lista os grupos horários"
 
-#: api_app/apps.py:647
+#: api_app/apps.py:650
 msgid "Crea un grupo horario"
 msgstr "Cria um grupo horário"
 
-#: api_app/apps.py:650
+#: api_app/apps.py:653
 msgid "Actualiza un grupo horario"
 msgstr "Atualiza um grupo horário"
 
-#: api_app/apps.py:653
+#: api_app/apps.py:656
 msgid "Obtiene detalle de un grupo horario"
 msgstr "Obtém detalhe de um grupo horário"
 
-#: api_app/apps.py:656
+#: api_app/apps.py:659
 msgid "Elimina un grupo horario"
 msgstr "Elimina um grupo horário"
 
-#: api_app/apps.py:659
+#: api_app/apps.py:662
 msgid "Lista los ivrs"
 msgstr "Lista os IVRs"
 
-#: api_app/apps.py:662
+#: api_app/apps.py:665
 msgid "Crea un ivr"
 msgstr "Cria um IVR"
 
-#: api_app/apps.py:665
+#: api_app/apps.py:668
 msgid "Actualiza un ivr"
 msgstr "Atualiza um IVR"
 
-#: api_app/apps.py:668
+#: api_app/apps.py:671
 msgid "Obtiene detalle de un ivr"
 msgstr "Obtém detalhe de um IVR"
 
-#: api_app/apps.py:671
+#: api_app/apps.py:674
 msgid "Elimina un ivr"
 msgstr "Elimina um IVR"
 
-#: api_app/apps.py:674
+#: api_app/apps.py:677
 msgid "Obtiene los audios disponibles para ivr"
 msgstr "Obtém os áudios disponíveis para IVR"
 
-#: api_app/apps.py:677
+#: api_app/apps.py:680
 msgid "Obtiene los destinos por tipo para un ivr"
 msgstr "Obtém os destinos por tipo para um IVR"
 
-#: api_app/apps.py:680
+#: api_app/apps.py:683
 msgid "Obtener el detalle del registro de la instancia"
 msgstr "Obtém o detalhe do registro da instância"
 
-#: api_app/apps.py:683
+#: api_app/apps.py:686
 msgid "Registrar la instancia"
 msgstr "Registra a instância"
 
-#: api_app/apps.py:686
+#: api_app/apps.py:689
 msgid "Crear una base de datos de contactos"
 msgstr "Criar o banco de dados de contato"
 
-#: api_app/apps.py:689
+#: api_app/apps.py:692
 msgid "Crear un contacto para una base de datos de contactos"
 msgstr "Criar um contato para um banco de dados de contatos"
 
-#: api_app/apps.py:692
+#: api_app/apps.py:695
 msgid "Campañas asociadas a una base de datos de contactos"
 msgstr "Campanhas associadas a um banco de dados de contatos"
 
-#: api_app/apps.py:695
+#: api_app/apps.py:698
 msgid "Loguea un intento de transferencia a Survey"
 msgstr "Registra uma tentativa de transferência para Pesquisa"
 
@@ -626,16 +631,16 @@ msgstr "Arquivo excede o máximo de linhas permitidas"
 msgid "Error al parsear el archivo csv"
 msgstr "Erro ao analisar o arquivo CSV"
 
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:89
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:99
-#: api_app/views/campaigns/add_agents_to_campaign.py:50
-#: api_app/views/campaigns/add_agents_to_campaign.py:201
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:98
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:108
+#: api_app/views/campaigns/add_agents_to_campaign.py:47
+#: api_app/views/campaigns/add_agents_to_campaign.py:147
 #: api_app/views/external_system.py:173
 msgid "Se obtuvieron los agentes de forma exitosa"
 msgstr "Os agentes foram obtidos com sucesso"
 
-#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:118
-#: api_app/views/campaigns/add_agents_to_campaign.py:137
+#: api_app/tests/campaign/agents/tests_add_agents_to_campaign.py:127
+#: api_app/views/campaigns/add_agents_to_campaign.py:93
 msgid "Se agregaron los agentes de forma exitosa a la campaña"
 msgstr "Os agentes foram adicionados com sucesso à campanha"
 
@@ -1195,7 +1200,7 @@ msgstr "Observações"
 msgid "Pendiente"
 msgstr "Pendente"
 
-#: api_app/views/auditoria.py:145
+#: api_app/views/auditoria.py:146
 msgid "Exportación de auditoria a .csv en proceso"
 msgstr "Exportação de auditoria para .csv em processo"
 
@@ -1298,46 +1303,28 @@ msgstr "Não é permitido eliminar uma qualificação reservada do sistema"
 msgid "Error al eliminar la calificacion"
 msgstr "Erro ao eliminar a qualificação"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:62
+#: api_app/views/campaigns/add_agents_to_campaign.py:59
 #: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
 msgid "No existe la campaña"
 msgstr "A campanha não existe"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:82
-#, python-brace-format
-msgid "QueueAdd failed - agente: {0} de la campana: {1} "
-msgstr "Falha no QueueAdd - agente: {0} da campanha: {1}"
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:111
-#, python-brace-format
-msgid "QueueRemove failed - agente: {0} de la campana: {1}"
-msgstr "Falha no QueueRemove - agente: {0} da campanha: {1}"
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:122
-msgid "No existe el agente en cola"
-msgstr "O agente na fila não existe"
-
-#: api_app/views/campaigns/add_agents_to_campaign.py:144
+#: api_app/views/campaigns/add_agents_to_campaign.py:100
 msgid "No existe la campaña, no se pueden agregar agentes"
 msgstr "A campanha não existe, não é possível adicionar agentes"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:160
-msgid ""
-"No existe el agente,                                        no se puede "
-"eliminar de la member queue"
+#: api_app/views/campaigns/add_agents_to_campaign.py:114
+msgid "No existe el agente, no se puede eliminar de la member queue"
 msgstr "O agente não existe, não pode ser removido da fila de membros"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:172
-msgid ""
-"No existe el agente,                                        no se puede "
-"crear la member queue"
+#: api_app/views/campaigns/add_agents_to_campaign.py:120
+msgid "No existe el agente, no se puede crear la member queue"
 msgstr "O agente não existe, não é possível criar a fila de membros"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:188
+#: api_app/views/campaigns/add_agents_to_campaign.py:134
 msgid "No se pudo confirmar la creación del dialplan"
 msgstr "Não foi possível confirmar a criação do plano de discagem"
 
-#: api_app/views/campaigns/add_agents_to_campaign.py:220
+#: api_app/views/campaigns/add_agents_to_campaign.py:166
 msgid "Error al obtener los agentes activos"
 msgstr "Erro ao obter os agentes ativos"
 
@@ -1976,6 +1963,6 @@ msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr ""
 "Atualizando. Aguarde pelo menos 15 segundos enquanto o processo é finalizado."
 
-#: utiles_globales.py:36
+#: utiles_globales.py:34
 msgid "Archivos permitidos: .wav"
 msgstr "Arquivos permitidos: .wav"

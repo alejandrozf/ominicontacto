@@ -343,8 +343,11 @@ class ActividadAgente(object):
         if lista_pausas_oml is None:
             lista_pausas_oml = Pausa.objects.all()
 
-        res = {'0': Pausa(id='0', nombre=_(u'ACW')),
-               '00': Pausa(id='00', nombre=_(u'Pausa-Supervisión'))}
+        res = {
+            '0': Pausa(id='0', nombre=_(u'ACW')),
+            '00': Pausa(id='00', nombre=_(u'Pausa-Supervisión')),
+            'OW': Pausa(id='OW', nombre=_(u'On-Whatsapp')),
+        }
         for pausa in lista_pausas_oml:
             res[str(pausa.id)] = pausa
         return res

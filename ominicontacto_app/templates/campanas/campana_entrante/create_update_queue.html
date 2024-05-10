@@ -36,6 +36,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <ul class="nav nav-indicators">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="active"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+        {% if whatsapp_habilitado %}
+            <li class="disabled"><a>{% trans 'Configuración de Whatsapp' %}</a></li>
+        {% endif %}
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         {% if interaccion_crm %}
             <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>

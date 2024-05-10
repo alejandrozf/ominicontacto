@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import timedelta
 from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
     datetime_hora_minima_dia, fecha_local
 import urllib.parse
@@ -456,28 +456,20 @@ class LlamadaLog(models.Model):
 
     @property
     def url_archivo_grabacion(self):
-        hoy = fecha_local(now())
         dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              self.archivo_grabacion])
-        if dia_grabacion < hoy:
-            return filename + '.' + settings.MONITORFORMAT
-        else:
-            return filename + '.wav'
+        return filename + '.' + settings.MONITORFORMAT
 
     @property
     def url_archivo_grabacion_url_encoded(self):
         # TODO: Refactorizar junto con url_archivo_grabacion para eliminar duplicidad de código
-        hoy = fecha_local(now())
         dia_grabacion = fecha_local(self.time - timedelta(seconds=self.delta_inicio()))
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              urllib.parse.quote(self.archivo_grabacion)])
-        if dia_grabacion < hoy:
-            return filename + '.' + settings.MONITORFORMAT
-        else:
-            return filename + '.wav'
+        return filename + '.' + settings.MONITORFORMAT
 
     @property
     def campana(self):
@@ -568,3 +560,14 @@ class TransferenciaAEncuestaLog(models.Model):
     campana_id = models.IntegerField(db_index=True, blank=True, null=True)
     encuesta_id = models.IntegerField(db_index=True, blank=True, null=True)
     callid = models.CharField(db_index=True, max_length=32, blank=True, null=True)
+
+
+class AnalisisSentimiento(models.Model):
+    """
+    Registro de analis de sentimientos
+    """
+    time = models.DateTimeField(db_index=True, auto_now_add=True)
+    callid = models.CharField(max_length=32, unique=True)
+    result = models.CharField(max_length=32, null=True, blank=True)
+    url_audio = models.TextField(null=True, blank=True)
+    url_transcription = models.TextField(null=True, blank=True)

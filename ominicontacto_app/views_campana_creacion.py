@@ -32,24 +32,21 @@ from django.utils.translation import gettext as _
 
 from formtools.wizard.views import SessionWizardView
 
+from ominicontacto_app.services.queue_member_service import QueueMemberService
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms.base import (
     CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
-    CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
+    CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm,
+    CampanaConfiguracionWhatsappForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SitioExterno, SupervisorProfile,
-                                      AgenteProfile, QueueMember)
+                                      AgenteProfile)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
 from ominicontacto_app.utiles import cast_datetime_part_date, obtener_opciones_columnas_bd
-from ominicontacto_app.views_queue_member import adicionar_agente_cola
-
-from utiles_globales import obtener_sip_agentes_sesiones_activas
-
 
 import logging as logging_
-from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
-    AmiManagerClient
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError
 
 logger = logging_.getLogger(__name__)
 
@@ -200,16 +197,23 @@ def mostrar_form_parametros_crm_form(wizard):
     return interaccion in [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
 
 
+def mostrar_form_configuracion_whatsapp_form(wizard):
+    cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
+    return cleaned_data.get('whatsapp_habilitado', '')
+
+
 class CampanaWizardMixin(object):
     INICIAL = '0'
     COLA = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
-    ADICION_SUPERVISORES = '4'
-    ADICION_AGENTES = '5'
+    CONFIGURACION_WHATSAPP = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
+    ADICION_SUPERVISORES = '5'
+    ADICION_AGENTES = '6'
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
+             (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
@@ -217,6 +221,7 @@ class CampanaWizardMixin(object):
 
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_entrante/adicionar_supervisores.html",
@@ -224,7 +229,8 @@ class CampanaWizardMixin(object):
 
     form_list = FORMS
     condition_dict = {
-        PARAMETROS_CRM: mostrar_form_parametros_crm_form
+        PARAMETROS_CRM: mostrar_form_parametros_crm_form,
+        CONFIGURACION_WHATSAPP: mostrar_form_configuracion_whatsapp_form
     }
 
     def get_template_names(self):
@@ -237,6 +243,8 @@ class CampanaWizardMixin(object):
             return campana
         if step == self.COLA or step == self.ADICION_AGENTES:
             return campana.queue_campana
+        if step == self.CONFIGURACION_WHATSAPP:
+            return campana.configuracionwhatsapp.filter(is_active=True).last()
 
     def get_form_kwargs(self, step):
         if step == self.ADICION_SUPERVISORES:
@@ -315,6 +323,13 @@ class CampanaWizardMixin(object):
             tipo_interaccion = cleaned_data_step_initial['tipo_interaccion']
             context['interaccion_crm'] = tipo_interaccion in \
                 [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
+            context['whatsapp_habilitado'] = cleaned_data_step_initial['whatsapp_habilitado']
+        else:
+            pk = self.kwargs.get('pk_campana', False)
+            if pk:
+                campana = get_object_or_404(Campana, pk=pk)
+                # Es necesario en el primer form?
+                context['whatsapp_habilitado'] = campana.whatsapp_habilitado
 
         # se adiciona el formulario de los grupos para etapa de asignación de agentes
         if current_step == self.ADICION_AGENTES:
@@ -334,35 +349,21 @@ class CampanaWizardMixin(object):
         queue_member_formset = list(form_list)[index_form_agentes]
         queue_member_formset.instance = campana.queue_campana
         if queue_member_formset.is_valid():
-            # obtenemos los agentes que estan logueados
-            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-
-            # se asignan valores por defecto en cada una de las instancias
-            # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
-            try:
-                client = AmiManagerClient()
-                client.connect()
-            except AMIManagerConnectorError:
-                logger.exception(_("QueueAdd failed "))
-
+            # Delego a queue_member_service
+            agentes = set()
+            penalties = {}
             for queue_form in queue_member_formset.forms:
                 if queue_form.cleaned_data != {}:
-                    # no se tienen en cuenta formularios vacíos
                     agente = queue_form.instance.member
-                    queue_member_defaults = QueueMember.get_defaults(agente, campana)
-                    queue_form.instance.id_campana = queue_member_defaults['id_campana']
-                    queue_form.instance.membername = queue_member_defaults['membername']
-                    queue_form.instance.interface = queue_member_defaults['interface']
-                    # por ahora no definimos 'paused'
-                    queue_form.instance.paused = queue_member_defaults['paused']
-                    queue_form_created = True
-                    if queue_form.instance.pk is not None:
-                        queue_form_created = False
-                    queue_form.save(commit=False)
-                    if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                        adicionar_agente_cola(agente, queue_form.instance, campana, client)
-            client.disconnect()
-            queue_member_formset.save()
+                    agentes.add(agente)
+                    penalties[agente.id] = queue_form.instance.penalty
+            try:
+                queue_service = QueueMemberService()
+                queue_service.agregar_agentes_en_cola(campana, agentes, penalties)
+                queue_service.disconnect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueAdd failed "))
+            queue_service.disconnect()
 
     def alertas_por_sistema_externo(self, campana):
         if campana.sistema_externo:
@@ -446,22 +447,33 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def _save_forms(self, form_list, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
+        campana = campana_form.instance
         interaccion_crm = campana_form.instance.tiene_interaccion_con_sitio_externo
+        whatsapp_habilitado = campana_form.instance.whatsapp_habilitado
         queue_form = list(form_list)[int(self.COLA)]
-        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
         campana_form.instance.estado = estado
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
-        campana = campana_form.instance
+        offset = 1
+        if whatsapp_habilitado:
+            offset = offset - 1
+            configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
+            if configuracion_whatsapp_formset.is_valid():
+                configuracion_whatsapp_formset.instance.campana = campana
+                configuracion_whatsapp_formset.instance.created_by_id = self.request.user.id
+                configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
+                configuracion_whatsapp_formset.instance.save()
+
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         queue_form.instance.campana = campana
         queue = self._save_queue(queue_form)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         if interaccion_crm:
-            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM) - offset]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         return queue
@@ -496,16 +508,19 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
 
     INICIAL = '0'
     COLA = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
+    CONFIGURACION_WHATSAPP = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
+             (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 
@@ -526,13 +541,24 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.save()
 
         campana = campana_form.instance
-        opts_calif_init_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
+        offset = 1
+        if campana.whatsapp_habilitado:
+            offset = offset - 1
+            configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
+            if configuracion_whatsapp_formset.is_valid():
+                if not configuracion_whatsapp_formset.instance.pk:
+                    configuracion_whatsapp_formset.instance.created_by_id = self.request.user.id
+                    configuracion_whatsapp_formset.instance.campana = campana
+                configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
+                configuracion_whatsapp_formset.instance.save()
+        opts_calif_init_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
         if campana.tiene_interaccion_con_sitio_externo:
-            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM) - offset]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
+
         self._insert_queue_asterisk(queue_form.instance)
         self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_list'))
@@ -558,16 +584,19 @@ class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntra
 
     INICIAL = '0'
     COLA = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
+    CONFIGURACION_WHATSAPP = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
+             (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 

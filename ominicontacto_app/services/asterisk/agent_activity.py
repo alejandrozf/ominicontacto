@@ -77,6 +77,8 @@ class AgentActivityAmiManager(object):
             pause_name = 'ACW'
         elif pause_id == '00':
             pause_name = 'Supervision'
+        elif pause_id == 'OW':
+            pause_name = 'On Whatsapp'
         else:
             pause_name = Pausa.objects.activa_by_pauseid(pause_id).nombre
 
@@ -95,7 +97,7 @@ class AgentActivityAmiManager(object):
 
     def unpause_agent(self, agente_profile, pause_id, manage_connection=False, supervisor=False):
         # Me aseguro q exista la pausa activa:
-        if pause_id not in ('0', '00'):
+        if pause_id not in ('0', '00', 'OW'):
             pause_id = Pausa.objects.activa_by_pauseid(pause_id).id
 
         if manage_connection:

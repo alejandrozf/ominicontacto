@@ -27,6 +27,9 @@ from configuracion_telefonia_app.tests.factories import (
 from configuracion_telefonia_app.models import (
     ValidacionFechaHora, DestinoEntrante, OpcionDestino)
 from configuracion_telefonia_app.views.base import ValidacionFechaHoraDeleteView
+from configuracion_telefonia_app.views.base import DeleteNodoDestinoMixin
+from whatsapp_app.tests.factories import LineaFactory, MenuInteractivoFactory
+from whatsapp_app.models import OpcionMenuInteractivoWhatsapp
 
 
 class BaseTestRestriccionEliminacion(OMLBaseTest):
@@ -38,6 +41,7 @@ class BaseTestRestriccionEliminacion(OMLBaseTest):
 
         self.admin = self.crear_administrador()
         self.admin.set_password(self.PWD)
+        self.client.login(username=self.admin.username, password=self.PWD)
 
     def _crear_campanas_entrantes(self):
         self.camp_1 = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
@@ -61,7 +65,6 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
         OpcionDestinoFactory(valor='False',
                              destino_anterior=nodo_validacion,
                              destino_siguiente=self.nodo_camp_2)
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
         response = self.client.post(url, follow=True)
         mock_sincronizacion.assert_called_with(validacion_fh)
@@ -85,7 +88,6 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
                              destino_anterior=nodo_validacion,
                              destino_siguiente=self.nodo_camp_2)
         RutaEntranteFactory(destino=nodo_validacion)
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -109,7 +111,6 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
                              destino_anterior=nodo_ivr,
                              destino_siguiente=nodo_validacion)
         destinos_iniciales = DestinoEntrante.objects.count()
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_validacion_fecha_hora', args=[validacion_fh.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -129,7 +130,6 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
         total_campanas = Campana.objects.count()
         campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
         destinos_iniciales = DestinoEntrante.objects.count()
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('campana_elimina', args=[self.camp_1.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -138,14 +138,13 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
         self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
                          campanas_iniciales - 1)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales - 1)
+        mock_activacion.assert_called()
 
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    def test_no_elimina_campana_utilizado_en_ruta_entrante(self, mock_sincronizacion):
+    def test_no_elimina_campana_utilizado_en_ruta_entrante(self):
         # Pongo la campaña entrante 1 como destino de una Ruta Entrante
         destinos_iniciales = DestinoEntrante.objects.count()
         campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
         RutaEntranteFactory(destino=self.nodo_camp_1)
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('campana_elimina', args=[self.camp_1.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -156,8 +155,7 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
                          campanas_iniciales)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
 
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    def test_no_elimina_campana_destino_de_otro_nodo(self, mock_sincronizacion):
+    def test_no_elimina_campana_destino_de_otro_nodo(self):
         # Pongo la campaña entrante 1 como destino de un IVR
         ivr = IVRFactory()
         nodo_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
@@ -166,7 +164,6 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
                              destino_siguiente=self.nodo_camp_1)
         destinos_iniciales = DestinoEntrante.objects.count()
         campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
-        self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('campana_elimina', args=[self.camp_1.id])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -176,3 +173,28 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
         self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
                          campanas_iniciales)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales)
+
+    def test_no_elimina_campana_destino_directo_linea(self):
+        linea = LineaFactory(destino=self.nodo_camp_1, created_by=self.admin, updated_by=self.admin)
+        url = reverse('campana_elimina', args=[self.camp_1.id])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('campana_list'))
+        msg = DeleteNodoDestinoMixin.ERROR_DESTINO_LINEA.format(", ".join([linea.nombre, ]))
+        self.assertContains(response, msg)
+
+    def test_no_elimina_campana_destino_menu_interactivo_linea(self):
+        menu = MenuInteractivoFactory()
+        destino_menu = DestinoEntrante.crear_nodo_ruta_entrante(menu)
+        opcion_destino_1 = OpcionDestino.crear_opcion_destino(
+            destino_anterior=destino_menu, destino_siguiente=self.nodo_camp_1,
+            valor='Campana 1')
+        OpcionMenuInteractivoWhatsapp.objects.create(
+            opcion=opcion_destino_1, descripcion='Descripcion opcion 1')
+        linea = LineaFactory(destino=destino_menu, created_by=self.admin, updated_by=self.admin)
+        url = reverse('campana_elimina', args=[self.camp_1.id])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('campana_list'))
+        msg = DeleteNodoDestinoMixin.ERROR_DESTINO_LINEA.format(", ".join([linea.nombre, ]))
+        self.assertContains(response, msg)

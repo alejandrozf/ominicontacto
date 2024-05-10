@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api_app.apps.ApiAppConfig',
+    'whatsapp_app.apps.WhatsappAppConfig',
+    'orquestador_app.apps.OrquestadorAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',
@@ -196,7 +198,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
-    ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
+    ("omnileads-frontend", os.path.join(BASE_DIR, "omnileads_ui/dist")),
 ]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
@@ -384,6 +386,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'reportes_app/locale'),
     os.path.join(BASE_DIR, 'reciclado_app/locale'),
     os.path.join(BASE_DIR, 'supervision_app/locale'),
+    os.path.join(BASE_DIR, 'whatsapp_app/locale'),
 )
 
 LANGUAGES = (
