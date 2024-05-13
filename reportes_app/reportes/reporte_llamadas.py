@@ -18,6 +18,7 @@
 from __future__ import unicode_literals, division
 
 import pygal
+import logging
 
 from django.utils.translation import gettext as _
 from django.utils.encoding import force_text
@@ -31,6 +32,9 @@ from reportes_app.utiles import (
 )
 
 from utiles_globales import adicionar_render_unicode
+
+
+logger = logging.getLogger(__name__)
 
 LLAMADA_MANUAL = Campana.TYPE_MANUAL
 LLAMADA_DIALER = Campana.TYPE_DIALER
@@ -207,6 +211,8 @@ class ReporteDeLlamadas(object):
             },
         }
 
+        self.tipo_por_campana = {}  # Patch OML-2663
+
         for campana in self.campanas:
             self._inicializar_conteo_de_estadisticas_de_campana(campana)
 
@@ -227,11 +233,18 @@ class ReporteDeLlamadas(object):
         tipos_por_campana['nombre'] = campana.nombre
         self.estadisticas['tipos_de_llamada_por_campana'][tipo][campana.id] = tipos_por_campana
         self.estadisticas_por_fecha['tipos_de_llamada_por_campana'][tipo][campana.id] = {}
+        self.tipo_por_campana[campana.id] = tipo  # Patch OML-2663
 
     def _contabilizar_estadisticas(self):
         for log in self.logs:
             fecha = fecha_hora_local(log.time).strftime('%d-%m-%Y')
             tipo_campana = str(log.tipo_campana)
+            # Patch OML-2663 <--
+            if tipo_campana == '-1':
+                logger.error(f'Log con tipo_campana erroneo: {log.id}')
+                tipo_campana = self.tipo_por_campana[log.campana_id]
+                log.tipo_campana = int(tipo_campana)
+            # -->
             tipo_llamada = str(log.tipo_llamada)
             if tipo_llamada == str(LLAMADA_TRANSF_INTERNA):
                 tipo_llamada = str(LLAMADA_ENTRANTE)
