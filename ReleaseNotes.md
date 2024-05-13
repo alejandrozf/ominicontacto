@@ -1,20 +1,17 @@
 # Release Notes
-2024-05-09
+2024-05-13
 
 ## Added
 
-- oml-2310 Nueva canalidad Whatsapp
+- oml-2662 Posibilidad de configurar CUSTOM_CORS_ALLOWED_ORIGINS
 
 ## Changed
 
-- oml-2605 Refactor QueueMember, redis connection, remove deprecated views.
-- oml-2616 Centralización de 
-- oml-2626 vuejs scss for css
+No changes
 
 ## Fixed
-- oml-2623 Fix bad redirections, url refactoring
-- oml-2624 Fix timezone change days bug
-- Text translations
+
+- oml-2663 Fix error 500 cuando un log viene con tipo_campana=-1 en ReporteLlamadas
 
 ## Removed
 

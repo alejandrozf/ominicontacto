@@ -115,3 +115,12 @@ if not os.getenv('WEBPHONE_CLIENT_VERSION', '') == '':
     ADDONS_APPS.append('webphone_client_app.apps.WebphoneClientAppConfig')
     ADDON_URLPATTERNS.append((r'^', 'webphone_client_app.urls'))
     ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'webphone_client_app/locale'), )
+
+#########################################
+# django-cors-headers Custom config
+""" Se deja acá porque modifica INSTALLED_APPS a traves de ADDONS_APPS """
+CUSTOM_CORS_ALLOWED_ORIGINS = os.getenv('CUSTOM_CORS_ALLOWED_ORIGINS', '')
+if not CUSTOM_CORS_ALLOWED_ORIGINS == '':
+    ADDONS_APPS.append('corsheaders')
+    MIDDLEWARE_PREPPEND.insert(0, 'corsheaders.middleware.CorsMiddleware')
+    CORS_ALLOWED_ORIGINS = CUSTOM_CORS_ALLOWED_ORIGINS.split(',')
