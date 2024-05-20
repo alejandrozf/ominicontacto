@@ -124,3 +124,12 @@ if not CUSTOM_CORS_ALLOWED_ORIGINS == '':
     ADDONS_APPS.append('corsheaders')
     MIDDLEWARE_PREPPEND.insert(0, 'corsheaders.middleware.CorsMiddleware')
     CORS_ALLOWED_ORIGINS = CUSTOM_CORS_ALLOWED_ORIGINS.split(',')
+
+    CUSTOM_CORS_ALLOW_HEADERS = os.getenv('CUSTOM_CORS_ALLOW_HEADERS', '')
+    if not CUSTOM_CORS_ALLOW_HEADERS == '':
+        CUSTOM_CORS_ALLOW_HEADERS = CUSTOM_CORS_ALLOW_HEADERS.split(',')
+        from corsheaders.defaults import default_headers
+        CORS_ALLOW_HEADERS = (
+            *default_headers,
+            *CUSTOM_CORS_ALLOW_HEADERS,
+        )
