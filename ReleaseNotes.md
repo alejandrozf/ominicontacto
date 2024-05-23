@@ -3,7 +3,8 @@
 
 ## Added
 
-- oml-2662 Posibilidad de configurar CUSTOM_CORS_ALLOWED_ORIGINS
+- oml-2672 Posibilidad de configurar CUSTOM_CORS_ALLOW_HEADERS
+- oml-2664 El comando inicializar_entorno permite crear múltiples agentes y supervisores
 
 ## Changed
 
@@ -11,7 +12,7 @@ No changes
 
 ## Fixed
 
-- oml-2663 Fix error 500 cuando un log viene con tipo_campana=-1 en ReporteLlamadas
+No Fixes
 
 ## Removed
 
