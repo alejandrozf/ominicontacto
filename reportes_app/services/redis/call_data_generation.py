@@ -36,6 +36,8 @@ class CallDataGenerator(object):
     CALLDATA_CAMP_KEY = 'OML:CALLDATA:CAMP:{0}'
     CALLDATA_WAIT_KEY = 'OML:CALLDATA:WAIT-TIME:CAMP:{0}'
     # CALLDATA_AGENT_KEY = 'OML:CALLDATA:AGENT:{0}'
+    CALLDATA_QUEUE_SIZE_KEY = 'OML:CALLDATA:QUEUE-SIZE:{0}'
+    CALLDATA_QUEUE_KEY = 'OML:CALLDATA:QUEUE:{0}'
 
     EVENTOS_FIN_CONEXION_ORIGINAL = [
         'COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-TRY', 'BTOUT-TRY',
@@ -43,25 +45,38 @@ class CallDataGenerator(object):
     ]
 
     def __init__(self, redis_connection=None) -> None:
-        self.redis_connection = redis_connection
+        self._redis_connection = redis_connection
         self._desde = None
 
-    def get_redis_connection(self):
-        if not self.redis_connection:
-            self.redis_connection = create_redis_connection(2)
-        return self.redis_connection
+    @property
+    def redis_connection(self):
+        if not self._redis_connection:
+            self._redis_connection = create_redis_connection(2)
+        return self._redis_connection
 
     def eliminar_datos(self):
+        """ Eliminar Datos acumulativos del día """
         base_keys = [self.CALLDATA_CAMP_KEY, self.CALLDATA_WAIT_KEY]  # , self.CALLDATA_AGENT_KEY]
         for base_key in base_keys:
             keys = self.redis_connection.keys(base_key.format('*'))
             if keys:
                 self.redis_connection.delete(*keys)
 
-    def regenerar(self):
-        self.get_redis_connection()
+    def efectuar_cleanup_de_datos(self):
+        """ Elimina datos acumulativos y de estado de colas """
         self.eliminar_datos()
+        self.eliminar_datos_de_colas()
 
+    def eliminar_datos_de_colas(self):
+        """ Elimina datos de los estados de colas """
+        base_keys = [self.CALLDATA_QUEUE_SIZE_KEY, self.CALLDATA_QUEUE_KEY]
+        for base_key in base_keys:
+            keys = self.redis_connection.keys(base_key.format('*'))
+            if keys:
+                self.redis_connection.delete(*keys)
+
+    def regenerar(self):
+        self.eliminar_datos()
         self.regenerar_eventos_por_campana()
         self.regenerar_wait_times()
         # Actualmente no se genera ni se usa esta estadística

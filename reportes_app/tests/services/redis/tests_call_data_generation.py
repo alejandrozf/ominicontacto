@@ -18,7 +18,7 @@
 
 from mock import patch
 
-from ominicontacto_app.services.redis.call_data_generation import CallDataGenerator
+from reportes_app.services.redis.call_data_generation import CallDataGenerator
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (LlamadaLogFactory, CampanaFactory, QueueFactory, )

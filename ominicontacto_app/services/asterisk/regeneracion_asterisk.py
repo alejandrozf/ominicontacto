@@ -86,7 +86,8 @@ class RegeneracionAsteriskService(object):
             'actualizar_reporte_dia_actual_agentes',  # [4]
             'actualizar_reportes_salientes',          # [5]
             'actualizar_reportes_dialers',            # [6]
-            'calcular_datos_wallboards',              # [7]
+            'reiniciar_estadisticas_calldata',        # [7]
+            'calcular_datos_wallboards',              # [8]
         ]
 
         self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
@@ -313,10 +314,33 @@ class RegeneracionAsteriskService(object):
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_DIALERS)
             crontab.write_to_user(user=getpass.getuser())
 
-    def _generar_tarea_script_calcular_datos_wallboards(self):
+    def _generar_tarea_script_reiniciar_estadisticas_calldata(self):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         id_tarea = self.tareas_programadas_ids[7]
+        flock = flock_template.format(id_tarea)
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
+        ruta_script_logout = os.path.join(
+            settings.INSTALL_PREFIX,
+            'ominicontacto/manage.py reiniciar_estadisticas_calldata > /dev/stdout')
+        # Eliminar cualquier cron job de la tarea anterior
+        job = crontab.find_comment(id_tarea)
+        crontab.remove_all(comment=id_tarea)
+        # adicionar nuevo cron job para esta tarea si no existe anteriormente
+        if list(job) == []:
+            job = crontab.new(
+                command='{0} {1} {2}'.format(
+                    flock, ruta_python_virtualenv, ruta_script_logout),
+                comment=id_tarea)
+            # adicionar tiempo de periodicidad al cron job
+            job.hour.on(0)
+            job.minute.on(0)
+            crontab.write_to_user(user=getpass.getuser())
+
+    def _generar_tarea_script_calcular_datos_wallboards(self):
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        id_tarea = self.tareas_programadas_ids[8]
         flock = flock_template.format(id_tarea)
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(
@@ -398,6 +422,7 @@ class RegeneracionAsteriskService(object):
         self._generar_tarea_script_actualizar_reportes_llamadas_dialers()
         self._generar_tarea_script_actualizar_reporte_datos_supervisores()
         self._generar_tarea_script_actualizar_reporte_agentes_dia_actual()
+        self._generar_tarea_script_reiniciar_estadisticas_calldata()
         if not os.getenv('WALLBOARD_VERSION', '') == '':
             from wallboard_app.redis.regeneracion import regenerar_wallboard_data
             regenerar_wallboard_data()

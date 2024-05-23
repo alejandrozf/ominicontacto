@@ -26,9 +26,9 @@ from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from ominicontacto_app.models import (
-    AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana, )
+    AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana, QueueMember, )
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
-from ominicontacto_app.services.redis.call_data_generation import CallDataGenerator
+from reportes_app.services.redis.call_data_generation import CallDataGenerator
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
     TroncalSIP, RutaEntrante, DestinoPersonalizado, AmdConf, EsquemaGrabaciones
@@ -786,7 +786,7 @@ class RegenerarAsteriskFamilysOML(object):
         self.blacklist_family = BlacklistFamily(redis_connection=redis_connection)
         # TODO: Separar datos de Redis pertinentes a Asterisk de los que no.
         self.campanas_de_agente_family = CampanasDeAgenteFamily(redis_connection=redis_connection)
-        self.call_data_generator = CallDataGenerator(redis_connection=redis_connection)        
+        self.call_data_generator = CallDataGenerator(redis_connection=redis_connection)
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()
