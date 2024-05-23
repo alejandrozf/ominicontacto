@@ -58,17 +58,6 @@ class Command(BaseCommand):
 
     help = "Valores mínimos para tener un entorno de desarrollo listo"
 
-    agent_1_username = 'ag1'
-    agent_2_username = 'ag2'
-    # agent_3_username = 'ag3'
-    # agent_4_username = 'ag4'
-    # agent_5_username = 'ag5'
-    # agent_6_username = 'ag6'
-    # agent_7_username = 'ag7'
-    # agent_8_username = 'ag8'
-    # agent_9_username = 'ag9'
-    # agent_10_username = 'ag10'
-
     def _crear_opciones_calificacion(self, campana):
         # opciones de calificacion
         OpcionCalificacionFactory(
@@ -203,6 +192,19 @@ class Command(BaseCommand):
             telefono=telefono, destino=destino_campana_entrante, prefijo_caller_id='')
         escribir_ruta_entrante_config(self, ruta_entrante)
 
+    def _crear_agentes(self, cantidad, grupo):
+        # Crea un minimo de 2 agentes
+        cantidad = max(2, cantidad)
+        agentes_creados = []
+        for i in range(0, cantidad):
+            username = f'ag{i+1}'
+            agente = self._crear_agente(grupo, username, PASSWORD)
+            agentes_creados.append(agente)
+        asterisk_sip_service = ActivacionAgenteService()
+        asterisk_sip_service.activar()
+
+        return agentes_creados
+
     def _crear_agente(self, grupo, username, password):
         agente = AgenteProfileFactory(grupo=grupo, reported_by=self.admin)
         agente.user.username = username
@@ -212,11 +214,9 @@ class Command(BaseCommand):
         agente.user.save()
         agente.save()
         agente.user.groups.add(Group.objects.get(name='Agente'))
-        asterisk_sip_service = ActivacionAgenteService()
-        asterisk_sip_service.activar()
         return agente
 
-    def _crear_supervisor_gerente(self, username):
+    def _crear_gerente(self, username):
         user = User.objects.create_user(
             username=username,
             email=username + '@example.com',
@@ -226,6 +226,30 @@ class Command(BaseCommand):
             last_name=username
         )
         user.groups.set([Group.objects.get(name=User.GERENTE)])
+        SupervisorProfile.objects.create(
+            user=user,
+            sip_extension=1000 + user.id,
+            sip_password="sdsfhdfhfdhfd",
+            is_administrador=False,
+            is_customer=False,
+        )
+        return user
+
+    def _crear_supervisores(self, cantidad):
+        for i in range(0, cantidad):
+            username = f'ftsup{i+1}'
+            self._crear_supervisor(username)
+
+    def _crear_supervisor(self, username):
+        user = User.objects.create_user(
+            username=username,
+            email=username + '@example.com',
+            password=PASSWORD,
+            is_supervisor=True,
+            first_name=username,
+            last_name=username
+        )
+        user.groups.set([Group.objects.get(name=User.SUPERVISOR)])
         SupervisorProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
@@ -295,22 +319,18 @@ class Command(BaseCommand):
         ContactoFactory(bd_contacto=self.bd_contacto_prw_success, telefono='123456781',
                         datos='["Ricardo Cancel","ABERASTAINSUR655","SANJUAN"]')
 
-    def _crear_datos_entorno(self, qa_devops):
+    def _crear_datos_entorno(self, qa_devops, qa_agents, qa_supervisors):
 
         self.admin = User.objects.filter(is_staff=True).first()
-        self.gerente = self._crear_supervisor_gerente('gerente')
+        self.gerente = self._crear_gerente('gerente')
         self.cliente_webphone = self._crear_cliente_webphone('webphone')
+        self._crear_supervisores(max(0, qa_supervisors))
 
         # crear grupo
         grupo = GrupoFactory(auto_unpause=0)
 
-        agentes_creados = []  # Esta lista almacenará los agentes que crees
-
-        agent_usernames = [self.agent_1_username, self.agent_2_username]
-        for username in agent_usernames:
-            agente = self._crear_agente(grupo, username, PASSWORD)
-            agente.user.groups.add(Group.objects.get(name='Agente'))
-            agentes_creados.append(agente)
+        agentes_creados = self._crear_agentes(qa_agents, grupo)
+        agentes_base = [agentes_creados[0], agentes_creados[1]]
 
         if not os.getenv('WEBPHONE_CLIENT_VERSION', '') == '':
             constance_config.WEBPHONE_CLIENT_ENABLED = True
@@ -394,12 +414,12 @@ class Command(BaseCommand):
         # Asigno agentes a campañas (no entrantes)
         queue_service = QueueMemberService()
         campanas = [campana_manual, campana_dialer, campana_preview]
-        for agente in agentes_creados:
-            for campana in campanas:
-                queue_service.agregar_agentes_en_cola(campana, agentes_creados)
+
+        for campana in campanas:
+            queue_service.agregar_agentes_en_cola(campana, agentes_base)
         # Asigno 1 Agente por campaña entrante
-        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[0], ))
-        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_creados[1], ))
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_base[0], ))
+        queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_base[1], ))
 
         # Luego de agregar los agentes refresco datos en asterisk
         queue_service.activar_cola()
@@ -414,13 +434,31 @@ class Command(BaseCommand):
             action='store_true',
             help='Initializes with QA DEVOPS configuration',
         )
+        parser.add_argument(
+            '--qa-agents',
+            type=int,
+            default=2,
+            required=False,
+            action='store',
+            help='Initializes with many Agents and Supervisors',
+        )
+        parser.add_argument(
+            '--qa-supervisors',
+            type=int,
+            default=0,
+            required=False,
+            action='store',
+            help='Initializes with many Agents and Supervisors',
+        )
 
     def handle(self, *args, **options):
         qa_devops = options['qa_devops']
+        qa_agents = options['qa_agents']
+        qa_supervisors = options['qa_supervisors']
         if qa_devops:
             print('Initializing with QA DEVOPS configuration')
         try:
-            self._crear_datos_entorno(qa_devops)
+            self._crear_datos_entorno(qa_devops, qa_agents, qa_supervisors)
             print("Some initial data created for the OML fresh installation")
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e))
