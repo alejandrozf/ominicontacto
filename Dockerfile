@@ -64,7 +64,6 @@ RUN apk add bash \
         tzdata \
         postgresql14-client \
         pcre pcre-dev \
-        aws-cli \
         git \
         build-base \
         gcc \
