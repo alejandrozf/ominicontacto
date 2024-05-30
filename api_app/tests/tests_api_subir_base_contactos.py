@@ -43,6 +43,7 @@ class SubirBaseContactosTest(OMLBaseTest):
             Token.objects.create(user=user)
 
     def test_api_subir_base_contacto_api_usuario_no_logueado_no_accede_a_servicio(self):
+        self.actualizar_permisos()
         url = reverse('api_upload_base_contactos')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 403)
@@ -60,12 +61,14 @@ class SubirBaseContactosTest(OMLBaseTest):
         self.assertEqual(response.status_code, 405)
 
     def test_api_subir_base_contacto_api_admite_post_admin(self):
+        self.actualizar_permisos()
         self.client.login(username=self.admin.user.username, password=PASSWORD)
         url = reverse('api_upload_base_contactos')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
 
     def test_api_subir_base_contacto_api_admite_post_admin_via_token(self):
+        self.actualizar_permisos()
         token_admin = Token.objects.get(user=self.admin.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_admin)
@@ -74,6 +77,7 @@ class SubirBaseContactosTest(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
 
     def test_api_subir_base_contacto_api_no_admite_post_agente_via_token(self):
+        self.actualizar_permisos()
         token_agente = Token.objects.get(user=self.agente_profile.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
@@ -82,6 +86,7 @@ class SubirBaseContactosTest(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
 
     def test_api_subir_base_contacto_api_admite_post_supervisor_via_token(self):
+        self.actualizar_permisos()
         token_supervisor = Token.objects.get(user=self.supervisor.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_supervisor)
