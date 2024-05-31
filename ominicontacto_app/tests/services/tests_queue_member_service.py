@@ -24,7 +24,6 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, )
 
 
 class QueueMemberServiceTests(OMLBaseTest):
-    omitir_actualizar_permisos = True
 
     def setUp(self):
         super(QueueMemberServiceTests, self).setUp()

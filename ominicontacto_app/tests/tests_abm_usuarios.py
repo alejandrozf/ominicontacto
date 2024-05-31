@@ -176,6 +176,7 @@ class ListaUsuariosTest(ABMUsuariosTest):
         self.admin2 = self.crear_administrador(username='admin2')
 
     def test_admin_ve_links_para_editar_y_borrar_todos(self):
+        self.actualizar_permisos()
         url = reverse('user_list', kwargs={"page": 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -194,6 +195,7 @@ class ListaUsuariosTest(ABMUsuariosTest):
         self.assertContains(response, reverse('agent_update', kwargs={'pk': self.agente.user.id}))
 
     def test_supervisor_solo_ve_links_para_editar_o_borrar_agentes(self):
+        self.actualizar_permisos()
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         url = reverse('user_list', kwargs={"page": 1})
         response = self.client.get(url)
@@ -246,6 +248,7 @@ class BorrarUsuariosTest(ABMUsuariosTest):
         self.assertContains(response, message)
 
     def test_supevisor_no_puede_borrar_users(self):
+        self.actualizar_permisos()
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         admin2 = self.crear_administrador(username='admin2')
         url = reverse('user_delete', kwargs={'pk': admin2.id})
@@ -333,6 +336,7 @@ class EditarUsuariosTest(ABMUsuariosTest):
         self.assertContains(response, message)
 
     def test_supevisor_no_puede_editar_users(self):
+        self.actualizar_permisos()
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         admin2 = self.crear_administrador(username='admin2')
         url = reverse('user_update', kwargs={'pk': admin2.id})

@@ -265,8 +265,9 @@ class Command(BaseCommand):
             email=username + '@example.com',
             password=PASSWORD,
             is_supervisor=False,
-            first_name='Gerente',
-            last_name=username
+            first_name='WebphoneClient',
+            last_name=username,
+            is_cliente_webphone=True
         )
         user.groups.set([Group.objects.get(name=User.CLIENTE_WEBPHONE)])
         cliente_webphone = ClienteWebPhoneProfile(user=user, sip_extension=1000 + user.id)
@@ -323,7 +324,7 @@ class Command(BaseCommand):
 
         self.admin = User.objects.filter(is_staff=True).first()
         self.gerente = self._crear_gerente('gerente')
-        self.cliente_webphone = self._crear_cliente_webphone('webphone')
+        self.cliente_webphone = self._crear_cliente_webphone('webphone_user')
         self._crear_supervisores(max(0, qa_supervisors))
 
         # crear grupo

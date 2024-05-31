@@ -92,7 +92,7 @@ urlpatterns = [
     path('user/list/<int:page>/',
          login_required(views_user_profiles.UserListView.as_view()),
          name='user_list'),
-    path('user/list/download_csv/$',
+    path('user/list/download_csv/',
          login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
          name='descargar_usuarios_csv'),
     path('user/delete/<int:pk>',

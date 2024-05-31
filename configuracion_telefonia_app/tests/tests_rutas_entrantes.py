@@ -149,6 +149,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         }
 
     def test_usuario_customer_no_puede_crear_validacion_fecha_hora(self):
+        self.actualizar_permisos()
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.usr_referente.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -159,6 +160,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_supervisor_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
+        self.actualizar_permisos()
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -170,6 +172,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
+        self.actualizar_permisos()
         url = reverse('crear_validacion_fecha_hora')
         self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
@@ -179,6 +182,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
 
     def test_usuario_customer_no_puede_modificar_validacion_fecha_hora(self):
+        self.actualizar_permisos()
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.usr_referente.username, password=PASSWORD)
@@ -193,6 +197,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_supervisor_puede_modificar_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
+        self.actualizar_permisos()
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.usr_sup.username, password=PASSWORD)
@@ -208,6 +213,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrar_puede_modificar_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
+        self.actualizar_permisos()
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
         self.client.login(username=self.admin.username, password=PASSWORD)

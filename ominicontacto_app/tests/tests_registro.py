@@ -32,6 +32,7 @@ from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 
 
 class RegistroTest(OMLBaseTest):
+    ejecutar_actualizar_permisos = True
 
     def setUp(self):
         super(RegistroTest, self).setUp()
