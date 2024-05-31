@@ -27,7 +27,8 @@ COPY requirements/requirements.txt ./
 RUN mkdir -p $INSTALL_PREFIX/virtualenv \
   && pip3 install --upgrade pip \
   && pip3 install -r requirements.txt \
-  && pip3 install flake8
+  && pip3 install flake8 \
+  && apk del .buildeps
 
 ########################################################################
 # Stage build VueJS
@@ -51,7 +52,7 @@ COPY --from=dev /usr/local/bin/flake8 /usr/local/bin/
 COPY --from=dev /usr/local/bin/uwsgi /usr/local/bin/
 COPY --from=dev /usr/local/bin/daphne /usr/local/bin/
 
-RUN apk add bash \
+RUN apk add --no-cache bash \
         busybox-suid \
         py3-cairo \
         curl \
@@ -69,7 +70,7 @@ RUN apk add bash \
         gcc \
         wget \
         coreutils \
-        sudo  \
+        sudo \
     && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
     &&  tar xzvf libffi-3.3.tar.gz \
     && cd libffi-3.3/ \
