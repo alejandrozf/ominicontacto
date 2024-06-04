@@ -155,12 +155,15 @@ def login_view(request):
             if authentication['ok'] or form.is_valid():
                 primer_log = user.last_login is None
                 login(request, user)
-                user.set_session_key(request.session.session_key)
                 # Si es agente, se ignora el parámetro 'next'
                 if user.is_agente:
                     presence_manager = AgentPresenceManager()
-                    presence_manager.login(user.get_agente_profile())
+                    agente_profile = user.get_agente_profile()
+                    presence_manager.fix_previous_open_session_logs(user, agente_profile)
+                    user.set_session_key(request.session.session_key)
+                    presence_manager.login(agente_profile)
                     return HttpResponseRedirect(reverse('consola_de_agente'))
+                user.set_session_key(request.session.session_key)
                 if user.get_supervisor_profile() is not None and primer_log:
                     return HttpResponseRedirect(reverse('user_change_password'))
                 if 'next' in request.GET and request.GET.get('next') != reverse(
