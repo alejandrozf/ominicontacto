@@ -87,7 +87,7 @@ class AgenteReporteCalificaciones(FormView):
         service_formulario.crea_reporte_csv(agente, hoy, hoy_ahora)
         fecha_desde = fecha_hora_local(datetime.datetime.combine(hoy, datetime.time.min))
         fecha_hasta = fecha_hora_local(datetime.datetime.combine(hoy_ahora, datetime.time.max))
-        listado_calificaciones = agente.calificaciones.filter(fecha__range=(
+        listado_calificaciones = agente.calificaciones.filter(modified__range=(
             fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
             listado_calificaciones=listado_calificaciones))
@@ -112,7 +112,7 @@ class AgenteReporteCalificaciones(FormView):
                                                 resultado=resultado)
         fecha_desde = fecha_hora_local(datetime.datetime.combine(fecha_desde, datetime.time.min))
         fecha_hasta = fecha_hora_local(datetime.datetime.combine(fecha_hasta, datetime.time.max))
-        listado_calificaciones = agente.calificaciones.filter(fecha__range=(
+        listado_calificaciones = agente.calificaciones.filter(modified__range=(
             fecha_desde, fecha_hasta))
         if not resultado == ReporteForm.TODOS_RESULTADOS:
             listado_calificaciones = listado_calificaciones.filter(

@@ -178,15 +178,11 @@ class User(AbstractUser):
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
-                # TODO: Revisar por que está este codigo.
-                #       Si se hace logout normal, no se esta limpiando last_session_key
-                #       Pero Django borra la session automaticamente
+                # Elimina Sessions viejas expiradas o abiertas en otro navegador.
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                # TODO: Este log aparece toda vez que se loggee un usuario y la key sea otra
-                #       O no exista sesion
-                logger.exception(_("Excepcion detectada al obtener session "
-                                   "con el key {0} no existe".format(self.last_session_key)))
+                # Session ya cerrada por logout (o inexistentes)
+                pass
         self.last_session_key = key
         self.save()
 
