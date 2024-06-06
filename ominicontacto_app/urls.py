@@ -58,6 +58,9 @@ urlpatterns = [
     path('blanco/',
          login_required(base.BlancoView.as_view()),
          name='view_blanco'),
+    re_path(base.WebUI.repath,
+            login_required(base.WebUI.as_view()),
+            name="webui"),
 
     # ==========================================================================
     # Instancia
