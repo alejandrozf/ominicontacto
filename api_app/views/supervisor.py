@@ -688,7 +688,7 @@ class ContactosAsignadosCampanaPreviewView(APIView):
         contactos = campana.bd_contacto.contactos.all()
         contactos_ids = [contacto.id for contacto in contactos]
         agentes_contactos = [agente_contacto for agente_contacto in AgenteEnContacto.objects.filter(
-            contacto_id__in=contactos_ids)]
+            campana_id=pk_campana, contacto_id__in=contactos_ids)]
         agente_ids = [agente_contacto.agente_id for agente_contacto in agentes_contactos]
         nombres_agentes = {agente.id: agente.user.get_full_name()
                            for agente in AgenteProfile.objects.select_related(
@@ -697,11 +697,14 @@ class ContactosAsignadosCampanaPreviewView(APIView):
 
         data_contacto = []
         for contacto in contactos:
+            dato_agente = datos_agente.get(contacto.id)
+            # Si no hay datos de AgenteEnContacto no es asignable
+            if dato_agente is None:
+                continue
             datos = {}
             datos['id'] = contacto.id
             datos['telefono'] = contacto.telefono
             datos['id_externo'] = contacto.id_externo
-            dato_agente = datos_agente[contacto.id]
             if dato_agente:
                 datos['estado'] = dato_agente['estado']
                 datos['agente'] = dato_agente['agente']

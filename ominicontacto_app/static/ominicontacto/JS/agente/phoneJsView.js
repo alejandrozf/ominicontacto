@@ -245,6 +245,7 @@ class PhoneJSView {
     }
 
     cargarAgentes(agentes) {
+        agentes.sort(ordenAgentes);
         for (var i = 0; i < agentes.length; i++) {
             var id = agentes[i].id;
             var full_name = agentes[i].full_name;
@@ -415,3 +416,13 @@ var SIP_STATUSES = {
         icon: 'redcross.png'
     },
 };
+
+function ordenAgentes(ag1, ag2){
+    // READY va Primero
+    if (ag1.status == 'READY' && ag2.status != 'READY')
+        return -1;
+    if (ag2.status == 'READY' && ag1.status != 'READY')
+        return 1;
+    // Si ambos o ninguno estan READY, orden por id
+    return Number(ag1.id) - Number(ag2.id);
+}

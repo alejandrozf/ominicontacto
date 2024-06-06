@@ -189,7 +189,7 @@ urlpatterns = [
     re_path(r'api/v1/exportar_csv_no_atendidos/$',
             ExportarCSVNoAtendidos.as_view(),
             name='api_exportar_csv_no_atendidos'),
-    re_path(r'api/vi/supervision/contactos_asignados_preview/(?P<pk_campana>\d+)/$',
+    re_path(r'api/v1/supervision/contactos_asignados_preview/(?P<pk_campana>\d+)/$',
             ContactosAsignadosCampanaPreviewView.as_view(),
             name='api_contactos_asignados_campana_preview'),
     re_path(r'api/v1/exportar_csv_calificaciones_campana/$',
