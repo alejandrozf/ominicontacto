@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <iframe
+    name="webui"
+    src="/{{ prefix }}-{{ name }}/{{ path }}"
+    style="border: none; display: block; margin: 0; padding: 0; width: 100%; height: calc(100vh - 124px);">
+  </iframe>
+  <script>
+    (function(){
+      const name = "{{ name | escapejs }}"
+      const prefix = "{{ prefix | escapejs }}"
+      window.addEventListener("message", function(event) {
+        if (event.data.id === "webui:inner-route-changed") {
+          history.pushState({}, "", `/${prefix}/${name}${event.data.path}`)
+        }
+      })
+    })()
+  </script>
+{% endblock content %}
