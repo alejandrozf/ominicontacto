@@ -1,10 +1,9 @@
 # Release Notes
-2024-05-13
+2024-06-25
 
 ## Added
 
-- oml-2672 Posibilidad de configurar CUSTOM_CORS_ALLOW_HEADERS
-- oml-2664 El comando inicializar_entorno permite crear múltiples agentes y supervisores
+- oml-557: Parameters for scalability are added (listen and worker-reload-mercy)
 
 ## Changed
 
