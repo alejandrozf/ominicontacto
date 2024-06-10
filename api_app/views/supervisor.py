@@ -878,7 +878,11 @@ class AuditSupervisor(APIView):
 
     def post(self, request):
         data = request.data
-        filter_kwargs = {'datetime__date__range': [data['date_start'], data['date_end']]}
+        if 'date_start' in data and data['date_start']:
+            filter_kwargs = {'datetime__date': data['date_start']}
+        else:
+            today = timezone.now().astimezone(timezone.get_current_timezone()).date()
+            filter_kwargs = {'datetime__date': today}
         qs_crudevent = CRUDEvent.objects.filter(**filter_kwargs)\
             .exclude(event_type=CRUDEvent.UPDATE, changed_fields='null')
         qs_loginevent = LoginEvent.objects.filter(**filter_kwargs)
