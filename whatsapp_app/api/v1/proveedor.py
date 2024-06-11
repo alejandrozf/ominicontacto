@@ -18,11 +18,8 @@
 
 # APIs para visualizar proveedores
 from django.utils.translation import ugettext as _
-from django.contrib.postgres.fields import JSONField
 from django.utils.functional import cached_property
-from django.db.models import F
-from django.db.models import Func
-from django.db.models import Value
+from django.db.models import F, Func, Value, JSONField
 from rest_framework import serializers
 from rest_framework import response
 from rest_framework import status

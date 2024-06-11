@@ -1744,7 +1744,7 @@ class Queue(models.Model):
 
     # campos que no usamos
     context = models.CharField(max_length=128, blank=True, null=True)
-    monitor_join = models.NullBooleanField(blank=True, null=True)
+    monitor_join = models.BooleanField(blank=True, null=True)
     monitor_format = models.CharField(max_length=128, blank=True, null=True)
     queue_youarenext = models.CharField(max_length=128, blank=True, null=True)
     queue_thereare = models.CharField(max_length=128, blank=True, null=True)
@@ -1758,9 +1758,9 @@ class Queue(models.Model):
     announce_round_seconds = models.BigIntegerField(blank=True, null=True)
     joinempty = models.CharField(max_length=128, blank=True, null=True)
     leavewhenempty = models.CharField(max_length=128, blank=True, null=True)
-    reportholdtime = models.NullBooleanField(blank=True, null=True)
+    reportholdtime = models.BooleanField(blank=True, null=True)
     memberdelay = models.BigIntegerField(blank=True, null=True)
-    timeoutrestart = models.NullBooleanField(blank=True, null=True)
+    timeoutrestart = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
         return self.name
