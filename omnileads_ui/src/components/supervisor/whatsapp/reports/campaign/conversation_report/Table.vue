@@ -1,10 +1,10 @@
 <template>
   <div class="card">
     <DataTable
+      ref="dt"
       :value="supWhatsReportCampaignConversations"
       class="p-datatable-sm"
       showGridlines
-      tableStyle="min-width: 1600px"
       :scrollable="true"
       scrollHeight="900px"
       responsiveLayout="scroll"
@@ -39,6 +39,7 @@
               class="p-button-outlined"
               @click="cleanFilters()"
             />
+            <Button icon="pi pi-external-link" :label="$t('globals.export_type', { type: 'CSV' })" @click="exportCSV($event)" />
           </div>
         </div>
       </template>
@@ -280,6 +281,9 @@ export default {
             if (option === PROVIDER_TYPES.TWILIO) {
                 return this.$t('forms.whatsapp.provider.types.twilio');
             }
+        },
+        exportCSV() {
+            this.$refs.dt.exportCSV();
         },
         ...mapActions(['initWhatsappProviders', 'agtWhatsConversationDetail'])
     },
