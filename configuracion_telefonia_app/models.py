@@ -37,8 +37,9 @@ R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
 R_MATCH_PATTERN = r'^\+?[\*\w|\.|\[|\]|-]+$'
+R_MATCH_PATTERN_DISCADO = r'^\+?[\*\w|\.|\[|\]|-|#|\+]+$'
 R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
-R_PATRON_DISCADO = r'^(#|\d)+$'
+R_PATRON_DISCADO = r'^(\+|\*|#|\d)+$'
 
 
 class TroncalSIP(models.Model):
@@ -106,8 +107,9 @@ class PatronDeDiscado(models.Model):
     prepend = models.CharField(
         max_length=32, blank=True, null=True, validators=[RegexValidator(R_PATRON_DISCADO)])
     prefix = models.CharField(
-        max_length=32, blank=True, null=True, validators=[RegexValidator(R_DECIMAL)])
-    match_pattern = models.CharField(max_length=100, validators=[RegexValidator(R_MATCH_PATTERN)])
+        max_length=32, blank=True, null=True, validators=[RegexValidator(R_PATRON_DISCADO)])
+    match_pattern = models.CharField(
+        max_length=100, validators=[RegexValidator(R_MATCH_PATTERN_DISCADO)])
     orden = models.PositiveIntegerField()
 
     class Meta:
