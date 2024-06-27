@@ -26,6 +26,7 @@ from factory import (lazy_attribute, SubFactory, Sequence, post_generation)
 from factory.django import DjangoModelFactory, FileField
 
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import (
     AgenteProfile, AutenticacionSitioExterno, BaseDatosContacto, Campana, GrabacionMarca,
@@ -163,7 +164,23 @@ class SupervisorProfileFactory(DjangoModelFactory):
     #  TODO: hacer atributo 'sip_password'
 
 
-COLUMNAS_DB_DEFAULT = ['telefono', 'nombre', 'apellido', 'dni', 'telefono2', 'telefono3']
+COLUMNAS_DB_DEFAULT = [
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_telefono'),
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_nombre'),
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_apellido'),
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_dni'),
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_telefono2'),
+    # Translators: _ usado para identificar estos nombres de campos de base de datos
+    _('_telefono3'),
+]
+DEFAULT_DB_METADATA = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": '\
+                      '["' + '", "'.join([str(x) for x in COLUMNAS_DB_DEFAULT]) + '"],' + \
+                      ' "cols_telefono": [0, 4, 5]}'
 
 
 class BaseDatosContactoFactory(DjangoModelFactory):
@@ -173,10 +190,14 @@ class BaseDatosContactoFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
-    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": '\
-               '["' + '", "'.join(COLUMNAS_DB_DEFAULT) + '"],' + \
-               ' "cols_telefono": [0, 4, 5]}'
+    metadata = str(DEFAULT_DB_METADATA)
     estado = BaseDatosContacto.ESTADO_DEFINIDA
+
+    @classmethod
+    def create_default_metadata(cls):
+        return '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": '\
+               '["' + '", "'.join([str(x) for x in COLUMNAS_DB_DEFAULT]) + '"],' + \
+               ' "cols_telefono": [0, 4, 5]}'
 
 
 class ContactoFactory(DjangoModelFactory):

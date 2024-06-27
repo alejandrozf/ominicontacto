@@ -11,7 +11,7 @@ No changes
 
 ## Fixed
 
-No Fixes
+- oml-2709 Translation fixes
 
 ## Removed
 

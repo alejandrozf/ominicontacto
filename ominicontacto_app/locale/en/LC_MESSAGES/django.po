@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 19:27-0300\n"
+"POT-Creation-Date: 2024-06-27 10:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1121,6 +1121,22 @@ msgstr "Passwords are not the same"
 msgid "Ingrese la nueva contraseña"
 msgstr "Enter new password"
 
+#: ominicontacto_app/forms/base.py:242 ominicontacto_app/models.py:1161
+msgid "Manual"
+msgstr "Manual"
+
+#: ominicontacto_app/forms/base.py:243 ominicontacto_app/models.py:1163
+msgid "Dialer"
+msgstr "Dialer"
+
+#: ominicontacto_app/forms/base.py:244 ominicontacto_app/models.py:1165
+msgid "Entrante"
+msgstr "Inbound"
+
+#: ominicontacto_app/forms/base.py:245 ominicontacto_app/models.py:1167
+msgid "Preview"
+msgstr "Preview"
+
 #: ominicontacto_app/forms/base.py:256
 msgid "Tipo de campaña"
 msgstr "Campaign type"
@@ -1362,10 +1378,10 @@ msgid "Debe seleccionar un sitio externo"
 msgstr "You must select an external URL"
 
 #: ominicontacto_app/forms/base.py:853 ominicontacto_app/models.py:1511
-#: ominicontacto_app/tests/tests_campanas.py:245
-#: ominicontacto_app/tests/tests_campanas.py:258
-#: ominicontacto_app/tests/tests_campanas.py:271
-#: ominicontacto_app/tests/tests_campanas.py:275
+#: ominicontacto_app/tests/tests_campanas.py:246
+#: ominicontacto_app/tests/tests_campanas.py:259
+#: ominicontacto_app/tests/tests_campanas.py:272
+#: ominicontacto_app/tests/tests_campanas.py:276
 msgid "No se puede elegir un URL externo si selecciono un formulario."
 msgstr "Can't select an external URL if a campaign form was selected"
 
@@ -1410,7 +1426,7 @@ msgstr ""
 "another one"
 
 #: ominicontacto_app/forms/base.py:1030
-#: ominicontacto_app/tests/tests_campanas.py:2031
+#: ominicontacto_app/tests/tests_campanas.py:2032
 msgid "Debe elegir un formulario para la gestión."
 msgstr "You must select a form to engage"
 
@@ -1505,8 +1521,8 @@ msgid "Demasiados campos obligatorios seleccionados."
 msgstr "Too many mandatory fields selected."
 
 #: ominicontacto_app/forms/base.py:1619 ominicontacto_app/forms/base.py:2045
-#: ominicontacto_app/tests/tests_campanas.py:297
-#: ominicontacto_app/tests/tests_campanas.py:309
+#: ominicontacto_app/tests/tests_campanas.py:298
+#: ominicontacto_app/tests/tests_campanas.py:310
 msgid "No puede seleccionar una BD vacia"
 msgstr "You can't select an empty DB"
 
@@ -2022,22 +2038,6 @@ msgstr "Active Template"
 #: ominicontacto_app/models.py:1157
 msgid "Template Borrado"
 msgstr "Deleted Template"
-
-#: ominicontacto_app/models.py:1161
-msgid "Manual"
-msgstr "Manual"
-
-#: ominicontacto_app/models.py:1163
-msgid "Dialer"
-msgstr "Dialer"
-
-#: ominicontacto_app/models.py:1165
-msgid "Entrante"
-msgstr "Inbound"
-
-#: ominicontacto_app/models.py:1167
-msgid "Preview"
-msgstr "Preview"
 
 #: ominicontacto_app/models.py:1185 ominicontacto_app/models.py:3778
 msgid "Formulario"
@@ -3033,7 +3033,7 @@ msgstr ""
 
 #: ominicontacto_app/services/exportar_base_datos.py:81
 msgid "telefono"
-msgstr "Phone Number"
+msgstr "phone_number"
 
 #: ominicontacto_app/services/exportar_base_datos.py:82
 msgid "pk_contacto"
@@ -3388,12 +3388,12 @@ msgid " %(OMNILEADS_TM)s - Permiso Denegado "
 msgstr " %(OMNILEADS_TM)s - Permission Denied "
 
 #: ominicontacto_app/templates/403.html:39
-#: ominicontacto_app/templates/base.html:127
+#: ominicontacto_app/templates/base.html:130
 msgid "Permiso denegado"
 msgstr "Permission Denied"
 
 #: ominicontacto_app/templates/403.html:41
-#: ominicontacto_app/templates/base.html:128
+#: ominicontacto_app/templates/base.html:131
 msgid "Ud. no posee los permisos requeridos para acceder a esta pagina."
 msgstr "You don't have correct permissions to access this web page."
 
@@ -3895,7 +3895,7 @@ msgstr "Recordings"
 
 #: ominicontacto_app/templates/agente/base_agente.html:722
 #: ominicontacto_app/templates/agente/update_agent_password.html:73
-#: ominicontacto_app/templates/base.html:88
+#: ominicontacto_app/templates/base.html:91
 #: ominicontacto_app/templates/user/force_password_change.html:73
 msgid "Salir"
 msgstr "Exit"
@@ -4295,7 +4295,7 @@ msgid "Observaciones: "
 msgstr "Comments: "
 
 #: ominicontacto_app/templates/agente/update_agent_password.html:73
-#: ominicontacto_app/templates/base.html:88
+#: ominicontacto_app/templates/base.html:91
 #: ominicontacto_app/templates/user/force_password_change.html:73
 msgid "Deslogueo"
 msgstr "Logoff"
@@ -6706,6 +6706,36 @@ msgstr "Your version: {0}"
 msgid "Versión actual: {0}"
 msgstr "Actual version: {0}"
 
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:169
+msgid "_telefono"
+msgstr "phone_number"
+
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:171
+msgid "_nombre"
+msgstr "name"
+
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:173
+msgid "_apellido"
+msgstr "last_name"
+
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:175
+msgid "_dni"
+msgstr "id"
+
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:177
+msgid "_telefono2"
+msgstr "phone_number_2"
+
+#. Translators: _ usado para identificar estos nombres de campos de base de datos
+#: ominicontacto_app/tests/factories.py:179
+msgid "_telefono3"
+msgstr "phone_number_3"
+
 #: ominicontacto_app/tests/tests_abm_usuarios.py:113
 #: ominicontacto_app/views_user_profiles.py:122
 msgid "Nuevo Usuario: Selección de Campañas"
@@ -6758,17 +6788,17 @@ msgstr "You don't have permission to add contacts to this campaign."
 msgid "No tiene permiso para calificar llamadas de esa campaña."
 msgstr "You don't have permission to disposition calls for this campaign."
 
-#: ominicontacto_app/tests/tests_campanas.py:408
+#: ominicontacto_app/tests/tests_campanas.py:409
 #: ominicontacto_app/utiles.py:390
 msgid "el nombre no puede contener tildes ni caracteres no ASCII"
 msgstr "name string cannot have accents or non ASCII characters"
 
-#: ominicontacto_app/tests/tests_campanas.py:413
+#: ominicontacto_app/tests/tests_campanas.py:414
 #: ominicontacto_app/utiles.py:391
 msgid "el nombre no puede contener espacios"
 msgstr "name string cannot have spaces"
 
-#: ominicontacto_app/tests/tests_campanas.py:714
+#: ominicontacto_app/tests/tests_campanas.py:715
 #, python-brace-format
 msgid "Debe ingresar un minimo de {0} minutos"
 msgstr "Insert a minimum of {0} minutes"
@@ -7139,25 +7169,25 @@ msgstr "You cannot delete a campaign that is being in use by a Call Flow"
 msgid "No tiene permiso para editar esa campaña."
 msgstr "You don't have permission to edit this campaign."
 
-#: ominicontacto_app/views_campana_creacion.py:183
+#: ominicontacto_app/views_campana_creacion.py:184
 msgid ""
 "Operación Exitosa:        se llevó a cabo con éxito la eliminación del "
 "Template."
 msgstr "Success! Template deleted."
 
-#: ominicontacto_app/views_campana_creacion.py:365
+#: ominicontacto_app/views_campana_creacion.py:366
 msgid "QueueAdd failed "
 msgstr "QueueAdd failed"
 
-#: ominicontacto_app/views_campana_creacion.py:377
+#: ominicontacto_app/views_campana_creacion.py:378
 msgid "La campaña tiene agentes no asociados al sistema externo."
 msgstr "The campaign has agents not associated to the external system"
 
-#: ominicontacto_app/views_campana_creacion.py:386
+#: ominicontacto_app/views_campana_creacion.py:387
 msgid "La base de datos seleccionada esta asociada a otro sistema externo."
 msgstr "Contact database selected is associated to another external system"
 
-#: ominicontacto_app/views_campana_creacion.py:395
+#: ominicontacto_app/views_campana_creacion.py:396
 msgid "El sitio externo seleccionado esta asociado a otro sistema externo."
 msgstr "External site selected is associated to another external system"
 
@@ -7472,3 +7502,6 @@ msgstr "WebPhone client deactivated"
 #: ominicontacto_app/views_user_profiles.py:658
 msgid "El Cliente WebPhone fue activado"
 msgstr "WebPhone client activated"
+
+#~ msgid "dni"
+#~ msgstr "id"
