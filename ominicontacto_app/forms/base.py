@@ -239,10 +239,10 @@ class CampaingsByTypeForm(forms.Form):
     DIALER = 2
     ENTRANTE = 3
     PREVIEW = 4
-    MANUAL_DISPLAY = 'Manual'
-    DIALER_DISPLAY = 'Dialer'
-    ENTRANTE_DISPLAY = 'Entrante'
-    PREVIEW_DISPLAY = 'Preview'
+    MANUAL_DISPLAY = _('Manual')
+    DIALER_DISPLAY = _('Dialer')
+    ENTRANTE_DISPLAY = _('Entrante')
+    PREVIEW_DISPLAY = _('Preview')
 
     CAMPAING_TYPES = (
         ('-------', '-------'),
