@@ -13,14 +13,14 @@
 
  You should have received a copy of the GNU Lesser General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
-
+/* global interpolate */
 /*
  * Código js relacionado con vista de creación/modificación de Troncales SIP
  */
 
 var templates = [
     {
-        'name': 'Internet SIP Trunk',
+        'id': 0,
         'template':
           'type=wizard\n\
 transport=trunk-nat-transport\n\
@@ -41,7 +41,7 @@ outbound_auth/username=****YOUR SIP_USERNAME****\n\
 outbound_auth/password=****YOUR SIP_PASSWORD****'
     },
     {
-        'name': 'Dedicated SIP Trunk',
+        'id': 1,
         'template':
           'type=wizard\n\
 transport=trunk-transport\n\
@@ -61,7 +61,7 @@ endpoint/context=from-pstn\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
-        'name': 'PBX OmniLeads (LAN)',
+        'id': 2,
         'template':
           'type=wizard\n\
 transport=trunk-transport\n\
@@ -84,7 +84,7 @@ outbound_auth/username=****SIP_USER OML -> PBX****\n\
 outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
-        'name': 'PBX OmniLeads (NAT)',
+        'id': 3,
         'template':
         'type=wizard\n\
 transport=trunk-nat-transport\n\
@@ -107,7 +107,7 @@ outbound_auth/username=****SIP_USER OML -> PBX****\n\
 outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
-        'name': 'OML Docker',
+        'id': 4,
         'template':
         'type=wizard\n\
 transport=trunk-nat-docker-transport\n\
@@ -130,7 +130,7 @@ outbound_auth/username=****SIP_USER OML -> PBX****\n\
 outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
-        'name': 'Custom',
+        'id': 5,
         'template': '',
     },
 ];
@@ -155,6 +155,25 @@ function applyTemplate(i){
     $('#id_text_config').val(templates[i].template);
 }
 
+function getTemplateName(template_id){
+    var OMNILEADS_TM = $('#omnileads_tm').val() == undefined? 'asterisk':$('#omnileads_tm').val();
+    switch (template_id) {
+    case 0:
+        return 'Internet SIP Trunk';
+    case 1:
+        return 'Dedicated SIP Trunk';
+    case 2: 
+        return interpolate('PBX %(OMNILEADS_TM)s (LAN)', {OMNILEADS_TM:OMNILEADS_TM},true);
+    case 3:
+        return interpolate('PBX %(OMNILEADS_TM)s (NAT)', {OMNILEADS_TM:OMNILEADS_TM},true);
+    case 4:
+        return 'OML Docker';
+    case 5:
+        return 'Custom';
+    }
+    return '';
+}
+
 $(function() {
     // Create Template Options
     var options = $('<div id="template_options"><br>\
@@ -162,7 +181,8 @@ $(function() {
 
     for (var i in templates){
         var template = templates[i];
-        var butt = $('<input type="button" value="' + template.name + '" id="template-buttons" class="btn btn-primary" />');
+        var template_name = getTemplateName(template.id);
+        var butt = $('<input type="button" value="' + template_name + '" id="template-buttons" class="btn btn-primary" />');
         options.append(butt);
         options.append('<br>');
         butt.on('click', {'template': template.template}, function(e) {
