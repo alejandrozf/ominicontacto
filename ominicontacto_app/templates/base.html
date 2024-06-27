@@ -70,6 +70,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     </head>
     <body>
+        <!-- Constants -->
+        <input type="hidden" value="{{ OMNILEADS_TM }}" id="omnileads_tm">
+
         <div class="wrapper-main">
             {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
                 {% include "gestor/sidebar_gestion.html" %}
