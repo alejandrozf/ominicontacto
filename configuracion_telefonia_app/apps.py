@@ -98,7 +98,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         audios = []
         if 'adicionar_audios_asterisk' in permissions:
             audios.append({
-                'label': _('Paquetes de Audio de {0}'.format(ASTERISK_TM)),
+                'label': _('Paquetes de Audio de {0}').format(ASTERISK_TM),
                 'url': reverse('adicionar_audios_asterisk')
             })
         if 'lista_archivo_audio' in permissions:
