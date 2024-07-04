@@ -184,35 +184,35 @@ urlpatterns = [
     # ==========================================================================
     # Grabaciones
     # ==========================================================================
-    re_path(r'^node/grabacion/marcar/$',
-            login_required(views_grabacion.MarcarGrabacionView.as_view()),
-            name='grabacion_marcar',
-            ),
+    path('node/grabacion/marcar/',
+         login_required(views_grabacion.MarcarGrabacionView.as_view()),
+         name='grabacion_marcar',
+         ),
     re_path(r'^grabacion/descripcion/(?P<callid>[\d .]+)/$',
             login_required(views_grabacion.GrabacionDescripcionView.as_view()),
             name='grabacion_descripcion',
             ),
-    re_path(r'^grabacion/buscar/(?P<pagina>\d+)/$',
-            login_required(
-                views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
-            name='grabacion_buscar',
-            ),
-    re_path(r'^grabacion/agente/buscar/(?P<pagina>\d+)/$',
-            login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
-            name='grabacion_agente_buscar',
-            ),
+    path('grabacion/buscar/<int:pagina>/',
+         login_required(
+             views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
+         name='grabacion_buscar',
+         ),
+    path('grabacion/agente/buscar/<int:pagina>/',
+         login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
+         name='grabacion_agente_buscar',
+         ),
 
 
     # ==========================================================================
     # Auditorías (Backoffice)
     # ==========================================================================
-    re_path(r'^auditar_gestion/buscar/(?P<pagina>\d+)/$',
-            login_required(
-                views_auditorias.AuditarCalificacionesFormView.as_view()),
-            name='buscar_auditorias_gestion',),
-    re_path(r'^auditar_gestion/editar/(?P<pk_calificacion>\d+)/$',
-            login_required(views_auditorias.AuditoriaCalificacionFormView.as_view()),
-            name='auditar_calificacion_cliente'),
+    path('auditar_gestion/buscar/<int:pagina>/',
+         login_required(
+             views_auditorias.AuditarCalificacionesFormView.as_view()),
+         name='buscar_auditorias_gestion',),
+    path('auditar_gestion/editar/<int:pk_calificacion>/',
+         login_required(views_auditorias.AuditoriaCalificacionFormView.as_view()),
+         name='auditar_calificacion_cliente'),
 
 
 

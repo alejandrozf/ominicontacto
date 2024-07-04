@@ -118,12 +118,15 @@ $(function() {
         end = moment(moment(Date.parse($fechaElegidaHasta.val())));
     }
 
-    function cb(start, end) {
+    initSubmitButton();
+    var date_format = 'DD/MM/YYYY';
+
+    function set_daterange_input_values(start, end) {
         $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
     $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        $(this).val(picker.startDate.format(date_format) + ' - ' + picker.endDate.format(date_format));
     });
 
     $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
@@ -132,17 +135,20 @@ $(function() {
 
     // Init daterange plugin
     var ranges = get_ranges($('#campana_fecha_inicio').val());
-    $('#id_fecha').daterangepicker({
-        locale: {
-            format: 'DD/MM/YYYY'
+    $('#id_fecha').daterangepicker(
+        {
+            locale: {
+                format: date_format
+            },
+
+            startDate: start,
+            endDate: end,
+            ranges: ranges,
         },
+        set_daterange_input_values
+    );
 
-        startDate: start,
-        endDate: end,
-        ranges: ranges,
-    }, cb);
-
-    cb(start, end);
+    set_daterange_input_values(start, end);
 
     $csvContactadosDescarga.on('click', function() {
         var $self = $(this);
@@ -163,3 +169,10 @@ $(function() {
     });
 
 });
+
+function initSubmitButton() {
+    $('#id_buscar_btn').click(function (params) {
+        $('#submit_msg').show();
+        setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
+    });
+}

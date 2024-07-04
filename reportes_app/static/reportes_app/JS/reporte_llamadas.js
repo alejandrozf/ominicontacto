@@ -16,7 +16,12 @@
 
 */
 
-  $(function() {
+/* global get_ranges */
+
+
+$(function() {
+
+    initSubmitButton();
     var date_format = 'DD/MM/YYYY';
 
     function set_daterange_input_values(start, end) {
@@ -24,7 +29,7 @@
     }
 
     $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format(date_format) + ' - ' + picker.endDate.format(date_format));
+        $(this).val(picker.startDate.format(date_format) + ' - ' + picker.endDate.format(date_format));
     });
 
     $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
@@ -34,25 +39,32 @@
     // Init daterange plugin
     var ranges = get_ranges();
     $('#id_fecha').daterangepicker(
-      {
-        locale: {
-          format: date_format
+        {
+            locale: {
+                format: date_format
+            },
+            ranges: ranges,
         },
-        ranges: ranges,
-      },
-      set_daterange_input_values
+        set_daterange_input_values
     );
-  });
+});
 
-  function exportarReporte(tipo_reporte){
+function exportarReporte(tipo_reporte){
     $('#tipo_reporte').val(tipo_reporte);
     $('#exportar_reporte').submit();
-  };
+}
 
-  function mostrarLlamadasPorFecha(tipo){
-    $('#modalLlamadas' + tipo).modal('show')
-  };
+function mostrarLlamadasPorFecha(tipo){
+    $('#modalLlamadas' + tipo).modal('show');
+}
 
-  function toggleTiposDeLlamadaPorFecha(tipo, id){
+function toggleTiposDeLlamadaPorFecha(tipo, id){
     $('tr[fechas=Fechas' + tipo + '_' + id + ']').toggle();
-  };
+}
+
+function initSubmitButton() {
+    $('#id_buscar_btn').click(function (params) {
+        $('#submit_msg').show();
+        setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
+    });
+}
