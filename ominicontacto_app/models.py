@@ -686,16 +686,20 @@ class FieldFormulario(models.Model):
 
 # aplica lo que está en la doc
 # https://docs.djangoproject.com/en/1.11/topics/migrations/#serializing-values
+DIR_AUDIO_ORIGINAL = 'audios_reproduccion'
+DIR_AUDIO_ASTERISK = 'audios_asterisk'
+
+
 def upload_to_audio_original(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
-    return "audios_reproduccion/{0}-{1}".format(
-        str(uuid.uuid4()), filename)[:95]
+    new_filename = "{0}-{1}".format(str(uuid.uuid4()), filename)
+    return os.path.join(DIR_AUDIO_ORIGINAL, new_filename)[:95]
 
 
 def upload_to_audio_asterisk(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
-    return "audios_asterisk/{0}-{1}".format(
-        str(uuid.uuid4()), filename)[:95]
+    new_filename = "{0}-{1}".format(str(uuid.uuid4()), filename)
+    return os.path.join(DIR_AUDIO_ASTERISK, new_filename)[:95]
 
 
 class ArchivoDeAudioManager(models.Manager):

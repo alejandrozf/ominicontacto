@@ -19,6 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %} 
 {% load static %} 
 {% load i18n %} 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/nuevo_edita_archivo_audio.js' %}"></script>
+{% endblock %}
 {% block content %}
 <h1>{% trans 'Nuevo audio' %}</h1>
 
@@ -40,12 +43,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.audio_original.errors }}
         </div>
         {% if object.audio_original %}
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h4>{% trans 'Archivo de Audio' %}</h4>
             <audio id="audio" preload="metadata" src="{{audio_url}}" controls></audio>
-            <input class="hidden" id="durAudio">
         </div>
         {% endif %}
+        <div class="col-md-6">
+            <label for="{{ form.usar_tts.id_for_label }}">{{ form.usar_tts.label_tag }}</label> 
+            {{ form.usar_tts }} 
+            {{ form.usar_tts.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.tts_service.id_for_label }}">{{ form.tts_service.label_tag }}</label> 
+            {{ form.tts_service }} 
+            {{ form.tts_service.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.tts_text.id_for_label }}">{{ form.tts_text.label_tag }}</label> 
+            {{ form.tts_text }} 
+            {{ form.tts_text.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.tts_voice.id_for_label }}">{{ form.tts_voice.label_tag }}</label> 
+            {{ form.tts_voice }} 
+            {{ form.tts_voice.errors }}
+        </div>
     </div>
 
     <hr>
@@ -57,7 +79,5 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </a>
 
 </form>
-<script type="text/javascript" src="{% static 'ominicontacto/JS/duracion_audio.js' %}"></script>
-
 
 {% endblock %}

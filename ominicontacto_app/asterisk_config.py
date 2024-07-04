@@ -869,10 +869,12 @@ class AudioConfigFile(object):
         self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
 
     def _encode_audio_base64_str(self):
-        media_root = settings.MEDIA_ROOT.replace('//', '/')
         if os.getenv('S3_STORAGE_ENABLED'):
-            s3_handler = StorageService()
-            s3_handler.download_file(self.file_name, media_root, 'media_root')
+            # Solo descargo el audio de S3 si no existe localmente
+            if not os.path.exists(self._filename):
+                media_root = settings.MEDIA_ROOT.replace('//', '/')
+                s3_handler = StorageService()
+                s3_handler.download_file(self.file_name, media_root, 'media_root')
 
         data = Path(self._filename).read_bytes()
         res = base64.b64encode(data)

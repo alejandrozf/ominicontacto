@@ -32,6 +32,7 @@ django-widget-tweaks==1.4.12
 djangorestframework==3.14.0
 enum34==1.1.10
 factory-boy==3.2.1
+gTTS==2.5.1
 Jinja2==3.1.2
 jsonschema==4.17.0
 ipaddress==1.0.23
@@ -50,6 +51,7 @@ Pillow==9.3.0
 prompt-toolkit==3.0.32
 psycopg2-binary==2.9.9 
 ptyprocess==0.7.0
+py-espeak-ng==0.1.8
 pycairo==1.25.1
 pycparser==2.21
 pydub==0.25.1
@@ -67,6 +69,7 @@ simplegeneric==0.8.1
 six==1.16.0
 tinycss==0.4
 traitlets==5.5.0
+tts-wrapper==0.8.0
 unicodecsv==0.14.1
 wcwidth==0.2.5
 websocket-client==1.6.1
