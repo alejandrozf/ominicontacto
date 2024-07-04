@@ -21,34 +21,34 @@
 var subscribeConfirmationMessage = 'Subscribed!';
 
 $(function() {
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-    function cb(start, end) {
-        $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+
+    initSubmitButton();
+    var date_format = 'DD/MM/YYYY';
+
+    function set_daterange_input_values(start, end) {
+        $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
     $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        $(this).val(picker.startDate.format(date_format) + ' - ' + picker.endDate.format(date_format));
     });
 
     $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
         $(this).val('');
     });
 
-    var ranges = get_ranges();
-
     // Init daterange plugin
+    var ranges = get_ranges();
     $('#id_fecha').daterangepicker(
         {
             locale: {
-                format: 'DD/MM/YYYY'
+                format: date_format
             },
-            autoUpdateInput: false,
             ranges: ranges,
-        }, cb);
+        },
+        set_daterange_input_values
+    );
 
-    cb(start, end);
-    
     const checkGeneral = $('#check-general');
     checkGeneral.on('click', function() {
         cambiaEstadoChecks(checkGeneral.prop('checked'));
@@ -63,7 +63,6 @@ $(function() {
     $('#csvDescarga').on('click', function() {
         wsProcess();
     });
-
 });
 
 function cambiaEstadoChecks(estado) {
@@ -147,4 +146,11 @@ function prepareData() {
         res.push(id);
     });
     return res;
+}
+
+function initSubmitButton() {
+    $('#id_buscar_btn').click(function (params) {
+        $('#submit_msg').show();
+        setTimeout(function () { $('#id_buscar_btn').attr('disabled', true); }, 0);
+    });
 }
