@@ -97,7 +97,8 @@ class InteraccionConSistemaExterno(object):
         verify_ssl = autenticacion.ssl_estricto
         try:
             ahora = now()
-            response = requests.post(autenticacion.url, parametros, verify=verify_ssl, timeout=10)
+            response = requests.post(autenticacion.url, json=parametros,
+                                     verify=verify_ssl, timeout=10)
         except Exception as e:
             return err_msg.format(e), True
 
@@ -118,8 +119,12 @@ class InteraccionConSistemaExterno(object):
         if autenticacion.duracion > 0:
             autenticacion.expiracion_token = ahora + timedelta(seconds=autenticacion.duracion)
         else:
-            duracion = self.leer_campo(autenticacion.campo_duracion, response_json)
-            duracion = int(float(duracion))
+            try:
+                duracion = self.leer_campo(autenticacion.campo_duracion, response_json)
+                duracion = int(float(duracion))
+            except Exception:
+                logger.warning('Error campo_duracion. ID: ' + autenticacion.id)
+                duracion = 1
             autenticacion.expiracion_token = ahora + timedelta(seconds=duracion)
         autenticacion.save()
         return autenticacion.token, False
