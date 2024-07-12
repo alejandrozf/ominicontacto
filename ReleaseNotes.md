@@ -1,9 +1,9 @@
 # Release Notes
-2024-07-05
+2024-07-12
 
 ## Added
 
-- oml-2700 Agents to transder ordered by Ready state
+- oml-2700 Agents to transfer ordered by Ready state
 - oml-2674 Whatsapp conversations can be exported to .csv file
 
 ## Changed
@@ -17,7 +17,7 @@
 
 - oml-2669 Fix inconsistent agents activity logging
 - oml-2569 Fix previous day data showing in Inbound calls Supervision
-
+- Fix External Site Json Authentication
 
 ## Removed
 
