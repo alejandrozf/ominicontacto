@@ -44,7 +44,7 @@ from reportes_app.models import ActividadAgenteLog
 
 
 class APITest(OMLBaseTest):
-    """Agrupa todos los test relacionados con los servicios creados para la API del sistema"""
+    """Agrupa demasiados test relacionados con los servicios creados para la API del sistema"""
 
     def setUp(self):
         super(APITest, self).setUp()
@@ -126,6 +126,7 @@ class APITest(OMLBaseTest):
 
     def test_api_campanas_supervisor_usr_supervisor_no_admin_obtiene_campanas_activas_asignadas(
             self):
+        self.actualizar_permisos()
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
@@ -133,6 +134,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.data[0]['id'], self.campana_activa_supervisor.id)
 
     def test_servicio_campanas_supervisor_usuario_agente_no_accede_a_servicio(self):
+        self.actualizar_permisos()
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
@@ -154,12 +156,14 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
 
     def test_servicio_opciones_calificaciones_usuario_no_agente_no_accede_a_servicio(self):
+        self.actualizar_permisos()
         url = reverse('api_campana_opciones_calificacion-list', args=[self.campana_activa.pk, 1])
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 403)
 
     def test_servicio_opciones_calificaciones_usuario_agente_accede_a_servicio(self):
+        self.actualizar_permisos()
         id_externo = "id_externo_campana_activa"
         self.sistema_externo.campanas.add(self.campana_activa)
         self.campana_activa.id_externo = id_externo
@@ -172,6 +176,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
 
     def test_servicio_opciones_calificaciones_usuario_agente_accede_a_servicio_via_token(self):
+        self.actualizar_permisos()
         token_agente = Token.objects.get(user=self.agente_profile.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
@@ -186,6 +191,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
 
     def test_api_vista_opciones_calificaciones_no_es_accessible_usando_token_no_agente(self):
+        self.actualizar_permisos()
         token_supervisor = Token.objects.get(user=self.supervisor_admin.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_supervisor)
@@ -395,6 +401,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.data['token'], token_obj.key)
 
     def test_api_vista_contactos_campanas_es_accessible_usando_token_agente(self):
+        self.actualizar_permisos()
         ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
         cantidad = self.campana_activa.bd_contacto.contactos.count()
         token_agente = Token.objects.get(user=self.agente_profile.user).key
@@ -407,6 +414,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.data['recordsTotal'], cantidad)
 
     def test_api_vista_contactos_campanas_no_es_accessible_usando_token_no_agente(self):
+        self.actualizar_permisos()
         token_agente = Token.objects.get(user=self.supervisor_admin.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
@@ -451,6 +459,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
 
     def test_api_adiciona_calificacion_ids_internos_no_se_accede_credenciales_no_agente(self):
+        self.actualizar_permisos()
         observaciones = 'calificacion externa'
         contacto = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
         url = reverse('api_disposition-list')

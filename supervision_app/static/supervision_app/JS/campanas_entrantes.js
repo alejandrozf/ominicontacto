@@ -56,40 +56,49 @@ $(function() {
                 .replaceAll('"[', '[')
                 .replaceAll(']"', ']'));
             if (row['NAME']) {
+                // Agent Stats Data
                 agents.updateAgent(row);
                 haveAgentsData = true;
-            } else if (row['nombre'] && !fistCallStats[row['nombre']]) {
+            } else if (row['nombre'] && (!fistCallStats[row['nombre']] || row['START'])) {
+                // Campaign Stats Data
                 fistCallStats[row['nombre']] = row;
             }
         });
 
+        let updated_with_no_calls = [];
+        // Update/add rows with received Campaign Stats Data 
         for (const campaign in fistCallStats) {
-            let row = table_entrantes
-                .row('#' + campaign);
+            let row = table_entrantes.row('#' + campaign);
             let dataRow = row.data();
             if (dataRow == null) {
-                let newDataRow = new InboundStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                let campaign_id = campanas_id_supervisor[campanas_supervisor.indexOf(campaign)];
+                let newDataRow = new InboundStats(campaign_id, campaign);
                 newDataRow.updateCallStats(fistCallStats[campaign]);
-                table_entrantes.row.add(newDataRow);
+                if (!newDataRow.hasNoCalls()){
+                    table_entrantes.row.add(newDataRow);
+                }
             } else {
                 dataRow.updateCallStats(fistCallStats[campaign]);
                 row.data(dataRow);
+                if (dataRow.hasNoCalls()){
+                    updated_with_no_calls.push(row);
+                }
             }
         }
 
+        // Update/add rows with received Agents Stats Data 
         if (haveAgentsData) {
             let newAgentStats = agents.calculateStats(campanas_supervisor);
-            console.log(newAgentStats);
             for (const campaign in newAgentStats) {
                 const statsEmpty = emptyStats(newAgentStats[campaign]);
-                let row = table_entrantes
-                    .row('#' + campaign);
+                let row = table_entrantes.row('#' + campaign);
                 let dataRow = row.data();
                 if (dataRow == null && !statsEmpty) {
-                    let newDataRow = new InboundStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                    let campaign_id = campanas_id_supervisor[campanas_supervisor.indexOf(campaign)];
+                    let newDataRow = new InboundStats(campaign_id, campaign);
                     newDataRow.updateAgentStats(newAgentStats[campaign]);
                     table_entrantes.row.add(newDataRow);
-                } else if (dataRow && dataRow.isEmpty() && statsEmpty) {
+                } else if (dataRow && dataRow.hasNoCalls() && statsEmpty) {
                     row.remove();
                 } else if (dataRow) {
                     dataRow.updateAgentStats(newAgentStats[campaign]);
@@ -97,6 +106,15 @@ $(function() {
                 }
             }
         }
+
+        // Remove rows with no calls and no agents
+        updated_with_no_calls.forEach(row => {
+            let dataRow = row.data();
+            if (dataRow && dataRow.hasNoAgents()){
+                row.remove();
+            }
+        });
+
         table_entrantes.draw();
     }
 
@@ -172,7 +190,7 @@ class InboundStats {
         this.porcentaje_objetivo = 0;
     }
 
-    isEmpty() {
+    hasNoCalls() {
         if (this.llamadas_en_espera != 0 ||
             this.atendidas != 0 ||
             this.abandonadas != 0 ||
@@ -180,6 +198,10 @@ class InboundStats {
             this.gestiones != 0 ||
             this.porcentaje_objetivo != 0) return false;
         return true;
+    }
+
+    hasNoAgents() {
+        return this.agentes_online == 0;
     }
 
     updateCallStats(newStats) {
@@ -191,11 +213,13 @@ class InboundStats {
         this.porcentaje_objetivo = newStats['porcentaje_objetivo'];
 
         var abandonadas = parseInt(newStats['llamadas_abandonadas']);
+        this.t_promedio_abandono = 0;
         if (abandonadas > 0) {
             this.t_promedio_abandono = parseFloat(newStats['tiempo_acumulado_abandonadas']) / abandonadas;
         }
 
         var atendidas = parseInt(newStats['llamadas_atendidas']);
+        this.t_promedio_espera = 0;
         if (atendidas > 0) {
             this.t_promedio_espera = parseFloat(newStats['tiempo_acumulado_espera']) / atendidas;
         }
@@ -239,6 +263,9 @@ class Agents {
 
     updateAgent(newAgentData) {
         const agentId = newAgentData.id;
+        if (agentId == undefined){
+            return;
+        }
         this.agentList[agentId] = (this.agentList[agentId]) ? this.agentList[agentId] : {};
 
         if (this.agentList[agentId]['timestamp'] &&

@@ -65,6 +65,7 @@ class RolesYPermisosAPITest(OMLBaseTest):
         self.assertEqual(response.json()['message'], _('Se esperaba el campo "name"'))
 
     def test_asignar_permisos_a_rol_ok(self):
+        self.actualizar_permisos()
         nombre_rol = 'Rol_1'
         rol = Group.objects.create(name=nombre_rol)
         nombres_permisos = ['api_new_role', 'api_update_role_permissions']
@@ -79,6 +80,7 @@ class RolesYPermisosAPITest(OMLBaseTest):
         self.assertEqual(set(id_permisos), set(ids_asignados))
 
     def test_api_asignar_permisos_valida_parametros(self):
+        self.actualizar_permisos()
         nombre_rol = 'Rol_1'
         self.assertFalse(Group.objects.filter(name=nombre_rol).exists())
         url = reverse('api_update_role_permissions')

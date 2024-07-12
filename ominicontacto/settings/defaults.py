@@ -201,6 +201,7 @@ STATICFILES_DIRS = [
     ("omnileads-frontend", os.path.join(BASE_DIR, "omnileads_ui/dist")),
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
 TEST_RUNNER = "tests.tests.ManagedModelTestRunner"

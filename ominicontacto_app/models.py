@@ -178,15 +178,11 @@ class User(AbstractUser):
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
-                # TODO: Revisar por que está este codigo.
-                #       Si se hace logout normal, no se esta limpiando last_session_key
-                #       Pero Django borra la session automaticamente
+                # Elimina Sessions viejas expiradas o abiertas en otro navegador.
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                # TODO: Este log aparece toda vez que se loggee un usuario y la key sea otra
-                #       O no exista sesion
-                logger.exception(_("Excepcion detectada al obtener session "
-                                   "con el key {0} no existe".format(self.last_session_key)))
+                # Session ya cerrada por logout (o inexistentes)
+                pass
         self.last_session_key = key
         self.save()
 
@@ -1748,7 +1744,7 @@ class Queue(models.Model):
 
     # campos que no usamos
     context = models.CharField(max_length=128, blank=True, null=True)
-    monitor_join = models.NullBooleanField(blank=True, null=True)
+    monitor_join = models.BooleanField(blank=True, null=True)
     monitor_format = models.CharField(max_length=128, blank=True, null=True)
     queue_youarenext = models.CharField(max_length=128, blank=True, null=True)
     queue_thereare = models.CharField(max_length=128, blank=True, null=True)
@@ -1762,9 +1758,9 @@ class Queue(models.Model):
     announce_round_seconds = models.BigIntegerField(blank=True, null=True)
     joinempty = models.CharField(max_length=128, blank=True, null=True)
     leavewhenempty = models.CharField(max_length=128, blank=True, null=True)
-    reportholdtime = models.NullBooleanField(blank=True, null=True)
+    reportholdtime = models.BooleanField(blank=True, null=True)
     memberdelay = models.BigIntegerField(blank=True, null=True)
-    timeoutrestart = models.NullBooleanField(blank=True, null=True)
+    timeoutrestart = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
         return self.name

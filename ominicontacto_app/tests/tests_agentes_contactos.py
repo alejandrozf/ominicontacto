@@ -164,6 +164,7 @@ class AgentesContactosTests(OMLBaseTest):
         self.assertFalse(agente_en_contacto.es_originario)
 
     def test_usuario_no_agente_no_accede_vista_contactos_telefono_repetidos(self):
+        self.actualizar_permisos()
         self.client.logout()
         self.client.login(
             username=self.supervisor_profile.user.username, password=self.DEFAULT_PASSWORD)
@@ -177,6 +178,7 @@ class AgentesContactosTests(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
 
     def test_usuario_agente_accede_vista_contactos_telefono_repetidos(self):
+        self.actualizar_permisos()
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(

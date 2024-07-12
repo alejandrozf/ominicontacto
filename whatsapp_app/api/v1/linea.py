@@ -16,10 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from django.utils.translation import ugettext as _
-from django.contrib.postgres.fields import JSONField
-from django.db.models import F
-from django.db.models import Func
-from django.db.models import Value
+from django.db.models import F, Func, Value, JSONField
 from rest_framework import response
 from rest_framework import status
 from rest_framework import viewsets

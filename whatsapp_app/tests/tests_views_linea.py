@@ -17,9 +17,11 @@
 #
 from __future__ import unicode_literals
 
+from mock import patch
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.urls import reverse
+
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import User
 from ominicontacto_app.tests.utiles import PASSWORD
@@ -137,7 +139,8 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(response_data['configuration'], self.linea_a_campana.configuracion)
         self.assertEqual(response_data['destination_type'], DestinoEntrante.CAMPANA)
 
-    def test_creacion_linea_gupshup_con_destino_campana(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_creacion_linea_gupshup_con_destino_campana(self, notificar_nueva_linea):
         num_lineas = Linea.objects.count()
         proveedor = ConfiguracionProveedorFactory(
             tipo_proveedor=ConfiguracionProveedor.TIPO_GUPSHUP)
@@ -161,6 +164,7 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(linea.destino.tipo, DestinoEntrante.CAMPANA)
         self.assertEqual(linea.destino, DestinoEntrante.get_nodo_ruta_entrante(self.campana))
         self.assertEqual(response_data['data']['destination']['id'], self.campana.id)
+        notificar_nueva_linea.assert_called()
 
     def get_menu_post_data(self):
         return {
@@ -188,7 +192,8 @@ class LineaTest(OMLBaseTest):
             'configuration': {'app_name': 'LineaAppName', 'app_id': 'LineaAppId'},
         }
 
-    def test_creacion_linea_gupshup_con_destino_menu_interactivo(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_creacion_linea_gupshup_con_destino_menu_interactivo(self, notificar_nueva_linea):
         num_lineas = Linea.objects.count()
         num_menu = MenuInteractivoWhatsapp.objects.count()
         num_opcion = OpcionMenuInteractivoWhatsapp.objects.count()
@@ -213,6 +218,7 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(opcion_2.destino_siguiente, self.destino_2)
         opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres')
         self.assertEqual(opcion_3.destino_siguiente, self.destino_3)
+        notificar_nueva_linea.assert_called()
 
     def test_creacion_linea_gupshup_con_menu_interactivo_errors(self):
         num_lineas = Linea.objects.count()
@@ -265,7 +271,8 @@ class LineaTest(OMLBaseTest):
         response_data = response.json()
         self.assertIn('provider', response_data['errors'])
 
-    def test_update_linea_gupshup_con_campana(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_update_linea_gupshup_con_campana(self, notificar_nueva_linea):
         self.crear_linea_a_campana()
         num_lineas = Linea.objects.count()
         url = reverse('whatsapp_app:linea-detail', args=[self.linea_a_campana.id])
@@ -289,8 +296,10 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(linea.destino.tipo, DestinoEntrante.CAMPANA)
         self.assertEqual(linea.destino, DestinoEntrante.get_nodo_ruta_entrante(self.campana_2))
         self.assertEqual(response_data['data']['destination']['id'], self.campana_2.id)
+        notificar_nueva_linea.assert_called()
 
-    def test_update_linea_gupshup_con_menu_interactivo_a_campana(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_update_linea_gupshup_con_menu_interactivo_a_campana(self, notificar_nueva_linea):
         self.crear_linea_a_menu()
         num_lineas = Linea.objects.count()
         num_menu = MenuInteractivoWhatsapp.objects.count()
@@ -320,8 +329,10 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(linea.destino.tipo, DestinoEntrante.CAMPANA)
         self.assertEqual(linea.destino, DestinoEntrante.get_nodo_ruta_entrante(self.campana_2))
         self.assertEqual(response_data['data']['destination']['id'], self.campana_2.id)
+        notificar_nueva_linea.assert_called()
 
-    def test_update_linea_gupshup_con_campana_a_menu_interactivo(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_update_linea_gupshup_con_campana_a_menu_interactivo(self, notificar_nueva_linea):
         self.crear_linea_a_campana()
         num_lineas = Linea.objects.count()
         num_menu = MenuInteractivoWhatsapp.objects.count()
@@ -360,8 +371,10 @@ class LineaTest(OMLBaseTest):
         opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres')
         self.assertEqual(opcion_3.destino_siguiente, self.destino_3)
         self.assertEqual(linea.nombre, 'Nuevo Nombre')
+        notificar_nueva_linea.assert_called()
 
-    def test_update_linea_gupshup_con_menu_interactivo(self):
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_update_linea_gupshup_con_menu_interactivo(self, notificar_nueva_linea):
         self.crear_linea_a_menu()
         num_lineas = Linea.objects.count()
         num_menu = MenuInteractivoWhatsapp.objects.count()
@@ -400,3 +413,4 @@ class LineaTest(OMLBaseTest):
         opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres')
         self.assertEqual(opcion_3.destino_siguiente, self.destino_3)
         self.assertEqual(linea.nombre, 'Nuevo Nombre')
+        notificar_nueva_linea.assert_called()

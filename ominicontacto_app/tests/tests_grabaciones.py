@@ -44,6 +44,7 @@ from reportes_app.models import LlamadaLog
 class BaseGrabacionesTests(OMLBaseTest):
 
     def setUp(self):
+        super(BaseGrabacionesTests, self).setUp()
         self.supervisor1 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
         self.supervisor2 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
@@ -155,7 +156,7 @@ class GrabacionesTests(BaseGrabacionesTests):
         self.llamada_log2.time = hace_mucho
         self.llamada_log1.time = hoy
         self.assertTrue(self.llamada_log2.url_archivo_grabacion.endswith(settings.MONITORFORMAT))
-        self.assertTrue(self.llamada_log1.url_archivo_grabacion.endswith('.wav'))
+        self.assertTrue(self.llamada_log1.url_archivo_grabacion.endswith(settings.MONITORFORMAT))
 
 
 class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):

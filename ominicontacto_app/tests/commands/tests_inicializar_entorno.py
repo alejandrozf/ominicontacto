@@ -27,7 +27,6 @@ from ominicontacto_app.models import AgenteProfile, SupervisorProfile
 
 
 class TestsInicializarEntorno (OMLBaseTest):
-    omitir_actualizar_permisos = True
 
     def setUp(self, *args, **kwargs):
         super(TestsInicializarEntorno, self).setUp(*args, **kwargs)

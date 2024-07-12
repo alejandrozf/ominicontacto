@@ -82,13 +82,15 @@ class RegisterServerTest(APITest):
             _('Se creo el registro al servidor '
               'de forma exitosa'))
 
-    def test_obtener_detalle_del_registro_como_sup(self):
+    def test_obtener_detalle_del_registro_como_supervisor_falla_por_permiso(self):
+        self.actualizar_permisos()
         self.client.login(username=self.sup.username, password=PASSWORD)
         URL = reverse('api_register_server_detail')
         response = self.client.get(URL, follow=True)
         self.assertEqual(response.status_code, 403)
 
-    def test_crear_registro_como_sup(self):
+    def test_crear_registro_como_supervisor_falla_por_permiso(self):
+        self.actualizar_permisos()
         self.client.login(username=self.sup.username, password=PASSWORD)
         URL = reverse('api_register_server_create')
         response = self.client.post(

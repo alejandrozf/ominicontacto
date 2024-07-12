@@ -91,6 +91,7 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         self.client.login(username=self.supervisor2.user, password=self.DEFAULT_PASSWORD)
 
     def test_supervisor_simple_no_tiene_accesso_vista_gestion(self):
+        self.actualizar_permisos()
         self.client.logout()
         self.client.login(username=self.supervisor3.user, password=self.DEFAULT_PASSWORD)
         today = now().date()
@@ -103,6 +104,7 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
 
     def test_supervisor_referente_no_tiene_accesso_vista_gestion(self):
+        self.actualizar_permisos()
         self.client.logout()
         self.client.login(username=self.supervisor4.user, password=self.DEFAULT_PASSWORD)
         today = now().date()
