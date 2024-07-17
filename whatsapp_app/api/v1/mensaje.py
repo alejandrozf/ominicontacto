@@ -27,7 +27,7 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
-from whatsapp_app.models import ConversacionWhatsapp
+from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 
 
@@ -42,6 +42,7 @@ class MensajeListSerializer(serializers.Serializer):
     sender = serializers.JSONField()
     type = serializers.CharField()
     status = serializers.CharField()
+    file = serializers.FileField()
 
     def get_contact_data(self, obj):
         if obj.conversation.client:
@@ -71,10 +72,15 @@ class MensajeTextCreateSerializer(serializers.Serializer):
     sender = serializers.IntegerField()
 
 
-class MensajeAtachmentCreateSerializer(serializers.Serializer):
-    conversation = serializers.IntegerField()
-    content = serializers.CharField()
-    sender = serializers.IntegerField()
+class MensajeAtachmentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MensajeWhatsapp
+        fields = [
+            'id',
+            'conversation',
+            'sender',
+            'file'
+        ]
 
 
 class MensajePlantillaCreateSerializer(serializers.Serializer):

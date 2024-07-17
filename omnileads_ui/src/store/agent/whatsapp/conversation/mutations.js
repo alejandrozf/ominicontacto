@@ -52,9 +52,10 @@ export default {
                     : clientName || senderPhone,
                 conversationId: data && data.chat_id ? data.chat_id : null,
                 itsMine,
-                message: data && data.content && data.content.text ? data.content.text : '',
+                message: data && data.content ? data.content : '',
                 status: data && data.status ? data.status : null,
-                date: data && data.timestamp ? new Date(data.timestamp) : new Date()
+                date: data && data.timestamp ? new Date(data.timestamp) : new Date(),
+                type: data && data.type ? data.type : null,
             };
             state.agtWhatsCoversationMessages.push(message);
             if (Number(localStorage.getItem('agtWhatsappConversationAttending')) !== data.chat_id) {

@@ -1,13 +1,53 @@
 <template>
-  <Card class="shadow-6 border-round-xl" :class="getClasses(message?.itsMine)">
+  <Card class="border-round-xl" :class="getClasses(message?.itsMine)">
     <template #content>
       <div class="py-0 my-0">
-        <span
-          ><b class="text-lg">{{ message?.from }}</b></span
-        >
-        <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
-          {{ message?.message }}
-        </p>
+        <!-- <span
+          >{{ message?.from }}</span
+        > -->
+        <div v-if="message.type==='text'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+            {{ message?.message.text }}
+          </p>
+        </div>
+        <div v-if="message.type==='template'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+            {{ message?.message.text }}
+          </p>
+        </div>
+        <div v-if="message.type==='image'">
+          <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
+            <Image :src=message?.message.url :alt=message?.message.name width="250" />
+            <div class="display-middle">
+              <p>{{ message?.message.name }}</p>
+            </div>
+          </a>
+        </div>
+        <div v-if="message.type==='file'">
+          <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
+            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            {{ message?.message.name }}
+          </a>
+        </div>
+        <div v-if="message.type==='document' || message.type==='application'">
+          <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
+            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            {{ message?.message.name }}
+          </a>
+        </div>
+        <div v-if="message.type==='audio'">
+          <audio controls>
+            <source :src="message?.message.url" type="audio/ogg">
+          </audio>
+        </div>
+        <div v-if="message.type==='video'">
+          <video width="320" height="240" controls>
+            <source :src="message?.message.url" type="video/mp4">
+          </video>
+        </div>
+        <div v-if="message.type==='contact'">
+          <pre>{{message?.message.contacts}}</pre>
+        </div>
         <div class="flex justify-content-end flex-wrap">
           <div class="flex align-items-center justify-content-center">
             <small class="font-italic">
@@ -23,13 +63,16 @@
 
 <script>
 import { WHATSAPP_MESSAGE } from '@/globals/agent/whatsapp';
-
+import Image from 'primevue/image';
 export default {
     props: {
         message: {
             type: Object,
             default: () => {}
         }
+    },
+    components: {
+        Image
     },
     methods: {
         getClasses (itsMine) {

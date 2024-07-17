@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+import uuid
 from django.db import models
 from .mixins import AuditableModelMixin
 from django.utils.translation import ugettext_lazy as _
@@ -24,6 +24,11 @@ from ominicontacto_app.models import (
     AgenteProfile, Campana, Contacto, HistoricalCalificacionCliente)
 
 from django.utils import timezone
+
+
+def upload_to(instance, filename):
+    return "archivos_whatsapp/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
 
 
 class ConfiguracionProveedor(AuditableModelMixin, models.Model):
@@ -93,6 +98,8 @@ class TemplateWhatsapp(models.Model):
         Linea, on_delete=models.CASCADE, related_name="templates_whatsapp")
     nombre = models.CharField(max_length=100)
     identificador = models.CharField(max_length=100)  # id gupshup
+    identificador_media = models.CharField(max_length=100, blank=True, null=True)
+    link_media = models.CharField(max_length=200, blank=True, null=True)
     texto = models.TextField(blank=True, null=True)
     idioma = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
@@ -143,6 +150,7 @@ class MensajeWhatsapp(models.Model):
     sender = JSONField(default=dict)
     conversation = models.ForeignKey(
         'ConversacionWhatsapp', related_name="mensajes", on_delete=models.CASCADE, null=True)
+    file = models.FileField(upload_to=upload_to, max_length=100, null=True, blank=True)
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
