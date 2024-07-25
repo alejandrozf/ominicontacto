@@ -34,7 +34,7 @@ export default {
                                 status: t.status,
                                 created: t.created,
                                 updated: t.updated,
-                                numParams: regexResults.length || 0
+                                numParams: regexResults ? regexResults.length : 0
                             }
                         };
                     }));
