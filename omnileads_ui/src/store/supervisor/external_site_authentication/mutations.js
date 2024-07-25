@@ -14,7 +14,8 @@ export default {
                 duracion: siteAuthentication.duracion,
                 campo_duracion: siteAuthentication.campo_duracion,
                 token: siteAuthentication.token,
-                expiracion_token: siteAuthentication.expiracion_token
+                expiracion_token: siteAuthentication.expiracion_token,
+                ssl_estricto: siteAuthentication.ssl_estricto
             };
         } else {
             state.externalSiteAuthentication = {
@@ -27,7 +28,8 @@ export default {
                 campo_duracion: '',
                 duracion: 0,
                 token: null,
-                expiracion_token: null
+                expiracion_token: null,
+                ssl_estricto: false
             };
         }
     }
