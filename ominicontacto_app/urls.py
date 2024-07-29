@@ -944,26 +944,26 @@ urlpatterns = [
     # ==========================================================================
     # Archivo de Audio
     # ==========================================================================
-    re_path(r'^audios/$',
-            login_required(
-                views_archivo_de_audio.ArchivoAudioListView.as_view()),
-            name='lista_archivo_audio',
-            ),
-    re_path(r'^audios/create/$',
-            login_required(
-                views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
-            name='create_archivo_audio',
-            ),
-    re_path(r'^audios/(?P<pk>\d+)/update/$',
-            login_required(
-                views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
-            name='edita_archivo_audio',
-            ),
-    re_path(r'^audios/(?P<pk>\d+)/eliminar/$',
-            login_required(
-                views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
-            name='eliminar_archivo_audio',
-            ),
+    path('audios/',
+         login_required(
+             views_archivo_de_audio.ArchivoAudioListView.as_view()),
+         name='lista_archivo_audio',
+         ),
+    path('audios/create/',
+         login_required(
+             views_archivo_de_audio.ArchivoAudioCreateView.as_view()),
+         name='create_archivo_audio',
+         ),
+    path('audios/<int:pk>/update/',
+         login_required(
+             views_archivo_de_audio.ArchivoAudioUpdateView.as_view()),
+         name='edita_archivo_audio',
+         ),
+    path('audios/<int:pk>/eliminar/',
+         login_required(
+             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
+         name='eliminar_archivo_audio',
+         ),
 
     # ==========================================================================
     # Configuracion de agentes en campaña

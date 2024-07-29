@@ -56,7 +56,6 @@ from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSa
 from whatsapp_app.models import ConfiguracionWhatsappCampana
 from ominicontacto_app.parser import is_valid_length
 
-from utiles_globales import validar_extension_archivo_audio
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
 
@@ -2044,33 +2043,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         if not es_template and not bd_contacto.contactos.exists():
             raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
         return bd_contacto
-
-
-class ArchivoDeAudioForm(forms.ModelForm):
-
-    class Meta:
-        model = ArchivoDeAudio
-        fields = ('descripcion', 'audio_original')
-        widgets = {
-            "descripcion": forms.TextInput(attrs={'class': 'form-control'}),
-            "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
-        }
-        help_texts = {
-            'audio_original': _("Seleccione el archivo de audio que desea para "
-                                "la Campaña. Si ya existe uno y guarda otro, el audio será "
-                                "reemplazado."),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(ArchivoDeAudioForm, self).__init__(*args, **kwargs)
-        self.fields['audio_original'].required = True
-
-    def clean(self):
-        cleaned_data = super(ArchivoDeAudioForm, self).clean()
-        audio_original = cleaned_data.get('audio_original', False)
-        if audio_original:
-            validar_extension_archivo_audio(audio_original)
-        return cleaned_data
 
 
 class EscogerCampanaForm(forms.Form):
