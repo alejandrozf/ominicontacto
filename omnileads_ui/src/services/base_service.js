@@ -25,11 +25,18 @@ export class BaseService {
         this.initPayload();
     }
 
-    setPayload (method = HTTP.POST, body = null) {
+    setPayload (method = HTTP.POST, body = null, hMultipart = false) {
         if (body) {
             this.payload.body = body;
         }
+        if (hMultipart) {
+            this.payload.headers = {
+                'X-CSRFToken': this.cookies.get('csrftoken'),
+                // 'Content-Type': "multipart/form-data",
+            };
+        }
         this.payload.method = method;
+
     }
 
     initPayload () {

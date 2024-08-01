@@ -46,9 +46,9 @@ export default class WhatsappConversationService extends BaseService {
         }
     }
 
-    async sendAttachmentMessage (chatId, data) {
+    async sendAttachmentMessage (chatId, formData) {
         try {
-            this.setPayload(HTTP.POST, JSON.stringify(data));
+            this.setPayload(HTTP.POST, formData, true);
             const resp = await fetch(
                 this.urls.ChatSendAttachmentMessage(chatId),
                 this.payload

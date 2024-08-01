@@ -27,6 +27,25 @@
       </div>
     </div>
     <Panel header="Vista previa" class="field col-12 bg-green-200">
+      <div v-if="template.configuration.type==='IMAGE'">
+        <a :href="template.configuration.link_media" style="text-decoration: none; color: inherit;" target="_blank" download>
+          <Image :src="template.configuration.link_media" width="250" />
+        </a>
+      </div>
+      <div v-if="template.configuration.type==='DOCUMENT'">
+        <embed
+            :src="template.configuration.link_media"
+            frameBorder="0"
+            scrolling="auto"
+            height="100%"
+            width="100%"
+        >
+      </div>
+      <div v-if="template.configuration.type==='VIDEO'">
+        <video width="320" height="240" controls>
+          <source :src="template.configuration.link_media" type="video/mp4">
+        </video>
+      </div>
       <p class="m-0">
         {{ getPreviewMessage }}
       </p>

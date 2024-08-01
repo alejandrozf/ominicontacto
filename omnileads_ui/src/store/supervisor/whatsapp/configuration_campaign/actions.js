@@ -34,6 +34,8 @@ export default {
                                 status: t.status,
                                 created: t.created,
                                 updated: t.updated,
+                                identifier_media: t.identifier_media,
+                                link_media: t.link_media,
                                 numParams: regexResults ? regexResults.length : 0
                             }
                         };

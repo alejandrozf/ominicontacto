@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar lineas
+import json
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -29,6 +30,7 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
 from orquestador_app.core.gupshup_send_menssage import sync_templates
+from orquestador_app.core.media_management import get_media_url
 
 
 class ListSerializer(serializers.Serializer):
@@ -36,6 +38,8 @@ class ListSerializer(serializers.Serializer):
     line = serializers.IntegerField(source='linea.id')
     name = serializers.CharField(source='nombre')
     identifier = serializers.CharField(source='identificador')
+    identifier_media = serializers.CharField(source='identificador_media')
+    link_media = serializers.CharField()
     text = serializers.CharField(source='texto')
     language = serializers.CharField(source='idioma')
     status = serializers.CharField()
@@ -108,6 +112,7 @@ class ViewSet(viewsets.ViewSet):
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
                 templates = sync_templates(linea)
                 for attrs in templates:
+                    containerMeta = json.loads(attrs['containerMeta'])
                     linea.templates_whatsapp.update_or_create(
                         identificador=attrs['id'], defaults={
                             'nombre': attrs['elementName'],
@@ -117,7 +122,12 @@ class ViewSet(viewsets.ViewSet):
                             'creado': attrs['createdOn'],
                             'modificado': attrs['modifiedOn'],
                             'tipo': attrs['templateType'],
-                            'categoria': attrs['category']
+                            'categoria': attrs['category'],
+                            'identificador_media':
+                                containerMeta['mediaId'] if 'mediaId' in containerMeta else '',
+                            'link_media':
+                                get_media_url(attrs['appId'], containerMeta['mediaId'])
+                                if 'mediaId' in containerMeta else ''
                         }
                     )
             return response.Response(
@@ -126,7 +136,6 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se obtuvieron los templates de whatsapp de forma exitosa')),
                 status=status.HTTP_200_OK)
         except Exception as e:
-            print("********************************", e)
             return response.Response(
                 data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -151,7 +160,6 @@ class ViewSet(viewsets.ViewSet):
                     data={}),
                 status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
-            print("********************************", e)
             return response.Response(
                 data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
