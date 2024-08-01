@@ -10,6 +10,7 @@ export default {
         campo_duracion: '',
         duracion: 0,
         token: null,
-        expiracion_token: null
+        expiracion_token: null,
+        ssl_estricto: false
     }
 };

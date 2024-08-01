@@ -86,7 +86,7 @@
       </div>
     </div>
     <div class="grid formgrid mt-2">
-      <div class="field col-6">
+      <div class="field col-4">
         <label
           id="external_site_authentication_username"
           :class="{
@@ -125,7 +125,7 @@
           }}</small
         >
       </div>
-      <div class="field col-6">
+      <div class="field col-4">
         <label
           id="external_site_authentication_password"
           :class="{
@@ -162,6 +162,19 @@
             )
           }}</small
         >
+      </div>
+      <div class="field col-4">
+        <label
+          id="external_site_authentication_campo_ssl_estricto"
+          >{{ $t("models.external_site_authentication.ssl_estricto") }}</label
+        >
+        <div class="p-inputgroup mt-2">
+          <Checkbox
+            id="external_site_authentication_campo_ssl_estricto"
+            v-model="v$.externalSiteAuthentication.ssl_estricto.$model"
+            :binary="true"
+          />
+        </div>
       </div>
     </div>
     <div class="grid formgrid mt-2">
@@ -289,7 +302,9 @@ export default {
                 nombre: { required },
                 url: { required },
                 username: { required },
-                password: { required }
+                password: { required },
+                ssl_estricto: { required }
+
             }
         };
     },
