@@ -1655,12 +1655,16 @@ class Queue(models.Model):
     RRMEMORY = 'rrmemory'
     # round robin with memory, remember where we left off last ring pass
 
+    RINGALL = 'ringall'
+    # Ringall
+
     STRATEGY_CHOICES = (
         (RRORDERED, 'Rrordered'),
         (LEASTRECENT, 'Leastrecent'),
         (FEWESTCALLS, 'Fewestcalls'),
         (RANDOM, 'Random'),
         (RRMEMORY, 'Rremory'),
+        (RINGALL, 'Ringall'),
     )
 
     ANNOUNCE_HOLD_TIME_YES = 'yes'
