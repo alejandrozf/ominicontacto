@@ -13,19 +13,20 @@ const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
         from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : clientName || senderName || senderPhone,
         conversationId: data && data.conversation ? data.conversation : null,
         itsMine,
-        message: data && data.content && data.content.text ? data.content.text : '',
+        message: data && data.content && data.content ? data.content : '',
         status: data && data.status ? data.status : null,
-        date: data && data.timestamp ? new Date(data.timestamp) : null
+        date: data && data.timestamp ? new Date(data.timestamp) : null,
+        type: data && data.type ? data.type : null,
     };
 };
 
 export default {
     async agtWhatsCoversationSendAttachmentMessage (
         { commit },
-        { conversationId = null, message }
+        { conversationId = null, formData, phoneLine = null, messages, $t}
     ) {
         try {
-            if (!conversationId || !message) {
+            if (!conversationId || !formData.get('file')) {
                 return {
                     status: HTTP_STATUS.ERROR,
                     message: 'Error al enviar mensaje multimedia'
@@ -33,12 +34,19 @@ export default {
             }
             const response = await service.sendAttachmentMessage(
                 conversationId,
-                message
+                formData
             );
-            const { status } = response;
+            const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
+                const itsMine = data.origin === phoneLine;
+                const message = getMessageInfo({ $t, data, itsMine });
+                messages.push(message);
                 await commit('agtWhatsCoversationSendMessage', message);
             }
+            await resetStoreDataByAction({
+                action: 'agtWhatsSetCoversationMessages',
+                data: messages
+            });
             return response;
         } catch (error) {
             console.error('===> ERROR al enviar mensaje multimedia');
@@ -61,8 +69,9 @@ export default {
                 };
             }
             const response = await service.sendTextMessage(conversationId, {
-                message: message.message ? message.message : '',
-                destination: message.destination ? message.destination : ''
+                message: message ? message.message : '',
+                destination: message.destination ? message.destination : '',
+                type: 'text'
             });
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {

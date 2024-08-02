@@ -45,6 +45,7 @@
 <script>
 import { HTTP_STATUS } from '@/globals';
 import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
+import { mapActions, mapState } from 'vuex';
 export default {
     props: {
         fileType: {
@@ -75,9 +76,13 @@ export default {
             totalSizePercent: 0
         };
     },
+    computed: {
+        ...mapState(['agtWhatsCoversationInfo'])
+    },
     methods: {
+        ...mapActions(['agtWhatsCoversationSendAttachmentMessage']),
         getFileType () {
-            return this.fileType === 'img' ? 'image/*' : 'application/pdf';
+            return this.fileType === 'img' ? 'image/*' : 'application/pdf,audio/*,video/*,text/*';
         },
         onSelectedFiles (event) {
             this.files = event.files;
@@ -87,25 +92,25 @@ export default {
         },
         async customUploader ($event) {
             try {
+                const messages = JSON.parse(
+                    localStorage.getItem('agtWhatsappConversationMessages')
+                );
+                const agtWhatsCoversationInfo = JSON.parse(
+                    localStorage.getItem('agtWhatsCoversationInfo')
+                );
                 const file = this.files[0];
-                const reader = new FileReader();
-                const blob = await fetch(file.objectURL).then((r) => r.blob());
-                reader.readAsDataURL(blob);
-                // reader.onloadend = function () {
-                //     const base64data = reader.result;
-                // };
-                this.clearData();
-                const event = new CustomEvent('onWhatsappMediaFormEvent', {
-                    detail: {
-                        media_form: false,
-                        fileType: null
-                    }
-                });
-                window.parent.document.dispatchEvent(event);
-                // const { status, message } = await this.agtWhatsTemplateSendMsg(template);
-                const status = 'SUCCESS';
-                const message = 'Se envio el documento satisfactoriamente';
+                let formData = new FormData();
+                formData.append('file', file)
+                var data = {
+                    conversationId: agtWhatsCoversationInfo.id,
+                    formData: formData,
+                    phoneLine: agtWhatsCoversationInfo.line.number,
+                    messages: messages,
+                    $t: this.$t
+                }
+                const { status, message } = await this.agtWhatsCoversationSendAttachmentMessage(data);
                 if (status === HTTP_STATUS.SUCCESS) {
+                    this.clearData();
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,
                         message,
@@ -119,7 +124,6 @@ export default {
                     );
                 }
             } catch (error) {
-                console.error('Error al enviar template');
                 console.error(error);
                 this.clearData();
                 await notificationEvent(

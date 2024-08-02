@@ -44,7 +44,8 @@ export default {
         duracion: 'Duration',
         campo_duracion: 'Duration field',
         token: 'Token',
-        expiracion_token: 'Token expiration'
+        expiracion_token: 'Token expiration',
+        ssl_estricto: 'SSL Verification'
     },
     call_disposition: {
         id: 'ID',

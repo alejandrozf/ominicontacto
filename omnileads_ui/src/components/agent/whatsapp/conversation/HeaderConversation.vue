@@ -15,13 +15,12 @@
     </template>
     <template #end>
       <div v-if="!viewAsReport && !agtWhatsCoversationInfo.error">
-        <!-- <SplitButton
+        <SplitButton
         icon="pi pi-paperclip"
         :model="attachOptions"
         v-tooltip.top="$t('globals.attach')"
         class="p-button-warning"
-        disabled
-      />-->
+      />
         <Button
           v-if="!isExpired"
           icon="pi pi-arrows-h"
@@ -162,10 +161,18 @@ export default {
             }
         },
         attach (fileType = 'img') {
+            localStorage.setItem(
+                    'agtWhatsappConversationMessages',
+                    JSON.stringify(this.agtWhatsCoversationMessages)
+            );
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify(this.agtWhatsCoversationInfo)
+            );
             const event = new CustomEvent('onWhatsappMediaFormEvent', {
                 detail: {
                     media_form: true,
-                    fileType
+                    fileType: fileType,
                 }
             });
             window.parent.document.dispatchEvent(event);

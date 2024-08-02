@@ -44,7 +44,8 @@ export default {
         duracion: 'مدت زمان',
         campo_duracion: 'فیلد مدت',
         token: 'توکن ها',
-        expiracion_token: 'انقضای توکن'
+        expiracion_token: 'انقضای توکن',
+        ssl_estricto: 'تایید SSL'
     },
     call_disposition: {
         id: 'شناسه',

@@ -1,23 +1,18 @@
 # Release Notes
-2024-07-12
+2024-08-02
 
 ## Added
 
-- oml-2700 Agents to transfer ordered by Ready state
-- oml-2674 Whatsapp conversations can be exported to .csv file
+- oml-2668 Audio File creation using TTS Services
+- oml-2675 Whatsapp multimedia mesagges
 
 ## Changed
 
-- oml-2701 Event Audit allows filtering by day
-- oml-2703 New Outbound Routes regex for special characters
-- oml-2708 Several reports button blocked on click to prevent server overload
-- oml-2162 Tests optimization
+- oml-2723 Allow ignoring SSL validation in External Site Authentication requests
 
 ## Fixed
 
-- oml-2669 Fix inconsistent agents activity logging
-- oml-2569 Fix previous day data showing in Inbound calls Supervision
-- Fix External Site Json Authentication
+- oml-2728 Fix error on Whatsapp conversation initialization
 
 ## Removed
 

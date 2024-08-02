@@ -21,8 +21,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from orquestador_app.core.apis_urls import (
-    URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES,
-    URL_SEND_MENU_OPTION)
+    URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES)
 from whatsapp_app.models import MensajeWhatsapp
 
 
@@ -82,7 +81,7 @@ def autoreponse_destino_interactivo(line, conversation):
                 'destination': conversation.destination,
                 'message': json.dumps(message, default=str)
             }
-            response = requests.post(URL_SEND_MENU_OPTION, headers=headers, data=data).json()
+            response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data).json()
             if response['status'] == 'submitted':
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
                 content = {"text": json.dumps(message, default=str), 'type': 'list'},
@@ -144,24 +143,27 @@ def autoresponse_out_of_time(line, conversation, timestamp):
         print("autoresponse_out_of_time >>>>>>>>", e)
 
 
-def send_template_message(line, destination, template_id, params):
+def send_template_message(line, destination, template_id, template_tipo, params, media_id=None):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        print("===> HEADERS send_template_message")
-        print(headers)
         data = {
             'source': line.numero,
             'destination': destination,
             'template': json.dumps({"id": template_id, "params": params})
         }
-        print("===> data send_template_message")
-        print(data)
+        if template_tipo == 'IMAGE':
+            message = json.dumps({'image': {'id': media_id}, 'type': template_tipo})
+            data.update({"message": message})
+        elif template_tipo == 'DOCUMENT':
+            message = json.dumps({'document': {'id': media_id, 'link': ''}, 'type': template_tipo})
+            data.update({"message": message})
+        elif template_tipo == 'VIDEO':
+            message = json.dumps({'video': {'id': media_id, 'link': ''}, 'type': template_tipo})
+            data.update({"message": message})
         response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data)
-        print("===> response send_template_message")
-        print(response.json())
         return response.json()
     except Exception as e:
-        print("send_template_message >>>>>>>", e)
+        print("error en send_template_message >>>>>>>", e)
 
 
 def send_text_message(line, destination, message):
@@ -180,10 +182,26 @@ def send_text_message(line, destination, message):
         print("send_text_message >>>>>>", e)
 
 
+def send_multimedia_file(line, destination, message):
+    try:
+        headers.update({'apikey': line.proveedor.configuracion['api_key']})
+        data = {
+            "channel": "whatsapp",
+            "source": line.numero,
+            "src.name": line.configuracion['app_name'],
+            "destination": destination,
+            "message": json.dumps(message)
+        }
+        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
+        return response.json()
+    except Exception as e:
+        print("send_text_message >>>>>>", e)
+
+
 def sync_templates(line):
     try:
-        appname = line.configuracion['app_name']
-        url = URL_SYNC_TEMPLATES.format(appname)  # mover
+        app_id = line.configuracion['app_id']
+        url = URL_SYNC_TEMPLATES.format(app_id)
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
         response = requests.get(url, headers=headers)
         templates = json.loads(response.text)['templates']

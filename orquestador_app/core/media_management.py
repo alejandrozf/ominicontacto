@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-URL_SEND_TEMPLATE = 'https://api.gupshup.io/wa/api/v1/template/msg'
-URL_SEND_MESSAGE = 'https://api.gupshup.io/wa/api/v1/msg'
-URL_SYNC_TEMPLATES = 'https://api.gupshup.io/wa/app/{}/template'
+URL_FILEMANAGER_GUPSHUP = "https://filemanager.gupshup.io/wa/{0}/wa/media/{1}?download=false"
+
+
+def get_media_url(app_id, media_id):
+    return URL_FILEMANAGER_GUPSHUP.format(app_id, media_id)

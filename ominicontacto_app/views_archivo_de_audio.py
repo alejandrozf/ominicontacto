@@ -22,6 +22,7 @@ import os
 
 from django.contrib import messages
 from django.urls import reverse
+from django.forms import ValidationError
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -30,9 +31,10 @@ from django.utils.translation import gettext_lazy as _
 from api_app.services.storage_service import StorageService
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from ominicontacto_app.errors import OmlAudioConversionError
-from ominicontacto_app.forms.base import ArchivoDeAudioForm
+from ominicontacto_app.forms.audio import ArchivoDeAudioForm
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.asterisk_config import AudioConfigFile
+from ominicontacto_app.services.tts.generador import GeneradorTTS
 import logging as logging_
 
 
@@ -46,9 +48,18 @@ def convertir_archivo_audio(audio):
     """
     conversor_audio = ConversorDeAudioService()
     conversor_audio.convertir_audio_de_archivo_de_audio_globales(audio)
+    copiar_archivo_en_asterisk(audio)
+    copiar_archivo_en_storage(audio)
+
+
+def copiar_archivo_en_asterisk(audio):
     if audio.audio_asterisk.name:
         audio_file_asterisk = AudioConfigFile(audio)
         audio_file_asterisk.copy_asterisk()
+
+
+def copiar_archivo_en_storage(audio):
+    if audio.audio_asterisk.name:
         if os.getenv('S3_STORAGE_ENABLED'):
             s3_handler = StorageService()
             s3_handler.upload_file(audio.audio_asterisk.name,
@@ -115,7 +126,27 @@ class ArchivoAudioCreateView(ArchivoDeAudioMixin, CreateView):
     form_class = ArchivoDeAudioForm
 
     def form_valid(self, form):
-        form.save()
+        cleaned_data = form.cleaned_data
+        if cleaned_data.get('usar_tts'):
+            servicio = cleaned_data.get('tts_service')
+            voz = form.get_tts_voice(servicio, cleaned_data.get('tts_voice'))
+            generador = GeneradorTTS()
+            try:
+                filename = generador.generar_archivo(
+                    servicio=servicio,
+                    descripcion=cleaned_data.get('descripcion'),
+                    texto=cleaned_data.get('tts_text'),
+                    voz=voz,
+                )
+            except Exception as e:
+                logger.error('TTS Service Error: {0}'.format(e))
+                form.add_error(field=None, error=ValidationError(_('Error creando archivo TTS')))
+                return super(ArchivoAudioCreateView, self).form_invalid(form)
+            form.save(commit=False)
+            form.instance.audio_original = filename
+        else:
+            form.save()
+
         self._procesar_archivo_de_audio(form)
         return redirect(self.get_success_url())
 
@@ -152,8 +183,28 @@ class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
 
     def form_valid(self, form):
         form.save()
+        cleaned_data = form.cleaned_data
+        # Si se modificó el audio original... Ver si debo llamar al servicio de TTS
         if 'audio_original' in form.changed_data:
             self._procesar_archivo_de_audio(form)
+        elif cleaned_data.get('usar_tts'):
+            servicio = cleaned_data.get('tts_service')
+            voz = form.get_tts_voice(servicio, cleaned_data.get('tts_voice'))
+            generador = GeneradorTTS()
+            try:
+                filename = generador.generar_archivo(
+                    servicio=servicio,
+                    descripcion=cleaned_data.get('descripcion'),
+                    texto=cleaned_data.get('tts_text'),
+                    voz=voz,
+                )
+            except Exception as e:
+                logger.error('TTS Service Error: {0}'.format(e))
+                form.add_error(field=None, error=ValidationError(_('Error creando archivo TTS')))
+                return super(ArchivoAudioUpdateView, self).form_invalid(form)
+            form.instance.audio_original = filename
+            self._procesar_archivo_de_audio(form)
+
         return redirect(self.get_success_url())
 
     def get_success_url(self):
