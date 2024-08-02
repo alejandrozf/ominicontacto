@@ -157,8 +157,8 @@ class PhoneJSView {
             if (this.checked) {
                 $('#transfToNum').prop('disabled', false);
                 $('#transfToAgent').prop('disabled', false);
-                $('#transfToCamp').prop('disabled', true); // Deshabilitado temporalmente
-                $('#campToTransfer').prop('disabled', true);
+                $('#transfToCamp').prop('disabled', false);
+                $('#campToTransfer').prop('disabled', false);
                 $('#transfToCamp').prop('checked', false);
                 $('#transfToQuickNum').prop('disabled', false);
             }
