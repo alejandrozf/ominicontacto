@@ -510,7 +510,8 @@ class APITest(OMLBaseTest):
         }
         contacto_a_crear = ContactoFactory.build(bd_contacto=self.campana_activa.bd_contacto)
         post_data.update(contacto_a_crear.obtener_datos())
-        post_data.pop('telefono')
+        if 'telefono' in post_data:  # El telefono principal se manda en el campo 'phone' siempre
+            post_data.pop('telefono')
         calificaciones_count = CalificacionCliente.objects.count()
         contactos_count = Contacto.objects.count()
         client.post(url, post_data)

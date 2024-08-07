@@ -43,6 +43,7 @@ from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import (
     send_template_message, send_text_message, send_multimedia_file)
 from orquestador_app.core.media_management import get_media_url
+from orquestador_app.core.gupshup_code_error import GUPSHUP_CODE_ERROR
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
 
 
@@ -65,7 +66,8 @@ mimetypes.init()
 def get_type(fileName):
     mimestart = mimetypes.guess_type(fileName)[0]
     if mimestart is not None:
-        return mimestart.split('/')[0]
+        type_file = mimestart.split('/')[0]
+        return type_file if type_file != 'application' else 'file'
     return 'file'
 
 
@@ -360,7 +362,7 @@ class ViewSet(viewsets.ViewSet):
     def send_message_text(self, request, pk):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            if not conversation.error:
+            if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
                 if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
@@ -417,7 +419,7 @@ class ViewSet(viewsets.ViewSet):
     def send_message_attachment(self, request, pk):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            if not conversation.error:
+            if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
                 if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
@@ -493,7 +495,7 @@ class ViewSet(viewsets.ViewSet):
     def send_message_template(self, request, pk):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            if not conversation.error:
+            if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
                 if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
@@ -549,7 +551,7 @@ class ViewSet(viewsets.ViewSet):
     def send_message_whatsapp_template(self, request, pk):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
-            if not conversation.error:
+            if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
                 destination = conversation.destination
                 data = request.data.copy()  # Id Template
                 template = TemplateWhatsapp.objects.get(id=data['template_id'])

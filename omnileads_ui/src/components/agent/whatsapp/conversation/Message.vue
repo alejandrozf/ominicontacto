@@ -25,13 +25,13 @@
         </div>
         <div v-if="message.type==='file'">
           <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
-            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            <iframe :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe>
             {{ message?.message.name }}
           </a>
         </div>
         <div v-if="message.type==='document' || message.type==='application'">
           <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
-            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            <iframe :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe>
             {{ message?.message.name }}
           </a>
         </div>
