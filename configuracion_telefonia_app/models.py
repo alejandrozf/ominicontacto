@@ -33,13 +33,12 @@ import os
 import re
 import uuid
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
-R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
-R_MATCH_PATTERN = r'^\+?[\*\w|\.|\[|\]|-]+$'
-R_MATCH_PATTERN_DISCADO = r'^\+?[\*\w|\.|\[|\]|-|#|\+]+$'
-R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
+R_TELEFONO_RUTA_ENTRANTE = r'^\+?[\*\w|\.|\[|\]|-]+$'
+R_MATCH_PATTERN_DISCADO = r'^(\.|-|\+|\*|#|\d|\[|\]|[XZN])+$'
 R_PATRON_DISCADO = r'^(\+|\*|#|\d)+$'
+R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
 
 
 class TroncalSIP(models.Model):
@@ -476,7 +475,7 @@ class RutaEntrante(models.Model):
 
     nombre = models.CharField(max_length=30, unique=True)
     telefono = models.CharField(
-        max_length=30, unique=True, validators=[RegexValidator(R_MATCH_PATTERN)])
+        max_length=30, unique=True, validators=[RegexValidator(R_TELEFONO_RUTA_ENTRANTE)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
     idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes',
