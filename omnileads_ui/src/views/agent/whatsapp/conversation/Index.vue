@@ -2,13 +2,13 @@
   <div>
     <HeaderConversation :isExpired="isExpired" />
     <div v-if="agtWhatsCoversationInfo.error">
-      <Message severity="error" :closable="false" class="mt-0 mb-3"
+      <Message severity="error" :closable="true" class="mt-0 mb-3"
         >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
         <br>
         {{ agtWhatsCoversationInfo.errorEx.reason }} [{{ agtWhatsCoversationInfo.errorEx.code }}]
       </Message>
     </div>
-    <div v-else>
+    <div>
       <Message
         v-if="!agtWhatsCoversationInfo.client.id"
         severity="warn"
@@ -45,7 +45,6 @@
       </div>
     </div>
     <ListMessages id="listMessages" class="scroll" />
-    <div v-if="!agtWhatsCoversationInfo.error">
       <TextBox
         v-if="!isExpired && !isDisposition && !isTransferred"
         class="footer"
@@ -60,7 +59,6 @@
         class="w-full btn-border mt-2 p-button-warning"
         @click="openModalToRestart()"
       />
-    </div>
   </div>
 </template>
 
@@ -144,7 +142,7 @@ export default {
         },
         transferDone (event) {
             if (event.detail.conversationId === this.id) {
-                this.isTransferred = true
+                this.isTransferred = true;
             }
         },
         createContact () {

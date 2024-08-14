@@ -14,8 +14,9 @@
       />
     </template>
     <template #end>
-      <div v-if="!viewAsReport && !agtWhatsCoversationInfo.error">
+      <div v-if="!viewAsReport">
         <SplitButton
+        v-if="!isExpired"
         icon="pi pi-paperclip"
         :model="attachOptions"
         v-tooltip.top="$t('globals.attach')"
@@ -54,15 +55,6 @@
           @click="close"
           class="p-button-danger ml-2"
           v-tooltip.top="$t('globals.close')"
-        />
-      </div>
-      <div v-if="!viewAsReport && agtWhatsCoversationInfo.error">
-        <Button
-          v-if="agtWhatsCoversationInfo.client.id"
-          icon="pi pi-save"
-          class="ml-2"
-          @click="qualify"
-          v-tooltip.top="$t('globals.save')"
         />
       </div>
     </template>
@@ -162,8 +154,8 @@ export default {
         },
         attach (fileType = 'img') {
             localStorage.setItem(
-                    'agtWhatsappConversationMessages',
-                    JSON.stringify(this.agtWhatsCoversationMessages)
+                'agtWhatsappConversationMessages',
+                JSON.stringify(this.agtWhatsCoversationMessages)
             );
             localStorage.setItem(
                 'agtWhatsCoversationInfo',
@@ -172,7 +164,7 @@ export default {
             const event = new CustomEvent('onWhatsappMediaFormEvent', {
                 detail: {
                     media_form: true,
-                    fileType: fileType,
+                    fileType: fileType
                 }
             });
             window.parent.document.dispatchEvent(event);
@@ -254,7 +246,7 @@ export default {
                     if (this.agtWhatsCoversationInfo.client.id) {
                         this.clientInfo.name =
               this.agtWhatsCoversationInfo.client.data.nombre ||
-              this.agtWhatsCoversationInfo.client_alias
+              this.agtWhatsCoversationInfo.client_alias;
                         this.clientInfo.phone = this.agtWhatsCoversationInfo.client.phone;
                     } else {
                         this.clientInfo.name = this.agtWhatsCoversationInfo.client_alias;
