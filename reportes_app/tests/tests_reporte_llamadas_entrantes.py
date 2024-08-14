@@ -125,8 +125,12 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
     @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
     def test_reporte_vacio(self, _obtener_llamadas_en_espera_raw):
         reporte = ReporteDeLLamadasEntrantesDeSupervision()
-        self.assertNotIn(self.entrante1.id, reporte.estadisticas)
-        self.assertNotIn(self.entrante2.id, reporte.estadisticas)
+        self.assertIn(self.entrante1.id, reporte.estadisticas)
+        self.assertIn(self.entrante2.id, reporte.estadisticas)
+        for id, datos in reporte.estadisticas.items():
+            datos.pop('nombre')
+            for valor in datos.values():
+                self.assertEqual(valor, 0)
 
     @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
     def test_contabiliza_atendidas(self, _obtener_llamadas_en_espera_raw):
