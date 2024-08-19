@@ -12,7 +12,7 @@
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
-          <InputText
+          <InputNumber
             :class="{
               'p-invalid': v$.form.value.$invalid && submitted,
             }"

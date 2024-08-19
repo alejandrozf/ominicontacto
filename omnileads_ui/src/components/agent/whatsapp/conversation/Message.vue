@@ -48,6 +48,16 @@
         <div v-if="message.type==='contact'">
           <pre>{{message?.message.contacts}}</pre>
         </div>
+        <div v-if="message.type==='list'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+            {{ message?.message.text }}
+          </p>
+        </div>
+        <div v-if="message.type==='list_reply'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+            {{ message?.message.text }}
+          </p>
+        </div>
         <div class="flex justify-content-end flex-wrap">
           <div class="flex align-items-center justify-content-center">
             <small class="font-italic">
