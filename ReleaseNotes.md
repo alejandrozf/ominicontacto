@@ -11,6 +11,7 @@
 
 - oml-2723 Allow ignoring SSL validation in External Site Authentication requests
 - oml-2740 Whatsapp conversations are not always blocked after detecting error
+- oml-2754 Whatsapp Interactive menu options restricted to numbers only
 
 ## Fixed
 
