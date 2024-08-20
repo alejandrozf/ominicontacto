@@ -304,6 +304,16 @@ class Grupo(models.Model):
         'Acceso a las campañas preview como agente'))
     whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
         'Permiso de uso de la canalidad WhatsApp'))
+    restringir_tipo_llamadas_manuales = models.BooleanField(default=False, verbose_name=_(
+        'Restringir tipo de llamadas manuales'))
+    permitir_llamadas_manuales_a_manuales = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Manuales'))
+    permitir_llamadas_manuales_a_dialer = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Dialer'))
+    permitir_llamadas_manuales_a_entrante = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Entrante'))
+    permitir_llamadas_manuales_a_preview = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Preview'))
     conjunto_de_pausa = models.ForeignKey(
         ConjuntoDePausa,
         verbose_name=_('Conjunto de pausas'),
@@ -412,6 +422,24 @@ class AgenteProfile(models.Model):
     def get_campanas_activas_miembro(self):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
+
+    def get_campanas_habilitadas_para_llamada_manual(self):
+        campanas = Campana.objects.filter(queue_campana__queuemember__member=self,
+                                          estado=Campana.ESTADO_ACTIVA)
+
+        if not self.grupo.restringir_tipo_llamadas_manuales:
+            return campanas
+
+        filtro_tipo = Q(type=-1)
+        if self.grupo.permitir_llamadas_manuales_a_manuales:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_MANUAL)
+        if self.grupo.permitir_llamadas_manuales_a_dialer:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_DIALER)
+        if self.grupo.permitir_llamadas_manuales_a_entrante:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_ENTRANTE)
+        if self.grupo.permitir_llamadas_manuales_a_preview:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_PREVIEW)
+        return campanas.filter(filtro_tipo)
 
     def has_campanas_preview_activas_miembro(self):
         campanas_preview_activas = self.campana_member.filter(

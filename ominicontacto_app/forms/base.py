@@ -2069,7 +2069,10 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
-                  'obligar_despausa', 'whatsapp_habilitado')
+                  'obligar_despausa', 'whatsapp_habilitado',
+                  'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
+                  'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',
+                  'permitir_llamadas_manuales_a_preview')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

@@ -560,14 +560,7 @@ class FormularioNuevoContactoFormView(FormView):
 
 class IdentificarContactoView(FormView):
     """
-    Vista para identificar Contactos de llamadas entrantes, manuales o redials.
-    Si son de llamadas entrantes deben ir a calificar. Manuales y redials van a edicion del contacto
-    con click to call.
-    Si no se sabe el id del contacto:
-    - Listar los contactos de la campaña que tengan ese teléfono en alguno de sus campos
-    - Si viene un id de contacto de sugerencia (por redial) ofrecer el ultimo contacto llamado
-    - Ofrecer buscar contacto
-    - Ofrecer para crear un contacto nuevo
+    Vista para identificar Contactos de manuales ingresadas por teclado numérico.
     """
     template_name = 'agente/identificar_contacto.html'
     form_class = BusquedaContactoForm
@@ -575,7 +568,11 @@ class IdentificarContactoView(FormView):
     def dispatch(self, request, *args, **kwargs):
         pk_campana = kwargs.get('pk_campana', False)
         self.campana = get_object_or_404(Campana, pk=pk_campana)
-        pk_campana = kwargs.get('pk_campana', False)
+        # Valido que el agente tenga permiso para llamar a esta campaña si es manual
+        agente = request.user.get_agente_profile()
+        campanas_habilitadas = agente.get_campanas_habilitadas_para_llamada_manual()
+        if not campanas_habilitadas.filter(id=pk_campana).exists():
+            raise PermissionDenied
         # Validar formato de telefono??
         self.telefono = kwargs.get('telefono', False)
         self.call_data_json = kwargs.get('call_data_json', '')
