@@ -152,6 +152,7 @@ function createDataTable() {
                     return data.toFixed(1) + gettext(' segundos');
                 },
             },
+            { 'data': 'porcentaje_abandono' },
             { 'data': 'gestiones' },
             { 'data': 'porcentaje_objetivo' },
         ],
@@ -187,6 +188,7 @@ class InboundStats {
         this.agentes_llamada = 0;
         this.agentes_pausa = 0;
         this.agentes_ready = 0;
+        this.porcentaje_abandono = 0;
         this.porcentaje_objetivo = 0;
     }
 
@@ -216,6 +218,11 @@ class InboundStats {
         this.t_promedio_abandono = 0;
         if (abandonadas > 0) {
             this.t_promedio_abandono = parseFloat(newStats['tiempo_acumulado_abandonadas']) / abandonadas;
+        }
+        let total = this.atendidas + this.abandonadas + this.expiradas;
+        this.porcentaje_abandono = 0;
+        if (total > 0) {
+            this.porcentaje_abandono = this.abandonadas / total * 100;
         }
 
         var atendidas = parseInt(newStats['llamadas_atendidas']);
