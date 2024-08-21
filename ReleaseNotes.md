@@ -6,6 +6,7 @@
 - oml-2668 Audio File creation using TTS Services
 - oml-2675 Whatsapp multimedia mesagges
 - oml-2731 Added Ringall strategy for inbound and dialer campaigns
+- oml-2734 Inbound Campaigns Supervision shows abandoned calls percentage row.
 
 ## Changed
 
