@@ -25,13 +25,13 @@
         </div>
         <div v-if="message.type==='file'">
           <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
-            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            <iframe :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe>
             {{ message?.message.name }}
           </a>
         </div>
         <div v-if="message.type==='document' || message.type==='application'">
           <a :href="message?.message.url" style="text-decoration: none; color: inherit;" target="_blank" download>
-            <embed :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%">
+            <iframe :src="message?.message.url" frameBorder="0" scrolling="auto" height="100%" width="100%"></iframe>
             {{ message?.message.name }}
           </a>
         </div>
@@ -47,6 +47,16 @@
         </div>
         <div v-if="message.type==='contact'">
           <pre>{{message?.message.contacts}}</pre>
+        </div>
+        <div v-if="message.type==='list'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+            {{ message?.message.text }}
+          </p>
+        </div>
+        <div v-if="message.type==='list_reply'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+            {{ message?.message.text }}
+          </p>
         </div>
         <div class="flex justify-content-end flex-wrap">
           <div class="flex align-items-center justify-content-center">

@@ -331,7 +331,7 @@ class RutasSalientesTest(APITest):
                     "id": None,
                     "prepend": None,
                     "prefix": None,
-                    "match_pattern": "ZYXXXXX"
+                    "match_pattern": "+123*[1-9]#ZNX"
                 }
             ],
             "troncales": [
