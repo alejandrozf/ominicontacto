@@ -160,7 +160,7 @@ class TestConfigCreators(OMLBaseTest):
         template = """
         [{oml_nombre_playlist}]
         mode=files
-        directory=sounds/moh/{oml_nombre_playlist}
+        directory=sounds/oml/moh/{oml_nombre_playlist}
         """
         template = "\n".join(t.strip() for t in template.splitlines())
         config = template.format(**{'oml_nombre_playlist': playlist.nombre})
