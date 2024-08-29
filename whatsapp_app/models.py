@@ -154,6 +154,7 @@ class MensajeWhatsapp(models.Model):
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
+    fail_reason = models.CharField(max_length=100, null=True, blank=True)
     objects = MensajeWhatsappManager()
 
 
