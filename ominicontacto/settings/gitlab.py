@@ -193,7 +193,7 @@ MONITORFORMAT = 'mp3'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
-OML_PLAYLIST_PATH_ASTERISK = "var/lib/asterisk/sounds/moh/"
+OML_PLAYLIST_PATH_ASTERISK = "var/lib/asterisk/sounds/oml/moh/"
 
 CALIFICACION_REAGENDA = 'Agenda'
 
