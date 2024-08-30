@@ -1269,7 +1269,8 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = contacto.bd_contacto.get_metadata()
             datos = json.loads(contacto.datos)
             for nombre, dato in zip(bd_metadata.nombres_de_columnas_de_datos, datos):
-                kwargs['initial'].update({self.get_nombre_input(nombre): dato})
+                if nombre not in kwargs['initial']:
+                    kwargs['initial'].update({self.get_nombre_input(nombre): dato})
         else:
             self.base_datos = base_datos
             bd_metadata = base_datos.get_metadata()

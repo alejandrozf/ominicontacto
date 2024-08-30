@@ -512,6 +512,9 @@ class SessionData {
         if (this.is_dialer && invite_request.headers['Auto-Attend-Dialer']){
             call_data.auto_attend = invite_request.headers['Auto-Attend-Dialer'][0].raw;
         }
+        if (invite_request.headers['Oml-Retrieve-Crm-Data']){
+            call_data.CRM_contact_data = invite_request.headers['Oml-Retrieve-Crm-Data'][0].raw;
+        }
 
         this.setDialplanCallData(invite_request.headers, call_data);
         return call_data;

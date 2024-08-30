@@ -258,7 +258,7 @@ class CalificacionClienteFormView(FormView):
                                        es_auditoria=self.es_auditoria(),
                                        **kwargs)
 
-    def get_contacto_form_kwargs(self):
+    def get_contacto_form_kwargs(self, usar_crm=False):
         kwargs = {'prefix': 'contacto_form'}
         initial = {}
         if self.contacto is not None:
@@ -271,18 +271,30 @@ class CalificacionClienteFormView(FormView):
                 # TODO: Cuando las manuales vengan con call_data sacar esto
                 initial['telefono'] = self.kwargs['telefono']
 
+        # Cargo los datos de contacto recibidos desde el CRM
+        if 'call_data_json' in self.kwargs and 'CRM_contact_data' in self.call_data and usar_crm:
+            bd_metadata = self.campana.bd_contacto.get_metadata()
+            campos_bd = bd_metadata.nombres_de_columnas
+            contact_data = json.loads(self.call_data['CRM_contact_data'])
+            for key, value in contact_data.items():
+                if key in campos_bd:
+                    initial[key] = value
+            nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
+            if nombre_campo_id_externo in contact_data:
+                value = initial.pop(nombre_campo_id_externo)
+                initial['id_externo'] = value
+
         kwargs['campos_ocultos'] = self.campos_ocultos
         kwargs['campos_obligatorios'] = self.campos_obligatorios
         kwargs['initial'] = initial
-
         if self.request.method == 'POST':
             kwargs['data'] = self.request.POST
         return kwargs
 
-    def get_contacto_form(self):
+    def get_contacto_form(self, usar_crm=False):
         return FormularioNuevoContacto(
             base_datos=self.campana.bd_contacto,
-            **self.get_contacto_form_kwargs(),
+            **self.get_contacto_form_kwargs(usar_crm),
             es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE,
             control_de_duplicados=self.campana.control_de_duplicados
         )
@@ -299,7 +311,7 @@ class CalificacionClienteFormView(FormView):
 
     def get(self, request, *args, **kwargs):
         formulario_llamada_entrante = self._formulario_llamada_entrante()
-        contacto_form = self.get_contacto_form()
+        contacto_form = self.get_contacto_form(usar_crm=True)
         calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
         bd_metadata = self.campana.bd_contacto.get_metadata()
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
@@ -475,6 +487,9 @@ class CalificacionClienteFormView(FormView):
             )
 
     def form_valid(self, contacto_form, calificacion_form=None):
+        # Elimino CRM DATA para que no moleste:
+        if 'CRM_contact_data' in self.call_data:
+            self.call_data.pop('CRM_contact_data')
         try:
             nuevo_contacto = False
             if self.contacto is None:
@@ -552,6 +567,10 @@ class CalificacionClienteFormView(FormView):
         """
         bd_metadata = self.campana.bd_contacto.get_metadata()
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+
+        # Elimino CRM DATA para que no moleste:
+        if 'CRM_contact_data' in self.call_data:
+            self.call_data.pop('CRM_contact_data')
 
         return self.render_to_response(self.get_context_data(
             contacto=self.contacto,
