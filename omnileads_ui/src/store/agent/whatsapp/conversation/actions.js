@@ -15,6 +15,7 @@ const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
         itsMine,
         message: data && data.content && data.content ? data.content : '',
         status: data && data.status ? data.status : null,
+        fail_reason: data && data.fail_reason ? data.fail_reason : null,
         date: data && data.timestamp ? new Date(data.timestamp) : null,
         type: data && data.type ? data.type : null,
     };

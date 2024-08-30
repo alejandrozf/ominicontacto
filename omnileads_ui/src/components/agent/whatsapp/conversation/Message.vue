@@ -58,6 +58,9 @@
             {{ message?.message.text }}
           </p>
         </div>
+        <div v-if="message?.fail_reason" class="flex justify-content-end flex-wrap">
+          <Tag severity="danger" :value="message?.fail_reason"></Tag>
+        </div>
         <div class="flex justify-content-end flex-wrap">
           <div class="flex align-items-center justify-content-center">
             <small class="font-italic">

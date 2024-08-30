@@ -25,6 +25,8 @@ async def outbound_chat_event(timestamp, message_id, status, expire, destination
         print("status de mensaje saliente ====>", status)
         message = MensajeWhatsapp.objects.get(message_id=message_id)
         message.status = status
+        if status == 'failed':
+            message.fail_reason = error_ex['reason']
         if not message.conversation.whatsapp_id:
             message.conversation.whatsapp_id = destination
         message.save()
