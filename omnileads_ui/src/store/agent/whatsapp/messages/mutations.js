@@ -2,7 +2,10 @@ export default {
     agtWhatSendMessageStatus (state, info = null) {
         if (info) {
             state.agtWhatsCoversationMessages.forEach((message) => {
-                if (message.id === info.message_id) { message.status = info.status; }
+                if (message.id === info.message_id) {
+                    message.status = info.status;
+                    message.fail_reason = info.fail_reason;
+                }
             });
         }
     }

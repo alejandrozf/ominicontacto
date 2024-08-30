@@ -42,6 +42,7 @@ class MensajeListSerializer(serializers.Serializer):
     sender = serializers.JSONField()
     type = serializers.CharField()
     status = serializers.CharField()
+    fail_reason = serializers.CharField()
     file = serializers.FileField()
 
     def get_contact_data(self, obj):

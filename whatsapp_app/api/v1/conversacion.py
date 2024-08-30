@@ -67,7 +67,7 @@ def get_type(fileName):
     mimestart = mimetypes.guess_type(fileName)[0]
     if mimestart is not None:
         type_file = mimestart.split('/')[0]
-        return type_file if type_file != 'application' else 'file'
+        return type_file if type_file not in ['application', 'text'] else 'file'
     return 'file'
 
 
@@ -436,12 +436,12 @@ class ViewSet(viewsets.ViewSet):
                         serializer.is_valid(raise_exception=True)
                         mensaje = serializer.save()
                         filename = data['file'].name
-                        type = get_type(filename)
+                        file_type = get_type(filename)
                         domain = request.build_absolute_uri('/')[:-1]
                         # domain = "https://nominally-hopeful-condor.ngrok-free.app"
                         media_url = domain + mensaje.file.url
                         message_dict = {
-                            "type": type,
+                            "type": file_type,
                             "previewUrl": media_url,
                             "originalUrl": media_url,
                             "url": media_url,
@@ -459,7 +459,7 @@ class ViewSet(viewsets.ViewSet):
                                 "agent_id": sender.user.id
                             }
                             mensaje.content = message_dict
-                            mensaje.type = type
+                            mensaje.type = file_type
                             mensaje.save()
                             serializer = MensajeListSerializer(mensaje)
                         else:

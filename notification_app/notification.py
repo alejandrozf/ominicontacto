@@ -152,6 +152,7 @@ class AgentNotifier:
                 'chat_id': message.conversation.id,
                 'message_id': message.id,
                 'status': message.status,
+                'fail_reason': message.fail_reason,
                 'date': message.timestamp.isoformat()
             }
             await self.send_message_whatsapp(
