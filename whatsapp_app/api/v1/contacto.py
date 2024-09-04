@@ -105,14 +105,15 @@ class CreateSerializer(serializers.ModelSerializer):
         return json.dumps(datos)
 
     def to_internal_value(self, data):
-        bd_contacto = self.campana.bd_contacto
         mandatory = self.campana.get_campos_obligatorios()
-        campos_bd = json.loads(bd_contacto.metadata)['nombres_de_columnas']
-        if 'telefono' in data['datos']:
-            telefono = data['datos'].pop('telefono')
-            data['telefono'] = self.validar_telefono('telefono', telefono)
+        metadata = self.campana.bd_contacto.get_metadata()
+        campos_bd = metadata.nombres_de_columnas
+        telefono = metadata.nombre_campo_telefono
+        if telefono in data['datos']:
+            telefono_val = data['datos'].pop(telefono)
+            data['telefono'] = self.validar_telefono(telefono, telefono_val)
         else:
-            raise serializers.ValidationError({'telefono': _('campo requerido')})
+            raise serializers.ValidationError({telefono: _('campo requerido')})
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if set(data['datos'].keys()).issuperset(set(mandatory)):
                 data['datos'] = self.get_datos_json(data['datos'])
@@ -164,13 +165,14 @@ class UpdateSerializer(serializers.ModelSerializer):
         return json.dumps(datos)
 
     def to_internal_value(self, data):
-        bd_contacto = self.campana.bd_contacto
         campos_no_editables = self.campana.get_campos_no_editables()
         campos_ocultos = self.campana.get_campos_ocultos()
-        campos_bd = json.loads(bd_contacto.metadata)['nombres_de_columnas']
-        if 'telefono' in data['datos']:
-            telefono = data['datos'].pop('telefono')
-            data['telefono'] = self.validar_telefono('telefono', telefono)
+        metadata = self.campana.bd_contacto.get_metadata()
+        campos_bd = metadata.nombres_de_columnas
+        telefono = metadata.nombre_campo_telefono
+        if telefono in data['datos']:
+            telefono_val = data['datos'].pop(telefono)
+            data['telefono'] = self.validar_telefono(telefono, telefono_val)
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if not set(data['datos'].keys()).intersection(set(campos_no_editables))\
                     and not set(data['datos'].keys()).intersection(set(campos_ocultos)):
