@@ -101,6 +101,14 @@
             >{{ $t("models.whatsapp.conversation.new.model.contact") }}*</label
           >
           <div class="p-inputgroup mt-2">
+            <Button
+            icon="pi pi-user"
+            :label="$t('globals.create')"
+            severity="secondary"
+            @click="createContact"
+            />
+          </div>
+          <div class="p-inputgroup mt-2">
             <span class="p-inputgroup-addon">
               <i class="pi pi-user"></i>
             </span>
@@ -162,6 +170,11 @@
       :contactId="contactId"
       @handleModalEvent="handleModal"
     />
+    <ModalNewContact
+      :showModal="showModalNewContact"
+      :campaignId="campaignId"
+      @handleModalEvent="handleModalNewContact"
+    />
   </div>
 </template>
 
@@ -175,6 +188,8 @@ import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp';
 import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
 import ModalTemplateParams from '@/components/agent/whatsapp/conversation/new/ModalTemplateParams';
+import ModalNewContact from '@/components/agent/whatsapp/contact/ModalNewContact';
+import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -188,7 +203,8 @@ export default {
         };
     },
     components: {
-        ModalTemplateParams
+        ModalTemplateParams,
+        ModalNewContact
     },
     inject: ['$helpers'],
     data () {
@@ -203,6 +219,7 @@ export default {
             templates: [],
             contacts: [],
             showModal: false,
+            showModalNewContact: false,
             template: null,
             campaignId: null,
             contactId: null,
@@ -238,15 +255,21 @@ export default {
         ...mapState([
             'supWhatsappLineCampaigns',
             'supCampaignTemplates',
-            'agtWhatsContactSearchResults'
+            'agtWhatsContactSearchResults',
+            'newContact'
         ])
     },
     mounted () {
         window.addEventListener('storage', this.updatedLocalStorage);
         this.updatedLocalStorage();
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA,
+            this.updatedLocalStorage
+        )
     },
+
     methods: {
-        ...mapActions(['initSupCampaignTemplates', 'agtWhatsContactSearch']),
+        ...mapActions(['initSupCampaignTemplates', 'agtWhatsContactSearch', 'agtWhatsContactDBFieldsInit']),
         async searchContacts (event) {
             const searchKey = event?.value?.toString() || null;
             if (!this.form?.campaign) {
@@ -266,7 +289,6 @@ export default {
             }
             const { status, message } = await this.agtWhatsContactSearch({
                 campaignId: this.form?.campaign || null,
-                conversationId: 'tes',
                 filterData: { phone: searchKey, name: searchKey }
             });
             if (status !== HTTP_STATUS.SUCCESS) {
@@ -304,6 +326,17 @@ export default {
                 this.nofifyResponse(response);
             }
         },
+        handleModalNewContact ({
+            showModal = false,
+            campaignId = null,
+            response = null
+        }) {
+            this.showModalNewContact = showModal;
+            this.campaignId = campaignId;
+            if (response) {
+                this.nofifyResponse(response);
+            }
+        },
         async nofifyResponse (response) {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
@@ -336,9 +369,10 @@ export default {
             });
         },
         getContactInfo (contact) {
-            const firstname = contact?.data?.nombre || '-----'
-            const lastname = contact?.data?.apellido || '-----'
-            const phone = contact?.phone || '-----'
+            const data = Object.values(contact.data)
+            const firstname = data[1] || '-----';
+            const lastname = data[2] || '-----';
+            const phone = contact?.phone || '-----';
             return `${firstname} ${lastname} (${phone})`;
         },
         closeModal () {
@@ -378,7 +412,28 @@ export default {
                 contactPhone: contact?.phone || ''
 
             });
-        }
+        },
+        async createContact () {
+            const agtWhatsCampaingId = this.form.campaign
+            localStorage.setItem("agtWhatsCampaingId", agtWhatsCampaingId);
+            const { status, message } = await this.agtWhatsContactDBFieldsInit({
+                campaignId: agtWhatsCampaingId || null,
+            });
+            if (status !== HTTP_STATUS.SUCCESS) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+            }
+            else{
+              this.handleModalNewContact({
+                showModal: true
+            });
+            }
+        },
     },
     watch: {
         agtWhatsContactSearchResults: {
@@ -464,6 +519,24 @@ export default {
                     this.templates = [];
                 }
             },
+            deep: true,
+            immediate: true
+        },
+        newContact: {
+          handler () {
+            if (this.newContact.length > 0){
+              this.contacts = this.newContact.map(
+                  (contact) => {
+                      return {
+                          id: contact?.id || null,
+                          data: contact?.data ? contact.data : {},
+                          phone: contact?.phone || ''
+                      };
+                  }
+                );
+              this.form.contact = this.newContact[0].id
+            }
+          },
             deep: true,
             immediate: true
         }

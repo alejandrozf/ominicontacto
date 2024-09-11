@@ -3,21 +3,16 @@
     <Header
       @handleCloseEvent="closeEvent"
       :title="
-        formToCreate
+        formToCreate||formToCreateFromNewConversation
           ? $t('views.whatsapp.contact.new')
           : $t('views.whatsapp.contact.edit')
       "
-    />
-    <SearchTable
-      v-if="inconmingConversation"
-      @selectPreviewContactEvent="selectPreviewContact"
-      ref="searchTableRef"
-      :conversationInfo="{ campaignId: conversationInfo?.campaignId }"
     />
     <Form
       ref="formRef"
       @cleanFilterSearchEvent="cleanFilterSearch"
       :formToCreate="formToCreate"
+      :formToCreateFromNewConversation="formToCreateFromNewConversation"
       :previewContact="previewContact"
     />
   </div>
@@ -40,7 +35,8 @@ export default {
     data () {
         return {
             conversationInfo: null,
-            formToCreate: true,
+            formToCreate: null,
+            formToCreateFromNewConversation: null,
             previewContact: null,
             inconmingConversation: false
         };
@@ -52,7 +48,6 @@ export default {
         ]),
         cleanFilterSearch () {
             this.previewContact = null;
-            this.$refs.searchTableRef.clearFilter();
         },
         selectPreviewContact (contact) {
             this.previewContact = contact;
@@ -61,31 +56,42 @@ export default {
             this.$refs.formRef.clearForm();
         },
         async updatedLocalStorage () {
-            this.inconmingConversation =
-        localStorage.getItem('agtWhatsInconmingConversation') === 'true';
-            this.conversationInfo =
-        JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
-            if (this.conversationInfo && this.conversationInfo?.client) {
-                this.formToCreate = !this.conversationInfo?.client?.id;
+            const agtWhatsCoversationInfo = localStorage.getItem('agtWhatsCoversationInfo');
+            if (agtWhatsCoversationInfo && agtWhatsCoversationInfo !== 'null') {
+                this.conversationInfo = JSON.parse(agtWhatsCoversationInfo);
+                this.formToCreate = this.conversationInfo.client.id === null
+                this.agtWhatsSetCoversationInfo(this.conversationInfo);
+                this.$helpers.openLoader(this.$t);
+                const { status, message } = await this.agtWhatsContactDBFieldsInit({
+                    campaignId: this.conversationInfo.campaignId,
+                });
+                this.$helpers.closeLoader();
+                if (status !== HTTP_STATUS.SUCCESS) {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.error_notification'),
+                            message,
+                            this.$t('globals.icon_error')
+                        )
+                    );
+                }
             } else {
-                this.formToCreate = false;
+                this.formToCreateFromNewConversation = true
+                const { status, message } = await this.agtWhatsContactDBFieldsInit({
+                    campaignId: localStorage.getItem('agtWhatsCampaingId'),
+                });
+                this.$helpers.closeLoader();
+                if (status !== HTTP_STATUS.SUCCESS) {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.error_notification'),
+                            message,
+                            this.$t('globals.icon_error')
+                        )
+                    );
+                }
             }
-            this.agtWhatsSetCoversationInfo(this.conversationInfo);
-            this.$helpers.openLoader(this.$t);
-            const { status, message } = await this.agtWhatsContactDBFieldsInit({
-                campaignId: this.conversationInfo?.campaignId || null,
-                conversationId: this.conversationInfo?.id || null
-            });
-            this.$helpers.closeLoader();
-            if (status !== HTTP_STATUS.SUCCESS) {
-                this.$swal(
-                    this.$helpers.getToasConfig(
-                        this.$t('globals.error_notification'),
-                        message,
-                        this.$t('globals.icon_error')
-                    )
-                );
-            }
+            this.inconmingConversation = localStorage.getItem('agtWhatsInconmingConversation') === 'true';
         }
     },
     mounted () {

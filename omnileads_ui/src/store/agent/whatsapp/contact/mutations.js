@@ -14,5 +14,12 @@ export default {
             }
         }
         state.agtWhatsContactSearchResults = contactsToAdd;
-    }
+    },
+    agtWhatsNewContact (state, contact){
+        console.log('agtWhatsNewContact', contact)
+        if (contact) {
+            state.newContact = []
+            state.newContact.push(contact);
+        }
+    },
 };
