@@ -5,7 +5,7 @@ const service = new Service();
 export default {
     async agtWhatsContactListInit ({ commit }, { campaignId = null, conversationId = null }) {
         try {
-            if (!campaignId || !conversationId) {
+            if (!campaignId) {
                 await commit('agtWhatsContactListInit', []);
                 return {
                     status: HTTP_STATUS.ERROR,
@@ -13,8 +13,7 @@ export default {
                 };
             }
             const response = await service.getContacts({
-                campaignId,
-                conversationId
+                campaignId
             });
             const { status, data } = response;
             await commit(
@@ -32,7 +31,7 @@ export default {
             };
         }
     },
-    async agtWhatsContactCreate (
+    async agtContactCreateFromConversation (
         { commit },
         { campaignId = null, conversationId = null, data }
     ) {
@@ -43,7 +42,7 @@ export default {
                     message: 'Error al crear contacto'
                 };
             }
-            return await service.createContact({
+            return await service.createContactFromConversation({
                 campaignId,
                 conversationId,
                 data
@@ -57,12 +56,39 @@ export default {
             };
         }
     },
-    async agtWhatsContactUpdate (
+    async agtContactCreate(
         { commit },
-        { campaignId = null, conversationId = null, contactId = null, data }
+        { campaignId = null, fdata }
     ) {
         try {
-            if (!campaignId || !conversationId || !contactId) {
+            if (!campaignId ) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al crear contacto'
+                };
+            }
+            const response = await service.createContact({
+                campaignId,
+                fdata
+            });
+            const { status, data } = response;
+            await commit('agtWhatsNewContact', status === HTTP_STATUS.SUCCESS ? data : []);
+            return response
+        } catch (error) {
+            console.error('===> ERROR to create contact');
+            console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al crear contacto'
+            };
+        }
+    },
+    async agtWhatsContactUpdate (
+        { commit },
+        { campaignId = null, contactId = null, data }
+    ) {
+        try {
+            if (!campaignId || !contactId) {
                 return {
                     status: HTTP_STATUS.ERROR,
                     message: 'Error al actualizar contacto'
@@ -70,7 +96,6 @@ export default {
             }
             return await service.updateContact({
                 campaignId,
-                conversationId,
                 contactId,
                 data
             });
@@ -85,10 +110,10 @@ export default {
     },
     async agtWhatsContactDBFieldsInit (
         { commit },
-        { campaignId = null, conversationId = null }
+        { campaignId = null}
     ) {
         try {
-            if (!campaignId || !conversationId) {
+            if (!campaignId) {
                 await commit('agtWhatsContactDBFieldsInit', []);
                 return {
                     status: HTTP_STATUS.ERROR,
@@ -96,8 +121,7 @@ export default {
                 };
             }
             const response = await service.getContactDBFields({
-                campaignId,
-                conversationId
+                campaignId
             });
             const { status, data } = response;
             await commit('agtWhatsContactDBFieldsInit', status === HTTP_STATUS.SUCCESS ? data : []);
@@ -114,10 +138,10 @@ export default {
     },
     async agtWhatsContactSearch (
         { commit },
-        { campaignId = null, conversationId = null, filterData }
+        { campaignId = null, filterData }
     ) {
         try {
-            if (!campaignId || !conversationId) {
+            if (!campaignId) {
                 return {
                     status: HTTP_STATUS.ERROR,
                     message: 'Error al buscar contactos'
@@ -125,7 +149,6 @@ export default {
             }
             const response = await service.searchOnContactDB({
                 campaignId,
-                conversationId,
                 data: filterData
             });
             const { status, data } = response;
@@ -140,5 +163,5 @@ export default {
                 message: 'Error al buscar contactos'
             };
         }
-    }
+    },
 };

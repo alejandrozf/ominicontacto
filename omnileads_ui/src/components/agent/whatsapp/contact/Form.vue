@@ -138,6 +138,10 @@ export default {
             type: Boolean,
             default: true
         },
+        formToCreateFromNewConversation: {
+            type: Boolean,
+            default: false
+        },
         previewContact: {
             type: Object,
             default: () => {
@@ -169,7 +173,7 @@ export default {
         ...mapState(['agtWhatsContactDBFields', 'agtWhatsCoversationInfo'])
     },
     methods: {
-        ...mapActions(['agtWhatsContactCreate', 'agtWhatsContactUpdate']),
+        ...mapActions(['agtContactCreateFromConversation', 'agtContactCreate', 'agtWhatsContactUpdate']),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -178,6 +182,7 @@ export default {
             this.clearForm();
             this.$emit('clearForm');
             this.$emit('cleanFilterSearchEvent');
+            this.$emit('closeModalEvent');
             const event = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
                     contact_form: false
@@ -201,7 +206,7 @@ export default {
                     if (i === 0) {
                         value = this.contact?.phone;
                     } else {
-                        value = this.contact?.id ? this.contact?.data[i - 1] : null;
+                        value = this.contact?.id ? this.contact?.data[field.name] : null;
                     }
                     this.form[`${field.name}`] = {
                         ...field,
@@ -283,9 +288,17 @@ export default {
                     data: this.getFormData(),
                     contactId: null
                 };
-                if (this.formToCreate) {
-                    response = await this.agtWhatsContactCreate(formData);
-                } else {
+                if (this.formToCreate && this.formToCreate != null) {
+                    response = await this.agtContactCreateFromConversation(formData);
+                }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
+                  const formData = {
+                    campaignId: localStorage.getItem('agtWhatsCampaingId'),
+                    fdata: this.getFormData(),
+                  };
+                  console.log("formData >>", formData)
+                  response = await this.agtContactCreate(formData);
+                }
+                else {
                     formData.contactId = this.form.id.value;
                     response = await this.agtWhatsContactUpdate(formData);
                 }
@@ -293,6 +306,12 @@ export default {
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
+                    let contacts = []
+                    contacts.push(JSON.stringify(response.data))
+                    localStorage.setItem(
+                        'newContant',
+                        contacts
+                    );
                     const event = new Event(
                         WHATSAPP_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA
                     );
@@ -332,15 +351,10 @@ export default {
         },
         agtWhatsCoversationInfo: {
             handler () {
-                if (this.agtWhatsCoversationInfo?.client) {
-                    this.contact.id = this.agtWhatsCoversationInfo?.client?.id || null;
-                    this.contact.phone =
-            this.agtWhatsCoversationInfo?.client?.phone ||
-            this.agtWhatsCoversationInfo?.destination ||
-            null;
-                    this.contact.data = this.agtWhatsCoversationInfo.client.data
-                        ? JSON.parse(this.agtWhatsCoversationInfo.client.data)
-                        : [];
+                if (this.agtWhatsCoversationInfo.client.id !== null) {
+                    this.contact.id = this.agtWhatsCoversationInfo.client.id;
+                    this.contact.phone = this.agtWhatsCoversationInfo.client.phone || this.agtWhatsCoversationInfo.destination;
+                    this.contact.data = this.agtWhatsCoversationInfo.client.data || [];
                 }
                 this.initFormData();
             },

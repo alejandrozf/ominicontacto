@@ -1,7 +1,8 @@
 export default {
-    ContactList: (campaignId, conversationId) => `/api/v1/whatsapp/contact/${campaignId}/${conversationId}`,
-    ContactCreate: (campaignId, conversationId) => `/api/v1/whatsapp/contact/${campaignId}/${conversationId}`,
-    ContactUpdate: (campaignId, conversationId, contactId) => `/api/v1/whatsapp/contact/${campaignId}/${conversationId}/${contactId}`,
-    ContactCampaignDBFields: (campaignId, conversationId) => `/api/v1/whatsapp/contact/${campaignId}/${conversationId}/db_fields`,
-    ContactSearch: (campaignId, conversationId) => `/api/v1/whatsapp/contact/${campaignId}/${conversationId}/search`
+    ContactList: (campaignId) => `/api/v1/whatsapp/contact/${campaignId}`,
+    ContactCreateFromConversation: (campaignId, conversationId) => `/api/v1/whatsapp/contact/${campaignId}/create_contact_from_conversation/${conversationId}`,
+    ContactCreate: (campaignId) => `/api/v1/whatsapp/contact/${campaignId}`,
+    ContactUpdate: (campaignId, contactId) => `/api/v1/whatsapp/contact/${campaignId}/${contactId}`,
+    ContactCampaignDBFields: (campaignId) => `/api/v1/whatsapp/contact/${campaignId}/db_fields`,
+    ContactSearch: (campaignId) => `/api/v1/whatsapp/contact/${campaignId}/search`
 };

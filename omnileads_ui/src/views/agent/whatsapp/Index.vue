@@ -48,7 +48,7 @@ export default {
         localStorage.setItem('agtWhatsMessageInfo', null);
         localStorage.setItem('onlyWhatsappTemplates', null);
         localStorage.setItem('agtWhatsConversationNewResetForm', null);
-        localStorage.setItem('agtWhatsCoversationInfo', null);
+        localStorage.setItem('agtWhatsCoversationInfo', JSON.stringify(null));
     },
     mounted () {
         window.addEventListener('storage', this.updatedLocalStorage);
