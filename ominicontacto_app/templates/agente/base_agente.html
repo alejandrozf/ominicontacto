@@ -175,9 +175,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
             <div class="modal-body">
                 <select class="form-control" id="cmpList">
-                    {% for queue_member in user.get_agente_profile.get_campanas_activas_miembro %}
-                    <option value = "{{ queue_member.queue_name.campana.pk }}"
-                    campana_type="{{ queue_member.queue_name.campana.type }}"> {{ queue_member.queue_name.campana.nombre }} </option>
+                    {% for campana in user.get_agente_profile.get_campanas_habilitadas_para_llamada_manual %}
+                    <option value = "{{ campana.pk }}"
+                    campana_type="{{ campana.type }}"> {{ campana.nombre }} </option>
                     {% endfor %}
                 </select>
             </div>

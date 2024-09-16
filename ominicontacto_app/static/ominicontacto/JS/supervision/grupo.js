@@ -25,6 +25,10 @@ $(function () {
 
     $('#id_limitar_agendas_personales_en_dias').on('change', actualizarEstadoDiasAgendasPersonales);
     actualizarEstadoDiasAgendasPersonales();
+
+    $('#id_restringir_tipo_llamadas_manuales').on('change', actualizarRestringirManuales);
+    actualizarRestringirManuales();
+
 });
 
 function actualizarEstadoAutoUnpause() {
@@ -51,4 +55,19 @@ function actualizarEstadoDiasAgendasPersonales() {
         $('#id_tiempo_maximo_para_agendar').prop('disabled', false);
     else
         $('#id_tiempo_maximo_para_agendar').prop('disabled', true);
+}
+
+function actualizarRestringirManuales() {
+    if ($('#id_restringir_tipo_llamadas_manuales').is(':checked')) {
+        $('#id_permitir_llamadas_manuales_a_manuales').prop('disabled', false);
+        $('#id_permitir_llamadas_manuales_a_dialer').prop('disabled', false);
+        $('#id_permitir_llamadas_manuales_a_entrante').prop('disabled', false);
+        $('#id_permitir_llamadas_manuales_a_preview').prop('disabled', false);
+    }
+    else {
+        $('#id_permitir_llamadas_manuales_a_manuales').prop('disabled', true);
+        $('#id_permitir_llamadas_manuales_a_dialer').prop('disabled', true);
+        $('#id_permitir_llamadas_manuales_a_entrante').prop('disabled', true);
+        $('#id_permitir_llamadas_manuales_a_preview').prop('disabled', true);
+    }
 }
