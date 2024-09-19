@@ -15,6 +15,14 @@
                 >{{ $t("models.whatsapp.line.horario") }}*</label
               >
               <div class="p-inputgroup mt-2">
+                <Button
+                icon="pi pi-clock"
+                :label="$t('globals.create')"
+                severity="secondary"
+                @click="createGroupOfHours"
+                />
+              </div>
+              <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                   <i class="pi pi-clock"></i>
                 </span>
@@ -547,6 +555,10 @@
         />
       </div>
     </div>
+    <ModalNewGroupOfHour
+    :showModal="showModalNewGroupOfHour"
+    @handleModalEvent="handleModalNewGroupOfHour"
+    />
   </div>
 </template>
 
@@ -563,6 +575,7 @@ import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { HTTP_STATUS } from '@/globals';
 import OptionsTable from '@/components/supervisor/whatsapp/lines/options_form/OptionsTable';
 import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
+import ModalNewGroupOfHour from '@/components/supervisor/whatsapp/lines/options_form/ModalNewGroupOfHour';
 
 export default {
     inject: ['$helpers'],
@@ -583,7 +596,8 @@ export default {
     },
     components: {
         ModalToHandleOption,
-        OptionsTable
+        OptionsTable,
+        ModalNewGroupOfHour
     },
     data () {
         return {
@@ -647,13 +661,15 @@ export default {
             msgDespedidaContent: '',
             msgBienvenidaRequired: false,
             msgFueraHoraRequired: false,
-            isEmptyOptions: false
+            isEmptyOptions: false,
+            showModalNewGroupOfHour: false
         };
     },
     computed: {
         ...mapState([
             'supWhatsappLine',
             'groupOfHours',
+            'groupOfHour',
             'isFormToCreate',
             'supWhatsappMessageTemplates',
             'supWhatsappLineCampaigns',
@@ -905,7 +921,18 @@ export default {
                     )
                 );
             }
-        }
+        },
+        handleModalNewGroupOfHour ({showModal = false}) {
+            this.showModalNewGroupOfHour = showModal;
+        },
+        createGroupOfHours() {
+          this.showModalNewGroupOfHour = true;
+          this.handleModalNewGroupOfHour({
+                showModal: true
+            })
+        },
+
+
     },
     watch: {
         supWhatsappLine: {
@@ -943,7 +970,11 @@ export default {
             immediate: true
         },
         groupOfHours: {
-            handler () {},
+            handler () {
+              if (this.groupOfHours.length > 0 && this.groupOfHour.nombre !== ''){
+                this.form.horario = this.groupOfHours[this.groupOfHours.length-1].id
+              }
+            },
             deep: true,
             immediate: true
         },
