@@ -101,7 +101,8 @@ from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
 from api_app.views.system import AsteriskQueuesData
 
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
-from api_app.views.reportes import TransferenciaAEncuestaLogCreateView
+from api_app.views.logging import TransferenciaAEncuestaLogCreateView
+from api_app.views.reports import AgentStatusView, CallStatusView
 
 
 router = routers.DefaultRouter()
@@ -559,4 +560,9 @@ urlpatterns = [
     path('api/v1/reportes/survey_transfer/',
          TransferenciaAEncuestaLogCreateView.as_view(), name='api_log_survey_transfer'),
 
+    # ######  For Bots Internos    ############ #
+    path('api/v1/agent_status/campaign/<int:campaign_id>',
+         AgentStatusView.as_view(), name='api_agent_status'),
+    path('api/v1/call_status/campaign/<int:campaign_id>',
+         CallStatusView.as_view(), name='api_call_status'),
 ]

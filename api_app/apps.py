@@ -303,6 +303,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_log_survey_transfer',
              'roles': ['Agente', ]},
+            {'nombre': 'api_agent_status',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_call_status',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -696,5 +700,11 @@ class ApiAppConfig(AppConfig):
              'version': '1.29.0'},
         'api_log_survey_transfer':
             {'descripcion': _('Loguea un intento de transferencia a Survey'),
+             'version': '1.27.0'},
+        'api_agent_status':
+            {'descripcion': _('Obtener la cantidad de agentes de una campaña en cada estado'),
+             'version': '1.27.0'},
+        'api_call_status':
+            {'descripcion': _('Obtener la cantidad de llamadas Atendidas, Abandonadas, Expiradas'),
              'version': '1.27.0'},
     }
