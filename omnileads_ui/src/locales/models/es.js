@@ -74,7 +74,8 @@ export default {
         order: 'Orden',
         type: 'Tipo',
         required: 'Es obligatorio',
-        list_options: 'Opciones de lista'
+        list_options: 'Opciones de lista',
+        numero_type: 'Number type'
     },
     pause: {
         id: 'ID',

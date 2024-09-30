@@ -53,8 +53,7 @@
       <div
         v-for="(field, index) in formByType"
         :key="index"
-        class="field col-6 mt-4"
-      >
+        class="field col-6 mt-4">
         <div v-if="field.is_required">
           <label
             :class="{
@@ -93,11 +92,29 @@
               optionValue="value"
               :options="field.selectOptions"
             />
-            <Textarea
+            <InputNumber
               v-model="field.value"
               :class="{
                 'p-invalid': isEmptyField(field.value) && submitted,
               }"
+              v-else-if="field.type == fieldTypes.OPT5 && field.type_number == fieldTypeNumber.OPT1"
+              :useGrouping="false"
+            />
+            <InputNumber
+              v-model="field.value"
+              :class="{
+                'p-invalid': isEmptyField(field.value) && submitted,
+              }"
+              v-else-if="field.type == fieldTypes.OPT5 && field.type_number == fieldTypeNumber.OPT2"
+              :useGrouping="false"
+              :minFractionDigits="0"
+              :maxFractionDigits="field.sig_digits"
+            />
+            <Textarea
+              v-model="field.value"
+              :class="{
+                'p-invalid': isEmptyField(field.value) && submitted,
+               }"
               class="w-full"
               v-else
               rows="5"
@@ -140,13 +157,27 @@
               optionValue="value"
               :options="field.selectOptions"
             />
-            <Textarea
+            <InputNumber
               v-model="field.value"
               class="w-full"
-              v-else
-              rows="5"
-              cols="30"
+              v-else-if="field.type == fieldTypes.OPT5 && field.type_number == fieldTypeNumber.OPT1"
+              :useGrouping="false"
             />
+            <InputNumber
+              v-model="field.value"
+              class="w-full"
+              v-else-if="field.type == fieldTypes.OPT5 && field.type_number == fieldTypeNumber.OPT2"
+              :useGrouping="false"
+              :minFractionDigits="0"
+              :maxFractionDigits="field.sig_digits"
+            />
+            <Textarea
+            v-model="field.value"
+            class="w-full"
+            v-else
+            rows="5"
+            cols="30"
+          />
           </div>
         </div>
       </div>
@@ -186,7 +217,7 @@ import { FilterMatchMode } from 'primevue/api';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
-import { FORM_TYPES, FIELD_TYPES } from '@/globals/agent/whatsapp/disposition';
+import { FORM_TYPES, FIELD_TYPES, FIELD_TYPE_NUMBER } from '@/globals/agent/whatsapp/disposition';
 import { HTTP_STATUS } from '@/globals';
 import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 export default {
@@ -202,6 +233,7 @@ export default {
     data () {
         return {
             fieldTypes: FIELD_TYPES,
+            fieldTypeNumber: FIELD_TYPE_NUMBER,
             form: {
                 id: null,
                 dispositionOption: null,
@@ -305,8 +337,10 @@ export default {
                 return 'pi-calendar';
             } else if (type === FIELD_TYPES.OPT3) {
                 return 'pi-list';
-            } else {
+            } else if (type === FIELD_TYPES.OPT4) {
                 return 'pi-comment';
+            } else {
+                return 'pi-hashtag';
             }
         },
         clearFilter () {

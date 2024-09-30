@@ -34,6 +34,7 @@ import time
 import uuid
 import unicodedata
 import datetime
+import json
 
 import pytz
 
@@ -45,6 +46,7 @@ from django.forms import ValidationError
 
 from ominicontacto_app.errors import OmlError
 import logging as _logging
+from decimal import *
 
 
 logger = _logging.getLogger(__name__)
@@ -458,3 +460,10 @@ def get_oml_last_release():
 
 def crear_segmento_grabaciones_url():
     return "/api/v1/grabacion/archivo/?filename="
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)

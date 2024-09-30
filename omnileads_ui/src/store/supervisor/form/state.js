@@ -17,6 +17,8 @@ export default {
         nombre_campo: '',
         orden: null,
         tipo: null,
+        tipo_numero: null,
+        cifras_significativas: null,
         values_select: null,
         is_required: false
     },

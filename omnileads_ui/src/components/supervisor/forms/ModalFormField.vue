@@ -104,6 +104,24 @@
             :binary="true"
           />
         </div>
+        <div class="field mt-3" v-if="newFormField.tipo == 5">
+          <div class="flex flex-col gap-4">
+            <div v-for="tipo of fieldTypesNumero" :key="tipo.value" class="flex items-center">
+              <RadioButton v-model="newFormField.tipo_numero" :inputId="tipo.value" name="dynamic" :value="tipo.value" />
+              <label :for="tipo.value" class="ml-2">{{ tipo.option }}</label>
+            </div>
+            <div>
+              <InputNumber v-if="newFormField.tipo_numero == 2"
+                id="form_field_digitos_significativos"
+                :placeholder="$t('forms.form.sig_digits')"
+                v-model="newFormField.cifras_significativas"
+                :useGrouping="false"
+                :min="1"
+                :max="3"
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <OptionListForm :isListType="isListType" />
     </div>
@@ -154,7 +172,12 @@ export default {
                 { option: this.$t('forms.form.field.type.text'), value: 1 },
                 { option: this.$t('forms.form.field.type.date'), value: 2 },
                 { option: this.$t('forms.form.field.type.list'), value: 3 },
-                { option: this.$t('forms.form.field.type.text_box'), value: 4 }
+                { option: this.$t('forms.form.field.type.text_box'), value: 4 },
+                { option: this.$t('forms.form.field.type.numero'), value: 5 }
+            ],
+            fieldTypesNumero: [
+                { option: this.$t('forms.form.field.numero_type.entero_type'), value: 1 },
+                { option: this.$t('forms.form.field.numero_type.decimal_type'), value: 2 }
             ]
         };
     },

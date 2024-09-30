@@ -32,6 +32,8 @@
           v-else-if="campo.tipo == 3"
           :options="JSON.parse(campo.values_select)"
         />
+        <InputNumber v-else-if="campo.tipo == 5 && campo.tipo_numero == 1" class="w-full mt-2"  :useGrouping="false" />
+        <InputNumber v-else-if="campo.tipo == 5 && campo.tipo_numero == 2" class="w-full mt-2"  :useGrouping="false" :minFractionDigits="0" :maxFractionDigits="campo.cifras_significativas" />
         <Textarea class="mt-2 w-full" v-else rows="5" cols="30" />
       </div>
     </div>

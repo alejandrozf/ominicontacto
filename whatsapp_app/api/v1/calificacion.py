@@ -57,6 +57,7 @@ class ListSerializer(serializers.Serializer):
         if obj.opcion_calificacion:
             serializer = CampaignSerializer(obj.opcion_calificacion.campana)
             return serializer.data
+        return None
 
     def get_disposition_data(self, obj):
         if obj.opcion_calificacion:
@@ -168,6 +169,8 @@ class FieldFormularioSerializer(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField(source="nombre_campo")
     type = serializers.IntegerField(source="tipo")
+    type_number = serializers.IntegerField(source="tipo_numero")
+    sig_digits = serializers.IntegerField(source="cifras_significativas")
     order = serializers.IntegerField(source="orden")
     values_select = serializers.CharField()
     is_required = serializers.BooleanField()
