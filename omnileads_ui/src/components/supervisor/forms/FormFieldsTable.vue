@@ -88,6 +88,16 @@
         </template>
       </Column>
       <Column
+        :header="$t('models.form_field.numero_type')"
+        dataType="boolean"
+        field="tipo_numero"
+        :sortable="true"
+      >
+      <template #body="slotProps">
+        {{ getNumberType(slotProps.data.tipo_numero) }}
+      </template>
+      </Column>
+      <Column
         field="values_select"
         :header="$t('models.form_field.list_options')"
       >
@@ -178,10 +188,20 @@ export default {
                 return this.$t('forms.form.field.type.date');
             } else if (type === 3) {
                 return this.$t('forms.form.field.type.list');
-            } else {
+            } else if (type === 4) {
                 return this.$t('forms.form.field.type.text_box');
-            }
+            } else if (type === 5) {
+                return this.$t('forms.form.field.type.numero');
+            } else return '-----';
+        },
+        getNumberType (type) {
+            if (type === 1) {
+                return this.$t('forms.form.field.numero_type.entero_type');
+            } else if (type === 2) {
+                return this.$t('forms.form.field.numero_type.decimal_type');
+            } else return '-----';
         }
+
     },
     watch: {
         fields: {

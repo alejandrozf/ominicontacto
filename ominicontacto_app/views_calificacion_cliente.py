@@ -45,6 +45,7 @@ from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo impo
     InteraccionConSistemaExterno)
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.redis.call_contact_cache import CallContactCache
+from ominicontacto_app.utiles import DecimalEncoder
 from api_app.services.calificacion_llamada import CalificacionLLamada
 from notification_app.notification import RedisStreamNotifier
 from configuracion_telefonia_app.models import DestinoEntrante
@@ -754,7 +755,7 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
         self.object = form.save(commit=False)
         cleaned_data_respuesta = form.cleaned_data
         del cleaned_data_respuesta['calificacion']
-        metadata = json.dumps(cleaned_data_respuesta)
+        metadata = json.dumps(cleaned_data_respuesta, cls=DecimalEncoder)
         self.object.metadata = metadata
         self.object.calificacion = self.calificacion
         self.object.save()

@@ -99,7 +99,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(dato)
                 datos = json.loads(respuesta.metadata)
                 for clave, valor in datos.items():
-                    lista_opciones.append(valor.replace('\r\n', ' '))
+                    lista_opciones.append(str(valor).replace('\r\n', ' '))
 
                 # --- Finalmente, escribimos la linea
 

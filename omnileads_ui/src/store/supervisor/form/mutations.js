@@ -29,6 +29,8 @@ export default {
                 nombre_campo: '',
                 orden: null,
                 tipo: null,
+                tipo_numero: null,
+                cifras_significativas: null,
                 values_select: null,
                 is_required: false
             };
@@ -38,6 +40,8 @@ export default {
                 nombre_campo: formField.nombre_campo,
                 orden: formField.orden,
                 tipo: formField.tipo,
+                tipo_numero: formField.tipo_numero,
+                cifras_significativas: formField.cifras_significativas,
                 values_select: formField.values_select,
                 is_required: formField.is_required
             };

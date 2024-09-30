@@ -1227,6 +1227,11 @@ class FormularioCRMForm(forms.Form):
                     label=campo.nombre_campo, widget=forms.Textarea(
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
 
 
 class SincronizaDialerForm(forms.Form):
@@ -1543,6 +1548,20 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                     label=campo.nombre_campo, widget=forms.Textarea(
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
+                campo.tipo_numero is FieldFormulario.TIPO_ENTERO:
+                self.fields[campo.nombre_campo] = forms.IntegerField(
+                    label=campo.nombre_campo, min_value=0,
+                    widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
+                campo.tipo_numero is FieldFormulario.TIPO_DECIMAL:
+                self.fields[campo.nombre_campo] = forms.DecimalField(
+                    label=campo.nombre_campo, min_value=0,
+                    decimal_places=campo.cifras_significativas,
+                    widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+
 
     class Meta:
         model = RespuestaFormularioGestion

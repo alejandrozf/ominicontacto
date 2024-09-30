@@ -134,7 +134,7 @@ class ReporteFormularioGestionCampanaCSV(ReporteCSV):
         lista_opciones.append('')
         campos = self.campos_formulario_opciones[id_opcion]
         for campo in campos:
-            lista_opciones.append(datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
+            lista_opciones.append(str(datos.get(campo.nombre_campo, '')).replace('\r\n', ' '))
 
         lista_datos_utf8 = [force_text(item) for item in lista_opciones]
         self.datos.append(lista_datos_utf8)

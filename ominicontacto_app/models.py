@@ -673,17 +673,32 @@ class FieldFormulario(models.Model):
     TIPO_TEXTO_AREA = 4
     """Tipo de campo text area"""
 
+    TIPO_NUMERO = 5
+    """Tipo de campo numero"""
+
     TIPO_CHOICES = (
         (TIPO_TEXTO, _('Texto')),
         (TIPO_FECHA, _('Fecha')),
         (TIPO_LISTA, _('Lista')),
         (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
+        (TIPO_NUMERO, _('Número')),
+    )
+
+    TIPO_ENTERO = 1
+
+    TIPO_DECIMAL = 2
+
+    TIPO_NUMERO_CHOICES = (
+        (TIPO_ENTERO, _('ENTERO')),
+        (TIPO_DECIMAL, _('DECIMAL')),
     )
 
     formulario = models.ForeignKey(Formulario, related_name="campos", on_delete=models.CASCADE)
     nombre_campo = models.CharField(max_length=64)
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
+    tipo_numero = models.PositiveIntegerField(choices=TIPO_NUMERO_CHOICES, blank=True, null=True)
+    cifras_significativas = models.PositiveIntegerField(blank=True, null=True)
     values_select = models.TextField(blank=True, null=True)
     is_required = models.BooleanField()
 

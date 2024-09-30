@@ -24,8 +24,8 @@ class FieldFormularioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FieldFormulario
-        fields = ('id', 'nombre_campo', 'orden',
-                  'tipo', 'values_select', 'is_required')
+        fields = ('id', 'nombre_campo', 'orden', 'tipo',
+                  'tipo_numero', 'cifras_significativas', 'values_select', 'is_required')
 
 
 class FormularioSerializer(serializers.ModelSerializer):
@@ -56,6 +56,8 @@ class FormularioSerializer(serializers.ModelSerializer):
             nombre_campo = campo.get('nombre_campo')
             orden = campo.get('orden')
             tipo = campo.get('tipo')
+            tipo_numero = campo.get('tipo_numero')
+            cifras_significativas = campo.get('cifras_significativas')
             values_select = campo.get('values_select')
             is_required = campo.get('is_required')
             if campo_id:
@@ -65,6 +67,8 @@ class FormularioSerializer(serializers.ModelSerializer):
                 item.nombre_campo = nombre_campo
                 item.orden = orden
                 item.tipo = tipo
+                item.tipo_numero = tipo_numero
+                item.cifras_significativas = cifras_significativas
                 item.values_select = values_select
                 item.is_required = is_required
                 item.save()
@@ -73,6 +77,8 @@ class FormularioSerializer(serializers.ModelSerializer):
                     formulario=instance,
                     nombre_campo=nombre_campo,
                     orden=orden, tipo=tipo,
+                    tipo_numero=tipo_numero,
+                    cifras_significativas=cifras_significativas,
                     values_select=values_select,
                     is_required=is_required)
         diference_ids = list(
