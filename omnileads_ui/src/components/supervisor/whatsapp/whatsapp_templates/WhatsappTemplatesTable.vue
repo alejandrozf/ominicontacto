@@ -77,35 +77,16 @@
         :header="$t('models.whatsapp.whatsapp_template.active')"
         dataType="boolean"
         field="is_active"
-        :sortable="true"
         style="max-width: 8rem; text-align: center"
       >
-        <template #body="{ data }">
-          <i
-            v-if="data.is_active"
-            class="pi pi-check-circle"
-            style="color: green"
-          ></i>
-          <i v-else class="pi pi-times-circle" style="color: red"></i>
-        </template>
-      </Column>
-      <Column :header="$tc('globals.option', 2)" style="max-width: 10rem">
-        <template #body="slotProps">
-          <Button
-            v-if="slotProps.data.is_active"
-            icon="pi pi-eye-slash"
-            class="p-button-secondary ml-2"
-            @click="changeStatus(slotProps.data)"
-            v-tooltip.top="$t('globals.deactivate')"
-          />
-          <Button
-            v-else
-            icon="pi pi-eye"
-            class="p-button-primary ml-2"
-            @click="changeStatus(slotProps.data)"
-            v-tooltip.top="$t('globals.activate')"
-          />
-        </template>
+      <template #body="slotProps">
+        <ToggleButton
+          v-model="slotProps.data.is_active"
+          onIcon="pi pi-check"
+          offIcon="pi pi-times"
+          @click="changeStatus(slotProps.data)"
+        />
+      </template>
       </Column>
     </DataTable>
   </div>
@@ -115,7 +96,6 @@
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { HTTP_STATUS } from '@/globals';
-
 export default {
     inject: ['$helpers'],
     data () {
