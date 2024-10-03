@@ -33,6 +33,8 @@ POSTGRES_PORT = os.getenv('PGPORT')
 REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 TIME_ZONE = os.getenv('TZ')
+if 'TOKEN_EXPIRED_AFTER_SECONDS' in os.environ:
+    TOKEN_EXPIRED_AFTER_SECONDS = int(os.getenv('TOKEN_EXPIRED_AFTER_SECONDS'))
 # Settings para version de OML
 OML_BRANCH = os.getenv('OML_BRANCH')
 OML_COMMIT = os.getenv('OML_COMMIT')
