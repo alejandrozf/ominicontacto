@@ -889,12 +889,19 @@ class CampanaMixinForm(object):
         whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
         if instance is not None:
             if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
-                nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
-                antecesores_linea = nodo.lineas_destino_whatsapp()
+                antecesores_linea = []
+                try:
+                    nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
+                    antecesores_linea = nodo.lineas_destino_whatsapp()
+                except Exception:
+                    pass
                 if antecesores_linea:
-                    nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
-                    raise forms.ValidationError(self.ERROR_WHATSAPP_DESTINO.format(
-                        ', '.join(nombres_lineas)))
+                    for line in antecesores_linea:
+                        line.destino = None
+                        line.save()
+                    # nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                ConfiguracionWhatsappCampana.objects.filter(
+                    is_active=True, campana=instance).update(is_active=False)
         return whatsapp_habilitado
 
 
@@ -1550,19 +1557,18 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
             elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
-                campo.tipo_numero is FieldFormulario.TIPO_ENTERO:
+                    campo.tipo_numero is FieldFormulario.TIPO_ENTERO:
                 self.fields[campo.nombre_campo] = forms.IntegerField(
                     label=campo.nombre_campo, min_value=0,
                     widget=forms.NumberInput(attrs={'class': 'form-control'}),
                     required=campo.is_required)
             elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
-                campo.tipo_numero is FieldFormulario.TIPO_DECIMAL:
+                    campo.tipo_numero is FieldFormulario.TIPO_DECIMAL:
                 self.fields[campo.nombre_campo] = forms.DecimalField(
                     label=campo.nombre_campo, min_value=0,
                     decimal_places=campo.cifras_significativas,
                     widget=forms.NumberInput(attrs={'class': 'form-control'}),
                     required=campo.is_required)
-
 
     class Meta:
         model = RespuestaFormularioGestion
