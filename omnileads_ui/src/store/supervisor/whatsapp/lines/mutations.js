@@ -16,15 +16,15 @@ export default {
                     tipo_de_destino: line.configuration.tipo_de_destino
                 },
                 destination: {
-                    data: line.destination.data,
-                    type: line.destination.type
+                    data: line.destination ? line.destination.data : null,
+                    type: line.destination ? line.destination.type : null
                 },
                 horario: line.schedule,
                 mensaje_bienvenida: line.welcome_message,
                 mensaje_despedida: line.farewell_message,
                 mensaje_fueradehora: line.afterhours_message
             };
-            state.supWhatsappLine.configuracion.destino = line.destination.data;
+            state.supWhatsappLine.configuracion.destino = line.destinatio ? line.destination.data : null;
             if (line.configuration.tipo_de_destino === 1) {
                 state.supWhatsappLineOptions = line.destination.data.options;
                 for (let i = 0; i < state.supWhatsappLineOptions.length; i++) {

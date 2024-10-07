@@ -46,7 +46,7 @@ from django.forms import ValidationError
 
 from ominicontacto_app.errors import OmlError
 import logging as _logging
-from decimal import *
+from decimal import Decimal
 
 
 logger = _logging.getLogger(__name__)

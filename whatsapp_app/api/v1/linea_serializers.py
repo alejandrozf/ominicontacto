@@ -191,7 +191,7 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
 
     def borrar_destino_sobrante(self, destino_previo, destino):
         # Si pasa de un menu a una campaña, borro el menu, su destino y sus componentes asociados.
-        if destino_previo.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
+        if destino_previo and destino_previo.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
                 and destino.tipo == DestinoEntrante.CAMPANA:
             destino_previo.delete()
             destino_previo.content_object.delete()
