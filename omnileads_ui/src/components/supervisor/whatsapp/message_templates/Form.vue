@@ -171,6 +171,10 @@ export default {
         formToCreate: {
             type: Boolean,
             default: true
+        },
+        return_after_save: {
+          type: String,
+          default: 'supervisor_whatsapp_message_templates'
         }
     },
     data () {
@@ -317,7 +321,12 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await this.initWhatsappMessageTemplates();
-                this.$router.push({ name: 'supervisor_whatsapp_message_templates' });
+                if(this.return_after_save === 'supervisor_whatsapp_message_templates'){
+                  this.$router.push({ name: this.return_after_save });
+                }
+                else{
+                  this.$emit('closeModalEvent');
+                }
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
