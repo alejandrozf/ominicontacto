@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-27 10:17-0300\n"
+"POT-Creation-Date: 2024-10-10 10:34-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,8 +76,8 @@ msgstr ""
 #: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:326
 #: ominicontacto_app/static/ominicontacto/JS/agente/revisionAuditoria.js:84
 #: ominicontacto_app/static/ominicontacto/JS/agente/revisionAuditoria.js:87
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:96
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:95
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:95
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:99
 #: ominicontacto_app/static/ominicontacto/JS/supervision/omlAPI.js:52
 #: ominicontacto_app/static/ominicontacto/JS/supervision/omlAPI.js:72
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:73
@@ -128,7 +128,7 @@ msgid "Conectado"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:326
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:406
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:407
 msgid "Desconectado"
 msgstr ""
 
@@ -278,19 +278,19 @@ msgstr ""
 msgid "Error: Llamado fallido"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:407
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:408
 msgid "Registrado"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:408
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:409
 msgid "No Registrado"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:410
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:411
 msgid "El SIP Proxy no responde, contacte a su administrador"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:414
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:415
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr ""
 
@@ -315,28 +315,28 @@ msgstr ""
 msgid "Error al marcar auditoría"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:81
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:80
 msgid "Descargar archivo de auditoria (CSV)"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:129
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:128
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reporte_calificaciones_campana.js:84
 msgid "Exportación completa"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:131
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_auditorias.js:130
 msgid "La exportación a .csv del reporte ha sido completada exitosamente."
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:79
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:83
 msgid "Descargar archivo de grabaciones (ZIP)"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:136
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:140
 msgid "Operación completa"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:138
+#: ominicontacto_app/static/ominicontacto/JS/busqueda_grabacion.js:142
 msgid "La operación ha sido completada exitosamente."
 msgstr ""
 

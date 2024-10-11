@@ -133,7 +133,7 @@ class WhatsappAppConfig(AppConfig):
             {'descripcion': _('linea-list'),
              'version': '1.26.0'},
         'linea-detail':
-            {'descripcion': _('linea-detailp'),
+            {'descripcion': _('linea-detail'),
              'version': '1.26.0'},
         'destino-list':
             {'descripcion': _('destino-list'),
