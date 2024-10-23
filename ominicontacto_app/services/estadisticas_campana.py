@@ -37,7 +37,7 @@ from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Cam
                                       AgenteProfile, HistoricalCalificacionCliente,
                                       HistoricalRespuestaFormularioGestion,
                                       RespuestaFormularioGestion)
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer import get_dialer_service
 from reportes_app.models import LlamadaLog
 
 from utiles_globales import adicionar_render_unicode
@@ -390,12 +390,8 @@ class ReporteTotalesLlamadas:
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=self.campana.pk,
                 es_originario=True).count()
         if self.campana.es_dialer:
-            campana_service = CampanaService()
-            dato_campana = campana_service.obtener_dato_campana_run(self.campana)
-            llamadas_pendientes_extra = 0
-            if dato_campana:
-                llamadas_pendientes_extra = dato_campana.get(
-                    'n_est_remaining_calls', 0)
+            dialer_service = get_dialer_service()
+            llamadas_pendientes_extra = dialer_service.obtener_llamadas_pendientes(self.campana)
         return self._llamadas_pendientes + llamadas_pendientes_extra
 
     @property

@@ -26,7 +26,7 @@ class OMLAPI {
     }
 
     getDialerCampaignDetails(campaign_id, callback_ok) {
-        var URL = Urls.campana_dialer_detalle_wombat();
+        var URL = Urls.campana_dialer_detalle_servicio();
         $.get(URL, {pk_campana: campaign_id}, callback_ok);
     }
 

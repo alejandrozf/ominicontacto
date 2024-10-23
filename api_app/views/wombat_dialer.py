@@ -30,7 +30,7 @@ from constance import config as config_constance
 
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from ominicontacto_app.services.wombat_service import WombatReloader, WombatService
+from ominicontacto_app.services.dialer.wombat_api import WombatReloader, WombatAPI
 
 
 class ReiniciarWombat(APIView):
@@ -77,7 +77,7 @@ class WombatState(APIView):
     def get(self, request):
         if not config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
             raise PermissionDenied
-        service = WombatService()
+        service = WombatAPI()
         state, uptime = service.get_dialer_state()
         response_data = {
             'status': 'OK',

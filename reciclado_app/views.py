@@ -30,7 +30,8 @@ from ominicontacto_app.models import Campana
 from reciclado_app.forms import RecicladoForm
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER)
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer.campana_wombat import CampanaService
+from ominicontacto_app.services.dialer import wombat_habilitado
 
 import logging as logging_
 
@@ -124,6 +125,11 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
     dialer
     """
     def dispatch(self, request, *args, **kwargs):
+        if not wombat_habilitado():
+            message = _('Esta función no se encuentra disponible por el momento.')
+            messages.warning(request, message)
+            return HttpResponseRedirect(reverse('campana_dialer_list'))
+
         form = self.get_form_kwargs()
         contactados = form.get('reciclado_choice')
         no_contactados = form.get('no_contactados_choice')

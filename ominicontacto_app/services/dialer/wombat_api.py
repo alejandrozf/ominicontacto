@@ -25,6 +25,8 @@ import subprocess
 import os
 import json
 import time
+import requests
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -34,7 +36,7 @@ from constance import config as config_constance
 logger = logging.getLogger(__name__)
 
 
-class WombatService():
+class WombatAPI(object):
 
     GET_DIALER_STATE_URL = "api/engine/?op=STATE"
     STOP_SERVICE_URL = "api/engine/?op=STOP"
@@ -62,8 +64,8 @@ class WombatService():
             logger.info(_("actualizacion en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError as e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(" - Comando ejecutado: {0}".format(e.cmd))
+            logger.warning(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warning(" - Comando ejecutado: {0}".format(e.cmd))
             print(e)
 
     def update_lista_wombat(self, nombre_archivo, url_edit):
@@ -86,8 +88,8 @@ class WombatService():
                                                      url_edit])])
             return out
         except subprocess.CalledProcessError as e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            logger.warning(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warning(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
 
     def list_config_wombat(self, url_edit):
@@ -110,8 +112,8 @@ class WombatService():
             logger.info(_("list en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError as e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            logger.warning(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warning(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
 
     def set_call_ext_status(self, url_set_status):
@@ -128,8 +130,8 @@ class WombatService():
                 logger.info(_("Set extStatus en WOMBAT OK"))
             return True
         except subprocess.CalledProcessError as e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            logger.warning(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warning(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
 
     def post_json(self, url, object):
@@ -151,8 +153,8 @@ class WombatService():
             logger.info(_("POST en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError as e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            logger.warning(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warning(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
 
     def get_dialer_state(self):
@@ -164,7 +166,18 @@ class WombatService():
                 uptime = response['uptimeMs']
             return (state, uptime)
         else:
-            logger.warn(_("No se pudo obtener el estado del dialer"))
+            logger.warning(_("No se pudo obtener el estado del dialer"))
+
+    def agendar_llamada(self, campana, agenda):
+        fecha_hora = '.'.join([str(agenda.fecha), str(agenda.hora)])
+        telefono = agenda.contacto.telefono
+        # TODO: Pasar a WombatAPI
+        url_wombat = urljoin(settings.OML_WOMBAT_URL,
+                             f'api/calls/?op=addcall&campaign={campana.pk}_{campana.nombre}&'
+                             f'number={telefono}&schedule={fecha_hora}&'
+                             f'attrs=ID_CAMPANA:{campana.pk},ID_CLIENTE:{agenda.contacto.pk},'
+                             f'CAMPANA:{campana.nombre}')
+        requests.post(url_wombat)
 
 
 class WombatReloader(object):
@@ -175,11 +188,11 @@ class WombatReloader(object):
 
     def reload(self):
         # Obtener estado "/api/engine/?op=STATE"
-        service = WombatService()
+        service = WombatAPI()
         config_constance.WOMBAT_DIALER_STATE = self.STATE_DOWN
-        response = service.list_config_wombat(WombatService.STOP_SERVICE_URL)
+        response = service.list_config_wombat(WombatAPI.STOP_SERVICE_URL)
         if response is None or 'state' not in response:
-            logger.warn('No se pudo reiniciar Wombat Dialer.')
+            logger.warning('No se pudo reiniciar Wombat Dialer.')
             return
         time.sleep(5)
         self.start_tries = 0
@@ -192,7 +205,7 @@ class WombatReloader(object):
         state, uptime = service.get_dialer_state()
         if state is not None and state == 'DOWN':
             config_constance.WOMBAT_DIALER_STATE = self.STATE_STARTING
-            response = service.list_config_wombat(WombatService.START_SERVICE_URL)
+            response = service.list_config_wombat(WombatAPI.START_SERVICE_URL)
             if 'state' in response and response['state'] == self.STATE_READY:
                 uptime = response['uptimeMs']
                 config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
@@ -206,7 +219,7 @@ class WombatReloader(object):
             # Pruebo hacer el start varias veces hasta cancelar.
             self.start_tries += 1
             if self.start_tries > 5:
-                logger.warn('No se pudo reiniciar Wombat Dialer. Error en start_dialer')
+                logger.warning('No se pudo reiniciar Wombat Dialer. Error en start_dialer')
                 return
             time.sleep(5)
             self.start_dialer(service)
@@ -223,13 +236,14 @@ class WombatReloader(object):
             # Espero la confirmación un cierto numero de veces
             self.confirm_tries += 1
             if self.confirm_tries > 5:
-                logger.warn('No se pudo reiniciar Wombat Dialer. Error en confirm_dialer_is_ready')
+                logger.warning('No se pudo reiniciar Wombat Dialer.'
+                               ' Error en confirm_dialer_is_ready')
                 return
             time.sleep(5)
             self.confirm_dialer_is_ready(service)
 
     def synchronize_local_state(self):
-        service = WombatService()
+        service = WombatAPI()
         state, uptime = service.get_dialer_state()
         if state == 'READY':
             config_constance.WOMBAT_DIALER_STATE = self.STATE_READY

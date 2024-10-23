@@ -19,6 +19,7 @@
 """Vista para generar un objecto campana de tipo dialer"""
 
 from __future__ import unicode_literals
+from functools import partial
 
 from django.db import transaction
 from django.utils.translation import gettext as _
@@ -34,8 +35,7 @@ from ominicontacto_app.forms.base import (QueueDialerForm, SincronizaDialerForm,
                                           QueueMemberFormset, CampanaConfiguracionWhatsappForm)
 from ominicontacto_app.models import Campana
 
-from ominicontacto_app.services.campana_service import CampanaService
-from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
+from ominicontacto_app.services.dialer import get_dialer_service, wombat_habilitado
 
 from formtools.wizard.views import SessionWizardView
 
@@ -126,34 +126,14 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         queue_form.save()
         return queue_form.instance
 
-    def _sincronizar_campana(self, sincronizar_form, campana):
+    def _sincronizar_campana(self, sincronizar_form, campana, campana_creada=False):
         evitar_duplicados = sincronizar_form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = sincronizar_form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = sincronizar_form.cleaned_data.get('prefijo_discador')
-        service_base = SincronizarBaseDatosContactosService()
-        # Crea un achivo con la lista de contactos para importar a wombat
-        service_base.crear_lista(campana, evitar_duplicados,
-                                 evitar_sin_telefono, prefijo_discador)
-        campana_service = CampanaService()
-        # crear campana en wombat
-        campana_service.crear_campana_wombat(campana)
-        # crea trunk en wombat
-        campana_service.crear_trunk_campana_wombat(campana)
-        # crea reglas de incidencia en wombat
-        for regla in campana.reglas_incidencia.all():
-            parametros = [regla.get_estado_wombat(), regla.estado_personalizado,
-                          regla.intento_max, regla.reintentar_tarde,
-                          regla.get_en_modo_wombat()]
-            campana_service.crear_reschedule_campana_wombat(campana, parametros)
-        # crea endpoint en wombat
-        campana_service.guardar_endpoint_campana_wombat(campana)
-        # asocia endpoint en wombat a campana
-        campana_service.crear_endpoint_asociacion_campana_wombat(
-            campana)
-        # crea lista en wombat
-        campana_service.crear_lista_contactos_wombat(campana)
-        # asocia lista a campana en wombat
-        campana_service.crear_lista_asociacion_campana_wombat(campana)
+
+        dialer_service = get_dialer_service()
+        dialer_service.crear_campana(campana,
+                                     evitar_duplicados, evitar_sin_telefono, prefijo_discador)
 
     def _save_forms(self, form_list, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
@@ -208,7 +188,9 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 if campana.whatsapp_habilitado:
                     offset = offset - 1
                 sincronizar_form = list(form_list)[int(self.SINCRONIZAR) - offset]
-                self._sincronizar_campana(sincronizar_form, campana)
+                # Intento crear la campaña en wombat como parte de la transaccion
+                if wombat_habilitado():
+                    self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
                 self.save_supervisores(form_list, -3)
                 self.save_agentes(form_list, -2)
@@ -218,6 +200,10 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         except Exception as e:
             logger.error(e)
             success = False
+
+        # Creo la campaña en OMniDialer una vez que ya existe en base
+        if not wombat_habilitado():
+            transaction.on_commit(partial(self._sincronizar_campana, sincronizar_form, campana))
 
         if success:
             messages.add_message(
@@ -273,6 +259,10 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
             queue_form.instance.initial_boost_factor = 1.0
         return queue_form.save()
 
+    def _update_dialer(self, campana):
+        dialer_service = get_dialer_service()
+        dialer_service.editar_campana(campana)
+
     def done(self, form_list, **kwargs):
         success = False
         try:
@@ -313,15 +303,9 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 actuacion_vigente_form.save()
 
                 self._insert_queue_asterisk(queue)
-                campana_service = CampanaService()
-                service_ok = campana_service.crear_campana_wombat(campana)
-                if service_ok:
-                    service_ok = campana_service.update_endpoint(campana)
-                if not service_ok:
-                    raise Exception('No se ha podico crear la campaña en Wombat.')
-                # recarga campaña en wombat
-                if campana.estado == Campana.ESTADO_ACTIVA:
-                    campana_service.reload_campana_wombat(campana)
+                # Intento editar la campaña en wombat como parte de la transaccion
+                if wombat_habilitado():
+                    self._update_dialer(campana)
 
                 if campana.whatsapp_habilitado:
                     configuracion_whatsapp_formset =\
@@ -334,6 +318,11 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                         configuracion_whatsapp_formset.instance.updated_by_id =\
                             self.request.user.id
                         configuracion_whatsapp_formset.instance.save()
+
+                # Actualizo en OMniDialer una vez que ya se modifico en la base de datos
+                if not wombat_habilitado():
+                    transaction.on_commit(partial(self._update_dialer, campana))
+
             success = True
 
         except Exception as e:

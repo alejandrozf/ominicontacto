@@ -76,9 +76,9 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         self.assertIn(self.opcion_calificacion_2.nombre, content)
         self.assertNotIn(self.opcion_calificacion_extra.nombre, content)
 
-    @patch('ominicontacto_app.services.campana_service.CampanaService.reload_campana_wombat')
-    @patch('ominicontacto_app.services.wombat_config.ConfigFile.write')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.update_config_wombat')
+    @patch('ominicontacto_app.services.dialer.campana_wombat.CampanaService.reload_campana_wombat')
+    @patch('ominicontacto_app.services.dialer.wombat_config.ConfigFile.write')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.update_config_wombat')
     def test_crear_regla_impacta_wombat(self, update_config_wombat, write, reload_campana):
         url = reverse('disposition_incidence_create', kwargs={'pk_campana': self.campana.id})
         post_data = {
@@ -99,9 +99,9 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
             "maxAttempts": 5, "retryAfterS": 60, "mode": regla.get_en_modo_wombat()}
         self.assertEqual(file_data, expected_data)
 
-    @patch('ominicontacto_app.services.campana_service.CampanaService.reload_campana_wombat')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.list_config_wombat')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.post_json')
+    @patch('ominicontacto_app.services.dialer.campana_wombat.CampanaService.reload_campana_wombat')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.list_config_wombat')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.post_json')
     def test_borrar_regla_impacta_wombat(self, post_json, list_config_wombat, reload_campana):
         regla = ReglaIncidenciaPorCalificacion(
             opcion_calificacion=self.opcion_calificacion_1, intento_max=5, reintentar_tarde=60,
@@ -128,9 +128,9 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
         self.assertFalse(ReglaIncidenciaPorCalificacion.objects.filter(
             opcion_calificacion=self.opcion_calificacion_1).exists())
 
-    @patch('ominicontacto_app.services.campana_service.CampanaService.reload_campana_wombat')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.list_config_wombat')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.post_json')
+    @patch('ominicontacto_app.services.dialer.campana_wombat.CampanaService.reload_campana_wombat')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.list_config_wombat')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.post_json')
     def test_editar_regla_impacta_wombat(self, post_json, list_config_wombat, reload_campana):
         regla = ReglaIncidenciaPorCalificacion(
             opcion_calificacion=self.opcion_calificacion_1, intento_max=5, reintentar_tarde=60,
@@ -168,7 +168,7 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
             opcion_calificacion=self.opcion_calificacion_1).exists())
 
     @patch('notification_app.notification.RedisStreamNotifier.send')
-    @patch('ominicontacto_app.services.wombat_service.WombatService.set_call_ext_status')
+    @patch('ominicontacto_app.services.dialer.wombat_api.WombatAPI.set_call_ext_status')
     def test_calificar_usando_opcion_con_regla_de_incidencia_impacta_wombat(
             self, set_call_ext_status, send):
         agente = self.crear_agente_profile()

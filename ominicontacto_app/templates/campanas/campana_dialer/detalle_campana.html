@@ -36,9 +36,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <p>{% trans 'Nombre:' %} <strong>{{ campana.nombre }}</strong></p>
             <p>{% trans 'Estado:' %} <strong>{{ campana.get_estado_display}}</strong></p>
             <hr>
-            <p>{% trans 'Llamadas efectuadas:' %} <strong>{{ efectuadas }}</strong></p>
-            <p>{% trans 'Llamadas Terminadas' %}<strong>{{ terminadas }}</strong></p>
-            <p>{% trans 'Llamadas restantes estimadas' %}<strong>{{ estimadas }}</strong></p>
+            <p>{% trans 'Llamadas efectuadas' %}: <strong>{{ efectuadas }}</strong></p>
+            <p>{% trans 'Llamadas Terminadas' %}: <strong>{{ terminadas }}</strong></p>
+            <p>{% trans 'Llamadas restantes estimadas' %}: <strong>{{ estimadas }}</strong></p>
             <p>{% trans 'Reintentos abiertos' %}: <strong>{{ reintentos_abiertos }}</strong></p>
             <p>{% trans 'Cantidad de contactos llamados' %}: <strong>{{ cant_contactos_llamados }}</strong></p>
             {% for statu in status %}

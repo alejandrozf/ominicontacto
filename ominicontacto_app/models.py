@@ -2651,6 +2651,17 @@ class BaseDatosContacto(models.Model):
             )
         self.cantidad_contactos = len(lista_contactos)
 
+    def validar_bd_de_reemplazo(self, nueva_base):
+        metadata_actual = self.get_metadata()
+        metadata_modificar = nueva_base.get_metadata()
+
+        for columna_base, columna_modificar in zip(
+                metadata_actual.nombres_de_columnas,
+                metadata_modificar.nombres_de_columnas):
+            if columna_base != columna_modificar:
+                error = _("Los nombres de las columnas no coinciden")
+        return error
+
 
 class ContactoManager(models.Manager):
 

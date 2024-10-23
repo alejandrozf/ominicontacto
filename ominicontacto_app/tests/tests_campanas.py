@@ -55,7 +55,7 @@ from ominicontacto_app.utiles import (
     convertir_ascii_string,
 )
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer.campana_wombat import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, IVRFactory
 from whatsapp_app.tests.factories import LineaFactory, MenuInteractivoFactory
