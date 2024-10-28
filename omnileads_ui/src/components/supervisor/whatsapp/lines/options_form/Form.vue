@@ -72,7 +72,7 @@
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
           :class="{
-            'p-error': v$.form.destinationType.$invalid && submitted,
+            'p-error': v$.form.type_option.$invalid && submitted,
           }"
           >{{
             $t("models.whatsapp.line.options.destination_type")
@@ -83,10 +83,10 @@
             <i class="pi pi-sitemap"></i>
           </span>
           <Dropdown
-            v-model="v$.form.destinationType.$model"
+            v-model="v$.form.type_option.$model"
             class="w-full"
             :class="{
-              'p-invalid': v$.form.destinationType.$invalid && submitted,
+              'p-invalid': v$.form.type_option.$invalid && submitted,
             }"
             :options="destinationTypes"
             placeholder="-----"
@@ -94,7 +94,6 @@
             optionValue="value"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
-            :disabled="true"
             v-bind:filterPlaceholder="
               $t('globals.find_by', { field: $tc('globals.name') }, 1)
             "
@@ -102,20 +101,20 @@
         </div>
         <small
           v-if="
-            (v$.form.destinationType.$invalid && submitted) ||
-            v$.form.destinationType.$pending.$response
+            (v$.form.type_option.$invalid && submitted) ||
+            v$.form.type_option.$pending.$response
           "
           class="p-error"
         >
           {{
-            v$.form.destinationType.required.$message.replace(
+            v$.form.type_option.required.$message.replace(
               "Value",
-              $t("models.whatsapp.line.options.destination_type")
+              $t("models.whatsapp.line.options.type_option")
             )
           }}
         </small>
       </div>
-      <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
+      <div v-if="v$.form.type_option.$model==destinationTypesValues.CAMPAIGN" class="sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
           :class="{
             'p-error': v$.form.destination.$invalid && submitted,
@@ -141,6 +140,47 @@
             optionGroupChildren="items"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
+            v-bind:filterPlaceholder="
+              $t('globals.find_by', { field: $tc('globals.name') }, 1)
+            "
+          />
+        </div>
+        <small
+          v-if="
+            (v$.form.destination.$invalid && submitted) ||
+            v$.form.destination.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.form.destination.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.line.options.destination")
+            )
+          }}</small
+        >
+      </div>
+      <div v-if="v$.form.type_option.$model==destinationTypesValues.INTERACTIVE" class="sm:col-12 md:col-12 lg:col-6 xl:col-6">
+        <label
+          :class="{
+            'p-error': v$.form.destination.$invalid && submitted,
+          }"
+          >{{ $t("models.whatsapp.line.options.destination") }}*</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-sign-in"></i>
+          </span>
+          <Dropdown
+            v-model="v$.form.destination.$model"
+            class="w-full"
+            :class="{
+              'p-invalid': v$.form.destination.$invalid && submitted,
+            }"
+            @change="findDuplicated()"
+            :options="destinationmenuoptions"
+            placeholder="-----"
+            optionLabel="text"
+            optionValue="id_tmp"
             v-bind:filterPlaceholder="
               $t('globals.find_by', { field: $tc('globals.name') }, 1)
             "
@@ -193,7 +233,7 @@ export default {
             form: {
                 value: { required },
                 description: { required },
-                destinationType: { required },
+                type_option: { required },
                 destination: { required }
             }
         };
@@ -203,6 +243,9 @@ export default {
         formToCreate: {
             type: Boolean,
             default: false
+        },
+        menuId: {
+          type: Number
         }
     },
     data () {
@@ -212,8 +255,8 @@ export default {
                 index: 0,
                 value: '',
                 description: '',
-                destinationType: null,
-                destination: null
+                type_option: null,
+                destination: null,
             },
             alreadyExists: false,
             submitted: false,
@@ -223,8 +266,17 @@ export default {
                 {
                     name: this.$t('forms.whatsapp.line.destination_types.campaign'),
                     value: DESTINATION_OPTION_TYPES.CAMPAIGN
+                },
+                {
+                    name: this.$t('forms.whatsapp.line.destination_types.menu'),
+                    value: DESTINATION_OPTION_TYPES.INTERACTIVE
                 }
             ],
+            destinationTypesValues:
+            {
+                CAMPAIGN: DESTINATION_OPTION_TYPES.CAMPAIGN,
+                INTERACTIVE: DESTINATION_OPTION_TYPES.INTERACTIVE
+            },
             campaings: [
                 {
                     type: CAMPAIGN_TYPES.INBOUND,
@@ -246,7 +298,8 @@ export default {
                     label: this.$t('models.campaign.types.dialer'),
                     items: []
                 }
-            ]
+            ],
+            destinationmenuoptions : []
         };
     },
     created () {
@@ -254,9 +307,11 @@ export default {
     },
     computed: {
         ...mapState([
+            'supWhatsappLine',
             'supWhatsappLineOptionForm',
             'supWhatsappLineCampaigns',
-            'supWhatsappLineOptions'
+            'supWhatsappLineOptions',
+            'supWhatsappDestinationMenuOptions',
         ])
     },
     methods: {
@@ -271,6 +326,7 @@ export default {
             this.findDuplicated();
         },
         closeModal () {
+            console.log('closeModal >>>1')
             this.$emit('closeModalEvent');
         },
         initializeData () {
@@ -282,8 +338,9 @@ export default {
             this.form.index = this.supWhatsappLineOptionForm.index;
             this.form.value = this.supWhatsappLineOptionForm.value;
             this.form.description = this.supWhatsappLineOptionForm.description;
-            this.form.destinationType = this.supWhatsappLineOptionForm.destinationType;
+            this.form.type_option = this.supWhatsappLineOptionForm.type_option;
             this.form.destination = this.supWhatsappLineOptionForm.destination;
+            this.findDestinationOptions()
             this.findDuplicated();
         },
         findDuplicated () {
@@ -299,19 +356,25 @@ export default {
                 this.alreadyExists = false;
             }
         },
+        findDestinationOptions() {
+          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
+        },
         save (isFormValid) {
+            console.log("***", this.form)
             this.submitted = true;
             if (!isFormValid) {
                 return null;
             }
             if (this.formToCreate) {
                 this.createWhatsappLineOption({
-                    data: this.form
+                    data: this.form,
+                    menuId: this.menuId,
                 });
             } else {
                 this.updateWhatsappLineOption({
-                    id: this.form.index,
-                    data: this.form
+                    id: this.form.id,
+                    data: this.form,
+                    menuId: this.menuId
                 });
             }
             this.$swal(
@@ -324,7 +387,7 @@ export default {
                 )
             );
             this.closeModal();
-        }
+        },
     },
     watch: {
         supWhatsappLineOptionForm: {

@@ -17,7 +17,10 @@
 #
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
+from configuracion_telefonia_app.models import DestinoEntrante
+from ominicontacto_app.models import Campana
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
+
 from orquestador_app.core.gupshup_send_menssage import (
     autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
     send_text_message)
@@ -25,8 +28,9 @@ from orquestador_app.core.check_out_of_time import is_out_of_time
 from orquestador_app.core.notify_agents import send_notify
 
 
-async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, type):
+async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     try:
+        print(context)
         print("mensaje entrante por la linea >>>", line.nombre, "content >>>>", content)
         is_out_of_time_chat = is_out_of_time(line, timestamp)
         message_inbound, created_message =\
@@ -100,44 +104,51 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
 
             if not conversation.campana:
                 if type == 'list_reply':
-                    await asignar_campana(line, conversation, content)
+                    await asignar_campana(line, conversation, content, context)
                 else:
-                    autoreponse_destino_interactivo(line, conversation)
+                    print('primer menu')
+                    autoreponse_destino_interactivo(line, line.destino, conversation)
 
     except Exception as e:
         print("inbound_chat_event >>>>>>>> Error: ", e)
 
 
-async def asignar_campana(line, conversation, content):
+async def asignar_campana(line, conversation, content, context):
     try:
-        destination_entrante = line.destino
+        mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])
+        destino_entrante_id = mensaje_origen.sender['destino_entrante']
+        destination_entrante = DestinoEntrante.objects.get(id=destino_entrante_id)
         destino = destination_entrante.destinos_siguientes.filter(
             opcion_menu_whatsapp__opcion__valor=content['title']).last()
         auto_response = {}
         if destino:
-            conversation.campana = destino.destino_siguiente.content_object
-            conversation.save()
-            await send_notify('notify_whatsapp_new_chat', conversation=conversation)
-            if destination_entrante.content_object.texto_derivacion:
-                auto_response = {"text": destination_entrante.content_object.texto_derivacion}
+            if isinstance(destino.destino_siguiente.content_object, Campana):
+                conversation.campana = destino.destino_siguiente.content_object
+                conversation.save()
+                await send_notify('notify_whatsapp_new_chat', conversation=conversation)
+                if destination_entrante.content_object.texto_derivacion:
+                    auto_response = {"text": destination_entrante.content_object.texto_derivacion}
+                    if auto_response:
+                        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                        orquestador_response = send_text_message(
+                            line, conversation.destination, auto_response)
+                        if orquestador_response["status"] == "submitted":
+                            MensajeWhatsapp.objects.get_or_create(
+                                message_id=orquestador_response['messageId'],
+                                conversation=conversation,
+                                defaults={
+                                    'origen': line.numero,
+                                    'timestamp': timestamp,
+                                    'sender': {},
+                                    'content': auto_response,
+                                    'type': 'text'
+                                }
+                            )
+            else:
+                autoreponse_destino_interactivo(line, destino.destino_siguiente, conversation)
         else:
             if destination_entrante.content_object.texto_opcion_incorrecta:
                 auto_response =\
                     {"text": destination_entrante.content_object.texto_opcion_incorrecta}
-        if auto_response:
-            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            orquestador_response = send_text_message(line, conversation.destination, auto_response)
-            if orquestador_response["status"] == "submitted":
-                MensajeWhatsapp.objects.get_or_create(
-                    message_id=orquestador_response['messageId'],
-                    conversation=conversation,
-                    defaults={
-                        'origen': line.numero,
-                        'timestamp': timestamp,
-                        'sender': {},
-                        'content': auto_response,
-                        'type': 'text'
-                    }
-                )
     except Exception as e:
         print("asignar_campana >>>>>>>", e)

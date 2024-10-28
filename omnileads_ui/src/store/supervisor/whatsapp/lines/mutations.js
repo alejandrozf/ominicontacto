@@ -4,6 +4,7 @@ export default {
     },
     initWhatsappLine (state, line = null) {
         if (line) {
+            console.log('line', line)
             state.supWhatsappLine = {
                 id: line.id,
                 nombre: line.name,
@@ -12,28 +13,18 @@ export default {
                 configuracion: {
                     app_name: line.configuration.app_name,
                     app_id: line.configuration.app_id,
-                    destino: line.configuration.destino,
-                    tipo_de_destino: line.configuration.tipo_de_destino
                 },
                 destination: {
                     data: line.destination ? line.destination.data : null,
-                    type: line.destination ? line.destination.type : null
+                    type: line.destination ? line.destination.type : null,
+                    id_tmp: line.destination && line.destination.type === 10 ? line.destination.id : 0
                 },
                 horario: line.schedule,
                 mensaje_bienvenida: line.welcome_message,
                 mensaje_despedida: line.farewell_message,
                 mensaje_fueradehora: line.afterhours_message
             };
-            state.supWhatsappLine.configuracion.destino = line.destinatio ? line.destination.data : null;
-            if (line.configuration.tipo_de_destino === 1) {
-                state.supWhatsappLineOptions = line.destination.data.options;
-                for (let i = 0; i < state.supWhatsappLineOptions.length; i++) {
-                    state.supWhatsappLineOptions[i].index = i;
-                    state.supWhatsappLineOptions[i].destinationType = 0;
-                }
-            } else {
-                state.supWhatsappLineOptions = [];
-            }
+            state.supWhatsappDestinationMenuOptions = line.destination ? line.destination.data : []
         } else {
             state.supWhatsappLine = {
                 id: null,
@@ -42,13 +33,12 @@ export default {
                 numero: '',
                 configuracion: {
                     app_name: '',
-                    app_id: '',
-                    destino: null,
-                    tipo_de_destino: 0
+                    app_id: ''
                 },
                 destination: {
                     data: null,
-                    type: 0
+                    type: 0,
+                    id_tmp: 0
                 },
                 horario: null,
                 mensaje_bienvenida: '',
@@ -70,34 +60,36 @@ export default {
             index: option ? option.index : null,
             value: option ? option.value : '',
             description: option ? option.description : '',
-            destinationType: option ? option.destinationType : 0,
-            destination: option ? option.destination : null
+            type_option: option ? option.type_option : 0,
+            destination: option ? option.destination : null,
+            // destination_name: option ? option.destination.text : '',
         };
     },
-    createWhatsappLineOption (state, option) {
+    createWhatsappLineOption (state, { data, menuId }) {
         const ultimoElemento = state.supWhatsappLineOptions[state.supWhatsappLineOptions.length - 1];
         state.supWhatsappLineOptions.push({
             index: ultimoElemento ? ultimoElemento.index + 1 : 0,
-            id: option.id,
-            value: option.value,
-            description: option.description,
-            destinationType: option.destinationType,
-            destination: option.destination
+            id: data.id,
+            value: data.value,
+            description: data.description,
+            type_option: data.type_option,
+            destination: data.destination,
+            destination_name: "----",
+            menuId: menuId,
         });
     },
-    updateWhatsappLineOption (state, { id, data }) {
-        const element = state.supWhatsappLineOptions.find(item => item.index === id);
+    updateWhatsappLineOption (state, { id, data, menuId }) {
+        const destinationOptions = state.supWhatsappLine.destination.data.filter(item => item.id_tmp === menuId);
+        const element = destinationOptions[0].options.find(item => item.id === id);
         if (element) {
             element.value = data.value;
             element.description = data.description;
-            element.destinationType = data.destinationType;
+            element.type_option = data.type_option;
             element.destination = data.destination;
         }
     },
-    deleteWhatsappLineOption (state, id) {
-        const index = state.supWhatsappLineOptions.findIndex(item => item.index === id);
-        if (index >= 0) {
-            state.supWhatsappLineOptions.splice(index, 1);
-        }
+    deleteWhatsappLineOption (state, { id, menuId }) {
+        const destinationOptions = state.supWhatsappLine.destination.data.filter(item => item.id_tmp === menuId);
+        destinationOptions[0].options = destinationOptions[0].options.filter(item => item.id !== id);
     }
 };

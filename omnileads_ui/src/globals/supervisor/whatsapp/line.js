@@ -1,10 +1,11 @@
 export const DESTINATION_FORM_TYPES = {
-    CAMPAIGN: 0,
-    INTERACTIVE: 1
+    CAMPAIGN: 1,
+    INTERACTIVE: 10
 };
 
 export const DESTINATION_OPTION_TYPES = {
-    CAMPAIGN: 0
+    CAMPAIGN: 1,
+    INTERACTIVE: 10
 };
 
 export const DESTINATION_TYPES_BACK = {
