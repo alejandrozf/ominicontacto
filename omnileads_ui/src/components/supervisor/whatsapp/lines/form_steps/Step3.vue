@@ -15,6 +15,14 @@
                 >{{ $t("models.whatsapp.line.horario") }}*</label
               >
               <div class="p-inputgroup mt-2">
+                <Button
+                icon="pi pi-clock"
+                :label="$t('globals.create')"
+                severity="secondary"
+                @click="createGroupOfHours"
+                />
+              </div>
+              <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                   <i class="pi pi-clock"></i>
                 </span>
@@ -91,6 +99,14 @@
                       $t("models.whatsapp.line.mensaje_bienvenida")
                     }}</label>
                     <div class="p-inputgroup mt-2">
+                      <Button
+                      icon="pi pi-comment"
+                      :label="$t('globals.new')"
+                      severity="secondary"
+                      @click="createNewMessageBienvenida"
+                      />
+                    </div>
+                    <div class="p-inputgroup mt-2">
                       <span class="p-inputgroup-addon">
                         <i class="pi pi-comment"></i>
                       </span>
@@ -139,6 +155,14 @@
                       $t("models.whatsapp.line.mensaje_fueradehora")
                     }}</label>
                     <div class="p-inputgroup mt-2">
+                      <Button
+                      icon="pi pi-comment"
+                      :label="$t('globals.new')"
+                      severity="secondary"
+                      @click="createNewMessageFueraHora"
+                      />
+                    </div>
+                    <div class="p-inputgroup mt-2">
                       <span class="p-inputgroup-addon">
                         <i class="pi pi-comment"></i>
                       </span>
@@ -186,6 +210,14 @@
                     <label>{{
                       $t("models.whatsapp.line.mensaje_despedida")
                     }}</label>
+                    <div class="p-inputgroup mt-2">
+                      <Button
+                      icon="pi pi-comment"
+                      :label="$t('globals.new')"
+                      severity="secondary"
+                      @click="createNewMessageDespedida"
+                      />
+                    </div>
                     <div class="p-inputgroup mt-2">
                       <span class="p-inputgroup-addon">
                         <i class="pi pi-comment"></i>
@@ -547,6 +579,14 @@
         />
       </div>
     </div>
+    <ModalNewGroupOfHour
+    :showModal="showModalNewGroupOfHour"
+    @handleModalEvent="handleModalNewGroupOfHour"
+    />
+    <ModalNewMessageTemplate
+    :showModal="showModalNewMessage"
+    @handleModalEvent="handleModalNewMessage"
+    />
   </div>
 </template>
 
@@ -563,6 +603,8 @@ import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { HTTP_STATUS } from '@/globals';
 import OptionsTable from '@/components/supervisor/whatsapp/lines/options_form/OptionsTable';
 import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
+import ModalNewGroupOfHour from '@/components/supervisor/whatsapp/lines/options_form/ModalNewGroupOfHour';
+import ModalNewMessageTemplate from '@/components/supervisor/whatsapp/lines/options_form/ModalNewMessageTemplate';
 
 export default {
     inject: ['$helpers'],
@@ -577,13 +619,15 @@ export default {
                 horario: { required },
                 mensaje_bienvenida: { required },
                 mensaje_despedida: { required },
-                mensaje_fueradehora: { required },
+                mensaje_fueradehora: { required }
             }
         };
     },
     components: {
         ModalToHandleOption,
-        OptionsTable
+        OptionsTable,
+        ModalNewGroupOfHour,
+        ModalNewMessageTemplate
     },
     data () {
         return {
@@ -603,7 +647,7 @@ export default {
                 horario: null,
                 mensaje_bienvenida: null,
                 mensaje_despedida: null,
-                mensaje_fueradehora: null,
+                mensaje_fueradehora: null
             },
             showModal: false,
             formToCreate: false,
@@ -647,13 +691,19 @@ export default {
             msgDespedidaContent: '',
             msgBienvenidaRequired: false,
             msgFueraHoraRequired: false,
-            isEmptyOptions: false
+            isEmptyOptions: false,
+            showModalNewGroupOfHour: false,
+            showModalNewMessage: false,
+            cratedNewmsgBienvenida: false,
+            cratedNewmsgFueraHora: false,
+            cratedNewmsgDespedida: false
         };
     },
     computed: {
         ...mapState([
             'supWhatsappLine',
             'groupOfHours',
+            'groupOfHour',
             'isFormToCreate',
             'supWhatsappMessageTemplates',
             'supWhatsappLineCampaigns',
@@ -905,7 +955,40 @@ export default {
                     )
                 );
             }
-        }
+        },
+        handleModalNewGroupOfHour ({ showModal = false }) {
+            this.showModalNewGroupOfHour = showModal;
+        },
+        createGroupOfHours () {
+            this.showModalNewGroupOfHour = true;
+            this.handleModalNewGroupOfHour({
+                showModal: true
+            });
+        },
+        handleModalNewMessage ({ showModal = false }) {
+            this.showModalNewMessage = showModal;
+        },
+        createNewMessageBienvenida () {
+            this.cratedNewmsgBienvenida = true;
+            this.showModalNewMessage = true;
+            this.handleModalNewMessage({
+                showModal: true
+            });
+        },
+        createNewMessageFueraHora () {
+            this.cratedNewmsgFueraHora = true;
+            this.showModalNewMessage = true;
+            this.handleModalNewMessage({
+                showModal: true
+            });
+        },
+        createNewMessageDespedida () {
+            this.cratedNewmsgDespedida = true;
+            this.showModalNewMessage = true;
+            this.handleModalNewMessage({
+                showModal: true
+            });
+        },
     },
     watch: {
         supWhatsappLine: {
@@ -943,7 +1026,34 @@ export default {
             immediate: true
         },
         groupOfHours: {
-            handler () {},
+            handler () {
+                if (this.groupOfHours.length > 0 && this.groupOfHour.nombre !== '') {
+                    this.form.horario = this.groupOfHours[this.groupOfHours.length - 1].id;
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        messageTemplates: {
+            handler () {
+                if (this.messageTemplates[0].items.length > 0) {
+                    if (this.cratedNewmsgBienvenida) {
+                      this.form.mensaje_bienvenida = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                      this.cratedNewmsgBienvenida = false;
+                      this.msgBienvenidaChange();
+                    }
+                    else if (this.cratedNewmsgFueraHora) {
+                      this.form.mensaje_fueradehora = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                      this.cratedNewmsgFueraHora = false;
+                      this.msgFueraHoraChange();
+                    }
+                    else if (this.cratedNewmsgDespedida){
+                      this.form.mensaje_despedida = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                      this.cratedNewmsgDespedida = false;
+                      this.msgDespedidaChange();
+                    }
+                }
+            },
             deep: true,
             immediate: true
         },

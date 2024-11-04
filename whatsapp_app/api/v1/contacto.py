@@ -101,18 +101,19 @@ class CreateSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError({field: msg})
             if field != 'telefono':
                 campo = data.get(field, '')
-                datos.append(campo)
+                datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):
-        bd_contacto = self.campana.bd_contacto
         mandatory = self.campana.get_campos_obligatorios()
-        campos_bd = json.loads(bd_contacto.metadata)['nombres_de_columnas']
-        if 'telefono' in data['datos']:
-            telefono = data['datos'].pop('telefono')
-            data['telefono'] = self.validar_telefono('telefono', telefono)
+        metadata = self.campana.bd_contacto.get_metadata()
+        campos_bd = metadata.nombres_de_columnas
+        telefono = metadata.nombre_campo_telefono
+        if telefono in data['datos']:
+            telefono_val = data['datos'].pop(telefono)
+            data['telefono'] = self.validar_telefono(telefono, telefono_val)
         else:
-            raise serializers.ValidationError({'telefono': _('campo requerido')})
+            raise serializers.ValidationError({telefono: _('campo requerido')})
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if set(data['datos'].keys()).issuperset(set(mandatory)):
                 data['datos'] = self.get_datos_json(data['datos'])
@@ -156,21 +157,27 @@ class UpdateSerializer(serializers.ModelSerializer):
     def get_datos_json(self, data):
         datos = []
         for field in json.loads(self.campana.bd_contacto.metadata)['nombres_de_columnas']:
+            if data.get(field, '') and self.es_campo_telefonico(field):
+                if not data.get(field).isdigit():
+                    msg = _('Debe ser en formato "999999999" y solo numérico.')
+                    raise serializers.ValidationError({field: msg})
+                if not 3 <= len(data.get(field)) <= 20:
+                    msg = _('Solo se permiten de 3-20 dígitos.')
+                    raise serializers.ValidationError({field: msg})
             if field != 'telefono':
-                if data.get(field, '') and self.es_campo_telefonico(field):
-                    self.validar_telefono(field, data.get(field))
-                campo = data.get(field, self.instance.obtener_datos()[field])
-                datos.append(campo)
+                campo = data.get(field, '')
+                datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):
-        bd_contacto = self.campana.bd_contacto
         campos_no_editables = self.campana.get_campos_no_editables()
         campos_ocultos = self.campana.get_campos_ocultos()
-        campos_bd = json.loads(bd_contacto.metadata)['nombres_de_columnas']
-        if 'telefono' in data['datos']:
-            telefono = data['datos'].pop('telefono')
-            data['telefono'] = self.validar_telefono('telefono', telefono)
+        metadata = self.campana.bd_contacto.get_metadata()
+        campos_bd = metadata.nombres_de_columnas
+        telefono = metadata.nombre_campo_telefono
+        if telefono in data['datos']:
+            telefono_val = data['datos'].pop(telefono)
+            data['telefono'] = self.validar_telefono(telefono, telefono_val)
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if not set(data['datos'].keys()).intersection(set(campos_no_editables))\
                     and not set(data['datos'].keys()).intersection(set(campos_ocultos)):
@@ -187,7 +194,7 @@ class ViewSet(viewsets.ViewSet):
     permission_classes = [TienePermisoOML]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
-    def list(self, request, campana_pk, conversacion_pk):
+    def list(self, request, campana_pk):
         try:
             filtro = request.GET.get('search')
             campana = Campana.objects.get(id=campana_pk)
@@ -204,7 +211,11 @@ class ViewSet(viewsets.ViewSet):
                 data=serializer.data),
             status=status.HTTP_200_OK)
 
-    def create(self, request, campana_pk, conversacion_pk):
+    @decorators.action(
+        detail=False,
+        methods=["post"],
+        url_path='create_contact_from_conversation/(?P<conversacion_pk>[^/.]+)')
+    def create_contact_from_conversation(self, request, campana_pk, conversacion_pk):
         try:
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
@@ -234,7 +245,34 @@ class ViewSet(viewsets.ViewSet):
                 data=get_response_data(message=_('Error al crear el contacto')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def update(self, request, campana_pk, conversacion_pk, pk):
+    def create(self, request, campana_pk):
+        try:
+            campana = Campana.objects.get(id=campana_pk)
+            request_data = request.data.copy()
+            data = {
+                "bd_contacto": campana.bd_contacto.id,
+                "datos": request_data
+            }
+            serializer = CreateSerializer(data=data, context={'campana': campana})
+            if serializer.is_valid():
+                client = serializer.save()
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Se creo el nuevo contacto de forma exitosa'),
+                        data=ListSerializer(client).data),
+                    status=status.HTTP_201_CREATED)
+            return response.Response(
+                data=get_response_data(
+                    message=_('Error en los datos'), errors=serializer.errors),
+                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return response.Response(
+                data=get_response_data(message=_('Error al crear el contacto')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def update(self, request, campana_pk, pk):
         try:
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
@@ -269,9 +307,8 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["get"])
-    def db_fields(self, request, campana_pk, conversacion_pk):
+    def db_fields(self, request, campana_pk):
         try:
-            print("conversacion_pk", conversacion_pk)
             campana = Campana.objects.get(id=campana_pk)
             metadata = campana.bd_contacto.get_metadata()
             data = []
@@ -296,7 +333,7 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["post"])
-    def search(self, request, campana_pk, conversacion_pk):
+    def search(self, request, campana_pk):
         try:
             values = request.data.values()
             q_list = [Q(datos__contains=x) for x in values]

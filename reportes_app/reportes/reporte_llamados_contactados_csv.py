@@ -249,7 +249,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
                 registro.append('')
                 campos = self.campos_formulario_opciones[id_opcion]
                 for campo in campos:
-                    registro.append(datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
+                    registro.append(str(datos.get(campo.nombre_campo, '')).replace('\r\n', ' '))
 
         lista_datos_utf8 = [force_text(item) for item in registro]
         self.datos.append(lista_datos_utf8)
@@ -383,7 +383,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             campos = self.campos_formularios_opciones[id_opcion]
             for campo in campos:
                 lista_opciones.append(
-                    datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
+                    str(datos.get(campo.nombre_campo, '')).replace('\r\n', ' '))
 
         lista_datos_utf8 = [force_text(item) for item in lista_opciones]
         self.datos.append(lista_datos_utf8)

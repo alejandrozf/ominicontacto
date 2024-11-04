@@ -186,12 +186,12 @@ export default {
             const event = new Event(
                 WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA
             );
-            window.parent.document.dispatchEvent(event);
             const modalEvent = new CustomEvent('onWhatsappContactFormEvent', {
                 detail: {
                     contact_form: true
                 }
             });
+            window.parent.document.dispatchEvent(event);
             window.parent.document.dispatchEvent(modalEvent);
         },
         qualify () {

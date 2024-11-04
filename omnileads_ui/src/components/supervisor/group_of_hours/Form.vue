@@ -60,9 +60,13 @@
     <div class="flex justify-content-end flex-wrap">
       <div class="flex align-items-center justify-content-center">
         <Button
+          :label="$t('globals.cancel')"
+          class="p-button-danger p-button-outlined mr-2"
+          @click="closeModal()"
+        />
+        <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
-          class="mt-4"
           @click="save(!v$.$invalid)"
         />
       </div>
@@ -102,6 +106,10 @@ export default {
         formToCreate: {
             type: Boolean,
             default: true
+        },
+        return_after_save: {
+          type: String,
+          default: 'supervisor_group_of_hours'
         }
     },
     data () {
@@ -169,7 +177,12 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await this.initGroupOfHours();
-                this.$router.push({ name: 'supervisor_group_of_hours' });
+                if(this.return_after_save === 'supervisor_group_of_hours'){
+                  this.$router.push({ name: this.return_after_save });
+                }
+                else{
+                  this.$emit('closeModalEvent');
+                }
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.success_notification'),
@@ -186,7 +199,10 @@ export default {
                     )
                 );
             }
-        }
+        },
+        closeModal () {
+            this.$emit('closeModalEvent');
+        },
     },
     watch: {
         formToCreate: {

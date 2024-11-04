@@ -6,10 +6,10 @@ export default class WhatsappContactService extends BaseService {
         super(URLS, 'Whatsapp <Contact>');
     }
 
-    async getContacts ({ campaignId, conversationId }) {
+    async getContacts ({ campaignId }) {
         try {
             const resp = await fetch(
-                this.urls.ContactList(campaignId, conversationId),
+                this.urls.ContactList(campaignId),
                 this.payload
             );
             return await resp.json();
@@ -21,11 +21,11 @@ export default class WhatsappContactService extends BaseService {
         }
     }
 
-    async searchOnContactDB ({ campaignId, conversationId, data }) {
+    async searchOnContactDB ({ campaignId, data }) {
         try {
             this.setPayload(HTTP.POST, JSON.stringify(data));
             const resp = await fetch(
-                this.urls.ContactSearch(campaignId, conversationId),
+                this.urls.ContactSearch(campaignId),
                 this.payload
             );
             return await resp.json();
@@ -37,10 +37,10 @@ export default class WhatsappContactService extends BaseService {
         }
     }
 
-    async getContactDBFields ({ campaignId, conversationId }) {
+    async getContactDBFields ({ campaignId }) {
         try {
             const resp = await fetch(
-                this.urls.ContactCampaignDBFields(campaignId, conversationId),
+                this.urls.ContactCampaignDBFields(campaignId),
                 this.payload
             );
             return await resp.json();
@@ -52,11 +52,11 @@ export default class WhatsappContactService extends BaseService {
         }
     }
 
-    async createContact ({ campaignId, conversationId, data }) {
+    async createContactFromConversation ({ campaignId, conversationId, data }) {
         try {
             this.setPayload(HTTP.POST, JSON.stringify(data));
             const resp = await fetch(
-                this.urls.ContactCreate(campaignId, conversationId),
+                this.urls.ContactCreateFromConversation(campaignId, conversationId),
                 this.payload
             );
             return await resp.json();
@@ -69,11 +69,28 @@ export default class WhatsappContactService extends BaseService {
         }
     }
 
-    async updateContact ({ campaignId, conversationId, contactId, data }) {
+    async createContact ({ campaignId, fdata }) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(fdata));
+            const resp = await fetch(
+                this.urls.ContactCreate(campaignId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`===> ERROR al crear Contacto`);
+            console.error(error);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
+    async updateContact ({ campaignId, contactId, data }) {
         try {
             this.setPayload(HTTP.PUT, JSON.stringify(data));
             const resp = await fetch(
-                this.urls.ContactUpdate(campaignId, conversationId, contactId),
+                this.urls.ContactUpdate(campaignId, contactId),
                 this.payload
             );
             return await resp.json();

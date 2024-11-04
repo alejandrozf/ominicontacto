@@ -889,12 +889,19 @@ class CampanaMixinForm(object):
         whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
         if instance is not None:
             if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
-                nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
-                antecesores_linea = nodo.lineas_destino_whatsapp()
+                antecesores_linea = []
+                try:
+                    nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
+                    antecesores_linea = nodo.lineas_destino_whatsapp()
+                except Exception:
+                    pass
                 if antecesores_linea:
-                    nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
-                    raise forms.ValidationError(self.ERROR_WHATSAPP_DESTINO.format(
-                        ', '.join(nombres_lineas)))
+                    for line in antecesores_linea:
+                        line.destino = None
+                        line.save()
+                    # nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                ConfiguracionWhatsappCampana.objects.filter(
+                    is_active=True, campana=instance).update(is_active=False)
         return whatsapp_habilitado
 
 
@@ -1227,6 +1234,11 @@ class FormularioCRMForm(forms.Form):
                     label=campo.nombre_campo, widget=forms.Textarea(
                         attrs={'class': 'form-control'}),
                     required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO:
+                self.fields[campo.nombre_campo] = forms.CharField(
+                    label=campo.nombre_campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
 
 
 class SincronizaDialerForm(forms.Form):
@@ -1264,7 +1276,8 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = contacto.bd_contacto.get_metadata()
             datos = json.loads(contacto.datos)
             for nombre, dato in zip(bd_metadata.nombres_de_columnas_de_datos, datos):
-                kwargs['initial'].update({self.get_nombre_input(nombre): dato})
+                if nombre not in kwargs['initial']:
+                    kwargs['initial'].update({self.get_nombre_input(nombre): dato})
         else:
             self.base_datos = base_datos
             bd_metadata = base_datos.get_metadata()
@@ -1542,6 +1555,19 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                 self.fields[campo.nombre_campo] = forms.CharField(
                     label=campo.nombre_campo, widget=forms.Textarea(
                         attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
+                    campo.tipo_numero is FieldFormulario.TIPO_ENTERO:
+                self.fields[campo.nombre_campo] = forms.IntegerField(
+                    label=campo.nombre_campo, min_value=0,
+                    widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_NUMERO and \
+                    campo.tipo_numero is FieldFormulario.TIPO_DECIMAL:
+                self.fields[campo.nombre_campo] = forms.DecimalField(
+                    label=campo.nombre_campo, min_value=0,
+                    decimal_places=campo.cifras_significativas,
+                    widget=forms.NumberInput(attrs={'class': 'form-control'}),
                     required=campo.is_required)
 
     class Meta:
@@ -2069,7 +2095,10 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
-                  'obligar_despausa', 'whatsapp_habilitado')
+                  'obligar_despausa', 'whatsapp_habilitado',
+                  'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
+                  'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',
+                  'permitir_llamadas_manuales_a_preview')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

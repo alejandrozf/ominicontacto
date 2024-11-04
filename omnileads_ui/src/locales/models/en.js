@@ -74,7 +74,8 @@ export default {
         order: 'Order',
         type: 'Type',
         required: 'Required?',
-        list_options: 'List options'
+        list_options: 'List options',
+        numero_type: 'Number type'
     },
     pause: {
         id: 'ID',

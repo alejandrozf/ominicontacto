@@ -20,9 +20,10 @@ import redis
 from django.conf import settings
 
 
-def create_redis_connection():
+def create_redis_connection(db=0):
     redis_connection = redis.Redis(
         host=settings.REDIS_HOSTNAME,
         port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+        db=db,
         decode_responses=True)
     return redis_connection

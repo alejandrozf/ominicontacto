@@ -43,12 +43,18 @@ export default {
         enter_description: 'Enter the description',
         new_field: 'New Field',
         options_list: 'Options for the list',
+        sig_digits: 'Significant digits',
         field: {
             type: {
                 text: 'Text',
                 date: 'Date',
                 list: 'List',
-                text_box: 'Text box'
+                text_box: 'Text box',
+                numero: 'Number'
+            },
+            numero_type: {
+                entero_type: 'Integer',
+                decimal_type: 'Decimal'
             }
         },
         validations: {
@@ -290,7 +296,8 @@ export default {
                 text: 'Text',
                 date: 'Date',
                 list: 'List',
-                text_box: 'Text box'
+                text_box: 'Text box',
+                numero: 'Number'
             }
         },
         reports: {

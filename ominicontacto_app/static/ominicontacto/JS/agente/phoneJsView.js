@@ -26,6 +26,7 @@ var CAMPANA_TYPE_ENTRANTE = 3;
  */
 class PhoneJSView {
     constructor () {
+        /*Temporal Debug */ this.consultToCampEnabled = false;
         /* Streams */
         this.local_audio = $('#localAudio')[0];
         this.remote_audio = $('#remoteAudio')[0];
@@ -157,8 +158,14 @@ class PhoneJSView {
             if (this.checked) {
                 $('#transfToNum').prop('disabled', false);
                 $('#transfToAgent').prop('disabled', false);
-                $('#transfToCamp').prop('disabled', true); // Deshabilitado temporalmente
-                $('#campToTransfer').prop('disabled', true);
+                if (self.consultToCampEnabled){  // Eliminar condicional al habilitar permanente
+                    $('#transfToCamp').prop('disabled', false);
+                    $('#campToTransfer').prop('disabled', false);
+                }
+                else {
+                    $('#transfToCamp').prop('disabled', true);
+                    $('#campToTransfer').prop('disabled', true);
+                }
                 $('#transfToCamp').prop('checked', false);
                 $('#transfToQuickNum').prop('disabled', false);
             }

@@ -49,9 +49,12 @@ def login(request):
     # token_expire_handler will check, if the token is expired it will generate new one
     is_expired, token = token_expire_handler(token)
     user_serialized = UserSerializer(user)
+    user_data = user_serialized.data
+    if user.get_is_agente():
+        user_data['agent_id'] = user.agenteprofile.id
 
     return Response({
-        'user': user_serialized.data,
+        'user': user_data,
         'expires_in': expires_in(token),
         'token': token.key
     }, status=HTTP_200_OK)

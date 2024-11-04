@@ -85,6 +85,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
         </h4>
     </li>
+    <li>
+        <h4>{% trans 'Restringir tipo de llamadas manuales' %}:
+            {% if grupo.restringir_tipo_llamadas_manuales %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
 </ul>
 <hr>
 <h3><strong>{% trans 'Agendas' %}</strong></h3>

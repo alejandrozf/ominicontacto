@@ -304,6 +304,16 @@ class Grupo(models.Model):
         'Acceso a las campañas preview como agente'))
     whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
         'Permiso de uso de la canalidad WhatsApp'))
+    restringir_tipo_llamadas_manuales = models.BooleanField(default=False, verbose_name=_(
+        'Restringir tipo de llamadas manuales'))
+    permitir_llamadas_manuales_a_manuales = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Manuales'))
+    permitir_llamadas_manuales_a_dialer = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Dialer'))
+    permitir_llamadas_manuales_a_entrante = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Entrante'))
+    permitir_llamadas_manuales_a_preview = models.BooleanField(default=False, verbose_name=_(
+        'Campañas Preview'))
     conjunto_de_pausa = models.ForeignKey(
         ConjuntoDePausa,
         verbose_name=_('Conjunto de pausas'),
@@ -412,6 +422,24 @@ class AgenteProfile(models.Model):
     def get_campanas_activas_miembro(self):
         campanas_member = self.campana_member.all()
         return campanas_member.filter(queue_name__campana__estado=Campana.ESTADO_ACTIVA)
+
+    def get_campanas_habilitadas_para_llamada_manual(self):
+        campanas = Campana.objects.filter(queue_campana__queuemember__member=self,
+                                          estado=Campana.ESTADO_ACTIVA)
+
+        if not self.grupo.restringir_tipo_llamadas_manuales:
+            return campanas
+
+        filtro_tipo = Q(type=-1)
+        if self.grupo.permitir_llamadas_manuales_a_manuales:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_MANUAL)
+        if self.grupo.permitir_llamadas_manuales_a_dialer:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_DIALER)
+        if self.grupo.permitir_llamadas_manuales_a_entrante:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_ENTRANTE)
+        if self.grupo.permitir_llamadas_manuales_a_preview:
+            filtro_tipo = filtro_tipo | Q(type=Campana.TYPE_PREVIEW)
+        return campanas.filter(filtro_tipo)
 
     def has_campanas_preview_activas_miembro(self):
         campanas_preview_activas = self.campana_member.filter(
@@ -645,17 +673,32 @@ class FieldFormulario(models.Model):
     TIPO_TEXTO_AREA = 4
     """Tipo de campo text area"""
 
+    TIPO_NUMERO = 5
+    """Tipo de campo numero"""
+
     TIPO_CHOICES = (
         (TIPO_TEXTO, _('Texto')),
         (TIPO_FECHA, _('Fecha')),
         (TIPO_LISTA, _('Lista')),
         (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
+        (TIPO_NUMERO, _('Número')),
+    )
+
+    TIPO_ENTERO = 1
+
+    TIPO_DECIMAL = 2
+
+    TIPO_NUMERO_CHOICES = (
+        (TIPO_ENTERO, _('ENTERO')),
+        (TIPO_DECIMAL, _('DECIMAL')),
     )
 
     formulario = models.ForeignKey(Formulario, related_name="campos", on_delete=models.CASCADE)
     nombre_campo = models.CharField(max_length=64)
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
+    tipo_numero = models.PositiveIntegerField(choices=TIPO_NUMERO_CHOICES, blank=True, null=True)
+    cifras_significativas = models.PositiveIntegerField(blank=True, null=True)
     values_select = models.TextField(blank=True, null=True)
     is_required = models.BooleanField()
 

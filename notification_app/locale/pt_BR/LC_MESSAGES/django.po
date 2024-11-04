@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-16 13:24-0300\n"
+"POT-Creation-Date: 2024-10-10 10:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,8 +20,8 @@ msgstr ""
 
 #: notification_app/message/apps.py:46
 msgid "Lista de los mensajes de correos que el sistema soporta"
-msgstr ""
+msgstr "Lista das mensagens de correios que o sistema suporta"
 
 #: notification_app/message/apps.py:50
 msgid "Obtiene detalle de un mensaje de correo"
-msgstr ""
+msgstr "Obtém detalhes de uma mensagem de correio"

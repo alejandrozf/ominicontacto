@@ -320,10 +320,11 @@ class CalificacionTests(OMLBaseTest):
         contactos_ids = self.campana.bd_contacto.contactos.values_list('id', flat=True)
         contactos_ids = list(contactos_ids)
         telefono = str(self.contacto.telefono) + '11'
+        nombre_campo_dato = self.campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos[0]
         post_data = {
             'opcion_calificacion': self.opcion_calificacion_gestion.pk,
             'contacto_form-telefono': telefono,
-            'contacto_form-nombre': 'Nuevo Contacto'
+            f'contacto_form-{nombre_campo_dato}': 'Nuevo Contacto'
         }
 
         url = reverse('calificar_por_telefono',

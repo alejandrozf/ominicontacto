@@ -1,5 +1,6 @@
 export default {
     agtWhatsContactDBFields: [],
     agtWhatsContactList: [],
-    agtWhatsContactSearchResults: []
+    agtWhatsContactSearchResults: [],
+    newContact: []
 };

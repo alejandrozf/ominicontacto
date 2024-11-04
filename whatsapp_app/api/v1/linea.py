@@ -215,7 +215,8 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = Linea.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
-            if not instance.configuracionwhatsapp.exclude(campana__estado=Campana.ESTADO_BORRADA):
+            if not instance.configuracionwhatsapp.exclude(
+                    campana__estado=Campana.ESTADO_BORRADA, campana__whatsapp_habilitado=False):
                 instance.is_active = False
                 instance.save()
                 StreamDeLineas().notificar_linea_eliminada(instance)
