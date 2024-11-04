@@ -1,23 +1,31 @@
 # Release Notes
-2024-08-14
+2024-10-08
 
 ## Added
 
-- oml-2668 Audio File creation using TTS Services
-- oml-2675 Whatsapp multimedia mesagges
-- oml-2731 Added Ringall strategy for inbound and dialer campaigns
-- oml-2734 Inbound Campaigns Supervision shows abandoned calls percentage row.
+- oml-2752 Allow contact creation from create whatsapp conversation window.
+- oml-2730 Manual calls can be restricted by campaign type in group configuration
+- oml-2749 Allow Group of Hours creation from whatsapp line edit/create window.
+- oml-2772 API to get Campaign agents and calls status
+- oml-2745 New Number field for disposition forms.
+- oml-2751 Whatsapp template deactivation
+- oml-2729 Use CRM data for inbound call contact identification
+- oml-2780 Agent id sent in login api response
+- oml-2781 TOKEN_EXPIRED_AFTER_SECONDS can be configured via envar
+- oml-2748 Allow message template creation from whatsapp line edit/create window
 
 ## Changed
 
-- oml-2723 Allow ignoring SSL validation in External Site Authentication requests
-- oml-2740 Whatsapp conversations are not always blocked after detecting error
-- oml-2754 Whatsapp Interactive menu options restricted to numbers only
+- oml-2784 Line deletion allowed for associated lines
+- oml-2732 Allow consultative transfer to inbound campaigns
+- oml-2398 Changes for new Wallboard Addon Version
 
 ## Fixed
 
-- oml-2728 Fix error on Whatsapp conversation initialization
-- oml-2739 Fix Outbound Route Pattern validation
+- oml-614 Error generating asterisk Music On Hold paths
+- oml-2764 Error sending multimedia content via Whatsapp
+- oml-2763 Error creating contact without field 'telefono' en contact database
+- oml- uwsgi workers recycle delta time 
 
 ## Removed
 
