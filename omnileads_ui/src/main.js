@@ -18,6 +18,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 // Components primevue
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import InputSwitch from 'primevue/inputswitch';
 import InputText from 'primevue/inputtext';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -81,6 +82,7 @@ app.directive('tooltip', Tooltip);
 // Components Primevue
 app.component('Card', Card);
 app.component('Button', Button);
+app.component('InputSwitch', InputSwitch);
 app.component('InputText', InputText);
 app.component('DataTable', DataTable);
 app.component('Column', Column);

@@ -71,6 +71,12 @@
           }}</small
         >
       </div>
+      <div class="field col-12">
+        <label id="inbound_route_is_direct">{{ $t("models.inbound_route.is_direct") }}</label>
+        <div class="p-inputgroup mt-2">
+          <InputSwitch id="inbound_route_is_direct" v-bind:modelValue="isDirect" v-on:change="isDirectOnChange" />
+        </div>
+      </div>
       <div class="field col-6">
         <label
           id="inbound_route_caller_id"
@@ -136,7 +142,7 @@
             placeholder="-----"
             optionLabel="option"
             optionValue="value"
-            @change="getDestinations"
+            optionDisabled="disabled"
             :emptyFilterMessage="$t('globals.without_data')"
           />
           <small
@@ -206,6 +212,15 @@ import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
+import {
+    AGENT,
+    CAMPAIGN,
+    CUSTOM_DST,
+    HANGUP,
+    ID_CLIENT,
+    IVR,
+    VALIDATION_DATE
+} from '@/globals/supervisor/ivr';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -234,24 +249,31 @@ export default {
                 { option: this.$t('forms.inbound_route.languages.en'), value: 1 },
                 { option: this.$t('forms.inbound_route.languages.es'), value: 2 }
             ],
-            destination_types: [
-                { option: this.$t('forms.inbound_route.destination_types.campaign'), value: 1 },
-                { option: this.$t('forms.inbound_route.destination_types.validation_date'), value: 2 },
-                { option: this.$t('forms.inbound_route.destination_types.ivr'), value: 3 },
-                { option: this.$t('forms.inbound_route.destination_types.hangup'), value: 5 },
-                { option: this.$t('forms.inbound_route.destination_types.id_client'), value: 9 },
-                { option: this.$t('forms.inbound_route.destination_types.custom_dst'), value: 7 }
-            ],
-            destinations_filter: []
         };
     },
     computed: {
+        destination_types () {
+            return [
+                { option: this.$t('forms.inbound_route.destination_types.campaign'), value: CAMPAIGN, disabled: this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.validation_date'), value: VALIDATION_DATE, disabled: this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.ivr'), value: IVR, disabled: this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.hangup'), value: HANGUP, disabled: this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.id_client'), value: ID_CLIENT, disabled: this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.agent'), value: AGENT, disabled: !this.isDirect },
+                { option: this.$t('forms.inbound_route.destination_types.custom_dst'), value: CUSTOM_DST, disabled: this.isDirect }
+            ];
+        },
+        destinations_filter () {
+            return this.inboundRouteForm.tipo_destino !== null ? this.destinations[`${this.inboundRouteForm.tipo_destino}`] : [];
+        },
+        isDirect () {
+            return this.inboundRouteForm.tipo_destino === AGENT;
+        },
         ...mapState(['inboundRouteForm', 'destinations'])
     },
     async created () {
         await this.initInboundRoutesDestinations();
         this.initializeData();
-        this.getDestinations();
     },
     methods: {
         ...mapActions([
@@ -263,8 +285,13 @@ export default {
         initializeData () {
             this.submitted = false;
         },
-        getDestinations () {
-            this.destinations_filter = this.inboundRouteForm.tipo_destino !== null ? this.destinations[`${this.inboundRouteForm.tipo_destino}`] : [];
+        isDirectOnChange ($event) {
+            if (this.isDirect) {
+                this.inboundRouteForm.tipo_destino = null;
+                this.inboundRouteForm.destino = null;
+            } else {
+                this.inboundRouteForm.tipo_destino = AGENT;
+            }
         },
         async save (isFormValid) {
             this.submitted = true;
@@ -294,6 +321,7 @@ export default {
                     )
                 );
             } else {
+                this.inboundRouteForm.destino = idDestino;
                 this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
@@ -310,15 +338,6 @@ export default {
             deep: true,
             immediate: true
         },
-        inboundRouteForm: {
-            handler () {
-                if (this.inboundRouteForm) {
-                    this.getDestinations();
-                }
-            },
-            deep: true,
-            immediate: true
-        }
     }
 };
 </script>

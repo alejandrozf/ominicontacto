@@ -41,6 +41,8 @@ from django.apps import apps
 from django.db.models import Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.forms.models import model_to_dict
@@ -415,6 +417,7 @@ class AgenteProfile(models.Model):
     reported_by = models.ForeignKey(User, related_name="reportedby", on_delete=models.CASCADE)
     is_inactive = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
+    destinos_entrantes = GenericRelation("configuracion_telefonia_app.DestinoEntrante", related_query_name="agente")
 
     def __str__(self):
         return self.user.get_full_name()
@@ -460,11 +463,22 @@ class AgenteProfile(models.Model):
         nombre = reemplazar_no_alfanumericos_por_guion(self.user.get_full_name())
         return "{0}_{1}".format(self.id, nombre)
 
+    def get_inbound_routes_where_is_destino(self):
+        RutaEntrante = apps.get_model('configuracion_telefonia_app.RutaEntrante')
+        return RutaEntrante.objects.filter(
+            destino__object_id=self.id,
+            destino__content_type=ContentType.objects.get_for_model(self),
+        )
+
     def desactivar(self):
+        self.destinos_entrantes.all().delete()
         self.is_inactive = True
         self.save()
 
     def activar(self):
+        if not self.destinos_entrantes.exists():
+            DestinoEntrante = apps.get_model('configuracion_telefonia_app.DestinoEntrante')
+            self.destinos_entrantes.create(nombre=self.user.username, tipo=DestinoEntrante.AGENTE)
         self.is_inactive = False
         self.save()
 
@@ -474,6 +488,7 @@ class AgenteProfile(models.Model):
         """
         logger.info(_("Seteando Agente {0} como BORRADO".format(self.id)))
 
+        self.destinos_entrantes.all().delete()
         self.borrado = True
         self.is_inactive = True
         self.save()

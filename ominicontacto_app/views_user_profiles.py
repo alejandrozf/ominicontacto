@@ -33,6 +33,7 @@ from django.db.models import Q
 from django.db.models import Value as V
 from django.db.models.functions import Concat
 from django.urls import reverse
+from django.template.defaultfilters import pluralize
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (
     View, UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
@@ -49,6 +50,7 @@ from ominicontacto_app.models import (
     SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, Grupo, Campana,
     AutenticacionExternaDeUsuario
 )
+from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
@@ -185,6 +187,11 @@ class CustomUserWizard(SessionWizardView):
             grupo=grupo,
             reported_by=self.request.user,
             sip_extension=1000 + user.id
+        )
+        DestinoEntrante.objects.create(
+            nombre=user.username,
+            tipo=DestinoEntrante.AGENTE,
+            content_object=agente_profile
         )
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
@@ -413,6 +420,20 @@ class UserDeleteView(DeleteView):
                 user.get_full_name()))
             messages.warning(self.request, message)
             return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
+        obj = self.get_object()
+        if obj.is_agente:
+            agente = obj.get_agente_profile()
+            inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+            if len(inbound_routes_where_is_destino):
+                msgs = [_('El Agente no puede ser eliminado.')]
+                msgs.append(
+                    _('El mismo se encuentra como "destino" en la{0} Ruta{0} Entrante{0}: {1}.'.format(
+                        pluralize(len(inbound_routes_where_is_destino)),
+                        ", ".join(inbound_routes_where_is_destino)
+                    ))
+                )
+                messages.add_message(request, messages.WARNING, " ".join(msgs))
+                return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
 
     def _can_delete_user(self, user):
@@ -602,7 +623,18 @@ class DesactivarAgenteView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        agente.desactivar()
+        inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+        if len(inbound_routes_where_is_destino):
+            msgs = [_('El Agente no fue desactivado.')]
+            msgs.append(
+                _('El mismo se encuentra como "destino" en la{0} Ruta{0} Entrante{0}: {1}.'.format(
+                    pluralize(len(inbound_routes_where_is_destino)),
+                    ", ".join(inbound_routes_where_is_destino)
+                ))
+            )
+            messages.add_message(request, messages.WARNING, " ".join(msgs))
+        else:
+            agente.desactivar()
         return HttpResponseRedirect(reverse('agente_list'))
 
 

@@ -91,6 +91,7 @@ export default {
             es: 'Español'
         },
         destination_types: {
+            agent: 'Agente',
             campaign: 'Campaña entrante',
             validation_date: 'Validación de fecha/hora',
             ivr: 'IVR',
