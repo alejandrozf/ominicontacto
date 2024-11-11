@@ -11,16 +11,16 @@ echo "uwsgi.ini settings"
 
 if [[ $UWSGI_CUSTOM == "True" ]]; then
 cat >> ${INSTALL_PREFIX}/run/oml_uwsgi.ini << EOF
-processes=${UWSGI_PROCESSES}
-threads=${UWSGI_THREADS}
-listen=${UWSGI_LISTEN_QUEUE_SIZE}
-worker-reload-mercy=${UWSGI_WORKER_RELOAD_MERCY}
-max-worker-lifetime=7200
-max-worker-lifetime-delta=300
-reload-on-rss=1024
-reload-on-as=2048
-evil-reload-on-rss=3096
-max-requests=2000
+processes=${UWSGI_PROCESSES:-4}
+threads=${UWSGI_THREADS:-1}
+listen=${UWSGI_LISTEN_QUEUE_SIZE:-2048}
+worker-reload-mercy=${UWSGI_WORKER_RELOAD_MERCY:-60}
+max-worker-lifetime=${UWSGI_MAX_WORKER_LIFETIME:-7200}
+max-worker-lifetime-delta=${UWSGI_MAX_WORKER_LIFETIME_DELTA:-300}
+reload-on-rss=${UWSGI_RELOAD_ON_RSS:-1024}
+reload-on-as=${UWSGI_RELOAD_ON_AS:-2048}
+evil-reload-on-rss=${UWSGI_EVIL_RELOAD_ON_RSS:-3096}
+max-requests=${UWSGI_MAX_REQUESTS:-2000}
 EOF
 fi
 
