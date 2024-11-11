@@ -14,6 +14,7 @@
         icon="pi pi-search"
         class="mr-2"
         @click="applyFilter"
+        v-bind:disabled="loading"
       />
     </template>
   </Toolbar>
@@ -22,6 +23,9 @@
 import { ref } from 'vue';
 export default {
     emits: ['filterChange'],
+    props: {
+        loading: Boolean
+    },
     setup (props, { emit }) {
         const dateStart = ref(new Date());
         const applyFilter = () => {
