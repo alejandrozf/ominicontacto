@@ -1,0 +1,10 @@
+FROM node:lts-alpine AS dev
+ENV NODE_OPTIONS=--openssl-legacy-provider
+RUN apk add make g++ python3 && ln -sf python3 /usr/bin/python
+WORKDIR /opt/webui-omnileads
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci
+COPY . .
+RUN echo 'VUE_APP_PUBLIC_PATH=/webui-omnileads/' >> .env.local
+CMD ["npm", "run", "serve", "--", "--host=0.0.0.0", "--port=80", "--skip-plugins=@vue/cli-plugin-eslint"]
