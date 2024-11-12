@@ -18,7 +18,6 @@
 import requests
 import json
 from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from orquestador_app.core.apis_urls import (
     URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES)
@@ -52,50 +51,48 @@ def autoresponse_welcome(line, conversation, timestamp):
         print("autoresponse_welcome >>>>>>>>", e)
 
 
-def autoreponse_destino_interactivo(line, conversation):
+def autoreponse_destino_interactivo(line, destino, conversation):
     try:
-        destination_entrante = line.destino
-        if destination_entrante.content_type == ContentType\
-                .objects.get(model='menuinteractivowhatsapp'):
-            texto_opciones = destination_entrante.content_object.texto_opciones
-            message = {
-                'type': 'list',
-                'title': _(texto_opciones),
-                'body': _('Click Menu Interactivo'),
-                'globalButtons': [{'type': 'text', 'title': _('Menu Interactivo')}],
-                'items': [{
-                    'title': _('Opciones'), 'subtitle': _('Seleccione una opción'),
-                    'options': [
-                        {'type': 'text',
-                         'title': opt.opcion_menu_whatsapp.opcion.valor,
-                         'description': opt.opcion_menu_whatsapp.descripcion}
-                        for opt in destination_entrante.destinos_siguientes.all()
-                    ]
-                }]
-            }
-            headers.update({'apikey': line.proveedor.configuracion['api_key']})
-            data = {
-                'channel': 'whatsapp',
-                'source': line.numero,
-                'src.name': line.configuracion['app_name'],
-                'destination': conversation.destination,
-                'message': json.dumps(message, default=str)
-            }
-            response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data).json()
-            if response['status'] == 'submitted':
-                timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                content = {"text": json.dumps(message, default=str), 'type': 'list'},
-                MensajeWhatsapp.objects.get_or_create(
-                    message_id=response['messageId'],
-                    conversation=conversation,
-                    defaults={
-                        'origen': line.numero,
-                        'timestamp': timestamp,
-                        'sender': {},
-                        'content': content,
-                        'type': 'list'
-                    }
-                )
+        destination_entrante = destino
+        texto_opciones = destination_entrante.content_object.texto_opciones
+        message = {
+            'type': 'list',
+            'title': _(texto_opciones),
+            'body': _('Click Menu Interactivo'),
+            'globalButtons': [{'type': 'text', 'title': _('Menu Interactivo')}],
+            'items': [{
+                'title': _('Opciones'), 'subtitle': _('Seleccione una opción'),
+                'options': [
+                    {'type': 'text',
+                        'title': opt.opcion_menu_whatsapp.opcion.valor,
+                        'description': opt.opcion_menu_whatsapp.descripcion}
+                    for opt in destination_entrante.destinos_siguientes.all()
+                ]
+            }]
+        }
+        headers.update({'apikey': line.proveedor.configuracion['api_key']})
+        data = {
+            'channel': 'whatsapp',
+            'source': line.numero,
+            'src.name': line.configuracion['app_name'],
+            'destination': conversation.destination,
+            'message': json.dumps(message, default=str)
+        }
+        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data).json()
+        if response['status'] == 'submitted':
+            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            content = {"text": json.dumps(message, default=str), 'type': 'list'},
+            MensajeWhatsapp.objects.get_or_create(
+                message_id=response['messageId'],
+                conversation=conversation,
+                defaults={
+                    'origen': line.numero,
+                    'timestamp': timestamp,
+                    'sender': {'destino_entrante': destination_entrante.id},
+                    'content': content,
+                    'type': 'list',
+                }
+            )
     except Exception as e:
         print("autoreponse_destino_interactivo >>>>>>>>>>>>", e)
 

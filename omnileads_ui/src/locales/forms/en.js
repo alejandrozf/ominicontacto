@@ -258,7 +258,8 @@ export default {
                 field_is_required: '{field} is required'
             },
             destination_types: {
-                campaign: 'Campaign'
+                campaign: 'Campaign',
+                menu: 'Interactive Menu'
             },
             options: {
                 success_create: 'Destination option created successfully',

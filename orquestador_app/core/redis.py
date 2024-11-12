@@ -120,6 +120,7 @@ async def handler_messages(line, payloads):
                 origen = msg_json['payload']['source']
                 type = msg_json['payload']['type']
                 content = msg_json['payload']['payload']
+                context = msg_json['payload']['context'] if type == 'list_reply' else {}
                 sender = msg_json['payload']['sender']
                 await inbound_chat_event(
                     line,
@@ -128,6 +129,7 @@ async def handler_messages(line, payloads):
                     origen,
                     content,
                     sender,
+                    context,
                     type,
                 )
     except Exception as e:

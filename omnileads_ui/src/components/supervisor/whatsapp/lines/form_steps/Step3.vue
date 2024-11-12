@@ -249,14 +249,14 @@
               <label
                 :class="{
                   'p-error':
-                    v$.form.configuracion.tipo_de_destino.$invalid && submitted,
+                    v$.form.destination_type.$invalid && submitted,
                 }"
                 >{{ $t("models.whatsapp.line.tipo_de_destino") }}*</label
               >
               <div class="field-radiobutton">
                 <RadioButton
-                  :value="0"
-                  v-model="form.configuracion.tipo_de_destino"
+                  :value="destinationType.CAMPAIGN"
+                  v-model="form.destination_type"
                   @change="campaignOption()"
                 />
                 <label>{{
@@ -265,8 +265,8 @@
               </div>
               <div class="field-radiobutton">
                 <RadioButton
-                  :value="1"
-                  v-model="form.configuracion.tipo_de_destino"
+                  :value="destinationType.INTERACTIVE"
+                  v-model="form.destination_type"
                   @change="interactiveOption()"
                 />
                 <label>{{
@@ -275,15 +275,15 @@
               </div>
               <small
                 v-if="
-                  (v$.form.configuracion.tipo_de_destino.$invalid &&
+                  (v$.form.destination_type.$invalid &&
                     submitted) ||
-                  v$.form.configuracion.tipo_de_destino.$pending.$response
+                  v$.form.destination_type.$pending.$response
                 "
                 class="p-error"
                 >{{
-                  v$.form.configuracion.tipo_de_destino.required.$message.replace(
+                  v$.form.destination_type.required.$message.replace(
                     "Value",
-                    $t("models.whatsapp.line.tipo_de_destino")
+                    $t("models.whatsapp.line.destination_type")
                   )
                 }}</small
               >
@@ -291,13 +291,13 @@
             <div
               class="field col-8"
               v-if="
-                form.configuracion.tipo_de_destino === destinationType.CAMPAIGN
+                form.destination_type === destinationType.CAMPAIGN
               "
             >
               <label
                 :class="{
                   'p-error':
-                    v$.form.configuracion.destino.$invalid && submitted,
+                    v$.form.destination.$invalid && submitted,
                 }"
                 >{{ $t("models.whatsapp.line.destino") }}*</label
               >
@@ -306,11 +306,11 @@
                   <i class="pi pi-sign-in"></i>
                 </span>
                 <Dropdown
-                  v-model="v$.form.configuracion.destino.$model"
+                  v-model="v$.form.destination.$model"
                   class="w-full"
                   :class="{
                     'p-invalid':
-                      v$.form.configuracion.destino.$invalid && submitted,
+                      v$.form.destination.$invalid && submitted,
                   }"
                   :options="campaings"
                   :filter="true"
@@ -325,12 +325,12 @@
               </div>
               <small
                 v-if="
-                  (v$.form.configuracion.destino.$invalid && submitted) ||
-                  v$.form.configuracion.destino.$pending.$response
+                  (v$.form.destination.$invalid && submitted) ||
+                  v$.form.destination.$pending.$response
                 "
                 class="p-error"
                 >{{
-                  v$.form.configuracion.destino.required.$message.replace(
+                  v$.form.destination.required.$message.replace(
                     "Value",
                     $t("models.whatsapp.line.destino")
                   )
@@ -340,222 +340,21 @@
             <div
               class="field col-12"
               v-if="
-                form.configuracion.tipo_de_destino ===
-                destinationType.INTERACTIVE
+                form.destination_type === destinationType.INTERACTIVE
               "
             >
-              <label
-                :class="{
-                  'p-error':
-                    v$.form.configuracion.destino.$invalid && submitted,
-                }"
-                >{{ $t("models.whatsapp.line.destino") }}*</label
-              >
-              <div class="card mt-2">
-                <div class="grid formgrid">
-                  <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-                    <label
-                      :class="{
-                        'p-error':
-                          isEmptyField(interactiveForm.text) && submitted,
-                      }"
-                      >{{
-                        $t("models.whatsapp.line.interactive_form.text")
-                      }}*</label
-                    >
-                    <div class="p-inputgroup mt-2">
-                      <span class="p-inputgroup-addon">
-                        <i class="pi pi-comment"></i>
-                      </span>
-                      <InputText
-                        :class="{
-                          'p-invalid':
-                            isEmptyField(interactiveForm.text) && submitted,
-                        }"
-                        v-model="interactiveForm.text"
-                      />
-                    </div>
-                    <small
-                      v-if="isEmptyField(interactiveForm.text) && submitted"
-                      class="p-error"
-                    >
-                      {{
-                        $t(
-                          "forms.whatsapp.line.validations.field_is_required",
-                          {
-                            field: $t(
-                              "models.whatsapp.line.interactive_form.text"
-                            ),
-                          }
-                        )
-                      }}
-                    </small>
-                  </div>
-                  <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-                    <label
-                      :class="{
-                        'p-error':
-                          isEmptyField(interactiveForm.timeout) && submitted,
-                      }"
-                      >{{
-                        $t("models.whatsapp.line.interactive_form.timeout")
-                      }}*</label
-                    >
-                    <div class="p-inputgroup mt-2">
-                      <span class="p-inputgroup-addon">
-                        <i class="pi pi-clock"></i>
-                      </span>
-                      <InputNumber
-                        :class="{
-                          'p-invalid':
-                            isEmptyField(interactiveForm.timeout) && submitted,
-                        }"
-                        :showButtons="true"
-                        :min="0"
-                        :max="100"
-                        v-model="interactiveForm.timeout"
-                      />
-                    </div>
-                    <small>
-                      {{ $t("globals.in_seconds") }}
-                    </small>
-                    <div
-                      v-if="isEmptyField(interactiveForm.timeout) && submitted"
-                    >
-                      <br />
-                      <small class="p-error">
-                        {{
-                          $t(
-                            "forms.whatsapp.line.validations.field_is_required",
-                            {
-                              field: $t(
-                                "models.whatsapp.line.interactive_form.timeout"
-                              ),
-                            }
-                          )
-                        }}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-                <div class="grid formgrid">
-                  <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-                    <label
-                      :class="{
-                        'p-error':
-                          isEmptyField(interactiveForm.wrongAnswer) &&
-                          submitted,
-                      }"
-                      >{{
-                        $t(
-                          "models.whatsapp.line.interactive_form.wrong_answer"
-                        )
-                      }}*</label
-                    >
-                    <div class="p-inputgroup mt-2">
-                      <span class="p-inputgroup-addon">
-                        <i class="pi pi-times-circle"></i>
-                      </span>
-                      <InputText
-                        :class="{
-                          'p-invalid':
-                            isEmptyField(interactiveForm.wrongAnswer) &&
-                            submitted,
-                        }"
-                        v-model="interactiveForm.wrongAnswer"
-                      />
-                    </div>
-                    <small
-                      v-if="
-                        isEmptyField(interactiveForm.wrongAnswer) && submitted
-                      "
-                      class="p-error"
-                    >
-                      {{
-                        $t(
-                          "forms.whatsapp.line.validations.field_is_required",
-                          {
-                            field: $t(
-                              "models.whatsapp.line.interactive_form.wrong_answer"
-                            ),
-                          }
-                        )
-                      }}
-                    </small>
-                  </div>
-                  <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-                    <label
-                      :class="{
-                        'p-error':
-                          isEmptyField(interactiveForm.successAnswer) &&
-                          submitted,
-                      }"
-                      >{{
-                        $t(
-                          "models.whatsapp.line.interactive_form.success_answer"
-                        )
-                      }}*</label
-                    >
-                    <div class="p-inputgroup mt-2">
-                      <span class="p-inputgroup-addon">
-                        <i class="pi pi-check-circle"></i>
-                      </span>
-                      <InputText
-                        :class="{
-                          'p-invalid':
-                            isEmptyField(interactiveForm.successAnswer) &&
-                            submitted,
-                        }"
-                        v-model="interactiveForm.successAnswer"
-                      />
-                    </div>
-                    <small
-                      v-if="
-                        isEmptyField(interactiveForm.successAnswer) && submitted
-                      "
-                      class="p-error"
-                    >
-                      {{
-                        $t(
-                          "forms.whatsapp.line.validations.field_is_required",
-                          {
-                            field: $t(
-                              "models.whatsapp.line.interactive_form.success_answer"
-                            ),
-                          }
-                        )
-                      }}
-                    </small>
-                  </div>
-                </div>
+            <div class="flex justify-content-between flex-wrap mt-4">
+              <div class="flex align-items-center justify-content-center">
               </div>
-              <Message
-                v-if="isEmptyOptions"
-                class="mt-2 p-0"
-                :closable="false"
-                severity="warn"
-              >
-                {{ $t("views.whatsapp.line.step3.empty_options") }}
-              </Message>
-              <OptionsTable @handleModalEvent="handleModal" />
-              <ModalToHandleOption
-                :showModal="showModal"
-                :formToCreate="formToCreate"
-                @handleModalEvent="handleModal"
+              <div class="flex align-items-center justify-content-center">
+              <Button
+                :label="$t('globals.new')"
+                icon="pi pi-plus"
+                @click="addInteractiveMenuItem"
               />
-              <small
-                v-if="
-                  (v$.form.configuracion.destino.$invalid && submitted) ||
-                  v$.form.configuracion.destino.$pending.$response
-                "
-                class="p-error"
-                >{{
-                  v$.form.configuracion.destino.required.$message.replace(
-                    "Value",
-                    $t("models.whatsapp.line.destino")
-                  )
-                }}</small
-              >
+              </div>
+            </div>
+              <FormMenuInteractivo :data="menu" v-for="menu in supWhatsappLine.destination.data" :key="menu.id"></FormMenuInteractivo>
             </div>
           </div>
         </Fieldset>
@@ -587,6 +386,7 @@
     :showModal="showModalNewMessage"
     @handleModalEvent="handleModalNewMessage"
     />
+    <pre>{{this.supWhatsappLine.destination.data}}</pre>
   </div>
 </template>
 
@@ -601,10 +401,10 @@ import {
 } from '@/globals/supervisor/whatsapp/line';
 import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { HTTP_STATUS } from '@/globals';
-import OptionsTable from '@/components/supervisor/whatsapp/lines/options_form/OptionsTable';
 import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
 import ModalNewGroupOfHour from '@/components/supervisor/whatsapp/lines/options_form/ModalNewGroupOfHour';
 import ModalNewMessageTemplate from '@/components/supervisor/whatsapp/lines/options_form/ModalNewMessageTemplate';
+import FormMenuInteractivo from '@/components/supervisor/whatsapp/lines/options_form/FormMenuInteractivo';
 
 export default {
     inject: ['$helpers'],
@@ -612,10 +412,8 @@ export default {
     validations () {
         return {
             form: {
-                configuracion: {
-                    destino: { required },
-                    tipo_de_destino: { required }
-                },
+                destination: { required },
+                destination_type: { required },
                 horario: { required },
                 mensaje_bienvenida: { required },
                 mensaje_despedida: { required },
@@ -624,8 +422,8 @@ export default {
         };
     },
     components: {
+        FormMenuInteractivo,
         ModalToHandleOption,
-        OptionsTable,
         ModalNewGroupOfHour,
         ModalNewMessageTemplate
     },
@@ -640,10 +438,8 @@ export default {
                 options: []
             },
             form: {
-                configuracion: {
-                    destino: null,
-                    tipo_de_destino: 0
-                },
+                destination: null,
+                destination_type: null,
                 horario: null,
                 mensaje_bienvenida: null,
                 mensaje_despedida: null,
@@ -699,6 +495,9 @@ export default {
             cratedNewmsgDespedida: false
         };
     },
+    mounted() {
+      this.initFormBase()
+    },
     computed: {
         ...mapState([
             'supWhatsappLine',
@@ -707,7 +506,8 @@ export default {
             'isFormToCreate',
             'supWhatsappMessageTemplates',
             'supWhatsappLineCampaigns',
-            'supWhatsappLineOptions'
+            'supWhatsappLineOptions',
+            'supWhatsappLineIteractiveForm'
         ])
     },
     methods: {
@@ -725,24 +525,25 @@ export default {
             this.form.mensaje_bienvenida = this.supWhatsappLine.mensaje_bienvenida;
             this.form.mensaje_despedida = this.supWhatsappLine.mensaje_despedida;
             this.form.mensaje_fueradehora = this.supWhatsappLine.mensaje_fueradehora;
-            this.form.configuracion.tipo_de_destino =
-        this.supWhatsappLine.configuracion.tipo_de_destino;
-            this.form.configuracion.destino =
-        this.supWhatsappLine.configuracion.destino;
+            this.form.destination_type = this.supWhatsappLine.destination.type;
+            this.form.destination = this.supWhatsappLine.destination.data;
         },
-        initInteractiveForm () {
-            this.interactiveForm.text = this.supWhatsappLine.destination.data.text;
-            this.interactiveForm.wrongAnswer =
-        this.supWhatsappLine.destination.data.wrong_answer;
-            this.interactiveForm.successAnswer =
-        this.supWhatsappLine.destination.data.success;
-            this.interactiveForm.timeout =
-        this.supWhatsappLine.destination.data.timeout;
+        // initInteractiveForm () {
+        //     this.interactiveForm.text = this.supWhatsappLine.destination.data.text;
+        //     this.interactiveForm.wrongAnswer =
+        // this.supWhatsappLine.destination.data.wrong_answer;
+        //     this.interactiveForm.successAnswer =
+        // this.supWhatsappLine.destination.data.success;
+        //     this.interactiveForm.timeout =
+        // this.supWhatsappLine.destination.data.timeout;
+        // },
+        addInteractiveMenuItem() {
+          this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date()})
         },
         validateInteractiveForm () {
             this.invalidInteractiveForm = false;
             if (
-                this.form.configuracion.tipo_de_destino ===
+                this.form.destination_type ===
         this.destinationType.INTERACTIVE
             ) {
                 if (
@@ -836,63 +637,55 @@ export default {
                     })
                 );
             }
-            this.isEmptyOptions =
-        this.form.configuracion.tipo_de_destino ===
-          this.destinationType.INTERACTIVE &&
-        this.supWhatsappLineOptions.length === 0;
-            if (this.isEmptyOptions) {
-                this.formErrors.push(
-                    this.$t('forms.whatsapp.line.options.empty_options')
-                );
-            }
+        //     this.isEmptyOptions =
+        // this.form.destination_type ===
+        //   this.destinationType.INTERACTIVE &&
+        // this.supWhatsappLineOptions.length === 0;
+        //     if (this.isEmptyOptions) {
+        //         this.formErrors.push(
+        //             this.$t('forms.whatsapp.line.options.empty_options')
+        //         );
+        //     }
         },
         interactiveOption () {
-            this.isEmptyOptions =
-        this.form.configuracion.tipo_de_destino ===
-          this.destinationType.INTERACTIVE &&
-        this.supWhatsappLineOptions.length === 0;
+         this.supWhatsappLine.destination.type = this.destinationType.INTERACTIVE
+         if (this.supWhatsappLine.destination.data === null || typeof(this.supWhatsappLine.destination.data) === 'number'){
+          this.supWhatsappLine.destination.data = [this.supWhatsappLineIteractiveForm]
+         }
         },
         campaignOption () {
-            this.isEmptyOptions = false;
+            this.supWhatsappLine.destination.type = this.destinationType.CAMPAIGN
         },
         getDestinationData () {
             if (
-                this.form.configuracion.tipo_de_destino ===
+                this.form.destination_type ===
         this.destinationType.CAMPAIGN
             ) {
                 return {
                     type: DESTINATION_TYPES_BACK.CAMPAIGN,
-                    data: this.form.configuracion.destino
+                    data: this.form.destination
                 };
             } else if (
-                this.form.configuracion.tipo_de_destino ===
+                this.form.destination_type ===
         this.destinationType.INTERACTIVE
             ) {
+                console.log('>>>', this.supWhatsappLine.destination.data)
+                console.log('>>>', this.supWhatsappLine.destination.id_tmp)
                 return {
                     type: DESTINATION_TYPES_BACK.INTERACTIVE,
-                    data: {
-                        text: this.interactiveForm.text,
-                        wrong_answer: this.interactiveForm.wrongAnswer,
-                        success: this.interactiveForm.successAnswer,
-                        timeout: this.interactiveForm.timeout,
-                        options: this.supWhatsappLineOptions.map((o) => {
-                            return {
-                                value: o.value,
-                                description: o.description,
-                                destination: o.destination
-                            };
-                        })
-                    }
+                    data: this.supWhatsappLine.destination.data,
+                    id_tmp: this.supWhatsappLine.destination.id_tmp
                 };
             }
         },
         async save (isFormValid) {
             this.submitted = true;
-            this.form.configuracion.destino = this.getDestinationData();
-            this.validateInteractiveForm();
-            if (!isFormValid || this.invalidInteractiveForm) {
-                return null;
-            }
+            // this.form.destination_type = this.getDestinationData();
+            // this.validateInteractiveForm();
+            // if (!isFormValid || this.invalidInteractiveForm) {
+            //     console.log('no valid')
+            //     return null;
+            // }
             this.validateFormData();
             if (this.formErrors.length > 0) {
                 var errors = '';
@@ -918,17 +711,15 @@ export default {
                 configuration: {
                     app_name: this.supWhatsappLine.configuracion.app_name,
                     app_id: this.supWhatsappLine.configuracion.app_id,
-                    destino: this.form.configuracion.destino,
-                    tipo_de_destino: this.form.configuracion.tipo_de_destino
                 },
-                destination: this.form.configuracion.destino,
+                destination: this.getDestinationData(),
                 schedule: this.form.horario,
                 welcome_message: this.form.mensaje_bienvenida,
                 farewell_message: this.form.mensaje_despedida,
                 afterhours_message: this.form.mensaje_fueradehora
             };
             if (this.isFormToCreate) {
-                response = await this.createWhatsappLine(form);
+              response = await this.createWhatsappLine(form);
             } else {
                 response = await this.updateWhatsappLine({
                     id: this.supWhatsappLine.id,
@@ -991,19 +782,6 @@ export default {
         },
     },
     watch: {
-        supWhatsappLine: {
-            handler () {
-                this.initFormBase();
-                if (
-                    this.form.configuracion.tipo_de_destino ===
-          this.destinationType.INTERACTIVE
-                ) {
-                    this.initInteractiveForm();
-                }
-            },
-            deep: true,
-            immediate: true
-        },
         supWhatsappMessageTemplates: {
             handler () {
                 if (this.supWhatsappMessageTemplates.length > 0) {
@@ -1060,7 +838,7 @@ export default {
         supWhatsappLineOptions: {
             handler () {
                 if (
-                    this.form.configuracion.tipo_de_destino ===
+                    this.form.destination_type ===
             this.destinationType.INTERACTIVE &&
           this.supWhatsappLineOptions.length === 0
                 ) {
