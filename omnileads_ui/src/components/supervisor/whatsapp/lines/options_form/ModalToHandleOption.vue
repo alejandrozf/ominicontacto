@@ -14,7 +14,7 @@
         }}
       </h2>
     </template>
-    <Form @closeModalEvent="closeModal" :formToCreate="formToCreate" />
+    <Form @closeModalEvent="closeModal" :formToCreate="formToCreate" :menuId="menuId"/>
   </Dialog>
 </template>
 
@@ -31,6 +31,13 @@ export default {
         formToCreate: {
             type: Boolean,
             default: false
+        },
+        option: {
+          type: Array,
+          default:[]
+        },
+        menuId: {
+          type: Number
         }
     },
     components: {
@@ -42,7 +49,10 @@ export default {
     methods: {
         ...mapActions([]),
         closeModal () {
-            this.$emit('handleModalEvent', {});
+          this.$emit('handleModalEvent',{
+                showModal: false,
+                formToCreate: false
+          });
         }
     },
     watch: {
@@ -50,6 +60,11 @@ export default {
             handler () {},
             deep: true,
             immediate: true
+        },
+        showModal: {
+          handler () {},
+          deep: true,
+          immediate: true
         }
     }
 };

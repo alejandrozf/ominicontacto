@@ -5,7 +5,7 @@
         <h1>{{ $t("views.audit.title") }}</h1>
       </template>
     </Toolbar>
-    <FilterAuditSupervisor @filterChange="loadData"></FilterAuditSupervisor>
+    <FilterAuditSupervisor @filterChange="loadData" v-bind:loading="loadingData"></FilterAuditSupervisor>
     <DataTableAuditSupervisor
       :tableData="tableData.data"
       :loading="loadingData"
@@ -27,6 +27,7 @@ export default {
         const loadingData = ref(false);
         const tableData = ref({ data: null });
 
+        loadingData.value = true;
         const { loading, response } = apiCall(apiUrls.AuditSupervisor);
         watch(loading, () => {
             loadingData.value = loading.value;
@@ -36,6 +37,7 @@ export default {
         const state = reactive({
             loadData: (data) => {
                 const params = { ...data };
+                loadingData.value = true;
                 const { loading, response } = apiCall(
                     apiUrls.AuditSupervisor,
                     httpMethods.POST,

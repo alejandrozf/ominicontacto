@@ -23,6 +23,7 @@ from ominicontacto_app.models import Campana
 from whatsapp_app.models import ConfiguracionProveedor, Linea
 from whatsapp_app.models import (
     PlantillaMensaje, MenuInteractivoWhatsapp, OpcionMenuInteractivoWhatsapp)
+import json
 
 
 class ListSerializer(serializers.Serializer):
@@ -31,7 +32,7 @@ class ListSerializer(serializers.Serializer):
     number = serializers.CharField(source='numero')
     provider = serializers.IntegerField(source='proveedor.id')
     configuration = serializers.JSONField(source='configuracion')
-    # destination = serializers.IntegerField(source='destino.id', required=False)
+    # destination = serializers.IntegerField(source='destino', required=False)
     # destination_type = serializers.IntegerField(source='destino.tipo', required=False)
     schedule = serializers.IntegerField(source='horario.id', required=False)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
@@ -93,15 +94,32 @@ class LineaCreateSerializer(serializers.ModelSerializer):
                     'configuration': _('Configuración incorrecta para el tipo de proveedor')})
 
 
+class JSONSerializerField(serializers.Field):
+    def to_internal_value(self, data):
+        try:
+            if isinstance(data, int):
+                json_data = data
+            else:
+                json_data = {}
+                json_data = json.loads(json.dumps(data))
+        except Exception:
+            pass
+        finally:
+            return json_data
+
+    def to_representation(self, value):
+        return value
+
+
 class DestinoDeLineaCreateSerializer(serializers.Serializer):
     type = serializers.ChoiceField(
         choices=((DestinoEntrante.CAMPANA, _('Campana')),
                  (DestinoEntrante.MENU_INTERACTIVO_WHATSAPP, _('Menu Interactivo'))))
-    data = serializers.JSONField()
+    data = JSONSerializerField()
+    id_tmp = serializers.IntegerField(required=False)
 
     def validate_data(self, destination):
         destination_type = self.initial_data.get('type')
-
         # Si el destino es de una campaña, valido que exista
         if destination_type == DestinoEntrante.CAMPANA:
             return self._validate_campana_as_destination(destination)
@@ -127,8 +145,7 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
 
     def _validate_menu_interactivo_as_destination(self, menu_data):
         """ Valido que esten bien los datos para crear un menu interactivo """
-        self.menu_serializer = MenuInteractivoSerializer(data=menu_data)
-
+        self.menu_serializer = MenuInteractivoSerializer(data=menu_data, many=True)
         if not self.menu_serializer.is_valid(raise_exception=True):
             raise serializers.ValidationError({
                 'destination': _('Valor incorrecto.')})
@@ -137,57 +154,84 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
     def create(self, validated_data):
         """ En caso de que sea un Menu interactivo debo crearlo """
         if validated_data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            self.create_menu_interactivo()
-
+            self.create_menu_interactivo(validated_data)
         return validated_data
 
-    def create_menu_interactivo(self):
+    def create_menu_interactivo(self, validated_data):
         # Si es un menú interactivo debo crearlo:
-        menu_data = self.menu_serializer.data
-        self.menu = MenuInteractivoWhatsapp(texto_opciones=menu_data['text'],
-                                            texto_opcion_incorrecta=menu_data['wrong_answer'],
-                                            texto_derivacion=menu_data['success'],
-                                            timeout=menu_data['timeout'])
-        self.menu.save()
-        self.destino = DestinoEntrante.crear_nodo_ruta_entrante(self.menu)
-        for option_data in menu_data['options']:
-            self.crear_opcion(option_data)
+        list_menu_data = validated_data['data']
+        destino_whith_options = []
+        for menu_data in list_menu_data:
+            menu = MenuInteractivoWhatsapp(texto_opciones=menu_data['text'],
+                                           texto_opcion_incorrecta=menu_data['wrong_answer'],
+                                           texto_derivacion=menu_data['success'],
+                                           timeout=menu_data['timeout'])
+            menu.save()
+            destino = DestinoEntrante.crear_nodo_ruta_entrante(menu)
+            opcions = {
+                "id_temp": menu_data['id_tmp'],
+                'destino_anterior': destino,
+                "opcions": menu_data['options']
 
-    def crear_opcion(self, option_data):
-        campana = Campana.objects.get(id=option_data['destination'])
-        destino_campana = DestinoEntrante.get_nodo_ruta_entrante(campana)
-        opcion = OpcionDestino.crear_opcion_destino(destino_anterior=self.destino,
-                                                    destino_siguiente=destino_campana,
-                                                    valor=option_data['value'])
-        OpcionMenuInteractivoWhatsapp.objects.create(opcion=opcion,
-                                                     descripcion=option_data['description'])
+            }
+            if menu_data['id_tmp'] == validated_data['id_tmp']:
+                self.destino = destino
+            destino_whith_options.append(opcions)
+            menu_data['id'] = menu.id
+        self.crear_opcions(destino_whith_options)
 
-    def update_menu_interactivo(self, instance):
-        menu_data = self.menu_serializer.data
-        self.destino = instance
-        self.menu = instance.content_object
-        self.menu.texto_opciones = menu_data['text']
-        self.menu.texto_opcion_incorrecta = menu_data['wrong_answer']
-        self.menu.texto_derivacion = menu_data['success']
-        self.menu.timeout = menu_data['timeout']
-        self.menu.save()
+    def crear_opcions(self, destino_whith_options):
+        for object_dict in destino_whith_options:
+            for option_data in object_dict['opcions']:
+                if option_data['type_option'] == DestinoEntrante.CAMPANA:
+                    campana = Campana.objects.get(id=option_data['destination'])
+                    destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
+                else:
+                    destino_siguiente = self.find_destination(
+                        destino_whith_options, option_data['destination'])
+                option_data['destination'] = destino_siguiente.content_object.id
+                opcion = OpcionDestino.crear_opcion_destino(
+                    destino_anterior=object_dict['destino_anterior'],
+                    destino_siguiente=destino_siguiente,
+                    valor=option_data['value'])
+                OpcionMenuInteractivoWhatsapp.objects.create(
+                    opcion=opcion,
+                    descripcion=option_data['description'])
 
-        valores = set(instance.destinos_siguientes.values_list('valor', flat=True))
-        for option_data in menu_data['options']:
-            # Actualizar opciones con valores preexistentes
-            if option_data['value'] in valores:
-                opcion = instance.destinos_siguientes.get(valor=option_data['value'])
-                campana = Campana.objects.get(id=option_data['destination'])
-                destino_campana = DestinoEntrante.get_nodo_ruta_entrante(campana)
-                opcion.destino_siguiente = destino_campana
-                opcion.save()
-                opcion.opcion_menu_whatsapp.descripcion = option_data['description']
-                opcion.opcion_menu_whatsapp.save()
-                valores.remove(option_data['value'])
-            else:
-                self.crear_opcion(option_data)
-        # Elimino las opciones que no tienen valor
-        instance.destinos_siguientes.filter(valor__in=valores).delete()
+    def update_opcions(self, destino_whith_options):
+        # TODO NO SE USA ACTUALMENTE IMPLEMENTACION INCOMPLETA
+        for object_dict in destino_whith_options:
+            for option_data in object_dict['opcions']:
+                if not option_data['type_option'] == DestinoEntrante.CAMPANA:
+                    campana = Campana.objects.get(id=option_data['destination'])
+                    destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
+                else:
+                    destino_siguiente = self.find_destination(
+                        destino_whith_options, option_data['destination'])
+            return destino_siguiente
+
+    def find_destination(self, destino_whith_options, value):
+        for object_dict in destino_whith_options:
+            if object_dict['id_temp'] == value:
+                return object_dict['destino_anterior']
+
+    def update_menu_interactivo(self, instance, validated_data):
+        list_menu_data = validated_data['data']
+        destino_whith_options = []
+        for menu_data in list_menu_data:
+            menu = MenuInteractivoWhatsapp.objects.get(pk=menu_data['id'])
+            menu.texto_opciones = menu_data['text']
+            menu.texto_opcion_incorrecta = menu_data['wrong_answer']
+            menu.texto_derivacion = menu_data['success']
+            menu.timeout = menu_data['timeout']
+            menu.save()
+            opcions = {
+                "id": menu_data['id'],
+                'destino_anterior': instance,
+                "opcions": menu_data['options']
+            }
+            destino_whith_options.append(opcions)
+        self.update_opcions(destino_whith_options)
 
     def borrar_destino_sobrante(self, destino_previo, destino):
         # Si pasa de un menu a una campaña, borro el menu, su destino y sus componentes asociados.
@@ -209,36 +253,57 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         # Cambio destino campaña por Menu Interactivo:
         if instance.tipo == DestinoEntrante.CAMPANA \
                 and validated_data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            self.create_menu_interactivo()
+            self.create_menu_interactivo(validated_data)
         # Cambio destino campaña por Menu Interactivo:
         if instance.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
                 and validated_data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            self.update_menu_interactivo(instance)
+            self.update_menu_interactivo(instance, validated_data)
 
         return validated_data
 
-    def serialize_data(self):
-        serialize_data = {
-            'type': self.data['type']
+
+class OpcionMenuSerializer(serializers.BaseSerializer):
+
+    def to_internal_value(self, data):
+        value = data.get('value')
+        destination = data.get('destination')
+        description = data.get('description')
+        type_option = data.get('type_option')
+
+        if not destination:
+            raise serializers.ValidationError({
+                'destination': 'This field is required.'
+            })
+        if not value:
+            raise serializers.ValidationError({
+                'value': 'This field is required.'
+            })
+        return {
+            'destination': destination,
+            'value': value,
+            'description': description,
+            'type_option': type_option
         }
-        if self.data['type'] == DestinoEntrante.CAMPANA:
-            serialize_data['id'] = self.data['data']
-        elif self.data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            serialize_data.update(self.menu_serializer.data)
-            serialize_data['id'] = self.menu.id
-        else:
-            raise Exception('Se obtuvo un type inválido')
-        return serialize_data
 
-
-class OpcionMenuSerializer(serializers.Serializer):
-    value = serializers.CharField()
-    description = serializers.CharField(source='descripcion')
-    destination = serializers.PrimaryKeyRelatedField(
-        queryset=Campana.objects.filter(whatsapp_habilitado=True))
+    def to_representation(self, instance):
+        representation = {
+            'value': instance["value"],
+            'description': instance["description"],
+            'type_option': instance["type_option"],
+            'destination': instance["destination"]
+        }
+        if instance["type_option"] == DestinoEntrante.CAMPANA:
+            representation['destination_name'] = instance.nombre
+        elif instance["type_option"] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+            destination = DestinoDeLineaCreateSerializer(data=instance["destination"])
+            destination.is_valid(raise_exception=True)
+            representation['destination'] = destination.data
+            representation['destination_name'] = destination.name
+        return representation
 
 
 class MenuInteractivoSerializer(serializers.Serializer):
+    id_tmp = serializers.IntegerField(required=False)
     text = serializers.CharField()
     wrong_answer = serializers.CharField()
     success = serializers.CharField()
@@ -258,6 +323,30 @@ class MenuInteractivoSerializer(serializers.Serializer):
 
 class DestinoEntranteRelatedField(serializers.RelatedField):
 
+    def _menu_representation(self, value, data_list):
+        menu = value.content_object
+        menu_representation = {
+            'id': menu.id,
+            'id_tmp': menu.id,
+            'text': menu.texto_opciones,
+            'wrong_answer': menu.texto_opcion_incorrecta,
+            'success': menu.texto_derivacion,
+            'timeout': menu.timeout,
+            'options': []
+        }
+        for opcion in value.destinos_siguientes.all():
+            menu_representation['options'].append({
+                'id': opcion.id,
+                'type_option': opcion.destino_siguiente.tipo,
+                'destination': opcion.destino_siguiente.content_object.id,
+                'value': opcion.valor,
+                'description': opcion.opcion_menu_whatsapp.descripcion,
+                'destination_name': opcion.destino_siguiente.content_object.nombre
+            })
+            if opcion.destino_siguiente.tipo == 10:
+                data_list.insert(0, self._menu_representation(opcion.destino_siguiente, []))
+        return menu_representation
+
     def to_representation(self, value):
         representation = {
             'type': value.tipo,
@@ -266,25 +355,12 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
         if value.tipo == DestinoEntrante.CAMPANA:
             representation['data'] = value.content_object.id
         elif value.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            menu = value.content_object
-            menu_representation = {
-                'text': menu.texto_opciones,
-                'wrong_answer': menu.texto_opcion_incorrecta,
-                'success': menu.texto_derivacion,
-                'timeout': menu.timeout,
-                'options': []
-            }
-            for opcion in value.destinos_siguientes.all():
-                menu_representation['options'].append({
-                    'id': opcion.id,
-                    'destination': opcion.destino_siguiente.content_object.id,
-                    'value': opcion.valor,
-                    'description': opcion.opcion_menu_whatsapp.descripcion,
-                })
-            representation['data'] = menu_representation
+            data_list = []
+            menu_representation = self._menu_representation(value, data_list)
+            data_list.insert(0, menu_representation)
+            representation['data'] = data_list
         else:
             raise Exception('Tipo de destino incorrecto')
-
         return representation
 
 
@@ -295,7 +371,7 @@ class LineaRetrieveSerializer(serializers.Serializer):
     provider = serializers.IntegerField(source='proveedor.id')
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
-    destination_type = serializers.IntegerField(source='destino.tipo', required=False)
+    # destination_type = serializers.IntegerField(source='destino.tipo', required=False)
     destination = DestinoEntranteRelatedField(source='destino', read_only=True)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)

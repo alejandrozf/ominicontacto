@@ -8,9 +8,7 @@ export default {
         numero: '',
         configuracion: {
             app_name: '',
-            app_id: '',
-            destino: null,
-            tipo_de_destino: 0
+            app_id: ''
         },
         destination: {
             data: null,
@@ -26,11 +24,15 @@ export default {
         id: null,
         value: '',
         description: '',
-        destinationType: 0,
-        destination: null
+        type_option: 0,
+        destination: null,
+        destination_name: '',
+        menuId: null
     },
     supWhatsappLineOptions: [],
+    supWhatsappDestinationMenuOptions: [],
     supWhatsappLineIteractiveForm: {
+        id_tmp: 0,
         text: '',
         wrongAnswer: '',
         successAnswer: '',

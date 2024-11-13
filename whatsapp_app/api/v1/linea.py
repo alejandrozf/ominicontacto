@@ -23,6 +23,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from configuracion_telefonia_app.models import DestinoEntrante
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.services.redis.linea import StreamDeLineas
 from whatsapp_app.models import Linea
@@ -87,6 +88,7 @@ class ViewSet(viewsets.ViewSet):
                 serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
                 if serializer_destino.is_valid():
                     serializer_destino.save()
+                    print('serializer_destino.destino', serializer_destino.destino)
                     destino = serializer_destino.destino
                     line = serializer.save(
                         destino=destino,
@@ -94,7 +96,7 @@ class ViewSet(viewsets.ViewSet):
                         updated_by=request.user,
                     )
                     serialized_data = serializer.data
-                    serialized_data['destination'] = serializer_destino.serialize_data()
+                    serialized_data['destination'] = serializer_destino.data
                     StreamDeLineas().notificar_nueva_linea(line)
                     return response.Response(
                         data=get_response_data(
@@ -112,7 +114,8 @@ class ViewSet(viewsets.ViewSet):
                     data=get_response_data(message=_('Error en los datos'),
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
+        except Exception as e:
+            print(">>>>>>>>>", e)
             return response.Response(
                 data=get_response_data(message=_('Error al crear la línea')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -151,7 +154,8 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Línea no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception:
+        except Exception as e:
+            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener la línea')),
@@ -170,27 +174,28 @@ class ViewSet(viewsets.ViewSet):
             destino_data = request_data.pop('destination')
             serializer = UpdateSerializer(instance, data=request_data, partial=True)
             if serializer.is_valid():
-                serializer_destino = DestinoDeLineaCreateSerializer(instance.destino,
-                                                                    data=destino_data)
+                serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
                 if serializer_destino.is_valid():
                     serializer_destino.save()
-                    destino_previo = instance.destino
+                    if serializer_destino.destino.tipo ==\
+                            DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                        destino_menu_old = instance.destino  # borrar destino anterior
+                        destino_menu_old.delete()
                     destino = serializer_destino.destino
-                    serializer.save(
+                    line = serializer.save(
                         destino=destino,
                         created_by=request.user,
                         updated_by=request.user,
                     )
-                    serializer_destino.borrar_destino_sobrante(destino_previo, destino)
                     serialized_data = serializer.data
-                    serialized_data['destination'] = serializer_destino.serialize_data()
-                    StreamDeLineas().notificar_nueva_linea(instance)
+                    serialized_data['destination'] = serializer_destino.data
+                    StreamDeLineas().notificar_nueva_linea(line)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
-                            message=_('Se actualizó la línea de forma exitosa'),
+                            message=_('Se creo la línea de forma exitosa'),
                             data=serialized_data),
-                        status=status.HTTP_200_OK)
+                        status=status.HTTP_201_CREATED)
                 else:
                     return response.Response(
                         data=get_response_data(message=_('Error en los datos'),
@@ -198,17 +203,13 @@ class ViewSet(viewsets.ViewSet):
                         status=status.HTTP_400_BAD_REQUEST)
             else:
                 return response.Response(
-                    data=get_response_data(
-                        message=_('Error en los datos'), errors=serializer.errors),
+                    data=get_response_data(message=_('Error en los datos'),
+                                           errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
-        except Linea.DoesNotExist:
+        except Exception as e:
+            print('e', e)
             return response.Response(
-                data=get_response_data(message=_('Línea no encontrada')),
-                status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return response.Response(
-                data=get_response_data(
-                    message=_('Error al actualizar la línea')),
+                data=get_response_data(message=_('Error al crear la línea')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def destroy(self, request, pk):

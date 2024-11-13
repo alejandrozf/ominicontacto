@@ -42,7 +42,8 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = DestinoEntrante.objects.filter(tipo=DestinoEntrante.CAMPANA)
+            tipo_destino = request.GET.get('tipo', 1)
+            queryset = DestinoEntrante.objects.filter(tipo=tipo_destino)
             serializer = ListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(

@@ -89,6 +89,7 @@ export default {
         phone: 'Number DID',
         caller_id: 'Caller Id',
         idiom: 'Language',
+        is_direct: 'Direct',
         destiny: 'Destiny',
         destiny_type: 'Destiny type'
     },

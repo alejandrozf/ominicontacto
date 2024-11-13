@@ -12,6 +12,7 @@ export const IVR = 3;
 export const HANGUP = 5;
 export const ID_CLIENT = 9;
 export const CUSTOM_DST = 7;
+export const AGENT = 11;
 // Audio Type
 export const INTERNAL_AUDIO = 1;
 export const EXTERNAL_AUDIO = 2;

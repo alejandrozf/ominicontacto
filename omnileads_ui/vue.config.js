@@ -8,7 +8,18 @@ function getCsfrToken (cookie) {
     }
 }
 
+const historyApiFallback = {
+    rewrites: [],
+    verbose: true,
+}
+
+const publicPath = process.env.VUE_APP_PUBLIC_PATH || '/static/omnileads-frontend/';
+
 function getPageConfig (pageName) {
+    historyApiFallback.rewrites.push({
+        from: new RegExp(`${publicPath}${pageName}/.+`),
+        to: `${publicPath}${pageName}.html`
+    })
     return {
         entry: 'src/main.js',
         template: `public/${pageName}.html`,
@@ -22,7 +33,7 @@ module.exports = {
     chainWebpack: (config) => {
         config.resolve.alias.set('@assets', path.resolve(__dirname, 'src/assets'));
     },
-    publicPath: '/static/omnileads-frontend/',
+    publicPath,
     lintOnSave: process.env.NODE_ENV !== 'production',
     pages: {
         // Supervisor Pages
@@ -61,6 +72,7 @@ module.exports = {
         agent_whatsapp_contact_form: getPageConfig('agent_whatsapp_contact_form')
     },
     devServer: {
+        historyApiFallback,
         contentBase: './src/assets',
         proxy: {
             '/api': {
@@ -80,6 +92,9 @@ module.exports = {
                 changeOrigin: true
             }
         },
+        public: 'localhost',
+        sockPath: `${publicPath}sockjs-node`,
+        disableHostCheck: true,
         overlay: {
             warnings: true,
             errors: true

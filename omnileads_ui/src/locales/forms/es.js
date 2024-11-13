@@ -91,6 +91,7 @@ export default {
             es: 'Español'
         },
         destination_types: {
+            agent: 'Agente',
             campaign: 'Campaña entrante',
             validation_date: 'Validación de fecha/hora',
             ivr: 'IVR',
@@ -258,7 +259,8 @@ export default {
                 field_is_required: '{field} es requerido'
             },
             destination_types: {
-                campaign: 'Campaña'
+                campaign: 'Campaña',
+                menu: 'Menu Interactivo'
             },
             options: {
                 success_create: 'Opcion de destino creada exitosamente',

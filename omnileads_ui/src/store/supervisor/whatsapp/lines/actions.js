@@ -49,13 +49,14 @@ export default {
     initWhatsappLineOptionForm ({ commit }, option = null) {
         commit('initWhatsappLineOptionForm', option);
     },
-    createWhatsappLineOption ({ commit }, { data }) {
-        commit('createWhatsappLineOption', data);
+    createWhatsappLineOption ({ commit }, { data, menuId }) {
+        commit('createWhatsappLineOption', {data, menuId});
     },
-    updateWhatsappLineOption ({ commit }, { id, data }) {
-        commit('updateWhatsappLineOption', { id, data });
+    updateWhatsappLineOption ({ commit }, { id, data, menuId }) {
+        commit('updateWhatsappLineOption', { id, data, menuId});
     },
-    deleteWhatsappLineOption ({ commit }, { id }) {
-        commit('deleteWhatsappLineOption', id);
+    deleteWhatsappLineOption ({ commit }, { id, menuId }) {
+        console.log(2, { id, menuId } )
+        commit('deleteWhatsappLineOption', { id, menuId });
     }
 };

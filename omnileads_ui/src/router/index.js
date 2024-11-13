@@ -8,7 +8,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory('/static/omnileads-frontend/'),
+    history: createWebHistory(process.env.VUE_APP_PUBLIC_PATH || '/static/omnileads-frontend/'),
     routes
 });
 
