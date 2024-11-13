@@ -346,6 +346,7 @@ class DestinoEntrante(models.Model):
     VOICEMAIL = 8
     IDENTIFICADOR_CLIENTE = 9
     MENU_INTERACTIVO_WHATSAPP = 10
+    AGENTE = 11
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
@@ -355,6 +356,7 @@ class DestinoEntrante(models.Model):
         (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
         (CUSTOM_DST, _('Destino personalizado')),
         (MENU_INTERACTIVO_WHATSAPP, _('Menú Interactivo de Whatsapp')),
+        (AGENTE, _('Agente')),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
