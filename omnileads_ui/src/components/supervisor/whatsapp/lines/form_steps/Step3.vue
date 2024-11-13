@@ -386,7 +386,6 @@
     :showModal="showModalNewMessage"
     @handleModalEvent="handleModalNewMessage"
     />
-    <pre>{{this.supWhatsappLine.destination.data}}</pre>
   </div>
 </template>
 
@@ -669,8 +668,6 @@ export default {
                 this.form.destination_type ===
         this.destinationType.INTERACTIVE
             ) {
-                console.log('>>>', this.supWhatsappLine.destination.data)
-                console.log('>>>', this.supWhatsappLine.destination.id_tmp)
                 return {
                     type: DESTINATION_TYPES_BACK.INTERACTIVE,
                     data: this.supWhatsappLine.destination.data,
@@ -680,12 +677,6 @@ export default {
         },
         async save (isFormValid) {
             this.submitted = true;
-            // this.form.destination_type = this.getDestinationData();
-            // this.validateInteractiveForm();
-            // if (!isFormValid || this.invalidInteractiveForm) {
-            //     console.log('no valid')
-            //     return null;
-            // }
             this.validateFormData();
             if (this.formErrors.length > 0) {
                 var errors = '';
