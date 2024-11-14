@@ -8,6 +8,7 @@ export default {
             state.supWhatsappLine = {
                 id: line.id,
                 nombre: line.name,
+                status: line.status,
                 proveedor: line.provider,
                 numero: line.number,
                 configuracion: {

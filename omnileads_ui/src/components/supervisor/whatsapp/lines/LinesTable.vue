@@ -67,6 +67,15 @@
           {{ getProvider(slotProps.data.proveedor) }}
         </template>
       </Column>
+      <Column
+        field="status"
+        :header="$t('models.whatsapp.line.status')"
+        :sortable="true"
+      >
+        <template #body="slotProps">
+          <Tag :value="slotProps.data.status" :severity="getSeverity(slotProps.data)" />
+        </template>
+      </Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">
         <template #body="slotProps">
           <Button
@@ -152,6 +161,14 @@ export default {
                 params: { id: line.id }
             });
         },
+        getSeverity(line) {
+            switch (line.status) {
+                case 'LIVE':
+                    return 'success';
+                default:
+                    return null;
+            }
+        },
         async remove (id) {
             this.$swal({
                 title: this.$t('globals.sure_notification'),
@@ -211,6 +228,7 @@ export default {
                         id: line.id,
                         nombre: line.name,
                         numero: line.number,
+                        status: line.status,
                         proveedor: line.provider,
                         configuracion: line.configuration,
                         horario: line.schedule,

@@ -5,6 +5,7 @@ export default {
         id: null,
         nombre: '',
         proveedor: null,
+        status: '',
         numero: '',
         configuracion: {
             app_name: '',

@@ -24,6 +24,7 @@ from ominicontacto_app.models import (
     AgenteProfile, Campana, Contacto, HistoricalCalificacionCliente)
 
 from django.utils import timezone
+from .services.gupshup import linea_gupshup
 
 
 def upload_to(instance, filename):
@@ -76,6 +77,10 @@ class Linea(AuditableModelMixin):
     mensaje_fueradehora = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
         on_delete=models.CASCADE, related_name="linea_mensaje_fueradehora")
+
+    @property
+    def status(self):
+        return linea_gupshup.get_line_status(self)
 
     def __str__(self) -> str:
         return f"Linea: {self.nombre}"
