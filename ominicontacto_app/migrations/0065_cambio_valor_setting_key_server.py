@@ -6,10 +6,12 @@ from constance import config
 
 
 def eliminar_puerto_setting_key_server(apps, schema_editor):
+    return
     config.KEYS_SERVER_HOST = 'https://keys-server.freetech.com.ar'
 
 
 def restaurar_puerto_setting_key_server(apps, schema_editor):
+    return
     config.KEYS_SERVER_HOST = 'https://keys-server.freetech.com.ar:20852'
 
 
