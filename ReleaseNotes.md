@@ -1,19 +1,17 @@
 # Release Notes
-2024-11-13
+2024-11-21
 
 ## Added
 
-- oml-2813 Evil reload on rss parameter for uwsgi config.
-- oml-2757 Multiple level interactive menu for Whatsapp Line destination.
-- oml-2785 Inbound Routes can have Agents as a destination.
+- oml-2757 New fields for Whatsapp interactive menu.
 
 ## Changed
 
-- oml-2720 Prevent button click while fetch is in progress.
+- Agent event stream data expires after 2 days.
 
 ## Fixed
 
-No fixes in this release
+- Strange django migration dependency problems
 
 ## Removed
 
