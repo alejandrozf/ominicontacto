@@ -54,14 +54,18 @@ def autoresponse_welcome(line, conversation, timestamp):
 def autoreponse_destino_interactivo(line, destino, conversation):
     try:
         destination_entrante = destino
-        texto_opciones = destination_entrante.content_object.texto_opciones
+        menu_header = destination_entrante.content_object.menu_header
+        menu_body = destination_entrante.content_object.menu_body
+        menu_footer = destination_entrante.content_object.menu_footer
+        menu_button = destination_entrante.content_object.menu_button
         message = {
             'type': 'list',
-            'title': _(texto_opciones),
-            'body': _('Click Menu Interactivo'),
-            'globalButtons': [{'type': 'text', 'title': _('Menu Interactivo')}],
+            'title': _(menu_header),
+            'body': _(menu_body),
+            'footer': _(menu_footer),
+            'globalButtons': [{'type': 'text', 'title': _(menu_button)}],
             'items': [{
-                'title': _('Opciones'), 'subtitle': _('Seleccione una opción'),
+                'title': _(menu_button), 'subtitle': _(menu_button),
                 'options': [
                     {'type': 'text',
                         'title': opt.opcion_menu_whatsapp.opcion.valor,
