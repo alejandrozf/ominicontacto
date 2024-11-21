@@ -261,10 +261,13 @@ class ConversacionWhatsapp(models.Model):
 
 
 class MenuInteractivoWhatsapp(models.Model):
-    texto_opciones = models.CharField(max_length=100)
-    texto_opcion_incorrecta = models.CharField(max_length=100)
+    menu_header = models.CharField(max_length=60)
+    menu_body = models.CharField(max_length=1024)
+    menu_footer = models.CharField(max_length=60, null=True, blank=True)
+    menu_button = models.CharField(max_length=20)
+    texto_opcion_incorrecta = models.CharField(max_length=100, null=True, blank=True)
     texto_derivacion = models.CharField(max_length=100)
-    timeout = models.IntegerField()
+    timeout = models.IntegerField(null=True)
 
     @property
     def nombre(self):

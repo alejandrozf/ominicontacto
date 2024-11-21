@@ -32,8 +32,6 @@ class ListSerializer(serializers.Serializer):
     number = serializers.CharField(source='numero')
     provider = serializers.IntegerField(source='proveedor.id')
     configuration = serializers.JSONField(source='configuracion')
-    # destination = serializers.IntegerField(source='destino', required=False)
-    # destination_type = serializers.IntegerField(source='destino.tipo', required=False)
     schedule = serializers.IntegerField(source='horario.id', required=False)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
@@ -162,10 +160,13 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         list_menu_data = validated_data['data']
         destino_whith_options = []
         for menu_data in list_menu_data:
-            menu = MenuInteractivoWhatsapp(texto_opciones=menu_data['text'],
+            menu = MenuInteractivoWhatsapp(menu_header=menu_data['menu_header'],
+                                           menu_body=menu_data['menu_body'],
+                                           menu_footer= menu_data['menu_footer'] if 'menu_footer' in menu_data else '',
+                                           menu_button=menu_data['menu_button'],
                                            texto_opcion_incorrecta=menu_data['wrong_answer'],
                                            texto_derivacion=menu_data['success'],
-                                           timeout=menu_data['timeout'])
+                                           timeout=0)
             menu.save()
             destino = DestinoEntrante.crear_nodo_ruta_entrante(menu)
             opcions = {
@@ -220,7 +221,10 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         destino_whith_options = []
         for menu_data in list_menu_data:
             menu = MenuInteractivoWhatsapp.objects.get(pk=menu_data['id'])
-            menu.texto_opciones = menu_data['text']
+            menu.menu_header = menu_data['menu_header']
+            menu.menu_body = menu_data['temenu_bodyxt']
+            menu.menu_body = menu_data['menu_body']
+            menu.menu_button = menu_data['menu_button']
             menu.texto_opcion_incorrecta = menu_data['wrong_answer']
             menu.texto_derivacion = menu_data['success']
             menu.timeout = menu_data['timeout']
@@ -304,10 +308,13 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
 
 class MenuInteractivoSerializer(serializers.Serializer):
     id_tmp = serializers.IntegerField(required=False)
-    text = serializers.CharField()
+    menu_header = serializers.CharField(max_length=60)
+    menu_body =  serializers.CharField(max_length=1024)
+    menu_footer =  serializers.CharField(required=False, allow_blank=True, max_length=60)
+    menu_button = serializers.CharField(max_length=20)
     wrong_answer = serializers.CharField()
     success = serializers.CharField()
-    timeout = serializers.IntegerField(min_value=0)
+    timeout = serializers.IntegerField(min_value=0, required=False)
     options = OpcionMenuSerializer(many=True)
 
     def validate_options(self, options):
@@ -328,10 +335,13 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
         menu_representation = {
             'id': menu.id,
             'id_tmp': menu.id,
-            'text': menu.texto_opciones,
+            'menu_header': menu.menu_header,
+            'menu_body': menu.menu_body,
+            'menu_footer': menu.menu_footer if menu.menu_footer else '',
+            'menu_button': menu.menu_button,
             'wrong_answer': menu.texto_opcion_incorrecta,
             'success': menu.texto_derivacion,
-            'timeout': menu.timeout,
+            'timeout': 0,
             'options': []
         }
         for opcion in value.destinos_siguientes.all():
@@ -344,7 +354,7 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
                 'destination_name': opcion.destino_siguiente.content_object.nombre
             })
             if opcion.destino_siguiente.tipo == 10:
-                data_list.insert(0, self._menu_representation(opcion.destino_siguiente, []))
+                data_list.insert(0, self._menu_representation(opcion.destino_siguiente, data_list))
         return menu_representation
 
     def to_representation(self, value):
@@ -371,7 +381,6 @@ class LineaRetrieveSerializer(serializers.Serializer):
     provider = serializers.IntegerField(source='proveedor.id')
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
-    # destination_type = serializers.IntegerField(source='destino.tipo', required=False)
     destination = DestinoEntranteRelatedField(source='destino', read_only=True)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)

@@ -64,8 +64,7 @@
               "Value",
               $t("models.whatsapp.line.options.description")
             )
-          }}</small
-        >
+          }}</small>
       </div>
     </div>
     <div class="grid formgrid mt-4">
@@ -179,7 +178,7 @@
             @change="findDuplicated()"
             :options="destinationmenuoptions"
             placeholder="-----"
-            optionLabel="text"
+            optionLabel="menu_header"
             optionValue="id_tmp"
             v-bind:filterPlaceholder="
               $t('globals.find_by', { field: $tc('globals.name') }, 1)
@@ -360,19 +359,20 @@ export default {
           this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
         },
         save (isFormValid) {
-            console.log("***", this.form)
             this.submitted = true;
             if (!isFormValid) {
                 return null;
             }
             if (this.formToCreate) {
+                console.log('save', 'createWhatsappLineOption')
                 this.createWhatsappLineOption({
                     data: this.form,
                     menuId: this.menuId,
                 });
             } else {
+                const id = this.form.id ? this.form.id : this.form.index
                 this.updateWhatsappLineOption({
-                    id: this.form.id,
+                    id: id,
                     data: this.form,
                     menuId: this.menuId
                 });

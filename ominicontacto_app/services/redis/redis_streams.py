@@ -37,3 +37,8 @@ class RedisStreams(object):
 
     def flush(self, stream_name):
         self.connection.xtrim(name=stream_name, maxlen=0, approximate=False)
+
+    def expire(self, stream_name, seconds=None):
+        if seconds is None:
+            seconds = 60 * 60 * 24 * 2
+        self.connection.expire(stream_name, seconds)

@@ -22,6 +22,7 @@ export default {
     isFormToCreate: false,
     supWhatsappLineOptionForm: {
         id: null,
+        index: 0,
         value: '',
         description: '',
         type_option: 0,

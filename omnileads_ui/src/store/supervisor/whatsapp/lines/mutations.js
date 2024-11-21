@@ -55,9 +55,10 @@ export default {
         state.supWhatsappLineCampaigns = campaigns;
     },
     initWhatsappLineOptionForm (state, option = null) {
+        console.log("option>>>>>", option)
         state.supWhatsappLineOptionForm = {
             id: option ? option.id : null,
-            index: option ? option.index : null,
+            index: option ? option.index : 0,
             value: option ? option.value : '',
             description: option ? option.description : '',
             type_option: option ? option.type_option : 0,
@@ -67,18 +68,20 @@ export default {
     },
     createWhatsappLineOption (state, { data, menuId }) {
         const ultimoElemento = state.supWhatsappLineOptions[state.supWhatsappLineOptions.length - 1];
+        const index = ultimoElemento ? ultimoElemento.index + 1 : 0;
         state.supWhatsappLineOptions.push({
-            index: ultimoElemento ? ultimoElemento.index + 1 : 0,
-            id: data.id,
+            index: index,
+            id: index,
             value: data.value,
             description: data.description,
             type_option: data.type_option,
             destination: data.destination,
-            destination_name: "----",
             menuId: menuId,
         });
+        console.log('createWhatsappLineOption >>>', state.supWhatsappLineOptions)
     },
     updateWhatsappLineOption (state, { id, data, menuId }) {
+        console.log('index >>>', id)
         const destinationOptions = state.supWhatsappLine.destination.data.filter(item => item.id_tmp === menuId);
         const element = destinationOptions[0].options.find(item => item.id === id);
         if (element) {

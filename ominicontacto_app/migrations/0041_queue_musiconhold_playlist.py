@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('ominicontacto_app', '0040_elimina_modulo'),
+        ('configuracion_telefonia_app', '0011_playlist_musica_de_espera'),
     ]
 
     operations = [
