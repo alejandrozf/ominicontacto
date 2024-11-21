@@ -197,7 +197,10 @@ export default {
                 destination: 'Destino'
             },
             interactive_form: {
-                text: 'Texto',
+                menu_header: 'Encabezado del Menu',
+                menu_body: 'Cuerpo del Menu',
+                menu_footer: 'Pie del menú',
+                menu_button: 'Texto del boton del Menu',
                 wrong_answer: 'Respuesta incorrecta',
                 success_answer: 'Respuesta de exito',
                 timeout: 'Tiempo de espera',

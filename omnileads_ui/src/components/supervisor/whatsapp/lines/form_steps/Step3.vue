@@ -354,7 +354,7 @@
               />
               </div>
             </div>
-              <FormMenuInteractivo :data="menu" v-for="menu in supWhatsappLine.destination.data" :key="menu.id"></FormMenuInteractivo>
+              <FormMenuInteractivo :data="menu" :submitted="submitted" v-for="menu in supWhatsappLine.destination.data" :key="menu.id"></FormMenuInteractivo>
             </div>
           </div>
         </Fieldset>
@@ -491,7 +491,7 @@ export default {
             showModalNewMessage: false,
             cratedNewmsgBienvenida: false,
             cratedNewmsgFueraHora: false,
-            cratedNewmsgDespedida: false
+            cratedNewmsgDespedida: false,
         };
     },
     mounted() {
@@ -527,33 +527,8 @@ export default {
             this.form.destination_type = this.supWhatsappLine.destination.type;
             this.form.destination = this.supWhatsappLine.destination.data;
         },
-        // initInteractiveForm () {
-        //     this.interactiveForm.text = this.supWhatsappLine.destination.data.text;
-        //     this.interactiveForm.wrongAnswer =
-        // this.supWhatsappLine.destination.data.wrong_answer;
-        //     this.interactiveForm.successAnswer =
-        // this.supWhatsappLine.destination.data.success;
-        //     this.interactiveForm.timeout =
-        // this.supWhatsappLine.destination.data.timeout;
-        // },
         addInteractiveMenuItem() {
           this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date()})
-        },
-        validateInteractiveForm () {
-            this.invalidInteractiveForm = false;
-            if (
-                this.form.destination_type ===
-        this.destinationType.INTERACTIVE
-            ) {
-                if (
-                    this.isEmptyField(this.interactiveForm.text) ||
-          this.isEmptyField(this.interactiveForm.wrongAnswer) ||
-          this.isEmptyField(this.interactiveForm.successAnswer) ||
-          this.isEmptyField(this.interactiveForm.timeout)
-                ) {
-                    this.invalidInteractiveForm = true;
-                }
-            }
         },
         handleModal ({ showModal = false, formToCreate = false, option = null }) {
             this.showModal = showModal;
@@ -636,15 +611,6 @@ export default {
                     })
                 );
             }
-        //     this.isEmptyOptions =
-        // this.form.destination_type ===
-        //   this.destinationType.INTERACTIVE &&
-        // this.supWhatsappLineOptions.length === 0;
-        //     if (this.isEmptyOptions) {
-        //         this.formErrors.push(
-        //             this.$t('forms.whatsapp.line.options.empty_options')
-        //         );
-        //     }
         },
         interactiveOption () {
          this.supWhatsappLine.destination.type = this.destinationType.INTERACTIVE

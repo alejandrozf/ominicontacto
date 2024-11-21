@@ -256,7 +256,8 @@ export default {
         },
         line: {
             validations: {
-                field_is_required: '{field} is required'
+                field_is_required: '{field} is required',
+                max_len: 'Ensure this field has no more than {max_len} characters.'
             },
             destination_types: {
                 campaign: 'Campaign',

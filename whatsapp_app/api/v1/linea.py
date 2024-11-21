@@ -177,10 +177,10 @@ class ViewSet(viewsets.ViewSet):
                 serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
                 if serializer_destino.is_valid():
                     serializer_destino.save()
-                    if serializer_destino.destino.tipo ==\
+                    if instance .destino.tipo ==\
                             DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
                         destino_menu_old = instance.destino  # borrar destino anterior
-                        destino_menu_old.delete()
+                        # destino_menu_old.delete()
                     destino = serializer_destino.destino
                     line = serializer.save(
                         destino=destino,
