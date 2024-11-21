@@ -212,3 +212,4 @@ class RedisStreamNotifier:
             'actives': actives
         }
         self.redis_stream.write_stream(stream_name, json.dumps(content), max_stream_length=100000)
+        self.redis_stream.expire(stream_name)
