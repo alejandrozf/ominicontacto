@@ -183,9 +183,10 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
 
         # agrego el encabezado para los campos de los formularios
         if self.campana.tiene_formulario:
-            for opcion in self.campana.opciones_calificacion.filter(
-                    tipo=OpcionCalificacion.GESTION).select_related(
-                        'formulario').prefetch_related('formulario__campos'):
+            opciones = self.campana.opciones_calificacion.filter(
+                tipo=OpcionCalificacion.GESTION).order_by('id').select_related(
+                'formulario').prefetch_related('formulario__campos')
+            for opcion in opciones:
                 if opcion.nombre not in self.posiciones_opciones:
                     self.posiciones_opciones[opcion.id] = len(encabezado)
                     campos = opcion.formulario.campos.all()
