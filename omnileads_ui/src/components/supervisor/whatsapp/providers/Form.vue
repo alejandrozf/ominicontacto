@@ -127,6 +127,84 @@
         >
       </div>
     </div>
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
+        <label
+          id="whatsapp_provider_email_partner"
+          :class="{
+            'p-error': v$.supWhatsappProviderForm.email_partner.$invalid && submitted,
+          }"
+          >{{ $t("models.whatsapp.provider.configuracion.email_partner") }}</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-at"></i>
+          </span>
+          <InputText
+            id="whatsapp_provider_email_partner"
+            :class="{
+              'p-invalid':
+                v$.supWhatsappProviderForm.email_partner.$invalid && submitted,
+            }"
+            v-model="v$.supWhatsappProviderForm.email_partner.$model"
+          />
+        </div>
+        <small
+          v-if="
+            (v$.supWhatsappProviderForm.email_partner.$invalid && submitted) ||
+            v$.supWhatsappProviderForm.email_partner.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.supWhatsappProviderForm.email_partner.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.provider.email_partner")
+            )
+          }}</small
+        >
+      </div>
+    </div>
+    <div class="grid formgrid mt-4">
+      <div class="field col-12">
+        <label
+          :class="{
+            'p-error':
+              v$.supWhatsappProviderForm.password_partner.$invalid &&
+              submitted,
+          }"
+          >{{ $t("models.whatsapp.provider.configuracion.password_partner") }}</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-key"></i>
+          </span>
+          <Password
+            toggleMask
+            :feedback="false"
+            :class="{
+              'p-invalid':
+                v$.supWhatsappProviderForm.password_partner.$invalid &&
+                submitted,
+            }"
+            v-model="v$.supWhatsappProviderForm.password_partner.$model"
+          />
+        </div>
+        <small
+          v-if="
+            (v$.supWhatsappProviderForm.password_partner.$invalid &&
+              submitted) ||
+            v$.supWhatsappProviderForm.password_partner.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.supWhatsappProviderForm.password_partner.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.provider.configuracion.password_partner")
+            )
+          }}</small
+        >
+      </div>
+    </div>
     <div class="flex justify-content-end flex-wrap mt-4">
       <div class="flex align-items-center">
         <Button
@@ -159,7 +237,9 @@ export default {
             supWhatsappProviderForm: {
                 nombre: { required },
                 tipo_proveedor: { required },
-                api_key: { required }
+                api_key: { required },
+                email_partner: { },
+                password_partner: { }
             }
         };
     },
@@ -223,8 +303,12 @@ export default {
         this.supWhatsappProvider.tipo_proveedor;
             if (this.supWhatsappProvider.configuracion) {
                 this.supWhatsappProviderForm.api_key = this.supWhatsappProvider.configuracion.api_key;
+                this.supWhatsappProviderForm.email_partner = this.supWhatsappProvider.configuracion.email_partner;
+                this.supWhatsappProviderForm.password_partner = this.supWhatsappProvider.configuracion.password_partner;
             } else {
                 this.supWhatsappProviderForm.api_key = '';
+                this.supWhatsappProviderForm.email_partner = '';
+                this.supWhatsappProviderForm.password_partner = '';
             }
         },
         clearFilter () {
@@ -242,14 +326,18 @@ export default {
             }
             var response = null;
             this.supWhatsappProviderForm.configuracion = {
-                api_key: this.supWhatsappProviderForm.api_key
+                api_key: this.supWhatsappProviderForm.api_key,
+                email_partner: this.supWhatsappProviderForm.email_partner,
+                password_partner: this.supWhatsappProviderForm.password_partner
             };
 
             const form = {
                 name: this.supWhatsappProviderForm.nombre,
                 provider_type: this.supWhatsappProviderForm.tipo_proveedor,
                 configuration: {
-                    api_key: this.supWhatsappProviderForm.api_key
+                    api_key: this.supWhatsappProviderForm.api_key,
+                    email_partner: this.supWhatsappProviderForm.email_partner,
+                    password_partner: this.supWhatsappProviderForm.password_partner
                 }
             };
             if (this.formToCreate) {

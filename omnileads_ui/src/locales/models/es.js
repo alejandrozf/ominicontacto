@@ -172,8 +172,11 @@ export default {
         provider: {
             nombre: 'Nombre',
             tipo_proveedor: 'Proveedor',
+            status: 'Estado',
             configuracion: {
-                api_key: 'API Key'
+                api_key: 'API Key',
+                email_partner: 'Email Partner',
+                password_partner: 'Password Partner'
             }
         },
         line: {
