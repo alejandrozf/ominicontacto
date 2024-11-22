@@ -31,6 +31,7 @@ class ListSerializer(serializers.Serializer):
     name = serializers.CharField(source='nombre')
     number = serializers.CharField(source='numero')
     provider = serializers.IntegerField(source='proveedor.id')
+    status = serializers.CharField()
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)

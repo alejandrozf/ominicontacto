@@ -173,12 +173,16 @@ export default {
             nombre: 'Name',
             tipo_proveedor: 'Provider',
             configuracion: {
-                api_key: 'API Key'
+                api_key: 'API Key',
+                email_partner: 'Email Partner',
+                password_partner: 'Password Partner'
+
             }
         },
         line: {
             nombre: 'Name',
             proveedor: 'Provider',
+            status: 'Status',
             numero: 'Number',
             configuracion: {
                 app_name: 'App name',
