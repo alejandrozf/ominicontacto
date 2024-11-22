@@ -279,6 +279,13 @@ class PhoneJSController {
             var fromUser = self.phone.session_data.from;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:fromUser}, true);
             self.view.setCallStatus(message, 'orange');
+            if (self.phone.session_data.is_transfered &&
+                self.phone.session_data.is_consultative_transfer) {
+                var agtmessage = interpolate(
+                    gettext('Transferencia de Agente %(from_agent_name)s'),
+                    {from_agent_name:self.phone.session_data.from_agent_name}, true);
+                self.view.setConferenceAgent(agtmessage, 'orange');
+            }
             self.manageContact(self.phone.session_data);
         };
         
@@ -989,6 +996,12 @@ class PhoneJSController {
             var fromUser = session_data.from;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:fromUser}, true);
             this.view.setCallStatus(message, 'orange');
+            if (self.phone.session_data.is_transfered &&
+                        self.phone.session_data.is_consultative_transfer) {
+                var agtmessage = interpolate(gettext('Agente %(from_agent_name)s'),
+                    message = {from_agent_name:self.phone.session_data.from_agent_name}, true);
+                this.view.setConferenceAgent(message, 'orange');
+            }
             this.manageContact(session_data);
             if (session_data.is_click2call) {
                 // Seteo datos para redial

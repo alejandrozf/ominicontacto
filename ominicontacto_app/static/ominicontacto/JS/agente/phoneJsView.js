@@ -71,6 +71,7 @@ class PhoneJSView {
         this.sipStatus = $('#SipStatus');
         this.callStatus = $('#CallStatus');
         this.user_status = $('#UserStatus');
+        this.conferAgent = $('#ConferAgent');
 
         /* Other buttons & Modal menus */
         this.selectCampaignButton = $('#SelectCamp');
@@ -249,6 +250,16 @@ class PhoneJSView {
         callSipStatus.id = 'dial_status';
         callSipStatus.append(textCallSipStatus);
         this.callStatus.append(callSipStatus);
+    }
+
+    setConferenceAgent(text, color) {
+        this.conferAgent.children().remove();
+        var conferAgentEM = document.createElement('em');
+        var textConferAgent = document.createTextNode(text);
+        conferAgentEM.style.color = color;
+        conferAgentEM.id = 'confer_agent';
+        conferAgentEM.append(textConferAgent);
+        this.conferAgent.append(conferAgentEM);
     }
 
     cargarAgentes(agentes) {
