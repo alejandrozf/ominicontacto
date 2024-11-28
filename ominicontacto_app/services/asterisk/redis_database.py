@@ -20,8 +20,10 @@ from __future__ import unicode_literals
 
 import json
 import sys
+from collections import defaultdict
 
 from django.conf import settings
+from django.db import models
 from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.redis.connection import create_redis_connection
@@ -772,6 +774,70 @@ class CampanasDeAgenteFamily(object):
         self.redis_connection.srem(key, campana_id)
 
 
+class CampaignAgentsFamily(object):
+    """ Mantiene información de que agentes están asociados a cada campaña """
+
+    KEY_PREFIX = "OML:CAMPAIGN-AGENTS:{0}" 
+
+    def __init__(self, redis_connection=None) -> None:
+        self.redis_connection = redis_connection
+
+    def _get_redis_connection(self):
+        if not self.redis_connection:
+            self.redis_connection = create_redis_connection()
+
+    def _create_families(self):
+        self._get_redis_connection()
+        queryset = QueueMember.objects.annotate(
+            campana_id=models.Func(
+                models.F("id_campana"),
+                models.Value("_"),
+                models.Value(1),
+                function="split_part",
+                output_field=models.IntegerField(),
+            )
+        ).values_list("campana_id", "member_id")
+        data = defaultdict(set)
+        for campana_id, agente_id in queryset:
+            data[self.KEY_PREFIX.format(campana_id)].add(agente_id)
+        for campana_id_key, agente_ids in data.items():
+            self.redis_connection.sadd(campana_id_key, *agente_ids)
+
+    def _delete_families(self):
+        self._get_redis_connection()
+        pattern = self.KEY_PREFIX.format("*")
+        keys = self.redis_connection.keys(pattern)
+        if keys:
+            self.redis_connection.delete(*keys)
+
+    def regenerar_families(self):
+        self._delete_families()
+        self._create_families()
+
+    def eliminar_datos_de_agente(self, agent_id):
+        self._get_redis_connection()
+        pattern = self.KEY_PREFIX.format("*")
+        keys = self.redis_connection.keys(pattern)
+        for key in keys:
+            self.redis_connection.srem(key, agent_id)
+    
+    def borrar_agente_de_campana(self, campana_id, agente_id):
+        self._get_redis_connection()
+        key = self.KEY_PREFIX.format(campana_id)
+        self.redis_connection.srem(key, agente_id)
+    
+    def registrar_agentes_en_campana(self, campana_id, agente_ids):
+        self._get_redis_connection()
+        key = self.KEY_PREFIX.format(campana_id)
+        self.redis_connection.sadd(key, *agente_ids)
+
+    def registrar_campanas_a_agente(self, campana_ids, agente_id):
+        self._get_redis_connection()
+        for campana_id in campana_ids:
+            key = self.KEY_PREFIX.format(campana_id)
+            self.redis_connection.sadd(key, agente_id)
+
+
 class RegenerarAsteriskFamilysOML(object):
     """
     Regenera las Families en Asterisk para los objetos que no tienen un Sincronizador como los de
@@ -786,6 +852,7 @@ class RegenerarAsteriskFamilysOML(object):
         self.blacklist_family = BlacklistFamily(redis_connection=redis_connection)
         # TODO: Separar datos de Redis pertinentes a Asterisk de los que no.
         self.campanas_de_agente_family = CampanasDeAgenteFamily(redis_connection=redis_connection)
+        self.agentes_de_campana_family = CampaignAgentsFamily(redis_connection=redis_connection)
         self.call_data_generator = CallDataGenerator(redis_connection=redis_connection)
 
     def regenerar_asterisk(self):
@@ -794,4 +861,5 @@ class RegenerarAsteriskFamilysOML(object):
         self.pausa_family.regenerar_families()
         self.blacklist_family.regenerar_families()
         self.campanas_de_agente_family.regenerar_datos_de_agentes()
+        self.agentes_de_campana_family.regenerar_families()
         self.call_data_generator.regenerar()
