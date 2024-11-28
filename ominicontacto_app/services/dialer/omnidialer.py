@@ -32,6 +32,7 @@ START_URL = 'start-campaign/{0}'
 PAUSE_URL = 'pause-campaign/{0}'
 RESUME_URL = 'resume-campaign/{0}'
 STOP_URL = 'stop-campaign/{0}'
+CHANGE_DATABASE_URL = 'change-database/{0}'
 NOTIFY_DISPOSITION_URL = 'add-incidence-rule-disposition/{0}'
 CREATE_INCIDENCE_RULE_URL = '/create-incidence-rule/{0}'
 DELETE_INCIDENCE_RULE_URL = '/delete-incidence-rule/{0}'
@@ -151,6 +152,9 @@ class OmnidialerService(AbstractPhoneDialerService):
                                    es_de_calificacion=False) -> bool:
         self.eliminar_regla_de_incidencia(regla, es_de_calificacion)
         self.crear_regla_de_incidencia(regla, es_de_calificacion)
+
+    def cambiar_bd_contactos(self, campana, params=None):
+        return self._request(CHANGE_DATABASE_URL.format(campana.id))
 
     def obtener_estado_campana(self, campana):
         redis_connection = create_redis_connection(db=3)

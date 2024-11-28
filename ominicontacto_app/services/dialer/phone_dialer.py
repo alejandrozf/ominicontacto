@@ -59,7 +59,7 @@ class AbstractPhoneDialerService(object):
                                    es_de_calificacion=False) -> bool:
         raise NotImplementedError()
 
-    def cambiar_base(self, campana, otrosparametros):
+    def cambiar_bd_contactos(self, campana, params=None):
         raise NotImplementedError()
 
     def obtener_estado_campana(self, campana):

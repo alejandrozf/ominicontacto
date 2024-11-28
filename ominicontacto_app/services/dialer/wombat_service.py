@@ -119,6 +119,13 @@ class WombatService(AbstractPhoneDialerService):
             self.campana_service.reload_campana_wombat(self.campana)
         return editado
 
+    def cambiar_bd_contactos(self, campana, params=None):
+        self.campana_service.cambiar_base(campana,
+                                          params['telefonos'],
+                                          params['evitar_duplicados'],
+                                          params['evitar_sin_telefono'],
+                                          params['prefijo_discador'])
+
     def obtener_estado_campana(self, campana):
         dato_campana_run = self.campana_service.obtener_dato_campana_run(campana)
         if dato_campana_run:

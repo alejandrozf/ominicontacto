@@ -21,8 +21,9 @@ Vista para administrar el modelo Campana de tipo dialer
 Observacion se copiaron varias vistas del modulo views_campana
 """
 
-from __future__ import unicode_literals
+from functools import partial
 
+from django.db import transaction
 from django.utils.translation import gettext as _
 from django.utils.timezone import now
 from django.contrib import messages
@@ -263,11 +264,6 @@ class UpdateBaseDatosDialerView(FormView):
     template_name = 'base_create_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        # Verificar el estado de la campaña?
-        if not wombat_habilitado():
-            message = _('Esta función no se encuentra disponible por el momento.')
-            messages.warning(request, message)
-            return redirect('campana_dialer_list')
         return super(UpdateBaseDatosDialerView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
@@ -288,7 +284,7 @@ class UpdateBaseDatosDialerView(FormView):
         columnas = form.cleaned_data.get('telefonos')
         bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
-        base_actual = self.get_object()
+        base_actual = self.object.bd_contacto
         error = base_actual.validar_bd_de_reemplazo(bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
@@ -303,12 +299,24 @@ class UpdateBaseDatosDialerView(FormView):
                 message,
             )
 
-        self.object.bd_contacto = bd_contacto
-        self.object.save()
-        # realiza el cambio de la base de datos en wombat
-        campana_service = CampanaService()
-        campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
-                                     evitar_sin_telefono, prefijo_discador)
+        params = {
+            'telefonos': columnas,
+            'evitar_duplicados': evitar_duplicados,
+            'evitar_sin_telefono': evitar_sin_telefono,
+            'prefijo_discador': prefijo_discador
+        }
+        with transaction.atomic():
+            self.object.bd_contacto = bd_contacto
+            self.object.estado = Campana.ESTADO_INACTIVA
+            self.object.save()
+            if wombat_habilitado():
+                # Intento cambiar la BD en wombat como parte de la transaccion
+                self._cambiar_bd_contactos_en_dialer(params)
+
+        # Cambio BD en OMniDialer una vez que ya se cambió en base
+        if not wombat_habilitado():
+            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, params))
+
         message = _('Operación Exitosa!\
                      Se llevó a cabo con éxito el cambio de base de datos.')
 
@@ -317,10 +325,12 @@ class UpdateBaseDatosDialerView(FormView):
             messages.SUCCESS,
             message,
         )
-        self.object.estado = Campana.ESTADO_INACTIVA
-        self.object.save()
 
         return redirect(self.get_success_url())
+
+    def _cambiar_bd_contactos_en_dialer(self, params):
+        dialer_service = get_dialer_service()
+        dialer_service.cambiar_bd_contactos(self.object, params)
 
     def form_invalid(self, form, error=None):
 
