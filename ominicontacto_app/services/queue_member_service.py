@@ -23,6 +23,7 @@ from ominicontacto_app.models import QueueMember
 from ominicontacto_app.services.asterisk.asterisk_ami import (
     AMIManagerConnectorError, AmiManagerClient)
 from ominicontacto_app.services.asterisk.redis_database import CampanasDeAgenteFamily
+from ominicontacto_app.services.asterisk.redis_database import CampaignAgentsFamily
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 
@@ -52,6 +53,7 @@ class QueueMemberService(object):
             self.ami_client = AmiManagerClient()
             self.ami_client.connect()
         self.campanas_de_agente_family = CampanasDeAgenteFamily()
+        self.campaign_agents_family = CampaignAgentsFamily()
 
     def disconnect(self):
         self.ami_client.disconnect()
@@ -72,6 +74,7 @@ class QueueMemberService(object):
         self.activar_cola()
         QueueMember.objects.borrar_member_queue(agente)
         self.campanas_de_agente_family.eliminar_datos_de_agente(agente.id)
+        self.campaign_agents_family.eliminar_datos_de_agente(agente.id)
 
     def eliminar_agentes_de_cola(self, campana, agentes):
         QueueMember.objects.filter(
@@ -82,6 +85,7 @@ class QueueMemberService(object):
             if agente.sip_extension in sip_agentes_logueados:
                 self._remover_agente_cola_asterisk(campana, agente)
             self.campanas_de_agente_family.borrar_agente_de_campana(campana.id, agente.id)
+            self.campaign_agents_family.borrar_agente_de_campana(campana.id, agente.id)
 
     def _remover_agente_cola_asterisk(self, campana, agente):
         queue = campana.get_queue_id_name()
@@ -115,6 +119,7 @@ class QueueMemberService(object):
                     self._adicionar_agente_cola_asterisk(
                         agente, queue_member, campana)
         self.campanas_de_agente_family.registrar_agentes_en_campana(campana.id, penalties.keys())
+        self.campaign_agents_family.registrar_agentes_en_campana(campana.id, penalties.keys())
 
     def _adicionar_agente_cola_asterisk(self, agente, queue_member, campana):
         """Adiciona agente a la cola de su respectiva campaña"""
@@ -148,5 +153,6 @@ class QueueMemberService(object):
                     self._adicionar_agente_cola_asterisk(
                         agente, queue_member, campana)
             self.campanas_de_agente_family.registrar_campanas_a_agente(agente.id, campanas_ids)
+            self.campaign_agents_family.registrar_campanas_a_agente(campanas_ids, agente.id)
         except Exception as e:
             logger.exception(f'Error al adicionar agente a la cola de la campaña {e.__str__()}')
