@@ -1,19 +1,17 @@
 # Release Notes
-2024-11-21
+2024-11-28
 
 ## Added
 
-- oml-2757 New fields for Whatsapp interactive menu.
-- oml-2747 Show Whatsapp Line Status
+- oml-2796 Campaigns Agents list saved in redis
 
 ## Changed
 
-- Agent event stream data expires after 2 days.
-- oml-2817 Force Disposition report column order.
+No changes in this release.
 
 ## Fixed
 
-- Strange django migration dependency problems
+No fixes in this release.
 
 ## Removed
 
