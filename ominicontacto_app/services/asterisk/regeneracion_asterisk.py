@@ -426,4 +426,4 @@ class RegeneracionAsteriskService(object):
         if not os.getenv('WALLBOARD_VERSION', '') == '':
             from wallboard_app.redis.regeneracion import regenerar_wallboard_data
             regenerar_wallboard_data()
-        self._generar_tarea_script_calcular_datos_wallboards()
+        # self._generar_tarea_script_calcular_datos_wallboards()
