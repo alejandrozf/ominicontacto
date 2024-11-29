@@ -193,3 +193,8 @@ class OmnidialerService(AbstractPhoneDialerService):
         for campana_id, campana in campanas_por_id.items():
             pendientes_por_id[campana_id] = self.obtener_llamadas_pendientes(campana)
         return pendientes_por_id
+
+    def finalizar_campanas_sin_llamadas_pendientes(self, campanas):
+        for campana in campanas:
+            if self.obtener_llamadas_pendientes(campana) == 0:
+                self.terminar_campana(campana)

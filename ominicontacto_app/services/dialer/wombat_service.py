@@ -159,3 +159,6 @@ class WombatService(AbstractPhoneDialerService):
         for campana_id, datos_campana in dato_campanas.items():
             pendientes_por_id[campana_id] = datos_campana['n_est_remaining_calls']
         return pendientes_por_id
+
+    def finalizar_campanas_sin_llamadas_pendientes(self, campanas):
+        self.campana_service.chequear_campanas_finalizada_eliminarlas(campanas)

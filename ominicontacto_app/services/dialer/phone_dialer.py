@@ -70,3 +70,6 @@ class AbstractPhoneDialerService(object):
 
     def obtener_llamadas_pendientes_por_id(self, campanas_por_id) -> int:
         raise NotImplementedError()
+
+    def finalizar_campanas_sin_llamadas_pendientes(self, campanas):
+        raise NotImplementedError()

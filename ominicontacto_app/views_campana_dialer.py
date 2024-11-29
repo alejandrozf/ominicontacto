@@ -35,7 +35,7 @@ from django.views.generic import ListView, DeleteView, FormView, CreateView, Upd
 from constance import config as config_constance
 
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
-from ominicontacto_app.services.dialer.campana_wombat import CampanaService, WombatDialerError
+from ominicontacto_app.services.dialer.campana_wombat import WombatDialerError
 from ominicontacto_app.services.dialer import wombat_habilitado, get_dialer_service
 from ominicontacto_app.services.dialer.wombat_api import WombatReloader
 from ominicontacto_app.forms.base import (
@@ -263,9 +263,6 @@ class UpdateBaseDatosDialerView(FormView):
     form_class = UpdateBaseDatosForm
     template_name = 'base_create_update_form.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        return super(UpdateBaseDatosDialerView, self).dispatch(request, *args, **kwargs)
-
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
 
@@ -384,19 +381,11 @@ class FinalizarCampanasActivasView(View):
     """
     Esta vista finaliza las campanas activas de acuerdo si tienen contactos pendientes en wombat
     """
-    def dispatch(self, request, *args, **kwargs):
-        # Que hacer si usa OMniDialer?
-        if not wombat_habilitado():
-            message = _('Esta función no se encuentra disponible por el momento.')
-            messages.warning(request, message)
-            return redirect('campana_dialer_list')
-        return super(UpdateBaseDatosDialerView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        campanas = Campana.objects.obtener_campanas_dialer()
-        campana_service = CampanaService()  # TODO: Ver si Omnidialer requiere funcinalidad similar
-        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
-            campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        campanas = Campana.objects.obtener_campanas_dialer().filter(estado=Campana.ESTADO_ACTIVA)
+        dialer_service = get_dialer_service()
+        error_finalizadas = dialer_service.finalizar_campanas_sin_llamadas_pendientes(campanas)
         if error_finalizadas:
             messages.add_message(self.request, messages.WARNING, error_finalizadas)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
