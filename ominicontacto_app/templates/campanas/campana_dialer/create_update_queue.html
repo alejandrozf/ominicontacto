@@ -22,7 +22,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'configuracion_telefonia_app/JS/rutas-entrantes-lib.js' %}"></script>
-    <script src="{% static 'configuracion_telefonia_app/JS/ruta-entrante.js' %}"></script>
 {% endblock %}
 {% block head_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/create_update_queue.js' %}"></script>
@@ -141,16 +140,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.musiconhold.errors }}
             </div>
             <div class="col-md-6">
-                <label >{% trans 'Destino en caso de timeout' %}</label>
+                <label >{% trans 'Destino llamada Dialer' %}</label>
                 <div class="col-md-12">
-                    <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
-                    {{ form.tipo_destino }}
-                    {{ form.tipo_destino.errors }}
+                    <label for="{{ form.tipo_destino_dialer.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+                    {{ form.tipo_destino_dialer }}
+                    {{ form.tipo_destino_dialer.errors }}
                 </div>
                 <div class="col-md-12">
-                    <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
-                    {{ form.destino }}
-                    {{ form.destino.errors }}
+                    <label for="{{ form.destino_dialer.id_for_label }}">{% trans 'Destino:' %}</label>
+                    {{ form.destino_dialer }}
+                    {{ form.destino_dialer.errors }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label >{% trans 'Destino en caso de timeout' %}</label>
+                <div class="col-md-12">
+                    <label for="{{ form.tipo_destino_failover.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+                    {{ form.tipo_destino_failover }}
+                    {{ form.tipo_destino_failover.errors }}
+                </div>
+                <div class="col-md-12">
+                    <label for="{{ form.destino_failover.id_for_label }}">{% trans 'Destino:' %}</label>
+                    {{ form.destino_failover }}
+                    {{ form.destino_failover.errors }}
                 </div>
             </div>
         </div>

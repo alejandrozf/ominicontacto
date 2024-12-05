@@ -47,6 +47,7 @@ class QueueMemberServiceTests(OMLBaseTest):
     def test_eliminar_agente_de_colas_asignadas(
             self, connect, activar_cola, delete, keys, srem,
             obtener_sip_agentes_sesiones_activas):
+        keys.return_value = []
         service = QueueMemberService()
         self.assertEqual(self.agente1.queue_set.count(), 2)
         keys.return_value = ['OML:CAMPAIGN-AGENTS:1']
@@ -54,6 +55,7 @@ class QueueMemberServiceTests(OMLBaseTest):
         connect.assert_called()
         activar_cola.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
+        keys.assert_called_with('OML:CAMPAIGN-AGENTS:*')
         delete.assert_called_with('OML:AGENT-CAMPAIGNS:' + str(self.agente1.id))
         srem.assert_called_with('OML:CAMPAIGN-AGENTS:1', self.agente1.id)
         self.assertEqual(self.agente1.queue_set.count(), 0)
@@ -70,6 +72,7 @@ class QueueMemberServiceTests(OMLBaseTest):
             self, connect, activar_cola, delete, keys, srem,
             obtener_sip_agentes_sesiones_activas, _remover_agente_cola_asterisk):
         obtener_sip_agentes_sesiones_activas.return_value = [self.agente1.sip_extension, ]
+        keys.return_value = []
         service = QueueMemberService()
         self.assertEqual(self.agente1.queue_set.count(), 2)
         keys.return_value = ['OML:CAMPAIGN-AGENTS:1']
@@ -77,6 +80,7 @@ class QueueMemberServiceTests(OMLBaseTest):
         connect.assert_called()
         activar_cola.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
+        keys.assert_called_with('OML:CAMPAIGN-AGENTS:*')
         delete.assert_called_with('OML:AGENT-CAMPAIGNS:' + str(self.agente1.id))
         self.assertEqual(self.agente1.queue_set.count(), 0)
         _remover_agente_cola_asterisk.assert_has_calls([call(self.campana1, self.agente1),

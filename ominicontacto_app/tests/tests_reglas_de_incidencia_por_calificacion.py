@@ -34,6 +34,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Que
 from ominicontacto_app.models import (
     ReglaIncidenciaPorCalificacion, OpcionCalificacion, Campana
 )
+from reportes_app.models import LlamadaLog
 
 
 class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
@@ -186,7 +187,7 @@ class ReglaIncidenciaPorCalificacionTests(OMLBaseTest):
                      "campana_type": self.campana.type,
                      "telefono": "3512349992",
                      "call_id": '123456789',
-                     "call_type": "1",
+                     "call_type": LlamadaLog.LLAMADA_DIALER,
                      "id_contacto": self.contacto.id,
                      "rec_filename": "",
                      "call_wait_duration": "",

@@ -115,10 +115,11 @@ ASTERISK = {
 
 OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')
 
+OML_DIALER_ENGINE = 'wombat'
 # 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
 # ejemplo "http://172.16.20.222/wombat"
 
-OML_WOMBAT_URL = "http://172.16.20.222:8080/wombat"
+OML_WOMBAT_URL = "trash"
 
 # 'OML_WOMBAT_FILENAME': donde se alojara temporalmente los json de wombat
 # ejemplo "http://172.16.20.222/wombat"

@@ -524,7 +524,7 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
         regla = form.save(commit=False)
         try:
             dialer_service = get_dialer_service()
-            dialer_service.crear_regla_de_incidencia_de_calificacion(regla)
+            dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)

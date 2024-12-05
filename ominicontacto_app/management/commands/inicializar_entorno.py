@@ -34,7 +34,7 @@ from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactor
                                                FieldFormularioFactory, BaseDatosContactoFactory,
                                                ContactoFactory, CampanaFactory,
                                                NombreCalificacionFactory, PausaFactory,
-                                               OpcionCalificacionFactory, ActuacionVigenteFactory)
+                                               OpcionCalificacionFactory)
 from configuracion_telefonia_app.tests.factories import (RutaSalienteFactory, TroncalSIPFactory,
                                                          PatronDeDiscadoFactory,
                                                          RutaEntranteFactory,

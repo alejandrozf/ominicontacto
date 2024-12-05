@@ -19,6 +19,7 @@
 """ Vistas para el reciclados de las campanas"""
 
 from __future__ import unicode_literals
+from functools import partial
 
 from django.db import transaction
 from django.urls import reverse
@@ -162,20 +163,20 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
             campana.save()
             if wombat_habilitado():
                 # Intento cambiar la BD en wombat como parte de la transaccion
-                self._cambiar_bd_contactos_en_dialer()
+                self._cambiar_bd_contactos_en_dialer(campana)
 
         # Cambio BD en OMniDialer una vez que ya se cambió en base
         if not wombat_habilitado():
-            transaction.on_commit(self._cambiar_bd_contactos_en_dialer)
+            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, campana=campana))
 
         update_campana = "campana_dialer_update"
         return update_campana
 
-    def _cambiar_bd_contactos_en_dialer(self):
+    def _cambiar_bd_contactos_en_dialer(self, campana):
         params = {'telefonos': [], 'evitar_duplicados': False,
                   'evitar_sin_telefono': False, 'prefijo_discador': ''}
         dialer_service = get_dialer_service()
-        dialer_service.cambiar_bd_contactos(self.object, params)
+        dialer_service.cambiar_bd_contactos(campana, params)
 
 
 class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):

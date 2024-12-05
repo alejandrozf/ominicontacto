@@ -315,9 +315,9 @@ class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
     """
-    tipo_destino = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
-    )
+    tipo_destino_failover = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino_failover'}),
+        required=False)
     announce_position = forms.BooleanField(required=False),
 
     def __init__(self, audios_choices, *args, **kwargs):
@@ -331,22 +331,22 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
             Count('musicas')).filter(musicas__count__gte=1)
-        tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino = tuple(
+        tipo_destino_failover_choices = [EMPTY_CHOICE]
+        tipo_destino_failover = tuple(
             item for item in DestinoEntrante.TIPOS_DESTINOS if item[0] != DestinoEntrante.HANGUP)
-        tipo_destino_choices.extend(tipo_destino)
-        self.fields['tipo_destino'].choices = tipo_destino_choices
+        tipo_destino_failover_choices.extend(tipo_destino_failover)
+        self.fields['tipo_destino_failover'].choices = tipo_destino_failover_choices
         instance = getattr(self, 'instance', None)
         # inicializa valores de destino failover
-        if instance.pk is not None and instance.destino:
-            tipo = instance.destino.tipo
-            self.initial['tipo_destino'] = tipo
-            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
-                                                         for dest_entr in destinos_qs]
-            self.fields['destino'].choices = destino_entrante_choices
+        if instance.pk is not None and instance.destino_failover:
+            tipo = instance.destino_failover.tipo
+            self.initial['tipo_destino_failover'] = tipo
+            destinos_failover_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_failover_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
+                                                         for dest_entr in destinos_failover_qs]
+            self.fields['destino_failover'].choices = destino_failover_choices
         else:
-            self.fields['destino'].choices = ()
+            self.fields['destino_failover'].choices = ()
         # inicializa valores de campo ivr_breakdown
         ivr_breakdown_qs = DestinoEntrante.get_destinos_por_tipo(DestinoEntrante.IVR)
         ivr_breakdown_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
@@ -361,7 +361,7 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino', 'ivr_breakdown',
+                  'tipo_destino_failover', 'destino_failover', 'ivr_breakdown',
                   'announce_holdtime', 'announce_position', 'musiconhold',
                   'wait_announce_frequency', 'audio_previo_conexion_llamada')
 
@@ -388,8 +388,9 @@ class QueueEntranteForm(forms.ModelForm):
             'audios': forms.Select(attrs={'class': 'form-control'}),
             'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
-            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
-            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
+            'tipo_destino_failover': forms.Select(attrs={'class': 'form-control'}),
+            'destino_failover': forms.Select(attrs={'class': 'form-control',
+                                                    'id': 'destino_failover'}),
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
             'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
@@ -414,13 +415,13 @@ class QueueEntranteForm(forms.ModelForm):
                 _('Debe definir un Anuncio Periódico para esta frecuencia'))
         return frequency
 
-    def clean_destino(self):
-        tipo_destino = self.cleaned_data.get('tipo_destino', None)
-        destino = self.cleaned_data.get('destino', None)
-        if tipo_destino and not destino:
+    def clean_destino_failover(self):
+        tipo_destino_failover = self.cleaned_data.get('tipo_destino_failover', None)
+        destino_failover = self.cleaned_data.get('destino_failover', None)
+        if tipo_destino_failover and not destino_failover:
             raise forms.ValidationError(
                 _('Debe seleccionar un destino'))
-        return destino
+        return destino_failover
 
     def clean_ivr_breakdown(self):
         ivr_breakdown = self.cleaned_data.get('ivr_breakdown', None)
@@ -1908,16 +1909,21 @@ class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
     """
-    tipo_destino = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
-    )
+    tipo_destino_failover = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino_failover'}),
+        required=False)
+    tipo_destino_dialer = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino_dialer'}),
+        required=False)
 
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores', 'musiconhold',
                   'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
-                  'dial_timeout', 'tipo_destino', 'destino', 'audio_previo_conexion_llamada')
+                  'dial_timeout', 'tipo_destino_failover', 'tipo_destino_dialer',
+                  'destino_failover', 'destino_dialer',
+                  'audio_previo_conexion_llamada')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1932,8 +1938,12 @@ class QueueDialerForm(forms.ModelForm):
             "initial_boost_factor": forms.NumberInput(
                 attrs={'class': 'form-control', 'min': 0.1, 'max': 5}),
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
-            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
-            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
+            'tipo_destino_failover': forms.Select(attrs={'class': 'form-control'}),
+            'destino_failover': forms.Select(attrs={'class': 'form-control',
+                                                    'id': 'destino_failover'}),
+            'tipo_destino_dialer': forms.Select(attrs={'class': 'form-control'}),
+            'destino_dialer': forms.Select(attrs={'class': 'form-control',
+                                                  'id': 'destino_dialer'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
             'audio_previo_conexion_llamada': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -1966,35 +1976,63 @@ class QueueDialerForm(forms.ModelForm):
 
         return self.cleaned_data
 
-    def clean_destino(self):
-        tipo_destino = self.cleaned_data.get('tipo_destino', None)
-        destino = self.cleaned_data.get('destino', None)
-        if tipo_destino and not destino:
+    def clean_destino_failover(self):
+        tipo_destino_failover = self.cleaned_data.get('tipo_destino_failover', None)
+        destino_failover = self.cleaned_data.get('destino_failover', None)
+        if tipo_destino_failover and not destino_failover:
             raise forms.ValidationError(
                 _('Debe seleccionar un destino'))
-        return destino
+        return destino_failover
+
+    def clean_destino_dialer(self):
+        tipo_destino_dialer = self.cleaned_data.get('tipo_destino_dialer', None)
+        destino_dialer = self.cleaned_data.get('destino_dialer', None)
+        if tipo_destino_dialer:
+            if not destino_dialer:
+                raise forms.ValidationError(
+                    _('Debe seleccionar un destino'))
+            if tipo_destino_dialer == str(DestinoEntrante.SURVEY):
+                if not destino_dialer.content_object.esta_activa:
+                    raise forms.ValidationError(_('La encuesta debe estar activa'))
+        return destino_dialer
 
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
-        tipo_destino_choices = [EMPTY_CHOICE]
-        tipo_destino = tuple(
+        tipo_destino_failover_choices = [EMPTY_CHOICE]
+        tipo_destino_failover = tuple(
             item for item in DestinoEntrante.TIPOS_DESTINOS if item[0] != DestinoEntrante.HANGUP)
-        tipo_destino_choices.extend(tipo_destino)
-        self.fields['tipo_destino'].choices = tipo_destino_choices
+        tipo_destino_failover_choices.extend(tipo_destino_failover)
+        self.fields['tipo_destino_failover'].choices = tipo_destino_failover_choices
+        tipo_destino_dialer_choices = [
+            ('', _('Agentes')),
+            (DestinoEntrante.IVR, DestinoEntrante.IVR_STR),
+            (DestinoEntrante.CUSTOM_DST, DestinoEntrante.CUSTOM_DST_STR),
+            (DestinoEntrante.SURVEY, DestinoEntrante.SURVEY_STR),
+        ]
+        self.fields['tipo_destino_dialer'].choices = tipo_destino_dialer_choices
         self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
             Count('musicas')).filter(musicas__count__gte=1)
         instance = getattr(self, 'instance', None)
-        if instance.pk is not None and instance.destino:
-            tipo = instance.destino.tipo
-            self.initial['tipo_destino'] = tipo
-            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
-                                                         for dest_entr in destinos_qs]
-            self.fields['destino'].choices = destino_entrante_choices
-        else:
-            self.fields['destino'].choices = ()
+
+        self.fields['destino_failover'].choices = ()
+        self.fields['destino_dialer'].choices = ()
+        if instance.pk is not None:
+            if instance.destino_failover:
+                tipo_failover = instance.destino_failover.tipo
+                self.initial['tipo_destino_failover'] = tipo_failover
+                destinos_failover_qs = DestinoEntrante.get_destinos_por_tipo(tipo_failover)
+                destino_failover_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
+                                                             for dest_entr in destinos_failover_qs]
+                self.fields['destino_failover'].choices = destino_failover_choices
+            if instance.destino_dialer:
+                tipo_dialer = instance.destino_dialer.tipo
+                self.initial['tipo_destino_dialer'] = tipo_dialer
+                destinos_dialer_qs = DestinoEntrante.get_destinos_por_tipo(tipo_dialer)
+                destino_dialer_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
+                                                           for dest_entr in destinos_dialer_qs]
+                self.fields['destino_dialer'].choices = destino_dialer_choices
 
         if not instance.pk:
             self.initial['wrapuptime'] = 2

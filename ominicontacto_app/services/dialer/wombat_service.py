@@ -102,7 +102,7 @@ class WombatService(AbstractPhoneDialerService):
 
         self.campana_service.crear_reschedule_campana_wombat(campana, parametros)
         if campana.estado == Campana.ESTADO_ACTIVA:
-            self.campana_service.reload_campana_wombat(self.campana)
+            self.campana_service.reload_campana_wombat(campana)
 
     def eliminar_regla_de_incidencia(self, regla, es_de_calificacion=False) -> bool:
         remover = self.campana_service.eliminar_reschedule_wombat(regla)
@@ -116,7 +116,7 @@ class WombatService(AbstractPhoneDialerService):
                                    es_de_calificacion=False) -> bool:
         editado = self.campana_service.editar_reschedule_wombat(regla, id_anterior, estado_anterior)
         if editado and campana.estado == Campana.ESTADO_ACTIVA:
-            self.campana_service.reload_campana_wombat(self.campana)
+            self.campana_service.reload_campana_wombat(campana)
         return editado
 
     def cambiar_bd_contactos(self, campana, params=None):
@@ -142,7 +142,7 @@ class WombatService(AbstractPhoneDialerService):
             return data
 
     def obtener_llamadas_pendientes(self, campana) -> int:
-        dato_campana = self.campana_service.obtener_dato_campana_run(self.campana)
+        dato_campana = self.campana_service.obtener_dato_campana_run(campana)
         if dato_campana:
             return dato_campana.get('n_est_remaining_calls', 0)
         return 0
