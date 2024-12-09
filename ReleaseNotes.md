@@ -11,7 +11,7 @@ No changes in this release.
 
 ## Fixed
 
-No fixes in this release.
+- oml-2839 Fixes phone parsing to int when calling from Agent's softphone
 
 ## Removed
 
