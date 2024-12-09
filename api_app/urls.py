@@ -102,7 +102,7 @@ from api_app.views.system import AsteriskQueuesData
 
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
 from api_app.views.logging import TransferenciaAEncuestaLogCreateView
-from api_app.views.reports import AgentStatusView, CallStatusView
+from api_app.views.reports import AgentStatusView, AgentStatusListView, CallStatusView
 
 
 router = routers.DefaultRouter()
@@ -563,6 +563,8 @@ urlpatterns = [
     # ######  For Bots Internos    ############ #
     path('api/v1/agent_status/campaign/<int:campaign_id>',
          AgentStatusView.as_view(), name='api_agent_status'),
+    path('api/v1/agent_status_list/campaign/<int:campaign_id>',
+         AgentStatusListView.as_view(), name='api_agent_status_list'),
     path('api/v1/call_status/campaign/<int:campaign_id>',
          CallStatusView.as_view(), name='api_call_status'),
 ]

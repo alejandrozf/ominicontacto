@@ -26,6 +26,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
+from ominicontacto_app.services.redis.connection import create_redis_connection
+from ominicontacto_app.services.asterisk.redis_database import CampaignAgentsFamily, AgenteFamily
 from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 from reportes_app.models import LlamadaLog
@@ -55,6 +57,37 @@ class AgentStatusView(APIView):
                 elif agente_info['STATUS'].startswith('PAUSE'):
                     data['pause'] += 1
         return Response(data)
+
+
+class AgentStatusListView(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get']
+
+    def get(self, request, campaign_id):
+        # Verifico que exista en la base de datos.
+        get_object_or_404(Campana, pk=campaign_id)
+        redis_connection = create_redis_connection()
+        key = CampaignAgentsFamily.KEY_PREFIX.format(campaign_id)
+        agents_ids = redis_connection.smembers(key)
+        data = []
+        for agent_id in agents_ids:
+            key_agent = AgenteFamily.KEY_PREFIX.format(agent_id)
+            agent_data = redis_connection.hmget(key_agent, 'NAME', 'STATUS')
+            name = agent_data[0]
+            if name:
+                data.append({'name': name,
+                             'status': self._parse_status(agent_data[1])})
+        return Response(data)
+
+    def _parse_status(self, status):
+        print(status)
+        if status.startswith('PAUSE'):
+            return 'PAUSE'
+        if status == '' or status is None:
+            return 'OFFLINE'
+        return status
 
 
 class CallStatusView(APIView):

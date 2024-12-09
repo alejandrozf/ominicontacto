@@ -274,6 +274,8 @@ class CampanaFamily(AbstractRedisFamily):
 
 class AgenteFamily(AbstractRedisFamily):
 
+    KEY_PREFIX = "OML:AGENT:{0}"
+
     def _create_dict(self, agente, status='', timestamp=''):
         dict_agente = {
             'NAME': agente.user.get_full_name().replace("'", "’"),
@@ -777,7 +779,7 @@ class CampanasDeAgenteFamily(object):
 class CampaignAgentsFamily(object):
     """ Mantiene información de que agentes están asociados a cada campaña """
 
-    KEY_PREFIX = "OML:CAMPAIGN-AGENTS:{0}" 
+    KEY_PREFIX = "OML:CAMPAIGN-AGENTS:{0}"
 
     def __init__(self, redis_connection=None) -> None:
         self.redis_connection = redis_connection
@@ -820,12 +822,12 @@ class CampaignAgentsFamily(object):
         keys = self.redis_connection.keys(pattern)
         for key in keys:
             self.redis_connection.srem(key, agent_id)
-    
+
     def borrar_agente_de_campana(self, campana_id, agente_id):
         self._get_redis_connection()
         key = self.KEY_PREFIX.format(campana_id)
         self.redis_connection.srem(key, agente_id)
-    
+
     def registrar_agentes_en_campana(self, campana_id, agente_ids):
         self._get_redis_connection()
         key = self.KEY_PREFIX.format(campana_id)
