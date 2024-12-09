@@ -4,6 +4,7 @@
 ## Added
 
 - oml-2796 Campaigns Agents list saved in redis.
+- oml-2829 Campaigns Agents status list api
 
 ## Changed
 
