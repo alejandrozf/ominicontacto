@@ -311,6 +311,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_call_status',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_notify_end_transferred_call',
+             'roles': ['Agente', ]},
         ]
 
     informacion_de_permisos = {
@@ -717,4 +719,7 @@ class ApiAppConfig(AppConfig):
         'api_call_status':
             {'descripcion': _('Obtener la cantidad de llamadas Atendidas, Abandonadas, Expiradas'),
              'version': '1.27.0'},
+        'api_notify_end_transferred_call':
+            {'descripcion': _('Notificar que la llamada transferida ha finalizado'),
+             'version': '1.27.0'}
     }

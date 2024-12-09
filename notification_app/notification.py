@@ -41,6 +41,7 @@ class AgentNotifier:
     TYPE_PAUSE = 'pause'
     TYPE_CONTACT_SAVED = 'contact_saved'
     TYPE_EXTERNAL_SITE_INTERACTION_ERROR = 'external_site_interaction_error'
+    TYPE_END_TRANSFERRED_CALL = 'end_transferred_call'
     TYPE_WHATSAPP_NEW_CHAT = 'whatsapp_new_chat'
     TYPE_WHATSAPP_CHAT_ATTENDED = 'whatsapp_chat_attended'
     TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
@@ -77,6 +78,12 @@ class AgentNotifier:
             'dispositioned': dispositioned
         }
         self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
+
+    def notify_end_transferred_call(self, user_id):
+        message = {
+            'end_transferred_call': True
+        }
+        self.send_message(self.TYPE_END_TRANSFERRED_CALL, message, user_id=user_id)
 
     def notify_contact_saved(self, user_id, call_id, contact_id):
         message = {

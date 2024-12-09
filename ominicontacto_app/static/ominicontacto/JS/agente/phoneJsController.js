@@ -59,6 +59,7 @@ class PhoneJSController {
         this.campaign_type = null;
         this.campaign_name = '';
         this.llamada_calificada = null;
+        this.transfer = null
         /*-----------------*/
 
         this.disableOnHold();
@@ -224,8 +225,8 @@ class PhoneJSController {
 
         // Transfer View events: makeTransfer, EndTransfer,
         this.view.makeTransferButton.on('click', function () {
-            var transfer = new OutTransferData();
-            if (!transfer.is_valid){
+            this.transfer = new OutTransferData();
+            if (!this.transfer.is_valid){
                 alert(gettext('Seleccione una opción válida'));
             }
             else {
@@ -261,9 +262,21 @@ class PhoneJSController {
         this.view.endTransferButton.click(function() {
             self.phone_fsm.endTransfer();
             self.phone.endTransfer();
+            self.view.setConferenceAgent("", 'orange');
         });
 
         this.view.conferButton.click(function() {
+            if(self.transfer.is_consultative){
+                var member = null
+                if(self.transfer.is_to_agent)
+                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                else if(self.transfer.is_to_number)
+                    member = self.transfer.destination
+                var agtmessage = interpolate(
+                    gettext('Conference whith:%(from)s and %(member)s'),
+                    {from:self.phone.session_data.from, member: member}, true);
+                self.view.setConferenceAgent(agtmessage, 'orange');
+            }
             self.phone.confer();
         });
 
@@ -601,6 +614,10 @@ class PhoneJSController {
         });
 
         this.phone.eventsCallbacks.onCallEnded.add(function() {
+            if(self.phone.session_data.is_transfered && self.phone.session_data.is_consultative_transfer){
+                var agent_id = self.phone.session_data.from_agent_name.split('_')[0];
+                self.oml_api.notifyEndTransferredCall(agent_id);
+            }
             if (self.phone_fsm.state == 'DialingTransfer') {
                 self.phone.cancelDialTransfer();
             }
@@ -697,6 +714,23 @@ class PhoneJSController {
             console.log("===================================> NEW CHAT")
             $('#newChat').removeClass('invisible');
         });
+        this.notification_agent.eventsCallbacks.onNotificationEndTransferredCall.add(function(args){
+            console.log("===================================> End Transferred Call")
+            if(self.transfer.is_consultative){
+                var member = null
+                if(self.transfer.is_to_agent){
+                    self.transfer.is_consultative = false;
+                    self.transfer.is_to_agent = false;
+                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                    var agtmessage = interpolate(
+                        gettext('The agent %(member)s ended the call'),
+                        { member: member}, true);
+                    self.view.setConferenceAgent(agtmessage, 'orange');
+                }
+
+                }
+        });
+
     }
 
     subscribeToNavigatorEvents() {
@@ -765,6 +799,7 @@ class PhoneJSController {
                 m_seconds
             );
         }
+        self.view.setConferenceAgent("", 'orange');
         // else { Stay in ACW Pause }:
     }
 
@@ -1164,12 +1199,12 @@ class PhoneJSController {
     }
 
     makeSelectedTransfer() {
-        var transfer = new OutTransferData();
-        if (!transfer.is_valid){
+        this.transfer = new OutTransferData();
+        if (!this.transfer.is_valid){
             alert(gettext('Seleccione una opción válida'));
         }
         this.phone_fsm.dialTransfer();
-        this.phone.dialTransfer(transfer);
+        this.phone.dialTransfer(this.transfer);
         $('#numberToTransfer').val('');
     }
 
