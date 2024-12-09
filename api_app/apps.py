@@ -305,6 +305,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_agent_status',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_agent_status_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_call_status',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
@@ -704,6 +706,9 @@ class ApiAppConfig(AppConfig):
         'api_agent_status':
             {'descripcion': _('Obtener la cantidad de agentes de una campaña en cada estado'),
              'version': '1.27.0'},
+        'api_agent_status_list':
+            {'descripcion': _('Obtener la lista de agentes de una campaña con su estado'),
+             'version': '2.2.3'},
         'api_call_status':
             {'descripcion': _('Obtener la cantidad de llamadas Atendidas, Abandonadas, Expiradas'),
              'version': '1.27.0'},
