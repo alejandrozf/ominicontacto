@@ -3,7 +3,7 @@
 
 ## Added
 
-- oml-2796 Campaigns Agents list saved in redis
+- oml-2796 Campaigns Agents list saved in redis.
 
 ## Changed
 
@@ -11,7 +11,7 @@ No changes in this release.
 
 ## Fixed
 
-- oml-2839 Fixes phone parsing to int when calling from Agent's softphone
+- oml-2839 Fixes phone parsing to int when calling from Agent's softphone.
 
 ## Removed
 
