@@ -395,10 +395,9 @@ urlpatterns = [
             login_required(
                 views_contacto.ContactosTelefonosRepetidosView.as_view()),
             name="campana_contactos_telefono_repetido"),
-
-    path('campana/<int:pk_campana>/identificar_contacto_a_llamar/<int:telefono>/',
-         login_required(views_contacto.IdentificarContactoView.as_view()),
-         name="identificar_contacto_a_llamar"),
+    re_path(r'^campana/(?P<pk_campana>\d+)/identificar_contacto_a_llamar/(?P<telefono>[0-9*#]+)/$',
+            login_required(views_contacto.IdentificarContactoView.as_view()),
+            name="identificar_contacto_a_llamar"),
 
 
     # ==========================================================================
