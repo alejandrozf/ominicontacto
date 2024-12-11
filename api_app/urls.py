@@ -51,6 +51,7 @@ from api_app.views.external_site import (
     SitioExternoUpdate)
 from api_app.views.external_site_authentication import (
     ExternalSiteAuthenticationCreate,
+    ExternalSiteAuthenticationTest,
     ExternalSiteAuthenticationDelete,
     ExternalSiteAuthenticationDetail,
     ExternalSiteAuthenticationList,
@@ -280,6 +281,9 @@ urlpatterns = [
     re_path(r'api/v1/external_site_authentications/create/$',
             ExternalSiteAuthenticationCreate.as_view(),
             name='api_external_site_authentications_create'),
+    re_path(r'api/v1/external_site_authentications/test/$',
+            ExternalSiteAuthenticationTest.as_view(),
+            name='api_external_site_authentications_test'),
     re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/update/$',
             ExternalSiteAuthenticationUpdate.as_view(),
             name='api_external_site_authentications_update'),

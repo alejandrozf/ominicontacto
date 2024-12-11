@@ -26,7 +26,11 @@ from rest_framework.authentication import SessionAuthentication
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers.external_site_authentication import AutenticacionSitioExternoSerializer
+from api_app.serializers.external_site_authentication import AutenticacionSitioExternoTestSerializer
 from ominicontacto_app.models import AutenticacionSitioExterno
+from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
+    InteraccionConSistemaExterno,
+)
 
 
 class ExternalSiteAuthenticationList(APIView):
@@ -85,6 +89,43 @@ class ExternalSiteAuthenticationCreate(APIView):
             return Response(
                 data=responseData,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ExternalSiteAuthenticationTest(APIView):
+    authentication_classes = (
+        SessionAuthentication,
+        ExpiringTokenAuthentication,
+    )
+
+    http_method_names = ['post']
+
+    permission_classes = (TienePermisoOML,)
+
+    renderer_classes = (JSONRenderer,)
+
+    def post(self, request):
+        try:
+            responseData = {
+                'status': 'SUCCESS',
+                'errors': {},
+                'message': _('Autenticación Satisfactoria a CRM')}
+            auth_sitio_externo = AutenticacionSitioExternoTestSerializer(data=request.data)
+            if auth_sitio_externo.is_valid():
+                servicio = InteraccionConSistemaExterno()
+                servicio.probar_autenticacion(**auth_sitio_externo.validated_data)
+                return Response(data=responseData, status=status.HTTP_200_OK)
+            else:
+                responseData['status'] = 'ERROR'
+                responseData['message'] = [
+                    auth_sitio_externo.errors[key]
+                    for key in auth_sitio_externo.errors
+                ]
+                responseData['errors'] = auth_sitio_externo.errors
+                return Response(data=responseData, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            responseData['status'] = 'ERROR'
+            responseData['message'] = _('Autenticación Fallida a CRM: <{}>').format(e)
+            return Response(data=responseData, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ExternalSiteAuthenticationUpdate(APIView):

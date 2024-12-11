@@ -46,6 +46,9 @@ export default {
         show: 'Unhide'
     },
     external_site_authentication: {
+        test_auth: {
+            label: 'Test Authentication'
+        },
         list_title: 'External site authentications',
         edit_title: 'Edit external site authentication',
         new_title: 'New external site authentication'

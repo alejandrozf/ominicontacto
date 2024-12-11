@@ -37,6 +37,9 @@ export default {
         show: 'پنهان کردن'
     },
     external_site_authentication: {
+        check_interaction: {
+            label: 'تست احراز هویت'
+        },
         list_title: 'احراز هویت برای سایت های خارجی',
         edit_title: 'ویرایش احراز هویت برای سایت خارجی',
         new_title: 'احراز هویت جدید برای سایت خارجی'
