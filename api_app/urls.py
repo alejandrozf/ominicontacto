@@ -91,7 +91,7 @@ from api_app.views.agente import (
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk, Click2CallOutsideCampaign, ApiAgentesParaTransferencia,
-    AgentDisabledAsterisk,
+    AgentDisabledAsterisk, NotifyEndTransferredCall
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
@@ -514,6 +514,8 @@ urlpatterns = [
          AgentRejectCallAsterisk.as_view(), name='api_make_reject_call'),
     path('api/v1/asterisk_disabled/',
          AgentDisabledAsterisk.as_view(), name='api_make_disabled'),
+    path('api/v1/notify_end_transferred_call/',
+         NotifyEndTransferredCall.as_view(), name='api_notify_end_transferred_call'),
     path('api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
          name='api_credenciales_sip_agente'),
     path('api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),

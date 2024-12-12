@@ -542,6 +542,10 @@ class SessionData {
         return this.invite_request.headers.Transfer[0].raw;
     }
 
+    get is_consultative_transfer () {
+        return this.is_transfered && this.transfer_type == CONSULTATIVE_TRANSFER;
+    }
+
     get transfer_type_str () {
         switch (this.transfer_type) {
         case DIRECT_TRANSFER:
