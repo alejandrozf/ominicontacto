@@ -37,6 +37,9 @@ export default {
         show: 'mostrar'
     },
     external_site_authentication: {
+        check_interaction: {
+            label: 'Autenticação de teste'
+        },
         list_title: 'Autenticação para sites externos',
         edit_title: 'Editar autenticação para site externo',
         new_title: 'Nova autenticação para site externo'

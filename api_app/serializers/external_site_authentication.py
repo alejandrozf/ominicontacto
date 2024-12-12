@@ -24,3 +24,13 @@ class AutenticacionSitioExternoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutenticacionSitioExterno
         fields = '__all__'
+
+
+class AutenticacionSitioExternoTestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AutenticacionSitioExterno
+        exclude = [
+            "id",
+            "nombre",
+        ]

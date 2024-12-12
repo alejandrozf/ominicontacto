@@ -224,8 +224,10 @@ class CalificacionClienteFormView(FormView):
                         self.contacto,
                         self.call_data
                     )
-                    if error is not None:
-                        pass
+                    AgentNotifier().notify_external_site_interaction_error(
+                        self.agente.user_id,
+                        repr(error) if error else None,
+                    )
             else:
                 if sitio_externo.disparador == SitioExterno.AUTOMATICO:
                     if sitio_externo.metodo == SitioExterno.GET and \
@@ -478,12 +480,16 @@ class CalificacionClienteFormView(FormView):
             self.call_data['id_calificacion'] = calificacion.id
             self.call_data['nombre_opcion_calificacion'] = \
                 calificacion.opcion_calificacion.nombre
-            servicio.ejecutar_interaccion(
+            error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
                 calificacion.opcion_calificacion.campana,
                 self.contacto,
                 self.call_data
+            )
+            AgentNotifier().notify_external_site_interaction_error(
+                self.agente.user_id,
+                repr(error) if error else None,
             )
 
     def form_valid(self, contacto_form, calificacion_form=None):
@@ -872,12 +878,16 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
             call_data['id_calificacion'] = self.calificacion.id
             call_data['nombre_opcion_calificacion'] = \
                 self.calificacion.opcion_calificacion.nombre
-            servicio.ejecutar_interaccion(
+            error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
                 self.calificacion.opcion_calificacion.campana,
                 self.contacto,
                 call_data
+            )
+            AgentNotifier().notify_external_site_interaction_error(
+                self.agente.user_id,
+                repr(error) if error else None,
             )
 
 

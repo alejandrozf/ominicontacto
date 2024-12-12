@@ -46,6 +46,9 @@ export default {
         show: 'Desocultar'
     },
     external_site_authentication: {
+        test_auth: {
+            label: 'Probar Autenticación'
+        },
         list_title: 'Autenticaciones para sitios externos',
         edit_title: 'Editar autenticacion para sitio externo',
         new_title: 'Nueva autenticacion para sitio externo'
