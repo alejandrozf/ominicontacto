@@ -179,6 +179,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_site_authentications_create',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_external_site_authentications_test',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_site_authentications_detail',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_external_site_authentications_update',
@@ -519,6 +521,9 @@ class ApiAppConfig(AppConfig):
              'version': '1.23.0'},
         'api_external_site_authentications_create':
             {'descripcion': _('Crea una autenticacion para sitio externo'),
+             'version': '1.23.0'},
+        'api_external_site_authentications_test':
+            {'descripcion': _('Prueba la autenticacion para sitio externo'),
              'version': '1.23.0'},
         'api_external_site_authentications_update':
             {'descripcion': _('Actualiza una autenticacion para sitio externo'),

@@ -26,6 +26,7 @@ class NotificationSocket
             onNotificationForzarDespausa: $.Callbacks(),
             onNotificationForzarPausa: $.Callbacks(),
             onNotificationPhoneJsLogout: $.Callbacks(),
+            onNotificationExternalSiteInteractionError: $.Callbacks(),
             onNotificationContactSaved: $.Callbacks()
         };
     }
@@ -46,6 +47,8 @@ class NotificationSocket
                 self.eventsCallbacks.onNotificationForzarDespausa.fire(data.args);
             if (data.type == 'logout')
                 self.eventsCallbacks.onNotificationPhoneJsLogout.fire();
+            if (data.type == 'external_site_interaction_error')
+                self.eventsCallbacks.onNotificationExternalSiteInteractionError.fire(data.args);
             if (data.type == 'contact_saved')
                 self.eventsCallbacks.onNotificationContactSaved.fire(data.args);
         });

@@ -666,6 +666,26 @@ class PhoneJSController {
                 self.phone.session_data.remote_call.id_contacto=args['contact_id'];
             }
         });
+
+        this.notification_agent.eventsCallbacks.onNotificationExternalSiteInteractionError.add(
+            function(args) {
+                if (args.error === null) {
+                    $.growl.notice({
+                        title: gettext('CRM conectado con éxito'),
+                        message: "",
+                        duration: 5000
+                    });
+                } else {
+                    $.growl.error({
+                        title: gettext('CRM no conectado'),
+                        message: args.error,
+                        fixed: true,
+                    });
+                }
+            }
+        );
+
+
         this.notification_agent_whatsapp.eventsCallbacks.onNotificationNewChat.add(function(args){
             console.log("===================================> NEW CHAT")
             $('#newChat').removeClass('invisible');
