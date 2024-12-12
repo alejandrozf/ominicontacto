@@ -12,7 +12,7 @@
           <span class="p-inputgroup-addon">
             <i class="pi pi-list"></i>
           </span>
-          <InputNumber
+          <InputText
             :class="{
               'p-invalid': v$.form.value.$invalid && submitted,
             }"
@@ -39,7 +39,7 @@
           :class="{
             'p-error': v$.form.description.$invalid && submitted,
           }"
-          >{{ $t("models.whatsapp.line.options.description") }}*</label
+          >{{ $t("models.whatsapp.line.options.description") }}</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
@@ -53,18 +53,6 @@
             @input="updateOption"
           />
         </div>
-        <small
-          v-if="
-            (v$.form.description.$invalid && submitted) ||
-            v$.form.description.$pending.$response
-          "
-          class="p-error"
-          >{{
-            v$.form.description.required.$message.replace(
-              "Value",
-              $t("models.whatsapp.line.options.description")
-            )
-          }}</small>
       </div>
     </div>
     <div class="grid formgrid mt-4">
@@ -231,7 +219,7 @@ export default {
         return {
             form: {
                 value: { required },
-                description: { required },
+                description: { },
                 type_option: { required },
                 destination: { required }
             }
