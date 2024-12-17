@@ -17,3 +17,11 @@ No changes in this release.
 ## Removed
 
 No removals in this release.
+
+# Release Notes
+2024-12-17
+
+## Fixed
+
+- oml-2853 Fix: upload blacklist contact to redis using pagination.
+- Fix redis error on campaign creation without agents.
