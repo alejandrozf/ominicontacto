@@ -763,6 +763,8 @@ class CampanasDeAgenteFamily(object):
 
     def registrar_campanas_a_agente(self, agente_id, campanas_ids):
         """ Registra N campanas ids a un agente """
+        if not campanas_ids:
+            return
         self.get_redis_connection()
         key = self.get_agente_key(agente_id)
         self.redis_connection.sadd(key, *campanas_ids)
@@ -835,6 +837,8 @@ class CampaignAgentsFamily(object):
         self.redis_connection.srem(key, agente_id)
 
     def registrar_agentes_en_campana(self, campana_id, agente_ids):
+        if not agente_ids:
+            return
         self._get_redis_connection()
         key = self.KEY_PREFIX.format(campana_id)
         self.redis_connection.sadd(key, *agente_ids)
