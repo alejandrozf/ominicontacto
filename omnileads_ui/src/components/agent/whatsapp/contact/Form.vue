@@ -356,6 +356,11 @@ export default {
                     this.contact.phone = this.agtWhatsCoversationInfo.client.phone || this.agtWhatsCoversationInfo.destination;
                     this.contact.data = this.agtWhatsCoversationInfo.client.data || [];
                 }
+                else {
+                  if (this.agtWhatsCoversationInfo.destination !== null){
+                    this.contact.phone = this.agtWhatsCoversationInfo.destination
+                  }
+                }
                 this.initFormData();
             },
             deep: true,
