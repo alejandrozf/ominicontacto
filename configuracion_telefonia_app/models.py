@@ -62,7 +62,7 @@ class TroncalSIP(models.Model):
     register_string = models.CharField(max_length=100, blank=True, null=True,
                                        verbose_name=_('Register string'))
     text_config = models.TextField(verbose_name=_('Text config'))
-    tecnologia = models.PositiveIntegerField(choices=OPCIONES_TECNOLOGIA, default=CHANSIP)
+    tecnologia = models.PositiveIntegerField(choices=OPCIONES_TECNOLOGIA, default=PJSIP)
 
     def __str__(self):
         return self.nombre

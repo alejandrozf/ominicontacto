@@ -392,9 +392,13 @@ class Command(BaseCommand):
                        "aor/qualify_frequency=60\n"
                        "endpoint/allow=alaw,ulaw\n"
                        "endpoint/dtmf_mode=rfc4733\n"
+                       ";external_media_address=****Container engine Host IP -> OML****\n"
+                       ";external_signaling_address=****Container engine Host IP -> OML****\n"
+                       ";external_signaling_port=****Container engine Host port forward -> OML****\n"
                        "endpoint/context=from-pstn\n"
                        "remote_hosts=" + remote_host + "\n"
                        "outbound_auth/username=" + caller_id + "\n"
+                       "endpoint/from_user=" + caller_id + "\n"
                        "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,

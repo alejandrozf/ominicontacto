@@ -23,22 +23,25 @@ var templates = [
         'id': 0,
         'template':
           'type=wizard\n\
-transport=trunk-nat-transport\n\
+transport=trunk-transport\n\
 accepts_registrations=no\n\
 accepts_auth=no\n\
-sends_registrations=yes\n\
-sends_auth=yes\n\
-endpoint/rtp_symmetric=yes\n\
-endpoint/force_rport=yes\n\
+sends_registrations=no\n\
+sends_auth=no\n\
+endpoint/rtp_symmetric=no\n\
+endpoint/force_rport=no\n\
 endpoint/rewrite_contact=yes\n\
 endpoint/timers=yes\n\
 aor/qualify_frequency=60\n\
-endpoint/allow=alaw,ulaw\n\
+endpoint/allow=alaw,ulaw,opus\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pstn\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-outbound_auth/username=****YOUR SIP_USERNAME****\n\
-outbound_auth/password=****YOUR SIP_PASSWORD****'
+;endpoint/from_user=****Your SIP Trunk User****\n\
+;endpoint/from_domain=****Your Your net domain ****\n\
+;registration/contact_user=****Your DID number****\n\
+;outbound_auth/username=****YOUR SIP_USERNAME****\n\
+;outbound_auth/password=****YOUR SIP_PASSWORD****\n\
+remote_hosts=****IPADDR-or-FQDN:PORT****'
     },
     {
         'id': 1,
@@ -52,12 +55,15 @@ sends_auth=no\n\
 endpoint/rtp_symmetric=no\n\
 endpoint/force_rport=no\n\
 endpoint/rewrite_contact=no\n\
-aor/qualify_frequency=60\n\
-endpoint/allow=alaw,ulaw\n\
+endpoint/language=es\n\
+endpoint/allow=alaw,ulaw,opus\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/timers=yes\n\
 endpoint/language=es\n\
 endpoint/context=from-pstn\n\
+;endpoint/from_user=****Your SIP Trunk User****\n\
+;endpoint/from_domain=****Your Your net domain ****\n\
+;registration/contact_user=****Your DID number****\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
@@ -74,20 +80,25 @@ endpoint/force_rport=no\n\
 endpoint/rewrite_contact=no\n\
 endpoint/timers=yes\n\
 aor/qualify_frequency=60\n\
-endpoint/allow=alaw,ulaw\n\
+endpoint/allow=alaw,ulaw,opus\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pbx\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
+;endpoint/from_user=****Your SIP Trunk User****\n\
+;endpoint/from_domain=****Your Your net domain ****\n\
+;registration/contact_user=****Your DID number****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
+endpoint/from_user=****SIP_USER OML -> PBX****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+remote_hosts=****IPADDR-or-FQDN:PORT****',
+
     },
     {
         'id': 3,
         'template':
         'type=wizard\n\
-transport=trunk-nat-transport\n\
+transport=trunk-transport\n\
 accepts_registrations=no\n\
 sends_auth=yes\n\
 sends_registrations=yes\n\
@@ -97,20 +108,23 @@ endpoint/force_rport=yes\n\
 endpoint/rewrite_contact=yes\n\
 endpoint/timers=yes\n\
 aor/qualify_frequency=60\n\
-endpoint/allow=alaw,ulaw\n\
+endpoint/allow=alaw,ulaw,opus\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pbx\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
+;endpoint/from_user=****Your SIP Trunk User****\n\
+;endpoint/from_domain=****Your Your net domain ****\n\
+;registration/contact_user=****Your DID number****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
         'id': 4,
         'template':
         'type=wizard\n\
-transport=trunk-nat-docker-transport\n\
+transport=trunk-transport\n\
 accepts_registrations=no\n\
 sends_auth=yes\n\
 sends_registrations=yes\n\
@@ -123,11 +137,15 @@ aor/qualify_frequency=60\n\
 endpoint/allow=alaw,ulaw\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pbx\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-inbound_auth/username=****SIP_USER PBX -> OML****\n\
-inbound_auth/password=****SIP_PASS PBX -> OML****\n\
+endpoint/from_user=****Your SIP Trunk User****,\n\
+;endpoint/from_domain=****Your Your net domain ****\n\
+;registration/contact_user=****Your DID number****,\n\
+external_media_address=****Container engine Host IP -> OML****\n\
+external_signaling_address=****Container engine Host IP -> OML****\n\
+external_signaling_port=****Container engine Host port forward -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
         'id': 5,
@@ -159,15 +177,15 @@ function getTemplateName(template_id){
     var OMNILEADS_TM = $('#omnileads_tm').val() == undefined? 'asterisk':$('#omnileads_tm').val();
     switch (template_id) {
     case 0:
-        return 'Internet SIP Trunk';
+        return 'LAN SIP Trunk';
     case 1:
-        return 'Dedicated SIP Trunk';
+        return 'Public IP SIP Trunk';
     case 2: 
-        return interpolate('PBX %(OMNILEADS_TM)s (LAN)', {OMNILEADS_TM:OMNILEADS_TM},true);
+        return 'PBX SIP Trunk';
     case 3:
-        return interpolate('PBX %(OMNILEADS_TM)s (NAT)', {OMNILEADS_TM:OMNILEADS_TM},true);
+        return 'Behind NAT SIP Trunk';
     case 4:
-        return 'OML Docker';
+        return 'Container Bridge NET';
     case 5:
         return 'Custom';
     }
