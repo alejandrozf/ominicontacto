@@ -120,6 +120,9 @@ class TemplateWhatsapp(models.Model):
                 fields=['linea_id', 'identificador'], name='identificador_unico')
         ]
 
+    def __str__(self) -> str:
+        return f"{self.id} - {self.nombre}"
+
 
 class GrupoPlantillaMensaje(AuditableModelMixin):
     nombre = models.CharField(max_length=100)

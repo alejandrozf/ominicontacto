@@ -115,6 +115,10 @@ if not os.getenv('WEBPHONE_CLIENT_VERSION', '') == '':
     ADDONS_APPS.append('webphone_client_app.apps.WebphoneClientAppConfig')
     ADDON_URLPATTERNS.append((r'^', 'webphone_client_app.urls'))
     ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'webphone_client_app/locale'), )
+if not os.getenv('BULK_MESSAGES_VERSION', '') == '':
+    ADDONS_APPS.append('bulk_messages_app.apps.BulkMessagesAppConfig')
+    ADDON_URLPATTERNS.append((r'^', 'bulk_messages_app.urls'))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'bulk_messages_app/locale'), )
 
 #########################################
 # django-cors-headers Custom config
