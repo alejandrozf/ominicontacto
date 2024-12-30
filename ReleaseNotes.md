@@ -1,10 +1,9 @@
 # Release Notes
-2024-11-28
+2024-12-30
 
 ## Added
 
-- oml-2796 Campaigns Agents list saved in redis.
-- oml-2829 Campaigns Agents status list api
+- oml-2843 Close Whatsapp conversations command.
 
 ## Changed
 
@@ -12,16 +11,10 @@ No changes in this release.
 
 ## Fixed
 
-- oml-2839 Fixes phone parsing to int when calling from Agent's softphone.
+- oml-2854 Optimizations to allow loading big Blacklists.
+- oml-2831 Identify Whatsapp contact now shows phone field correctly. 
+- oml-2856 IVR name change is reflected in IVR as Destination Option.
 
 ## Removed
 
 No removals in this release.
-
-# Release Notes
-2024-12-17
-
-## Fixed
-
-- oml-2853 Fix: upload blacklist contact to redis using pagination.
-- Fix redis error on campaign creation without agents.
