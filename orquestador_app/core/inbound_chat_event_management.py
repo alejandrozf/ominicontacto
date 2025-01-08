@@ -15,10 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import json
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.models import Campana
+from ominicontacto_app.services.redis.connection import create_redis_connection
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 
 from orquestador_app.core.gupshup_send_menssage import (
@@ -26,6 +28,8 @@ from orquestador_app.core.gupshup_send_menssage import (
     send_text_message)
 from orquestador_app.core.check_out_of_time import is_out_of_time
 from orquestador_app.core.notify_agents import send_notify
+
+redis_2 = create_redis_connection(db=2)
 
 
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
@@ -78,6 +82,15 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 created_conversation = True
                 if not is_out_of_time_chat:
                     autoresponse_welcome(line, conversation, timestamp)
+                if client is None:
+                    redis_2.sadd(
+                        f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NOT-IDENTIFIED-CONV',
+                        conversation.destination
+                    )
+                    redis_2.publish('OML:CHANNEL:WHATSAPPEVENTS', json.dumps({
+                        'type': 'WHATSAPP:NOT-IDENTIFIED-CONV',
+                        'campaign_id': conversation.campana_id,
+                    }))
             else:
                 if not conversation.is_active:
                     conversation.is_active = True
@@ -96,6 +109,14 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 return
             #  ## notificar a agentes
             if created_conversation and conversation.campana:
+                redis_2.sadd(
+                    f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NEW-INBOUND-CONV',
+                    conversation.id
+                )
+                redis_2.publish('OML:CHANNEL:WHATSAPPEVENTS', json.dumps({
+                    'type': 'WHATSAPP:NEW-INBOUND-CONV',
+                    'campaign_id': conversation.campana_id,
+                }))
                 await send_notify('notify_whatsapp_new_chat', conversation=conversation)
             elif created_message and conversation.agent:
                 await send_notify('notify_whatsapp_new_message', conversation=conversation,
