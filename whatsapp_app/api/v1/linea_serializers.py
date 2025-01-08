@@ -133,9 +133,12 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         try:
             destino = DestinoEntrante.objects.get(tipo=DestinoEntrante.CAMPANA,
                                                   object_id=campana_id)
-            if not destino.content_object.whatsapp_habilitado:
+            destino_lineas = destino.lineas.all()
+            if 'line_id' in self.context:
+                destino_lineas = destino_lineas.exclude(id=self.context['line_id'])
+            if destino_lineas.exists():  # verificar que la campnana no la este usando otra linea.
                 raise serializers.ValidationError({
-                    'data': _('Valor incorrecto. La campaña no tiene whatsapp habilitado')})
+                    'data': _('Valor incorrecto. Esta campaña esta siendo usada por otra línea')})
             self.destino = destino
             return campana_id
         except DestinoEntrante.DoesNotExist:
@@ -163,7 +166,8 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         for menu_data in list_menu_data:
             menu = MenuInteractivoWhatsapp(menu_header=menu_data['menu_header'],
                                            menu_body=menu_data['menu_body'],
-                                           menu_footer= menu_data['menu_footer'] if 'menu_footer' in menu_data else '',
+                                           menu_footer=menu_data['menu_footer']
+                                           if 'menu_footer' in menu_data else '',
                                            menu_button=menu_data['menu_button'],
                                            texto_opcion_incorrecta=menu_data['wrong_answer'],
                                            texto_derivacion=menu_data['success'],
@@ -310,8 +314,8 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
 class MenuInteractivoSerializer(serializers.Serializer):
     id_tmp = serializers.IntegerField(required=False)
     menu_header = serializers.CharField(max_length=60)
-    menu_body =  serializers.CharField(max_length=1024)
-    menu_footer =  serializers.CharField(required=False, allow_blank=True, max_length=60)
+    menu_body = serializers.CharField(max_length=1024)
+    menu_footer = serializers.CharField(required=False, allow_blank=True, max_length=60)
     menu_button = serializers.CharField(max_length=20)
     wrong_answer = serializers.CharField()
     success = serializers.CharField()

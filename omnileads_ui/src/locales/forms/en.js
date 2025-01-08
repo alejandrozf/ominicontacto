@@ -257,7 +257,8 @@ export default {
         line: {
             validations: {
                 field_is_required: '{field} is required',
-                max_len: 'Ensure this field has no more than {max_len} characters.'
+                max_len: 'Ensure this field has no more than {max_len} characters.',
+                whatsapp_habilitado: 'This campaign does not have the channel enabled, activation will be forced.'
             },
             destination_types: {
                 campaign: 'Campaign',
@@ -268,7 +269,8 @@ export default {
                 success_update: 'Destination option updated successfully',
                 success_delete: 'Destination option successfully removed',
                 empty_options: 'No destination options configured'
-            }
+            },
+            only_whatsapp_habilitado: 'Only campaigns with the channel enabled'
         },
         group_of_message_template: {
             validations: {
