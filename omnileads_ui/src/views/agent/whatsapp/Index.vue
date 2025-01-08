@@ -5,14 +5,14 @@
       <TabPanel>
         <template #header>
           <span>{{ $t("views.whatsapp.conversations.answered") }}</span>
-          <Badge :value="numAnsweredMessages" class="ml-2"></Badge>
+          <Badge :value="numAnsweredMessages.toString()" class="ml-2"></Badge>
         </template>
         <ListMessages :messages="answeredMessages" class="scroll" />
       </TabPanel>
       <TabPanel>
         <template #header>
           <span>{{ $t("views.whatsapp.conversations.new") }}</span>
-          <Badge :value="numNewMessages" class="ml-2"></Badge>
+          <Badge :value="numNewMessages.toString()" class="ml-2"></Badge>
         </template>
         <ListMessages :messages="newMessages" class="scroll" />
       </TabPanel>

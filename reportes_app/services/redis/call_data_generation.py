@@ -38,6 +38,7 @@ class CallDataGenerator(object):
     # CALLDATA_AGENT_KEY = 'OML:CALLDATA:AGENT:{0}'
     CALLDATA_QUEUE_SIZE_KEY = 'OML:CALLDATA:QUEUE-SIZE:{0}'
     CALLDATA_QUEUE_KEY = 'OML:CALLDATA:QUEUE:{0}'
+    WHATSAPP_CAMP_KEY = 'OML:WHATSAPP:CAMP:{0}'
 
     EVENTOS_FIN_CONEXION_ORIGINAL = [
         'COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-TRY', 'BTOUT-TRY',
@@ -56,7 +57,12 @@ class CallDataGenerator(object):
 
     def eliminar_datos(self):
         """ Eliminar Datos acumulativos del día """
-        base_keys = [self.CALLDATA_CAMP_KEY, self.CALLDATA_WAIT_KEY]  # , self.CALLDATA_AGENT_KEY]
+        base_keys = [
+            self.CALLDATA_CAMP_KEY,
+            self.CALLDATA_WAIT_KEY,
+            # self.CALLDATA_AGENT_KEY,
+            self.WHATSAPP_CAMP_KEY,
+        ]
         for base_key in base_keys:
             keys = self.redis_connection.keys(base_key.format('*'))
             if keys:
