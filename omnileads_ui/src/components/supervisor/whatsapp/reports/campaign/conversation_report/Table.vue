@@ -164,6 +164,24 @@
         </template>
       </Column>
       <Column
+        field="was_closed_by_system"
+        :sortable="true"
+        :header="$t('views.whatsapp.reports.campaign.conversation.system_closed')"
+      >
+      <template #body="{ data }">
+        <i
+          v-if="data.was_closed_by_system"
+          class="pi pi-check-circle"
+          style="color: green; font-size: 2rem"
+        ></i>
+        <i
+          v-else
+          class="pi pi-times-circle"
+          style="color: red; font-size: 2rem"
+        ></i>
+      </template>
+      </Column>
+      <Column
         field="disposition.name"
         :sortable="true"
         :header="$t('models.whatsapp.conversation.disposition')"

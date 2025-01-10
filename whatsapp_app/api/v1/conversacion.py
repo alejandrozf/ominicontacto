@@ -121,6 +121,7 @@ class ConversacionFilterSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     campaign = serializers.SerializerMethodField()
     destination = serializers.CharField()
+    was_closed_by_system = serializers.SerializerMethodField()
     disposition = serializers.SerializerMethodField()
     client = serializers.SerializerMethodField()
     agent = serializers.SerializerMethodField()
@@ -178,6 +179,8 @@ class ConversacionFilterSerializer(serializers.Serializer):
         except Exception as e:
             print(e)
 
+    def get_was_closed_by_system(self, obj):
+        return obj.is_disposition and not obj.conversation_disposition
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
     is_transfer_campaing = serializers.BooleanField()
