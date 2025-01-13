@@ -259,7 +259,8 @@ export default {
                 conversation: {
                     title: 'Conversation report',
                     table_title: 'Conversation list',
-                    detail_title: 'Detail of the conversation'
+                    detail_title: 'Detail of the conversation',
+                    system_closed: 'System Closed?'
                 }
             }
         }
