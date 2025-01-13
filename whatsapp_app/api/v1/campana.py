@@ -35,6 +35,7 @@ class ListSerializer(serializers.Serializer):
     name = serializers.CharField(source='nombre')
     type = serializers.IntegerField()
     line_id = serializers.SerializerMethodField()
+    whatsapp_habilitado = serializers.BooleanField()
 
     def get_line_id(self, obj):
         configuracionwhatsapp = obj.configuracionwhatsapp.last()
@@ -51,17 +52,17 @@ class ViewSet(viewsets.ViewSet):
         try:
             estados = [Campana.ESTADO_ACTIVA]
             if request.user.get_is_administrador():
-                queryset = Campana.objects.filter(estado__in=estados, whatsapp_habilitado=True)
+                queryset = Campana.objects.filter(estado__in=estados)
             elif request.user.get_is_agente():
                 campana_members = request.user.get_agente_profile().campana_member.all()
                 queue_names = campana_members.values_list('id_campana', flat=True)
                 campaigns_pks = [Campana.get_id_from_queue_id_name(name) for name in queue_names]
                 queryset = Campana.objects.filter(
-                    pk__in=campaigns_pks, estado__in=estados, whatsapp_habilitado=True)
+                    pk__in=campaigns_pks, estado__in=estados)
             else:
                 queryset = request.user.get_supervisor_profile()\
                     .campanas_asignadas_actuales().filter(
-                        estado__in=estados, whatsapp_habilitado=True)
+                        estado__in=estados)
             serializer = ListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
@@ -69,8 +70,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Se obtuvieron las campanas de forma exitosa'),
                     data=serializer.data),
                 status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener campanas')),
