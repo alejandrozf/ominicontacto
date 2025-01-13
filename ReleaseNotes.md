@@ -4,10 +4,12 @@
 ## Added
 
 - oml-2843 Close Whatsapp conversations command.
+- oml-2724 Better notifications in case of External site interaction errors.
+- oml-2765 Show transfer conference members.
 
 ## Changed
 
-No changes in this release.
+- oml-2825 Whatsapp Interactive Menu form validations
 
 ## Fixed
 
