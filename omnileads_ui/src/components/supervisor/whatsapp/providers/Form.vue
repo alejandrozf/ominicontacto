@@ -179,7 +179,6 @@
             <i class="pi pi-key"></i>
           </span>
           <Password
-            toggleMask
             :feedback="false"
             :class="{
               'p-invalid':
