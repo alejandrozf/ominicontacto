@@ -38,6 +38,17 @@ class ListSerializer(serializers.Serializer):
     provider_type = serializers.IntegerField(source='tipo_proveedor')
     configuration = serializers.JSONField(source='configuracion')
 
+    class Meta:
+        class ListSerializer(serializers.ListSerializer):
+            def to_representation(self, data):
+                items = super().to_representation(data)
+                for item in items:
+                    if item['configuration'].get('password_partner'):
+                        item['configuration']['password_partner'] = '**********'
+                return items
+
+        list_serializer_class = ListSerializer
+
 
 class CreateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='nombre')
@@ -53,7 +64,7 @@ class CreateSerializer(serializers.ModelSerializer):
             "configuration"
         ]
 
-    def validate_configuracion(self, configuration):
+    def validate_configuration(self, configuration):
         tipo_proveedor = self.initial_data.get('provider_type')
         if tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
             if 'api_key' not in configuration:
@@ -93,7 +104,7 @@ class UpdateSerializer(serializers.ModelSerializer):
         return [f for f in self.fields.values()
                 if not f.write_only and f.field_name in self.initial_data]
 
-    def validate_configuracion(self, configuration):
+    def validate_configuration(self, configuration):
         if self.initial_data.get('provider_type'):
             tipo_proveedor = self.initial_data.get('tipo_proveedor')
         else:
@@ -107,6 +118,8 @@ class UpdateSerializer(serializers.ModelSerializer):
                     or 'token_de_acceso' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
+        if configuration.get('password_partner') == '**********':
+            configuration['password_partner'] = self.instance.configuracion['password_partner']
         return configuration
 
 
