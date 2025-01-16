@@ -370,6 +370,7 @@ class LlamadaLog(models.Model):
     EVENTOS_NO_CONEXION_TRANSFER = [
         'BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION', 'BT-NOANSWER', 'BT-ABANDON',
         'CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL', 'CT-CONGESTION',
+        'CAMPCT-DISCARD', 'CAMPCT-BUSY', 'CAMPCT-CANCEL', 'CAMPCT-CHANUNAVAIL', 'CAMPCT-CONGESTION',
         'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION', 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON',
         'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
     ]
@@ -379,13 +380,14 @@ class LlamadaLog(models.Model):
                             'BT-TRY', 'COMPLETE-BT',
                             'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
                             'CT-COMPLETE', 'COMPLETE-CT', 'ABANDON-CT',
+                            'CAMPCT-COMPLETE', 'COMPLETE-CAMPCT', 'ABANDON-CAMPCT',
                             'BTOUT-TRY',
                             'CTOUT-COMPLETE', ]
 
     # Marcan el fin de la conexion por una transferencia para el agente original
     EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
                                          'CAMPT-COMPLETE', 'CAMPT-FAIL',
-                                         'CT-COMPLETE', 'CTOUT-COMPLETE']
+                                         'CT-COMPLETE', 'COMPLETE-CAMPCT', 'CTOUT-COMPLETE']
 
     EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
                                'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
