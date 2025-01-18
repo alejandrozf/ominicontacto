@@ -192,8 +192,10 @@ class LlamadaLogManager(models.Manager):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
         fecha_fin = datetime_hora_maxima_dia(fecha_fin)
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
-                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
-                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT',
+                           'CAMPCT-COMPLETE', 'COMPLETE-CAMPCT',
+                           'CAMPT-COMPLETE', 'COMPLETE-CAMPT',
+                           'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
 
@@ -209,8 +211,10 @@ class LlamadaLogManager(models.Manager):
                                       callid, id_contacto_externo, agente, campana, campanas,
                                       marcadas, duracion, gestion, calificaciones):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE', 'COMPLETE-BT',
-                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
-                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'CT-ANSWER', 'CT-COMPLETE', 'COMPLETE-CT',
+                           'CAMPCT-COMPLETE', 'COMPLETE-CAMPCT',
+                           'CAMPT-COMPLETE', 'COMPLETE-CAMPT',
+                           'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
                            'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
                            'CTOUT-TRY', 'BT-TRY']
         # Campañas a Filtrar:
@@ -387,7 +391,7 @@ class LlamadaLog(models.Model):
     # Marcan el fin de la conexion por una transferencia para el agente original
     EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
                                          'CAMPT-COMPLETE', 'CAMPT-FAIL',
-                                         'CT-COMPLETE', 'COMPLETE-CAMPCT', 'CTOUT-COMPLETE']
+                                         'CT-COMPLETE', 'CAMPCT-COMPLETE', 'CTOUT-COMPLETE']
 
     EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
                                'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
