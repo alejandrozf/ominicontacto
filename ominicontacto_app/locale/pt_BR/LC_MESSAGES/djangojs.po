@@ -726,6 +726,3 @@ msgstr "Chat transferido!"
 #: ominicontacto_app/static/ominicontacto/JS/whatsapp_notifications.js:29
 msgid "¡Chat expirado!"
 msgstr "Chat expirado!"
-
-#~ msgid "Conectando a asterisk  .."
-#~ msgstr "Conectando a asterisk  .."
