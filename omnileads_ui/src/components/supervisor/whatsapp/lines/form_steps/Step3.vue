@@ -532,6 +532,9 @@ export default {
             this.form.mensaje_fueradehora = this.supWhatsappLine.mensaje_fueradehora;
             this.form.destination_type = this.supWhatsappLine.destination.type;
             this.form.destination = this.supWhatsappLine.destination.data;
+            this.msgBienvenidaChange();
+            this.msgDespedidaChange();
+            this.msgFueraHoraChange();
         },
         addInteractiveMenuItem() {
           this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date()})
@@ -886,6 +889,11 @@ export default {
                     }
                 }
             },
+            deep: true,
+            immediate: true
+        },
+        supWhatsappLine: {
+            handler () { this.initFormBase(); },
             deep: true,
             immediate: true
         },

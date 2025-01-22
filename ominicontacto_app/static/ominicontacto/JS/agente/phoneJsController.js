@@ -225,8 +225,8 @@ class PhoneJSController {
 
         // Transfer View events: makeTransfer, EndTransfer,
         this.view.makeTransferButton.on('click', function () {
-            this.transfer = new OutTransferData();
-            if (!this.transfer.is_valid){
+            self.transfer = new OutTransferData();
+            if (!self.transfer.is_valid){
                 alert(gettext('Seleccione una opción válida'));
             }
             else {
@@ -1031,10 +1031,10 @@ class PhoneJSController {
             var fromUser = session_data.from;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:fromUser}, true);
             this.view.setCallStatus(message, 'orange');
-            if (self.phone.session_data.is_transfered &&
-                        self.phone.session_data.is_consultative_transfer) {
+            if (this.phone.session_data.is_transfered &&
+                        this.phone.session_data.is_consultative_transfer) {
                 var agtmessage = interpolate(gettext('Agente %(from_agent_name)s'),
-                    message = {from_agent_name:self.phone.session_data.from_agent_name}, true);
+                    message = {from_agent_name:this.phone.session_data.from_agent_name}, true);
                 this.view.setConferenceAgent(message, 'orange');
             }
             this.manageContact(session_data);

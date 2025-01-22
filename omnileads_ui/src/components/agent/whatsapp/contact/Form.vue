@@ -355,11 +355,12 @@ export default {
                     this.contact.id = this.agtWhatsCoversationInfo.client.id;
                     this.contact.phone = this.agtWhatsCoversationInfo.client.phone || this.agtWhatsCoversationInfo.destination;
                     this.contact.data = this.agtWhatsCoversationInfo.client.data || [];
-                }
-                else {
-                  if (this.agtWhatsCoversationInfo.destination !== null){
-                    this.contact.phone = this.agtWhatsCoversationInfo.destination
-                  }
+                } else {
+                    if (this.agtWhatsCoversationInfo.destination !== null) {
+                        this.contact.id = null;
+                        this.contact.phone = this.agtWhatsCoversationInfo.destination;
+                        this.contact.data = [];
+                    }
                 }
                 this.initFormData();
             },

@@ -26,7 +26,7 @@ var CAMPANA_TYPE_ENTRANTE = 3;
  */
 class PhoneJSView {
     constructor () {
-        /*Temporal Debug */ this.consultToCampEnabled = false;
+        /*Temporal Debug */ this.consultToCampEnabled = true;
         /* Streams */
         this.local_audio = $('#localAudio')[0];
         this.remote_audio = $('#remoteAudio')[0];

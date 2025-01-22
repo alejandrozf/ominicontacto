@@ -318,10 +318,10 @@ class PhoneJS {
             } else if (transfer.is_to_campaign) {
                 if (transfer.destination) {             // TODO: Remove Line
                     this.transferTimeoutHandler = setTimeout(function() {
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
                         self.currentSession.sendDTMF(transfer.destination);
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
