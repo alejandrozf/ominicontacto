@@ -10,7 +10,8 @@
 
 ## Changed
 
-- oml-2825 Whatsapp Interactive Menu form validations
+- oml-2825 Whatsapp Interactive Menu form validations.
+- PJSIP parameters optimized for different networking scenarios.
 
 ## Fixed
 
