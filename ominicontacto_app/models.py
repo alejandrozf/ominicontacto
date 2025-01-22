@@ -691,12 +691,16 @@ class FieldFormulario(models.Model):
     TIPO_NUMERO = 5
     """Tipo de campo numero"""
 
+    TIPO_LISTA_DINAMICA = 6
+    """Tipo de campo numero"""
+
     TIPO_CHOICES = (
         (TIPO_TEXTO, _('Texto')),
         (TIPO_FECHA, _('Fecha')),
         (TIPO_LISTA, _('Lista')),
         (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
         (TIPO_NUMERO, _('Número')),
+        (TIPO_LISTA_DINAMICA, _('Lista Dinámica')),
     )
 
     TIPO_ENTERO = 1
@@ -715,6 +719,8 @@ class FieldFormulario(models.Model):
     tipo_numero = models.PositiveIntegerField(choices=TIPO_NUMERO_CHOICES, blank=True, null=True)
     cifras_significativas = models.PositiveIntegerField(blank=True, null=True)
     values_select = models.TextField(blank=True, null=True)
+    sitio_externo = models.ForeignKey(
+        "SitioExterno", on_delete=models.CASCADE, null=True, blank=True)
     is_required = models.BooleanField()
 
     class Meta:
@@ -3322,12 +3328,14 @@ class SitioExterno(models.Model):
     AUTOMATICO = 2
     SERVER = 3
     CALIFICACION = 4
+    LISTA_DINAMICA = 5
 
     DISPARADORES = (
         (BOTON, _('Agente')),
         (AUTOMATICO, _('Automático')),
         (SERVER, _('Servidor')),
         (CALIFICACION, _('Calificación')),
+        (LISTA_DINAMICA, _('Lista Dinámica')),
     )
 
     GET = 1

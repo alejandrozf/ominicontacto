@@ -25,7 +25,8 @@ export default {
             opt1: 'Agent',
             opt2: 'Automatic',
             opt3: 'Server',
-            opt4: 'Call disposition'
+            opt4: 'Call disposition',
+            opt5: 'Dynamic list'
         },
         objectives: {
             opt1: 'Embedded',
@@ -50,7 +51,8 @@ export default {
                 date: 'Date',
                 list: 'List',
                 text_box: 'Text box',
-                numero: 'Number'
+                numero: 'Number',
+                dynamic_list: 'Dynamic List'
             },
             numero_type: {
                 entero_type: 'Integer',

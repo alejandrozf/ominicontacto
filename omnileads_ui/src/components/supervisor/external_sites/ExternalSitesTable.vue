@@ -207,6 +207,8 @@ export default {
                 return this.$t('forms.external_site.triggers.opt3');
             } else if (option === 4) {
                 return this.$t('forms.external_site.triggers.opt4');
+            } else if (option === 5) {
+                return this.$t('forms.external_site.triggers.opt5');
             }
         },
         toEditExternalSite (externalSite) {

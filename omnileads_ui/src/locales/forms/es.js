@@ -25,7 +25,8 @@ export default {
             opt1: 'Agente',
             opt2: 'Automatico',
             opt3: 'Servidor',
-            opt4: 'Calificacion'
+            opt4: 'Calificacion',
+            opt5: 'Lista Dinámica'
         },
         objectives: {
             opt1: 'Embebido',
@@ -50,7 +51,8 @@ export default {
                 date: 'Fecha',
                 list: 'Lista',
                 text_box: 'Caja de texto',
-                numero: 'Numero'
+                numero: 'Numero',
+                dynamic_list: 'Lista Dinámica'
             },
             numero_type: {
                 entero_type: 'Entero',

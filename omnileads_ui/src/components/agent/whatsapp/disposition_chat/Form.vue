@@ -87,7 +87,7 @@
                 'p-invalid': isEmptyField(field.value) && submitted,
               }"
               class="w-full"
-              v-else-if="field.type == fieldTypes.OPT3"
+              v-else-if="field.type == fieldTypes.OPT3 || field.type == fieldTypes.OPT6"
               optionLabel="name"
               optionValue="value"
               :options="field.selectOptions"
@@ -152,7 +152,7 @@
             <Dropdown
               v-model="field.value"
               class="w-full"
-              v-else-if="field.type == fieldTypes.OPT3"
+              v-else-if="field.type == fieldTypes.OPT3 || field.type == fieldTypes.OPT6"
               optionLabel="name"
               optionValue="value"
               :options="field.selectOptions"
@@ -335,7 +335,7 @@ export default {
                 return 'pi-bars';
             } else if (type === FIELD_TYPES.OPT2) {
                 return 'pi-calendar';
-            } else if (type === FIELD_TYPES.OPT3) {
+            } else if (type === FIELD_TYPES.OPT3 || type === FIELD_TYPES.OPT6) {
                 return 'pi-list';
             } else if (type === FIELD_TYPES.OPT4) {
                 return 'pi-comment';
@@ -359,15 +359,10 @@ export default {
                 return null;
             }
             const options = JSON.parse(data);
-            const dropdownOptions = [
-                { name: '-------', value: null },
-                ...options.map((item) => {
-                    return {
-                        name: item,
-                        value: item
-                    };
-                })
-            ];
+            const dropdownOptions = [{ name: '-------', value: null }]
+            for (let option of options){
+              dropdownOptions.push({ name: option, value: option});
+            }
             return dropdownOptions;
         },
         getFormFieldsByOption () {

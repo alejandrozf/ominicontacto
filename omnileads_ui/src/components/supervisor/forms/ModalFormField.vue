@@ -122,6 +122,26 @@
             </div>
           </div>
         </div>
+
+        <div class="field mt-3" v-if="newFormField.tipo == 6">
+          <div class="flex flex-col gap-4">
+            <label
+              id="form_field_sitio_externo"
+              >{{ $t("models.form_field.sitio_externo") }}*</label
+            >
+            <Dropdown
+              v-model="newFormField.sitio_externo"
+              :options="externalSitesDynamicList"
+              optionLabel="nombre"
+              optionValue="id"
+              placeholder="--------"
+              class="mt-2 w-full"
+              v-bind:filterPlaceholder="
+                $t('globals.find_by', { field: $tc('globals.name') }, 1)
+              "
+            />
+          </div>
+        </div>
       </div>
       <OptionListForm :isListType="isListType" />
     </div>
@@ -173,7 +193,8 @@ export default {
                 { option: this.$t('forms.form.field.type.date'), value: 2 },
                 { option: this.$t('forms.form.field.type.list'), value: 3 },
                 { option: this.$t('forms.form.field.type.text_box'), value: 4 },
-                { option: this.$t('forms.form.field.type.numero'), value: 5 }
+                { option: this.$t('forms.form.field.type.numero'), value: 5 },
+                { option: this.$t('forms.form.field.type.dynamic_list'), value: 6 }
             ],
             fieldTypesNumero: [
                 { option: this.$t('forms.form.field.numero_type.entero_type'), value: 1 },
@@ -185,13 +206,13 @@ export default {
         this.initFormData();
     },
     computed: {
-        ...mapState(['newFormField', 'optionListValues', 'formDetail', 'newForm']),
+        ...mapState(['newFormField', 'optionListValues', 'formDetail', 'newForm', 'externalSitesDynamicList']),
         checkEmptyList () {
             return this.optionListValues.length === 0 && this.newFormField.tipo === 3;
         }
     },
     methods: {
-        ...mapActions(['initNewFormField', 'initOptionListValues', 'addFormField']),
+        ...mapActions(['initNewFormField', 'initOptionListValues', 'addFormField', 'initExternalSitesDynamicList']),
         initFormData () {
             this.submitted = false;
             this.initNewFormField();
@@ -224,6 +245,7 @@ export default {
         changeTypeEvent () {
             this.isListType = this.newFormField.tipo === 3;
             this.initOptionListValues();
+            this.initExternalSitesDynamicList();
         },
         fieldNameEvent () {
             this.duplicateFieldName = this.newForm.campos.find(

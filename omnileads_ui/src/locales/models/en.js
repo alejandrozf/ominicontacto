@@ -75,7 +75,8 @@ export default {
         type: 'Type',
         required: 'Required?',
         list_options: 'List options',
-        numero_type: 'Number type'
+        numero_type: 'Number type',
+        sitio_externo: 'External Site'
     },
     pause: {
         id: 'ID',
