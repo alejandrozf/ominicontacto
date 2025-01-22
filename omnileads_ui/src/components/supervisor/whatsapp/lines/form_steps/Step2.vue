@@ -101,7 +101,9 @@
                 <span class="p-inputgroup-addon">
                   <i class="pi pi-list"></i>
                 </span>
-                <InputText
+                <Password
+                  toggleMask
+                  :feedback="false"
                   :class="{
                     'p-invalid':
                       v$.supWhatsappLine.configuracion.app_id.$invalid &&

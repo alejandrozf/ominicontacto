@@ -51,6 +51,7 @@ from api_app.views.external_site import (
     SitioExternoUpdate)
 from api_app.views.external_site_authentication import (
     ExternalSiteAuthenticationCreate,
+    ExternalSiteAuthenticationTest,
     ExternalSiteAuthenticationDelete,
     ExternalSiteAuthenticationDetail,
     ExternalSiteAuthenticationList,
@@ -90,7 +91,7 @@ from api_app.views.agente import (
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk,
     AgentRejectCallAsterisk, Click2CallOutsideCampaign, ApiAgentesParaTransferencia,
-    AgentDisabledAsterisk,
+    AgentDisabledAsterisk, NotifyEndTransferredCall
 )
 from api_app.views.grabaciones import (
     ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView, ObtenerUrlGrabacionView
@@ -280,6 +281,9 @@ urlpatterns = [
     re_path(r'api/v1/external_site_authentications/create/$',
             ExternalSiteAuthenticationCreate.as_view(),
             name='api_external_site_authentications_create'),
+    re_path(r'api/v1/external_site_authentications/test/$',
+            ExternalSiteAuthenticationTest.as_view(),
+            name='api_external_site_authentications_test'),
     re_path(r'api/v1/external_site_authentications/(?P<pk>\d+)/update/$',
             ExternalSiteAuthenticationUpdate.as_view(),
             name='api_external_site_authentications_update'),
@@ -510,6 +514,8 @@ urlpatterns = [
          AgentRejectCallAsterisk.as_view(), name='api_make_reject_call'),
     path('api/v1/asterisk_disabled/',
          AgentDisabledAsterisk.as_view(), name='api_make_disabled'),
+    path('api/v1/notify_end_transferred_call/',
+         NotifyEndTransferredCall.as_view(), name='api_notify_end_transferred_call'),
     path('api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
          name='api_credenciales_sip_agente'),
     path('api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),

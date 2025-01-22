@@ -26,7 +26,9 @@ class NotificationSocket
             onNotificationForzarDespausa: $.Callbacks(),
             onNotificationForzarPausa: $.Callbacks(),
             onNotificationPhoneJsLogout: $.Callbacks(),
-            onNotificationContactSaved: $.Callbacks()
+            onNotificationExternalSiteInteractionError: $.Callbacks(),
+            onNotificationContactSaved: $.Callbacks(),
+            onNotificationEndTransferredCall: $.Callbacks()
         };
     }
 
@@ -46,8 +48,12 @@ class NotificationSocket
                 self.eventsCallbacks.onNotificationForzarDespausa.fire(data.args);
             if (data.type == 'logout')
                 self.eventsCallbacks.onNotificationPhoneJsLogout.fire();
+            if (data.type == 'external_site_interaction_error')
+                self.eventsCallbacks.onNotificationExternalSiteInteractionError.fire(data.args);
             if (data.type == 'contact_saved')
                 self.eventsCallbacks.onNotificationContactSaved.fire(data.args);
+            if (data.type == 'end_transferred_call')
+                self.eventsCallbacks.onNotificationEndTransferredCall.fire(data.args);
         });
       
     }
@@ -76,7 +82,5 @@ class NotificationSocketWhatsapp
             if (data.type == 'whatsapp_new_chat' || data.type == 'whatsapp_new_message')
                 self.eventsCallbacks.onNotificationNewChat.fire(data.args);
         });
-      
     }
-
 }

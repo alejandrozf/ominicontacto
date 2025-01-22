@@ -1,27 +1,25 @@
 # Release Notes
-2024-11-28
+2024-12-30
 
 ## Added
 
-- oml-2796 Campaigns Agents list saved in redis.
-- oml-2829 Campaigns Agents status list api
+- oml-2843 Close Whatsapp conversations command.
+- oml-2724 Better notifications in case of External site interaction errors.
+- oml-2765 Show transfer conference members.
+- oml-2732 Consultative transfers to campaigns enabled.
 
 ## Changed
 
-No changes in this release.
+- oml-2825 Whatsapp Interactive Menu form validations
 
 ## Fixed
 
-- oml-2839 Fixes phone parsing to int when calling from Agent's softphone.
+- oml-2854 Optimizations to allow loading big Blacklists.
+- oml-2831 Identify Whatsapp contact now shows phone field correctly. 
+- oml-2856 IVR name change is reflected in IVR as Destination Option.
+- oml-2862 Hide Whatsapp Providers "Password Partner" field.
+- oml-2861 Fix Whatsapp line wizzard initial field data bug.
 
 ## Removed
 
 No removals in this release.
-
-# Release Notes
-2024-12-17
-
-## Fixed
-
-- oml-2853 Fix: upload blacklist contact to redis using pagination.
-- Fix redis error on campaign creation without agents.

@@ -122,6 +122,9 @@ class IVRUpdate(APIView):
             if serializer.is_valid():
                 ivr = serializer.save()
                 msg = _('Se actualizo el IVR de forma exitosa')
+                nodo = DestinoEntrante.get_nodo_ruta_entrante(ivr)
+                nodo.nombre = ivr.nombre
+                nodo.save()
                 if not escribir_nodo_ivr_config(self, ivr):
                     msg = _('Se actualizo el IVR pero no se pudo '
                             'cargar la configuración telefónica')

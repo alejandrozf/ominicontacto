@@ -17,7 +17,7 @@
             <li class="main-menu-li">
               <span class="icon {{ main_item.icon }}"></span>
             {% if main_item.url %}
-              <a class="menu-link" href="{{ main_item.url }}">{{ main_item.label }}</a>
+              <a class="menu-link {{ main_item.class }}" href="{{ main_item.url }}">{{ main_item.label }}</a>
             {% else %}
               <a class="menu-header" href="#{{ main_item.id }}" role="button" data-toggle="collapse" aria-expanded="false">{{ main_item.label }}</a>
               <ul class="collapse list-unstyled submenu" id="{{ main_item.id }}" data-parent="#nav-main-menu">

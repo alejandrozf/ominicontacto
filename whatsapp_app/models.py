@@ -120,6 +120,9 @@ class TemplateWhatsapp(models.Model):
                 fields=['linea_id', 'identificador'], name='identificador_unico')
         ]
 
+    def __str__(self) -> str:
+        return f"{self.id} - {self.nombre}"
+
 
 class GrupoPlantillaMensaje(AuditableModelMixin):
     nombre = models.CharField(max_length=100)
@@ -276,11 +279,11 @@ class MenuInteractivoWhatsapp(models.Model):
 
     @property
     def nombre(self):
-        return 'menu-interactivo-whatsapp-{0}'.format(self.id)
+        return self.menu_header
 
 
 class OpcionMenuInteractivoWhatsapp(models.Model):
     opcion = models.OneToOneField(
         'configuracion_telefonia_app.OpcionDestino', on_delete=models.CASCADE,
         related_name="opcion_menu_whatsapp")
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100, null=True, blank=True)

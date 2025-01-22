@@ -15,6 +15,9 @@ export default {
             commit('initExternalSiteAuthentication', null);
         }
     },
+    async testExternalSiteAuthentication ({ commit }, data) {
+        return await service.test(data);
+    },
     async deleteExternalSiteAuthentication ({ commit }, id) {
         return await service.delete(id);
     },

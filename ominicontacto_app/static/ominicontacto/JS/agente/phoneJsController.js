@@ -59,6 +59,7 @@ class PhoneJSController {
         this.campaign_type = null;
         this.campaign_name = '';
         this.llamada_calificada = null;
+        this.transfer = null
         /*-----------------*/
 
         this.disableOnHold();
@@ -224,8 +225,8 @@ class PhoneJSController {
 
         // Transfer View events: makeTransfer, EndTransfer,
         this.view.makeTransferButton.on('click', function () {
-            var transfer = new OutTransferData();
-            if (!transfer.is_valid){
+            self.transfer = new OutTransferData();
+            if (!self.transfer.is_valid){
                 alert(gettext('Seleccione una opción válida'));
             }
             else {
@@ -261,9 +262,21 @@ class PhoneJSController {
         this.view.endTransferButton.click(function() {
             self.phone_fsm.endTransfer();
             self.phone.endTransfer();
+            self.view.setConferenceAgent("", 'orange');
         });
 
         this.view.conferButton.click(function() {
+            if(self.transfer.is_consultative){
+                var member = null
+                if(self.transfer.is_to_agent)
+                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                else if(self.transfer.is_to_number)
+                    member = self.transfer.destination
+                var agtmessage = interpolate(
+                    gettext('Conference whith:%(from)s and %(member)s'),
+                    {from:self.phone.session_data.from, member: member}, true);
+                self.view.setConferenceAgent(agtmessage, 'orange');
+            }
             self.phone.confer();
         });
 
@@ -279,6 +292,13 @@ class PhoneJSController {
             var fromUser = self.phone.session_data.from;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:fromUser}, true);
             self.view.setCallStatus(message, 'orange');
+            if (self.phone.session_data.is_transfered &&
+                self.phone.session_data.is_consultative_transfer) {
+                var agtmessage = interpolate(
+                    gettext('Transferencia de Agente %(from_agent_name)s'),
+                    {from_agent_name:self.phone.session_data.from_agent_name}, true);
+                self.view.setConferenceAgent(agtmessage, 'orange');
+            }
             self.manageContact(self.phone.session_data);
         };
         
@@ -594,6 +614,10 @@ class PhoneJSController {
         });
 
         this.phone.eventsCallbacks.onCallEnded.add(function() {
+            if(self.phone.session_data.is_transfered && self.phone.session_data.is_consultative_transfer){
+                var agent_id = self.phone.session_data.from_agent_name.split('_')[0];
+                self.oml_api.notifyEndTransferredCall(agent_id);
+            }
             if (self.phone_fsm.state == 'DialingTransfer') {
                 self.phone.cancelDialTransfer();
             }
@@ -666,10 +690,47 @@ class PhoneJSController {
                 self.phone.session_data.remote_call.id_contacto=args['contact_id'];
             }
         });
+
+        this.notification_agent.eventsCallbacks.onNotificationExternalSiteInteractionError.add(
+            function(args) {
+                if (args.error === null) {
+                    $.growl.notice({
+                        title: gettext('CRM conectado con éxito'),
+                        message: "",
+                        duration: 5000
+                    });
+                } else {
+                    $.growl.error({
+                        title: gettext('CRM no conectado'),
+                        message: args.error,
+                        fixed: true,
+                    });
+                }
+            }
+        );
+
+
         this.notification_agent_whatsapp.eventsCallbacks.onNotificationNewChat.add(function(args){
             console.log("===================================> NEW CHAT")
             $('#newChat').removeClass('invisible');
         });
+        this.notification_agent.eventsCallbacks.onNotificationEndTransferredCall.add(function(args){
+            console.log("===================================> End Transferred Call")
+            if(self.transfer.is_consultative){
+                var member = null
+                if(self.transfer.is_to_agent){
+                    self.transfer.is_consultative = false;
+                    self.transfer.is_to_agent = false;
+                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                    var agtmessage = interpolate(
+                        gettext('The agent %(member)s ended the call'),
+                        { member: member}, true);
+                    self.view.setConferenceAgent(agtmessage, 'orange');
+                }
+
+                }
+        });
+
     }
 
     subscribeToNavigatorEvents() {
@@ -738,6 +799,7 @@ class PhoneJSController {
                 m_seconds
             );
         }
+        self.view.setConferenceAgent("", 'orange');
         // else { Stay in ACW Pause }:
     }
 
@@ -969,6 +1031,12 @@ class PhoneJSController {
             var fromUser = session_data.from;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:fromUser}, true);
             this.view.setCallStatus(message, 'orange');
+            if (this.phone.session_data.is_transfered &&
+                        this.phone.session_data.is_consultative_transfer) {
+                var agtmessage = interpolate(gettext('Agente %(from_agent_name)s'),
+                    message = {from_agent_name:this.phone.session_data.from_agent_name}, true);
+                this.view.setConferenceAgent(message, 'orange');
+            }
             this.manageContact(session_data);
             if (session_data.is_click2call) {
                 // Seteo datos para redial
@@ -1131,12 +1199,12 @@ class PhoneJSController {
     }
 
     makeSelectedTransfer() {
-        var transfer = new OutTransferData();
-        if (!transfer.is_valid){
+        this.transfer = new OutTransferData();
+        if (!this.transfer.is_valid){
             alert(gettext('Seleccione una opción válida'));
         }
         this.phone_fsm.dialTransfer();
-        this.phone.dialTransfer(transfer);
+        this.phone.dialTransfer(this.transfer);
         $('#numberToTransfer').val('');
     }
 

@@ -40,6 +40,8 @@ class AgentNotifier:
     TYPE_UNPAUSE = 'unpause'
     TYPE_PAUSE = 'pause'
     TYPE_CONTACT_SAVED = 'contact_saved'
+    TYPE_EXTERNAL_SITE_INTERACTION_ERROR = 'external_site_interaction_error'
+    TYPE_END_TRANSFERRED_CALL = 'end_transferred_call'
     TYPE_WHATSAPP_NEW_CHAT = 'whatsapp_new_chat'
     TYPE_WHATSAPP_CHAT_ATTENDED = 'whatsapp_chat_attended'
     TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
@@ -77,12 +79,28 @@ class AgentNotifier:
         }
         self.send_message(self.TYPE_UNPAUSE, message, user_id=user_id)
 
+    def notify_end_transferred_call(self, user_id):
+        message = {
+            'end_transferred_call': True
+        }
+        self.send_message(self.TYPE_END_TRANSFERRED_CALL, message, user_id=user_id)
+
     def notify_contact_saved(self, user_id, call_id, contact_id):
         message = {
             "id": call_id,
             "contact_id": contact_id
         }
         self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
+
+    def notify_external_site_interaction_error(self, user_id, error_msg):
+        message = {
+            'error_msg': error_msg
+        }
+        self.send_message(
+            self.TYPE_EXTERNAL_SITE_INTERACTION_ERROR,
+            message,
+            user_id=user_id
+        )
 
     async def notify_whatsapp_new_chat(self, user_id, **kwargs):
         conversation = kwargs.get('conversation', None)

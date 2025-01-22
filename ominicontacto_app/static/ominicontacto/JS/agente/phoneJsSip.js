@@ -318,10 +318,10 @@ class PhoneJS {
             } else if (transfer.is_to_campaign) {
                 if (transfer.destination) {             // TODO: Remove Line
                     this.transferTimeoutHandler = setTimeout(function() {
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
-                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
+                        self.currentSession.sendDTMF('8');
                         self.currentSession.sendDTMF(transfer.destination);
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
@@ -540,6 +540,10 @@ class SessionData {
     get transfer_type () {
         // Directa, asistida, campaña
         return this.invite_request.headers.Transfer[0].raw;
+    }
+
+    get is_consultative_transfer () {
+        return this.is_transfered && this.transfer_type == CONSULTATIVE_TRANSFER;
     }
 
     get transfer_type_str () {

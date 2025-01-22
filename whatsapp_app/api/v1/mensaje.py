@@ -58,10 +58,14 @@ class MensajeListSerializer(serializers.Serializer):
                 text = content['title'] + '\n'
                 options = content['items'][0]['options']
                 for option in options:
-                    text += f"{option['title']}- {option['description']} \n"
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
                 return {'text': text}
             elif obj.type == 'list_reply':
-                text = f"Reply-option:\n {obj.content['title']}-{obj.content['description']}"
+                text = "Reply-option:\n {}-{}"\
+                    .format(obj.content['title'],
+                            obj.content['description'] if 'description' in obj.content else '')
                 return {'text': text}
             return obj.content
         return {}

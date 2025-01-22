@@ -52,6 +52,8 @@ from api_app.services.calificacion_llamada import CalificacionLLamada
 from ominicontacto_app.services.asterisk.supervisor_activity import (
     SupervisorActivityAmiManager)
 
+from notification_app.notification import AgentNotifier
+
 
 class ObtenerCredencialesSIPAgenteView(APIView):
     permission_classes = (TienePermisoOML, )
@@ -512,6 +514,19 @@ class AgentDisabledAsterisk(APIView):
         agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
         agent_login_manager.set_agent_as_disabled(agente_profile)
+        return Response(data={'status': 'OK'})
+
+
+class NotifyEndTransferredCall(APIView):
+
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        agent_id = request.data.get('agent_id')
+        agente = AgenteProfile.objects.get(id=agent_id)
+        AgentNotifier().notify_end_transferred_call(agente.user_id)
         return Response(data={'status': 'OK'})
 
 

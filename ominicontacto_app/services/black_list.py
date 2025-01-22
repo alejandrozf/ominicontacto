@@ -84,27 +84,27 @@ class CreacionBlacklistService(object):
 
         try:
             estructura_archivo = parser.get_estructura_archivo(blacklist)
-            cantidad_contactos = 0
-            contactos_repetidos = False
-            if blacklist.cantidad_contactos:
-                cantidad_contactos = blacklist.cantidad_contactos
+            telefonos = set(ContactoBlacklist.objects.values_list('telefono', flat=True))
+            cant_viejos = len(telefonos)
+            cant_nuevos = 0
+            ContactoBlacklist.objects.all().delete()
             for lista_dato in estructura_archivo[1:]:
-                if ContactoBlacklist.objects.filter(telefono=lista_dato[0]).count() == 0:
-                    cantidad_contactos += 1
-                    ContactoBlacklist.objects.create(
-                        telefono=lista_dato[0],
-                        black_list=blacklist,
-                    )
-                else:
-                    contactos_repetidos = True
+                telefonos.add(lista_dato[0])
+                cant_nuevos += 1
+            contactos = []
+            for telefono in telefonos:
+                contactos.append(ContactoBlacklist(telefono=telefono, black_list=blacklist))
+            ContactoBlacklist.objects.bulk_create(contactos)
         except OmlParserMaxRowError:
-            blacklist.elimina_contactos()
+            blacklist.contactosblacklist.all().delete()
             raise
 
         except OmlParserCsvImportacionError:
-            blacklist.elimina_contactos()
+            blacklist.contactosblacklist.all().delete()
             raise
 
+        cantidad_contactos = len(telefonos)
+        contactos_repetidos = not (cantidad_contactos == (cant_viejos + cant_nuevos))
         blacklist.cantidad_contactos = cantidad_contactos
         blacklist.save()
         return contactos_repetidos

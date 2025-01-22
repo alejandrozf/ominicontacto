@@ -198,7 +198,7 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                     valor=option_data['value'])
                 OpcionMenuInteractivoWhatsapp.objects.create(
                     opcion=opcion,
-                    descripcion=option_data['description'])
+                    descripcion=option_data['description'] if 'description' in option_data else "")
 
     def update_opcions(self, destino_whith_options):
         # TODO NO SE USA ACTUALMENTE IMPLEMENTACION INCOMPLETA

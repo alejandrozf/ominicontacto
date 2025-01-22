@@ -46,6 +46,9 @@ export default {
         show: 'Unhide'
     },
     external_site_authentication: {
+        test_auth: {
+            label: 'Test Authentication'
+        },
         list_title: 'External site authentications',
         edit_title: 'Edit external site authentication',
         new_title: 'New external site authentication'
@@ -256,7 +259,8 @@ export default {
                 conversation: {
                     title: 'Conversation report',
                     table_title: 'Conversation list',
-                    detail_title: 'Detail of the conversation'
+                    detail_title: 'Detail of the conversation',
+                    system_closed: 'System Closed?'
                 }
             }
         }

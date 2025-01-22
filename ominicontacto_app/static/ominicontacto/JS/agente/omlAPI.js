@@ -327,4 +327,21 @@ class OMLAPI {
             }
         });
     }
+
+    notifyEndTransferredCall(agent_id)
+    {
+        var URL = Urls.api_notify_end_transferred_call();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: {
+                'agent_id': agent_id
+            },
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
 }

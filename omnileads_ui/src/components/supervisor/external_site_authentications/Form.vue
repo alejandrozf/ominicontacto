@@ -275,7 +275,14 @@
       </div>
     </div>
     <div class="flex justify-content-end flex-wrap">
-      <div class="flex align-items-center">
+      <div class="flex align-items-center gap-2">
+        <Button
+          :label="$t('views.external_site_authentication.test_auth.label')"
+          :disabled="v$.externalSiteAuthentication.$invalid"
+          icon="pi pi-key"
+          class="mt-4 p-button-outlined"
+          @click="test_auth()"
+        />
         <Button
           :label="$t('globals.save')"
           icon="pi pi-save"
@@ -284,6 +291,9 @@
         />
       </div>
     </div>
+    <Message v-for="msg of messages" :severity="msg.severity" :key="msg.content">
+      {{ msg.content }}
+    </Message>
   </div>
 </template>
 
@@ -324,6 +334,7 @@ export default {
             invalid_name_campo_duracion: false,
             disable_campo_duracion: true,
             disable_duracion: false,
+            messages: [],
             regexAlfanumeric: new RegExp('^[a-zA-Z0-9_]+$')
         };
     },
@@ -336,6 +347,7 @@ export default {
     methods: {
         ...mapActions([
             'createExternalSiteAuthentication',
+            'testExternalSiteAuthentication',
             'updateExternalSiteAuthentication',
             'initExternalSiteAuthentications'
         ]),
@@ -385,6 +397,13 @@ export default {
                 this.disable_campo_duracion = true;
                 this.invalid_campo_duracion = false;
             }
+        },
+        async test_auth () {
+            const response = await this.testExternalSiteAuthentication(this.externalSiteAuthentication);
+            this.messages.push({
+                severity: response.status === HTTP_STATUS.SUCCESS ? 'success' : 'error',
+                content: response.message
+            });
         },
         async save (isFormValid) {
             this.submitted = true;

@@ -129,6 +129,29 @@ class InteraccionConSistemaExterno(object):
         autenticacion.save()
         return autenticacion.token, False
 
+    def probar_autenticacion(self, *, url, username, password, ssl_estricto, campo_token, **kwargs):
+        response = requests.get(
+            url,
+            json={"username": username, "password": password},
+            verify=ssl_estricto,
+            timeout=10
+        )
+        response.raise_for_status()
+        try:
+            response_json = response.json()
+        except requests.JSONDecodeError:
+            raise requests.HTTPError(
+                _('La respuesta es esperada en formato JSON'),
+                response=response
+            )
+        token = self.leer_campo(campo_token, response_json)
+        if token is None:
+            raise requests.HTTPError(
+                _('La respuesta no contiene información en el campo_token'),
+                response=response
+            )
+        return token
+
     def leer_campo(self, campo, response_json):
         # En principio se asume que el campo esta en el primer nivel del objeto response.
         return response_json.get(campo, None)
