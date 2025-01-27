@@ -353,6 +353,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['ivr_breakdown'].choices = ivr_breakdown_choices
         if not instance.pk:
             self.initial['wrapuptime'] = 2
+            self.initial['auto_grabacion'] = True
 
     class Meta:
         model = Queue
@@ -1946,6 +1947,7 @@ class QueueDialerForm(forms.ModelForm):
 
         if not instance.pk:
             self.initial['wrapuptime'] = 2
+            self.initial['auto_grabacion'] = True
 
 
 ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
@@ -1984,7 +1986,7 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
-    auto_grabacion = forms.BooleanField(required=False)
+    auto_grabacion = forms.BooleanField(required=False, initial=True)
     detectar_contestadores = forms.BooleanField(required=False)
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -2027,7 +2029,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
-    auto_grabacion = forms.BooleanField(required=False)
+    auto_grabacion = forms.BooleanField(required=False, initial=True)
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     telefono_habilitado = forms.BooleanField(required=False, disabled=True)
