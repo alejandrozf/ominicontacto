@@ -18,7 +18,7 @@
 $(function () {
   inicializarCampoSitioExterno();
 
-  $('#id_0-bd_contacto').each(function() {
+  $('#camp_bd_contactos').each(function() {
       $(this).select2();});
 });
 
