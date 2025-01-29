@@ -7,6 +7,10 @@ export default {
         const { externalSites } = await service.list();
         commit('initExternalSites', externalSites);
     },
+    async initExternalSitesDynamicList ({ commit }) {
+        const { externalSites } = await service.list();
+        commit('initExternalSitesDynamicList', externalSites);
+    },
     async initExternalSiteDetail ({ commit }, id) {
         const { externalSiteDetail } = await service.detail(id);
         commit('initExternalSiteDetail', externalSiteDetail);

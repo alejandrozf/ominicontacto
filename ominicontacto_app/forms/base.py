@@ -58,6 +58,8 @@ from ominicontacto_app.parser import is_valid_length
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
+from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
+    InteraccionConSistemaExterno)
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -1568,6 +1570,16 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                     label=campo.nombre_campo, min_value=0,
                     decimal_places=campo.cifras_significativas,
                     widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                    required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_LISTA_DINAMICA:
+                servicio = InteraccionConSistemaExterno()
+                respuesta_sitio_externo = servicio.obtener_lista_dinamica(campo.sitio_externo)
+                choices = (EMPTY_CHOICE,) + tuple((option, option)
+                                                  for option in respuesta_sitio_externo)
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
                     required=campo.is_required)
 
     class Meta:

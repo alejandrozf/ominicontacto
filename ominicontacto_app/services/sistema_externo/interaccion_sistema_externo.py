@@ -155,3 +155,22 @@ class InteraccionConSistemaExterno(object):
     def leer_campo(self, campo, response_json):
         # En principio se asume que el campo esta en el primer nivel del objeto response.
         return response_json.get(campo, None)
+
+    def obtener_lista_dinamica(self, sitio_externo):
+        url = sitio_externo.url
+        headers, error = self.obtener_headers(sitio_externo)
+        if not error:
+            verify_ssl = True
+            if sitio_externo.autenticacion and not sitio_externo.autenticacion.ssl_estricto:
+                verify_ssl = False
+            if sitio_externo.metodo == SitioExterno.GET:
+                response = requests.get(url, headers=headers, verify=verify_ssl, timeout=10)
+                if response.status_code == 200:
+                    try:
+                        return response.json()
+                    except:
+                        logger.exception(_('Error al ejecutar InteraccionConSistemaExterno: {0}').format(headers))
+                        return ["ERROR: Service {} not available".format(sitio_externo.nombre)]
+        else:
+            logger.exception(_('Error al ejecutar InteraccionConSistemaExterno: {0}').format(headers))
+            return ["ERROR: Service {} not available".format(sitio_externo.nombre)]

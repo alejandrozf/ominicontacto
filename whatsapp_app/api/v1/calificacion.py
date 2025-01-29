@@ -35,6 +35,9 @@ from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
 from whatsapp_app.models import ConversacionWhatsapp
 from orquestador_app.core.gupshup_send_menssage import autoresponse_goodbye
 
+from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
+    InteraccionConSistemaExterno)
+
 
 class AgentSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -172,8 +175,15 @@ class FieldFormularioSerializer(serializers.Serializer):
     type_number = serializers.IntegerField(source="tipo_numero")
     sig_digits = serializers.IntegerField(source="cifras_significativas")
     order = serializers.IntegerField(source="orden")
-    values_select = serializers.CharField()
+    values_select = serializers.SerializerMethodField()
     is_required = serializers.BooleanField()
+
+    def get_values_select(self, obj):
+        if obj.tipo == FieldFormulario.TIPO_LISTA_DINAMICA:
+            servicio = InteraccionConSistemaExterno()
+            respuesta_sitio_externo = servicio.obtener_lista_dinamica(obj.sitio_externo)
+            return json.dumps(respuesta_sitio_externo)
+        return obj.values_select
 
 
 class OpcionCalificacionSerializer(serializers.Serializer):

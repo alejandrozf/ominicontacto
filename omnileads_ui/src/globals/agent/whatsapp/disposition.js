@@ -9,7 +9,8 @@ export const FIELD_TYPES = {
     OPT2: 2, // Date
     OPT3: 3, // List
     OPT4: 4, // Text box
-    OPT5: 5 // Number
+    OPT5: 5, // Number
+    OPT6: 6 // Dynamic List
 };
 
 export const FIELD_TYPE_NUMBER = {
