@@ -182,6 +182,7 @@ class ConversacionFilterSerializer(serializers.Serializer):
     def get_was_closed_by_system(self, obj):
         return obj.is_disposition and not obj.conversation_disposition
 
+
 class ConversacionNuevaSerializer(ConversacionSerializer):
     is_transfer_campaing = serializers.BooleanField()
     number_messages = serializers.IntegerField()

@@ -168,9 +168,12 @@ class InteraccionConSistemaExterno(object):
                 if response.status_code == 200:
                     try:
                         return response.json()
-                    except:
-                        logger.exception(_('Error al ejecutar InteraccionConSistemaExterno: {0}').format(headers))
+                    except Exception:
+                        logger.exception(
+                            _('Error al ejecutar InteraccionConSistemaExterno: {0}').format(
+                                headers))
                         return ["ERROR: Service {} not available".format(sitio_externo.nombre)]
         else:
-            logger.exception(_('Error al ejecutar InteraccionConSistemaExterno: {0}').format(headers))
+            logger.exception(_('Error al ejecutar InteraccionConSistemaExterno: {0}').format(
+                headers))
             return ["ERROR: Service {} not available".format(sitio_externo.nombre)]

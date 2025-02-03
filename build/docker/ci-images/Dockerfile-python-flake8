@@ -4,7 +4,7 @@ FROM python:3.9-alpine
 RUN apk add --virtual .buildeps \
       build-base \
       libffi-dev \
-      postgresql14-dev \
+      postgresql-dev \
       git \
       curl \
       bash \
@@ -24,5 +24,8 @@ RUN apk add --virtual .buildeps \
       python3-dev \
     && pip3 install --upgrade pip \
     && pip3 install flake8
-  
+
+# Install ESLint globally
+RUN npm install -g eslint@6.1.0
+
 CMD ["python"]

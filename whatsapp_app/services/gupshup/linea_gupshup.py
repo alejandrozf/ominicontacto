@@ -30,7 +30,7 @@ def get_partner_access_token(provider):
             'password': provider.configuracion['password_partner']
         }
         response = requests.post(url=URL_PARTNER_TOKEN, headers=headers, data=payload)
-        if response.status_code==200:
+        if response.status_code == 200:
             return response.json()['token']
     return ''
 
@@ -39,7 +39,7 @@ def get_app_token(app_id, partner_token):
     if app_id and 'partner_token':
         headers = {"accept": "application/json", "Authorization": partner_token}
         response = requests.get(url=URL_APP_TOKEN.format(app_id), headers=headers)
-        if response.status_code==200:
+        if response.status_code == 200:
             return response.json()['token']['token']
     return ''
 
@@ -52,6 +52,6 @@ def get_line_status(line):
         app_token = get_app_token(app_id, token)
         headers.update({'Authorization': app_token})
         response = requests.get(url=URL_LINE_HEALTH.format(app_id), headers=headers)
-        if response.status_code==200:
-            return 'LIVE' if response.json()['healthy'] =='true' else '-'
+        if response.status_code == 200:
+            return 'LIVE' if response.json()['healthy'] == 'true' else '-'
     return '-'

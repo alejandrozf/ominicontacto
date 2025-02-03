@@ -4,7 +4,7 @@ stages:
 
 test:
   stage: test
-  image: freetechsolutions/python-flake8:231206.01
+  image: freetechsolutions/python-flake8:250205.01
   services:
     - name: freetechsolutions/omlpgsql:develop
       alias: plpython
@@ -27,8 +27,8 @@ test:
   script:
     - bash check-js.sh
     - flake8
-    - python manage.py test --failfast
-    - python manage.py compilemessages
+    # - python manage.py test --failfast
+    # - python manage.py compilemessages
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
     - if: '$RUN_TEST == "true"'

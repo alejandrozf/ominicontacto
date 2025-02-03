@@ -574,12 +574,12 @@ urlpatterns = [
                 views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
             name='formulario_venta'
             ),
-    re_path(r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
-            login_required(
-                views_calificacion_cliente.\
-                RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
-            name='auditar_formulario_venta'
-            ),
+    re_path(
+        r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
+        login_required(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
+        name='auditar_formulario_venta'
+    ),
     # ==========================================================================
     # Agente
     # ==========================================================================

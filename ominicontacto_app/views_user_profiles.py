@@ -423,11 +423,12 @@ class UserDeleteView(DeleteView):
         obj = self.get_object()
         if obj.is_agente:
             agente = obj.get_agente_profile()
-            inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+            inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino()\
+                                                    .values_list("nombre", flat=True)
             if len(inbound_routes_where_is_destino):
                 msgs = [_('El Agente no puede ser eliminado.')]
                 msgs.append(
-                    _('El mismo se encuentra como "destino" en la{0} Ruta{0} Entrante{0}: {1}.'.format(
+                    _('El mismo se encuentra como "destino" en la Ruta Entrante {0}: {1}.'.format(
                         pluralize(len(inbound_routes_where_is_destino)),
                         ", ".join(inbound_routes_where_is_destino)
                     ))
@@ -623,7 +624,8 @@ class DesactivarAgenteView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+        inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino()\
+                                                .values_list("nombre", flat=True)
         if len(inbound_routes_where_is_destino):
             msgs = [_('El Agente no fue desactivado.')]
             msgs.append(
