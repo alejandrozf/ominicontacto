@@ -58,9 +58,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </h2>
         <input type="button" id="submit_restart_wombat" name="campana_id" class="btn btn-outline-primary btn-sm" value="{% trans 'Refrescar' %}"/>
     {% endif %}
-    <a value="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right action_for_campaign">
+    {% if wombat_habilitado %}
+      <a value="{% url 'campana_dialer_finaliza_activas' %}" class="btn btn-light btn-sm float-right action_for_campaign">
         {% trans 'Finalizar campañas sin contactos por discar' %}
-    </a>
+      </a>
+    {% endif %}
     </br>
     </br>
     <table class="table">
