@@ -389,6 +389,9 @@ class DestinoEntrante(models.Model):
             raise _('Error: El nodo HangUp es único.')
         elif isinstance(info_nodo_entrante, MenuInteractivoWhatsapp):
             tipo = cls.MENU_INTERACTIVO_WHATSAPP
+        elif info_nodo_entrante.__class__.__name__ == 'Encuesta' and \
+                info_nodo_entrante.__module__ == 'survey_app.models':
+            tipo = cls.SURVEY
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
