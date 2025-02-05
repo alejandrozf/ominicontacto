@@ -34,6 +34,7 @@ class TestsInicializarEntorno (OMLBaseTest):
         admin.is_staff = True
         admin.save()
 
+    @patch('redis.Redis.sadd')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.queue_add')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
@@ -48,7 +49,7 @@ class TestsInicializarEntorno (OMLBaseTest):
     def test_multiples_agentes(self, activar_agente, activar_queue, regenerar_troncales,
                                regenerar_asterisk, escribir_ruta_entrante_config,
                                obtener_sip_agentes_sesiones_activas, ami_connect,
-                               queue_add):
+                               queue_add, sadd):
         inicializar_entorno = Command()
         inicializar_entorno._crear_datos_entorno(False, 3, 2)
         activar_agente.assert_called()
