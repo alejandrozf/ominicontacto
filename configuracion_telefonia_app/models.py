@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 import calendar
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -429,16 +430,20 @@ class DestinoEntrante(models.Model):
         """
         return self.campanas_destino_failover.exists()
 
-    def lineas_destino_whatsapp(self):
+    def lineas_whatsapp_antecesoras(self):
         """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un
             Menu Interactivo de WhatsApp.
-            Nota: Cuando el menú tenga más profundidad habrá que recorrer todo el arbol
         """
+        # Busco las lineas de los menues que tengan este destino
         nodos_anteriores = self.destinos_anteriores.filter(
             destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
-        destinos_menu = list(nodos_anteriores.values_list('destino_anterior', flat=True).distinct())
-        lineas = Linea.objects.filter(destino_id__in=destinos_menu + [self.id, ])
-        return lineas
+        ids_menues_anteriores = nodos_anteriores.values_list('destino_anterior__object_id')
+        ids_lineas_menues_anteriores = MenuInteractivoWhatsapp.objects.filter(
+            id__in=ids_menues_anteriores).values_list('line_id', flat=True)
+        q_lineas_menu = Q(id__in=ids_lineas_menues_anteriores)
+        # Y las lineas que tengan este destino directamente
+        q_lineas_directo = Q(destino_id=self.id)
+        return Linea.objects.filter(q_lineas_menu | q_lineas_directo)
 
 
 class OpcionDestino(models.Model):

@@ -892,17 +892,17 @@ class CampanaMixinForm(object):
         whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
         if instance is not None:
             if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
-                antecesores_linea = []
+                lineas_antecesoras = []
                 try:
                     nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
-                    antecesores_linea = nodo.lineas_destino_whatsapp()
+                    lineas_antecesoras = nodo.lineas_whatsapp_antecesoras()
                 except Exception:
                     pass
-                if antecesores_linea:
-                    for line in antecesores_linea:
-                        line.destino = None
-                        line.save()
-                    # nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                if lineas_antecesoras:
+                    nombres_lineas = lineas_antecesoras.values_list('nombre', flat=True)
+                    nombres_lineas = ', '.join(nombres_lineas)
+                    msg = self.ERROR_WHATSAPP_DESTINO.format(nombres_lineas)
+                    raise forms.ValidationError(msg)
                 ConfiguracionWhatsappCampana.objects.filter(
                     is_active=True, campana=instance).update(is_active=False)
         return whatsapp_habilitado
