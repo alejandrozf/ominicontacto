@@ -417,7 +417,8 @@ class AgenteProfile(models.Model):
     reported_by = models.ForeignKey(User, related_name="reportedby", on_delete=models.CASCADE)
     is_inactive = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
-    destinos_entrantes = GenericRelation("configuracion_telefonia_app.DestinoEntrante", related_query_name="agente")
+    destinos_entrantes = GenericRelation(
+        "configuracion_telefonia_app.DestinoEntrante", related_query_name="agente")
 
     def __str__(self):
         return self.user.get_full_name()
