@@ -35,6 +35,7 @@ export default {
     supWhatsappDestinationMenuOptions: [],
     supWhatsappLineIteractiveForm: {
         id_tmp: 0,
+        is_main: true,
         text: '',
         wrongAnswer: '',
         successAnswer: '',

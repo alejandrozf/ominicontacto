@@ -208,7 +208,8 @@ export default {
                 wrong_answer: 'Respuesta incorrecta',
                 success_answer: 'Respuesta de exito',
                 timeout: 'Tiempo de espera',
-                options: 'Opciones'
+                options: 'Opciones',
+                is_main: 'Principal'
             }
         },
         message_template: {

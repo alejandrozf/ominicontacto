@@ -276,6 +276,9 @@ class MenuInteractivoWhatsapp(models.Model):
     texto_opcion_incorrecta = models.CharField(max_length=100, null=True, blank=True)
     texto_derivacion = models.CharField(max_length=100)
     timeout = models.IntegerField(null=True)
+    line = models.ForeignKey(
+        Linea, related_name="menuinteractivo", on_delete=models.CASCADE, null=True, blank=True)
+    is_main = models.BooleanField(default=False)
 
     @property
     def nombre(self):

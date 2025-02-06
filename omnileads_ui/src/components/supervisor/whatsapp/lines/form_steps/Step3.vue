@@ -537,7 +537,7 @@ export default {
             this.msgFueraHoraChange();
         },
         addInteractiveMenuItem() {
-          this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date()})
+          this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date(), is_main: false})
         },
         handleModal ({ showModal = false, formToCreate = false, option = null }) {
             this.showModal = showModal;
