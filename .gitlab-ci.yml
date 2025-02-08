@@ -18,6 +18,7 @@ test:
     - mkdir -p /opt/omnileads/static
     - mkdir -p /opt/omnileads/media_root
     - pip install -r requirements/requirements.txt
+    - rm "${CI_PROJECT_DIR}"/omnileads_ui/.eslintrc.js
   variables:
     POSTGRES_DB: omnileads
     POSTGRES_USER: omnileads
