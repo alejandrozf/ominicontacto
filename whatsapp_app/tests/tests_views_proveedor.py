@@ -56,8 +56,8 @@ class ConfiguracionProveedorTest(OMLBaseTest):
         response_proveedor_list = self.client.get(url)
         playload = {
             "name": "provedor",
-            "provider_type": 1,
-            "configuration": {}
+            "provider_type": 2,
+            "configuration": {'api_key': "********"},
         }
         response_proveedor_create = self.client.post(url, playload, content_type="application/json")
         self.assertEqual(response_proveedor_list.status_code, status.HTTP_200_OK)

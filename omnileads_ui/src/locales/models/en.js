@@ -209,7 +209,8 @@ export default {
                 wrong_answer: 'Wrong answer',
                 success_answer: 'Success response',
                 timeout: 'Wait time',
-                options: 'Options'
+                options: 'Options',
+                is_main: 'Main'
             }
         },
         message_template: {

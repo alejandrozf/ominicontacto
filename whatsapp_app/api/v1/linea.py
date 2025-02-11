@@ -23,10 +23,10 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.services.redis.linea import StreamDeLineas
-from whatsapp_app.models import Linea, ConfiguracionWhatsappCampana
+from whatsapp_app.models import Linea, ConfiguracionWhatsappCampana, MenuInteractivoWhatsapp
 from whatsapp_app.api.v1.linea_serializers import (
     ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
     DestinoDeLineaCreateSerializer, )
@@ -106,6 +106,15 @@ class ViewSet(viewsets.ViewSet):
                                 updated_by=request.user,
                             )
                             confwhatsappcampana.save()
+                    if line.destino.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                        destino.content_object.is_main = True
+                        destino.content_object.save()
+                        menu_ids = [menu.get('id')
+                                    for menu in serializer_destino.data['data'] if 'id' in menu]
+                        if menu_ids:
+                            MenuInteractivoWhatsapp.objects.filter(
+                                id__in=menu_ids).update(line=line.id)
+
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
                     StreamDeLineas().notificar_nueva_linea(line)
@@ -125,9 +134,9 @@ class ViewSet(viewsets.ViewSet):
                     data=get_response_data(message=_('Error en los datos'),
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
+        except Exception as e:
             return response.Response(
-                data=get_response_data(message=_('Error al crear la línea')),
+                data=get_response_data(message=_('Error al crear la línea') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def retrieve(self, request, pk):
@@ -168,7 +177,7 @@ class ViewSet(viewsets.ViewSet):
             print(e)
             return response.Response(
                 data=get_response_data(
-                    message=_('Error al obtener la línea')),
+                    message=_('Error al obtener la línea: ') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk):
@@ -185,14 +194,22 @@ class ViewSet(viewsets.ViewSet):
             serializer = UpdateSerializer(instance, data=request_data, partial=True)
             if serializer.is_valid():
                 serializer_destino =\
-                    DestinoDeLineaCreateSerializer(data=destino_data, context={'line_id': pk})
+                    DestinoDeLineaCreateSerializer(data=destino_data, context={'line': instance})
                 if serializer_destino.is_valid():
+                    for menu_old in instance.menuinteractivo.all():
+                        destino_old = DestinoEntrante.objects.get(
+                            object_id=menu_old.pk,
+                            tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+                        opciones_destino =\
+                            OpcionDestino.objects.filter(destino_anterior=destino_old)
+                        for option in opciones_destino:
+                            if option.destino_siguiente.tipo ==\
+                               DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                                option.destino_siguiente.delete()
+                            option.delete()
+                        destino_old.delete()
+                        menu_old.delete()
                     serializer_destino.save()
-                    # if instance.destino and instance.destino.tipo ==\
-                    #         DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-                    #     destino_menu_old = instance.destino  # borrar destino anterior
-                    #     # noqa: F841
-                    #     # destino_menu_old.delete()
                     destino = serializer_destino.destino
                     line = serializer.save(
                         destino=destino,
@@ -211,6 +228,10 @@ class ViewSet(viewsets.ViewSet):
                                 updated_by=request.user,
                             )
                             confwhatsappcampana.save()
+                    if line.destino.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                        destino.content_object.is_main = True
+                        destino.content_object.save()
+
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
                     StreamDeLineas().notificar_nueva_linea(line)
@@ -233,9 +254,8 @@ class ViewSet(viewsets.ViewSet):
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print('e', e)
             return response.Response(
-                data=get_response_data(message=_('Error al crear la línea')),
+                data=get_response_data(message=_('Error al crear la línea >>>') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def destroy(self, request, pk):

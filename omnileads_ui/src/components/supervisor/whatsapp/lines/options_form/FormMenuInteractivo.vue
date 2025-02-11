@@ -1,6 +1,16 @@
 <template>
+<div>
 <Fieldset :toggleable="true" :collapsed="false">
   <div class="field col-12">
+  <div class="card mt-2">
+      <div v-if="data.is_main" class="flex flex-wrap mt-2">
+        <label> {{ $t("models.whatsapp.line.interactive_form.is_main") }} </label>
+        <Checkbox v-model="interactiveForm.is_main" :disabled="true" binary/>
+      </div>
+      <div v-else class="flex flex-wrap mt-2">
+        <Button label="Delete" icon="pi pi-trash" class="p-button-danger ml-2" @click="delete_menu(data.id_tmp)" />
+      </div>
+  </div>
   <div class="card mt-2">
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
@@ -382,6 +392,7 @@
 />
 </div>
 </Fieldset>
+</div>
 </template>
 
 <script>
@@ -442,6 +453,7 @@ export default {
     },
     computed: {
         ...mapState([
+            'supWhatsappLine',
             'supWhatsappLineOptionForm',
             'supWhatsappLineCampaigns',
             'supWhatsappLineOptions'
@@ -479,7 +491,8 @@ export default {
                   return '----------';
               }
             } else {
-                return data.destination_name;
+              const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
+                return `${menu.menu_header}`;
             }
         },
         handleModalEvent ({ showModal = false, formToCreate = false }) {
@@ -497,8 +510,6 @@ export default {
             this.initWhatsappLineOptionForm(option);
         },
         remove (option) {
-            console.log(1, this.interactiveForm.id_tmp)
-            console.log(1, option)
             const id = option.id ? option.id : option.index
             this.deleteWhatsappLineOption({
               id: id, menuId: this.interactiveForm.id_tmp
@@ -511,6 +522,11 @@ export default {
                 )
             );
         },
+        delete_menu (menuId) {
+          if (menuId !=0){
+            this.supWhatsappLine.destination.data = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== menuId);
+          }
+        }
     },
     watch: {
       supWhatsappLineOptions: {

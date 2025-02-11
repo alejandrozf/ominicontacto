@@ -327,6 +327,7 @@ export default {
             this.form.description = this.supWhatsappLineOptionForm.description;
             this.form.type_option = this.supWhatsappLineOptionForm.type_option;
             this.form.destination = this.supWhatsappLineOptionForm.destination;
+            this.form.destination_name = this.supWhatsappLineOptionForm.destination_name;
             this.findDestinationOptions()
             this.findDuplicated();
         },
@@ -344,7 +345,7 @@ export default {
             }
         },
         findDestinationOptions() {
-          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
+          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId && !item.is_main)
         },
         save (isFormValid) {
             this.submitted = true;
@@ -352,7 +353,6 @@ export default {
                 return null;
             }
             if (this.formToCreate) {
-                console.log('save', 'createWhatsappLineOption')
                 this.createWhatsappLineOption({
                     data: this.form,
                     menuId: this.menuId,
