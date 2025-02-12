@@ -280,10 +280,10 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 campana_form = list(form_list)[int(self.INICIAL)]
                 queue_form = list(form_list)[int(self.COLA)]
                 campana = campana_form.save()
-                offset_tatal = 2
+                offset_total = 2
                 offset_parcial = 1
                 if campana.whatsapp_habilitado:
-                    offset_tatal = offset_tatal - 1
+                    offset_total = offset_total - 1
                     offset_parcial = offset_parcial - 1
                     configuracion_whatsapp_formset =\
                         list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
@@ -303,13 +303,13 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 opciones_calificacion_formset.save()
 
                 if campana.tiene_interaccion_con_sitio_externo:
-                    offset_tatal = offset_tatal - 1
+                    offset_total = offset_total - 1
                     parametros_crm_formset =\
                         list(form_list)[int(self.PARAMETROS_CRM) - offset_parcial]
                     parametros_crm_formset.save()
 
                 actuacion_vigente_form =\
-                    list(form_list)[int(self.ACTUACION_VIGENTE) - offset_tatal]
+                    list(form_list)[int(self.ACTUACION_VIGENTE) - offset_total]
                 actuacion_vigente_form.save()
 
                 self._insert_queue_asterisk(queue)

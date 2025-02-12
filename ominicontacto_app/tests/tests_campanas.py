@@ -2054,6 +2054,8 @@ class SupervisorCampanaTests(CampanasTests):
         OpcionMenuInteractivoWhatsapp.objects.create(
             opcion=opcion_destino_1, descripcion='Descripcion opcion 1')
         linea2 = LineaFactory(destino=destino_menu, created_by=admin, updated_by=admin)
+        menu.line = linea2
+        menu.save()
 
         url = reverse('campana_update', args=[self.campana.id, ])
         post_step0_data = {
