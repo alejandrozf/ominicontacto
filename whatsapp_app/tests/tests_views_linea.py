@@ -17,7 +17,7 @@
 #
 from __future__ import unicode_literals
 
-from mock import patch
+from mock import patch, MagicMock
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.urls import reverse
@@ -32,12 +32,16 @@ from whatsapp_app.models import (Linea, ConfiguracionProveedor, MenuInteractivoW
 from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino
 
 
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
+
+
 class LineaTest(OMLBaseTest):
     def setUp(self):
         super(LineaTest, self).setUp()
         # self.factory = RequestFactory()
         self.admin = self.crear_supervisor_profile(rol=User.ADMINISTRADOR)
         self.client.login(username=self.admin.user.username, password=PASSWORD)
+        ConversorDeAudioService._convertir_audio = MagicMock()
         self.campana = self.crear_campana_entrante()
         self.destino_1 = DestinoEntrante.crear_nodo_ruta_entrante(self.campana)
         self.campana_2 = self.crear_campana_entrante()

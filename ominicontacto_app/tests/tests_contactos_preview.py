@@ -407,7 +407,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
 
     def test_campos_bloqueados_no_se_modifican(self):
-        self.campana_preview.campos_bd_no_editables = json.dumps(['telefono'])
+        self.campana_preview.campos_bd_no_editables = json.dumps([str(_('_telefono'))])
         self.campana_preview.save()
         contacto = ContactoFactory()
         agente_en_contacto = AgenteEnContactoFactory(

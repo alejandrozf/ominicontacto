@@ -364,7 +364,11 @@ class AgenteCampanaTests(CampanasTests):
                      'id': ['']}
         # Agrego campos de contacto:
         for key, value in self.contacto.obtener_datos().items():
-            post_data['contacto_form-' + key] = value
+            post_data['contacto_form-' + str(_(key))] = value
+        # se garantiza que se envíe el campo 'telefono' que es requerido en
+        # el form de Contacto y que puede perderse en la i18n de los campos
+        # de la BD de contactos
+        post_data['contacto_form-telefono'] = self.contacto.telefono
 
         return values, url, post_data
 

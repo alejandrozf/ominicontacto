@@ -23,6 +23,8 @@ from ominicontacto_app.tests.factories import (
     SitioExternoFactory, CampanaFactory,
     ParametrosCrmFactory, ContactoFactory, COLUMNAS_DB_DEFAULT)
 
+from django.utils.translation import gettext_lazy as _
+
 
 class TestsParametrosCRM(OMLBaseTest):
     PWD = u'admin123'
@@ -116,7 +118,7 @@ class TestsParametrosCRM(OMLBaseTest):
     def test_obtener_beautiful_url_con_parametros(self):
         self.sitio_externo.url = 'https://oml.com/{1}/{2}/{3}/{4}'
         ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CONTACTO,
-                             nombre='{1}', valor='telefono')
+                             nombre='{1}', valor=str(_('_telefono')))
         ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CAMPANA,
                              nombre='{2}', valor='id')
         ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,

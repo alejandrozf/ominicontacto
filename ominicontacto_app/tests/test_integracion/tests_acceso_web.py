@@ -37,7 +37,7 @@ except ImportError:
     pass
 
 AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
-LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
+LOGIN_FAILURE_LIMIT = os.getenv('LOGIN_FAILURE_LIMIT')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 
@@ -148,7 +148,7 @@ class AccesoWebTests(unittest.TestCase):
         try:
             clave_erronea = 'test'
             # Intento loguearme 12 veces para bloquear la cuenta del usuario
-            intentos = LOGIN_FAILURE_LIMIT + 2
+            intentos = int(LOGIN_FAILURE_LIMIT) + 2
             for i in range(intentos):
                 login(self.browser, AGENTE_USERNAME, clave_erronea)
             texto_error = self.browser.find_element_by_xpath('//div/p').text

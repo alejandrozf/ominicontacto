@@ -1272,6 +1272,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         self.campos_a_ocultar = campos_a_ocultar
         self.control_de_duplicados = control_de_duplicados
         self.es_campana_entrante = kwargs.pop('es_campana_entrante', False)
+
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']

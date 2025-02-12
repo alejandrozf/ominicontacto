@@ -105,8 +105,8 @@ class AuditarCalificacionesFormView(FormView):
         fecha = form.cleaned_data.get('fecha')
         if fecha:
             fecha_desde, fecha_hasta = fecha.split('-')
-            fecha_desde = convert_fecha_datetime(fecha_desde)
-            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+            fecha_desde = convert_fecha_datetime(fecha_desde, use_utc=True)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta, use_utc=True)
         else:
             fecha_desde = ''
             fecha_hasta = ''
@@ -127,7 +127,7 @@ class AuditarCalificacionesFormView(FormView):
             'pk', flat=True))
         listado_de_calificaciones = CalificacionCliente.objects.calificacion_por_filtro(
             fecha_desde, fecha_hasta, agente, campana, grupo_agente, id_contacto,
-            id_contacto_externo, telefono, callid, status_auditoria).filter(
+            id_contacto_externo, telefono, callid, status_auditoria, use_utc=True).filter(
                 opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
         if revisadas:
             listado_de_calificaciones = listado_de_calificaciones.filter(
