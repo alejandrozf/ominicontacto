@@ -25,7 +25,7 @@ test:
   script:
     - bash check-js.sh
     - flake8
-    - python manage.py test
+    - python manage.py test --failfast
     - python manage.py compilemessages
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
