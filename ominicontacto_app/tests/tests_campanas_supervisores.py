@@ -25,6 +25,10 @@ from django.utils.translation import gettext as _
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import User, Campana
 
+from mock import MagicMock
+
+from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
+
 
 class AsignacionSupervisoresACampanasTests(OMLBaseTest):
 
@@ -47,7 +51,7 @@ class AsignacionSupervisoresACampanasTests(OMLBaseTest):
         super(AsignacionSupervisoresACampanasTests, self).setUp()
         self.supervisor_creador = self.crear_supervisor_profile(rol=User.SUPERVISOR, user=None)
         self.supervisor_no_creador = self.crear_supervisor_profile(rol=User.SUPERVISOR, user=None)
-
+        ConversorDeAudioService._convertir_audio = MagicMock()
         self.campanas = {}
         self.campanas[Campana.TYPE_PREVIEW] = self.crear_campana(
             type=Campana.TYPE_PREVIEW, user=self.supervisor_creador.user)

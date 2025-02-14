@@ -192,6 +192,8 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
         OpcionMenuInteractivoWhatsapp.objects.create(
             opcion=opcion_destino_1, descripcion='Descripcion opcion 1')
         linea = LineaFactory(destino=destino_menu, created_by=self.admin, updated_by=self.admin)
+        menu.line = linea
+        menu.save()
         url = reverse('campana_elimina', args=[self.camp_1.id])
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)

@@ -2856,14 +2856,14 @@ class CalificacionClienteManager(models.Manager):
     def calificacion_por_filtro(self, fecha_desde=False, fecha_hasta=False, agente=False,
                                 campana=False, grupo_agentes=False, id_contacto=False,
                                 id_contacto_externo=False,
-                                telefono=False, callid=False, status_auditoria=False):
+                                telefono=False, callid=False, status_auditoria=False,
+                                use_utc=False):
         """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
 
         calificaciones = self.obtener_calificaciones_auditoria()
-
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime_hora_minima_dia(fecha_desde)
-            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde, use_utc=use_utc)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta, use_utc=use_utc)
             calificaciones = calificaciones.filter(modified__range=(fecha_desde,
                                                                     fecha_hasta))
         if agente:
