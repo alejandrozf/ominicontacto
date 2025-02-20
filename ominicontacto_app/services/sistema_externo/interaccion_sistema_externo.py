@@ -130,7 +130,7 @@ class InteraccionConSistemaExterno(object):
         return autenticacion.token, False
 
     def probar_autenticacion(self, *, url, username, password, ssl_estricto, campo_token, **kwargs):
-        response = requests.get(
+        response = requests.post(
             url,
             json={"username": username, "password": password},
             verify=ssl_estricto,

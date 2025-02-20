@@ -693,16 +693,16 @@ class PhoneJSController {
 
         this.notification_agent.eventsCallbacks.onNotificationExternalSiteInteractionError.add(
             function(args) {
-                if (args.error === null) {
+                if (args.error_msg === null) {
                     $.growl.notice({
                         title: gettext('CRM conectado con éxito'),
-                        message: "",
+                        message: '',
                         duration: 5000
                     });
                 } else {
                     $.growl.error({
                         title: gettext('CRM no conectado'),
-                        message: args.error,
+                        message: args.error_msg,
                         fixed: true,
                     });
                 }
