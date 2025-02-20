@@ -1,4 +1,13 @@
 # Release Notes
+2025-02-20
+
+## Fixed
+
+- Error testing External Site Authentication
+- Error in notification of External Site interaction result.
+- Race condition with LlamadaLog log and External Site interaction with 'datetime' parameter.
+
+# Release Notes
 2024-12-30
 
 ## Added
