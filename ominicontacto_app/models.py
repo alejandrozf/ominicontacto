@@ -3900,7 +3900,10 @@ class ParametrosCrm(models.Model):
         elif self.valor == 'datetime':
             callid = datos_de_llamada['call_id']
             llamada_log = LlamadaLog.objects.filter(callid=callid).first()
-            return llamada_log.time.strftime("%Y-%m-%d %H:%M:%S")
+            if llamada_log:
+                return llamada_log.time.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                return now().strftime("%Y-%m-%d %H:%M:%S")
         else:
             return datos_de_llamada[self.valor]
 
