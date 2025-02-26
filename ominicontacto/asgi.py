@@ -20,15 +20,25 @@ import notification_app.routing
 
 from channels.http import AsgiHandler as get_asgi_application
 from channels.routing import ProtocolTypeRouter
+from channels.routing import ChannelNameRouter
 from channels.routing import URLRouter
 from channels.auth import AuthMiddlewareStack
+from django.urls import path
+from ominicontacto_app.bgtasks import BackgroundTasksConsumerClient
+from ominicontacto_app.bgtasks import BackgroundTasksConsumerWorker
 
 if not os.getenv('WALLBOARD_VERSION', '') == '':
     import wallboard_app.routing
 
 django.setup()
 
-websocket_urlpatterns = []
+websocket_urlpatterns = [
+    path(
+        "channels/background-tasks",
+        BackgroundTasksConsumerClient.as_asgi(),
+        kwargs={"viewname": "channels-background-tasks"}
+    ),
+]
 websocket_urlpatterns.extend(notification_app.routing.websocket_urlpatterns)
 if not os.getenv('WALLBOARD_VERSION', '') == '':
     websocket_urlpatterns.extend(wallboard_app.routing.websocket_urlpatterns)
@@ -36,4 +46,7 @@ if not os.getenv('WALLBOARD_VERSION', '') == '':
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
+    "channel": ChannelNameRouter({
+        "background-tasks": BackgroundTasksConsumerWorker.as_asgi(),
+    }),
 })

@@ -1,0 +1,98 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "agente/frame/base_frame.html" %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}">
+{% endblock extra_css%}
+
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/busqueda_grabacion_ex/index.js' %}"></script>
+{% endblock head_js %}
+
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+<div class="container-fluid">
+    <h1>{% trans 'Buscar grabación' %}</h1>
+    <div id="wrapper-search">
+        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true"
+            aria-controls="wrapperSearchForm">
+            <span class="icon icon-search"></span>
+            {% trans 'Buscar' %}
+        </button>
+        <div id="wrapperSearchForm" class="show">
+            <form id="form-buscar-grabacion" role="form">
+                <input type="hidden" name="BASE_URL" value="{{ request.scheme }}://{{ request.get_host }}">
+                <input type="hidden" name="LANG_CODE" value="{{ LANGUAGE_CODE }}">
+                {% include "base_form_fields.html" with form=form %}
+                <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                    {% trans 'Buscar' %}
+                    <span></span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="wrapper-results">
+        <table class="table table-stripped">
+            <thead>
+                <tr>
+                    <th>{% trans 'Fecha' %}</th>
+                    <th>{% trans 'Tipo de llamada' %}</th>
+                    <th>{% trans 'Teléfono cliente' %}</th>
+                    <th>{% trans 'Campaña' %}</th>
+                    <th>{% trans 'Grabación' %}</th>
+                    <th>{% trans 'Descripción' %}</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination" id="pagination"></ul>
+        </nav>
+
+        <div class="modal fade" id="descripcionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="descripcionModalLabel"></h1>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="description-text" id="descripcion-text">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

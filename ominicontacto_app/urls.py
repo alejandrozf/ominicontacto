@@ -195,13 +195,12 @@ urlpatterns = [
             login_required(views_grabacion.GrabacionDescripcionView.as_view()),
             name='grabacion_descripcion',
             ),
-    path('grabacion/buscar/<int:pagina>/',
-         login_required(
-             views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
+    path('grabacion/buscar/',
+         login_required(views_grabacion.BusquedaGrabacionSupervisorFormViewEx.as_view()),
          name='grabacion_buscar',
          ),
-    path('grabacion/agente/buscar/<int:pagina>/',
-         login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
+    path('grabacion/agente/buscar/',
+         login_required(views_grabacion.BusquedaGrabacionAgenteFormViewEx.as_view()),
          name='grabacion_agente_buscar',
          ),
 
@@ -574,12 +573,12 @@ urlpatterns = [
                 views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
             name='formulario_venta'
             ),
-    re_path(
-        r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
-        login_required(
-            views_calificacion_cliente.RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
-        name='auditar_formulario_venta'
-    ),
+    re_path(r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
+            login_required(
+                views_calificacion_cliente.
+                RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
+            name='auditar_formulario_venta'
+            ),
     # ==========================================================================
     # Agente
     # ==========================================================================

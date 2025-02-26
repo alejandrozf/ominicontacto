@@ -1,0 +1,134 @@
+{% load i18n %}
+{% language LANG_CODE %}
+{% load calificacion_grabacion %}
+
+{% for obj in page_object_list %}
+<tr id="tr-{{ obj.origen.id }}">
+    <td>
+        <input class="form-check-input ml-0 check-grabacion" type="checkbox" value="{{ obj.origen.id }}">
+    </td>
+    <td>
+        {% if obj.transfer %}
+        <a class="btn btn-primary p-1" data-toggle="collapse" href=".grab{{obj.origen.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+            <i class="fa fa-chevron-circle-up"></i>
+            <i class="fa fa-chevron-circle-down"></i>
+        </a>
+        {% endif %}
+    </td>
+    <td>{{ obj.origen.time | date:"Y-m-d H:i" }}</td>
+    <td>{{ obj.origen.tipo_llamada_show }}</td>
+    <td>{{ obj.origen.numero_marcado }}</td>
+    <td>{{ obj.origen.agente }}</td>
+    <td>{{ obj.origen.campana }}</td>
+    <td>
+        <audio controls>
+            <source src="{{ BASE_URL }}{{ obj.origen.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
+            {% trans 'Escuchar' %}
+        </audio>
+        <a href="{{ BASE_URL }}{{ obj.origen.url_archivo_grabacion_url_encoded }}" target="_blank">
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
+        </a>
+    </td>
+    <td>
+        {% for calificacion in calificaciones %}
+        {% es_calificacion_llamada obj.origen calificacion as calificacion %}
+        {% if calificacion %}
+        <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">
+            {% if calificacion.opcion_calificacion.es_agenda %}
+                {{ calificacion.opcion_calificacion.nombre }} {{ calificacion.get_tipo_agenda_display }}
+            {% else %} 
+                {{ calificacion.opcion_calificacion.nombre }}
+            {% endif %}
+        </a>
+        <br>
+        {% endif %}
+        {% with auditoria=calificacion.instance.obtener_auditoria %}
+        {% if auditoria %}
+            {% if auditoria.es_aprobada %}
+            <button class="btn aprobada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+            {% elif auditoria.es_rechazada %}
+            <button class="btn rechazada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+            {% elif auditoria.es_observada %}
+            <button class="btn observada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+            {% else %}
+            <button class="btn" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+            {% endif %}
+            {% trans 'Auditoría' %}
+            </button>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+    </td>
+    <td>
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ obj.callid }}">
+            {% trans 'Descripción' %}
+        </button>
+    </td>
+    <td style="display:none;">{{ obj.origen.agente.user }}</td>
+    <td style="display:none;">{{ obj.origen | select_contacto_id }}</td>
+</tr>
+{% if obj.transfer %}
+{% for transfer in obj.transfer %}
+<tr class="collapse grab grab{{obj.origen.id}}">
+    <td colspan="2"></td>
+    <td>{{ transfer.time | date:"Y-m-d H:i" }}</td>
+    <td>{{ transfer.tipo_llamada_show }}</td>
+    <td>{{ transfer.numero_marcado }}</td>
+    <td>
+    {% if transfer.numero_extra != '-1' %}
+        {{ transfer.numero_extra }}
+    {% else %}
+        {{ transfer.agente }}
+        {{ transfer.numero_extra }}
+    {% endif %}
+    </td>
+    <td>{{ transfer.campana }}</td>
+    <td>
+        <audio controls>
+            <source src="{{ BASE_URL }}{{ transfer.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
+            {% trans 'Escuchar' %}
+        </audio>
+        <a href="{{ BASE_URL }}{{ transfer.url_archivo_grabacion_url_encoded }}" target="_blank">
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
+        </a>
+    </td>
+    <td>
+    {% for calificacion in calificaciones %}
+    {% es_calificacion_llamada transfer calificacion as calificacion %}
+    {% if calificacion %}
+        <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">
+            {{ calificacion.opcion_calificacion.nombre }}
+        </a> 
+    {% endif %} 
+    {% with auditoria=calificacion.instance.obtener_auditoria %}
+    {% if auditoria %}
+    {% if auditoria.es_aprobada %}
+        <button class="btn aprobada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+    {% elif auditoria.es_rechazada %}
+        <button class="btn rechazada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+    {% elif auditoria.es_observada %}
+        <button class="btn observada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+    {% else %}
+        <button class="btn" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
+    {% endif %}
+            {% trans 'Auditoría' %}
+        </button>
+    {% endif %}
+    {% endwith %}
+    {% endfor %}
+    </td>
+    <td>
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ transfer.callid }}">
+            {% trans 'Descripción' %}
+        </button>
+    </td>
+</tr>
+{% endfor %}
+{% endif %}
+{% empty %}
+<tr>
+    <td colspan="12">{% trans 'No existen grabaciones' %}</td>
+</tr>
+{% endfor %}
+
+{% endlanguage %}

@@ -24,9 +24,14 @@ from __future__ import unicode_literals
 
 import json
 
+from urllib.parse import urlencode
+from unittest.mock import patch
+from channels.db import database_sync_to_async
 from django.conf import settings
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
+from django.contrib.auth.models import Group
+from django.test import TransactionTestCase
 
 from simple_history.utils import update_change_reason
 
@@ -35,16 +40,25 @@ from ominicontacto_app.models import GrabacionMarca, OpcionCalificacion, Campana
 from ominicontacto_app.tests.factories import CalificacionClienteFactory, CampanaFactory, \
     ContactoFactory, GrabacionMarcaFactory, LlamadaLogFactory, \
     OpcionCalificacionFactory, QueueFactory, QueueMemberFactory
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLTestUtilsMixin
 
 from ominicontacto_app.utiles import fecha_hora_local
 from reportes_app.models import LlamadaLog
 
+from ominicontacto.asgi import application
+from channels.testing import WebsocketCommunicator
+from channels.testing import ApplicationCommunicator
 
-class BaseGrabacionesTests(OMLBaseTest):
+
+class BaseGrabacionesTests(TransactionTestCase, OMLTestUtilsMixin):
+
+    databases = {'default', 'replica'}
 
     def setUp(self):
         super(BaseGrabacionesTests, self).setUp()
+        Group.objects.get_or_create(name=User.SUPERVISOR)
+        Group.objects.get_or_create(name=User.AGENTE)
+
         self.supervisor1 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
         self.supervisor2 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
@@ -104,6 +118,57 @@ class BaseGrabacionesTests(OMLBaseTest):
         hace_mucho = hoy - timedelta(days=3)
         ahora = fecha_hora_local(now())
         return (hoy, hace_mucho, ahora)
+
+    async def _search_recordings_request(self, formdata):
+        ws_communicator = WebsocketCommunicator(
+            application=application,
+            path="channels/background-tasks",
+            headers=[
+                (b"cookie", self.client.cookies.output(header="")[1:].encode()),
+            ],
+        )
+        ws_communicator_connected, _ = await ws_communicator.connect(timeout=1)
+        self.assertTrue(ws_communicator_connected)
+        with (
+            patch("channels_redis.core.RedisChannelLayer.send") as channel_layer_send,
+            patch("channels_redis.core.RedisChannelLayer.group_send") as channel_layer_group_send,
+        ):
+            formdata.setdefault("pagina", "1")
+            formdata.setdefault("grabaciones_x_pagina", "10")
+            formdata.setdefault("BASE_URL", "/")
+            formdata.setdefault("LANG_CODE", "en")
+            request_message = {
+                "type": "search_recordings.request",
+                "data": urlencode(formdata)
+            }
+            await ws_communicator.send_json_to(request_message)
+            self.assertTrue(await ws_communicator.receive_nothing(timeout=1))
+            enqueue_message_channel, enqueue_message = channel_layer_send.call_args[0]
+            self.assertEqual(enqueue_message_channel, "background-tasks")
+            self.assertEqual(enqueue_message["type"], "search_recordings.enqueue")
+
+            worker_communicator = ApplicationCommunicator(
+                application=application,
+                scope={
+                    "type": "channel",
+                    "channel": enqueue_message_channel
+                },
+            )
+            await worker_communicator.send_input(enqueue_message)
+            await worker_communicator.wait(timeout=2)
+            dequeue_message_channel, dequeue_message = channel_layer_group_send.call_args[0]
+            self.assertIn("background-tasks.user-", dequeue_message_channel)
+            self.assertEqual(dequeue_message["type"], "search_recordings.dequeue")
+            await ws_communicator.send_json_to(dequeue_message)
+            respond_message = await ws_communicator.receive_json_from(timeout=1)
+            self.assertEqual(respond_message["type"], "search_recordings.respond")
+            await ws_communicator.disconnect()
+            return respond_message["result"]
+
+    @staticmethod
+    @database_sync_to_async
+    def llamadalog_filter_update(filter_id, **update_attrs):
+        LlamadaLog.objects.filter(id=filter_id).update(**update_attrs)
 
 
 class GrabacionesTests(BaseGrabacionesTests):
@@ -168,112 +233,127 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
     def test_filtro_grabaciones_marcadas(self):
         self.assertEqual(LlamadaLog.objects.obtener_grabaciones_marcadas().count(), 3)
 
-    def test_buscar_grabaciones_por_duracion(self):
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '1',
-                     'grabaciones_x_pagina': '10'}
-
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertContains(response, self.llamada_log2.numero_marcado)
-        self.assertContains(response, self.llamada_log3.numero_marcado)
+    async def test_buscar_grabaciones_por_duracion(self):
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log1.numero_marcado, response)
+        self.assertIn(self.llamada_log2.numero_marcado, response)
+        self.assertIn(self.llamada_log3.numero_marcado, response)
         # Aseguro que no traiga la grabacion de una campaña que no tiene asignada.
-        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
+        self.assertNotIn(response, self.llamada_log2_1.numero_marcado)
 
-        LlamadaLog.objects.filter(id=self.llamada_log2.id).update(
-            duracion_llamada=15, numero_marcado='42222222')
-        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(
-            duracion_llamada=15, numero_marcado='41111111')
-        LlamadaLog.objects.filter(id=self.llamada_log3.id).update(
-            duracion_llamada=12, numero_marcado='43333333')
+        await self.llamadalog_filter_update(
+            self.llamada_log2.id,
+            duracion_llamada=15,
+            numero_marcado='42222222',
+        )
+        await self.llamadalog_filter_update(
+            self.llamada_log1.id,
+            duracion_llamada=15,
+            numero_marcado='41111111',
+        )
+        await self.llamadalog_filter_update(
+            self.llamada_log3.id,
+            duracion_llamada=12,
+            numero_marcado='43333333',
+        )
 
-        post_data['duracion'] = 12
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, '41111111')
-        self.assertContains(response, '42222222')
-        self.assertContains(response, '43333333')
-        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "duracion": 12,
+        }))["fragments"]["#table-body"]
+        self.assertIn('41111111', response)
+        self.assertIn('42222222', response)
+        self.assertIn('43333333', response)
+        self.assertNotIn(self.llamada_log2_1.numero_marcado, response)
 
-        post_data['duracion'] = 15
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, '41111111')
-        self.assertContains(response, '42222222')
-        self.assertNotContains(response, '43333333')
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "duracion": 15,
+        }))["fragments"]["#table-body"]
+        self.assertIn('41111111', response)
+        self.assertIn('42222222', response)
+        self.assertNotIn('43333333', response)
 
-        post_data['duracion'] = 16
-        response = self.client.post(url, post_data, follow=True)
-        self.assertNotContains(response, '41111111')
-        self.assertNotContains(response, '42222222')
-        self.assertNotContains(response, '43333333')
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "duracion": 16,
+        }))["fragments"]["#table-body"]
+        self.assertNotIn('41111111', response)
+        self.assertNotIn('42222222', response)
+        self.assertNotIn('43333333', response)
 
-    def test_buscar_grabaciones_por_fecha(self):
+    async def test_buscar_grabaciones_por_fecha(self):
         (hoy, hace_mucho, ahora) = self._obtener_fechas()
         if hoy.date() < ahora.date():
             (hoy, hace_mucho, ahora) = self._obtener_fechas()
-        LlamadaLog.objects.filter(id=self.llamada_log2.id).update(time=hace_mucho,
-                                                                  numero_marcado='42222222')
-        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(
-            time=hoy, numero_marcado='41111111')
-        LlamadaLog.objects.filter(id=self.llamada_log3.id).update(
-            time=hoy, numero_marcado='43333333')
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '0',
-                     'grabaciones_x_pagina': '10'}
-
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, '41111111')
-        self.assertContains(response, '42222222')
-        self.assertContains(response, '43333333')
+        await self.llamadalog_filter_update(
+            self.llamada_log2.id,
+            time=hace_mucho,
+            numero_marcado='42222222',
+        )
+        await self.llamadalog_filter_update(
+            self.llamada_log1.id,
+            time=hoy,
+            numero_marcado='41111111',
+        )
+        await self.llamadalog_filter_update(
+            self.llamada_log3.id,
+            time=hoy,
+            numero_marcado='43333333',
+        )
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+        }))["fragments"]["#table-body"]
+        self.assertIn('41111111', response)
+        self.assertIn('42222222', response)
+        self.assertIn('43333333', response)
 
         rango_hoy = ahora.date().strftime('%d/%m/%Y') + ' - ' + ahora.date().strftime('%d/%m/%Y')
-        post_data['fecha'] = rango_hoy
-        response = self.client.post(url, post_data, follow=True)
-        self.assertNotContains(response, '42222222')
-        self.assertContains(response, '41111111')
-        self.assertContains(response, '43333333')
+        response = (await self._search_recordings_request({
+            "fecha": rango_hoy,
+        }))["fragments"]["#table-body"]
+        self.assertNotIn('42222222', response)
+        self.assertIn('41111111', response)
+        self.assertIn('43333333', response)
 
-    def test_filtro_grabaciones_calificadas_gestion_muestra_gestionadas(self):
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True,
-                     'grabaciones_x_pagina': '10'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertNotContains(response, self.llamada_log2.numero_marcado)
-        self.assertNotContains(response, self.llamada_log3.numero_marcado)
+    async def test_filtro_grabaciones_calificadas_gestion_muestra_gestionadas(self):
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "gestion": True,
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log1.numero_marcado, response)
+        self.assertNotIn(self.llamada_log2.numero_marcado, response)
+        self.assertNotIn(self.llamada_log3.numero_marcado, response)
 
-    def test_filtro_grabaciones_calificadas_gestion_excluye_no_gestionadas(self):
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '0',
-                     'gestion': False, 'grabaciones_x_pagina': '10'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertContains(response, self.llamada_log2.numero_marcado)
-        self.assertContains(response, self.llamada_log3.numero_marcado)
+    async def test_filtro_grabaciones_calificadas_gestion_excluye_no_gestionadas(self):
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "gestion": False,
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log1.numero_marcado, response)
+        self.assertIn(self.llamada_log2.numero_marcado, response)
+        self.assertIn(self.llamada_log3.numero_marcado, response)
 
-    def test_buscar_grabaciones_por_callid(self):
-        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(callid='1')
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '', 'callid': '1',
-                     'grabaciones_x_pagina': '10'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertNotContains(response, self.llamada_log2.numero_marcado)
-        self.assertNotContains(response, self.llamada_log3.numero_marcado)
+    async def test_buscar_grabaciones_por_callid(self):
+        await self.llamadalog_filter_update(self.llamada_log1.id, callid='1')
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "callid": "1",
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log1.numero_marcado, response)
+        self.assertNotIn(self.llamada_log2.numero_marcado, response)
+        self.assertNotIn(self.llamada_log3.numero_marcado, response)
 
-    def test_buscar_grabaciones_por_id_contacto_externo(self):
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'agente': '', 'campana': '', 'marcadas': '', 'duracion': '',
-                     'id_contacto_externo': 'id_ext', 'grabaciones_x_pagina': '10'}
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log3_1.numero_marcado)
-        self.assertNotContains(response, self.llamada_log1.numero_marcado)
-        self.assertNotContains(response, self.llamada_log3.numero_marcado)
+    async def test_buscar_grabaciones_por_id_contacto_externo(self):
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+            "id_contacto_externo": "id_ext"
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log3_1.numero_marcado, response)
+        self.assertNotIn(self.llamada_log1.numero_marcado, response)
+        self.assertNotIn(self.llamada_log3.numero_marcado, response)
 
 
 class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
@@ -282,27 +362,30 @@ class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
         super(FiltrosBusquedaGrabacionesAgenteTests, self).setUp()
         self.client.login(username=self.agente1.user, password=self.DEFAULT_PASSWORD)
 
-    def test_ve_solamente_grabaciones_propias(self):
-        url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': self.rango_hace_mucho, 'tipo_llamada': '', 'tel_cliente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '1', 'grabaciones_x_pagina': '10'}
+    async def test_ve_solamente_grabaciones_propias(self):
+        response = (await self._search_recordings_request({
+            "fecha": self.rango_hace_mucho,
+        }))["fragments"]["#table-body"]
+        self.assertIn(self.llamada_log1.numero_marcado, response)
+        self.assertIn(self.llamada_log2.numero_marcado, response)
+        self.assertIn(self.llamada_log3.numero_marcado, response)
+        self.assertNotIn(self.llamada_log2_1.numero_marcado, response)
 
-        response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertContains(response, self.llamada_log2.numero_marcado)
-        self.assertContains(response, self.llamada_log3.numero_marcado)
-        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
-
-    def test_ve_solamente_grabaciones_propias_antes_de_filtrar(self):
-        agente3 = self.crear_agente_profile()
-        QueueMemberFactory(member=agente3, queue_name=self.queue_campana_1)
-        llamada_log3_3 = LlamadaLogFactory.create(
+    async def test_ve_solamente_grabaciones_propias_antes_de_filtrar(self):
+        agente3 = await database_sync_to_async(self.crear_agente_profile)()
+        await database_sync_to_async(QueueMemberFactory)(
+            member=agente3,
+            queue_name=self.queue_campana_1
+        )
+        llamada_log3_3 = await database_sync_to_async(LlamadaLogFactory.create)(
             duracion_llamada=1, agente_id=agente3.id, campana_id=self.campana1.id)
 
-        url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
-        response = self.client.get(url, follow=True)
-
-        self.assertContains(response, self.llamada_log1.numero_marcado)
-        self.assertContains(response, self.llamada_log2.numero_marcado)
-        self.assertContains(response, self.llamada_log3.numero_marcado)
-        self.assertNotContains(response, llamada_log3_3.numero_marcado)
+        ahora = self._obtener_fechas()[2]
+        rango_hoy = ahora.date().strftime('%d/%m/%Y') + ' - ' + ahora.date().strftime('%d/%m/%Y')
+        response = await self._search_recordings_request({
+            "fecha": rango_hoy,
+        })
+        self.assertIn(self.llamada_log1.numero_marcado, response["fragments"]["#table-body"])
+        self.assertIn(self.llamada_log2.numero_marcado, response["fragments"]["#table-body"])
+        self.assertIn(self.llamada_log3.numero_marcado, response["fragments"]["#table-body"])
+        self.assertNotIn(llamada_log3_3.numero_marcado, response["fragments"]["#table-body"])
