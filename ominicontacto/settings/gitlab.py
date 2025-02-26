@@ -228,6 +228,18 @@ CONSTANCE_REDIS_CONNECTION = {
 
 REDIS_HOSTNAME = 'redis'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [{"address": (REDIS_HOSTNAME, 6379), "db": 4}],
+            "prefix": "",
+            "expiry": 120,
+            "group_expiry": 86400,
+            "capacity": 500,
+        },
+    },
+}
 
 TOKEN_EXPIRED_AFTER_SECONDS = 600
 

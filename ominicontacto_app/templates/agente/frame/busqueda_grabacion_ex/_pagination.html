@@ -1,0 +1,7 @@
+{% if paginator.object_list %}
+{% for page in paginator %}
+<li class="page-item {% if page.number == page_number %}active{% endif %}">
+    <button class="page-link">{{ page.number }}</button>
+</li>
+{% endfor %}
+{% endif %}

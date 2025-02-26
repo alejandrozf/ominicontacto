@@ -1,0 +1,28 @@
+{% load i18n %}
+{% language LANG_CODE %}
+
+{% for obj in page.object_list %}
+<tr>
+    <td>{{ obj.time | date:"Y-m-d H:i" }}</td>
+    <td>{{ obj.tipo_llamada_show }}</td>
+    <td>{{ obj.numero_marcado }}</td>
+    <td>{{ obj.campana }}</td>
+    <td>
+        <audio controls>
+            <source src="{{ BASE_URL }}{{ obj.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
+            {% trans 'Escuchar' %}
+        </audio>
+    </td>
+    <td>
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ obj.callid }}">
+            {% trans 'Descripción' %}
+        </button>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6">{% trans 'No existen grabaciones' %}</td>
+</tr>
+{% endfor %}
+
+{% endlanguage %}
