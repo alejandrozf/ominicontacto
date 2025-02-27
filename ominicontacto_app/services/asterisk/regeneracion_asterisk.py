@@ -25,7 +25,6 @@ from configuracion_telefonia_app.models import MusicaDeEspera, Playlist
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTelefonicaEnAsterisk)
 from ominicontacto_app.services.asterisk.redis_database import RegenerarAsteriskFamilysOML
-from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 import getpass
 import logging
@@ -41,15 +40,9 @@ from ominicontacto.settings.omnileads import ASTERISK_TM
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfigFile, \
     PlaylistsConfigCreator, QueuesCreator, SipConfigCreator
-from configuracion_telefonia_app.models import AudiosAsteriskConf
 from ominicontacto_app.models import ArchivoDeAudio
 from whatsapp_app.services.redis.linea import StreamDeLineas
 
-import requests
-import tempfile
-import base64
-from pathlib import Path
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -377,44 +370,11 @@ class RegeneracionAsteriskService(object):
             audio_file_asterisk = AudioConfigFile(audio)
             audio_file_asterisk.copy_asterisk()
 
-    def _reenviar_paquetes_idioma(self):
-        ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
-        audios_asterisk_conf_list = AudiosAsteriskConf.objects.filter(esta_instalado=True)
-        print("Descargando paquete de idiomas instalados....")
-        for audio_conf in audios_asterisk_conf_list:
-            language = audio_conf.paquete_idioma
-            filename = 'asterisk-core-sounds-{0}-wav-current.tar.gz'.format(language)
-            url = ASTERISK_SOUNDS_URL + filename
-            response = requests.get(url, stream=True)
-            filename_full_path = os.path.join(tempfile.gettempdir(), filename)
-            handle = open(filename_full_path, "wb")
-            for chunk in response.iter_content(chunk_size=512):
-                if chunk:
-                    handle.write(chunk)
-            handle.close()
-
-            print(f'   {language}...')
-            __, nombre_archivo = os.path.split(filename_full_path)
-            sound_tar_data = Path(filename_full_path).read_bytes()
-            res = base64.b64encode(sound_tar_data)
-            res = res.decode('utf-8')
-            redis_stream = RedisStreams()
-            content = {
-                'archivo': nombre_archivo,
-                'type': 'ASTERISK_SOUNDS',
-                'action': 'COPY',
-                'language': language,
-                'content': res
-            }
-            redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
-        print('Completada descarga de paquetes de idioma')
-
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._regenerar_redis_data()
         self._reenviar_archivos_playlist_asterisk()
         self._reenviar_archivos_audio_asterisk()
-        self._reenviar_paquetes_idioma()
         self._generar_tarea_script_logout_agentes_inactivos()
         self._generar_tarea_limpieza_diaria_queuelog()
         self._generar_tarea_script_actualizar_reportes_llamadas_entrantes()

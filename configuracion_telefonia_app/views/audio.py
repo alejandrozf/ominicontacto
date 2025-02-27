@@ -20,10 +20,6 @@ from __future__ import unicode_literals
 
 import logging
 import os
-import requests
-import tempfile
-import base64
-import json
 
 from django.urls import reverse
 from django.contrib import messages
@@ -33,13 +29,12 @@ from django.views.generic import FormView, ListView, CreateView, DeleteView
 from api_app.services.storage_service import StorageService
 
 from configuracion_telefonia_app.forms import AudiosAsteriskForm, PlaylistForm, MusicaDeEsperaForm
-from configuracion_telefonia_app.models import AudiosAsteriskConf, MusicaDeEspera, Playlist
+from configuracion_telefonia_app.models import MusicaDeEspera, Playlist
+from configuracion_telefonia_app.services.audio_asterisk import AsteriskSoundsInstaller
 
 from ominicontacto_app.services.asterisk.playlist import PlaylistDirectoryManager
 from ominicontacto_app.views_archivo_de_audio import ArchivoDeAudioMixin
 from ominicontacto_app.asterisk_config import AudioConfigFile, PlaylistsConfigCreator
-from pathlib import Path
-from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 from utiles_globales import obtener_paginas
 
@@ -53,57 +48,16 @@ class AdicionarAudioAsteriskView(FormView):
     template_name = 'adicionar_audios_asterisk.html'
     form_class = AudiosAsteriskForm
 
-    # TODO: Sacar esto a un servicio
-    ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
-
-    def _download_asterisk_sound(self, language):
-        filename = 'asterisk-core-sounds-{0}-wav-current.tar.gz'.format(language)
-        url = self.ASTERISK_SOUNDS_URL + filename
-        response = requests.get(url, stream=True)
-        filename_full_path = os.path.join(tempfile.gettempdir(), filename)
-        handle = open(filename_full_path, "wb")  # ver el
-        for chunk in response.iter_content(chunk_size=512):
-            if chunk:  # filter out keep-alive new chunks
-                handle.write(chunk)
-        return filename_full_path
-
     def form_valid(self, form):
-        try:
-            # download asterisk file
-            # TODO: Sacar esto a un servicio
-            language = form.cleaned_data['audio_idioma']
-            filename_full_path = self._download_asterisk_sound(language)
-
-            __, nombre_archivo = os.path.split(filename_full_path)
-            sound_tar_data = Path(filename_full_path).read_bytes()
-            res = base64.b64encode(sound_tar_data)
-            res = res.decode('utf-8')
-            redis_stream = RedisStreams()
-            content = {
-                'archivo': nombre_archivo,
-                'type': 'ASTERISK_SOUNDS',
-                'action': 'COPY',
-                'language': language,
-                'content': res
-            }
-            try:
-                audio_asterisk_conf = AudiosAsteriskConf \
-                    .objects \
-                    .filter(paquete_idioma=language)[:1] \
-                    .get()
-                audio_asterisk_conf.esta_instalado = True
-                audio_asterisk_conf.save()
-            except AudiosAsteriskConf.DoesNotExist:
-                AudiosAsteriskConf.objects.create(
-                    paquete_idioma=language,
-                    esta_instalado=True)
-
-            redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
+        # download asterisk file
+        language = form.cleaned_data['audio_idioma']
+        instalador = AsteriskSoundsInstaller()
+        error = instalador.install(language)
+        if not error:
             messages.add_message(
                 self.request, messages.SUCCESS,
                 _('Se ha instalado el paquete de idioma satisfactoriamente.'))
-        except Exception as e:
-            logger.error(_("Error al instalar el paquete de idioma: {0}".format(e)))
+        else:
             messages.add_message(
                 self.request, messages.ERROR,
                 _('Ha ocurrido un error al instalar el paquete de idioma'))
