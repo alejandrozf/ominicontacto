@@ -114,6 +114,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <th>{% trans 'Teléfono' %}</th>
                     <th>{% trans 'Datos' %}</th>
                     <th>{% trans 'Calificación' %}</th>
+                    <th>{% trans 'Subcalificación' %}</th>
                     <th>{% trans 'Observaciones' %}</th>
                 </tr>
             </thead>
@@ -138,6 +139,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {{ calificacion.calif_actual.nombre}}
                     </td>
                     <td>
+                        {{ calificacion.calif_actual.subcalificacion }}
+                    </td>
+                    <td>
                         {{ calificacion.calif_actual.observaciones}}
                     </td>
                 </tr>
@@ -153,6 +157,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr class="fts-table-bg">
                                         <th>{% trans 'Fecha' %}-{% trans 'Hora' %}</th>
                                         <th>{% trans 'Calificación' %}</th>
+                                        <th>{% trans 'Subalificación' %}</th>
                                         <th>{% trans 'Observaciones' %}</th>
                                         <th>{% trans 'Gestiones' %}</th>
                                     </tr>
@@ -162,6 +167,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <tr>
                                         <td>{{calif_historica.fecha_hora}}</td>
                                         <td>{{calif_historica.nombre}}</td>
+                                        <td>{{calif_historica.subcalificacion}}</td>
                                         <td>{{calif_historica.observaciones}}</td>
                                         <td>
                                             {% for gestion in calif_historica.gestiones %} {{gestion}}

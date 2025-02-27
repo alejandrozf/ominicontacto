@@ -56,7 +56,8 @@ export default {
     call_dispositions: {
         list_title: 'Calificaciones',
         edit_title: 'Edita la calificacion',
-        new_title: 'Nueva calificacion'
+        new_title: 'Nueva calificacion',
+        add_subcategory: 'Adicionar nueva subcalificación'
     },
     external_system: {
         new_agent_on_system: 'Nuevo agente en sistema',

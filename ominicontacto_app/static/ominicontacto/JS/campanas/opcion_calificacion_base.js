@@ -28,6 +28,9 @@ $('.linkFormset').formset({
     addCssClass: 'addFormset btn btn-outline-primary',
     deleteCssClass: 'deleteFormset btn btn-outline-danger',
     added: function (row) {
+        row.find('.nombre-subcalificaciones > input').val(
+            row.prev('tr').find('.nombre-subcalificaciones > input').val()
+        );
         /* inicializa el nuevo formulario de opción de calificación */
         $(row.find('.nombre > select')).prop( 'disabled', false );
         var $tipo = $(row.find('.tipo > select'));
@@ -45,7 +48,10 @@ $('.linkFormset').formset({
         $formulario.prop( 'disabled', false );
         /* Suscribo al control que deshabilita el campo formulario segun el tipo */
         subscribeToChangeControl($tipo);
-    },
+
+        var $nombre = $(row.find('.nombre > select'));
+        subscribeToChangeNombre($nombre);
+    }
 });
 /* oculta los links de eliminación para los formularios de opciones de calificación
         que no deben ser eliminados */
@@ -55,6 +61,9 @@ $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden');
 $(function() {
     $('[name$=-tipo]').each(function() {
         subscribeToChangeControl(this);
+    });
+    $('[name$=-nombre]').each(function() {
+        subscribeToChangeNombre(this);
     });
 });
 
@@ -77,4 +86,22 @@ function setAssociatedFormDisabledStatus(type_input){
         $('#id_' + form_input_name).prop('disabled', true);
         $('#id_' + form_input_name).val('');
     }
+}
+
+function setSubdispositionsOptions(select_nombre){
+    var row_id = $(select_nombre).prop('name').slice(0,-6);
+    var form_input_subcalificaciones = row_id + 'subcalificaciones';
+    var form_input_nombre_subcalificaciones = row_id + 'nombre_subcalificaciones';
+    var lista = JSON.parse($('#id_' + form_input_nombre_subcalificaciones).val().replace(/'/g, '"'));
+    lista.forEach((obj, index) => {
+        if ($(select_nombre).val() in obj){
+            $('#id_' + form_input_subcalificaciones).val(JSON.stringify(obj[$(select_nombre).val()]));
+        }
+    });
+}
+
+function subscribeToChangeNombre(select_nombre) {
+    $(select_nombre).change(function(){
+        setSubdispositionsOptions(select_nombre);
+    });
 }

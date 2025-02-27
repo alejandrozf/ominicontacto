@@ -113,13 +113,14 @@ class CalificacionCreate(APIView):
                          'de forma exitosa')}
         try:
             nombre = request.data.get('nombre')
+            subcalificaciones = request.data.get('subcalificaciones')
             self.validate_nombre(nombre, data)
             if len(data['errors']) > 0:
                 data['status'] = 'ERROR'
                 data['message'] = _('Error al hacer la peticion')
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)
-            NombreCalificacion.objects.create(nombre=nombre)
+            NombreCalificacion.objects.create(nombre=nombre, subcalificaciones=subcalificaciones)
             return Response(data=data, status=status.HTTP_200_OK)
         except Exception:
             data['status'] = 'ERROR'
@@ -156,6 +157,7 @@ class CalificacionUpdate(APIView):
         try:
             calificacion = NombreCalificacion.objects.get(pk=pk)
             nombre = request.data.get('nombre')
+            subcalificaciones = request.data.get('subcalificaciones')
             self.validate_nombre(nombre, data)
             if len(data['errors']) > 0:
                 data['status'] = 'ERROR'
@@ -163,6 +165,7 @@ class CalificacionUpdate(APIView):
                 return Response(
                     data=data, status=status.HTTP_400_BAD_REQUEST)
             calificacion.nombre = nombre
+            calificacion.subcalificaciones = subcalificaciones
             calificacion.save()
             return Response(data=data, status=status.HTTP_200_OK)
         except NombreCalificacion.DoesNotExist:

@@ -989,32 +989,34 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
 
 class OpcionCalificacionForm(forms.ModelForm):
+    nombre_subcalificaciones = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = OpcionCalificacion
         fields = (
-            'tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva', 'interaccion_crm')
+            'tipo', 'nombre', 'subcalificaciones', 'formulario', 'campana', 'oculta', 'positiva',
+            'interaccion_crm', 'nombre_subcalificaciones')
 
         widgets = {
             'nombre': forms.Select(),
             'usada_en_calificacion': forms.HiddenInput(),
+            'subcalificaciones': forms.TextInput(attrs={'readonly': 'readonly'})
         }
 
     def __init__(self, *args, **kwargs):
         nombres_calificaciones = kwargs.pop('nombres_calificaciones')
+        nombre_subcalificaciones = kwargs.pop('nombre_subcalificaciones')
         con_formulario = kwargs.pop('con_formulario')
         con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
             if 'con_crm_calificacion' in kwargs else None
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
-            # calificaciones creadas se agrega
             choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
         else:
-            # al crear se muestra en primer lugar una opción vacía
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
+        self.fields['nombre_subcalificaciones'].initial = nombre_subcalificaciones
         self.fields['nombre'] = forms.ChoiceField(choices=choices)
-
         if instance and instance.pk and instance.no_editable():
             self.fields['nombre'].disabled = True
             self.fields['tipo'].disabled = True
@@ -1067,9 +1069,11 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         # adicionamos dinámicamente las nombres de calificaciones existentes en el sistema
         # para que el usuario pueda escoger de ellas al crear las opciones de calificación
         nombres_calificaciones_qs = NombreCalificacion.objects.usuarios().values_list(
-            'nombre', flat=True)
-        kwargs['nombres_calificaciones'] = tuple((nombre, nombre)
-                                                 for nombre in nombres_calificaciones_qs)
+            'nombre', 'subcalificaciones')
+        kwargs['nombres_calificaciones'] = tuple(
+            (nombre, nombre) for nombre, subcalificaciones in nombres_calificaciones_qs)
+        kwargs['nombre_subcalificaciones'] = list(
+            {nombre: subcalificaciones} for nombre, subcalificaciones in nombres_calificaciones_qs)
         return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
 
     def _validar_numero_opciones_calificacion(self, save_candidates_forms):
@@ -1141,9 +1145,21 @@ class CalificacionClienteForm(forms.ModelForm):
     """
     Formulario para la creacion de Calificaciones de Clientes
     """
-
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
+    nombre_subcalificaciones = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = CalificacionCliente
+        fields = ('opcion_calificacion', 'subcalificacion',
+                  'observaciones', 'nombre_subcalificaciones')
+        widgets = {
+            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
+            'subcalificacion': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'observaciones': _('Observaciones'),
+        }
 
     def __init__(self, campana, es_auditoria, *args, **kwargs):
 
@@ -1154,10 +1170,27 @@ class CalificacionClienteForm(forms.ModelForm):
         self.historico_calificaciones = historico_calificaciones
 
         filtro = Q(oculta=False)
-        if self.instance.pk:
+        if 'opcion_calificacion' in self.data and self.data['opcion_calificacion']:
+            subcalificaciones = campana.opciones_calificacion.get(
+                id=self.data['opcion_calificacion']).subcalificaciones
+            if subcalificaciones:
+                choices = (EMPTY_CHOICE,) + tuple((nombre, nombre) for nombre in subcalificaciones)
+                self.fields['subcalificacion'] = forms.ChoiceField(
+                    choices=choices, required=True,
+                    widget=forms.Select(attrs={'class': 'form-control'}))
+        elif self.instance.pk:
             if self.instance.opcion_calificacion.oculta:
                 filtro = filtro | Q(id=self.instance.opcion_calificacion.id)
+            if self.instance.opcion_calificacion.subcalificaciones:
+                choices = (EMPTY_CHOICE,) + tuple(
+                    (nombre, nombre) for nombre in
+                    self.instance.opcion_calificacion.subcalificaciones)
+                self.fields['subcalificacion'] = forms.ChoiceField(
+                    choices=choices, required=True,
+                    widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
+        self.fields['nombre_subcalificaciones'].initial = list(
+            campana.opciones_calificacion.values("id", "subcalificaciones"))
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
@@ -1170,16 +1203,6 @@ class CalificacionClienteForm(forms.ModelForm):
                 raise forms.ValidationError(
                     _('No puede elegir una opción de calificacion oculta.'))
         return opcion
-
-    class Meta:
-        model = CalificacionCliente
-        fields = ('opcion_calificacion', 'observaciones')
-        widgets = {
-            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'observaciones': _('Observaciones'),
-        }
 
 
 class GrupoAgenteForm(forms.Form):
@@ -2204,7 +2227,7 @@ class ParametrosCrmForm(forms.ModelForm):
         }
 
     def clean_valor(self):
-        tipo = int(self.cleaned_data.get('tipo'))
+        tipo = int(self.cleaned_data.get('tipo')) if self.cleaned_data.get('tipo') else None
         valor = self.cleaned_data.get('valor')
         if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
             raise forms.ValidationError(

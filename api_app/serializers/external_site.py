@@ -42,6 +42,7 @@ class SitioExternoSerializer(serializers.ModelSerializer):
                 'objetivo': 'Si el disparador es el servidor, '
                             'no puede haber un objetivo.'
             })
+        # TODO: Revisar que los parametros de CRM no se queden sin tipo al cambiar el Disparador
         permite_omitir_objetivo = (disparador == SitioExterno.SERVER) or \
             disparador == SitioExterno.CALIFICACION and metodo == SitioExterno.POST
         if not objetivo and not permite_omitir_objetivo:

@@ -49,7 +49,8 @@ export default {
     },
     call_disposition: {
         id: 'ID',
-        name: 'Name'
+        name: 'Name',
+        subcalificaciones: 'Subdispositions'
     },
     external_system: {
         id: 'ID',
@@ -251,6 +252,7 @@ export default {
             campaign: 'Bell',
             campaign_type: 'Campaign type',
             disposition_option: 'Qualification option',
+            subdisposition_option: 'Subqualification option',
             disposition: 'Qualification',
             created_at: 'Creation date',
             updated_at: 'Last update',

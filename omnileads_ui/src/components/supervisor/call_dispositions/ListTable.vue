@@ -55,11 +55,21 @@
         :header="$t('models.call_disposition.name')"
       ></Column>
       <Column
+        field="subcalificaciones"
+        :header="$t('models.call_disposition.subcalificaciones')"
+      ></Column>
+      <Column
         :header="$tc('globals.option', 2)"
         style="max-width: 20rem"
         :exportable="false"
       >
         <template #body="slotProps">
+          <Button
+            icon="pi pi-plus"
+            class="p-button-success ml-2"
+            @click="addSubcategoria(slotProps.data)"
+            v-tooltip.top="$t('globals.add_subdisposition')"
+          />
           <Button
             icon="pi pi-pencil"
             class="p-button-warning ml-2"
@@ -114,6 +124,15 @@ export default {
                 toCreate: false,
                 callDisposition
             });
+        },
+        addSubcategoria (callDisposition) {
+          console.log(callDisposition)
+          this.$emit('handleModalEvent', {
+                showModal: true,
+                toCreate: false,
+                toAddSubcategory: true,
+                callDisposition
+          });
         },
         async remove (id) {
             this.$swal({

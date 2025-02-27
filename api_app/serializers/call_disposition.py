@@ -24,4 +24,4 @@ class NombreCalificacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = NombreCalificacion
         fields = (
-            'id', 'nombre')
+            'id', 'nombre', 'subcalificaciones')

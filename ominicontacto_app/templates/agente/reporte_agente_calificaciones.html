@@ -107,6 +107,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           <th>{% trans 'Datos' %}</th>
           <th>{% trans 'Gestionado' %}</th>
           <th>{% trans 'Calificación' %}</th>
+          <th>{% trans 'Subcalificación' %}</th>
           <th>{% trans 'Observaciones' %}</th>
           <th>{% trans 'Auditoria' %}</th>
           <th>{% trans 'Acciones' %}</th>
@@ -141,6 +142,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   </td>
                   <td>
                     {{ calificacion_cliente.opcion_calificacion.nombre }}
+                  </td>
+                  <td>
+                    {% if calificacion_cliente.subcalificacion %}
+                      {{ calificacion_cliente.subcalificacion }}
+                    {% endif %}
                   </td>
                   <td>
                       {% if calificacion_cliente.observaciones %}

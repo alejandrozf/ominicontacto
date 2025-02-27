@@ -49,7 +49,8 @@ export default {
     },
     call_disposition: {
         id: 'ID',
-        name: 'Nombre'
+        name: 'Nombre',
+        subcalificaciones: 'Subcalificaciones'
     },
     external_system: {
         id: 'ID',
@@ -250,6 +251,7 @@ export default {
             campaign: 'Campaña',
             campaign_type: 'Tipo de campaña',
             disposition_option: 'Opción de calificación',
+            subdisposition_option: 'Opción de subcalificación',
             disposition: 'Calificación',
             created_at: 'Fecha de creación',
             updated_at: 'Última actualización',

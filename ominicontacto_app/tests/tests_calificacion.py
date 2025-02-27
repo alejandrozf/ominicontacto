@@ -36,7 +36,9 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory,
                                                SitioExternoFactory, ParametrosCrmFactory,
                                                CalificacionClienteFactory,
                                                NombreCalificacionFactory,
+                                               NombreCalificacionConSubcalificacionesFactory,
                                                OpcionCalificacionFactory,
+                                               OpcionCalificacionConSubcalificacionesFactory,
                                                FormularioFactory, FieldFormularioFactory,
                                                RespuestaFormularioGestionFactory,
                                                AgendaContactoFactory)
@@ -631,3 +633,28 @@ class CalificacionTests(OMLBaseTest):
                                          calificado=True, es_agenda=False,
                                          gestion=False, id_calificacion=None)
         send.assert_called_with('calification', self.agente_profile.id)
+
+    def test_calificacion_cliente_con_opcion_calificacion_con_subcalificaciones(self):
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        opcion = OpcionCalificacionConSubcalificacionesFactory.create(campana=self.campana)
+        post_data = {
+            'contacto_form-telefono': self.contacto.telefono,
+            'campana': self.campana.pk,
+            'contacto': self.contacto.pk,
+            'agente': self.agente_profile.pk,
+            'opcion_calificacion': opcion.id
+        }
+        response = self.client.post(url, post_data, follow=True)
+        calificacion_form = response.context_data.get('calificacion_form')
+        choices = calificacion_form.fields['subcalificacion'].choices[1:]
+        self.assertEqual([ch[0] for ch in choices], opcion.subcalificaciones)
+
+    def test_nombre_calificacion_con_subcalificaciones(self):
+        nombre_calificacion = NombreCalificacionConSubcalificacionesFactory.create()
+        opcion_calificacion = OpcionCalificacionConSubcalificacionesFactory.create(
+            campana=self.campana, nombre=nombre_calificacion,
+            subcalificaciones=nombre_calificacion.subcalificaciones)
+        self.assertEqual(nombre_calificacion.subcalificaciones,
+                         opcion_calificacion.subcalificaciones)

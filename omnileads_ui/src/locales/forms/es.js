@@ -11,7 +11,8 @@ export default {
         infinite_time: 'Tiempo infinito'
     },
     call_disposition: {
-        enter_name: 'Ingresa el nombre'
+        enter_name: 'Ingresa el nombre',
+        enter_subdisposition: 'Ingresa the subcalificación'
     },
     external_system: {
         enter_name: 'Ingresa el nombre'
