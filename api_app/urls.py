@@ -104,6 +104,7 @@ from api_app.views.system import AsteriskQueuesData
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
 from api_app.views.logging import TransferenciaAEncuestaLogCreateView
 from api_app.views.reports import AgentStatusView, AgentStatusListView, CallStatusView
+from api_app.views.audios_asterisk import AudiosAsteriskListView
 
 
 router = routers.DefaultRouter()
@@ -573,4 +574,8 @@ urlpatterns = [
          AgentStatusListView.as_view(), name='api_agent_status_list'),
     path('api/v1/call_status/campaign/<int:campaign_id>',
          CallStatusView.as_view(), name='api_call_status'),
+
+    # ######  AudiosAsterisk    ############ #
+    path('api/v1/languages/list',
+         AudiosAsteriskListView.as_view(), name='audios_asterisk_list')
 ]

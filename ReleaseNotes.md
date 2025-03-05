@@ -12,6 +12,7 @@
 - oml-2891 DB Select input with search capabilities in Campaign Wizard.
 - oml-2844 Whatsapp Line Interactive Menu management allows non connected menues.
 - oml-2845 Is now not possible to deactivate Whatsapp for Line destination campaigns.
+- oml-2934 Inbound Routes language options are now selected from installed asterisk audios.
 
 ## Fixed
 

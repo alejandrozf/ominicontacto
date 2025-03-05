@@ -164,7 +164,7 @@ class RutaEntranteFamilyTest(RedisDatabaseTest):
             'NAME': self.inr.nombre,
             "DST": "{0},{1}".format(self.nodo_ivr.tipo, self.nodo_ivr.object_id),
             "ID": self.inr.id,
-            "LANG": self.inr.sigla_idioma,
+            "LANG": self.inr.idioma.paquete_idioma,
         }
         family = RutaEntranteFamily()
         self.assertEqual(dict, family._create_dict(self.inr))

@@ -640,7 +640,7 @@ class RutaEntranteFamily(AbstractRedisFamily):
             "NAME": ruta.nombre,
             "DST": dst,
             "ID": ruta.id,
-            "LANG": ruta.sigla_idioma,
+            "LANG": ruta.idioma.paquete_idioma,
         }
         return dict_ruta
 

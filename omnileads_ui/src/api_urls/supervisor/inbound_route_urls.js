@@ -4,5 +4,6 @@ export default {
     Detail: (id) => `/api/v1/inbound_routes/${id}`,
     Delete: (id) => `/api/v1/inbound_routes/${id}/delete`,
     Update: (id) => `/api/v1/inbound_routes/${id}/update/`,
-    InboundRouteDestinationsByType: '/api/v1/inbound_routes/destinations_by_type'
+    InboundRouteDestinationsByType: '/api/v1/inbound_routes/destinations_by_type',
+    Languages: '/api/v1/languages/list'
 };
