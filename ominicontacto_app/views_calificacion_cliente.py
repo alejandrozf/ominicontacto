@@ -341,6 +341,8 @@ class CalificacionClienteFormView(FormView):
                 call_data['formulario'] = ""
                 call_data['nombre_opcion_calificacion'] = \
                     calificacion_form.instance.opcion_calificacion.nombre
+                call_data['nombre_opcion_subcalificacion'] = \
+                    calificacion_form.instance.subcalificacion
                 self.configuracion_sitio_externo = \
                     sitio_externo.get_configuracion_de_interaccion(
                         agente, self.campana, self.contacto, call_data)
@@ -480,6 +482,8 @@ class CalificacionClienteFormView(FormView):
             self.call_data['id_calificacion'] = calificacion.id
             self.call_data['nombre_opcion_calificacion'] = \
                 calificacion.opcion_calificacion.nombre
+            self.call_data['nombre_opcion_subcalificacion'] = \
+                calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
@@ -708,6 +712,8 @@ class RespuestaFormularioDetailView(DetailView):
                 call_data['id_calificacion'] = respuesta.calificacion.id
                 call_data['nombre_opcion_calificacion'] = \
                     respuesta.calificacion.opcion_calificacion.nombre
+                call_data['nombre_opcion_subcalificacion'] = \
+                    respuesta.calificacion.subcalificacion
                 configuracion_sitio_externo = \
                     sitio_externo.get_configuracion_de_interaccion(
                         agente, campana, contacto, call_data)
@@ -809,7 +815,7 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
     def disparar_interaccion_sitio_externo(self):
         # Sólo La respuesta creada por agente debe dispararla
-        return
+        raise NotImplementedError()
 
     def post(self, request, *args, **kwargs):
         """
@@ -878,6 +884,8 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
             call_data['id_calificacion'] = self.calificacion.id
             call_data['nombre_opcion_calificacion'] = \
                 self.calificacion.opcion_calificacion.nombre
+            call_data['nombre_opcion_subcalificacion'] = \
+                self.calificacion.calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,

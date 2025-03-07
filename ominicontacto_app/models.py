@@ -630,6 +630,7 @@ class NombreCalificacionManager(models.Manager):
 
 class NombreCalificacion(models.Model):
     nombre = models.CharField(max_length=50, verbose_name=_('Nombre'))
+    subcalificaciones = models.JSONField(null=True, blank=True, default=[])
     objects = NombreCalificacionManager()
 
     def es_reservada(self):
@@ -1673,6 +1674,7 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
+    subcalificaciones = models.JSONField(null=True, blank=True, default=[])
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
     oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
     positiva = models.BooleanField(default=False, verbose_name=_('Positiva'))
@@ -2916,6 +2918,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_cliente',
         on_delete=models.CASCADE)
+    subcalificacion = models.CharField(max_length=200, blank=True, null=True, default="")
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones",
                                on_delete=models.CASCADE)
@@ -3846,6 +3849,7 @@ class ParametrosCrm(models.Model):
     OPCIONES_DATO_CALIFICACION = (
         ('id', _('ID de Calificación')),
         ('name', _('Nombre')),
+        ('subdisposition', _('Subcalificacion')),
         ('form', _('Formulario')),
     )
     OPCIONES_DATO_CALIFICACION_KEYS = [key for key, value in OPCIONES_DATO_CALIFICACION]
@@ -3913,6 +3917,8 @@ class ParametrosCrm(models.Model):
                 return datos_de_llamada['id_calificacion']
             elif self.valor == 'name':
                 return datos_de_llamada['nombre_opcion_calificacion']
+            elif self.valor == 'subdisposition':
+                return datos_de_llamada['nombre_opcion_subcalificacion']
             elif self.valor == 'form':
                 return urlsafe_base64_encode(datos_de_llamada['formulario'].encode())
         return ""

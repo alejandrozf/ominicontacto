@@ -19,6 +19,7 @@
     <FormModal
       :showModal="showModal"
       :formToCreate="formToCreate"
+      :formToAddSubdisposition="formToAddSubdisposition"
       :callDisposition="callDisposition"
       @handleModalEvent="handleModal"
     />
@@ -46,8 +47,9 @@ export default {
         await this.initData();
     },
     methods: {
-        handleModal ({ showModal, toCreate, callDisposition }) {
+        handleModal ({ showModal, toCreate, toAddSubcategory, callDisposition }) {
             this.formToCreate = toCreate;
+            this.formToAddSubdisposition = toAddSubcategory;
             this.showModal = showModal;
             this.callDisposition = callDisposition;
         },

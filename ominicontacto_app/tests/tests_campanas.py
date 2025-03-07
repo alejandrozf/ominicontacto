@@ -983,6 +983,7 @@ class SupervisorCampanaTests(CampanasTests):
         post_step2_data = {
             'campana_manual_create_view-current_step': 2,
             '2-0-nombre': 'Venta',
+            '2-0-subcalificaciones': '',
             '2-0-tipo': OpcionCalificacion.GESTION,
             '2-0-formulario': self.formulario.pk,
             '2-0-id': '',

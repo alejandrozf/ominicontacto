@@ -75,6 +75,7 @@ export default {
     // -------------
     new: 'Nuevo | Nueva',
     add: 'Agregar',
+    add_subdisposition: 'Agregar Subcalificacion',
     delete: 'Borrar',
     create: 'Crear',
     clean: 'Limpiar',

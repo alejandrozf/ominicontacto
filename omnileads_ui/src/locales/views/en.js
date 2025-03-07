@@ -56,7 +56,8 @@ export default {
     call_dispositions: {
         list_title: 'Call Dispositions',
         edit_title: 'Edit Call Disposition',
-        new_title: 'New Call Disposition'
+        new_title: 'New Call Disposition',
+        add_subcategory: 'Add New Subdisposition'
     },
     external_system: {
         new_agent_on_system: 'New agent in system',

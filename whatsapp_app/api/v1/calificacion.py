@@ -138,6 +138,8 @@ class CreateSerializer(serializers.ModelSerializer):
         source='agente', queryset=AgenteProfile.objects.all())
     idDispositionOption = serializers.PrimaryKeyRelatedField(
         source='opcion_calificacion', queryset=OpcionCalificacion.objects.all())
+    subdispositionOption = serializers.CharField(
+        source='subcalificacion', allow_blank=True, allow_null=True)
     comments = serializers.CharField(source='observaciones', allow_blank=True, allow_null=True)
 
     class Meta:
@@ -147,6 +149,7 @@ class CreateSerializer(serializers.ModelSerializer):
             'idContact',
             'idAgente',
             'idDispositionOption',
+            'subdispositionOption'
             'comments'
         ]
 
@@ -156,6 +159,8 @@ class UpdateSerializer(serializers.ModelSerializer):
         source='agente', queryset=AgenteProfile.objects.all())
     idDispositionOption = serializers.PrimaryKeyRelatedField(
         source='opcion_calificacion', queryset=OpcionCalificacion.objects.all())
+    subdispositionOption = serializers.CharField(
+        source='subcalificacion', allow_blank=True, allow_null=True)
     comments = serializers.CharField(source='observaciones', allow_blank=True, allow_null=True)
 
     class Meta:
@@ -164,6 +169,7 @@ class UpdateSerializer(serializers.ModelSerializer):
             'id',
             'idAgente',
             'idDispositionOption',
+            'subdispositionOption',
             'comments'
         ]
 
@@ -189,6 +195,7 @@ class FieldFormularioSerializer(serializers.Serializer):
 class OpcionCalificacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(source="nombre")
+    subcalificaciones = serializers.CharField()
     type = serializers.IntegerField(source="tipo")
     form_fields = serializers.SerializerMethodField()
 

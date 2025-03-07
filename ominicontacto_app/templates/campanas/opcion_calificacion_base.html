@@ -64,6 +64,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% else %}
                     class="linkFormset"
                     {% endif %}>
+                    <td class="nombre-subcalificaciones"> {{ form.nombre_subcalificaciones }} </td>
                     <td>
                     {% if form.instance.pk %}
                         {{ form.DELETE }}
@@ -72,6 +73,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td class="nombre">
                         {{ form.nombre.errors }}
                         {{ form.nombre|add_class:"form-control" }}
+                    </td>
+                    <td class="subcalificaciones" style="padding:10px">
+                        {{ form.subcalificaciones.label }}
+                        {{ form.subcalificaciones|add_class:"form-control" }}
+                        {{ form.subcalificaciones.errors }}
                     </td>
                     <td class="tipo">
                         {{ form.tipo.errors }}

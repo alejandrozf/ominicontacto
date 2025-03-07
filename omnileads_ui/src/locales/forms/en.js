@@ -11,7 +11,8 @@ export default {
         infinite_time: 'Infinite time'
     },
     call_disposition: {
-        enter_name: 'Enter the name'
+        enter_name: 'Enter the name',
+        enter_subdisposition: 'Enter the subdisposition'
     },
     external_system: {
         enter_name: 'Enter the name'

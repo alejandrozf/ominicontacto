@@ -7,10 +7,11 @@
   >
     <template #header>
       <h2 v-if="formToCreate">{{ $t("views.call_dispositions.new_title") }}</h2>
+      <h2 v-if="formToAddSubdisposition">{{ $t("views.call_dispositions.add_subcategory") }}</h2>
       <h2 v-else>{{ $t("views.call_dispositions.edit_title") }}</h2>
     </template>
     <div class="card">
-      <div class="fluid grid formgrid">
+      <div v-if="formToAddSubdisposition==false" class="fluid grid formgrid">
         <div class="field col-12">
           <label
             id="call_disposition_name"
@@ -48,6 +49,51 @@
           >
         </div>
       </div>
+      <div class="fluid grid formgrid">
+        <div class="field col-12">
+            <label>{{ $t("models.call_disposition.subcalificaciones") }}</label>
+          <div class="p-inputgroup mt-2">
+            <span class="p-inputgroup-addon">
+              <i class="pi pi-sitemap"></i>
+            </span>
+            <Listbox v-model="subcalificacion_selected" :options="callDisposition.subcalificaciones" class="w-full md:w-56" />
+          </div>
+          <div class="p-inputgroup mt-2">
+            <InputText
+              id="call_disposition_subcalificaciones"
+              :class="{
+                'p-invalid':
+                  v$.callDispositionForm.subcalificaciones.$invalid && submitted,
+              }"
+              :placeholder="$t('forms.call_disposition.enter_subdisposition')"
+              v-model="subcalificacion_new"
+            />
+            <Button
+              class="p-button-success ml-2"
+              icon="pi pi-plus"
+              @click="addSubcalificacion()"
+            />
+            <Button
+            class="p-danger ml-2"
+            icon="pi pi-times"
+            @click="deleteSubcalificacion()"
+          />
+          </div>
+          <small
+            v-if="
+              (v$.callDispositionForm.subcalificaciones.$invalid && submitted) ||
+              v$.callDispositionForm.subcalificaciones.$pending.$response
+            "
+            class="p-error"
+            >{{
+              v$.callDispositionForm.subcalificaciones.required.$message.replace(
+                "Value",
+                $t("models.call_disposition.subcalificaciones")
+              )
+            }}</small
+          >
+        </div>
+      </div>
       <div class="flex justify-content-end flex-wrap">
         <div class="flex align-items-center justify-content-center">
           <Button
@@ -72,13 +118,15 @@
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions } from 'vuex';
+import { removeInPlace } from '@/utils';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
     validations () {
         return {
             callDispositionForm: {
-                nombre: { required }
+                nombre: { required },
+                subcalificaciones: {}
             }
         };
     },
@@ -88,6 +136,10 @@ export default {
             type: Boolean,
             default: true
         },
+        formToAddSubdisposition: {
+            type: Boolean,
+            default: false
+        },
         showModal: {
             type: Boolean,
             default: false
@@ -96,7 +148,8 @@ export default {
             type: Object,
             default () {
                 return {
-                    nombre: ''
+                    nombre: '',
+                    subcalificaciones: []
                 };
             }
         }
@@ -104,10 +157,13 @@ export default {
     data () {
         return {
             callDispositionForm: {
-                nombre: ''
+                nombre: '',
+                subcalificaciones: []
             },
             submitted: false,
-            filters: null
+            filters: null,
+            subcalificacion_selected: null,
+            subcalificacion_new: null
         };
     },
     created () {
@@ -121,14 +177,26 @@ export default {
         },
         initFormData () {
             this.callDispositionForm.nombre = this.callDisposition.nombre;
+            this.callDispositionForm.subcalificaciones = this.callDisposition.subcalificaciones;
         },
         closeModal () {
             this.submitted = false;
             this.$emit('handleModalEvent', {
                 showModal: false,
                 toCreate: false,
-                callDisposition: { nombre: '' }
+                toAddSubcategory: false,
+                callDisposition: { nombre: '', subcalificaciones: [] }
             });
+        },
+        addSubcalificacion() {
+          this.callDispositionForm.subcalificaciones.push(this.subcalificacion_new)
+          this.subcalificacion_new = ""
+        },
+        deleteSubcalificacion() {
+          var arrayCopy;
+          arrayCopy = this.callDisposition.subcalificaciones.slice();
+          this.callDisposition.subcalificaciones = removeInPlace(arrayCopy, this.subcalificacion_selected);
+          this.callDispositionForm.subcalificaciones = this.callDisposition.subcalificaciones
         },
         async save (isFormValid) {
             this.submitted = true;
@@ -146,7 +214,19 @@ export default {
                 errorMsg = this.$tc('globals.error_to_created_type', {
                     type: this.$tc('globals.call_disposition')
                 });
-            } else {
+            } else if(this.formToAddSubdisposition){
+                response = await this.updateCallDisposition({
+                      id: this.callDisposition.id,
+                      data: this.callDispositionForm
+                  });
+                  successMsg = this.$tc('globals.success_added', {
+                      type: this.$tc('globals.call_disposition')
+                  });
+                  errorMsg = this.$tc('globals.error_to_updated_type', {
+                      type: this.$tc('globals.success_added')
+                  });
+            }
+            else {
                 response = await this.updateCallDisposition({
                     id: this.callDisposition.id,
                     data: this.callDispositionForm
