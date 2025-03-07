@@ -51,7 +51,7 @@ from api_app.serializers.base import (
     CampanaSerializer, AuditSupervisorCRUDEventSerializer, AuditSupervisorLoginEventSerializer,
     AuditSupervisorRequestEventSerializer)
 from ominicontacto_app.models import (
-    Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
+    Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto, Grupo)
 from ominicontacto_app.services.asterisk.supervisor_activity import (
     SupervisorActivityAmiManager)
 from reportes_app.models import LlamadaLog
@@ -73,7 +73,7 @@ from ominicontacto_app.services.reporte_campana_calificacion import ReporteCalif
 from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
 from ominicontacto_app.utiles import (
     datetime_hora_minima_dia, datetime_hora_maxima_dia, convert_fecha_datetime)
-from notification_app.notification import RedisStreamNotifier
+from notification_app.notification import RedisStreamNotifier, AgentNotifier
 
 
 logger = _logging.getLogger(__name__)
@@ -280,6 +280,40 @@ class InteraccionDeSupervisorSobreAgenteView(APIView):
             return Response(data={
                 'status': 'OK',
             })
+
+
+class EnviarMensajeAgentesView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        try:
+            self.supervisor = self.request.user.get_supervisor_profile()
+            recipient_id = request.POST.get('recipient-id')
+            recipient_type = request.POST.get('recipient-type')
+            message = request.POST.get('message-text')
+            ag_n = AgentNotifier()
+            user_list = []
+            if recipient_type == 'agent':
+                agent = AgenteProfile.objects.get(id=recipient_id)
+                user_list.append(agent.user_id)
+            elif recipient_type == 'group':
+                user_list = Grupo.objects.get(
+                    nombre=recipient_id).agentes.values_list('user_id', flat=True)
+            elif recipient_type == 'campaign':
+                campana = Campana.objects.get(nombre=recipient_id)
+                user_list = campana.obtener_agentes().values_list('user_id', flat=True)
+            for user in user_list:
+                ag_n.notify_supervisor_send_message(
+                    user,
+                    message,
+                    self.supervisor.user.username
+                )
+            return Response(data={'status': 'OK'})
+        except Exception as e:
+            print(e)
+            return Response(data={'status': 'ERROR'})
 
 
 class ReasignarAgendaContactoView(APIView):

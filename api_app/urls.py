@@ -38,7 +38,8 @@ from api_app.views.supervisor import (
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     StatusCampanasEntrantesView, ContactosAsignadosCampanaPreviewView,
     ExportarCSVCalificacionesCampana, ExportarCSVFormularioGestionCampana,
-    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor)
+    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor,
+    EnviarMensajeAgentesView)
 from api_app.views.campaigns.add_agents_to_campaign import (
     AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
 from api_app.views.pause_set import (
@@ -168,6 +169,9 @@ urlpatterns = [
     re_path(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
             login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
             name='api_accion_sobre_agente'),
+    re_path(r'api/v1/supervision/enviar_mensaje_agentes/$',
+            login_required(EnviarMensajeAgentesView.as_view()),
+            name='api_enviar_mensaje_agentes'),
     re_path(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
             LlamadasDeCampanaView.as_view(),
             name='api_supervision_llamadas_campana',

@@ -35,8 +35,7 @@ var ASTERISK_TM = $('#asterisk_tm').val() == undefined? 'asterisk':$('#asterisk_
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp
-        ) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
@@ -59,7 +58,7 @@ class PhoneJSController {
         this.campaign_type = null;
         this.campaign_name = '';
         this.llamada_calificada = null;
-        this.transfer = null
+        this.transfer = null;
         /*-----------------*/
 
         this.disableOnHold();
@@ -262,16 +261,16 @@ class PhoneJSController {
         this.view.endTransferButton.click(function() {
             self.phone_fsm.endTransfer();
             self.phone.endTransfer();
-            self.view.setConferenceAgent("", 'orange');
+            self.view.setConferenceAgent('', 'orange');
         });
 
         this.view.conferButton.click(function() {
             if(self.transfer.is_consultative){
-                var member = null
+                var member = null;
                 if(self.transfer.is_to_agent)
-                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                    member = $('#agentToTransfer option:selected').text().split(':')[0];
                 else if(self.transfer.is_to_number)
-                    member = self.transfer.destination
+                    member = self.transfer.destination;
                 var agtmessage = interpolate(
                     gettext('Conference whith:%(from)s and %(member)s'),
                     {from:self.phone.session_data.from, member: member}, true);
@@ -709,28 +708,35 @@ class PhoneJSController {
             }
         );
 
-
         this.notification_agent_whatsapp.eventsCallbacks.onNotificationNewChat.add(function(args){
-            console.log("===================================> NEW CHAT")
+            console.log('===================================> NEW CHAT');
             $('#newChat').removeClass('invisible');
         });
+
         this.notification_agent.eventsCallbacks.onNotificationEndTransferredCall.add(function(args){
-            console.log("===================================> End Transferred Call")
+            console.log('===================================> End Transferred Call');
             if(self.transfer.is_consultative){
-                var member = null
+                var member = null;
                 if(self.transfer.is_to_agent){
                     self.transfer.is_consultative = false;
                     self.transfer.is_to_agent = false;
-                    member = $("#agentToTransfer option:selected").text().split(':')[0];
+                    member = $('#agentToTransfer option:selected').text().split(':')[0];
                     var agtmessage = interpolate(
                         gettext('The agent %(member)s ended the call'),
                         { member: member}, true);
                     self.view.setConferenceAgent(agtmessage, 'orange');
                 }
 
-                }
+            }
         });
 
+        this.notification_agent.eventsCallbacks.onNotificationSupervisorSendMessageCall.add(function(args){
+            $.growl.notice({
+                title: gettext('Mensaje de supervisor ') + args.supervisor,
+                message: gettext(args.msg),
+                fixed:true
+            });
+        });
     }
 
     subscribeToNavigatorEvents() {
@@ -799,7 +805,7 @@ class PhoneJSController {
                 m_seconds
             );
         }
-        self.view.setConferenceAgent("", 'orange');
+        self.view.setConferenceAgent('', 'orange');
         // else { Stay in ACW Pause }:
     }
 
