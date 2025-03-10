@@ -23,47 +23,47 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% if "error" in message.tags %}
 
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans '¡Error!' %}</h1>
-            <p>{{ message|safe  }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% elif "warning" in message.tags %}
 
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans '¡Atención!' %}</h1>
-            <p>{{ message|safe  }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% elif "success" in message.tags %}
 
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans 'Finalizado' %}</h1>
-            <p>{{ message|safe }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% elif "info" in message.tags %}
 
         <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans 'Información' %}</h1>
-            <p>{{ message|safe  }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% elif "debug" in message.tags %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans 'Información' %}</h1>
-            <p>{{ message|safe  }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% else %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <button type="button" class="close btn" data-dismiss="alert" aria-label="Cerrar">&times;</button>
             <h1>{% trans 'Información' %}</h1>
-            <p>{{ message|safe  }}</p>
+            <p>{{ message | safe | linebreaks }}</p>
         </div>
 
     {% endif %}
