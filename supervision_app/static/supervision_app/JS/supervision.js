@@ -265,11 +265,28 @@ function obtenerNodosAcciones(pk_agent, status) {
     });
     $logout.append($spanLogout);
 
+    var $chat = create_node('a', {
+        'class': 'btn btn-light btn-sm',
+        'role': 'button',
+        'href': '#',
+        'data-toggle':'modal',
+        'data-target':'#modalSendChat',
+        'data-recipient-id':pk_agent,
+        'data-recipient-type':'agent'
+    });
+    var $spanChat = create_node('span', {
+        'class': 'fas fa-paper-plane',
+        'aria-hidden': 'true',
+        'title': gettext('Enviar mensaje'),
+    });
+    $chat.append($spanChat);
+
     var $div = create_node('div');
     $div.append($spy);
     $div.append($whisper);
     $div.append($pause);
     $div.append($logout);
+    $div.append($chat);
 
     return $div.prop('outerHTML');
 }
@@ -296,6 +313,11 @@ function subcribeFilterChange() {
     let old_filter = table_agentes.column(1).search();
     if (old_filter) {
         $('#filter_group').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+        const selection = $('#filter_group').find('option:selected');
+        if(selection.val()){
+            $('#send_group').data('recipient-id', selection.val());
+            $('#send_group').show();
+        }
     }
 
     $('#filter_group').change(function() {
@@ -303,6 +325,14 @@ function subcribeFilterChange() {
         $('#filter_group option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
         table_agentes.columns(1).search(selection.html()).draw();
+        if(selection.val()){
+            $('#send_group').data('recipient-id', selection.val());
+            $('#send_group').show();
+        }
+        else{
+            $('#send_group').data('recipient-id', '');
+            $('#send_group').hide();
+        }
     });
 
     // Seleccionar filtro viejo de campañas.
@@ -310,6 +340,11 @@ function subcribeFilterChange() {
     old_filter = old_filter.slice(2,-2); // Elimino los valores '\\b\\b'
     if (old_filter) {
         $('#filter_campana').find('[value="'+old_filter+'"]').attr('selected', 'selected');
+        const selection = $('#filter_campana').find('option:selected');
+        if(selection.val()){
+            $('#send_campana').data('recipient-id', selection.val());
+            $('#send_campana').show();
+        }
     }
 
     $('#filter_campana').change(function() {
@@ -318,5 +353,14 @@ function subcribeFilterChange() {
         selection.attr('selected', true);
         var regex = '\\b' + selection.html() + '\\b';
         table_agentes.columns(2).search(regex, true, false).draw();
+        if(selection.val()){
+            $('#send_campana').data('recipient-id', selection.val());
+            $('#send_campana').show();
+        }
+
+        else{
+            $('#send_campana').data('recipient-id', '');
+            $('#send_campana').hide();
+        }
     });
 }

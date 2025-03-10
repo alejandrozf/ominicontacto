@@ -81,6 +81,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% endfor %}
                 </select></div>
         </div>
+        <a style="display: None;" id="send_group" class="btn btn-success" role="button" href="#" data-toggle="modal" data-target="#modalSendChat" data-recipient-id="" data-recipient-type="group">
+          <span class="fas fa-paper-plane" aria-hidden="true" title="{% trans 'Enviar mensaje a los agentes del Grupo seleccionado' %}"></span>
+        </a>
         <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
             <div class="col-md-5"><label>{% trans 'Filtrar Campaña' %}</label></div>
             <div class="col-md-7"><select class="form-control" id="filter_campana">
@@ -90,6 +93,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% endfor %}
                 </select></div>
         </div>
+        <a style="display: None;" id="send_campana" class="btn btn-success" role="button" href="#" data-toggle="modal" data-target="#modalSendChat" data-recipient-id="" data-recipient-type="campaign">
+          <span class="fas fa-paper-plane" aria-hidden="true" title="{% trans 'Enviar mensaje a los agentes de la Campaña seleccionada' %}"></span>
+        </a>
         <div class="col col-xs-2 col-md-2 col-lg-2">
             <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar'>
                 {% trans "Finalizar" %}
@@ -112,4 +118,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
     </thead>
 </table>
+<div class="modal fade" id="modalSendChat" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{% trans 'New message' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <!-- {% csrf_token %} -->
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">{% trans 'Recipient' %}</label>
+              <input readonly type="text" class="form-control" name="recipient-id">
+            </div>
+            <div class="form-group">
+                <label for="recipient-type" class="col-form-label">{% trans 'Type' %}</label>
+                <input readonly type="text" class="form-control" name="recipient-type">
+              </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">{% trans 'Message' %}</label>
+              <textarea class="form-control" name="message-text"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+          <button type="button" class="btn btn-primary" >{% trans 'Send message' %}</button>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock content %}

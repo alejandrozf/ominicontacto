@@ -94,4 +94,27 @@ $(document).ready(function(){
             position: {my: 'left+100 top', at: 'right top', collision: 'flipfit'} // Right side
         }
     });
+    $('#modalSendChat').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const recipient_id = button.data('recipient-id');
+        const recipient_type = button.data('recipient-type');
+        const modal = $(this);
+        modal.find('[name=recipient-id]').val(recipient_id);
+        modal.find('[name=recipient-type]').val(recipient_type);
+        modal.find('[name=message-text]').val('');
+    });
+    $('#modalSendChat').on('click', '.btn.btn-primary', function (event) {
+        $.ajax({
+            url: Urls.api_enviar_mensaje_agentes(),
+            type: 'POST',
+            data: $(event.delegateTarget).find('form').serialize(),
+            success: function(data) {
+                console.log('success >> api_enviar_mensaje_agentes');
+                $(event.delegateTarget).modal('hide');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            },
+        });
+    });
 });
