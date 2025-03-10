@@ -353,6 +353,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'descargar_usuarios_csv',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'importar_usuarios_csv',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_update',
@@ -739,6 +741,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'descargar_usuarios_csv':
             {'descripcion': _('Descargar lista de usuarios a CSV'), 'version': '1.7.0'},
+        'importar_usuarios_csv':
+            {'descripcion': _('Importar lista de usuarios a CSV'), 'version': '?'},
         'user_delete':
             {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
         'user_update':
