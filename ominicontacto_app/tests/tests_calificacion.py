@@ -20,9 +20,9 @@
 Tests sobre los procesos realicionados con la calificaciones de los contactos de las campañas
 """
 import json
+import random
 
 from mock import patch
-
 from django.utils.translation import gettext as _
 from django.conf import settings
 from django.urls import reverse
@@ -268,7 +268,7 @@ class CalificacionTests(OMLBaseTest):
                      'campana': self.campana.pk,
                      'agente': self.agente_profile.pk,
                      'fecha': fecha,
-                     'telefono': self.contacto.telefono,
+                     'telefono': random.choice(self.contacto.lista_de_telefonos_de_contacto()),
                      'hora': hora,
                      'tipo_agenda': AgendaContacto.TYPE_PERSONAL,
                      'observaciones': observaciones}

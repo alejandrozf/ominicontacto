@@ -122,7 +122,7 @@ class AgendaContactoCreateView(CreateView):
                 fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
                 requests.post(
                     url_wombat.format(
-                        campana.nombre, self.object.contacto.telefono, fecha_hora,
+                        campana.nombre, self.object.telefono, fecha_hora,
                         campana.pk, self.object.contacto.pk))
                 self.object.save()
             # Después de agendado el contacto se marca como agendado en la calificación
