@@ -2184,7 +2184,7 @@ class ParametrosCrmForm(forms.ModelForm):
         }
 
     def clean_valor(self):
-        tipo = int(self.cleaned_data.get('tipo'))
+        tipo = int(self.cleaned_data.get('tipo')) if self.cleaned_data.get('tipo') else None
         valor = self.cleaned_data.get('valor')
         if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
             raise forms.ValidationError(

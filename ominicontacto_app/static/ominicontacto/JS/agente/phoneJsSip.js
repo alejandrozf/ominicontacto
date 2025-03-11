@@ -631,4 +631,10 @@ class SessionData {
         }
         return false;
     }
+
+    get is_multinum() {
+        // Intentando conectar a multiples números.
+        // Todavía no atendió.
+        return this.remote_call.telefono.indexOf('_') != -1;
+    }
 }
