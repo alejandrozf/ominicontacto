@@ -45,6 +45,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tr class="fts-table-bg">
             <th>{% trans 'Base Datos Contactos' %}</th>
             <th class="text-center">{% trans 'Creada' %}</th>
+            <th class="text-center">{% trans 'Cantidad Contactos Originarios' %}</th>
             <th class="text-center">{% trans 'Cantidad Contactos' %}</th>
             <th class="text-center">{% trans 'Acciones' %}</th>
         </tr>
@@ -60,6 +61,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </td>
                     <td class="text-center">
                         {{ base_datos_contacto.get_cantidad_contactos }}
+                    </td>
+                    <td class="text-center">
+                        {{ base_datos_contacto.get_cantidad_contactos_actual }}
                     </td>
                     <td class="text-center">
                         <div class="dropdown">

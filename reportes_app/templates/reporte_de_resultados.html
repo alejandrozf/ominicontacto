@@ -33,6 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <input id="task_id" type="hidden" value="{{task_id}}">
     <input id="campana_id" type="hidden" value="{{campana.pk}}">
     <h1>{% trans 'Estado de contactaciones de la Campaña: ' %}{{ campana.nombre }}</h1>
+    <h2>{% trans 'Cantidad de contactos en base de datos: ' %}{{ cantidad_contactos }}</h2>
     <br>
     <div class="row ml-1">
         <div class="col-md-6">

@@ -221,6 +221,7 @@ class ReporteDeResultadosView(TemplateView):
         metadata = self.campana.bd_contacto.get_metadata()
         context['columnas_datos'] = metadata.nombres_de_columnas_de_datos
         context['reporte'] = reporte
+        context['cantidad_contactos'] = self.campana.bd_contacto.get_cantidad_contactos_actual()
 
         if self.campana.type in [Campana.TYPE_ENTRANTE, Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]:
             context['mostrar_export_todos'] = True

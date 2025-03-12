@@ -2497,7 +2497,7 @@ class BaseDatosContacto(models.Model):
 
     def __str__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
-                                             self.cantidad_contactos)
+                                             self.get_cantidad_contactos_actual())
 
     def get_metadata(self):
         return MetadataBaseDatosContacto(self)
@@ -2518,10 +2518,15 @@ class BaseDatosContacto(models.Model):
 
     def get_cantidad_contactos(self):
         """
+        Devuelve la cantidad de contactos originarios de la BaseDatosContacto.
+        """
+        return self.cantidad_contactos
+
+    def get_cantidad_contactos_actual(self):
+        """
         Devuelve la cantidad de contactos de la BaseDatosContacto.
         """
-
-        return self.cantidad_contactos
+        return self.contactos.count()
 
     # def verifica_en_uso(self):
     #     """
