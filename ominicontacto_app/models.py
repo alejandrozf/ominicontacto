@@ -630,7 +630,7 @@ class NombreCalificacionManager(models.Manager):
 
 class NombreCalificacion(models.Model):
     nombre = models.CharField(max_length=50, verbose_name=_('Nombre'))
-    subcalificaciones = models.JSONField(null=True, blank=True, default=[])
+    subcalificaciones = models.JSONField(null=True, blank=True, default=list)
     objects = NombreCalificacionManager()
 
     def es_reservada(self):
@@ -1674,7 +1674,7 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
-    subcalificaciones = models.JSONField(null=True, blank=True, default=[])
+    subcalificaciones = models.JSONField(null=True, blank=True, default=list)
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
     oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
     positiva = models.BooleanField(default=False, verbose_name=_('Positiva'))
@@ -2765,6 +2765,15 @@ class Contacto(models.Model):
             self.lista_datos_contacto = datos
         return self.lista_datos_contacto
 
+    def lista_de_telefonos_de_contacto(self):
+        bd_metadata = self.bd_contacto.get_metadata()
+        lista_de_telefonos = []
+        nombres_de_columnas_de_telefonos = bd_metadata.nombres_de_columnas_de_telefonos
+        for key, value in self.obtener_datos().items():
+            if key in nombres_de_columnas_de_telefonos:
+                lista_de_telefonos.append(value)
+        return lista_de_telefonos
+
     def __str__(self):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
@@ -3167,6 +3176,7 @@ class AgendaContacto(models.Model):
     observaciones = models.TextField(blank=True, null=True)
     campana = models.ForeignKey(Campana, related_name='agendas', null=True,
                                 on_delete=models.CASCADE)
+    telefono = models.CharField(max_length=128)
 
     def __str__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \

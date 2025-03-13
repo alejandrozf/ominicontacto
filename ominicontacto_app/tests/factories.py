@@ -442,6 +442,7 @@ class AgendaContactoFactory(DjangoModelFactory):
     tipo_agenda = AgendaContacto.TYPE_PERSONAL
     fecha = lazy_attribute(lambda a: timezone.now().date())
     hora = lazy_attribute(lambda a: timezone.now().time())
+    telefono = lazy_attribute(lambda a: faker.random_number(10))
 
     class Meta:
         model = AgendaContacto

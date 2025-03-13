@@ -42,7 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <table class="table table-striped">
                 <tr>
                     <td><strong>{% trans 'Agenda para el contacto con el teléfono' %}</strong></td>
-                    <td>{{object.contacto.telefono}}</td>
+                    <td>{{object.telefono}}</td>
                 </tr>
                 <tr>
                     <td>{% trans 'Fecha' %}</td>
@@ -55,6 +55,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <tr>
                     <td>{% trans 'Tipo' %}</td>
                     <td>{{object.get_tipo_agenda_display}}</td>
+                </tr>
+                <tr>
+                    <td>{% trans 'Telefono' %}</td>
+                    <td>{{object.telefono}}</td>
                 </tr>
                 <tr>
                     <td>{% trans 'Observaciones' %}</td>

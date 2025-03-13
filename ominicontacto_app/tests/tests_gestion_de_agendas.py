@@ -21,10 +21,12 @@ Tests busqueda y reasignacion de Agendas de contacto
 """
 
 # from mock import patch
+import random
 
 # from django.utils.translation import gettext as _
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import (
@@ -110,3 +112,52 @@ class CalificacionTests(OMLBaseTest):
         self.assertEqual(self.agenda_1.agente, self.agente_2)
         self.calificacion_1.refresh_from_db()
         self.assertEqual(self.calificacion_1.agente, self.agente_2)
+
+    def test_crear_editar_agendar_contacto_con_telefono(self):
+        siguiente_dia = timezone.now()
+        fecha = str(siguiente_dia.date())
+        hora = str(siguiente_dia.time())
+        contacto_nuevo = ContactoFactory.create()
+        self.campana.bd_contacto.contactos.add(contacto_nuevo)
+        CalificacionClienteFactory(
+            opcion_calificacion=self.opcion_calificacion_agenda, agente=self.agente_1,
+            contacto=contacto_nuevo)
+        url_create = reverse('agenda_contacto_create',
+                             kwargs={'pk_campana': self.campana.pk,
+                                     'pk_contacto': contacto_nuevo.pk})
+        telefono = random.choice(contacto_nuevo.lista_de_telefonos_de_contacto())
+        post_data = {
+            'agente': self.agente_1.id,
+            'contacto': contacto_nuevo.id,
+            'campana': self.campana.id,
+            'fecha': fecha,
+            'telefono': telefono,
+            'hora': hora,
+            'tipo_agenda': AgendaContacto.TYPE_PERSONAL,
+            'observaciones': 'test_schedule'
+        }
+        self.client.login(username=self.agente_1.user.username, password=PASSWORD)
+        response = self.client.post(url_create, post_data, follow=True)
+        self.assertEqual(response.context['agendacontacto'].telefono, telefono)
+        agendacontacto_id = response.context['agendacontacto'].id
+        url_update = reverse('agenda_contacto_update', kwargs={'pk': agendacontacto_id})
+        telefono_2 = random.choice(contacto_nuevo.lista_de_telefonos_de_contacto())
+        post_data['telefono'] = telefono_2
+        response2 = self.client.post(url_update, post_data, follow=True)
+        self.assertEqual(response2.context['agendacontacto'].telefono, telefono_2)
+
+    def test_editar_telefono_agenda(self):
+        agendacontacto_id = self.agenda_1.id
+        url_update = reverse('agenda_contacto_update', kwargs={'pk': agendacontacto_id})
+        telefono = random.choice(self.agenda_1.contacto.lista_de_telefonos_de_contacto())
+        self.client.login(username=self.agente_1.user.username, password=PASSWORD)
+        response = self.client.post(url_update, {'telefono': telefono}, follow=True)
+        self.assertEqual(response.context['agendacontacto'].telefono, telefono)
+
+    def test_editar_telefono_agenda_con_telefono_erroneo(self):
+        agendacontacto_id = self.agenda_1.id
+        url_update = reverse('agenda_contacto_update', kwargs={'pk': agendacontacto_id})
+        telefono = "00110011"
+        self.client.login(username=self.agente_1.user.username, password=PASSWORD)
+        response = self.client.post(url_update, {'telefono': telefono}, follow=True)
+        self.assertNotEqual(response.context['agendacontacto'].telefono, telefono)

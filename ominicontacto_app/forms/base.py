@@ -1186,7 +1186,7 @@ class CalificacionClienteForm(forms.ModelForm):
                     (nombre, nombre) for nombre in
                     self.instance.opcion_calificacion.subcalificaciones)
                 self.fields['subcalificacion'] = forms.ChoiceField(
-                    choices=choices, required=True,
+                    choices=choices, required=False,
                     widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
         self.fields['nombre_subcalificaciones'].initial = list(
@@ -1636,10 +1636,13 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
 
 
 class AgendaContactoForm(forms.ModelForm):
+    telefono = forms.ChoiceField(
+        choices=(), widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones', 'tipo_agenda')
+        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones',
+                  'tipo_agenda', 'telefono')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -1654,8 +1657,12 @@ class AgendaContactoForm(forms.ModelForm):
         super(AgendaContactoForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             campana = self.instance.campana
+            contacto = self.instance.contacto
         else:
             campana = kwargs['initial']['campana']
+            contacto = kwargs['initial']['contacto']
+        self.fields['telefono'].choices = [
+            (x, x) for x in contacto.lista_de_telefonos_de_contacto()]
         if not campana.type == Campana.TYPE_DIALER:
             self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
 
