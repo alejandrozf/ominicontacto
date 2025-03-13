@@ -544,6 +544,12 @@ urlpatterns = [
             name='auditar_calificacion'
             ),
 
+    path('agente/espera_llamada_multinum/<call_data_json>/',
+         login_required(views_calificacion_cliente.EsperaLlamadaMultinumView.as_view()),
+         kwargs={'from': 'calificacion'},
+         name='espera_llamada_multinum'
+         ),
+
     # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
     # Mientras, quedará para ser usada únicamente en llamadas manuales
     re_path(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
