@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
-from ominicontacto_app.tests.factories import CampanaFactory
+from ominicontacto_app.tests.factories import CampanaFactory, ContactoFactory
 from ominicontacto_app.models import Campana, Contacto, AgenteEnContacto, User
 
 
@@ -83,3 +83,11 @@ class AgregarContactoACampanaTest(OMLBaseTest):
         self.assertEqual(contactos_iniciales, Contacto.objects.count())
         self.assertEqual(asignaciones_iniciales, AgenteEnContacto.objects.count())
         self.assertContains(response, _('No tiene permiso para agregar contactos a la Campaña.'))
+
+    def test_agregar_contacto_campana_incrementa_contactos_en_db(self):
+        campana = CampanaFactory()
+        bd_contacto = campana.bd_contacto
+        cantidad_contactos_origen = bd_contacto.get_cantidad_contactos()
+        ContactoFactory.create(bd_contacto=bd_contacto)
+        cantidad_contactos_actual = bd_contacto.get_cantidad_contactos_actual()
+        self.assertEqual(cantidad_contactos_actual, cantidad_contactos_origen + 1)
