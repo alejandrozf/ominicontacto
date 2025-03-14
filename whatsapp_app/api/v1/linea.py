@@ -245,7 +245,7 @@ class ViewSet(viewsets.ViewSet):
                     return response.Response(
                         data=get_response_data(
                             message=_('Error en los datos') + ' destination: {}'.format(
-                                serializer_destino.errors['data']['data']),
+                                serializer_destino.errors),
                             errors={'destination': serializer_destino.errors}),
                         status=status.HTTP_400_BAD_REQUEST)
             else:
