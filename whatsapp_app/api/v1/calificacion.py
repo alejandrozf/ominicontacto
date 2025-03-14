@@ -149,7 +149,7 @@ class CreateSerializer(serializers.ModelSerializer):
             'idContact',
             'idAgente',
             'idDispositionOption',
-            'subdispositionOption'
+            'subdispositionOption',
             'comments'
         ]
 
