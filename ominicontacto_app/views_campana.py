@@ -97,9 +97,11 @@ class CampanaListView(ListView):
             campanas = Campana.objects.obtener_campanas_asignadas_o_creadas_by_user(campanas, user)
         # ordenar las campanas por ID
         context['campanas'] = campanas.order_by('id')
-        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA).order_by('id')
+        context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
-                                              oculto=False).order_by('id')
+                                              oculto=False)
+        context['activas'] = context['activas'].order_by("-id")
+        context['borradas'] = context['borradas'].order_by("-id")
         return context
 
 

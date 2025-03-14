@@ -17,6 +17,7 @@
 */
 /* global gettext */
 /* global OMLAPI */
+/* global tableToDataTable */
 
 var oml_api = undefined;
 var campana_list_reload_interval = undefined;
@@ -27,6 +28,19 @@ $(function(){
     configure_campaign_actions_links();
     if ($('#wombat_state').length > 0)
         wombat_reloader = new WombatReloader();
+    
+    tableToDataTable(
+        [
+            null,
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+        ]
+    );
 });
 
 $(function(){
