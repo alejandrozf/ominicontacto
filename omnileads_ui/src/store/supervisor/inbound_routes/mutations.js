@@ -5,6 +5,9 @@ export default {
     initInboundRoutesDestinations (state, destinations) {
         state.destinations = destinations;
     },
+    initInboundRoutesLanguages (state, languages) {
+        state.languages = languages;
+    },
     initInboundRouteDetail (state, inboundRoute) {
         state.inboundRouteDetail = inboundRoute;
     },

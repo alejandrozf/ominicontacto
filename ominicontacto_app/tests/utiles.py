@@ -43,6 +43,7 @@ from ominicontacto_app.models import (
     ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
+from configuracion_telefonia_app.models import AudiosAsteriskConf
 from ominicontacto_app.tests.factories import (NombreCalificacionFactory, GrupoFactory,
                                                QueueMemberFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
@@ -547,6 +548,8 @@ class OMLBaseTest(TestCase, OMLTestUtilsMixin):
             Group.objects.create(name=User.SUPERVISOR)
             Group.objects.create(name=User.REFERENTE)
             Group.objects.create(name=User.AGENTE)
+            AudiosAsteriskConf.objects.create(id=1, paquete_idioma='en', esta_instalado=True)
+            AudiosAsteriskConf.objects.create(id=2, paquete_idioma='es', esta_instalado=True)
         if self.ejecutar_actualizar_permisos:
             self.actualizar_permisos()
 

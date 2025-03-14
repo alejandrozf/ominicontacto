@@ -21,7 +21,7 @@ import json
 from mock import patch
 from django.utils.translation import gettext as _
 from django.urls import reverse
-from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante, AudiosAsteriskConf
 from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory)
 from ominicontacto_app.tests.factories import CampanaFactory
@@ -40,15 +40,16 @@ class APITest(OMLBaseTest):
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
             self.campana_entrante)
+        self.audio_es = AudiosAsteriskConf.objects.get(paquete_idioma='es')
         self.ruta_entrante = RutaEntranteFactory(
             nombre='RutaEntrante1',
             telefono='2222222222',
-            idioma=RutaEntrante.ES,
+            idioma=self.audio_es,
             destino=self.destino_campana_entrante)
         self.dataForm = {
             'nombre': 'RutaEntrante',
             'telefono': '5555555555',
-            'idioma': RutaEntrante.EN,
+            'idioma': self.audio_es.id,
             'prefijo_caller_id': None,
             'destino': {
                 'id': self.destino_campana_entrante.id,
@@ -98,7 +99,7 @@ class RutasEntrantesTest(APITest):
             self.ruta_entrante.prefijo_caller_id)
         self.assertEqual(
             response_json['inboundRoute']['idioma'],
-            self.ruta_entrante.idioma)
+            self.ruta_entrante.idioma.id)
         self.assertEqual(
             response_json['message'],
             _('Se obtuvo la informacion de la '
@@ -164,7 +165,7 @@ class RutasEntrantesTest(APITest):
         request_data = {
             'nombre': 'RutaEntrante Edit',
             'telefono': '1234123412',
-            'idioma': RutaEntrante.ES,
+            'idioma': self.audio_es.id,
             'prefijo_caller_id': None,
             'destino': {
                 'id': self.destino_campana_entrante.id,
@@ -182,7 +183,7 @@ class RutasEntrantesTest(APITest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ruta_entrante.nombre, request_data['nombre'])
         self.assertEqual(ruta_entrante.telefono, request_data['telefono'])
-        self.assertEqual(ruta_entrante.idioma, request_data['idioma'])
+        self.assertEqual(ruta_entrante.idioma.id, request_data['idioma'])
         self.assertEqual(
             ruta_entrante.prefijo_caller_id,
             request_data['prefijo_caller_id'])

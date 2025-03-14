@@ -29,7 +29,8 @@ class NotificationSocket
             onNotificationExternalSiteInteractionError: $.Callbacks(),
             onNotificationContactSaved: $.Callbacks(),
             onNotificationEndTransferredCall: $.Callbacks(),
-            onNotificationSupervisorSendMessageCall: $.Callbacks()
+            onNotificationSupervisorSendMessageCall: $.Callbacks(),
+            onAttendedMultinumCall: $.Callbacks(),
         };
     }
 
@@ -57,6 +58,8 @@ class NotificationSocket
                 self.eventsCallbacks.onNotificationEndTransferredCall.fire(data.args);
             if(data.type == 'supervisor_send_message')
                 self.eventsCallbacks.onNotificationSupervisorSendMessageCall.fire(data.args);
+            if (data.type == 'attended_multinum_call')
+                self.eventsCallbacks.onAttendedMultinumCall.fire(data.args);
         });
       
     }

@@ -150,7 +150,7 @@ class RutaEntranteFactory(DjangoModelFactory):
     nombre = Sequence(lambda n: "Ruta entrante {0}".format(n))
     telefono = lazy_attribute(lambda a: faker.phone_number())
     prefijo_caller_id = Sequence(lambda n: "Prefijo caller id {0}".format(n))
-    idioma = 1
+    idioma_id = 1
     destino = SubFactory(DestinoEntranteFactory)
 
 

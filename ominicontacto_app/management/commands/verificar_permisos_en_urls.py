@@ -36,6 +36,7 @@ class Command(BaseCommand):
             'api_app': [
                 'api_login', 'api',
                 'api_asterisk_queues_data',
+                'api_notify_attended_multinum_call',
             ],
         }
 

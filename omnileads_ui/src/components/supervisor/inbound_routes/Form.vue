@@ -106,8 +106,8 @@
             }"
             :options="languages"
             placeholder="-----"
-            optionLabel="option"
-            optionValue="value"
+            optionLabel="language"
+            optionValue="id"
             :emptyFilterMessage="$t('globals.without_data')"
           />
           <small
@@ -245,10 +245,6 @@ export default {
     data () {
         return {
             submitted: false,
-            languages: [
-                { option: this.$t('forms.inbound_route.languages.en'), value: 1 },
-                { option: this.$t('forms.inbound_route.languages.es'), value: 2 }
-            ],
         };
     },
     computed: {
@@ -269,10 +265,11 @@ export default {
         isDirect () {
             return this.inboundRouteForm.tipo_destino === AGENT;
         },
-        ...mapState(['inboundRouteForm', 'destinations'])
+        ...mapState(['inboundRouteForm', 'destinations', 'languages'])
     },
     async created () {
         await this.initInboundRoutesDestinations();
+        await this.initInboundRoutesLanguages();
         this.initializeData();
     },
     methods: {
@@ -280,7 +277,8 @@ export default {
             'createInboundRoute',
             'updateInboundRoute',
             'initInboundRoutes',
-            'initInboundRoutesDestinations'
+            'initInboundRoutesDestinations',
+            'initInboundRoutesLanguages'
         ]),
         initializeData () {
             this.submitted = false;

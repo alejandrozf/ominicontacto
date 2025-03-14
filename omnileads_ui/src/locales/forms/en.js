@@ -261,7 +261,8 @@ export default {
             validations: {
                 field_is_required: '{field} is required',
                 max_len: 'Ensure this field has no more than {max_len} characters.',
-                whatsapp_habilitado: 'This campaign does not have the channel enabled, activation will be forced.'
+                whatsapp_habilitado: 'This campaign does not have the channel enabled, activation will be forced.',
+                max_len_help: 'This field only supports {max_len} characters.',
             },
             destination_types: {
                 campaign: 'Campaign',

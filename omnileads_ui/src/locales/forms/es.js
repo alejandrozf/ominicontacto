@@ -261,7 +261,8 @@ export default {
             validations: {
                 field_is_required: '{field} es requerido',
                 max_len: 'Asegúrese que este campo no tiene mas de {max_len} caracteres.',
-                whatsapp_habilitado: 'Esta campaña no tiene esta canalidad habilitada, se forzará la activación.'
+                whatsapp_habilitado: 'Esta campaña no tiene esta canalidad habilitada, se forzará la activación.',
+                max_len_help: 'Este campo sólo admite {max_len} caracteres.',
             },
             destination_types: {
                 campaign: 'Campaña',

@@ -35,11 +35,15 @@ var ASTERISK_TM = $('#asterisk_tm').val() == undefined? 'asterisk':$('#asterisk_
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp) {
+    constructor(
+        agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher,
+        keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
-        this.phone = new PhoneJS(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, this.view.local_audio, this.view.remote_audio);
+        this.phone = new PhoneJS(
+            agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
+            this.view.local_audio, this.view.remote_audio);
         this.phone_fsm = new PhoneFSM();
         this.notification_agent = notification_agent;
         this.notification_agent_whatsapp = notification_agent_whatsapp;
@@ -272,7 +276,7 @@ class PhoneJSController {
                 else if(self.transfer.is_to_number)
                     member = self.transfer.destination;
                 var agtmessage = interpolate(
-                    gettext('Conference whith:%(from)s and %(member)s'),
+                    gettext('En Conferencia con: %(from)s y %(member)s'),
                     {from:self.phone.session_data.from, member: member}, true);
                 self.view.setConferenceAgent(agtmessage, 'orange');
             }
@@ -613,6 +617,10 @@ class PhoneJSController {
         });
 
         this.phone.eventsCallbacks.onCallEnded.add(function() {
+            if (self.phone.session_data.is_multinum){
+                self.getQualificationForm(self.phone.session_data.remote_call);
+            }
+
             if(self.phone.session_data.is_transfered && self.phone.session_data.is_consultative_transfer){
                 var agent_id = self.phone.session_data.from_agent_name.split('_')[0];
                 self.oml_api.notifyEndTransferredCall(agent_id);
@@ -722,7 +730,7 @@ class PhoneJSController {
                     self.transfer.is_to_agent = false;
                     member = $('#agentToTransfer option:selected').text().split(':')[0];
                     var agtmessage = interpolate(
-                        gettext('The agent %(member)s ended the call'),
+                        gettext('El agente %(member)s finalizó la llamada'),
                         { member: member}, true);
                     self.view.setConferenceAgent(agtmessage, 'orange');
                 }
@@ -736,6 +744,20 @@ class PhoneJSController {
                 message: gettext(args.msg),
                 fixed:true
             });
+        });
+
+        this.notification_agent.eventsCallbacks.onAttendedMultinumCall.add(function(args){
+            // TODO: Verificar que esta en llamada?
+            let call_data = self.phone.session_data.remote_call;
+            call_data['telefono'] = args.phone;
+            var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:args.phone}, true);
+            self.view.setCallStatus(message, 'orange');            
+            $.growl.notice({
+                title: gettext('Llamada Multinum Conectada'),
+                message: args.phone,
+                duration: 5000
+            });
+            self.getQualificationForm(call_data);
         });
     }
 
@@ -1089,6 +1111,10 @@ class PhoneJSController {
         var call_data = session_data.remote_call;
         if (session_data.is_from_agent || session_data.is_off_campaign)
             return;
+        if (session_data.is_multinum){
+            this.getWaitMultinumAttend(call_data);
+            return;
+        }
         this.getQualificationForm(call_data);
     }
 
@@ -1103,6 +1129,13 @@ class PhoneJSController {
         // 'calificar_llamada'
         var call_data_json = JSON.stringify(call_data);
         var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
+        $('#dataView').attr('src', url);
+    }
+
+    getWaitMultinumAttend(call_data) {
+        // 'espera_llamada_multinum'
+        var call_data_json = JSON.stringify(call_data);
+        var url = Urls.espera_llamada_multinum(encodeURIComponent(call_data_json));
         $('#dataView').attr('src', url);
     }
 

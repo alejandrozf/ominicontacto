@@ -26,6 +26,7 @@ from rest_framework.permissions import AllowAny
 
 from ominicontacto_app.utiles import reemplazar_no_alfanumericos_por_guion
 from ominicontacto_app.models import AgenteProfile, QueueMember
+from notification_app.notification import AgentNotifier
 
 
 class AsteriskQueuesData(APIView):
@@ -58,3 +59,16 @@ class AsteriskQueuesData(APIView):
                 interface = "PJSIP/" + str(sip_extension).strip('[]')
                 agents_data.append([agent_id, member_name, interface, pause, queues, penalties])
         return Response(data=agents_data)
+
+
+class NotifyAttendedMultinumCall(APIView):
+    permission_classes = (AllowAny, )
+    http_method_names = ['post', 'POST']
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, *args, **kwargs):
+        agent_id = request.data.get('agent_id')
+        agente = AgenteProfile.objects.get(id=agent_id)
+        phone = request.data.get('phone')
+        AgentNotifier().notify_attended_multinum_call(agente.user_id, phone)
+        return Response(data={'status': 'OK'})

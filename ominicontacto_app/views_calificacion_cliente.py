@@ -31,13 +31,12 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.edit import FormView, CreateView
-from django.views.generic.detail import DetailView
+from django.views.generic import FormView, CreateView, DetailView, TemplateView
 
 from simple_history.utils import update_change_reason
 
 from ominicontacto_app.forms.base import (CalificacionClienteForm, FormularioNuevoContacto,
-                                          RespuestaFormularioGestionForm)
+                                          RespuestaFormularioGestionForm, )
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
     OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
@@ -919,3 +918,13 @@ class RespuestaFormularioCreateUpdateSupervisorFormView(RespuestaFormularioCreat
 
     def _get_redireccion_campana_erronea(self):
         return redirect('index')
+
+
+class EsperaLlamadaMultinumView(TemplateView):
+    template_name = 'agente/espera_llamada_multinum.html'
+
+    def get(self, request, call_data_json, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        call_data = json.loads(call_data_json)
+        context['telefonos'] = call_data.get('telefono').split('_')
+        return self.render_to_response(context)

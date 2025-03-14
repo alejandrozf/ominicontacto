@@ -353,7 +353,7 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             'id': menu.id,
             'id_tmp': menu.id,
             'is_main': menu.is_main,
-            'menu_header': menu.menu_header,
+            'menu_header': menu.menu_header if menu.menu_header else '',
             'menu_body': menu.menu_body,
             'menu_footer': menu.menu_footer if menu.menu_footer else '',
             'menu_button': menu.menu_button,

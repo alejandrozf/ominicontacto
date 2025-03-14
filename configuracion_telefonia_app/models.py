@@ -471,29 +471,16 @@ class OpcionDestino(models.Model):
 
 class RutaEntrante(models.Model):
     """Representa el nodo inicial de la ruta de una llamada entrante"""
-    EN = 1
-    ES = 2
-
-    TIPOS_IDIOMAS = (
-        (EN, _('Inglés')),
-        (ES, _('Español')),)
-
-    SIGLAS_IDIOMAS = {
-        EN: 'en',
-        ES: 'es',
-    }
 
     nombre = models.CharField(max_length=30, unique=True)
     telefono = models.CharField(
         max_length=30, unique=True, validators=[RegexValidator(R_TELEFONO_RUTA_ENTRANTE)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
-    idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
+    idioma = models.ForeignKey('configuracion_telefonia_app.AudiosAsteriskConf',
+                               related_name='rutas_entrantes',
+                               on_delete=models.PROTECT)
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes',
                                 on_delete=models.CASCADE)
-
-    @property
-    def sigla_idioma(self):
-        return RutaEntrante.SIGLAS_IDIOMAS[self.idioma]
 
 
 class HangUp(models.Model):
@@ -641,6 +628,6 @@ class AudiosAsteriskConf(models.Model):
     paquete_idioma = models.CharField(
         max_length=2,
         choices=AUDIO_IDIOMA_CHOICES,
-        help_text=_('Paquete de idioma'))
+        help_text=_('Paquete de idioma'), unique=True)
 
     esta_instalado = models.BooleanField(default=False)
