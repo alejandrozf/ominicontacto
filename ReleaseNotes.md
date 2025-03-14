@@ -1,9 +1,12 @@
 # Release Notes
-2025-02-20
+2025-02-21
 
 ## Added
 
 - oml-2746 New Disposition form List field with options fetched from CRM.
+- oml-2788 Possibility to add Sub-Dispositions.
+- oml-2889 Supervisiors can send messages to Agents.
+- oml-2924 Massive Users profiles imports.
 
 ## Changed
 
@@ -13,6 +16,10 @@
 - oml-2844 Whatsapp Line Interactive Menu management allows non connected menues.
 - oml-2845 Is now not possible to deactivate Whatsapp for Line destination campaigns.
 - oml-2934 Inbound Routes language options are now selected from installed asterisk audios.
+- oml-2738 Decoupling recording report generation for async processing.
+- oml-2887 Change in the way Database Contacts are counted.
+- oml-2888 Possibility to select the Agenda telephone.
+- oml-2922 Campaign lists views can be ordered by id.
 
 ## Fixed
 
