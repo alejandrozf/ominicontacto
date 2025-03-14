@@ -269,7 +269,7 @@ class ConversacionWhatsapp(models.Model):
 
 
 class MenuInteractivoWhatsapp(models.Model):
-    menu_header = models.CharField(max_length=60)
+    menu_header = models.CharField(max_length=60, null=True, blank=True)
     menu_body = models.CharField(max_length=1024)
     menu_footer = models.CharField(max_length=60, null=True, blank=True)
     menu_button = models.CharField(max_length=20)
@@ -289,4 +289,4 @@ class OpcionMenuInteractivoWhatsapp(models.Model):
     opcion = models.OneToOneField(
         'configuracion_telefonia_app.OpcionDestino', on_delete=models.CASCADE,
         related_name="opcion_menu_whatsapp")
-    descripcion = models.CharField(max_length=100, null=True, blank=True)
+    descripcion = models.CharField(max_length=72)

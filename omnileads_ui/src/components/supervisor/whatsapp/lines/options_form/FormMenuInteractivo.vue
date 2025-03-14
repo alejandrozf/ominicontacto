@@ -16,11 +16,11 @@
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
         <label
           :class="{
-            'p-error': (isEmptyField(interactiveForm.menu_header) || isNoValidLen(interactiveForm.menu_header, 60)) && submitted,
+            'p-error': isNoValidLen(interactiveForm.menu_header, 60) && submitted,
           }"
           >{{
             $t("models.whatsapp.line.interactive_form.menu_header")
-          }}*</label
+          }}</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
@@ -29,28 +29,20 @@
           <InputText
             :class="{
               'p-invalid':
-               (isEmptyField(interactiveForm.menu_header) || isNoValidLen(interactiveForm.menu_header, 60)) && submitted,
+                isNoValidLen(interactiveForm.menu_header, 60) && submitted,
             }"
             v-model="interactiveForm.menu_header"
           />
         </div>
-        <small
-          v-if="isEmptyField(interactiveForm.menu_header) && submitted"
-          class="p-error"
-        >
-          {{
-            $t(
-              "forms.whatsapp.line.validations.field_is_required",
-              {
-                field: $t(
-                  "models.whatsapp.line.interactive_form.menu_header"
-                ),
-              }
-            )
-          }}
-        </small>
-        <br/>
-        <small v-if="isNoValidLen(interactiveForm.menu_header, 20) && submitted" class="p-error">
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 60
+            }
+          )
+        }}</small><br />
+        <small v-if="isNoValidLen(interactiveForm.menu_header, 60) && submitted" class="p-error">
           {{
             $t(
               "forms.whatsapp.line.validations.max_len",
@@ -83,10 +75,17 @@
             v-model="interactiveForm.menu_body"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 1024
+            }
+          )
+        }}</small>
         <div
           v-if="isEmptyField(interactiveForm.menu_body) && submitted"
         >
-          <br />
           <small class="p-error">
             {{
               $t(
@@ -103,7 +102,6 @@
         <div
           v-if="isNoValidLen(interactiveForm.menu_body, 1024) && submitted"
         >
-        <br />
         <small class="p-error">
           {{
             $t(
@@ -116,7 +114,6 @@
         </small>
         </div>
       </div>
-
     </div>
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
@@ -136,15 +133,22 @@
           <InputText
           :class="{
             'p-invalid':
-             isNoValidLen(interactiveForm.menu_body, 60) && submitted,
+             isNoValidLen(interactiveForm.menu_footer, 60) && submitted,
           }"
             v-model="interactiveForm.menu_footer"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 60
+            }
+          )
+        }}</small>
         <div
           v-if="isNoValidLen(interactiveForm.menu_footer, 60) && submitted"
         >
-          <br />
           <small class="p-error">
             {{
               $t(
@@ -179,6 +183,14 @@
             v-model="interactiveForm.menu_button"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 20
+            }
+          )
+        }}</small>
         <div
           v-if="isEmptyField(interactiveForm.menu_button) && submitted"
         >
@@ -240,6 +252,15 @@
             v-model="interactiveForm.wrong_answer"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 100
+            }
+          )
+          }}
+        </small>
         <small
           v-if="
             isEmptyField(interactiveForm.wrong_answer) && submitted
@@ -284,6 +305,15 @@
             v-model="interactiveForm.success"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 100
+            }
+          )
+          }}
+        </small>
         <small
           v-if="
             isEmptyField(interactiveForm.success) && submitted
