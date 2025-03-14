@@ -63,6 +63,8 @@ class CampanaManualListView(ListView):
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
         context['borradas'] = campanas.filter(estado=Campana.ESTADO_BORRADA,
                                               oculto=False)
+        context['activas'] = context['activas'].order_by("-id")
+        context['borradas'] = context['borradas'].order_by("-id")
         context['campanas'] = campanas
         return context
 

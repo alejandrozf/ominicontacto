@@ -258,6 +258,7 @@ class CampanaPreviewListView(CampanaManualListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewListView, self).get_context_data(**kwargs)
         context['finalizadas'] = context['campanas'].filter(estado=Campana.ESTADO_FINALIZADA)
+        context['finalizadas'] = context['finalizadas'].order_by("-id")
         context['mostrar_ocultas_tipo'] = "mostrar_campanas_preview_ocultas()"
         return context
 

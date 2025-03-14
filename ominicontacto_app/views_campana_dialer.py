@@ -83,6 +83,13 @@ class CampanaDialerListView(ListView):
                                               oculto=False)
         context['finalizadas'] = campanas.filter(estado=Campana.ESTADO_FINALIZADA)
 
+        context['campanas'] = context['campanas'].order_by("-id")
+        context['inactivas'] = context['inactivas'].order_by("-id")
+        context['pausadas'] = context['pausadas'].order_by("-id")
+        context['activas'] = context['activas'].order_by("-id")
+        context['borradas'] = context['borradas'].order_by("-id")
+        context['finalizadas'] = context['finalizadas'].order_by("-id")
+
         context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
         context['wombat_reload_enabled'] = config_constance.WOMBAT_DIALER_ALLOW_REFRESH
         if config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
