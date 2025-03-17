@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 12:14-0300\n"
+"POT-Creation-Date: 2025-03-17 15:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgid "Destinos personalizados"
 msgstr "Custom destinations"
 
 #: configuracion_telefonia_app/apps.py:54
-#: configuracion_telefonia_app/models.py:354
+#: configuracion_telefonia_app/models.py:355
 msgid "IVR"
 msgstr "IVR"
 
@@ -252,39 +252,37 @@ msgid "Los destinos deben ser distintos"
 msgstr "Destinations must be different"
 
 #: configuracion_telefonia_app/forms.py:127
-#: configuracion_telefonia_app/models.py:471
-#: configuracion_telefonia_app/models.py:624
+#: configuracion_telefonia_app/models.py:619
 msgid "Español"
 msgstr "Spanish"
 
 #: configuracion_telefonia_app/forms.py:128
-#: configuracion_telefonia_app/models.py:470
-#: configuracion_telefonia_app/models.py:625
+#: configuracion_telefonia_app/models.py:620
 msgid "Inglés"
 msgstr "English"
 
 #: configuracion_telefonia_app/forms.py:129
-#: configuracion_telefonia_app/models.py:626
+#: configuracion_telefonia_app/models.py:621
 msgid "Francés"
 msgstr "French"
 
 #: configuracion_telefonia_app/forms.py:130
-#: configuracion_telefonia_app/models.py:627
+#: configuracion_telefonia_app/models.py:622
 msgid "Italiano"
 msgstr "Italian"
 
 #: configuracion_telefonia_app/forms.py:131
-#: configuracion_telefonia_app/models.py:628
+#: configuracion_telefonia_app/models.py:623
 msgid "Japonés"
 msgstr "Japanese"
 
 #: configuracion_telefonia_app/forms.py:132
-#: configuracion_telefonia_app/models.py:629
+#: configuracion_telefonia_app/models.py:624
 msgid "Ruso"
 msgstr "Russian"
 
 #: configuracion_telefonia_app/forms.py:133
-#: configuracion_telefonia_app/models.py:630
+#: configuracion_telefonia_app/models.py:625
 msgid "Sueco"
 msgstr "Swedish"
 
@@ -360,21 +358,21 @@ msgstr "Id agent"
 msgid "Seleccione el archivo .wav que desea para la Musica de Espera."
 msgstr "Select the .wav file you want for the Music on Hold"
 
-#: configuracion_telefonia_app/models.py:49
+#: configuracion_telefonia_app/models.py:50
 msgid "chansip"
 msgstr "chansip"
 
-#: configuracion_telefonia_app/models.py:50
+#: configuracion_telefonia_app/models.py:51
 msgid "pjsip"
 msgstr "pjsip"
 
-#: configuracion_telefonia_app/models.py:55
-#: configuracion_telefonia_app/models.py:171
-#: configuracion_telefonia_app/models.py:276
-#: configuracion_telefonia_app/models.py:313
-#: configuracion_telefonia_app/models.py:504
-#: configuracion_telefonia_app/models.py:513
-#: configuracion_telefonia_app/models.py:549
+#: configuracion_telefonia_app/models.py:56
+#: configuracion_telefonia_app/models.py:172
+#: configuracion_telefonia_app/models.py:277
+#: configuracion_telefonia_app/models.py:314
+#: configuracion_telefonia_app/models.py:499
+#: configuracion_telefonia_app/models.py:508
+#: configuracion_telefonia_app/models.py:544
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:31
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:31
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:30
@@ -383,217 +381,217 @@ msgstr "pjsip"
 msgid "Nombre"
 msgstr "Name"
 
-#: configuracion_telefonia_app/models.py:58
+#: configuracion_telefonia_app/models.py:59
 msgid "Canales máximos"
 msgstr "Maximum number of channels"
 
-#: configuracion_telefonia_app/models.py:61
+#: configuracion_telefonia_app/models.py:62
 msgid "Caller id"
 msgstr "Caller id"
 
-#: configuracion_telefonia_app/models.py:63
+#: configuracion_telefonia_app/models.py:64
 msgid "Register string"
 msgstr "Register string"
 
-#: configuracion_telefonia_app/models.py:64
+#: configuracion_telefonia_app/models.py:65
 msgid "Text config"
 msgstr "Text config"
 
-#: configuracion_telefonia_app/models.py:184
+#: configuracion_telefonia_app/models.py:185
 msgid "Lunes"
 msgstr "Monday"
 
-#: configuracion_telefonia_app/models.py:185
+#: configuracion_telefonia_app/models.py:186
 msgid "Martes"
 msgstr "Tuesday"
 
-#: configuracion_telefonia_app/models.py:186
+#: configuracion_telefonia_app/models.py:187
 msgid "Miércoles"
 msgstr "Wednesday"
 
-#: configuracion_telefonia_app/models.py:187
+#: configuracion_telefonia_app/models.py:188
 msgid "Jueves"
 msgstr "Thursday"
 
-#: configuracion_telefonia_app/models.py:188
+#: configuracion_telefonia_app/models.py:189
 msgid "Viernes"
 msgstr "Friday"
 
-#: configuracion_telefonia_app/models.py:189
+#: configuracion_telefonia_app/models.py:190
 msgid "Sábado"
 msgstr "Saturday"
 
-#: configuracion_telefonia_app/models.py:190
+#: configuracion_telefonia_app/models.py:191
 msgid "Domingo"
 msgstr "Sunday"
 
-#: configuracion_telefonia_app/models.py:196
+#: configuracion_telefonia_app/models.py:197
 msgid "Enero"
 msgstr "January"
 
-#: configuracion_telefonia_app/models.py:197
+#: configuracion_telefonia_app/models.py:198
 msgid "Febrero"
 msgstr "February"
 
-#: configuracion_telefonia_app/models.py:198
+#: configuracion_telefonia_app/models.py:199
 msgid "Marzo"
 msgstr "March"
 
-#: configuracion_telefonia_app/models.py:199
+#: configuracion_telefonia_app/models.py:200
 msgid "Abril"
 msgstr "April"
 
-#: configuracion_telefonia_app/models.py:200
+#: configuracion_telefonia_app/models.py:201
 msgid "Mayo"
 msgstr "May"
 
-#: configuracion_telefonia_app/models.py:201
+#: configuracion_telefonia_app/models.py:202
 msgid "Junio"
 msgstr "June"
 
-#: configuracion_telefonia_app/models.py:202
+#: configuracion_telefonia_app/models.py:203
 msgid "Julio"
 msgstr "July"
 
-#: configuracion_telefonia_app/models.py:203
+#: configuracion_telefonia_app/models.py:204
 msgid "Agosto"
 msgstr "August"
 
-#: configuracion_telefonia_app/models.py:204
+#: configuracion_telefonia_app/models.py:205
 msgid "Septiembre"
 msgstr "September"
 
-#: configuracion_telefonia_app/models.py:205
+#: configuracion_telefonia_app/models.py:206
 msgid "Octubre"
 msgstr "October"
 
-#: configuracion_telefonia_app/models.py:206
+#: configuracion_telefonia_app/models.py:207
 msgid "Noviembre"
 msgstr "November"
 
-#: configuracion_telefonia_app/models.py:207
+#: configuracion_telefonia_app/models.py:208
 msgid "Diciembre"
 msgstr "December"
 
-#: configuracion_telefonia_app/models.py:211
+#: configuracion_telefonia_app/models.py:212
 msgid "Tiempo inicio"
 msgstr "Initial time"
 
-#: configuracion_telefonia_app/models.py:212
+#: configuracion_telefonia_app/models.py:213
 msgid "Tiempo final"
 msgstr "End time"
 
-#: configuracion_telefonia_app/models.py:214
+#: configuracion_telefonia_app/models.py:215
 msgid "Día de la semana inicio"
 msgstr "Initial week day"
 
-#: configuracion_telefonia_app/models.py:216
+#: configuracion_telefonia_app/models.py:217
 msgid "Día de la semana final"
 msgstr "End week day"
 
-#: configuracion_telefonia_app/models.py:218
+#: configuracion_telefonia_app/models.py:219
 msgid "Día del mes inicio"
 msgstr "Initial month day"
 
-#: configuracion_telefonia_app/models.py:220
+#: configuracion_telefonia_app/models.py:221
 msgid "Día del mes final"
 msgstr "End month day"
 
-#: configuracion_telefonia_app/models.py:222
+#: configuracion_telefonia_app/models.py:223
 msgid "Mes inicio"
 msgstr "Initial month"
 
-#: configuracion_telefonia_app/models.py:224
+#: configuracion_telefonia_app/models.py:225
 msgid "Mes final"
 msgstr "End month"
 
-#: configuracion_telefonia_app/models.py:279
+#: configuracion_telefonia_app/models.py:280
 msgid "Grupo horario"
 msgstr "Group of Hours:"
 
-#: configuracion_telefonia_app/models.py:308
+#: configuracion_telefonia_app/models.py:309
 msgid "Sin interacción externa"
 msgstr "Without external interaction"
 
-#: configuracion_telefonia_app/models.py:309
+#: configuracion_telefonia_app/models.py:310
 msgid "Interacción externa tipo 1"
 msgstr "Type 1 External Interaction"
 
-#: configuracion_telefonia_app/models.py:310
+#: configuracion_telefonia_app/models.py:311
 msgid "Interacción externa tipo 2"
 msgstr "Type 2 External Interaction"
 
-#: configuracion_telefonia_app/models.py:315
 #: configuracion_telefonia_app/models.py:316
+#: configuracion_telefonia_app/models.py:317
 msgid "Tipo de interacción"
 msgstr "Interaction type"
 
-#: configuracion_telefonia_app/models.py:319
+#: configuracion_telefonia_app/models.py:320
 msgid "Url servicio identificación"
 msgstr "Identification service url"
 
-#: configuracion_telefonia_app/models.py:324
+#: configuracion_telefonia_app/models.py:325
 msgid "Longitud de id esperado"
 msgstr "Expected id length"
 
-#: configuracion_telefonia_app/models.py:327
+#: configuracion_telefonia_app/models.py:328
 msgid "Timeout"
 msgstr "Timeout"
 
-#: configuracion_telefonia_app/models.py:331
+#: configuracion_telefonia_app/models.py:332
 msgid "Intentos"
 msgstr "Tries"
 
-#: configuracion_telefonia_app/models.py:334
-#: configuracion_telefonia_app/models.py:372
+#: configuracion_telefonia_app/models.py:335
+#: configuracion_telefonia_app/models.py:373
 #, python-brace-format
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#: configuracion_telefonia_app/models.py:352
+#: configuracion_telefonia_app/models.py:353
 msgid "Campaña entrante"
 msgstr "Inbound campaign"
 
-#: configuracion_telefonia_app/models.py:353
+#: configuracion_telefonia_app/models.py:354
 msgid "Validación de fecha/hora"
 msgstr "Time Conditions"
 
-#: configuracion_telefonia_app/models.py:355
-#: configuracion_telefonia_app/models.py:499
+#: configuracion_telefonia_app/models.py:356
+#: configuracion_telefonia_app/models.py:494
 msgid "HangUp"
 msgstr "HangUp"
 
-#: configuracion_telefonia_app/models.py:356
+#: configuracion_telefonia_app/models.py:357
 msgid "Identificador cliente"
 msgstr "Client identification service"
 
-#: configuracion_telefonia_app/models.py:357
+#: configuracion_telefonia_app/models.py:358
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:24
 msgid "Destino personalizado"
 msgstr "Custom destination:"
 
-#: configuracion_telefonia_app/models.py:358
+#: configuracion_telefonia_app/models.py:359
 msgid "Menú Interactivo de Whatsapp"
 msgstr "WhatsApp interactive menu"
 
-#: configuracion_telefonia_app/models.py:359
+#: configuracion_telefonia_app/models.py:360
 msgid "Agente"
 msgstr "Agent"
 
-#: configuracion_telefonia_app/models.py:389
+#: configuracion_telefonia_app/models.py:390
 msgid "Error: El nodo HangUp es único."
 msgstr "Error: HangUp node is unique."
 
-#: configuracion_telefonia_app/models.py:450
+#: configuracion_telefonia_app/models.py:458
 #, python-brace-format
 msgid "Desde nodo {0} a nodo {1}"
 msgstr "From node {0} to node {1}"
 
-#: configuracion_telefonia_app/models.py:507
+#: configuracion_telefonia_app/models.py:502
 msgid "Localización destino"
 msgstr "Custom destination"
 
-#: configuracion_telefonia_app/models.py:636
+#: configuracion_telefonia_app/models.py:631
 msgid "Paquete de idioma"
 msgstr "Language packages"
 
@@ -683,6 +681,11 @@ msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de rutas de {0}. "
 msgstr "An error ocurred when trying to create {0} routing configuration file"
+
+#: configuracion_telefonia_app/services/audio_asterisk.py:59
+#, python-brace-format
+msgid "Error al instalar el paquete de idioma: {0}"
+msgstr "Error when installing language pack: {0}"
 
 #: configuracion_telefonia_app/templates/adicionar_audios_asterisk.html:30
 #, python-format
@@ -991,20 +994,15 @@ msgstr "Insert a valid value"
 msgid "Este campo es requerido."
 msgstr "This field is required"
 
-#: configuracion_telefonia_app/views/audio.py:104
+#: configuracion_telefonia_app/views/audio.py:59
 msgid "Se ha instalado el paquete de idioma satisfactoriamente."
 msgstr "Language package installed successfully"
 
-#: configuracion_telefonia_app/views/audio.py:106
-#, python-brace-format
-msgid "Error al instalar el paquete de idioma: {0}"
-msgstr "Error when installing language pack: {0}"
-
-#: configuracion_telefonia_app/views/audio.py:109
+#: configuracion_telefonia_app/views/audio.py:63
 msgid "Ha ocurrido un error al instalar el paquete de idioma"
 msgstr "An error ocurred when installing language package"
 
-#: configuracion_telefonia_app/views/audio.py:152
+#: configuracion_telefonia_app/views/audio.py:106
 msgid ""
 "No se puede eliminar una Playlist que tiene Músicas en Espera. Elimine las "
 "Músicas en Espera primero"
@@ -1012,22 +1010,22 @@ msgstr ""
 "You can't remove a Playlist with Musics on Hold. Remove the Musics o Hold "
 "first"
 
-#: configuracion_telefonia_app/views/audio.py:163
+#: configuracion_telefonia_app/views/audio.py:117
 msgid "No se puede eliminar una Playlist que está siendo usada en una Campaña"
 msgstr "You cannot delete a Playlist being in use by campaign"
 
-#: configuracion_telefonia_app/views/audio.py:179
+#: configuracion_telefonia_app/views/audio.py:133
 msgid ""
 "Hubo un problema al eliminar la Playlist. Por Favor notifique a su "
 "Administrador."
 msgstr ""
 "There have been problems removing the playlist. Please notify your admin."
 
-#: configuracion_telefonia_app/views/audio.py:188
+#: configuracion_telefonia_app/views/audio.py:142
 msgid "Playlist eliminada con éxito"
 msgstr "Playlist deleted successfully"
 
-#: configuracion_telefonia_app/views/audio.py:285
+#: configuracion_telefonia_app/views/audio.py:239
 msgid "Musica de Espera eliminada con éxito"
 msgstr "Music on Hold deleted successfully"
 

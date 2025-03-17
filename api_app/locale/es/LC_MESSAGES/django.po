@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 12:14-0300\n"
+"POT-Creation-Date: 2025-03-17 15:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -738,17 +738,17 @@ msgid "Se creo la calificacion de forma exitosa"
 msgstr ""
 
 #: api_app/tests/tests_api_call_dispositions.py:92
-#: api_app/views/call_disposition.py:119 api_app/views/call_disposition.py:162
+#: api_app/views/call_disposition.py:120 api_app/views/call_disposition.py:164
 msgid "Error al hacer la peticion"
 msgstr ""
 
 #: api_app/tests/tests_api_call_dispositions.py:112
-#: api_app/views/call_disposition.py:154
+#: api_app/views/call_disposition.py:155
 msgid "Se actualizo la calificacion de forma exitosa"
 msgstr ""
 
 #: api_app/tests/tests_api_call_dispositions.py:128
-#: api_app/views/call_disposition.py:192
+#: api_app/views/call_disposition.py:195
 msgid "Se elimino la calificacion de forma exitosa"
 msgstr ""
 
@@ -959,28 +959,28 @@ msgstr ""
 msgid "Se actualizo el grupo horario de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:77
+#: api_app/tests/tests_api_inbound_route.py:78
 #: api_app/tests/tests_api_outbound_route.py:114
 #: api_app/views/inbound_route.py:46 api_app/views/outbound_route.py:49
 msgid "Se obtuvieron las rutas entrantes de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:104
+#: api_app/tests/tests_api_inbound_route.py:105
 #: api_app/views/inbound_route.py:151
 msgid "Se obtuvo la informacion de la ruta entrante de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:127
+#: api_app/tests/tests_api_inbound_route.py:128
 #: api_app/views/inbound_route.py:73
 msgid "Se creo la ruta entrante de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:146
+#: api_app/tests/tests_api_inbound_route.py:147
 #: api_app/views/inbound_route.py:182
 msgid "Se elimino la ruta entrante de forma exitosa"
 msgstr ""
 
-#: api_app/tests/tests_api_inbound_route.py:192
+#: api_app/tests/tests_api_inbound_route.py:193
 #: api_app/views/inbound_route.py:107
 msgid "Se actualizo la ruta entrante de forma exitosa"
 msgstr ""
@@ -1183,6 +1183,14 @@ msgstr ""
 msgid "No tiene permiso para modificar la auditoría"
 msgstr ""
 
+#: api_app/views/audios_asterisk.py:42
+msgid "Se obtuvieron los lenguajes de forma exitosa"
+msgstr ""
+
+#: api_app/views/audios_asterisk.py:50
+msgid "Error al obtener los lenguajes"
+msgstr ""
+
 #: api_app/views/auditoria.py:80
 msgid "Fecha-Hora"
 msgstr ""
@@ -1290,7 +1298,7 @@ msgstr ""
 msgid "Se obtuvo el detalle de la calificacion de forma exitosa"
 msgstr ""
 
-#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:208
+#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:211
 msgid "No existe la calificacion"
 msgstr ""
 
@@ -1298,28 +1306,28 @@ msgstr ""
 msgid "Error al obtener el detalle de la calificacion"
 msgstr ""
 
-#: api_app/views/call_disposition.py:126
+#: api_app/views/call_disposition.py:127
 msgid "Error al crear la calificacion"
 msgstr ""
 
-#: api_app/views/call_disposition.py:170
+#: api_app/views/call_disposition.py:173
 msgid "No existe la calificacion que se quiere actualizar"
 msgstr ""
 
-#: api_app/views/call_disposition.py:176
+#: api_app/views/call_disposition.py:179
 msgid "Error al actualizar la calificacion"
 msgstr ""
 
-#: api_app/views/call_disposition.py:200
+#: api_app/views/call_disposition.py:203
 msgid "No está permitido eliminar una calificacion reservada del sistema"
 msgstr ""
 
-#: api_app/views/call_disposition.py:213
+#: api_app/views/call_disposition.py:216
 msgid "Error al eliminar la calificacion"
 msgstr ""
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:59
-#: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
+#: api_app/views/supervisor.py:441 api_app/views/supervisor.py:456
 msgid "No existe la campaña"
 msgstr ""
 
@@ -1856,107 +1864,107 @@ msgstr ""
 msgid "Filtro \"status\" inválido"
 msgstr ""
 
-#: api_app/views/supervisor.py:300 api_app/views/supervisor.py:346
+#: api_app/views/supervisor.py:334 api_app/views/supervisor.py:380
 msgid "ID Agenda incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:307
+#: api_app/views/supervisor.py:341
 msgid "ID Agente incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:315 api_app/views/supervisor.py:353
+#: api_app/views/supervisor.py:349 api_app/views/supervisor.py:387
 msgid "No tiene permiso para editar esta Agenda"
 msgstr ""
 
-#: api_app/views/supervisor.py:372
+#: api_app/views/supervisor.py:406
 msgid "Recibidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:373
+#: api_app/views/supervisor.py:407
 msgid "Efectuadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:374
+#: api_app/views/supervisor.py:408
 msgid "Atendidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:375
+#: api_app/views/supervisor.py:409
 msgid "Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:376
+#: api_app/views/supervisor.py:410
 msgid "No Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:377
+#: api_app/views/supervisor.py:411
 msgid "Abandonadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:378
+#: api_app/views/supervisor.py:412
 msgid "Expiradas"
 msgstr ""
 
-#: api_app/views/supervisor.py:379
+#: api_app/views/supervisor.py:413
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:380
+#: api_app/views/supervisor.py:414
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:381
+#: api_app/views/supervisor.py:415
 msgid "Tiempo de Abandono(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:384
+#: api_app/views/supervisor.py:418
 msgid "Efectuadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:385
+#: api_app/views/supervisor.py:419
 msgid "Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:386
+#: api_app/views/supervisor.py:420
 msgid "No Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:387
+#: api_app/views/supervisor.py:421
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:513
+#: api_app/views/supervisor.py:547
 msgid "Exportación de CSV en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:561
+#: api_app/views/supervisor.py:595
 msgid "Exportación de contactados a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:608
+#: api_app/views/supervisor.py:642
 msgid "Exportación de calificados a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:655
+#: api_app/views/supervisor.py:689
 msgid "Exportación de no atendidos a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:667
+#: api_app/views/supervisor.py:701
 msgid "Finalizado"
 msgstr ""
 
-#: api_app/views/supervisor.py:669
+#: api_app/views/supervisor.py:703
 msgid "Liberado"
 msgstr ""
 
-#: api_app/views/supervisor.py:671
+#: api_app/views/supervisor.py:705
 msgid "Reservado"
 msgstr ""
 
-#: api_app/views/supervisor.py:758
+#: api_app/views/supervisor.py:792
 msgid "Exportación de calificaciones a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:803
+#: api_app/views/supervisor.py:837
 msgid "Exportación de Formularios de Gestiones a .csv en proceso"
 msgstr ""
 

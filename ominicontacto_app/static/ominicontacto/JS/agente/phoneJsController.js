@@ -751,7 +751,7 @@ class PhoneJSController {
             let call_data = self.phone.session_data.remote_call;
             call_data['telefono'] = args.phone;
             var message = interpolate(gettext('Conectado a %(fromUser)s'), {fromUser:args.phone}, true);
-            self.view.setCallStatus(message, 'orange');            
+            self.view.setCallStatus(message, 'orange');
             $.growl.notice({
                 title: gettext('Llamada Multinum Conectada'),
                 message: args.phone,
