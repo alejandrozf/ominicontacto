@@ -18,14 +18,19 @@ import os
 import django
 import notification_app.routing
 
-from channels.http import AsgiHandler as get_asgi_application
 from channels.routing import ProtocolTypeRouter
 from channels.routing import ChannelNameRouter
 from channels.routing import URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
-from ominicontacto_app.bgtasks import BackgroundTasksConsumerClient
-from ominicontacto_app.bgtasks import BackgroundTasksConsumerWorker
+
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
+from django.core.asgi import get_asgi_application
+django_asgi_app = get_asgi_application()
+
+from ominicontacto_app.bgtasks import BackgroundTasksConsumerClient  # noqa: E402
+from ominicontacto_app.bgtasks import BackgroundTasksConsumerWorker  # noqa: E402
 
 if not os.getenv('WALLBOARD_VERSION', '') == '':
     import wallboard_app.routing
@@ -44,7 +49,7 @@ if not os.getenv('WALLBOARD_VERSION', '') == '':
     websocket_urlpatterns.extend(wallboard_app.routing.websocket_urlpatterns)
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
     "channel": ChannelNameRouter({
         "background-tasks": BackgroundTasksConsumerWorker.as_asgi(),
