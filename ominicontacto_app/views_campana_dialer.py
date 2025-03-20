@@ -525,7 +525,8 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
         regla = form.save(commit=False)
         try:
             dialer_service = get_dialer_service()
-            dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
+            if wombat_habilitado():
+                dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -533,7 +534,9 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
             return self.form_invalid(form)
 
         regla.save()
-
+        if not wombat_habilitado():
+            # Se cambia en Omnidialer una vez ya creada en BD
+            dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
         return super(ReglasDeIncidenciaDeCalificacionesCreateView, self).form_valid(form)
 
 
@@ -569,9 +572,10 @@ class ReglasDeIncidenciaDeCalificacionesUpdateView(UpdateView, VerificarPremisoE
             editado = dialer_service.editar_regla_de_incidencia(regla, self.campana,
                                                                 self.wombat_id_anterior,
                                                                 es_de_calificacion=True)
-            if not editado:
-                messages.error(_('No se pudo guardar la regla de incidencia.'))
-                return self.form_invalid(form)
+            if wombat_habilitado():
+                if not editado:
+                    messages.error(_('No se pudo guardar la regla de incidencia.'))
+                    return self.form_invalid(form)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
