@@ -23,12 +23,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/select2.min.css' %}"></link>
 {% endblock %}
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/adicionarGruposAgentes.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/ext/jquery.formset.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/adicionar_agentes_base.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/select2.min.js' %}"></script>
 {% endblock %}
 
 {% block formset_render %}

@@ -1206,7 +1206,7 @@ class CalificacionClienteForm(forms.ModelForm):
 
 
 class GrupoAgenteForm(forms.Form):
-    grupo = forms.ChoiceField(choices=())
+    grupo = forms.ChoiceField(choices=(), widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(GrupoAgenteForm, self).__init__(*args, **kwargs)
