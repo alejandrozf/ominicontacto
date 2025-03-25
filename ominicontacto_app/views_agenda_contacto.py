@@ -37,9 +37,13 @@ from django.utils.translation import gettext as _
 from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
+from django.http import StreamingHttpResponse
+from import_export import fields
+from import_export.resources import ModelResource
+
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
 from ominicontacto_app.forms.base import (
-    AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
+    AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, FiltroAgendasForm)
 from ominicontacto_app.utiles import convert_fecha_datetime
 from notification_app.notification import AgentNotifier
 
@@ -259,3 +263,64 @@ class AgendaContactosPorCampanaView(FormView):
         context = super(AgendaContactosPorCampanaView, self).get_context_data(**kwargs)
         context['members'] = self.campana.queue_campana.queuemember.all()
         return context
+
+
+class AgendaContactosExportResource(ModelResource):
+    first_name = fields.Field(attribute="agente__user__first_name")
+    last_name = fields.Field(attribute="agente__user__last_name")
+    campana = fields.Field(attribute="campana__nombre")
+
+    class Meta:
+        model = AgendaContacto
+        fields = [
+            "id",
+            "fecha",
+            "hora",
+            "tipo_agenda",
+            "first_name",
+            "last_name",
+            "campana",
+            "telefono"
+        ]
+        export_order = fields
+
+
+class AgendaContactosView(FormView):
+    """ Vista para que el supervisor pueda gestionar Agendas """
+    form_class = FiltroAgendasForm
+    template_name = 'agenda_contacto/listar_agendas.html'
+
+    def get(self, request, *args, **kwargs):
+        agendas = AgendaContacto.objects.agendas_filtradas_por_fecha('', '')
+        return self.render_to_response(
+            self.get_context_data(agendas=agendas[:10], cantidad=agendas.count()))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial']['fecha'] = now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        return kwargs
+
+    def form_valid(self, form):
+        fecha_desde = form.fecha_desde
+        fecha_hasta = form.fecha_hasta
+        agendas = AgendaContacto.objects.agendas_filtradas_por_fecha(fecha_desde, fecha_hasta)
+        agente = form.cleaned_data['agente']
+        campana_list = form.cleaned_data['campana']
+        if agente:
+            agendas = agendas.filter(agente_id=agente.id)
+        if campana_list:
+            agendas = agendas.filter(campana__in=campana_list)
+
+        if '_exportar' in self.request.POST:
+            filename = "agendas_" + now().date().strftime('%d/%m/%Y') + ".csv"
+            queryset = agendas
+            return StreamingHttpResponse(
+                streaming_content=AgendaContactosExportResource().export(queryset).csv,
+                content_type="text/csv",
+                headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+            )
+        elif '_eliminar' in self.request.POST:
+            agendas.delete()
+
+        return self.render_to_response(
+            self.get_context_data(agendas=agendas[:10], cantidad=agendas.count()))
