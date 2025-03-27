@@ -29,6 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/datatables.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/reconnecting-websocket-iife.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/campana_list.js' %}"></script>
 <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/omlAPI.js' %}"></script>
@@ -47,8 +48,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
     </form>
+    {{ wombat_habilitado|json_script:"wombat_enabled" }}
+    {{ datos_campanas|json_script:"campaigns_data" }}
+
     <h2>{% trans 'Campañas Activas' %} <span style="color:red;">- {% trans 'Canales en uso' %}: {{ canales_en_uso }}</span></h2>
-    {% if user|has_oml_permission:'api_restart_wombat' and wombat_reload_enabled %}
+    {% if wombat_habilitado and user|has_oml_permission:'api_restart_wombat' and wombat_reload_enabled %}
         <input type="hidden" id="wombat_state" name="wombat_state" value="{{ wombat_state }}"/>
         <h2>{% trans 'Estado  Marcador: ' %} 
             <span id="wombat_ready" style="color:green;"> {% trans 'Listo' %}
@@ -64,420 +68,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       </a>
     {% endif %}
     </br>
+
     </br>
-    <table class="table">
-        <thead>
-            <tr>
-                <th width="5%">{% trans 'Id' %}</th>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Canales asignados' %}</th>
-                <th>{% trans 'Fecha Ini' %}</th>
-                <th>{% trans 'Fecha Fin' %}</th>
-                <th>{% trans 'Base de datos' %}</th>
-                <th>{% trans 'Estado' %}</th>
-                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
-
-            </tr>
-        </thead>
-        <tbody>
-        {% for campana in activas %}
-            <tr>
-                <td width="5%">{{ campana.id }}</td>
-                <td width="25%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
-                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
-                        &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
-                    </a>
-                </td>
-                <td>{{ campana.queue_campana.maxlen }}</td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
-                    {{ campana.bd_contacto }}
-                </td>
-                <td> {{campana.get_estado_display}}  </td>
-                <td width="14%">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignActive{{campana.pk}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignActive{{campana.pk}}">
-                            <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Editar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
-                            </a>
-                            <a class="dropdown-item action_for_campaign" value="{% url 'pausar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
-                            </a>
-                            <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Dar permiso para ver' %}
-                            </a>
-
-                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'update_base_datos_contacto_de_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar Contactos' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'bloquear_campos_para_agente' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Restringir campos de contacto' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
-                                <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
-                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td colspan="6">{% trans 'No existen campañas' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% include "campanas/campana_dialer/campana_list_table.html" with campanas=activas state=2 %}
     <br>
+
     <h2>{% trans 'Campañas Pausadas' %}</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th width="5%">{% trans 'Id' %}</th>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Canales asignados' %}</th>
-                <th>{% trans 'Fecha Ini' %}</th>
-                <th>{% trans 'Fecha Fin' %}</th>
-                <th>{% trans 'Base de datos' %}</th>
-                <th>{% trans 'Estado' %}</th>
-                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for campana in pausadas %}
-            <tr>
-                <td width="5%">{{ campana.id }}</td>
-                <td width="25%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
-                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
-                        &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
-                    </a>
-                </td>
-                <td>{{ campana.queue_campana.maxlen }}</td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
-                    {{ campana.bd_contacto }}
-                </td>
-                <td> {{campana.get_estado_display}}  </td>
-                <td width="14%">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignPaused" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignPaused">
-                            <a class="dropdown-item action_for_campaign" value="{% url 'activar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-control-play"></span>{% trans 'Activar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Editar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
-                            <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
-                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td colspan="6">{% trans 'No existen campañas' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% include "campanas/campana_dialer/campana_list_table.html" with campanas=pausadas state=5 %}
     <br>
+
     <h2>{% trans 'Campañas Inactivas' %}</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th width="5%">{% trans 'Id' %}</th>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Canales asignados' %}</th>
-                <th>{% trans 'Fecha Ini' %}</th>
-                <th>{% trans 'Fecha Fin' %}</th>
-                <th>{% trans 'Base de datos' %}</th>
-                <th>{% trans 'Estado' %}</th>
-                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for campana in inactivas %}
-            <tr>
-                <td width="5%">{{ campana.id }}</td>
-                <td width="25%">
-                    {{ campana.nombre }}
-                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
-                        &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
-                    </a>
-                </td>
-                <td>{{ campana.queue_campana.maxlen }}</td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
-                    {{ campana.bd_contacto }}
-                    <a href="{% url 'campana_dialer_update_base' campana.pk %}">
-                        {% trans 'Cambiar' %}
-                    </a>
-                </td>
-                <td> {{campana.get_estado_display}}  </td>
-                <td width="14%">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignInactive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignInactive">
-                            <a class="dropdown-item action_for_campaign" value="{% url 'start_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Editar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
-                            </a>
-                            <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
-                                <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
-                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td colspan="6">{% trans 'No existen campañas' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% include "campanas/campana_dialer/campana_list_table.html" with campanas=inactivas state=6 %}
     <br>
+
     <h2>{% trans 'Campañas Finalizadas' %}</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th width="5%">{% trans 'Id' %}</th>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Canales asignados' %}</th>
-                <th>{% trans 'Fecha Ini' %}</th>
-                <th>{% trans 'Fecha Fin' %}</th>
-                <th>{% trans 'Base de datos' %}</th>
-                <th>{% trans 'Estado' %}</th>
-                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for campana in finalizadas %}
-            <tr>
-                <td width="5%">{{ campana.id }}</td>
-                <td width="25%">
-                    <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
-                    <a href="{% url 'campana_dialer_detalle' campana.pk %}">
-                        &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
-                    </a>
-                </td>
-                <td>{{ campana.queue_campana.maxlen }}</td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td>
-                    {{ campana.bd_contacto }}
-                    <a href="{% url 'campana_dialer_update_base' campana.pk %}">
-                        {% trans 'Cambiar' %}
-                    </a>
-                </td>
-                <td> {{campana.get_estado_display}}  </td>
-                <td width="14%">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignFinished{{ campana.pk }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished{{ campana.pk }}">
-                            <a class="dropdown-item action_for_campaign" href="#" value="{% url 'start_campana_dialer' %}" camp-id="{{ campana.pk }}">
-                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
-                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td colspan="6">{% trans 'No existen campañas' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% include "campanas/campana_dialer/campana_list_table.html" with campanas=finalizadas state=3 %}
     <br>
+
     <h2>{% trans 'Campañas Eliminadas' %}</h2>
     <a href="#" class="btn btn-light btn-sm" onclick="mostrar_campanas_dialer_ocultas()" >
         {% trans 'Mostrar ocultas' %}
     </a>
     <hr>
-    <table class="table">
-        <thead>
-            <tr>
-                <th width="5%">{% trans 'Id' %}</th>
-                <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Canales asignados' %}</th>
-                <th>{% trans 'Fecha Ini' %}</th>
-                <th>{% trans 'Fecha Fin' %}</th>
-                <th>{% trans 'Estado' %}</th>
-                <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody id="t_body_borradas">
-        {% for campana in borradas %}
-            <tr>
-                <td width="5%">{{ campana.id }}</td>
-                <td width="25%">
-                    {{ campana.nombre }}<a href="{% url 'campana_dialer_detalle' campana.pk %}">
-                        &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
-                    </a>
-                </td>
-                <td>{{ campana.queue_campana.maxlen }}</td>
-                <td>
-                    {{ campana.fecha_inicio|date:"d/m/Y" }}
-                </td>
-                <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>
-                <td> {{campana.get_estado_display}}  </td>
-                <td width="14%">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignDeleted">
-                            <a class="dropdown-item" href="{% url 'campana_reporte_calificacion' campana.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Calificaciones' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reporte_de_resultados' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Resultados de Base' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
-                                <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            {% if campana.oculto %}
-                            <a class="dropdown-item" href="{% url 'campana_dialer_desocultar' campana.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
-                            </a>
-                            {% else %}
-                            <a class="dropdown-item" href="{% url 'campana_dialer_ocultar' campana.pk %}">
-                                <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td colspan="6">{% trans 'No existen campañas' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% include "campanas/campana_dialer/campana_list_table.html" with campanas=eliminadas state=4 %}
+
 </div>
 
  <div class="modal fade" id="myMapModal">

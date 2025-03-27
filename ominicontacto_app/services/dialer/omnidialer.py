@@ -160,14 +160,20 @@ class OmnidialerService(AbstractPhoneDialerService):
         redis_connection = create_redis_connection(db=3)
         stats = redis_connection.hgetall(CAMP_STATS_KEY.format(campana.id))
 
+        efectuadas = int(stats.pop('ATTEMPTED_CALLS', 0))
+        terminadas_ok = int(stats.pop(FINALIZED_SUCCESS, 0))
+        terminadas_no = int(stats.pop(FINALIZED_NOCONTACT, 0))
+        estimadas_iniciales = int(stats.pop('PENDING_INITIAL_CONTACT_ATTEMPTS', 0))
         pending_attempts = int(stats.pop(PENDING_ATTEMPTS, 0))
-        terminadas = int(stats.pop(FINALIZED_SUCCESS, 0)) + int(stats.pop(FINALIZED_NOCONTACT, 0))
-        estimadas = int(stats.pop('PENDING_INITIAL_CONTACT_ATTEMPTS', 0)) + pending_attempts
+        estimadas = estimadas_iniciales + pending_attempts
         data = {
             'error_consulta': False,
-            'efectuadas': int(stats.pop('ATTEMPTED_CALLS', 0)),
-            'terminadas': terminadas,
+            'efectuadas': efectuadas,
+            'terminadas': terminadas_ok + terminadas_no,
+            'terminadas_ok': terminadas_ok,
+            'terminadas_no': terminadas_no,
             'estimadas': estimadas,
+            'estimadas_iniciales': estimadas_iniciales,
             'reintentos_abiertos': pending_attempts,
         }
         status = []
