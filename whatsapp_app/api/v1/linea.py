@@ -196,6 +196,10 @@ class ViewSet(viewsets.ViewSet):
                 serializer_destino =\
                     DestinoDeLineaCreateSerializer(data=destino_data, context={'line': instance})
                 if serializer_destino.is_valid():
+                    # Primero desconectar destino anterior de la línea para poderlo borrar
+                    # pues es un campo PROTECT
+                    instance.destino = None
+                    instance.save()
                     for menu_old in instance.menuinteractivo.all():
                         destino_old = DestinoEntrante.objects.get(
                             object_id=menu_old.pk,
