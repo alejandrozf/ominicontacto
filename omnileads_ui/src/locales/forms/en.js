@@ -175,7 +175,8 @@ export default {
             ivr: 'IVR',
             hangup: 'Hang Up',
             id_client: 'Client identifier',
-            custom_dst: 'Custom destination'
+            custom_dst: 'Custom destination',
+            agent: 'Agent'
         },
         audios: {
             external: {
@@ -192,7 +193,7 @@ export default {
             repeated_dtmf:
                 'There is already a destination option with that DTMF',
             invalid_dtmf:
-                'The DTMF value must be a digit (0-9) or a character (#, -, *)'
+                'The DTMF value must have a maximum five digit (0-9) or character (#, -, *)'
         }
     },
     register_server: {

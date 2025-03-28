@@ -32,7 +32,7 @@ VALOR_OPCION_FIELD = {
 
 
 class DestinationOptionCreateSerializer(serializers.Serializer):
-    DMFT_REGEX = r'^[0-9|\-|#|\*]$'
+    DMFT_REGEX = r'^[0-9|\-|#|\*]{1,5}$'
 
     id = serializers.IntegerField(required=False, allow_null=True)
     dtmf = serializers.CharField()
@@ -44,7 +44,7 @@ class DestinationOptionCreateSerializer(serializers.Serializer):
         compiled_regex = re.compile(self.DMFT_REGEX)
         if compiled_regex.match(dtmf) is None:
             raise serializers.ValidationError({
-                'dtmf({0})'.format(dtmf): 'El valor del DTMF debe ser un dígito(0-9)'
+                'dtmf({0})'.format(dtmf): 'El valor del DTMF debe tener como máximo 5 dígitos(0-9)'
                                           'o un caracter (#, -, *)'
             })
 

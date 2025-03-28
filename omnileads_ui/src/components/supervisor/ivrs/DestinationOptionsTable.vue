@@ -110,7 +110,8 @@ import {
     IVR,
     HANGUP,
     ID_CLIENT,
-    CUSTOM_DST
+    CUSTOM_DST,
+    AGENT
 } from '@/globals/supervisor/ivr';
 
 export default {
@@ -148,6 +149,10 @@ export default {
                 {
                     option: this.$t('forms.ivr.destination_types.custom_dst'),
                     value: CUSTOM_DST
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.agent'),
+                    value: AGENT
                 }
             ]
         };

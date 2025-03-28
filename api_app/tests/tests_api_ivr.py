@@ -30,8 +30,12 @@ from configuracion_telefonia_app.tests.factories import (
     IdentificadorClienteFactory,
     OpcionDestinoFactory,
     RutaEntranteFactory,
-    ValidacionFechaHoraFactory)
-from ominicontacto_app.tests.factories import ArchivoDeAudioFactory, CampanaFactory
+    ValidacionFechaHoraFactory,
+    DestinoEntranteFactory
+)
+from ominicontacto_app.tests.factories import (
+    ArchivoDeAudioFactory, CampanaFactory, AgenteProfileFactory
+)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import Campana, User
 
@@ -468,3 +472,24 @@ class IVRTest(APITest):
         self.assertEqual(
             response_json['errors']['invalid_audio'],
             ['El archivo no tiene extension .wav'])
+
+    @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia'
+           '.SincronizadorDeConfiguracionIVRAsterisk.regenerar_asterisk')
+    def test_ivr_destino_agente(self, regenerar_asterisk):
+        URL = reverse(self.urls_api['Create'])
+        self.agente = AgenteProfileFactory()
+        self.agente_destino_entrante = DestinoEntranteFactory.create(
+            tipo=DestinoEntrante.AGENTE, content_object=self.agente)
+        destination_options = json.dumps([
+            {
+                "dtmf": "1111",
+                "destination_type": DestinoEntrante.AGENTE,
+                "destination": self.agente_destino_entrante.id,
+                "id": None
+            }
+        ])
+        post_data = self._get_ivr_form_data()
+        post_data.update({'destination_options': destination_options})
+        response = self.client.post(URL, post_data, follow=True)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(self.agente.is_ivr_destino(), True)

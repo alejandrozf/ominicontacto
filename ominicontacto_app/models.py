@@ -471,6 +471,14 @@ class AgenteProfile(models.Model):
             destino__content_type=ContentType.objects.get_for_model(self),
         )
 
+    def is_ivr_destino(self):
+        OpcionDestino = apps.get_model('configuracion_telefonia_app.OpcionDestino')
+        DestinoEntrante = apps.get_model('configuracion_telefonia_app.DestinoEntrante')
+        return OpcionDestino.objects.filter(
+            destino_siguiente__object_id=self.id,
+            destino_siguiente__tipo=DestinoEntrante.AGENTE,
+            destino_anterior__tipo=DestinoEntrante.IVR).exists()
+
     def desactivar(self):
         self.destinos_entrantes.all().delete()
         self.is_inactive = True

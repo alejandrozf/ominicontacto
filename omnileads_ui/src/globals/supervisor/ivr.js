@@ -17,4 +17,4 @@ export const AGENT = 11;
 export const INTERNAL_AUDIO = 1;
 export const EXTERNAL_AUDIO = 2;
 // Regex DTMF
-export const DTMF_REGEX = new RegExp('^[0-9|-|#|*]$');
+export const DTMF_REGEX = new RegExp('^[0-9|-|#|*]{1,5}$');

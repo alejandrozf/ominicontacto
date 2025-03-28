@@ -435,6 +435,14 @@ class UserDeleteView(DeleteView):
                 )
                 messages.add_message(request, messages.WARNING, " ".join(msgs))
                 return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
+            if agente.is_ivr_destino():
+                msgs = [_('El Agente no puede ser eliminado.')]
+                msgs.append(
+                    _('El mismo se encuentra como "destino" de un IVR')
+                )
+                messages.add_message(request, messages.WARNING, " ".join(msgs))
+                return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
+
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
 
     def _can_delete_user(self, user):
@@ -633,6 +641,12 @@ class DesactivarAgenteView(RedirectView):
                     pluralize(len(inbound_routes_where_is_destino)),
                     ", ".join(inbound_routes_where_is_destino)
                 ))
+            )
+            messages.add_message(request, messages.WARNING, " ".join(msgs))
+        elif agente.is_ivr_destino():
+            msgs = [_('El Agente no fue desactivado.')]
+            msgs.append(
+                _('El mismo se encuentra como "destino" de un IVR')
             )
             messages.add_message(request, messages.WARNING, " ".join(msgs))
         else:

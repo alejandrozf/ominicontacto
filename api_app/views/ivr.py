@@ -271,7 +271,8 @@ class IVRDestinationTypes(APIView):
                 '3': None,
                 '5': None,
                 '9': None,
-                '7': None
+                '7': None,
+                '11': None
             }
             for k, __ in DestinoEntrante.TIPOS_DESTINOS:
                 destinos = DestinoEntrante.get_destinos_por_tipo(k)

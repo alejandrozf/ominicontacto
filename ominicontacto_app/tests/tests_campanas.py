@@ -1234,7 +1234,7 @@ class SupervisorCampanaTests(CampanasTests):
             post_step6_data
         ) = self._obtener_post_data_wizard_creacion_campana_entrante(nombre_campana, audio_ingreso)
 
-        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1242,7 +1242,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
-        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 3)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
@@ -1271,7 +1271,7 @@ class SupervisorCampanaTests(CampanasTests):
              campana_entrante_template, audio_ingreso)
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-name'] = nombre_campana
-        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1279,7 +1279,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
-        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 3)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'

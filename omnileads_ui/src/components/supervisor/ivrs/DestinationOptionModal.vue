@@ -59,6 +59,12 @@
           >
         </div>
         <div class="field col-12">
+          <label id="ivr_is_direct">{{ $t("models.inbound_route.is_direct") }}</label>
+          <div class="p-inputgroup mt-2">
+            <InputSwitch id="ivr_is_direct" v-bind:modelValue="isDirect" v-on:change="isDirectOnChange" />
+          </div>
+        </div>
+        <div class="field col-12">
           <label
             id="pause_type"
             :class="{
@@ -78,6 +84,7 @@
             placeholder="-----"
             optionLabel="option"
             optionValue="value"
+            optionDisabled="disabled"
             @change="getDestinations"
             :emptyFilterMessage="$t('globals.without_data')"
           />
@@ -113,6 +120,7 @@
                 v$.destinationOptionForm.destination.$invalid && submitted,
             }"
             :options="destinations_filter"
+            :filter="true"
             placeholder="-----"
             optionLabel="nombre"
             optionValue="id"
@@ -157,7 +165,8 @@ import {
     IVR,
     HANGUP,
     ID_CLIENT,
-    CUSTOM_DST
+    CUSTOM_DST,
+    AGENT
 } from '@/globals/supervisor/ivr';
 import { isDTMFValid } from '@/helpers/ivr_helper';
 
@@ -201,38 +210,57 @@ export default {
                 destination: null,
                 destination_type: null,
                 dtmf: null
-            },
-            destination_types: [
-                {
-                    option: this.$t('forms.ivr.destination_types.campaign'),
-                    value: CAMPAIGN
-                },
-                {
-                    option: this.$t('forms.ivr.destination_types.validation_date'),
-                    value: VALIDATION_DATE
-                },
-                {
-                    option: this.$t('forms.ivr.destination_types.ivr'),
-                    value: IVR
-                },
-                {
-                    option: this.$t('forms.ivr.destination_types.hangup'),
-                    value: HANGUP
-                },
-                {
-                    option: this.$t('forms.ivr.destination_types.id_client'),
-                    value: ID_CLIENT
-                },
-                {
-                    option: this.$t('forms.ivr.destination_types.custom_dst'),
-                    value: CUSTOM_DST
-                }
-            ],
-            destinations_filter: []
+            }
         };
     },
     computed: {
-        ...mapState(['ivrDestinations'])
+        ...mapState(['ivrDestinations']),
+        destination_types () {
+            return [
+                {
+                    option: this.$t('forms.ivr.destination_types.campaign'),
+                    value: CAMPAIGN,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.validation_date'),
+                    value: VALIDATION_DATE,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.ivr'),
+                    value: IVR,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.hangup'),
+                    value: HANGUP,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.id_client'),
+                    value: ID_CLIENT,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.custom_dst'),
+                    value: CUSTOM_DST,
+                    disabled: this.isDirect
+                },
+                {
+                    option: this.$t('forms.ivr.destination_types.agent'),
+                    value: AGENT,
+                    disabled: !this.isDirect
+                }
+            ]
+        },
+        destinations_filter () {
+            return this.destinationOptionForm.destination_type !== null ? this.ivrDestinations[`${this.destinationOptionForm.destination_type}`] : [];
+        },
+        isDirect () {
+            console.log("----", this.destinationOptionForm.destination_type === AGENT)
+            return this.destinationOptionForm.destination_type === AGENT;
+        },
     },
     created () {
         this.initializeData();
@@ -286,6 +314,14 @@ export default {
                   `${this.destinationOptionForm.destination_type}`
               ]
               : [];
+            }
+        },
+        isDirectOnChange ($event) {
+            if (this.isDirect) {
+                this.destinationOptionForm.destination_type = null;
+                this.destinationOptionForm.destination = null;
+            } else {
+                this.destinationOptionForm.destination_type = AGENT;
             }
         },
         save (isFormValid) {
