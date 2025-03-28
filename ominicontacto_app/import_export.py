@@ -131,6 +131,17 @@ class UserImportResource(ModelResource):
                 "is_customer": profile == User.REFERENTE,
             }
 
+    def init_instance(self, row=None):
+        instance = self._meta.model()
+        profile = row.get("profile")
+        if profile == User.AGENTE:
+            instance.is_agente = True
+        elif profile == User.CLIENTE_WEBPHONE:
+            instance.is_cliente_webphone = True
+        else:
+            instance.is_supervisor = True
+        return instance
+
     def save_m2m(self, instance, row, using_transactions, dry_run):
         super().save_m2m(instance, row, using_transactions, dry_run)
         profile = row.get("profile")
