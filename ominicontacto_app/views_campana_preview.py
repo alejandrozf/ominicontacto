@@ -103,8 +103,8 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
                 messages.warning(self.request, message)
         return context
 
-    def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
+    def done(self, form_list, form_dict, **kwargs):
+        queue = self._save_forms(form_list, form_dict, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
         self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
         self.save_supervisores(form_list, -3)
@@ -185,8 +185,8 @@ class CampanaPreviewTemplateCreateView(CampanaTemplateCreateMixin, CampanaPrevie
 
     form_list = FORMS
 
-    def done(self, form_list, **kwargs):
-        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_PREVIEW)
+    def done(self, form_list, form_dict, **kwargs):
+        self._save_forms(form_list, form_dict, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_PREVIEW)
         return HttpResponseRedirect(reverse('campana_preview_template_list'))
 
 

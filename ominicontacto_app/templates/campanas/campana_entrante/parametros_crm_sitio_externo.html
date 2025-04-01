@@ -29,6 +29,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <li class="disabled"><a>{% trans 'Configuración de Whatsapp' %}</a></li>
         {% endif %}
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if custom_basedatoscontacto %}
+            <li class="disabled"><a>{% trans 'Base Datos de Contactos' %}</a></li>
+        {% endif %}
         <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
         {% if not es_template and create %}
             <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
