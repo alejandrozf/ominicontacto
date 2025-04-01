@@ -443,6 +443,19 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.disable();
                 self.keep_alive_sender.activate();
             },
+            onBeforeReceiveCall: function() {
+                if (self.phone_fsm.state == 'Paused') {
+                    self.oml_api.makeUnpause(
+                        self.pause_manager.pause_id,
+                        function unpause_ok() {
+                            self.pause_manager.leavePause();
+                        },
+                        function unpause_error() {
+                            self.pause_manager.leavePause();
+                        }
+                    );
+                }
+            },
             onOnhold: function() {
                 phone_logger.log('FSM: onOnHold');
                 self.view.setUserStatus('label label-success', gettext('En espera'));
