@@ -61,6 +61,8 @@ from reportes_app.models import LlamadaLog
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
 
+import jsonschema
+
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
 ALL_CAMPAIGNS_ACTIVE_CHOICE = ('activas', _('---- Todas las activas ----'))
@@ -2494,3 +2496,68 @@ class CampanaConfiguracionWhatsappForm(forms.ModelForm):
             'grupo_plantilla_whatsapp': forms.Select(attrs={'class': 'form-control'}),
             'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class CustomBaseDatosContactoForm(forms.ModelForm):
+
+    metadata_schema = {
+        "$id": "custom-basedatoscontacto.metadata",
+        "type": "object",
+        "properties": {
+            "prim_fila_enc": {
+                "const": False,
+            },
+            "cant_col": {
+                "type": "integer",
+                "minimum": 0,
+            },
+            "nombres_de_columnas": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                },
+            },
+            "cols_telefono": {
+                "type": "array",
+                "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                },
+            },
+            "col_id_externo": {
+                "type": ["integer", "null"],
+            },
+        },
+        "required": [
+            "prim_fila_enc",
+            "cant_col",
+            "nombres_de_columnas",
+            "cols_telefono",
+            "col_id_externo",
+        ],
+    }
+
+    class Meta:
+        model = BaseDatosContacto
+        fields = [
+            "nombre",
+            "metadata",
+        ]
+        widgets = {
+            "metadata": forms.HiddenInput,
+        }
+
+    def clean_metadata(self):
+        value = self.cleaned_data["metadata"]
+        metadata = json.loads(value)
+        try:
+            jsonschema.validate(metadata, self.metadata_schema)
+        except jsonschema.ValidationError as error:
+            raise forms.ValidationError(error.message)
+        if metadata["cant_col"] != len(metadata["nombres_de_columnas"]):
+            raise forms.ValidationError(_("El valor de {0} es incorrecto".format('cant_col')))
+        if any(col >= metadata["cant_col"] for col in metadata["cols_telefono"]):
+            raise forms.ValidationError(_("El valor de {0} es incorrecto".format('cols_telefono')))
+        if metadata["col_id_externo"] and metadata["col_id_externo"] >= metadata["cant_col"]:
+            raise forms.ValidationError(_("El valor de {0} es incorrecto".format('col_id_externo')))
+        return value
