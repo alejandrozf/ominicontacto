@@ -7,7 +7,7 @@
   >
     <template #header>
       <h2 v-if="formToCreate">{{ $t("views.call_dispositions.new_title") }}</h2>
-      <h2 v-if="formToAddSubdisposition">{{ $t("views.call_dispositions.add_subcategory") }}</h2>
+      <h2 v-else-if="formToAddSubdisposition">{{ $t("views.call_dispositions.add_subcategory") }}</h2>
       <h2 v-else>{{ $t("views.call_dispositions.edit_title") }}</h2>
     </template>
     <div class="card">
