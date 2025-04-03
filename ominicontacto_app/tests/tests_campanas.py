@@ -890,9 +890,10 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step6_data = {
             'campana_dialer_create_view-current_step': 6,
-            '6-0-estado': '',
-            '6-0-reintentar_tarde': '',
-            '6-0-intento_max': '',
+            '6-0-estado': '1',
+            '6-0-reintentar_tarde': '1',
+            '6-0-intento_max': '1',
+            '6-0-en_modo': '1',
             '6-TOTAL_FORMS': '1',
             '6-INITIAL_FORMS': '0',
             '6-MIN_NUM_FORMS': '0',

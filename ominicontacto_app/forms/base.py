@@ -1820,12 +1820,13 @@ class ReglasIncidenciaForm(forms.ModelForm):
 
     class Meta:
         model = ReglasIncidencia
-        fields = ('estado', 'intento_max', 'reintentar_tarde')
+        fields = ('estado', 'intento_max', 'reintentar_tarde', 'en_modo')
 
         widgets = {
             'estado': forms.Select(attrs={'class': 'form-control'}),
             "intento_max": forms.TextInput(attrs={'class': 'form-control'}),
             "reintentar_tarde": forms.TextInput(attrs={'class': 'form-control'}),
+            'en_modo': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

@@ -28,6 +28,7 @@ from ominicontacto_app.models import (Campana, Queue, User, OpcionCalificacion,
                                       SupervisorProfile, ClienteWebPhoneProfile)
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                # ArchivoDeAudioFactory,
+                                               ActuacionVigenteFactory,
                                                FormularioFactory,
                                                FieldFormularioFactory, BaseDatosContactoFactory,
                                                ContactoFactory, CampanaFactory,
@@ -148,6 +149,7 @@ class Command(BaseCommand):
         )
 
         self._crear_opciones_calificacion(campana)
+        ActuacionVigenteFactory.create(campana=campana)
 
         return campana
 
