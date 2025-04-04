@@ -273,7 +273,7 @@ class CalificacionClienteFormView(FormView):
                 initial['telefono'] = self.kwargs['telefono']
 
         # Cargo los datos de contacto recibidos desde el CRM
-        if self.call_data and 'CRM_contact_data' in self.call_data and usar_crm:
+        if usar_crm and self.call_data and self.call_data.get('CRM_contact_data'):
             bd_metadata = self.campana.bd_contacto.get_metadata()
             campos_bd = bd_metadata.nombres_de_columnas
             contact_data = json.loads(self.call_data['CRM_contact_data'])
