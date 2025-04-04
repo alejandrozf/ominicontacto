@@ -43,7 +43,7 @@ from ominicontacto_app.models import (
     ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
-from configuracion_telefonia_app.models import AudiosAsteriskConf
+from configuracion_telefonia_app.models import AudiosAsteriskConf, DestinoEntrante
 from ominicontacto_app.tests.factories import (NombreCalificacionFactory, GrupoFactory,
                                                QueueMemberFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
@@ -146,6 +146,9 @@ class OMLTestUtilsMixin(object):
             reported_by=user
         )
         profile.user.groups.set([Group.objects.get(name=User.AGENTE)])
+        DestinoEntrante.objects.create(
+            nombre=user.username, tipo=DestinoEntrante.AGENTE, content_object=profile
+        )
         return profile
 
     def crear_supervisor_profile(self, rol=User.GERENTE, user=None):
