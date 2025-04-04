@@ -121,7 +121,8 @@ export default {
         edit (callDisposition) {
             this.$emit('handleModalEvent', {
                 showModal: true,
-                toCreate: false,
+                formToCreate: false,
+                toAddSubcategory: false,
                 callDisposition
             });
         },
@@ -129,7 +130,7 @@ export default {
           console.log(callDisposition)
           this.$emit('handleModalEvent', {
                 showModal: true,
-                toCreate: false,
+                formToCreate: false,
                 toAddSubcategory: true,
                 callDisposition
           });
