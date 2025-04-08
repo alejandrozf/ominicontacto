@@ -892,11 +892,6 @@ export default {
             deep: true,
             immediate: true
         },
-        supWhatsappLine: {
-            handler () { this.initFormBase(); },
-            deep: true,
-            immediate: true
-        },
         supWhatsappLineOptions: {
             handler () {
                 if (
