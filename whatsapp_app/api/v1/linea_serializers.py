@@ -200,19 +200,22 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                 else:
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
-                    if object_dict['destino_anterior'].id in destino_siguiente.\
+                    if destino_siguiente\
+                            and object_dict['destino_anterior'].id in destino_siguiente.\
                             destinos_siguientes.values_list('destino_siguiente', flat=True).\
                             distinct():
                         raise serializers.ValidationError({
                             'data': _('No puede existir dependencias recursiva entre menus')})
-                option_data['destination'] = destino_siguiente.content_object.id
-                opcion = OpcionDestino.crear_opcion_destino(
-                    destino_anterior=object_dict['destino_anterior'],
-                    destino_siguiente=destino_siguiente,
-                    valor=option_data['value'])
-                OpcionMenuInteractivoWhatsapp.objects.create(
-                    opcion=opcion,
-                    descripcion=option_data['description'] if 'description' in option_data else "")
+                if destino_siguiente:
+                    option_data['destination'] = destino_siguiente.content_object.id
+                    opcion = OpcionDestino.crear_opcion_destino(
+                        destino_anterior=object_dict['destino_anterior'],
+                        destino_siguiente=destino_siguiente,
+                        valor=option_data['value'])
+                    OpcionMenuInteractivoWhatsapp.objects.create(
+                        opcion=opcion,
+                        descripcion=option_data['description'] if 'description'
+                                                                  in option_data else "")
 
     def update_opcions(self, destino_whith_options):
         # TODO NO SE USA ACTUALMENTE IMPLEMENTACION INCOMPLETA
