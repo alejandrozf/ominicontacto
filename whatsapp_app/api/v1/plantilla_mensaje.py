@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar lineas
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.db.models import F, Func, Value, JSONField
 from rest_framework import serializers
@@ -230,6 +231,19 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_('Plantilla no encontrado')),
                 status=status.HTTP_404_NOT_FOUND)
+        except models.ProtectedError as exc:
+            return response.Response(
+                data={
+                    "message": _(
+                       "No está permitido eliminar el '{modelo}' porque está siendo "
+                        "usado por {related}.".format(
+                            modelo=_("Mensaje Plantilla"),
+                            related=", ".join(str(o) for o in exc.protected_objects),
+                        )
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception:
             return response.Response(
                 data=get_response_data(
