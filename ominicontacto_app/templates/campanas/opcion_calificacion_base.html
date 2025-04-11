@@ -70,31 +70,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {{ form.DELETE }}
                     {% endif %}
                     </td>
-                    <td class="nombre">
+                    <td class="nombre p-2">
+                        <label>&nbsp;</label>
                         {{ form.nombre.errors }}
                         {{ form.nombre|add_class:"form-control" }}
                     </td>
-                    <td class="subcalificaciones" style="padding:10px">
-                        {{ form.subcalificaciones.label }}
+                    <td class="subcalificaciones p-2">
+                        <label>{{ form.subcalificaciones.label }}</label>
                         {{ form.subcalificaciones|add_class:"form-control" }}
                         {{ form.subcalificaciones.errors }}
                     </td>
-                    <td class="tipo">
+                    <td class="tipo p-2">
+                        <label>&nbsp;</label>
                         {{ form.tipo.errors }}
                         {{ form.tipo|add_class:"form-control" }}
                     </td>
                     {% if form.formulario %}
-                        <td class="formulario">
+                        <td class="formulario p-2">
+                            <label>&nbsp;</label>
                             {{ form.formulario.errors }}
                             {{ form.formulario|add_class:"form-control fieldsFormset" }}
                         </td>
                     {% endif %}
-                    <td class="positiva" style="padding:10px">
+                    <td class="positiva p-2">
                         {{ form.positiva.label }}
                         {{ form.positiva.errors }}
                         {{ form.positiva|add_class:"form-control" }}
                     </td>
-                    <td>
+                    <td class="p-2">
                     {% if not form.instance.es_agenda %}
                         {{ form.oculta.label }}
                         {{ form.oculta.errors }}
@@ -102,7 +105,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% endif %}
                     </td>
                     {% if not form.instance.es_agenda %}
-                    <td class="positiva" style="padding:10px">
+                    <td class="positiva p-2">
                         {{ form.interaccion_crm.label }}
                         {{ form.interaccion_crm.errors }}
                         {{ form.interaccion_crm|add_class:"form-control" }}
