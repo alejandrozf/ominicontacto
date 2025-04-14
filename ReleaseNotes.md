@@ -28,6 +28,12 @@
 - Error testing External Site Authentication.
 - Error in notification of External Site interaction result.
 - Race condition with LlamadaLog log and External Site interaction with 'datetime' parameter.
+- oml-2933 Fix uwsgi problem with long uris.
+- Fix generation of ActividadAgenteLog "UNPAUSEALL" event when agents receive calls
+- oml-686 Fix for backup restores
+- oml-2980 Fix Whatsapp Line edit form wizard problems with templates and groups of hours.
+- oml-2964 Fix unwanted Whatsapp line deletion when removing associated objects.
+
 
 ## Removed
 

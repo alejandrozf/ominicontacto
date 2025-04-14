@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-17 15:14-0300\n"
+"POT-Creation-Date: 2025-04-14 16:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,9 +59,9 @@ msgstr "Disposition successfully created"
 #: whatsapp_app/api/v1/grupo_plantilla_whatsapp.py:157
 #: whatsapp_app/api/v1/linea.py:82 whatsapp_app/api/v1/linea.py:129
 #: whatsapp_app/api/v1/linea.py:134 whatsapp_app/api/v1/linea.py:190
-#: whatsapp_app/api/v1/linea.py:247 whatsapp_app/api/v1/linea.py:253
-#: whatsapp_app/api/v1/plantilla_mensaje.py:144
-#: whatsapp_app/api/v1/plantilla_mensaje.py:207
+#: whatsapp_app/api/v1/linea.py:254 whatsapp_app/api/v1/linea.py:260
+#: whatsapp_app/api/v1/plantilla_mensaje.py:145
+#: whatsapp_app/api/v1/plantilla_mensaje.py:208
 #: whatsapp_app/api/v1/proveedor.py:184 whatsapp_app/api/v1/proveedor.py:247
 msgid "Error en los datos"
 msgstr "Data error"
@@ -422,7 +422,7 @@ msgstr "Error fetching lines"
 msgid "Este campo es requerido."
 msgstr "This field is required"
 
-#: whatsapp_app/api/v1/linea.py:124 whatsapp_app/api/v1/linea.py:241
+#: whatsapp_app/api/v1/linea.py:124 whatsapp_app/api/v1/linea.py:248
 msgid "Se creo la línea de forma exitosa"
 msgstr "Line successfully created"
 
@@ -442,37 +442,37 @@ msgstr "Line not found"
 msgid "Error al obtener la línea: "
 msgstr "Error fetching line: "
 
-#: whatsapp_app/api/v1/linea.py:258
+#: whatsapp_app/api/v1/linea.py:265
 msgid "Error al crear la línea >>>"
 msgstr "Error creating line >>>"
 
-#: whatsapp_app/api/v1/linea.py:273
+#: whatsapp_app/api/v1/linea.py:280
 msgid "Se elimino la línea de forma exitosa"
 msgstr "Line deleted successfully"
 
-#: whatsapp_app/api/v1/linea.py:278
+#: whatsapp_app/api/v1/linea.py:285
 msgid "Esta línea está siendo usada por alguna campaña activa."
 msgstr "This line is in use by an active campaign"
 
-#: whatsapp_app/api/v1/linea.py:282
+#: whatsapp_app/api/v1/linea.py:289
 msgid "Línea no encontrado"
 msgstr "Line not found"
 
-#: whatsapp_app/api/v1/linea.py:287
+#: whatsapp_app/api/v1/linea.py:294
 msgid "Error al eliminar la línea"
 msgstr "Error deleting line"
 
 #: whatsapp_app/api/v1/linea_serializers.py:85
 #: whatsapp_app/api/v1/linea_serializers.py:93
-#: whatsapp_app/api/v1/linea_serializers.py:483
-#: whatsapp_app/api/v1/linea_serializers.py:492
+#: whatsapp_app/api/v1/linea_serializers.py:486
+#: whatsapp_app/api/v1/linea_serializers.py:495
 #: whatsapp_app/api/v1/proveedor.py:72 whatsapp_app/api/v1/proveedor.py:77
 #: whatsapp_app/api/v1/proveedor.py:115 whatsapp_app/api/v1/proveedor.py:120
 msgid "Configuración incorrecta para el tipo de proveedor"
 msgstr "Wrong configuration for this provider type"
 
 #: whatsapp_app/api/v1/linea_serializers.py:88
-#: whatsapp_app/api/v1/linea_serializers.py:487
+#: whatsapp_app/api/v1/linea_serializers.py:490
 msgid "Ya existe una Linea con ese App ID"
 msgstr "A line with this App ID already exists"
 
@@ -500,23 +500,23 @@ msgstr "A destination with that campaign id does not exist"
 msgid "Valor incorrecto."
 msgstr "Wrong value."
 
-#: whatsapp_app/api/v1/linea_serializers.py:207
+#: whatsapp_app/api/v1/linea_serializers.py:208
 msgid "No puede existir dependencias recursiva entre menus"
 msgstr "Recursive dependencies are not allowed between menus"
 
-#: whatsapp_app/api/v1/linea_serializers.py:341
+#: whatsapp_app/api/v1/linea_serializers.py:344
 msgid "El valor de las opciones no puede repetirse"
 msgstr "Value options can not repeat"
 
-#: whatsapp_app/api/v1/linea_serializers.py:344
+#: whatsapp_app/api/v1/linea_serializers.py:347
 msgid "No pueden definirse más de 10 opciones"
 msgstr "Can't define more than 10 options"
 
-#: whatsapp_app/api/v1/linea_serializers.py:468
+#: whatsapp_app/api/v1/linea_serializers.py:471
 msgid "Debe indicar una configuración de proveedor."
 msgstr "Must select a provider configuration."
 
-#: whatsapp_app/api/v1/linea_serializers.py:474
+#: whatsapp_app/api/v1/linea_serializers.py:477
 msgid "Debe indicar un proveedor."
 msgstr "Must select a povider."
 
@@ -528,64 +528,75 @@ msgstr "Messages fetched successfully"
 msgid "Error al obtener los mensajes"
 msgstr "Error fetching messages"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:58
-#: whatsapp_app/api/v1/plantilla_mensaje.py:96
+#: whatsapp_app/api/v1/plantilla_mensaje.py:59
+#: whatsapp_app/api/v1/plantilla_mensaje.py:97
 msgid "No soportado por el momento"
 msgstr "Not supported at the moment"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:65
-#: whatsapp_app/api/v1/plantilla_mensaje.py:103
+#: whatsapp_app/api/v1/plantilla_mensaje.py:66
+#: whatsapp_app/api/v1/plantilla_mensaje.py:104
 msgid "Configuración incorrecta para el tipo de mensaje"
 msgstr "Wrong configuration for message type"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:118
+#: whatsapp_app/api/v1/plantilla_mensaje.py:119
 #: whatsapp_app/api/v1/template_whatsapp.py:77
 msgid "Se obtuvieron las plantillas de forma exitosa"
 msgstr "Templates fetched successfully"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:124
+#: whatsapp_app/api/v1/plantilla_mensaje.py:125
 #: whatsapp_app/api/v1/template_whatsapp.py:84
 msgid "Error al obtener las plantillas"
 msgstr "Error fetching templates"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:138
+#: whatsapp_app/api/v1/plantilla_mensaje.py:139
 msgid "Se creo la platilla de forma exitosa"
 msgstr "Template successfully created"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:148
+#: whatsapp_app/api/v1/plantilla_mensaje.py:149
 msgid "Error al crear la plantilla"
 msgstr "Error creating template"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:179
+#: whatsapp_app/api/v1/plantilla_mensaje.py:180
 msgid "Se obtuvo la plantilla de forma exitosa"
 msgstr "Template fetched successfully"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:183
-#: whatsapp_app/api/v1/plantilla_mensaje.py:211
+#: whatsapp_app/api/v1/plantilla_mensaje.py:184
+#: whatsapp_app/api/v1/plantilla_mensaje.py:212
 msgid "Plantilla no encontrada"
 msgstr "Template not found"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:188
+#: whatsapp_app/api/v1/plantilla_mensaje.py:189
 msgid "Error al obtener la plantilla"
 msgstr "Error fetching template"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:202
+#: whatsapp_app/api/v1/plantilla_mensaje.py:203
 msgid "Se actualizó la plantilla de forma exitosa"
 msgstr "Template updated successfully"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:216
+#: whatsapp_app/api/v1/plantilla_mensaje.py:217
 msgid "Error al actualizar la plantilla"
 msgstr "Error updating template"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:227
+#: whatsapp_app/api/v1/plantilla_mensaje.py:228
 msgid "Se elimino la plantilla de forma exitosa"
 msgstr "Template deleted successfully"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:231
+#: whatsapp_app/api/v1/plantilla_mensaje.py:232
 msgid "Plantilla no encontrado"
 msgstr "Template not found"
 
-#: whatsapp_app/api/v1/plantilla_mensaje.py:236
+#: whatsapp_app/api/v1/plantilla_mensaje.py:240
+msgid "Mensaje Plantilla"
+msgstr "Template message"
+
+#: whatsapp_app/api/v1/plantilla_mensaje.py:238
+#, python-brace-format
+msgid ""
+"No está permitido eliminar el '{modelo}' porque está siendo usado por "
+"{related}."
+msgstr "Can not delete '{modelo}', it's being used by {related}."
+
+#: whatsapp_app/api/v1/plantilla_mensaje.py:250
 msgid "Error al eliminar la Plantilla"
 msgstr "Error deleting template"
 

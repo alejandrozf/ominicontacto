@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-17 15:14-0300\n"
+"POT-Creation-Date: 2025-04-14 16:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -932,34 +932,34 @@ msgid "No está permitido actualizar un formulario con calificaciones"
 msgstr "Não é permitido atualizar um formulário com qualificações"
 
 #: api_app/tests/tests_api_group_of_hour.py:79
-#: api_app/views/group_of_hour.py:46
+#: api_app/views/group_of_hour.py:47
 msgid "Se obtuvieron los grupos horarios de forma exitosa"
 msgstr "Os grupos horários foram obtidos com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:97
-#: api_app/views/group_of_hour.py:150
+#: api_app/views/group_of_hour.py:151
 msgid "Se obtuvo la informacion el grupo horario de forma exitosa"
 msgstr "A informação do grupo horário foi obtida com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:116
-#: api_app/views/group_of_hour.py:73
+#: api_app/views/group_of_hour.py:74
 msgid "Se creo el grupo horario de forma exitosa"
 msgstr "O grupo horário foi criado com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:134
-#: api_app/views/group_of_hour.py:180
+#: api_app/views/group_of_hour.py:181
 msgid "Se elimino el grupo horario de forma exitosa"
 msgstr "O grupo horário foi eliminado com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:145
-#: api_app/views/group_of_hour.py:186
+#: api_app/views/group_of_hour.py:187
 msgid ""
 "No está permitido eliminar un grupo horario asociado a Validacion Fecha Hora"
 msgstr ""
 "Não é permitido eliminar um grupo horário associado à Validação Data Hora"
 
 #: api_app/tests/tests_api_group_of_hour.py:188
-#: api_app/views/group_of_hour.py:108
+#: api_app/views/group_of_hour.py:109
 msgid "Se actualizo el grupo horario de forma exitosa"
 msgstr "O grupo horário foi atualizado com sucesso"
 
@@ -1508,22 +1508,22 @@ msgstr "Erro ao revelar o formulário"
 msgid "Exportación de grabaciones Zip en proceso"
 msgstr "Exportação de gravações Zip em andamento"
 
-#: api_app/views/group_of_hour.py:56
+#: api_app/views/group_of_hour.py:57
 msgid "Error al obtener los grupos horarios"
 msgstr "Erro ao obter os grupos horários"
 
-#: api_app/views/group_of_hour.py:79
+#: api_app/views/group_of_hour.py:80
 msgid ""
 "Se creo el grupo horario pero no se pudo cargar la configuración telefónica"
 msgstr ""
 "O grupo horário foi criado, mas a configuração telefônica não pôde ser "
 "carregada"
 
-#: api_app/views/group_of_hour.py:91
+#: api_app/views/group_of_hour.py:92
 msgid "Error al crear el grupo horario"
 msgstr "Erro ao criar o grupo horário"
 
-#: api_app/views/group_of_hour.py:117
+#: api_app/views/group_of_hour.py:118
 msgid ""
 "Se actualizo el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
@@ -1531,21 +1531,33 @@ msgstr ""
 "O grupo horário foi atualizado, mas a configuração telefônica não pôde ser "
 "carregada"
 
-#: api_app/views/group_of_hour.py:134
+#: api_app/views/group_of_hour.py:135
 msgid "Error al actualizar el grupo horario"
 msgstr "Erro ao atualizar o grupo horário"
 
-#: api_app/views/group_of_hour.py:164
+#: api_app/views/group_of_hour.py:165
 msgid "Error al obtener el detalle del grupo horario"
 msgstr "Erro ao obter o detalhe do grupo horário"
 
-#: api_app/views/group_of_hour.py:191
+#: api_app/views/group_of_hour.py:192
 msgid ""
 "Se elimino el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
 msgstr ""
 "O grupo horário foi eliminado, mas a configuração telefônica não pôde ser "
 "carregada"
+
+#: api_app/views/group_of_hour.py:208
+msgid "Grupo Horario"
+msgstr "Grupo Horário"
+
+#: api_app/views/group_of_hour.py:206
+#, python-brace-format
+msgid ""
+"No está permitido eliminar el '{modelo}' porque está siendo usado por "
+"{related}."
+msgstr "Não é permitido eliminar o '{modelo}' porque esta sendo utilizado por "
+"{related}."
 
 #: api_app/views/inbound_route.py:56
 msgid "Error al obtener las rutas entrantes"
