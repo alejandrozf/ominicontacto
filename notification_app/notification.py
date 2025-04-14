@@ -20,7 +20,7 @@ import time
 import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from notification_app.consumers import AgentConsole, AgentConsoleWhatsapp
+from notification_app.consumers import AgentConsole, AgentConsoleWhatsapp, DialerStatsConsumer
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
 MESSAGE_SENDERS = {
     'AGENT': 0,
@@ -254,3 +254,41 @@ class RedisStreamNotifier:
         }
         self.redis_stream.write_stream(stream_name, json.dumps(content), max_stream_length=100000)
         self.redis_stream.expire(stream_name)
+
+
+class DialerStatsNotifier:
+
+    def get_group_name(self, user_id=None):
+        if user_id is not None:
+            return DialerStatsConsumer.GROUP_USER_OBJ.format(user_id=user_id)
+        else:
+            # si user_id=None se envia mensaje a todos los supervisores conectados
+            return DialerStatsConsumer.GROUP_USER_CLS
+
+    # SYNC
+    def send_message(self, type, message, user_id=None):
+        # si user_id=None se envia mensaje a todos los supervisores conectados
+        async_to_sync(
+            get_channel_layer().group_send)(self.get_group_name(user_id), {
+                'type': 'broadcast',
+                'payload': {
+                    'type': type,
+                    'args': message
+                }
+            }
+        )
+
+    async def async_send_message(self, type, message, user_id=None):
+        # si user_id=None se envia mensaje a todos los supervisores conectados
+        await get_channel_layer().group_send(
+            self.get_group_name(user_id),
+            {
+                'type': 'broadcast',
+                'payload': {
+                    'type': type,
+                    'args': message
+                }
+            })
+
+    async def notify(self, event_data, user_id):
+        return await self.async_send_message(type='stats', message=event_data, user_id=user_id)

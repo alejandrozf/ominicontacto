@@ -32,8 +32,8 @@ from django.utils import timezone
 from django.db import connections
 
 from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalificacion
-from ominicontacto_app.services.estadisticas_campana import (
-    EstadisticasService, CampanaService)
+from ominicontacto_app.services.estadisticas_campana import EstadisticasService
+from ominicontacto_app.services.dialer.campana_wombat import CampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ReporteContactadosCSV, ExportacionCampanaCSV)
