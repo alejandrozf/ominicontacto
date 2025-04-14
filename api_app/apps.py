@@ -123,6 +123,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
              'roles': ['Agente', ]},
+            {'nombre': 'api_consultative_confer_hold',
+             'roles': ['Agente', ]},
             {'nombre': 'api_agent_call_transfer_options',
              'roles': ['Agente', ]},
             {'nombre': 'api_audios_listado',
@@ -446,6 +448,9 @@ class ApiAppConfig(AppConfig):
         'api_evento_hold':
             {'descripcion': _('Loggea el evento hold o unhold'),
              'version': '1.13.0'},
+        'api_consultative_confer_hold':
+            {'descripcion': _('Des/Silenciar participante conferencia transferencia consultativa'),
+             'version': '2.6.0'},
         'api_agent_call_transfer_options':
             {'descripcion': _('Lista de agentes para transferir llamadas'),
              'version': '1.29.0'},
