@@ -174,12 +174,15 @@ class API_ObtenerContactosCampanaView(APIView):
         length = int(request.GET['length'])
         draw = int(request.GET['draw'])
         data = []
+        bd_metadata = campana.bd_contacto.get_metadata()
+        pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+        nombre_de_columna_telefono = bd_metadata.nombres_de_columnas[pos_primer_telefono]
         for contact in contactos_filtrados:
             contact_data = []
             contact_data.append(contact.pk)
             contact_data.append(contact.telefono)
             for (k, v) in contact.obtener_datos().items():
-                if k != 'telefono':
+                if k != nombre_de_columna_telefono:
                     if v:
                         contact_data.append(v)
                     else:

@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </button>
             </div>
             <div class="modal-body">
-                {% for col_metadata in bd_metadata.nombres_de_columnas_de_datos %}
+                {% for col_metadata in nombres_de_columnas %}
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="check_{{col_metadata}}">
                         <label class="custom-control-label" for="check_{{col_metadata}}">{{ col_metadata|title }}</label>
@@ -99,7 +99,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <tr>
                             <th>{% trans 'ID de Contacto' %}</th>
                             <th>{% trans 'Teléfono' %}</th>
-                            {% for col_metadata in bd_metadata.nombres_de_columnas_de_datos %}
+                            {% for col_metadata in nombres_de_columnas %}
                                 <th class="d-none" id="db_metadata_head_{{col_metadata}}">{{ col_metadata|title }}</th>
                             {% endfor %}
                             <th class="text-center">{% trans 'Acciones' %}</th>
