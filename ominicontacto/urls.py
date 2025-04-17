@@ -55,13 +55,10 @@ urlpatterns = [
 ]
 
 for (route, module) in settings.ADDON_URLPATTERNS:
-    try:
-        if route == '^':
-            urlpatterns += [re_path(route, include(module)),]
-        else:
-            urlpatterns.append(path(f"{route}/", include((module, route), namespace=route)))
-    except ModuleNotFoundError:
-        pass
+    if route == '^':
+        urlpatterns += [re_path(route, include(module)), ]
+    else:
+        urlpatterns.append(path(f"{route}/", include((module, route), namespace=route)))
 
 urlpatterns += [
     re_path(r'^jsi18n/$', JavaScriptCatalog.as_view(packages=js_info_packages),

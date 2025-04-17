@@ -12,11 +12,11 @@ body {
 }
 
 a {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 a, a:hover, a:focus {
-  color: #89468b;
+  color: var(--secondary-color, #89468b);
   text-decoration: none;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
@@ -57,13 +57,13 @@ h4 {
 */
 .btn-primary {
   color: #FFFFFF;
-  background-color: #f71883;
-  border-color: #f71883;
+  background-color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 .btn-primary:hover {
-  background-color: #89468b;
-  border-color: #89468b;
+  background-color: var(--secondary-color, #89468b);
+  border-color: var(--secondary-color, #89468b);
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
@@ -104,13 +104,13 @@ h4 {
 }
 
 .btn-outline-primary {
-  color: #f71883;
-  border-color: #f71883;
+  color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 .btn-outline-primary:hover {
-  color: #f71883;
-  border-color: #f71883;
+  color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
   background-color: #F9FDF3;
 }
 
@@ -205,13 +205,13 @@ ul.nav-indicators a {
 }
 
 ul.nav-indicators li.active a {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
   font-weight: 500;
-  border-bottom: 4px solid #f71883;
+  border-bottom: 4px solid var(--primary-color, #f71883);
 }
 
 ul.nav-indicators li.active a:hover {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
   background-color: transparent;
 }
 
@@ -358,7 +358,7 @@ ul.errorlist li {
 
 /* Select widget */
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #f71883 !important;
+  background-color: var(--primary-color, #f71883) !important;
   color: white;
 }
 
@@ -376,35 +376,35 @@ ul.errorlist li {
 }
 
 .daterangepicker .btn-success {
-  background-color: #f71883;
-  border-color: #f71883;
+  background-color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 .daterangepicker .btn-success:hover {
-  background-color: #fa4da0;
-  border-color: #f71883;
+  background-color: var(--primary-light-color, #fa4da0);
+  border-color: var(--primary-color, #f71883);
 }
 
 .daterangepicker .ranges li.active {
-  background: #f71883;
-  border: 1px solid #f71883;
+  background: var(--primary-color, #f71883);
+  border: 1px solid var(--primary-color, #f71883);
   color: #fff;
 }
 
 .daterangepicker .ranges li.active {
-  background: #f71883;
-  border: 1px solid #f71883;
+  background: var(--primary-color, #f71883);
+  border: 1px solid var(--primary-color, #f71883);
   color: #fff;
 }
 
 .daterangepicker .ranges li:hover {
-  background: #f71883;
-  border: 1px solid #f71883;
+  background: var(--primary-color, #f71883);
+  border: 1px solid var(--primary-color, #f71883);
   color: #fff;
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 /* Datetime picker widget */
@@ -413,11 +413,11 @@ ul.errorlist li {
 }
 
 .bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 .bootstrap-datetimepicker-widget table td span.active {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 /* Modals */
@@ -743,7 +743,7 @@ body > h1 {
 }
 
 #phoneKeysNumbers button {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 #phoneKeysNumbers .astBtn {
@@ -1056,7 +1056,7 @@ body > h1 {
     padding-left: 34px;
   }
   #navBar ul a.active {
-    background-color: #f71883;
+    background-color: var(--primary-color, #f71883);
     color: #ffffff;
   }
   #navBar .main-menu-li {

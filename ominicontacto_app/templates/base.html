@@ -22,11 +22,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load custom_messages %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="--primary-color: {{ PRIMARY_COLOR }}; --primary-light-color: {{ PRIMARY_LIGHT_COLOR }}; --secondary-color: {{ SECONDARY_COLOR }};">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %} {{ OMNILEADS_TM }} {% endblock %}</title>
-        <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
+        <link rel="shortcut icon" href="{{ FAVICON }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" /    >
         <!-- Bootstrap -->
         <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >

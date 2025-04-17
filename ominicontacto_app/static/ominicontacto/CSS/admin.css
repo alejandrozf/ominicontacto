@@ -17,11 +17,11 @@ body {
 }
 
 a {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 a, a:hover, a:focus {
-  color: #89468b;
+  color: var(--secondary-color, #89468b);
   text-decoration: none;
   transition: all 0.3s;
 }
@@ -65,13 +65,13 @@ h4 {
 /* ///// Button styles */
 .btn-primary {
   color: #FFFFFF !important;
-  background-color: #f71883;
-  border-color: #f71883;
+  background-color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 .btn-primary:hover {
-  background-color: #fa4da0;
-  border-color: #f71883;
+  background-color: var(--primary-light-color, #fa4da0);
+  border-color: var(--primary-color, #f71883);
 }
 
 .btn-light {
@@ -84,13 +84,13 @@ h4 {
 }
 
 .btn-outline-primary {
-  color: #f71883 !important;
-  border-color: #f71883;
+  color: var(--primary-color, #f71883) !important;
+  border-color: var(--primary-color, #f71883);
 }
 
 .btn-outline-primary:hover {
-  color: #f71883 !important;
-  border-color: #f71883;
+  color: var(--primary-color, #f71883) !important;
+  border-color: var(--primary-color, #f71883);
   background-color: #F9FDF3;
 }
 
@@ -178,13 +178,13 @@ ul.nav-indicators a {
 }
 
 ul.nav-indicators li.active a {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
   font-weight: 500;
-  border-bottom: 4px solid #f71883;
+  border-bottom: 4px solid var(--primary-color, #f71883);
 }
 
 ul.nav-indicators li.active a:hover {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
   background-color: transparent;
 }
 
@@ -356,12 +356,12 @@ ul.errorlist li {
 /* ///// Pagination
 */
 .page-link, .page-link:hover {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 .page-item.active .page-link {
-  background-color: #f71883;
-  border-color: #f71883;
+  background-color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 /* ///// Modals
@@ -383,7 +383,7 @@ input[type=file].form-control {
 /* ///// Select widget
 */
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #f71883 !important;
+  background-color: var(--primary-color, #f71883) !important;
   color: white;
 }
 
@@ -402,29 +402,29 @@ input[type=file].form-control {
 }
 
 .daterangepicker .btn-success {
-  background-color: #f71883;
-  border-color: #f71883;
+  background-color: var(--primary-color, #f71883);
+  border-color: var(--primary-color, #f71883);
 }
 
 .daterangepicker .btn-success:hover {
-  background-color: #fa4da0;
-  border-color: #f71883;
+  background-color: var(--primary-light-color, #fa4da0);
+  border-color: var(--primary-color, #f71883);
 }
 
 .daterangepicker .ranges li.active {
-  background: #f71883;
-  border: 1px solid #f71883;
+  background: var(--primary-color, #f71883);
+  border: 1px solid var(--primary-color, #f71883);
   color: #fff;
 }
 
 .daterangepicker .ranges li:hover {
-  background: #f71883;
-  border: 1px solid #f71883;
+  background: var(--primary-color, #f71883);
+  border: 1px solid var(--primary-color, #f71883);
   color: #fff;
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 /*///// Datetime picker widget
@@ -434,11 +434,11 @@ input[type=file].form-control {
 }
 
 .bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 .bootstrap-datetimepicker-widget table td span.active {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
 }
 
 /*///// Welcome screen
@@ -553,12 +553,12 @@ input[type=file].form-control {
 }
 
 #sidebar ul a.active {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
   color: #ffffff;
 }
 
 #sidebar ul a.active:hover {
-  background-color: #89468b;
+  background-color: var(--secondary-color, #89468b);
 }
 
 #sidebar .submenu, #sidebar .submenu-two, #sidebar a[aria-expanded="true"] {
@@ -603,11 +603,11 @@ input[type=file].form-control {
     background-color: #DFE1DD;
   }
   #sidebar.active .menu-link.active {
-    background-color: #f71883;
+    background-color: var(--primary-color, #f71883);
     color: #ffffff;
   }
   #sidebar.active .menu-link.active:hover {
-    background-color: #89468b;
+    background-color: var(--secondary-color, #89468b);
   }
   #sidebar.active .menu-header {
     background-color: #C9CBC7;
@@ -736,7 +736,7 @@ input[type=file].form-control {
 
 /* Campaign list */
 a span.fa-play, a span.fa-pause-circle {
-  color: #89468b;
+  color: var(--secondary-color, #89468b);
 }
 
 /* Campaign dialer */
@@ -914,7 +914,7 @@ body.wrapper-page-error {
 }
 
 .page-error-bg {
-  background: url(../Img/ic_logo_symbol.png) no-repeat center center/100%;
+  background: var(--ic-logo-symbol) no-repeat center center/100%;
   opacity: 0.07;
   top: 0;
   left: 0;
@@ -983,7 +983,7 @@ body.wrapper-page-error {
 }
 
 #permiso_resp thead {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
   color: white;
 }
 
@@ -992,7 +992,7 @@ body.wrapper-page-error {
 }
 
 #main_grid .btn-secondary {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
   color: white;
   height: 20px;
 }
@@ -1045,11 +1045,11 @@ body.wrapper-page-error {
 }
 
 .add_supervisor h3 {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 #registro {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 .popup_container {

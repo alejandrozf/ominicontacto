@@ -14,10 +14,16 @@
 // saga-orange    #FFC107
 // saga-purple    #9C27B0
 // $primaryColor: $primary-color; // from ominicontacto/SCSS/_variables
-$primaryColor: null;
+$primaryColor: var(--primary-color, #F71883);
 
 // $primaryLightColor: $primary-light-color; // from ominicontacto/SCSS/_variables
-$primaryLightColor: null;
+$primaryLightColor: var(--primary-light-color, #fa4da0);
+
+// $primaryDarkColor: #ec0875;
+$primaryDarkColor: color-mix(in srgb, var(--primary-color), #000 10%);
+
+// $primaryDarkerColor: #d20768;
+$primaryDarkerColor: color-mix(in srgb, var(--primary-color), #000 20%);
 
 // $textSecondaryColor: $secondary-color; // from ominicontacto/SCSS/_variables
 $textSecondaryColor: null;
