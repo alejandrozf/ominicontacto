@@ -154,14 +154,16 @@ class ContactoListView(FormView):
         total_calificados = total_contactos - total_no_calificados
         bd_contacto = campana.bd_contacto
         bd_metadata = bd_contacto.get_metadata()
-        bd_metadata_cols = " ".join(
-            bd_metadata.nombres_de_columnas_de_datos)
+        pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+        nombres_de_columnas = bd_metadata.nombres_de_columnas
+        nombres_de_columnas.pop(pos_primer_telefono)
+        bd_metadata_cols = " ".join(nombres_de_columnas)
         return self.render_to_response(
             self.get_context_data(
                 form=form, campana=campana, total_contactos=total_contactos,
                 total_no_calificados=total_no_calificados,
                 total_calificados=total_calificados,
-                bd_contacto=bd_contacto, bd_metadata=bd_metadata,
+                bd_contacto=bd_contacto, nombres_de_columnas=nombres_de_columnas,
                 bd_metadata_cols=bd_metadata_cols
             )
         )
