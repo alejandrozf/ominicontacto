@@ -20,11 +20,14 @@ def crear_audios_asterisk_conf_default(apps, schema_editor):
 
     en_conf, created = AudiosAsteriskConf.objects.get_or_create(
         paquete_idioma='en', defaults={'esta_instalado': True})
-    if not created:
-        if en_conf.id != 1:
-            en_conf.delete()
-            AudiosAsteriskConf.objects.get_or_create(
-                paquete_idioma='en', defaults={'esta_instalado': True, 'id': 1})
+    if en_conf.id != 1:
+        en_conf.delete()
+        en_conf, created = AudiosAsteriskConf.objects.get_or_create(
+            paquete_idioma='en', defaults={'esta_instalado': True, 'id': 1})
+    else:
+        if en_conf.esta_instalado:
+            en_conf.esta_instalado = True
+            en_conf.save()
 
     AudiosAsteriskConf.objects.get_or_create(paquete_idioma='es',
                                              defaults={'esta_instalado': True})

@@ -33,19 +33,32 @@ class Command(BaseCommand):
 
     help = 'Instala Audios de Asterisk'
 
-    def _instalar_audios_asterisk(self):
+    def _instalar_audios_asterisk(self, defaults_only):
         instalador = AsteriskSoundsInstaller()
         erroneos = []
-        for audios in AudiosAsteriskConf.objects.all():
-            if audios.paquete_idioma not in ['es', 'en']:
-                error = instalador.install(audios.paquete_idioma)
-                if error:
-                    erroneos.append(audios.get_paquete_idioma_display())
+        if defaults_only:
+            audios = AudiosAsteriskConf.objects.filter(paquete_idioma__in=['es', 'en'])
+        else:
+            audios = AudiosAsteriskConf.objects.exclude(paquete_idioma__in=['es', 'en'])
+
+        for audio_conf in audios:
+            print('Instalando: ', audio_conf.get_paquete_idioma_display())
+            error = instalador.install(audios.paquete_idioma)
+            if error:
+                erroneos.append(audio_conf.get_paquete_idioma_display())
         if erroneos:
             logger.error(f'Error al instalar los idiomas: {erroneos}')
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--defaults',
+            action='store_true',
+            help='Installs "es" and "en" languages',
+        )
+
     def handle(self, *args, **options):
+        defaults_only = options['defaults']
         try:
-            self._instalar_audios_asterisk()
+            self._instalar_audios_asterisk(defaults_only)
         except Exception as e:
             logger.error('Fallo del comando: {0}'.format(e))
