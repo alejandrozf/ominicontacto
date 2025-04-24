@@ -33,7 +33,7 @@
 - oml-686 Fix for backup restores
 - oml-2980 Fix Whatsapp Line edit form wizard problems with templates and groups of hours.
 - oml-2964 Fix unwanted Whatsapp line deletion when removing associated objects.
-
+- oml-2995 Avoid error 500 on invalid CRM_contact_data parameter json.
 
 ## Removed
 
