@@ -274,16 +274,20 @@ class CalificacionClienteFormView(FormView):
 
         # Cargo los datos de contacto recibidos desde el CRM
         if usar_crm and self.call_data and self.call_data.get('CRM_contact_data'):
-            bd_metadata = self.campana.bd_contacto.get_metadata()
-            campos_bd = bd_metadata.nombres_de_columnas
-            contact_data = json.loads(self.call_data['CRM_contact_data'])
-            for key, value in contact_data.items():
-                if key in campos_bd:
-                    initial[key] = value
-            nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
-            if nombre_campo_id_externo in contact_data:
-                value = initial.pop(nombre_campo_id_externo)
-                initial['id_externo'] = value
+            try:
+                contact_data = json.loads(self.call_data['CRM_contact_data'])
+                bd_metadata = self.campana.bd_contacto.get_metadata()
+                campos_bd = bd_metadata.nombres_de_columnas
+                for key, value in contact_data.items():
+                    if key in campos_bd:
+                        initial[key] = value
+                nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
+                if nombre_campo_id_externo in contact_data:
+                    value = initial.pop(nombre_campo_id_externo)
+                    initial['id_externo'] = value
+            except (json.JSONDecodeError, AttributeError):
+                logger.error('Error decoding CRM_contact_data %s',
+                             self.call_data)
 
         kwargs['campos_ocultos'] = self.campos_ocultos
         kwargs['campos_obligatorios'] = self.campos_obligatorios
