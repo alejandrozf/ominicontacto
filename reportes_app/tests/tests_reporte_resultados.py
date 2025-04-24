@@ -158,3 +158,8 @@ class ReporteDeResultadosTests(APITest, BaseTestDeReportes):
         self.assertEqual(response.status_code, 200)
         response_json = response.json()
         self.assertEqual(response_json, self.response_ok)
+
+    def test_cantidad_contactos_en_reporte_de_resultados(self):
+        url = reverse('reporte_de_resultados', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        self.assertIsNotNone(response.context['cantidad_contactos'])

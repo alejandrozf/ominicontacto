@@ -31,13 +31,12 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.edit import FormView, CreateView
-from django.views.generic.detail import DetailView
+from django.views.generic import FormView, CreateView, DetailView, TemplateView
 
 from simple_history.utils import update_change_reason
 
 from ominicontacto_app.forms.base import (CalificacionClienteForm, FormularioNuevoContacto,
-                                          RespuestaFormularioGestionForm)
+                                          RespuestaFormularioGestionForm, )
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
     OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
@@ -274,17 +273,21 @@ class CalificacionClienteFormView(FormView):
                 initial['telefono'] = self.kwargs['telefono']
 
         # Cargo los datos de contacto recibidos desde el CRM
-        if self.call_data and 'CRM_contact_data' in self.call_data and usar_crm:
-            bd_metadata = self.campana.bd_contacto.get_metadata()
-            campos_bd = bd_metadata.nombres_de_columnas
-            contact_data = json.loads(self.call_data['CRM_contact_data'])
-            for key, value in contact_data.items():
-                if key in campos_bd:
-                    initial[key] = value
-            nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
-            if nombre_campo_id_externo in contact_data:
-                value = initial.pop(nombre_campo_id_externo)
-                initial['id_externo'] = value
+        if usar_crm and self.call_data and self.call_data.get('CRM_contact_data'):
+            try:
+                contact_data = json.loads(self.call_data['CRM_contact_data'])
+                bd_metadata = self.campana.bd_contacto.get_metadata()
+                campos_bd = bd_metadata.nombres_de_columnas
+                for key, value in contact_data.items():
+                    if key in campos_bd:
+                        initial[key] = value
+                nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
+                if nombre_campo_id_externo in contact_data:
+                    value = initial.pop(nombre_campo_id_externo)
+                    initial['id_externo'] = value
+            except (json.JSONDecodeError, AttributeError):
+                logger.error('Error decoding CRM_contact_data %s',
+                             self.call_data)
 
         kwargs['campos_ocultos'] = self.campos_ocultos
         kwargs['campos_obligatorios'] = self.campos_obligatorios
@@ -341,6 +344,8 @@ class CalificacionClienteFormView(FormView):
                 call_data['formulario'] = ""
                 call_data['nombre_opcion_calificacion'] = \
                     calificacion_form.instance.opcion_calificacion.nombre
+                call_data['nombre_opcion_subcalificacion'] = \
+                    calificacion_form.instance.subcalificacion
                 self.configuracion_sitio_externo = \
                     sitio_externo.get_configuracion_de_interaccion(
                         agente, self.campana, self.contacto, call_data)
@@ -480,6 +485,8 @@ class CalificacionClienteFormView(FormView):
             self.call_data['id_calificacion'] = calificacion.id
             self.call_data['nombre_opcion_calificacion'] = \
                 calificacion.opcion_calificacion.nombre
+            self.call_data['nombre_opcion_subcalificacion'] = \
+                calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
@@ -708,6 +715,8 @@ class RespuestaFormularioDetailView(DetailView):
                 call_data['id_calificacion'] = respuesta.calificacion.id
                 call_data['nombre_opcion_calificacion'] = \
                     respuesta.calificacion.opcion_calificacion.nombre
+                call_data['nombre_opcion_subcalificacion'] = \
+                    respuesta.calificacion.subcalificacion
                 configuracion_sitio_externo = \
                     sitio_externo.get_configuracion_de_interaccion(
                         agente, campana, contacto, call_data)
@@ -809,7 +818,7 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
     def disparar_interaccion_sitio_externo(self):
         # Sólo La respuesta creada por agente debe dispararla
-        return
+        raise NotImplementedError()
 
     def post(self, request, *args, **kwargs):
         """
@@ -878,6 +887,8 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
             call_data['id_calificacion'] = self.calificacion.id
             call_data['nombre_opcion_calificacion'] = \
                 self.calificacion.opcion_calificacion.nombre
+            call_data['nombre_opcion_subcalificacion'] = \
+                self.calificacion.calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
@@ -911,3 +922,13 @@ class RespuestaFormularioCreateUpdateSupervisorFormView(RespuestaFormularioCreat
 
     def _get_redireccion_campana_erronea(self):
         return redirect('index')
+
+
+class EsperaLlamadaMultinumView(TemplateView):
+    template_name = 'agente/espera_llamada_multinum.html'
+
+    def get(self, request, call_data_json, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        call_data = json.loads(call_data_json)
+        context['telefonos'] = call_data.get('telefono').split('_')
+        return self.render_to_response(context)

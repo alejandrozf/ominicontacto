@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 12:14-0300\n"
+"POT-Creation-Date: 2025-04-14 16:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -738,17 +738,17 @@ msgid "Se creo la calificacion de forma exitosa"
 msgstr "Call disposition created successfully"
 
 #: api_app/tests/tests_api_call_dispositions.py:92
-#: api_app/views/call_disposition.py:119 api_app/views/call_disposition.py:162
+#: api_app/views/call_disposition.py:120 api_app/views/call_disposition.py:164
 msgid "Error al hacer la peticion"
 msgstr "Error making request"
 
 #: api_app/tests/tests_api_call_dispositions.py:112
-#: api_app/views/call_disposition.py:154
+#: api_app/views/call_disposition.py:155
 msgid "Se actualizo la calificacion de forma exitosa"
 msgstr "Call disposition updated successfully"
 
 #: api_app/tests/tests_api_call_dispositions.py:128
-#: api_app/views/call_disposition.py:192
+#: api_app/views/call_disposition.py:195
 msgid "Se elimino la calificacion de forma exitosa"
 msgstr "Call disposition deleted successfully"
 
@@ -929,58 +929,58 @@ msgid "No está permitido actualizar un formulario con calificaciones"
 msgstr "Call dispositions forms with dispositions can not be updated"
 
 #: api_app/tests/tests_api_group_of_hour.py:79
-#: api_app/views/group_of_hour.py:46
+#: api_app/views/group_of_hour.py:47
 msgid "Se obtuvieron los grupos horarios de forma exitosa"
 msgstr "Group of hours fetched successfully"
 
 #: api_app/tests/tests_api_group_of_hour.py:97
-#: api_app/views/group_of_hour.py:150
+#: api_app/views/group_of_hour.py:151
 msgid "Se obtuvo la informacion el grupo horario de forma exitosa"
 msgstr "Group of hours information fetched successfully "
 
 #: api_app/tests/tests_api_group_of_hour.py:116
-#: api_app/views/group_of_hour.py:73
+#: api_app/views/group_of_hour.py:74
 msgid "Se creo el grupo horario de forma exitosa"
 msgstr "Group of hours created successfully"
 
 #: api_app/tests/tests_api_group_of_hour.py:134
-#: api_app/views/group_of_hour.py:180
+#: api_app/views/group_of_hour.py:181
 msgid "Se elimino el grupo horario de forma exitosa"
 msgstr "Group of hours deleted successfully"
 
 #: api_app/tests/tests_api_group_of_hour.py:145
-#: api_app/views/group_of_hour.py:186
+#: api_app/views/group_of_hour.py:187
 msgid ""
 "No está permitido eliminar un grupo horario asociado a Validacion Fecha Hora"
 msgstr "Group of hours with associated to Time conditions can not be deleted"
 
 #: api_app/tests/tests_api_group_of_hour.py:188
-#: api_app/views/group_of_hour.py:108
+#: api_app/views/group_of_hour.py:109
 msgid "Se actualizo el grupo horario de forma exitosa"
 msgstr "Group of hours updated successfully"
 
-#: api_app/tests/tests_api_inbound_route.py:77
+#: api_app/tests/tests_api_inbound_route.py:78
 #: api_app/tests/tests_api_outbound_route.py:114
 #: api_app/views/inbound_route.py:46 api_app/views/outbound_route.py:49
 msgid "Se obtuvieron las rutas entrantes de forma exitosa"
 msgstr "Inbound Routes fetched successfully"
 
-#: api_app/tests/tests_api_inbound_route.py:104
+#: api_app/tests/tests_api_inbound_route.py:105
 #: api_app/views/inbound_route.py:151
 msgid "Se obtuvo la informacion de la ruta entrante de forma exitosa"
 msgstr "Inbound Route information fetched successfully "
 
-#: api_app/tests/tests_api_inbound_route.py:127
+#: api_app/tests/tests_api_inbound_route.py:128
 #: api_app/views/inbound_route.py:73
 msgid "Se creo la ruta entrante de forma exitosa"
 msgstr "Inbound Route created successfully"
 
-#: api_app/tests/tests_api_inbound_route.py:146
+#: api_app/tests/tests_api_inbound_route.py:147
 #: api_app/views/inbound_route.py:182
 msgid "Se elimino la ruta entrante de forma exitosa"
 msgstr "Inbound Route deleted successfully"
 
-#: api_app/tests/tests_api_inbound_route.py:192
+#: api_app/tests/tests_api_inbound_route.py:193
 #: api_app/views/inbound_route.py:107
 msgid "Se actualizo la ruta entrante de forma exitosa"
 msgstr "Inbound Route updated successfully"
@@ -1183,6 +1183,14 @@ msgstr "Audit not found"
 msgid "No tiene permiso para modificar la auditoría"
 msgstr "You don't have permission to edit the audit"
 
+#: api_app/views/audios_asterisk.py:42
+msgid "Se obtuvieron los lenguajes de forma exitosa"
+msgstr "Languages fetched successfully"
+
+#: api_app/views/audios_asterisk.py:50
+msgid "Error al obtener los lenguajes"
+msgstr "Error fetching languages"
+
 #: api_app/views/auditoria.py:80
 msgid "Fecha-Hora"
 msgstr "Datetime"
@@ -1290,7 +1298,7 @@ msgstr "Error fetching call dispositions"
 msgid "Se obtuvo el detalle de la calificacion de forma exitosa"
 msgstr "Call disposition detail fetched successfully"
 
-#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:208
+#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:211
 msgid "No existe la calificacion"
 msgstr "Call disposition does not exist"
 
@@ -1298,28 +1306,28 @@ msgstr "Call disposition does not exist"
 msgid "Error al obtener el detalle de la calificacion"
 msgstr "Error fetching call disposition detail"
 
-#: api_app/views/call_disposition.py:126
+#: api_app/views/call_disposition.py:127
 msgid "Error al crear la calificacion"
 msgstr "Error creating call disposition"
 
-#: api_app/views/call_disposition.py:170
+#: api_app/views/call_disposition.py:173
 msgid "No existe la calificacion que se quiere actualizar"
 msgstr "call disposition does not exist"
 
-#: api_app/views/call_disposition.py:176
+#: api_app/views/call_disposition.py:179
 msgid "Error al actualizar la calificacion"
 msgstr "Error updating call disposition"
 
-#: api_app/views/call_disposition.py:200
+#: api_app/views/call_disposition.py:203
 msgid "No está permitido eliminar una calificacion reservada del sistema"
 msgstr "System reserved call dispositions can not be deleted"
 
-#: api_app/views/call_disposition.py:213
+#: api_app/views/call_disposition.py:216
 msgid "Error al eliminar la calificacion"
 msgstr "Error deleting call disposition"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:59
-#: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
+#: api_app/views/supervisor.py:441 api_app/views/supervisor.py:456
 msgid "No existe la campaña"
 msgstr "Campaign does not exist"
 
@@ -1495,38 +1503,49 @@ msgstr "Error unhiding call disposition form"
 msgid "Exportación de grabaciones Zip en proceso"
 msgstr "Exportation of recordings to a .Zip file in process"
 
-#: api_app/views/group_of_hour.py:56
+#: api_app/views/group_of_hour.py:57
 msgid "Error al obtener los grupos horarios"
 msgstr "Error fetching Group of hours"
 
-#: api_app/views/group_of_hour.py:79
+#: api_app/views/group_of_hour.py:80
 msgid ""
 "Se creo el grupo horario pero no se pudo cargar la configuración telefónica"
 msgstr "Group of hours created, but configuration was not loaded properly"
 
-#: api_app/views/group_of_hour.py:91
+#: api_app/views/group_of_hour.py:92
 msgid "Error al crear el grupo horario"
 msgstr "Error creating Group of hours"
 
-#: api_app/views/group_of_hour.py:117
+#: api_app/views/group_of_hour.py:118
 msgid ""
 "Se actualizo el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
 msgstr "Group of hours updated, but configuration was not loaded properly"
 
-#: api_app/views/group_of_hour.py:134
+#: api_app/views/group_of_hour.py:135
 msgid "Error al actualizar el grupo horario"
 msgstr "Error updating Group of hours"
 
-#: api_app/views/group_of_hour.py:164
+#: api_app/views/group_of_hour.py:165
 msgid "Error al obtener el detalle del grupo horario"
 msgstr "Error fetching Group of hours detail"
 
-#: api_app/views/group_of_hour.py:191
+#: api_app/views/group_of_hour.py:192
 msgid ""
 "Se elimino el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
 msgstr "Group of hours deleted, but configuration was not loaded properly"
+
+#: api_app/views/group_of_hour.py:208
+msgid "Grupo Horario"
+msgstr "Group of hours"
+
+#: api_app/views/group_of_hour.py:206
+#, python-brace-format
+msgid ""
+"No está permitido eliminar el '{modelo}' porque está siendo usado por "
+"{related}."
+msgstr "Can not delete '{modelo}', it's being used by {related}."
 
 #: api_app/views/inbound_route.py:56
 msgid "Error al obtener las rutas entrantes"
@@ -1858,107 +1877,107 @@ msgstr "Agent not found"
 msgid "Filtro \"status\" inválido"
 msgstr "Invalid \"status\" filter"
 
-#: api_app/views/supervisor.py:300 api_app/views/supervisor.py:346
+#: api_app/views/supervisor.py:334 api_app/views/supervisor.py:380
 msgid "ID Agenda incorrecto"
 msgstr "Wrong Agenda Id"
 
-#: api_app/views/supervisor.py:307
+#: api_app/views/supervisor.py:341
 msgid "ID Agente incorrecto"
 msgstr "Wrong Agent Id"
 
-#: api_app/views/supervisor.py:315 api_app/views/supervisor.py:353
+#: api_app/views/supervisor.py:349 api_app/views/supervisor.py:387
 msgid "No tiene permiso para editar esta Agenda"
 msgstr "You don't have permission to edit this Agenda"
 
-#: api_app/views/supervisor.py:372
+#: api_app/views/supervisor.py:406
 msgid "Recibidas"
 msgstr "Received"
 
-#: api_app/views/supervisor.py:373
+#: api_app/views/supervisor.py:407
 msgid "Efectuadas"
 msgstr "Dialed"
 
-#: api_app/views/supervisor.py:374
+#: api_app/views/supervisor.py:408
 msgid "Atendidas"
 msgstr "Attended"
 
-#: api_app/views/supervisor.py:375
+#: api_app/views/supervisor.py:409
 msgid "Conectadas"
 msgstr "Connected"
 
-#: api_app/views/supervisor.py:376
+#: api_app/views/supervisor.py:410
 msgid "No Conectadas"
 msgstr "Not connected"
 
-#: api_app/views/supervisor.py:377
+#: api_app/views/supervisor.py:411
 msgid "Abandonadas"
 msgstr "Abandon"
 
-#: api_app/views/supervisor.py:378
+#: api_app/views/supervisor.py:412
 msgid "Expiradas"
 msgstr "Expired"
 
-#: api_app/views/supervisor.py:379
+#: api_app/views/supervisor.py:413
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr "Waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:380
+#: api_app/views/supervisor.py:414
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr "Waiting time for attention(avg.)"
 
-#: api_app/views/supervisor.py:381
+#: api_app/views/supervisor.py:415
 msgid "Tiempo de Abandono(prom.)"
 msgstr "Abandon time(avg.)"
 
-#: api_app/views/supervisor.py:384
+#: api_app/views/supervisor.py:418
 msgid "Efectuadas Manuales"
 msgstr "Manual dialed calls"
 
-#: api_app/views/supervisor.py:385
+#: api_app/views/supervisor.py:419
 msgid "Conectadas Manuales"
 msgstr "Manual connected calls"
 
-#: api_app/views/supervisor.py:386
+#: api_app/views/supervisor.py:420
 msgid "No Conectadas Manuales"
 msgstr "Manual not connected calls"
 
-#: api_app/views/supervisor.py:387
+#: api_app/views/supervisor.py:421
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr "Manual calls waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:513
+#: api_app/views/supervisor.py:547
 msgid "Exportación de CSV en proceso"
 msgstr "Exportation of CSV file in process"
 
-#: api_app/views/supervisor.py:561
+#: api_app/views/supervisor.py:595
 msgid "Exportación de contactados a .csv en proceso"
 msgstr "Exportation of contacted calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:608
+#: api_app/views/supervisor.py:642
 msgid "Exportación de calificados a .csv en proceso"
 msgstr "Exportation of dispositioned calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:655
+#: api_app/views/supervisor.py:689
 msgid "Exportación de no atendidos a .csv en proceso"
 msgstr "Exportation of not attended calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:667
+#: api_app/views/supervisor.py:701
 msgid "Finalizado"
 msgstr "Finalized"
 
-#: api_app/views/supervisor.py:669
+#: api_app/views/supervisor.py:703
 msgid "Liberado"
 msgstr "Liberated"
 
-#: api_app/views/supervisor.py:671
+#: api_app/views/supervisor.py:705
 msgid "Reservado"
 msgstr "Reserved"
 
-#: api_app/views/supervisor.py:758
+#: api_app/views/supervisor.py:792
 msgid "Exportación de calificaciones a .csv en proceso"
 msgstr "Exportation of dispositioned campaign calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:803
+#: api_app/views/supervisor.py:837
 msgid "Exportación de Formularios de Gestiones a .csv en proceso"
 msgstr "Exportation of Disposition Forms to a .csv file in process"
 

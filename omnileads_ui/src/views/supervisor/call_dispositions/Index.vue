@@ -19,6 +19,7 @@
     <FormModal
       :showModal="showModal"
       :formToCreate="formToCreate"
+      :formToAddSubdisposition="formToAddSubdisposition"
       :callDisposition="callDisposition"
       @handleModalEvent="handleModal"
     />
@@ -35,7 +36,7 @@ export default {
         return {
             formToCreate: true,
             showModal: false,
-            callDisposition: { nombre: '' }
+            callDisposition: { nombre: '' , subcalificaciones: []}
         };
     },
     components: {
@@ -46,15 +47,16 @@ export default {
         await this.initData();
     },
     methods: {
-        handleModal ({ showModal, toCreate, callDisposition }) {
-            this.formToCreate = toCreate;
+        handleModal ({ showModal, formToCreate, toAddSubcategory, callDisposition }) {
+            this.formToCreate = formToCreate;
+            this.formToAddSubdisposition = toAddSubcategory;
             this.showModal = showModal;
             this.callDisposition = callDisposition;
         },
         newCallDisposition () {
             this.showModal = true;
             this.formToCreate = true;
-            this.callDisposition = { nombre: '' };
+            this.callDisposition = { nombre: '', subcalificaciones: []};
         },
         async initData () {
             await this.initCallDispositions();

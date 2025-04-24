@@ -98,6 +98,9 @@ urlpatterns = [
     path('user/list/download_csv/',
          login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
          name='descargar_usuarios_csv'),
+    path('user/list/import/',
+         login_required(views_user_profiles.ImportUsuariosView.as_view()),
+         name='importar_usuarios_csv'),
     path('user/delete/<int:pk>',
          login_required(views_user_profiles.UserDeleteView.as_view()),
          name='user_delete'),
@@ -195,13 +198,12 @@ urlpatterns = [
             login_required(views_grabacion.GrabacionDescripcionView.as_view()),
             name='grabacion_descripcion',
             ),
-    path('grabacion/buscar/<int:pagina>/',
-         login_required(
-             views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
+    path('grabacion/buscar/',
+         login_required(views_grabacion.BusquedaGrabacionSupervisorFormViewEx.as_view()),
          name='grabacion_buscar',
          ),
-    path('grabacion/agente/buscar/<int:pagina>/',
-         login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
+    path('grabacion/agente/buscar/',
+         login_required(views_grabacion.BusquedaGrabacionAgenteFormViewEx.as_view()),
          name='grabacion_agente_buscar',
          ),
 
@@ -544,6 +546,12 @@ urlpatterns = [
             name='auditar_calificacion'
             ),
 
+    path('agente/espera_llamada_multinum/<call_data_json>/',
+         login_required(views_calificacion_cliente.EsperaLlamadaMultinumView.as_view()),
+         kwargs={'from': 'calificacion'},
+         name='espera_llamada_multinum'
+         ),
+
     # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
     # Mientras, quedará para ser usada únicamente en llamadas manuales
     re_path(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
@@ -576,7 +584,7 @@ urlpatterns = [
             ),
     re_path(r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
             login_required(
-                views_calificacion_cliente.\
+                views_calificacion_cliente.
                 RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
             name='auditar_formulario_venta'
             ),

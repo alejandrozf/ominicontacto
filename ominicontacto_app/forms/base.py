@@ -58,6 +58,8 @@ from ominicontacto_app.parser import is_valid_length
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
+from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
+    InteraccionConSistemaExterno)
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -351,6 +353,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['ivr_breakdown'].choices = ivr_breakdown_choices
         if not instance.pk:
             self.initial['wrapuptime'] = 2
+            self.initial['auto_grabacion'] = True
 
     class Meta:
         model = Queue
@@ -662,62 +665,82 @@ class CamposListaRapidaForm(forms.Form):
         return [i for i, x in enumerate(self.nombres_campos) if x in seleccionados]
 
 
-class GrabacionBusquedaForm(forms.Form):
-    """
-    El form para la busqueda de grabaciones
-    """
-    fecha = forms.CharField(required=True,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}),
-                            label=_('Fecha'))
-    tipo_llamada_choice = list(LlamadaLog.TYPE_LLAMADA_CHOICES)
-    tipo_llamada_choice.insert(0, EMPTY_CHOICE)
-    tipo_llamada = forms.ChoiceField(
-        required=False, choices=tipo_llamada_choice, label=_('Tipo de llamada'),
-        widget=forms.Select(attrs={'class': 'form-control'}))
-    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'),
-                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
-    callid = forms.CharField(required=False, label=_('Call ID'),
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))
-    id_contacto_externo = forms.CharField(required=False, label=_('ID de contacto externo'),
-                                          widget=forms.TextInput(attrs={'class': 'form-control'}))
-    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'),
-                                widget=forms.Select(attrs={'class': 'form-control'}),)
-    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
-    marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
-    duracion = forms.IntegerField(required=False, min_value=0, initial=0,
-                                  label=_('Duración mínima'),
-                                  widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    gestion = forms.BooleanField(required=False, label=_('Calificada como gestión'))
-    grabaciones_x_pagina = forms.ChoiceField(required=True,
-                                             choices=([(10, 10), (25, 25), (50, 50), (100, 100)]),
-                                             label=_('Grabaciones por página'),
-                                             widget=forms.Select(attrs={'class': 'form-control'}),)
-    calificacion = forms.ChoiceField(required=False, label=_('Calificación'),
-                                     widget=forms.Select(attrs={'class': 'form-control'}),
-                                     choices=())
+class GrabacionBusquedaFormEx(forms.Form):
+    fecha = forms.CharField(label=_('Fecha'), required=True)
+    tipo_llamada = forms.ChoiceField(label=_('Tipo de llamada'), required=False)
+    tel_cliente = forms.CharField(label=_('Teléfono Cliente'), required=False)
+    callid = forms.CharField(label=_('Call ID'), required=False)
+    agente = forms.ModelChoiceField(
+        label=_('Agente'),
+        queryset=AgenteProfile.objects.filter(is_inactive=False),
+        required=False,
+    )
+    campana = forms.ChoiceField(label=_('Campaña'), required=False)
+    id_contacto_externo = forms.CharField(label=_('ID de contacto externo'), required=False)
+    duracion = forms.IntegerField(
+        help_text=_('En segundos'),
+        initial=0,
+        label=_('Duración mínima'),
+        min_value=0,
+        required=False,
+    )
+    marcadas = forms.BooleanField(label=_('Marcadas'), required=False)
+    gestion = forms.BooleanField(label=_('Calificada como gestión'), required=False)
+    grabaciones_x_pagina = forms.ChoiceField(
+        choices=((10, 10), (25, 25), (50, 50), (100, 100)),
+        label=_('Grabaciones por página'),
+        required=True,
+    )
+    calificacion = forms.ChoiceField(label=_('Calificación'), required=False)
+    pagina = forms.IntegerField(initial=1)
 
-    def __init__(self, campana_choice, *args, **kwargs):
-        super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
-        campana_choice.insert(0, ALL_CAMPAIGNS_CHOICE)
-        campana_choice.insert(1, ALL_CAMPAIGNS_ACTIVE_CHOICE)
-        campana_choice.insert(2, ALL_CAMPAIGNS_INACTIVE_CHOICE)
-        self.fields['campana'].choices = campana_choice
-        self.fields['duracion'].help_text = _('En segundos')
+    def __init__(self, **kwargs):
+        agente_hidden_widget = kwargs.pop("agente_hidden_widget", False)
+        campana_choices = kwargs.pop("campana_choices", [])
+        super().__init__(**kwargs)
+        self.fields['fecha'].widget.attrs.update({'class': 'form-control'})
+        self.fields['tipo_llamada'].choices = (EMPTY_CHOICE, *LlamadaLog.TYPE_LLAMADA_CHOICES)
+        self.fields['tipo_llamada'].widget.attrs.update({'class': 'form-control'})
+        self.fields['tel_cliente'].widget.attrs.update({'class': 'form-control'})
+        self.fields['callid'].widget.attrs.update({'class': 'form-control'})
+        if agente_hidden_widget:
+            self.fields['agente'].widget = self.fields['agente'].hidden_widget()
+        else:
+            self.fields['agente'].widget.attrs.update({'class': 'form-control'})
+        self.fields['id_contacto_externo'].widget.attrs.update({'class': 'form-control'})
+        self.fields['campana'].choices = (
+            ALL_CAMPAIGNS_CHOICE,
+            ALL_CAMPAIGNS_ACTIVE_CHOICE,
+            ALL_CAMPAIGNS_INACTIVE_CHOICE,
+            *campana_choices,
+        )
+        self.fields['campana'].widget.attrs.update({'class': 'form-control'})
+        self.fields['duracion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['grabaciones_x_pagina'].widget.attrs.update({'class': 'form-control'})
+        self.fields['calificacion'].choices = (
+            EMPTY_CHOICE,
+            *[
+                (nombre, nombre)
+                for nombre in
+                OpcionCalificacion.objects.distinct('nombre').values_list('nombre', flat=True)
+            ]
+        )
+        self.fields['calificacion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['pagina'].widget = self.fields['pagina'].hidden_widget()
 
-        calificaciones = OpcionCalificacion.objects.distinct(
-            'nombre').values_list('nombre', flat=True)
-        calificaciones_choices = [(opt, opt) for opt in calificaciones]
-        calificaciones_choices.insert(0, EMPTY_CHOICE)
-        self.fields['calificacion'].choices = calificaciones_choices
+    def clean_agente(self):
+        value = self.cleaned_data.get("agente")
+        if value:
+            return value.id
 
-
-class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
-    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
-                                    required=False, label=_('Agente'))
-
-    field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
-                   'agente', 'campana', 'pagina', 'id_contacto_externo', 'duracion',
-                   'marcadas', 'gestion', 'grabaciones_x_pagina', 'calificacion']
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha = cleaned_data.pop("fecha").split(" - ")
+        cleaned_data.update({
+            "fecha_desde": fecha[0],
+            "fecha_hasta": fecha[1],
+        })
+        return cleaned_data
 
 
 class AuditoriaBusquedaForm(forms.Form):
@@ -889,17 +912,17 @@ class CampanaMixinForm(object):
         whatsapp_habilitado = self.cleaned_data.get('whatsapp_habilitado')
         if instance is not None:
             if instance.whatsapp_habilitado and not self.cleaned_data.get('whatsapp_habilitado'):
-                antecesores_linea = []
+                lineas_antecesoras = []
                 try:
                     nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
-                    antecesores_linea = nodo.lineas_destino_whatsapp()
+                    lineas_antecesoras = nodo.lineas_whatsapp_antecesoras()
                 except Exception:
                     pass
-                if antecesores_linea:
-                    for line in antecesores_linea:
-                        line.destino = None
-                        line.save()
-                    # nombres_lineas = antecesores_linea.values_list('nombre', flat=True)
+                if lineas_antecesoras:
+                    nombres_lineas = lineas_antecesoras.values_list('nombre', flat=True)
+                    nombres_lineas = ', '.join(nombres_lineas)
+                    msg = self.ERROR_WHATSAPP_DESTINO.format(nombres_lineas)
+                    raise forms.ValidationError(msg)
                 ConfiguracionWhatsappCampana.objects.filter(
                     is_active=True, campana=instance).update(is_active=False)
         return whatsapp_habilitado
@@ -966,32 +989,34 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
 
 class OpcionCalificacionForm(forms.ModelForm):
+    nombre_subcalificaciones = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = OpcionCalificacion
         fields = (
-            'tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva', 'interaccion_crm')
+            'tipo', 'nombre', 'subcalificaciones', 'formulario', 'campana', 'oculta', 'positiva',
+            'interaccion_crm', 'nombre_subcalificaciones')
 
         widgets = {
             'nombre': forms.Select(),
             'usada_en_calificacion': forms.HiddenInput(),
+            'subcalificaciones': forms.TextInput(attrs={'readonly': 'readonly'})
         }
 
     def __init__(self, *args, **kwargs):
         nombres_calificaciones = kwargs.pop('nombres_calificaciones')
+        nombre_subcalificaciones = kwargs.pop('nombre_subcalificaciones')
         con_formulario = kwargs.pop('con_formulario')
         con_crm_calificacion = kwargs.pop('con_crm_calificacion') \
             if 'con_crm_calificacion' in kwargs else None
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
-            # al modificar, en caso de que el valor del campo 'nombre' no esté entre las
-            # calificaciones creadas se agrega
             choices = set(nombres_calificaciones + ((instance.nombre, instance.nombre),))
         else:
-            # al crear se muestra en primer lugar una opción vacía
             choices = (EMPTY_CHOICE,) + nombres_calificaciones
+        self.fields['nombre_subcalificaciones'].initial = nombre_subcalificaciones
         self.fields['nombre'] = forms.ChoiceField(choices=choices)
-
         if instance and instance.pk and instance.no_editable():
             self.fields['nombre'].disabled = True
             self.fields['tipo'].disabled = True
@@ -1044,9 +1069,11 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         # adicionamos dinámicamente las nombres de calificaciones existentes en el sistema
         # para que el usuario pueda escoger de ellas al crear las opciones de calificación
         nombres_calificaciones_qs = NombreCalificacion.objects.usuarios().values_list(
-            'nombre', flat=True)
-        kwargs['nombres_calificaciones'] = tuple((nombre, nombre)
-                                                 for nombre in nombres_calificaciones_qs)
+            'nombre', 'subcalificaciones')
+        kwargs['nombres_calificaciones'] = tuple(
+            (nombre, nombre) for nombre, subcalificaciones in nombres_calificaciones_qs)
+        kwargs['nombre_subcalificaciones'] = list(
+            {nombre: subcalificaciones} for nombre, subcalificaciones in nombres_calificaciones_qs)
         return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
 
     def _validar_numero_opciones_calificacion(self, save_candidates_forms):
@@ -1118,9 +1145,21 @@ class CalificacionClienteForm(forms.ModelForm):
     """
     Formulario para la creacion de Calificaciones de Clientes
     """
-
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
+    nombre_subcalificaciones = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta:
+        model = CalificacionCliente
+        fields = ('opcion_calificacion', 'subcalificacion',
+                  'observaciones', 'nombre_subcalificaciones')
+        widgets = {
+            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
+            'subcalificacion': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'observaciones': _('Observaciones'),
+        }
 
     def __init__(self, campana, es_auditoria, *args, **kwargs):
 
@@ -1131,10 +1170,27 @@ class CalificacionClienteForm(forms.ModelForm):
         self.historico_calificaciones = historico_calificaciones
 
         filtro = Q(oculta=False)
-        if self.instance.pk:
+        if 'opcion_calificacion' in self.data and self.data['opcion_calificacion']:
+            subcalificaciones = campana.opciones_calificacion.get(
+                id=self.data['opcion_calificacion']).subcalificaciones
+            if subcalificaciones:
+                choices = (EMPTY_CHOICE,) + tuple((nombre, nombre) for nombre in subcalificaciones)
+                self.fields['subcalificacion'] = forms.ChoiceField(
+                    choices=choices, required=True,
+                    widget=forms.Select(attrs={'class': 'form-control'}))
+        elif self.instance.pk:
             if self.instance.opcion_calificacion.oculta:
                 filtro = filtro | Q(id=self.instance.opcion_calificacion.id)
+            if self.instance.opcion_calificacion.subcalificaciones:
+                choices = (EMPTY_CHOICE,) + tuple(
+                    (nombre, nombre) for nombre in
+                    self.instance.opcion_calificacion.subcalificaciones)
+                self.fields['subcalificacion'] = forms.ChoiceField(
+                    choices=choices, required=False,
+                    widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
+        self.fields['nombre_subcalificaciones'].initial = list(
+            campana.opciones_calificacion.values("id", "subcalificaciones"))
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
@@ -1147,16 +1203,6 @@ class CalificacionClienteForm(forms.ModelForm):
                 raise forms.ValidationError(
                     _('No puede elegir una opción de calificacion oculta.'))
         return opcion
-
-    class Meta:
-        model = CalificacionCliente
-        fields = ('opcion_calificacion', 'observaciones')
-        widgets = {
-            'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'observaciones': _('Observaciones'),
-        }
 
 
 class GrupoAgenteForm(forms.Form):
@@ -1269,6 +1315,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         self.campos_a_ocultar = campos_a_ocultar
         self.control_de_duplicados = control_de_duplicados
         self.es_campana_entrante = kwargs.pop('es_campana_entrante', False)
+
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']
@@ -1569,6 +1616,16 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                     decimal_places=campo.cifras_significativas,
                     widget=forms.NumberInput(attrs={'class': 'form-control'}),
                     required=campo.is_required)
+            elif campo.tipo is FieldFormulario.TIPO_LISTA_DINAMICA:
+                servicio = InteraccionConSistemaExterno()
+                respuesta_sitio_externo = servicio.obtener_lista_dinamica(campo.sitio_externo)
+                choices = (EMPTY_CHOICE,) + tuple((option, option)
+                                                  for option in respuesta_sitio_externo)
+                self.fields[campo.nombre_campo] = forms.ChoiceField(
+                    choices=choices,
+                    label=campo.nombre_campo, widget=forms.Select(
+                        attrs={'class': 'form-control'}),
+                    required=campo.is_required)
 
     class Meta:
         model = RespuestaFormularioGestion
@@ -1579,10 +1636,13 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
 
 
 class AgendaContactoForm(forms.ModelForm):
+    telefono = forms.ChoiceField(
+        choices=(), widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones', 'tipo_agenda')
+        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones',
+                  'tipo_agenda', 'telefono')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -1597,8 +1657,12 @@ class AgendaContactoForm(forms.ModelForm):
         super(AgendaContactoForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             campana = self.instance.campana
+            contacto = self.instance.contacto
         else:
             campana = kwargs['initial']['campana']
+            contacto = kwargs['initial']['contacto']
+        self.fields['telefono'].choices = [
+            (x, x) for x in contacto.lista_de_telefonos_de_contacto()]
         if not campana.type == Campana.TYPE_DIALER:
             self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
 
@@ -1934,6 +1998,7 @@ class QueueDialerForm(forms.ModelForm):
 
         if not instance.pk:
             self.initial['wrapuptime'] = 2
+            self.initial['auto_grabacion'] = True
 
 
 ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
@@ -1972,7 +2037,7 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
-    auto_grabacion = forms.BooleanField(required=False)
+    auto_grabacion = forms.BooleanField(required=False, initial=True)
     detectar_contestadores = forms.BooleanField(required=False)
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -2015,7 +2080,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
-    auto_grabacion = forms.BooleanField(required=False)
+    auto_grabacion = forms.BooleanField(required=False, initial=True)
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     telefono_habilitado = forms.BooleanField(required=False, disabled=True)
@@ -2169,7 +2234,7 @@ class ParametrosCrmForm(forms.ModelForm):
         }
 
     def clean_valor(self):
-        tipo = int(self.cleaned_data.get('tipo'))
+        tipo = int(self.cleaned_data.get('tipo')) if self.cleaned_data.get('tipo') else None
         valor = self.cleaned_data.get('valor')
         if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
             raise forms.ValidationError(

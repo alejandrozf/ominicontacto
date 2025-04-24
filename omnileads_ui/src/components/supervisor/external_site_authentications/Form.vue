@@ -361,7 +361,7 @@ export default {
             this.invalid_campo_duracion = false;
             this.invalid_name_campo_token = false;
             this.invalid_name_campo_duracion = false;
-            this.disable_campo_duracion = true;
+            this.disable_campo_duracion = false;
             this.disable_duracion = false;
         },
         campoTokenEventChange () {
@@ -387,8 +387,7 @@ export default {
             }
         },
         duracionEventChange (event) {
-            this.externalSiteAuthentication.campo_duracion = '';
-            if (event.value === null || event.value === 0) {
+            if ((event.value === null || event.value === 0) && this.externalSiteAuthentication.campo_duracion === '') {
                 this.externalSiteAuthentication.duracion = 0;
                 this.disable_campo_duracion = false;
                 this.invalid_campo_duracion = true;
@@ -450,6 +449,7 @@ export default {
                 const duracion = this.externalSiteAuthentication.duracion;
                 if (duracion === null || duracion === 0) {
                     this.disable_campo_duracion = false;
+                    this.invalid_campo_duracion = true;
                 } else {
                     this.disable_campo_duracion = true;
                 }

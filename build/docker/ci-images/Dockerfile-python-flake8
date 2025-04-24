@@ -1,10 +1,9 @@
-
 FROM python:3.9-alpine
 
 RUN apk add --virtual .buildeps \
       build-base \
       libffi-dev \
-      postgresql14-dev \
+      postgresql-dev \
       git \
       curl \
       bash \
@@ -24,5 +23,15 @@ RUN apk add --virtual .buildeps \
       python3-dev \
     && pip3 install --upgrade pip \
     && pip3 install flake8
-  
+
+COPY requirements.txt /requirements.txt
+
+RUN pip install -r requirements.txt
+
+# Install ESLint globally
+RUN npm install -g eslint@6.1.0
+
+# Install Eslint plugin for Vue
+RUN npm install -g @vue/eslint-config-standard
+
 CMD ["python"]

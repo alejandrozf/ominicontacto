@@ -40,8 +40,10 @@ class AgentNotifier:
     TYPE_UNPAUSE = 'unpause'
     TYPE_PAUSE = 'pause'
     TYPE_CONTACT_SAVED = 'contact_saved'
+    TYPE_SUPERVISOR_SEND_MESSAGE = 'supervisor_send_message'
     TYPE_EXTERNAL_SITE_INTERACTION_ERROR = 'external_site_interaction_error'
     TYPE_END_TRANSFERRED_CALL = 'end_transferred_call'
+    TYPE_ATTENDED_MULTINUM_CALL = 'attended_multinum_call'
     TYPE_WHATSAPP_NEW_CHAT = 'whatsapp_new_chat'
     TYPE_WHATSAPP_CHAT_ATTENDED = 'whatsapp_chat_attended'
     TYPE_WHATSAPP_CHAT_TRANSFERED = 'whatsapp_chat_transfered'
@@ -92,12 +94,33 @@ class AgentNotifier:
         }
         self.send_message(self.TYPE_CONTACT_SAVED, message, user_id=user_id)
 
+    def notify_supervisor_send_message(self, user_id, msg, supervisor):
+        message = {
+            'msg': msg,
+            'supervisor': supervisor
+        }
+        self.send_message(
+            self.TYPE_SUPERVISOR_SEND_MESSAGE,
+            message,
+            user_id=user_id
+        )
+
     def notify_external_site_interaction_error(self, user_id, error_msg):
         message = {
             'error_msg': error_msg
         }
         self.send_message(
             self.TYPE_EXTERNAL_SITE_INTERACTION_ERROR,
+            message,
+            user_id=user_id
+        )
+
+    def notify_attended_multinum_call(self, user_id, phone):
+        message = {
+            'phone': phone
+        }
+        self.send_message(
+            self.TYPE_ATTENDED_MULTINUM_CALL,
             message,
             user_id=user_id
         )

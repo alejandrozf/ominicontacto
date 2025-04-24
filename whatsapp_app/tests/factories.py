@@ -74,7 +74,10 @@ class MenuInteractivoFactory(DjangoModelFactory):
     class Meta:
         model = MenuInteractivoWhatsapp
 
-    texto_opciones = lazy_attribute(lambda a: faker.text(15))
+    menu_header = lazy_attribute(lambda a: faker.text(15))
+    menu_body = lazy_attribute(lambda a: faker.text(15))
+    menu_footer = lazy_attribute(lambda a: faker.text(15))
+    menu_button = lazy_attribute(lambda a: faker.text(15))
     texto_opcion_incorrecta = lazy_attribute(lambda a: faker.text(15))
     texto_derivacion = lazy_attribute(lambda a: faker.text(15))
     timeout = lazy_attribute(lambda a: faker.random_int(5, 60))

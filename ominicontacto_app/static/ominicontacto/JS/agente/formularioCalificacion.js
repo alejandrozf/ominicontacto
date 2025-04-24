@@ -35,4 +35,27 @@ $(function () {
             }
         });
     });
+    subscribeToChangeOptionCalification($opcion_calificar);
 });
+
+function subscribeToChangeOptionCalification(opcion_calificar) {
+    $(opcion_calificar).change(function(){
+        var $nombre_subcalificaciones = JSON.parse($('#id_nombre_subcalificaciones').val().replace(/'/g, '"'));
+        $nombre_subcalificaciones.forEach((obj, index) => {
+            if (obj['id'] == opcion_calificar.val()){
+                $('#id_subcalificacion').empty();
+                let option_0 = document.createElement('option');
+                option_0.value = '';
+                option_0.text = '---------';
+                option_0.selected = true;
+                $('#id_subcalificacion').append(option_0);
+                obj['subcalificaciones'].forEach(opcion => {
+                    let option = document.createElement('option');
+                    option.value = opcion;
+                    option.text = opcion;
+                    $('#id_subcalificacion').append(option);
+                });
+            }
+        });
+    });
+}

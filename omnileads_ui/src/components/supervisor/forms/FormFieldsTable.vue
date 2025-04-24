@@ -110,6 +110,11 @@
         </template>
       </Column>
       <Column
+        :header="$t('models.form_field.sitio_externo')"
+        field="sitio_externo"
+      >
+      </Column>
+      <Column
         :header="$tc('globals.option', 2)"
         style="max-width: 25rem"
         :exportable="false"
@@ -192,6 +197,8 @@ export default {
                 return this.$t('forms.form.field.type.text_box');
             } else if (type === 5) {
                 return this.$t('forms.form.field.type.numero');
+            } else if (type === 6) {
+                return this.$t('forms.form.field.type.dynamic_list');
             } else return '-----';
         },
         getNumberType (type) {

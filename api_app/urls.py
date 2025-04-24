@@ -38,7 +38,8 @@ from api_app.views.supervisor import (
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     StatusCampanasEntrantesView, ContactosAsignadosCampanaPreviewView,
     ExportarCSVCalificacionesCampana, ExportarCSVFormularioGestionCampana,
-    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor)
+    ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor,
+    EnviarMensajeAgentesView)
 from api_app.views.campaigns.add_agents_to_campaign import (
     AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
 from api_app.views.pause_set import (
@@ -99,11 +100,12 @@ from api_app.views.grabaciones import (
 from api_app.views.auditoria import ObtenerArchivoAuditoriaView
 from api_app.views.audios import ListadoAudiosView
 from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
-from api_app.views.system import AsteriskQueuesData
+from api_app.views.system import AsteriskQueuesData, NotifyAttendedMultinumCall
 
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
 from api_app.views.logging import TransferenciaAEncuestaLogCreateView
 from api_app.views.reports import AgentStatusView, AgentStatusListView, CallStatusView
+from api_app.views.audios_asterisk import AudiosAsteriskListView
 
 
 router = routers.DefaultRouter()
@@ -168,6 +170,9 @@ urlpatterns = [
     re_path(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
             login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
             name='api_accion_sobre_agente'),
+    re_path(r'api/v1/supervision/enviar_mensaje_agentes/$',
+            login_required(EnviarMensajeAgentesView.as_view()),
+            name='api_enviar_mensaje_agentes'),
     re_path(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
             LlamadasDeCampanaView.as_view(),
             name='api_supervision_llamadas_campana',
@@ -555,6 +560,8 @@ urlpatterns = [
     # ###########  ASTERISK    ############ #
     path('api/v1/asterisk/queues_data/',
          AsteriskQueuesData.as_view(), name='api_asterisk_queues_data'),
+    path('api/v1/asterisk/notify_attended_multinum_call/',
+         NotifyAttendedMultinumCall.as_view(), name='api_notify_attended_multinum_call'),
 
     # ###########  Inbound Destinations    ############ #
     re_path(r'^api/v1/inbound_destinations/(?P<type>\d+)/list/',
@@ -573,4 +580,8 @@ urlpatterns = [
          AgentStatusListView.as_view(), name='api_agent_status_list'),
     path('api/v1/call_status/campaign/<int:campaign_id>',
          CallStatusView.as_view(), name='api_call_status'),
+
+    # ######  AudiosAsterisk    ############ #
+    path('api/v1/languages/list',
+         AudiosAsteriskListView.as_view(), name='audios_asterisk_list')
 ]

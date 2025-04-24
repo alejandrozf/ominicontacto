@@ -252,7 +252,7 @@ def convert_string_in_boolean(cadena):
 
 
 # FIXME: realizar validacion en el caso que se reciba en otro formato
-def convert_fecha_datetime(fecha, final_dia=False):
+def convert_fecha_datetime(fecha, final_dia=False, use_utc=False):
     """
     Metodo que convierte string fecha en un datatime
     :param fecha: debe tener este formato dd/mm/aaaa
@@ -264,13 +264,19 @@ def convert_fecha_datetime(fecha, final_dia=False):
     if final_dia:
         hora = 23
         minuto = 59
-    fecha = timezone.datetime(int(ano), int(mes), int(dia), hora, minuto,
-                              tzinfo=timezone.get_current_timezone())
+    if use_utc:
+        fecha = timezone.datetime(int(ano), int(mes), int(dia), hora, minuto,
+                                  tzinfo=timezone.utc)
+    else:
+        fecha = timezone.datetime(int(ano), int(mes), int(dia), hora, minuto,
+                                  tzinfo=timezone.get_current_timezone())
     return fecha
 
 
-def datetime_hora_minima_dia(fecha):
+def datetime_hora_minima_dia(fecha, use_utc=False):
     minima = timezone.datetime.combine(fecha, datetime.time.min)
+    if use_utc:
+        return minima.replace(tzinfo=timezone.utc)
     try:
         return timezone.make_aware(minima, timezone.get_current_timezone())
     except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
@@ -280,8 +286,10 @@ def datetime_hora_minima_dia(fecha):
         )
 
 
-def datetime_hora_maxima_dia(fecha):
+def datetime_hora_maxima_dia(fecha, use_utc=False):
     maxima = timezone.datetime.combine(fecha, datetime.time.max)
+    if use_utc:
+        return maxima.replace(tzinfo=timezone.utc)
     try:
         return timezone.make_aware(maxima, timezone.get_current_timezone())
     except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):

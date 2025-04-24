@@ -16,8 +16,18 @@
 
 */
 /* global Urls */
+/* global tableToDataTable */
 $(function(){
     configure_campaign_actions_links();
+
+    tableToDataTable(
+        [
+            null,
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+        ]
+    );
 });
 
 $(function(){

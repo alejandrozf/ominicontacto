@@ -17,9 +17,19 @@
               'p-invalid': v$.form.value.$invalid && submitted,
             }"
             v-model="v$.form.value.$model"
+            maxlength="24"
             @input="updateOption"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 24
+            }
+          )
+        }}
+        </small><br />
         <small
           v-if="
             (v$.form.value.$invalid && submitted) ||
@@ -39,7 +49,7 @@
           :class="{
             'p-error': v$.form.description.$invalid && submitted,
           }"
-          >{{ $t("models.whatsapp.line.options.description") }}</label
+          >{{ $t("models.whatsapp.line.options.description") }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
@@ -50,9 +60,31 @@
               'p-invalid': v$.form.description.$invalid && submitted,
             }"
             v-model="v$.form.description.$model"
+            maxlength="72"
             @input="updateOption"
           />
         </div>
+        <small> {{
+          $t(
+            "forms.whatsapp.line.validations.max_len_help",
+            {
+              max_len: 72
+            }
+          )
+        }}
+        </small><br />
+        <small
+          v-if="
+            (v$.form.description.$invalid && submitted) ||
+            v$.form.description.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.form.description.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.line.options.description")
+            )
+          }}</small>
       </div>
     </div>
     <div class="grid formgrid mt-4">
@@ -96,7 +128,7 @@
           {{
             v$.form.type_option.required.$message.replace(
               "Value",
-              $t("models.whatsapp.line.options.type_option")
+              $t("models.whatsapp.line.options.destination_type")
             )
           }}
         </small>
@@ -219,7 +251,7 @@ export default {
         return {
             form: {
                 value: { required },
-                description: { },
+                description: { required },
                 type_option: { required },
                 destination: { required }
             }
@@ -327,6 +359,7 @@ export default {
             this.form.description = this.supWhatsappLineOptionForm.description;
             this.form.type_option = this.supWhatsappLineOptionForm.type_option;
             this.form.destination = this.supWhatsappLineOptionForm.destination;
+            this.form.destination_name = this.supWhatsappLineOptionForm.destination_name;
             this.findDestinationOptions()
             this.findDuplicated();
         },
@@ -344,7 +377,7 @@ export default {
             }
         },
         findDestinationOptions() {
-          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
+          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId && !item.is_main)
         },
         save (isFormValid) {
             this.submitted = true;
@@ -352,7 +385,6 @@ export default {
                 return null;
             }
             if (this.formToCreate) {
-                console.log('save', 'createWhatsappLineOption')
                 this.createWhatsappLineOption({
                     data: this.form,
                     menuId: this.menuId,
@@ -375,7 +407,7 @@ export default {
                 )
             );
             this.closeModal();
-        },
+        }
     },
     watch: {
         supWhatsappLineOptionForm: {

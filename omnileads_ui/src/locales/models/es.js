@@ -49,7 +49,8 @@ export default {
     },
     call_disposition: {
         id: 'ID',
-        name: 'Nombre'
+        name: 'Nombre',
+        subcalificaciones: 'Subcalificaciones'
     },
     external_system: {
         id: 'ID',
@@ -75,7 +76,8 @@ export default {
         type: 'Tipo',
         required: 'Es obligatorio',
         list_options: 'Opciones de lista',
-        numero_type: 'Number type'
+        numero_type: 'Number type',
+        sitio_externo: 'Sitio Externo'
     },
     pause: {
         id: 'ID',
@@ -207,7 +209,8 @@ export default {
                 wrong_answer: 'Respuesta incorrecta',
                 success_answer: 'Respuesta de exito',
                 timeout: 'Tiempo de espera',
-                options: 'Opciones'
+                options: 'Opciones',
+                is_main: 'Principal'
             }
         },
         message_template: {
@@ -248,6 +251,7 @@ export default {
             campaign: 'Campaña',
             campaign_type: 'Tipo de campaña',
             disposition_option: 'Opción de calificación',
+            subdisposition_option: 'Opción de subcalificación',
             disposition: 'Calificación',
             created_at: 'Fecha de creación',
             updated_at: 'Última actualización',

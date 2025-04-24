@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 10:39-0300\n"
+"POT-Creation-Date: 2025-03-17 15:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,14 +63,22 @@ msgid "Filtrar grupo"
 msgstr "Filter group"
 
 #: supervision_app/templates/supervision_agentes.html:85
+msgid "Enviar mensaje a los agentes del Grupo seleccionado"
+msgstr "Sen messages to agents of selected Group"
+
+#: supervision_app/templates/supervision_agentes.html:88
 msgid "Filtrar Campaña"
 msgstr "Filter Campaign"
 
-#: supervision_app/templates/supervision_agentes.html:95
+#: supervision_app/templates/supervision_agentes.html:97
+msgid "Enviar mensaje a los agentes de la Campaña seleccionada"
+msgstr "Send message to agents of selected campaign"
+
+#: supervision_app/templates/supervision_agentes.html:101
 msgid "Finalizar"
 msgstr "End Call"
 
-#: supervision_app/templates/supervision_agentes.html:101
+#: supervision_app/templates/supervision_agentes.html:107
 msgid ""
 "Para el ordenamiento por varias columnas mentenga presionada la tecla Shift "
 "y haga clic en el encabezado de la columna que desea ordenar."
@@ -78,32 +86,56 @@ msgstr ""
 "Keep shift pressed and click on the desired column headers for ordering by "
 "several columns."
 
-#: supervision_app/templates/supervision_agentes.html:104
+#: supervision_app/templates/supervision_agentes.html:110
 #: supervision_app/templates/supervision_campanas_dialers.html:56
 #: supervision_app/templates/supervision_campanas_entrantes.html:47
 #: supervision_app/templates/supervision_campanas_salientes.html:35
 msgid "Nombre"
 msgstr "Name"
 
-#: supervision_app/templates/supervision_agentes.html:107
+#: supervision_app/templates/supervision_agentes.html:113
 msgid "Campaña"
 msgstr "Campaign"
 
-#: supervision_app/templates/supervision_agentes.html:108
+#: supervision_app/templates/supervision_agentes.html:114
 msgid "Contacto"
 msgstr "Contact"
 
-#: supervision_app/templates/supervision_agentes.html:109
+#: supervision_app/templates/supervision_agentes.html:115
 msgid "Status"
 msgstr "Status"
 
-#: supervision_app/templates/supervision_agentes.html:110
+#: supervision_app/templates/supervision_agentes.html:116
 msgid "Tiempo"
 msgstr "Time"
 
-#: supervision_app/templates/supervision_agentes.html:111
+#: supervision_app/templates/supervision_agentes.html:117
 msgid "Acciones"
 msgstr "Actions"
+
+#: supervision_app/templates/supervision_agentes.html:125
+msgid "New message"
+msgstr "New message"
+
+#: supervision_app/templates/supervision_agentes.html:134
+msgid "Recipient"
+msgstr "Recipient"
+
+#: supervision_app/templates/supervision_agentes.html:138
+msgid "Type"
+msgstr "Type"
+
+#: supervision_app/templates/supervision_agentes.html:142
+msgid "Message"
+msgstr "Message"
+
+#: supervision_app/templates/supervision_agentes.html:148
+msgid "Close"
+msgstr "Close"
+
+#: supervision_app/templates/supervision_agentes.html:149
+msgid "Send message"
+msgstr "Send message"
 
 #: supervision_app/templates/supervision_campanas_dialers.html:32
 msgid "Filtrar por estado"

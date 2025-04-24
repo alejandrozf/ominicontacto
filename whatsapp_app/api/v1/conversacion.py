@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar destinos
+import json
 import operator
 import mimetypes
 from functools import reduce
@@ -39,12 +40,15 @@ from whatsapp_app.models import (
     ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
     TemplateWhatsapp)
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto
+from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.gupshup_send_menssage import (
     send_template_message, send_text_message, send_multimedia_file)
 from orquestador_app.core.media_management import get_media_url
 from orquestador_app.core.gupshup_code_error import GUPSHUP_CODE_ERROR
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
+
+redis_2 = create_redis_connection(db=2)
 
 
 MESSAGE_SENDERS = {
@@ -177,6 +181,7 @@ class ConversacionFilterSerializer(serializers.Serializer):
 
     def get_was_closed_by_system(self, obj):
         return obj.is_disposition and not obj.conversation_disposition
+
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
     is_transfer_campaing = serializers.BooleanField()
@@ -785,6 +790,14 @@ class ViewSet(viewsets.ViewSet):
                         type=template_tipo.lower(),
                     )
                     serializer = MensajeListSerializer(mensaje)
+                    redis_2.sadd(
+                        f"OML:WHATSAPP:CAMP:{conversation_started.campana_id}:NEW-OUTBOUND-CONV",
+                        conversation_started.id
+                    )
+                    redis_2.publish('OML:CHANNEL:WHATSAPPEVENTS', json.dumps({
+                        'type': 'WHATSAPP:NEW-OUTBOUND-CONV',
+                        'campana_id': conversation_started.campana_id,
+                    }))
                 return response.Response(
                     data=get_response_data(
                         message=_('Conversacion creada correctamente'),

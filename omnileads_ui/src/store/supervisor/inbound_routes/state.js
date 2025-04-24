@@ -1,6 +1,7 @@
 export default {
     inboundRoutes: [],
     destinations: [],
+    languages: [],
     inboundRouteDetail: {},
     inboundRouteForm: {
         id: null,

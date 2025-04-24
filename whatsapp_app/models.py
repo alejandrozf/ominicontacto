@@ -58,25 +58,25 @@ class Linea(AuditableModelMixin):
 
     nombre = models.CharField(max_length=100)  # appname requerido y unico
     proveedor = models.ForeignKey(
-        ConfiguracionProveedor, on_delete=models.CASCADE, related_name="lineas")
+        ConfiguracionProveedor, on_delete=models.PROTECT, related_name="lineas")
     numero = models.CharField(max_length=100)  # sender
     configuracion = JSONField(default=dict)  # appname, appid
     # TODO: Modelar en destino entrante whatsapp?
     destino = models.ForeignKey(
-        'configuracion_telefonia_app.DestinoEntrante', on_delete=models.CASCADE,
+        'configuracion_telefonia_app.DestinoEntrante', on_delete=models.PROTECT,
         related_name="lineas", blank=True, null=True)
     horario = models.ForeignKey(
-        'configuracion_telefonia_app.GrupoHorario', on_delete=models.CASCADE,
+        'configuracion_telefonia_app.GrupoHorario', on_delete=models.PROTECT,
         related_name="lineas", blank=True, null=True)
     mensaje_bienvenida = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_bienvenida")
+        on_delete=models.PROTECT, related_name="linea_mensaje_bienvenida")
     mensaje_despedida = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_despedida")
+        on_delete=models.PROTECT, related_name="linea_mensaje_despedida")
     mensaje_fueradehora = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_fueradehora")
+        on_delete=models.PROTECT, related_name="linea_mensaje_fueradehora")
 
     @property
     def status(self):
@@ -269,13 +269,16 @@ class ConversacionWhatsapp(models.Model):
 
 
 class MenuInteractivoWhatsapp(models.Model):
-    menu_header = models.CharField(max_length=60)
+    menu_header = models.CharField(max_length=60, null=True, blank=True)
     menu_body = models.CharField(max_length=1024)
     menu_footer = models.CharField(max_length=60, null=True, blank=True)
     menu_button = models.CharField(max_length=20)
     texto_opcion_incorrecta = models.CharField(max_length=100, null=True, blank=True)
     texto_derivacion = models.CharField(max_length=100)
     timeout = models.IntegerField(null=True)
+    line = models.ForeignKey(
+        Linea, related_name="menuinteractivo", on_delete=models.CASCADE, null=True, blank=True)
+    is_main = models.BooleanField(default=False)
 
     @property
     def nombre(self):
@@ -286,4 +289,4 @@ class OpcionMenuInteractivoWhatsapp(models.Model):
     opcion = models.OneToOneField(
         'configuracion_telefonia_app.OpcionDestino', on_delete=models.CASCADE,
         related_name="opcion_menu_whatsapp")
-    descripcion = models.CharField(max_length=100, null=True, blank=True)
+    descripcion = models.CharField(max_length=72)

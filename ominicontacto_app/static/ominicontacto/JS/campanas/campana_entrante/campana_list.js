@@ -16,26 +16,39 @@
 
 */
 
+/* global Urls */
+/* global tableToDataTable */
+
 $(function(){
-	$(".btn-submit").click(function (){
-        var campana_id = $(this).attr("id");
-        var action = $(this).attr("name");
+    $('.btn-submit').click(function (){
+        var campana_id = $(this).attr('id');
+        var action = $(this).attr('name');
         submit_form(campana_id, action);
-    })
+    });
 
     function submit_form(campana_id, action){
-            $("#campana_id").val(campana_id);
-            $("#form_estados_campanas").attr("action", action);
-            $("#form_estados_campanas").submit();
-        }
-    });
+        $('#campana_id').val(campana_id);
+        $('#form_estados_campanas').attr('action', action);
+        $('#form_estados_campanas').submit();
+    }
+
+    tableToDataTable(
+        [
+            null,
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+            { orderable: false },
+        ]
+    );
+
+});
 
 
 function mostrar_campanas_ocultas() {
-	$.get(Urls.mostrar_campanas_ocultas(),
-            function (data) {
-                $('#t_body_borradas').html(data);
+    $.get(Urls.mostrar_campanas_ocultas(),
+        function (data) {
+            $('#t_body_borradas').html(data);
 
-            });
+        });
 }
-;

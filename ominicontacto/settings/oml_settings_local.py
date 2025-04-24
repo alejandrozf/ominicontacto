@@ -85,7 +85,11 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(REDIS_HOSTNAME, 6379)],
+            "hosts": [{"address": (REDIS_HOSTNAME, 6379), "db": 4}],
+            "prefix": "",
+            "expiry": 120,
+            "group_expiry": 86400,
+            "capacity": 500,
         },
     },
 }

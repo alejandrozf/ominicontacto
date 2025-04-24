@@ -75,6 +75,7 @@ export default {
     // -------------
     new: 'New | New',
     add: 'Add',
+    add_subdisposition: 'Add subdisposition',
     delete: 'Delete',
     create: 'Create',
     clean: 'Clean',

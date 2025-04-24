@@ -49,7 +49,8 @@ export default {
     },
     call_disposition: {
         id: 'ID',
-        name: 'Name'
+        name: 'Name',
+        subcalificaciones: 'Subdispositions'
     },
     external_system: {
         id: 'ID',
@@ -75,7 +76,8 @@ export default {
         type: 'Type',
         required: 'Required?',
         list_options: 'List options',
-        numero_type: 'Number type'
+        numero_type: 'Number type',
+        sitio_externo: 'External Site'
     },
     pause: {
         id: 'ID',
@@ -208,7 +210,8 @@ export default {
                 wrong_answer: 'Wrong answer',
                 success_answer: 'Success response',
                 timeout: 'Wait time',
-                options: 'Options'
+                options: 'Options',
+                is_main: 'Main'
             }
         },
         message_template: {
@@ -249,6 +252,7 @@ export default {
             campaign: 'Bell',
             campaign_type: 'Campaign type',
             disposition_option: 'Qualification option',
+            subdisposition_option: 'Subqualification option',
             disposition: 'Qualification',
             created_at: 'Creation date',
             updated_at: 'Last update',

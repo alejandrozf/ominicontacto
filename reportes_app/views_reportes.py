@@ -160,6 +160,7 @@ class CampanaReporteCalificacionListView(FormView):
             res[hc.id]['cals'][hc.history_id] = {
                 'nombre': nombre,
                 'observaciones': hc.observaciones,
+                'subcalificacion': hc.subcalificacion,
                 'fecha_hora': timezone.localtime(hc.history_date).strftime("%Y/%m/%d %H:%M:%S"),
                 'history_id': hc.history_id,
             }

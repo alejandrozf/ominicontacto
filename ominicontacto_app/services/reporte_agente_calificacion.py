@@ -77,6 +77,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Telefono"))
             encabezado.append(_("Es una venta"))
             encabezado.append(_("Calificacion"))
+            encabezado.append(_("Subcalificacion"))
             encabezado.append(_("Observaciones"))
             encabezado.append(_("datos del cliente"))
 
@@ -100,6 +101,7 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append(_("NO"))
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
+                lista_opciones.append(calificacion.subcalificacion)
                 if calificacion.observaciones:
                     lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
                 datos = json.loads(calificacion.contacto.datos)

@@ -82,6 +82,7 @@ class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
         for nombre in nombres:
             encabezado.append(nombre)
         encabezado.append(_("Calificado"))
+        encabezado.append(_("Subcalificacion"))
         encabezado.append(_("Observaciones"))
         encabezado.append(_("base de datos"))
         lista_datos_utf8 = [force_text(item) for item in encabezado]
@@ -102,6 +103,7 @@ class ReporteCalificacionesCampanaCSV(ReporteCampanaService, ReporteCSV):
             opcion_calificacion_nombre = "{} {}".\
                 format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
         lista_opciones.append(opcion_calificacion_nombre)
+        lista_opciones.append(calificacion.subcalificacion)
         if calificacion.observaciones:
             lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         if calificacion.contacto.es_originario:

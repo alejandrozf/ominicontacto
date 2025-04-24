@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 import calendar
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -389,6 +390,9 @@ class DestinoEntrante(models.Model):
             raise _('Error: El nodo HangUp es único.')
         elif isinstance(info_nodo_entrante, MenuInteractivoWhatsapp):
             tipo = cls.MENU_INTERACTIVO_WHATSAPP
+        elif info_nodo_entrante.__class__.__name__ == 'Encuesta' and \
+                info_nodo_entrante.__module__ == 'survey_app.models':
+            tipo = cls.SURVEY
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -426,16 +430,20 @@ class DestinoEntrante(models.Model):
         """
         return self.campanas_destino_failover.exists()
 
-    def lineas_destino_whatsapp(self):
+    def lineas_whatsapp_antecesoras(self):
         """ Devuelve las lineas de WhatsApp de las que es destino directo, o a traves de un
             Menu Interactivo de WhatsApp.
-            Nota: Cuando el menú tenga más profundidad habrá que recorrer todo el arbol
         """
+        # Busco las lineas de los menues que tengan este destino
         nodos_anteriores = self.destinos_anteriores.filter(
             destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
-        destinos_menu = list(nodos_anteriores.values_list('destino_anterior', flat=True).distinct())
-        lineas = Linea.objects.filter(destino_id__in=destinos_menu + [self.id, ])
-        return lineas
+        ids_menues_anteriores = nodos_anteriores.values_list('destino_anterior__object_id')
+        ids_lineas_menues_anteriores = MenuInteractivoWhatsapp.objects.filter(
+            id__in=ids_menues_anteriores).values_list('line_id', flat=True)
+        q_lineas_menu = Q(id__in=ids_lineas_menues_anteriores)
+        # Y las lineas que tengan este destino directamente
+        q_lineas_directo = Q(destino_id=self.id)
+        return Linea.objects.filter(q_lineas_menu | q_lineas_directo)
 
 
 class OpcionDestino(models.Model):
@@ -463,29 +471,16 @@ class OpcionDestino(models.Model):
 
 class RutaEntrante(models.Model):
     """Representa el nodo inicial de la ruta de una llamada entrante"""
-    EN = 1
-    ES = 2
-
-    TIPOS_IDIOMAS = (
-        (EN, _('Inglés')),
-        (ES, _('Español')),)
-
-    SIGLAS_IDIOMAS = {
-        EN: 'en',
-        ES: 'es',
-    }
 
     nombre = models.CharField(max_length=30, unique=True)
     telefono = models.CharField(
         max_length=30, unique=True, validators=[RegexValidator(R_TELEFONO_RUTA_ENTRANTE)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
-    idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
+    idioma = models.ForeignKey('configuracion_telefonia_app.AudiosAsteriskConf',
+                               related_name='rutas_entrantes',
+                               on_delete=models.PROTECT)
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes',
                                 on_delete=models.CASCADE)
-
-    @property
-    def sigla_idioma(self):
-        return RutaEntrante.SIGLAS_IDIOMAS[self.idioma]
 
 
 class HangUp(models.Model):
@@ -633,6 +628,6 @@ class AudiosAsteriskConf(models.Model):
     paquete_idioma = models.CharField(
         max_length=2,
         choices=AUDIO_IDIOMA_CHOICES,
-        help_text=_('Paquete de idioma'))
+        help_text=_('Paquete de idioma'), unique=True)
 
     esta_instalado = models.BooleanField(default=False)

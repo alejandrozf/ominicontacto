@@ -247,6 +247,14 @@ class NombreCalificacionFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "calificacion_{0}".format(uuid4()))
 
 
+class NombreCalificacionConSubcalificacionesFactory(DjangoModelFactory):
+    class Meta:
+        model = NombreCalificacion
+
+    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(uuid4()))
+    subcalificaciones = lazy_attribute(lambda a: [faker.text(15) for _ in range(5)])
+
+
 class CampanaFactory(DjangoModelFactory):
     class Meta:
         model = Campana
@@ -330,6 +338,18 @@ class OpcionCalificacionFactory(DjangoModelFactory):
     campana = SubFactory(CampanaFactory)
     tipo = lazy_attribute(lambda a: faker.random_int(0, 1))
     nombre = lazy_attribute(lambda a: faker.text(15))
+    formulario = SubFactory(FormularioFactory)
+    oculta = False
+
+
+class OpcionCalificacionConSubcalificacionesFactory(DjangoModelFactory):
+    class Meta:
+        model = OpcionCalificacion
+
+    campana = SubFactory(CampanaFactory)
+    tipo = lazy_attribute(lambda a: faker.random_int(0, 1))
+    nombre = lazy_attribute(lambda a: faker.text(15))
+    subcalificaciones = lazy_attribute(lambda a: [faker.text(15) for _ in range(5)])
     formulario = SubFactory(FormularioFactory)
     oculta = False
 
@@ -422,6 +442,7 @@ class AgendaContactoFactory(DjangoModelFactory):
     tipo_agenda = AgendaContacto.TYPE_PERSONAL
     fecha = lazy_attribute(lambda a: timezone.now().date())
     hora = lazy_attribute(lambda a: timezone.now().time())
+    telefono = lazy_attribute(lambda a: faker.random_number(10))
 
     class Meta:
         model = AgendaContacto

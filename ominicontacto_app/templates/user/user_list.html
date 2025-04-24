@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <div class="form-row">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <h1>{% trans 'Usuarios' %}</h1>
         <h3>{% trans 'Activos:' %} {{ numero_usuarios_activos  }}</h1>
     </div>
@@ -34,13 +34,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
         </form>
     </div>
-    <div class="col-md-3">
-        <form method="POST" action="{% url 'descargar_usuarios_csv' %}">
+    <div class="col-md-4">
+        <form method="POST" action="{% url 'descargar_usuarios_csv' %}" class="d-inline-block">
             {% csrf_token %}
-            <input class="hidden" id="filtroUsuariosCSV" name="nombre_usuario" type="text" value="{{ search }}"/>
-            <button type="submit" class="btn btn-primary">
+            <input class="hidden" id="filtroUsuariosCSV" name="search" type="text" value="{{ search }}"/>
+            <button type="submit" class="btn btn-primary mb-2">
                 {% trans 'Descargar lista de usuarios (CSV)' %}
             </button>
+        </form>
+        <form method="POST" action="{% url 'importar_usuarios_csv' %}" class="d-inline-block" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="btn btn-primary">
+                <input type="file" name="archivo" hidden value="" onchange="value && form.submit()" accept=".csv" />
+                {% trans 'Importar lista de usuarios (CSV)' %}
+            </label>
         </form>
     </div>
 </div>

@@ -23,10 +23,10 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.services.redis.linea import StreamDeLineas
-from whatsapp_app.models import Linea
+from whatsapp_app.models import Linea, ConfiguracionWhatsappCampana, MenuInteractivoWhatsapp
 from whatsapp_app.api.v1.linea_serializers import (
     ListSerializer, LineaRetrieveSerializer, UpdateSerializer, LineaCreateSerializer,
     DestinoDeLineaCreateSerializer, )
@@ -88,13 +88,33 @@ class ViewSet(viewsets.ViewSet):
                 serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
                 if serializer_destino.is_valid():
                     serializer_destino.save()
-                    print('serializer_destino.destino', serializer_destino.destino)
                     destino = serializer_destino.destino
                     line = serializer.save(
                         destino=destino,
                         created_by=request.user,
                         updated_by=request.user,
                     )
+                    if line.destino.tipo == DestinoEntrante.CAMPANA:
+                        if not destino.content_object.whatsapp_habilitado:
+                            destino.content_object.whatsapp_habilitado = True
+                            destino.content_object.save()
+                            confwhatsappcampana = ConfiguracionWhatsappCampana(
+                                campana=destino.content_object,
+                                linea=line,
+                                nivel_servicio=90,
+                                created_by=request.user,
+                                updated_by=request.user,
+                            )
+                            confwhatsappcampana.save()
+                    if line.destino.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                        destino.content_object.is_main = True
+                        destino.content_object.save()
+                        menu_ids = [menu.get('id')
+                                    for menu in serializer_destino.data['data'] if 'id' in menu]
+                        if menu_ids:
+                            MenuInteractivoWhatsapp.objects.filter(
+                                id__in=menu_ids).update(line=line.id)
+
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
                     StreamDeLineas().notificar_nueva_linea(line)
@@ -115,9 +135,8 @@ class ViewSet(viewsets.ViewSet):
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(">>>>>>>>>", e)
             return response.Response(
-                data=get_response_data(message=_('Error al crear la línea')),
+                data=get_response_data(message=_('Error al crear la línea') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def retrieve(self, request, pk):
@@ -158,7 +177,7 @@ class ViewSet(viewsets.ViewSet):
             print(e)
             return response.Response(
                 data=get_response_data(
-                    message=_('Error al obtener la línea')),
+                    message=_('Error al obtener la línea: ') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk):
@@ -174,19 +193,52 @@ class ViewSet(viewsets.ViewSet):
             destino_data = request_data.pop('destination')
             serializer = UpdateSerializer(instance, data=request_data, partial=True)
             if serializer.is_valid():
-                serializer_destino = DestinoDeLineaCreateSerializer(data=destino_data)
+                serializer_destino =\
+                    DestinoDeLineaCreateSerializer(data=destino_data, context={'line': instance})
                 if serializer_destino.is_valid():
+                    # Primero desconectar destino anterior de la línea para poderlo borrar
+                    # pues es un campo PROTECT
+                    instance.destino = None
+                    instance.save()
+                    for menu_old in instance.menuinteractivo.all():
+                        try:
+                            destino_old = DestinoEntrante.objects.get(
+                                object_id=menu_old.pk,
+                                tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+                            opciones_destino =\
+                                OpcionDestino.objects.filter(destino_anterior=destino_old)
+                            for option in opciones_destino:
+                                if option.destino_siguiente.tipo ==\
+                                        DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                                    option.destino_siguiente.delete()
+                                option.delete()
+                            destino_old.delete()
+                            menu_old.delete()
+                        except Exception:
+                            instance.menuinteractivo.update(line=None)
                     serializer_destino.save()
-                    if instance .destino.tipo ==\
-                            DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-                        destino_menu_old = instance.destino  # borrar destino anterior
-                        # destino_menu_old.delete()
                     destino = serializer_destino.destino
                     line = serializer.save(
                         destino=destino,
                         created_by=request.user,
                         updated_by=request.user,
                     )
+                    if line.destino.tipo == DestinoEntrante.CAMPANA:
+                        if not destino.content_object.whatsapp_habilitado:
+                            destino.content_object.whatsapp_habilitado = True
+                            destino.content_object.save()
+                            confwhatsappcampana = ConfiguracionWhatsappCampana(
+                                campana=destino.content_object,
+                                linea=line,
+                                nivel_servicio=90,
+                                created_by=request.user,
+                                updated_by=request.user,
+                            )
+                            confwhatsappcampana.save()
+                    if line.destino.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                        destino.content_object.is_main = True
+                        destino.content_object.save()
+
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
                     StreamDeLineas().notificar_nueva_linea(line)
@@ -198,8 +250,10 @@ class ViewSet(viewsets.ViewSet):
                         status=status.HTTP_201_CREATED)
                 else:
                     return response.Response(
-                        data=get_response_data(message=_('Error en los datos'),
-                                               errors={'destination': serializer_destino.errors}),
+                        data=get_response_data(
+                            message=_('Error en los datos') + ' destination: {}'.format(
+                                serializer_destino.errors),
+                            errors={'destination': serializer_destino.errors}),
                         status=status.HTTP_400_BAD_REQUEST)
             else:
                 return response.Response(
@@ -207,9 +261,8 @@ class ViewSet(viewsets.ViewSet):
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print('e', e)
             return response.Response(
-                data=get_response_data(message=_('Error al crear la línea')),
+                data=get_response_data(message=_('Error al crear la línea >>>') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def destroy(self, request, pk):

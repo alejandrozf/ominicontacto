@@ -18,7 +18,7 @@
         <br />
         <InputText class="w-full mt-2" v-if="campo.tipo == 1" type="text" />
         <Calendar class="w-full mt-2" v-else-if="campo.tipo == 2" />
-        <Dropdown class="w-full mt-2" v-else-if="campo.tipo == 3" :options="JSON.parse(campo.values_select)" />
+        <Dropdown class="w-full mt-2" v-else-if="campo.tipo == 3 || campo.tipo == 6" :options="JSON.parse(campo.values_select)" />
         <InputNumber v-else-if="campo.tipo == 5 && campo.tipo_numero == 1" class="w-full mt-2"  :useGrouping="false" />
         <InputNumber v-else-if="campo.tipo == 5 && campo.tipo_numero == 2" class="w-full mt-2"  :useGrouping="false" :minFractionDigits="0" :maxFractionDigits="campo.cifras_significativas" />
         <Textarea class="w-full mt-2" v-else rows="5" cols="30" />

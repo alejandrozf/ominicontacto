@@ -11,7 +11,8 @@ export default {
         infinite_time: 'Infinite time'
     },
     call_disposition: {
-        enter_name: 'Enter the name'
+        enter_name: 'Enter the name',
+        enter_subdisposition: 'Enter the subdisposition'
     },
     external_system: {
         enter_name: 'Enter the name'
@@ -25,7 +26,8 @@ export default {
             opt1: 'Agent',
             opt2: 'Automatic',
             opt3: 'Server',
-            opt4: 'Call disposition'
+            opt4: 'Call disposition',
+            opt5: 'Dynamic list'
         },
         objectives: {
             opt1: 'Embedded',
@@ -50,7 +52,8 @@ export default {
                 date: 'Date',
                 list: 'List',
                 text_box: 'Text box',
-                numero: 'Number'
+                numero: 'Number',
+                dynamic_list: 'Dynamic List'
             },
             numero_type: {
                 entero_type: 'Integer',
@@ -257,7 +260,9 @@ export default {
         line: {
             validations: {
                 field_is_required: '{field} is required',
-                max_len: 'Ensure this field has no more than {max_len} characters.'
+                max_len: 'Ensure this field has no more than {max_len} characters.',
+                whatsapp_habilitado: 'This campaign does not have the channel enabled, activation will be forced.',
+                max_len_help: 'This field only supports {max_len} characters.',
             },
             destination_types: {
                 campaign: 'Campaign',
@@ -268,7 +273,8 @@ export default {
                 success_update: 'Destination option updated successfully',
                 success_delete: 'Destination option successfully removed',
                 empty_options: 'No destination options configured'
-            }
+            },
+            only_whatsapp_habilitado: 'Only campaigns with the channel enabled'
         },
         group_of_message_template: {
             validations: {

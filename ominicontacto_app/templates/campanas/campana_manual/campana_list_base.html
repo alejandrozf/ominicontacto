@@ -20,7 +20,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.dataTables.min.css' %}">
+{% endblock %}
+
 {% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/datatables.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_manual/campana_list_base.js' %}"></script>
 {% endblock %}
 

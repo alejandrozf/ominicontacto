@@ -47,8 +47,23 @@
           }}
         </small>
       </div>
+      <div v-if="subdispositionOptions!==null" class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
+        <label>{{ $t("models.whatsapp.disposition_form.subdisposition_option") }} *
+        </label>
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-list"></i>
+          </span>
+          <Dropdown
+            v-model="v$.form.subdispositionOption.$model"
+            :options="subdispositionOptions"
+            placeholder="-----"
+            optionLabel="name"
+            optionValue="value"
+          />
+        </div>
+      </div>
     </div>
-
     <div class="grid formgrid mt-2">
       <div
         v-for="(field, index) in formByType"
@@ -87,7 +102,7 @@
                 'p-invalid': isEmptyField(field.value) && submitted,
               }"
               class="w-full"
-              v-else-if="field.type == fieldTypes.OPT3"
+              v-else-if="field.type == fieldTypes.OPT3 || field.type == fieldTypes.OPT6"
               optionLabel="name"
               optionValue="value"
               :options="field.selectOptions"
@@ -152,7 +167,7 @@
             <Dropdown
               v-model="field.value"
               class="w-full"
-              v-else-if="field.type == fieldTypes.OPT3"
+              v-else-if="field.type == fieldTypes.OPT3 || field.type == fieldTypes.OPT6"
               optionLabel="name"
               optionValue="value"
               :options="field.selectOptions"
@@ -225,7 +240,8 @@ export default {
     validations () {
         return {
             form: {
-                dispositionOption: { required }
+                dispositionOption: { required },
+                subdispositionOption: {}
             }
         };
     },
@@ -237,6 +253,7 @@ export default {
             form: {
                 id: null,
                 dispositionOption: null,
+                subdispositionOption: null,
                 comments: ''
             },
             formByType: {},
@@ -266,7 +283,8 @@ export default {
                 }
             ],
             formFields: [],
-            dropdownOptions: [{ name: '-------', value: null }]
+            dropdownOptions: [{ name: '-------', value: null }],
+            subdispositionOptions: null,
         };
     },
     created () {
@@ -311,6 +329,7 @@ export default {
             this.form = {
                 id: null,
                 dispositionOption: null,
+                subdispositionOption: null,
                 comments: ''
             };
             this.formFields = [];
@@ -320,6 +339,7 @@ export default {
             this.form = {
                 id: null,
                 dispositionOption: null,
+                subdispositionOption: null,
                 comments: ''
             };
         },
@@ -335,7 +355,7 @@ export default {
                 return 'pi-bars';
             } else if (type === FIELD_TYPES.OPT2) {
                 return 'pi-calendar';
-            } else if (type === FIELD_TYPES.OPT3) {
+            } else if (type === FIELD_TYPES.OPT3 || type === FIELD_TYPES.OPT6) {
                 return 'pi-list';
             } else if (type === FIELD_TYPES.OPT4) {
                 return 'pi-comment';
@@ -359,24 +379,23 @@ export default {
                 return null;
             }
             const options = JSON.parse(data);
-            const dropdownOptions = [
-                { name: '-------', value: null },
-                ...options.map((item) => {
-                    return {
-                        name: item,
-                        value: item
-                    };
-                })
-            ];
+            const dropdownOptions = [{ name: '-------', value: null }]
+            for (let option of options){
+              dropdownOptions.push({ name: option, value: option});
+            }
             return dropdownOptions;
         },
         getFormFieldsByOption () {
             this.formFields = [];
+            this.subdispositionOptions = null;
             const option = this.agtWhatsDispositionChatOptions?.find(
                 (item) => item.id === this.form.dispositionOption
             );
             if (option) {
                 this.formFields = option?.form_fields || [];
+                console.log(option.subcalificaciones)
+                if(option.subcalificaciones !== "[]")
+                  this.subdispositionOptions = this.getDropdownOptions(option.subcalificaciones.replace(/'/g, '"'));
             }
             this.initFormByTypeData();
         },
@@ -440,6 +459,7 @@ export default {
                     idContact: this.agtWhatsCoversationInfo?.client?.id || null,
                     idAgente: this.agtWhatsCoversationInfo?.agent || null,
                     idDispositionOption: this.form?.dispositionOption || null,
+                    subdispositionOption: this.form?.subdispositionOption || null,
                     comments: this.form?.comments || null,
                     idConversation: this.agtWhatsCoversationInfo.id
                 };
@@ -530,7 +550,6 @@ export default {
                             (c) => c.type !== FORM_TYPES.OPT1
                         );
                     }
-
                     if (management.length > 0) {
                         this.dispositionOptions.find(
                             (c) => c.type === FORM_TYPES.OPT2
@@ -540,7 +559,6 @@ export default {
                             (c) => c.type !== FORM_TYPES.OPT2
                         );
                     }
-
                     if (schedule.length > 0) {
                         this.dispositionOptions.find(
                             (c) => c.type === FORM_TYPES.OPT3

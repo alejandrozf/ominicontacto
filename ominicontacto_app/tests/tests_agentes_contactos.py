@@ -27,7 +27,7 @@ from django.utils.translation import gettext as _
 from django.urls import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
-                                               QueueMemberFactory)
+                                               QueueMemberFactory, BaseDatosContactoFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import AgenteEnContacto, Campana, User
 
@@ -224,3 +224,17 @@ class AgentesContactosTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertContains(response, 'value="%s"' % telefono)
         self.assertContains(response, _('Guardar y llamar'))
+
+    def test_lista_de_telefonos_de_contacto_ok(self):
+        metadata = {
+            'cols_telefono': [1, 2, 3],
+            'nombres_de_columnas': ["nombre", "telefono", "telefono1", "telefono2"],
+        }
+        bd = BaseDatosContactoFactory(metadata=json.dumps(metadata))
+        contacto = ContactoFactory(
+            bd_contacto=bd,
+            telefono='111111',
+            datos='["name success", "5555555", "6666666"]'
+        )
+        self.assertEqual(
+            contacto.lista_de_telefonos_de_contacto(), ['111111', '5555555', '6666666'])

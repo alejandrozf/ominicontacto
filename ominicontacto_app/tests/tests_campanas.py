@@ -364,7 +364,11 @@ class AgenteCampanaTests(CampanasTests):
                      'id': ['']}
         # Agrego campos de contacto:
         for key, value in self.contacto.obtener_datos().items():
-            post_data['contacto_form-' + key] = value
+            post_data['contacto_form-' + str(_(key))] = value
+        # se garantiza que se envíe el campo 'telefono' que es requerido en
+        # el form de Contacto y que puede perderse en la i18n de los campos
+        # de la BD de contactos
+        post_data['contacto_form-telefono'] = self.contacto.telefono
 
         return values, url, post_data
 
@@ -564,6 +568,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(AgenteEnContacto.objects.all().exists())
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
+    @patch('redis.Redis.sadd')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
@@ -574,7 +579,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto_proporcionalmente(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, sadd):
         url = reverse('campana_preview_create')
         contacto2 = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(contacto2)
@@ -978,6 +983,7 @@ class SupervisorCampanaTests(CampanasTests):
         post_step2_data = {
             'campana_manual_create_view-current_step': 2,
             '2-0-nombre': 'Venta',
+            '2-0-subcalificaciones': '',
             '2-0-tipo': OpcionCalificacion.GESTION,
             '2-0-formulario': self.formulario.pk,
             '2-0-id': '',
@@ -1889,6 +1895,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)
 
+    @patch('redis.Redis.sadd')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
@@ -1898,7 +1905,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, sadd):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
@@ -1916,6 +1923,7 @@ class SupervisorCampanaTests(CampanasTests):
         # comprobamos que se realizó una nueva asignación de agente a campañas
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
+    @patch('redis.Redis.sadd')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
@@ -1925,7 +1933,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk):
+            _generar_y_recargar_configuracion_asterisk, sadd):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)
         opt_calif = OpcionCalificacionFactory.create(
@@ -2054,6 +2062,8 @@ class SupervisorCampanaTests(CampanasTests):
         OpcionMenuInteractivoWhatsapp.objects.create(
             opcion=opcion_destino_1, descripcion='Descripcion opcion 1')
         linea2 = LineaFactory(destino=destino_menu, created_by=admin, updated_by=admin)
+        menu.line = linea2
+        menu.save()
 
         url = reverse('campana_update', args=[self.campana.id, ])
         post_step0_data = {

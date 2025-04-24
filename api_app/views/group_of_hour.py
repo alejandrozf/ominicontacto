@@ -17,6 +17,7 @@
 #
 
 from __future__ import unicode_literals
+from django.db import models
 from django.utils.translation import ugettext as _
 from api_app.utils.group_of_hours import (
     eliminar_grupo_horario_config, escribir_grupo_horario_config
@@ -197,6 +198,20 @@ class GroupOfHourDelete(APIView):
             data['message'] = 'No existe el grupo horario'
             return Response(
                 data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except models.ProtectedError as exc:
+            return Response(
+                data={
+                    "status": "ERROR",
+                    "message": _(
+                       "No está permitido eliminar el '{modelo}' porque está siendo "
+                        "usado por {related}.".format(
+                            modelo=_("Grupo Horario"),
+                            related=", ".join(str(o) for o in exc.protected_objects),
+                        )
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception:
             data['status'] = 'ERROR'
             data['message'] = 'Error al eliminar el grupo horario'

@@ -306,7 +306,7 @@ class OminicontactoAppConfig(AppConfig):
             items.append({'order': 500,
                           'label': _('Buscar Grabación'),
                           'icon': 'icon-search',
-                          'url': reverse('grabacion_buscar', args=(1,))})
+                          'url': reverse('grabacion_buscar')})
         if 'buscar_auditorias_gestion' in permissions:
             items.append({'order': 600,
                           'label': _('Buscar Auditorías'),
@@ -352,6 +352,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'descargar_usuarios_csv',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'importar_usuarios_csv',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', ]},
@@ -711,6 +713,16 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'conjuntos_de_pausas_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {
+                'nombre': 'channels-background-tasks',
+                'roles': [
+                    'Administrador',
+                    'Agente',
+                    'Gerente',
+                    'Referente',
+                    'Supervisor',
+                ]
+            },
         ]
 
     informacion_de_permisos = {
@@ -729,6 +741,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'descargar_usuarios_csv':
             {'descripcion': _('Descargar lista de usuarios a CSV'), 'version': '1.7.0'},
+        'importar_usuarios_csv':
+            {'descripcion': _('Importar lista de usuarios a CSV'), 'version': '?'},
         'user_delete':
             {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
         'user_update':
@@ -1137,4 +1151,10 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Configurar autenticación externa'), 'version': '1.31.0'},
         'conjuntos_de_pausas_list':
             {'descripcion': _('Listado de conjuntos de pausas'), 'version': '1.21.0'},
+        'channels-background-tasks': {
+            'descripcion': _(
+                'Canal bidireccional para encolar tareas en segundo plano y '
+                'recibir el resultado de la ejecución'
+            ),
+            'version': '0.0.0'},
     }

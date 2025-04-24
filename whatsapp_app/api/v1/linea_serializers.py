@@ -133,9 +133,12 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
         try:
             destino = DestinoEntrante.objects.get(tipo=DestinoEntrante.CAMPANA,
                                                   object_id=campana_id)
-            if not destino.content_object.whatsapp_habilitado:
+            destino_lineas = destino.lineas.all()
+            if 'line' in self.context:
+                destino_lineas = destino_lineas.exclude(id=self.context['line'].id)
+            if destino_lineas.exists():  # verificar que la campnana no la este usando otra linea.
                 raise serializers.ValidationError({
-                    'data': _('Valor incorrecto. La campaña no tiene whatsapp habilitado')})
+                    'data': _('Valor incorrecto. Esta campaña esta siendo usada por otra línea')})
             self.destino = destino
             return campana_id
         except DestinoEntrante.DoesNotExist:
@@ -158,16 +161,22 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
 
     def create_menu_interactivo(self, validated_data):
         # Si es un menú interactivo debo crearlo:
+        line = None
+        if 'line' in self.context:
+            line = self.context['line']
         list_menu_data = validated_data['data']
         destino_whith_options = []
         for menu_data in list_menu_data:
             menu = MenuInteractivoWhatsapp(menu_header=menu_data['menu_header'],
                                            menu_body=menu_data['menu_body'],
-                                           menu_footer= menu_data['menu_footer'] if 'menu_footer' in menu_data else '',
+                                           menu_footer=menu_data['menu_footer']
+                                           if 'menu_footer' in menu_data else '',
                                            menu_button=menu_data['menu_button'],
                                            texto_opcion_incorrecta=menu_data['wrong_answer'],
                                            texto_derivacion=menu_data['success'],
-                                           timeout=0)
+                                           timeout=0,
+                                           line=line
+                                           )
             menu.save()
             destino = DestinoEntrante.crear_nodo_ruta_entrante(menu)
             opcions = {
@@ -191,14 +200,22 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                 else:
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
-                option_data['destination'] = destino_siguiente.content_object.id
-                opcion = OpcionDestino.crear_opcion_destino(
-                    destino_anterior=object_dict['destino_anterior'],
-                    destino_siguiente=destino_siguiente,
-                    valor=option_data['value'])
-                OpcionMenuInteractivoWhatsapp.objects.create(
-                    opcion=opcion,
-                    descripcion=option_data['description'] if 'description' in option_data else "")
+                    if destino_siguiente\
+                            and object_dict['destino_anterior'].id in destino_siguiente.\
+                            destinos_siguientes.values_list('destino_siguiente', flat=True).\
+                            distinct():
+                        raise serializers.ValidationError({
+                            'data': _('No puede existir dependencias recursiva entre menus')})
+                if destino_siguiente:
+                    option_data['destination'] = destino_siguiente.content_object.id
+                    opcion = OpcionDestino.crear_opcion_destino(
+                        destino_anterior=object_dict['destino_anterior'],
+                        destino_siguiente=destino_siguiente,
+                        valor=option_data['value'])
+                    OpcionMenuInteractivoWhatsapp.objects.create(
+                        opcion=opcion,
+                        descripcion=option_data['description'] if 'description'
+                                                                  in option_data else "")
 
     def update_opcions(self, destino_whith_options):
         # TODO NO SE USA ACTUALMENTE IMPLEMENTACION INCOMPLETA
@@ -304,14 +321,16 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
             destination.is_valid(raise_exception=True)
             representation['destination'] = destination.data
             representation['destination_name'] = destination.name
+        print('representation', representation)
         return representation
 
 
 class MenuInteractivoSerializer(serializers.Serializer):
     id_tmp = serializers.IntegerField(required=False)
+    is_main = serializers.BooleanField(required=False, default=True)
     menu_header = serializers.CharField(max_length=60)
-    menu_body =  serializers.CharField(max_length=1024)
-    menu_footer =  serializers.CharField(required=False, allow_blank=True, max_length=60)
+    menu_body = serializers.CharField(max_length=1024)
+    menu_footer = serializers.CharField(required=False, allow_blank=True, max_length=60)
     menu_button = serializers.CharField(max_length=20)
     wrong_answer = serializers.CharField()
     success = serializers.CharField()
@@ -336,7 +355,8 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
         menu_representation = {
             'id': menu.id,
             'id_tmp': menu.id,
-            'menu_header': menu.menu_header,
+            'is_main': menu.is_main,
+            'menu_header': menu.menu_header if menu.menu_header else '',
             'menu_body': menu.menu_body,
             'menu_footer': menu.menu_footer if menu.menu_footer else '',
             'menu_button': menu.menu_button,
@@ -354,11 +374,15 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
                 'description': opcion.opcion_menu_whatsapp.descripcion,
                 'destination_name': opcion.destino_siguiente.content_object.nombre
             })
-            if opcion.destino_siguiente.tipo == 10:
-                data_list.insert(0, self._menu_representation(opcion.destino_siguiente, data_list))
+            if opcion.destino_siguiente.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                if not [item for item in data_list
+                        if item['id'] == opcion.destino_siguiente.content_object.id]:
+                    data_list.insert(
+                        0, self._menu_representation(opcion.destino_siguiente, data_list))
         return menu_representation
 
-    def to_representation(self, value):
+    def to_representation(self, line):
+        value = line.destino
         representation = {
             'type': value.tipo,
             'id': value.content_object.id,
@@ -369,7 +393,23 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             data_list = []
             menu_representation = self._menu_representation(value, data_list)
             data_list.insert(0, menu_representation)
-            representation['data'] = data_list
+            try:
+                menu_used_list = [menu.get('id') for menu in data_list if 'id' in menu]
+                orphan_menus =\
+                    MenuInteractivoWhatsapp.objects.filter(line=line).exclude(
+                        id__in=menu_used_list)
+                for menu in orphan_menus:
+                    menu_used_list = [menu.get('id') for menu in data_list if 'id' in menu]
+                    if menu.id not in menu_used_list:
+                        destino = DestinoEntrante.objects.filter(
+                            object_id=menu.id,
+                            tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP).last()
+                        menu_representation = self._menu_representation(destino, data_list)
+                        data_list.append(menu_representation)
+                representation['data'] = data_list
+            except Exception as e:
+                print(e)
+                pass
         else:
             raise Exception('Tipo de destino incorrecto')
         return representation
@@ -382,7 +422,7 @@ class LineaRetrieveSerializer(serializers.Serializer):
     provider = serializers.IntegerField(source='proveedor.id')
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
-    destination = DestinoEntranteRelatedField(source='destino', read_only=True)
+    destination = DestinoEntranteRelatedField(source='*', read_only=True)
     welcome_message = serializers.IntegerField(source='mensaje_bienvenida.id', required=False)
     farewell_message = serializers.IntegerField(source='mensaje_despedida.id', required=False)
     afterhours_message = serializers.IntegerField(source='mensaje_fueradehora.id', required=False)

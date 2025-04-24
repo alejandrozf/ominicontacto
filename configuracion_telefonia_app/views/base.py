@@ -352,7 +352,7 @@ class DeleteNodoDestinoMixin(object):
         self.object = self.get_object()
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
         permitido_eliminar = True
-        lineas_whatsapp = nodo.lineas_destino_whatsapp()
+        lineas_whatsapp = nodo.lineas_whatsapp_antecesoras()
         if lineas_whatsapp:
             permitido_eliminar = False
             nombres_lineas = lineas_whatsapp.values_list('nombre', flat=True)
@@ -381,7 +381,7 @@ class DeleteNodoDestinoMixin(object):
         # pues es muy similar al del método 'dispatch' y al parecer no sería necesario
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
         permitido_eliminar = True
-        lineas_whatsapp = nodo.lineas_destino_whatsapp()
+        lineas_whatsapp = nodo.lineas_whatsapp_antecesoras()
         if lineas_whatsapp:
             permitido_eliminar = False
             nombres_lineas = lineas_whatsapp.values_list('nombre', flat=True)

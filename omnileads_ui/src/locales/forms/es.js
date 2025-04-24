@@ -11,7 +11,8 @@ export default {
         infinite_time: 'Tiempo infinito'
     },
     call_disposition: {
-        enter_name: 'Ingresa el nombre'
+        enter_name: 'Ingresa el nombre',
+        enter_subdisposition: 'Ingresa the subcalificación'
     },
     external_system: {
         enter_name: 'Ingresa el nombre'
@@ -25,7 +26,8 @@ export default {
             opt1: 'Agente',
             opt2: 'Automatico',
             opt3: 'Servidor',
-            opt4: 'Calificacion'
+            opt4: 'Calificacion',
+            opt5: 'Lista Dinámica'
         },
         objectives: {
             opt1: 'Embebido',
@@ -50,7 +52,8 @@ export default {
                 date: 'Fecha',
                 list: 'Lista',
                 text_box: 'Caja de texto',
-                numero: 'Numero'
+                numero: 'Numero',
+                dynamic_list: 'Lista Dinámica'
             },
             numero_type: {
                 entero_type: 'Entero',
@@ -257,7 +260,9 @@ export default {
         line: {
             validations: {
                 field_is_required: '{field} es requerido',
-                max_len: 'Asegúrese que este campo no tiene mas de {max_len} caracteres.'
+                max_len: 'Asegúrese que este campo no tiene mas de {max_len} caracteres.',
+                whatsapp_habilitado: 'Esta campaña no tiene esta canalidad habilitada, se forzará la activación.',
+                max_len_help: 'Este campo sólo admite {max_len} caracteres.',
             },
             destination_types: {
                 campaign: 'Campaña',
@@ -268,7 +273,9 @@ export default {
                 success_update: 'Opcion de destino actualizada exitosamente',
                 success_delete: 'Opcion de destino eliminada exitosamente',
                 empty_options: 'No hay opciones de destino configuradas'
-            }
+            },
+            only_whatsapp_habilitado: 'Solo campañas con la canalidad habilitada'
+
         },
         group_of_message_template: {
             validations: {

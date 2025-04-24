@@ -23,8 +23,7 @@ from __future__ import unicode_literals
 import json
 from formtools.wizard.views import SessionWizardView
 
-from import_export import resources
-from import_export.fields import Field
+from tablib import Dataset
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -34,7 +33,7 @@ from django.db.models import Value as V
 from django.db.models.functions import Concat
 from django.urls import reverse
 from django.template.defaultfilters import pluralize
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.views.generic import (
     View, UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
 
@@ -55,10 +54,11 @@ from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError
+from .import_export import UserExportResource
+from .import_export import UserImportResource
 
 import logging as logging_
 import os
-import csv
 
 from notification_app.message import emsg
 
@@ -423,11 +423,12 @@ class UserDeleteView(DeleteView):
         obj = self.get_object()
         if obj.is_agente:
             agente = obj.get_agente_profile()
-            inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+            inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino()\
+                                                    .values_list("nombre", flat=True)
             if len(inbound_routes_where_is_destino):
                 msgs = [_('El Agente no puede ser eliminado.')]
                 msgs.append(
-                    _('El mismo se encuentra como "destino" en la{0} Ruta{0} Entrante{0}: {1}.'.format(
+                    _('El mismo se encuentra como "destino" en la Ruta Entrante {0}: {1}.'.format(
                         pluralize(len(inbound_routes_where_is_destino)),
                         ", ".join(inbound_routes_where_is_destino)
                     ))
@@ -623,7 +624,8 @@ class DesactivarAgenteView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
-        inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino().values_list("nombre", flat=True)
+        inbound_routes_where_is_destino = agente.get_inbound_routes_where_is_destino()\
+                                                .values_list("nombre", flat=True)
         if len(inbound_routes_where_is_destino):
             msgs = [_('El Agente no fue desactivado.')]
             msgs.append(
@@ -718,43 +720,66 @@ class UserRoleManagementView(TemplateView):
         return context
 
 
-class UserResourceExport(resources.ModelResource):
-
-    profile = Field()
-    group = Field()
-
-    def dehydrate_profile(self, user):
-        return user.rol.name
-
-    def dehydrate_group(self, user):
-        if user.get_is_agente():
-            return user.agenteprofile.grupo.nombre
-        return ''
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'profile', 'group')
-        export_order = ('id', 'username', 'first_name', 'last_name', 'profile', 'group')
-
-
 class ExportCsvUsuariosView(View):
 
     def post(self, request, *args, **kwargs):
-        filtro = request.POST.get('nombre_usuario', False)
-        # ID, username, first name, last name,
-        # Profile (Agente / Supervisor / Administrador o nombre del perfil custom)
-        usuarios_activos = User.objects.filter(borrado=False)
-        if filtro:
-            usuarios_activos = usuarios_activos.annotate(
-                full_name=Concat('first_name', V(' '), 'last_name')).\
-                filter(Q(full_name__icontains=filtro) | Q(username__icontains=filtro))
-        response = HttpResponse(content_type='text/csv')
-        content_disposition = 'attachment; filename="active_users.csv"'
-        response['Content-Disposition'] = content_disposition
-        dataset = UserResourceExport().export(usuarios_activos)
-        writer = csv.writer(response)
-        columnas_headers = ('Id', 'Username', 'First Name', 'Last Name', 'Profile')
-        writer.writerow(columnas_headers)
-        for row in dataset:
-            writer.writerow(row)
-        return response
+        filename = "active-users.csv"
+        queryset = User.objects.filter(borrado=False).order_by("id")
+        if search := request.POST.get("search", None):
+            filename = f"active-users~{search}.csv"
+            queryset = queryset.filter(
+                Q(username__icontains=search) |
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search),
+            )
+        return StreamingHttpResponse(
+            streaming_content=UserExportResource().export(queryset).csv,
+            content_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+
+class ImportUsuariosView(View):
+
+    def post(self, request, *args, **kwargs):
+        if archive := request.FILES.get("archivo"):
+            dataset = Dataset().load(archive.read().decode(), format="csv")
+            results = UserImportResource().import_data(
+                dataset,
+                collect_failed_rows=True,
+                raise_errors=False,
+                user=request.user,
+                grupos=dict(Grupo.objects.values_list("nombre", "id")),
+                profiles=dict(Group.objects.values_list("name", "id")),
+            )
+            all_errors = []
+            if results.has_errors():
+                for error in results.base_errors:
+                    all_errors.append(error.error)
+                for line, errors in results.row_errors():
+                    for error in errors:
+                        all_errors.append(f"LINE{line} ERROR:{error.error}")
+            elif results.has_validation_errors():
+                for row in results.invalid_rows:
+                    for field_name, error_list in row.field_specific_errors.items():
+                        for error in error_list:
+                            all_errors.append(
+                                f"LINE:{row.number} FIELD:{field_name} ERROR:{error}"
+                            )
+                    for error in row.non_field_specific_errors:
+                        all_errors.append(f"LINE:{row.number} ERROR:{error}")
+            else:
+                asterisk_sip_service = ActivacionAgenteService()
+                try:
+                    asterisk_sip_service.activar()
+                except RestablecerConfigSipError as e:
+                    messages.add_message(
+                        request,
+                        messages.WARNING,
+                        _(f"<strong>¡Cuidado!</strong> con el siguiente error{e}.")
+                    )
+            if all_errors:
+                messages.add_message(request, messages.ERROR, "\n".join(all_errors))
+        else:
+            messages.add_message(request, messages.ERROR, _("El archivo (CSV) es requerido"))
+        return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))

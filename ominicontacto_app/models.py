@@ -630,6 +630,7 @@ class NombreCalificacionManager(models.Manager):
 
 class NombreCalificacion(models.Model):
     nombre = models.CharField(max_length=50, verbose_name=_('Nombre'))
+    subcalificaciones = models.JSONField(null=True, blank=True, default=list)
     objects = NombreCalificacionManager()
 
     def es_reservada(self):
@@ -692,12 +693,16 @@ class FieldFormulario(models.Model):
     TIPO_NUMERO = 5
     """Tipo de campo numero"""
 
+    TIPO_LISTA_DINAMICA = 6
+    """Tipo de campo numero"""
+
     TIPO_CHOICES = (
         (TIPO_TEXTO, _('Texto')),
         (TIPO_FECHA, _('Fecha')),
         (TIPO_LISTA, _('Lista')),
         (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
         (TIPO_NUMERO, _('Número')),
+        (TIPO_LISTA_DINAMICA, _('Lista Dinámica')),
     )
 
     TIPO_ENTERO = 1
@@ -716,6 +721,8 @@ class FieldFormulario(models.Model):
     tipo_numero = models.PositiveIntegerField(choices=TIPO_NUMERO_CHOICES, blank=True, null=True)
     cifras_significativas = models.PositiveIntegerField(blank=True, null=True)
     values_select = models.TextField(blank=True, null=True)
+    sitio_externo = models.ForeignKey(
+        "SitioExterno", on_delete=models.CASCADE, null=True, blank=True)
     is_required = models.BooleanField()
 
     class Meta:
@@ -1667,6 +1674,7 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
+    subcalificaciones = models.JSONField(null=True, blank=True, default=list)
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
     oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
     positiva = models.BooleanField(default=False, verbose_name=_('Positiva'))
@@ -2489,7 +2497,7 @@ class BaseDatosContacto(models.Model):
 
     def __str__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
-                                             self.cantidad_contactos)
+                                             self.get_cantidad_contactos_actual())
 
     def get_metadata(self):
         return MetadataBaseDatosContacto(self)
@@ -2510,10 +2518,15 @@ class BaseDatosContacto(models.Model):
 
     def get_cantidad_contactos(self):
         """
+        Devuelve la cantidad de contactos originarios de la BaseDatosContacto.
+        """
+        return self.cantidad_contactos
+
+    def get_cantidad_contactos_actual(self):
+        """
         Devuelve la cantidad de contactos de la BaseDatosContacto.
         """
-
-        return self.cantidad_contactos
+        return self.contactos.count()
 
     # def verifica_en_uso(self):
     #     """
@@ -2752,6 +2765,15 @@ class Contacto(models.Model):
             self.lista_datos_contacto = datos
         return self.lista_datos_contacto
 
+    def lista_de_telefonos_de_contacto(self):
+        bd_metadata = self.bd_contacto.get_metadata()
+        lista_de_telefonos = []
+        nombres_de_columnas_de_telefonos = bd_metadata.nombres_de_columnas_de_telefonos
+        for key, value in self.obtener_datos().items():
+            if key in nombres_de_columnas_de_telefonos:
+                lista_de_telefonos.append(value)
+        return lista_de_telefonos
+
     def __str__(self):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
@@ -2850,14 +2872,14 @@ class CalificacionClienteManager(models.Manager):
     def calificacion_por_filtro(self, fecha_desde=False, fecha_hasta=False, agente=False,
                                 campana=False, grupo_agentes=False, id_contacto=False,
                                 id_contacto_externo=False,
-                                telefono=False, callid=False, status_auditoria=False):
+                                telefono=False, callid=False, status_auditoria=False,
+                                use_utc=False):
         """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
 
         calificaciones = self.obtener_calificaciones_auditoria()
-
         if fecha_desde and fecha_hasta:
-            fecha_desde = datetime_hora_minima_dia(fecha_desde)
-            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            fecha_desde = datetime_hora_minima_dia(fecha_desde, use_utc=use_utc)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta, use_utc=use_utc)
             calificaciones = calificaciones.filter(modified__range=(fecha_desde,
                                                                     fecha_hasta))
         if agente:
@@ -2910,6 +2932,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_cliente',
         on_delete=models.CASCADE)
+    subcalificacion = models.CharField(max_length=200, blank=True, null=True, default="")
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones",
                                on_delete=models.CASCADE)
@@ -3153,6 +3176,7 @@ class AgendaContacto(models.Model):
     observaciones = models.TextField(blank=True, null=True)
     campana = models.ForeignKey(Campana, related_name='agendas', null=True,
                                 on_delete=models.CASCADE)
+    telefono = models.CharField(max_length=128)
 
     def __str__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
@@ -3323,12 +3347,14 @@ class SitioExterno(models.Model):
     AUTOMATICO = 2
     SERVER = 3
     CALIFICACION = 4
+    LISTA_DINAMICA = 5
 
     DISPARADORES = (
         (BOTON, _('Agente')),
         (AUTOMATICO, _('Automático')),
         (SERVER, _('Servidor')),
         (CALIFICACION, _('Calificación')),
+        (LISTA_DINAMICA, _('Lista Dinámica')),
     )
 
     GET = 1
@@ -3838,6 +3864,7 @@ class ParametrosCrm(models.Model):
     OPCIONES_DATO_CALIFICACION = (
         ('id', _('ID de Calificación')),
         ('name', _('Nombre')),
+        ('subdisposition', _('Subcalificacion')),
         ('form', _('Formulario')),
     )
     OPCIONES_DATO_CALIFICACION_KEYS = [key for key, value in OPCIONES_DATO_CALIFICACION]
@@ -3905,6 +3932,8 @@ class ParametrosCrm(models.Model):
                 return datos_de_llamada['id_calificacion']
             elif self.valor == 'name':
                 return datos_de_llamada['nombre_opcion_calificacion']
+            elif self.valor == 'subdisposition':
+                return datos_de_llamada['nombre_opcion_subcalificacion']
             elif self.valor == 'form':
                 return urlsafe_base64_encode(datos_de_llamada['formulario'].encode())
         return ""

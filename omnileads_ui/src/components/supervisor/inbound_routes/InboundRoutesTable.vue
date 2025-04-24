@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState} from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { CONFIRM_BTN_COLOR, CANCEL_BTN_COLOR, HTTP_STATUS } from '@/globals';
 
@@ -114,7 +114,11 @@ export default {
             filters: null
         };
     },
+    computed: {
+      ...mapState(['languages'])
+    },
     created () {
+        this.initInboundRoutesLanguages();
         this.initFilters();
     },
     methods: {
@@ -122,7 +126,7 @@ export default {
             this.initFilters();
         },
         getIdioma (type) {
-            return type === 1 ? this.$t('forms.inbound_route.languages.en') : this.$t('forms.inbound_route.languages.es');
+            return this.languages.find(obj => obj.id === type).language
         },
         initFilters () {
             this.filters = {
@@ -189,7 +193,7 @@ export default {
                 }
             });
         },
-        ...mapActions(['initInboundRoutes', 'deleteInboundRoute'])
+        ...mapActions(['initInboundRoutes', 'deleteInboundRoute', 'initInboundRoutesLanguages'])
     },
     watch: {
         inboundRoutes: {

@@ -15,4 +15,14 @@ export default class InboundRouteService extends BaseService {
             return [];
         }
     }
+
+    async languages () {
+        try {
+            const resp = await fetch(urls.Languages, this.payload);
+            return await resp.json();
+        } catch (error) {
+            console.error('No se pudieron obtener los lenguajes');
+            return [];
+        }
+    }
 }

@@ -20,6 +20,7 @@ import os
 
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from constance import config as constance_config
 from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 from ominicontacto_app.services.queue_member_service import QueueMemberService
@@ -64,6 +65,8 @@ class Command(BaseCommand):
             nombre=self.success.nombre, campana=campana, tipo=OpcionCalificacion.GESTION)
         OpcionCalificacionFactory(
             nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
+        OpcionCalificacionFactory(
+            nombre=settings.CALIFICACION_REAGENDA, campana=campana, tipo=OpcionCalificacion.AGENDA)
 
     def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual
@@ -379,27 +382,28 @@ class Command(BaseCommand):
             remote_host = '190.19.150.8:6066'
 
         # crea un troncal y con este una ruta entrante hacia el pbx-emulator
-        text_config = ("type=wizard\n"
-                       "transport=trunk-transport\n"
-                       "accepts_registrations=no\n"
-                       "accepts_auth=no\n"
-                       "sends_registrations=yes\n"
-                       "sends_auth=yes\n"
-                       "endpoint/rtp_symmetric=no\n"
-                       "endpoint/force_rport=no\n"
-                       "endpoint/rewrite_contact=yes\n"
-                       "endpoint/timers=yes\n"
-                       "aor/qualify_frequency=60\n"
-                       "endpoint/allow=alaw,ulaw\n"
-                       "endpoint/dtmf_mode=rfc4733\n"
-                       ";external_media_address=****Container engine Host IP -> OML****\n"
-                       ";external_signaling_address=****Container engine Host IP -> OML****\n"
-                       ";external_signaling_port=****Container engine Host port forward -> OML****\n"
-                       "endpoint/context=from-pstn\n"
-                       "remote_hosts=" + remote_host + "\n"
-                       "outbound_auth/username=" + caller_id + "\n"
-                       "endpoint/from_user=" + caller_id + "\n"
-                       "outbound_auth/password=omnileads\n")
+        text_config = (
+            "type=wizard\n"
+            "transport=trunk-transport\n"
+            "accepts_registrations=no\n"
+            "accepts_auth=no\n"
+            "sends_registrations=yes\n"
+            "sends_auth=yes\n"
+            "endpoint/rtp_symmetric=no\n"
+            "endpoint/force_rport=no\n"
+            "endpoint/rewrite_contact=yes\n"
+            "endpoint/timers=yes\n"
+            "aor/qualify_frequency=60\n"
+            "endpoint/allow=alaw,ulaw\n"
+            "endpoint/dtmf_mode=rfc4733\n"
+            ";external_media_address=****Container engine Host IP -> OML****\n"
+            ";external_signaling_address=****Container engine Host IP -> OML****\n"
+            ";external_signaling_port=****Container engine Host port forward -> OML****\n"
+            "endpoint/context=from-pstn\n"
+            "remote_hosts=" + remote_host + "\n"
+            "outbound_auth/username=" + caller_id + "\n"
+            "endpoint/from_user=" + caller_id + "\n"
+            "outbound_auth/password=omnileads\n")
         troncal_pbx_emulator = TroncalSIPFactory(
             text_config=text_config, canales_maximos=1000, tecnologia=1,
             caller_id=caller_id)

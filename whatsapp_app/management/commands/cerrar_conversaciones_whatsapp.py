@@ -19,7 +19,6 @@ import argparse
 from django.utils import timezone
 from django.core.management.base import BaseCommand
 from whatsapp_app.models import ConversacionWhatsapp
-from ominicontacto_app.models import OpcionCalificacion, CalificacionCliente
 
 
 class Command(BaseCommand):
@@ -35,7 +34,7 @@ class Command(BaseCommand):
             """Raise an argument error."""
             def raise_disabled_error_wrapper(*args) -> str:
                 """Raise an exception."""
-                raise argparse.ArgumentError(action, f'Has been disabled!')
+                raise argparse.ArgumentError(action, 'Has been disabled!')
             return raise_disabled_error_wrapper
 
         for action in parser._actions:
@@ -59,8 +58,9 @@ class Command(BaseCommand):
                                 all: Cerrar todos los chats
                                 att: Cerrar chats atendidos
                                 queued: Cerrar chats no atendidos''')
-        parser.add_argument("days_limit", type=int,
-                    help="Cerrar los chats que sean más antiguos que la cantidad de días definida")
+        parser.add_argument(
+            "days_limit", type=int,
+            help="Cerrar los chats que sean más antiguos que la cantidad de días definida")
 
     def handle(self, *args, **options):
         try:
