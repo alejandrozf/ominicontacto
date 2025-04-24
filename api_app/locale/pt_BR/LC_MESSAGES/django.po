@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 12:14-0300\n"
+"POT-Creation-Date: 2025-04-14 16:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -740,17 +740,17 @@ msgid "Se creo la calificacion de forma exitosa"
 msgstr "A qualificação foi criada com sucesso"
 
 #: api_app/tests/tests_api_call_dispositions.py:92
-#: api_app/views/call_disposition.py:119 api_app/views/call_disposition.py:162
+#: api_app/views/call_disposition.py:120 api_app/views/call_disposition.py:164
 msgid "Error al hacer la peticion"
 msgstr "Erro ao fazer a solicitação"
 
 #: api_app/tests/tests_api_call_dispositions.py:112
-#: api_app/views/call_disposition.py:154
+#: api_app/views/call_disposition.py:155
 msgid "Se actualizo la calificacion de forma exitosa"
 msgstr "A qualificação foi atualizada com sucesso"
 
 #: api_app/tests/tests_api_call_dispositions.py:128
-#: api_app/views/call_disposition.py:192
+#: api_app/views/call_disposition.py:195
 msgid "Se elimino la calificacion de forma exitosa"
 msgstr "A qualificação foi eliminada com sucesso"
 
@@ -932,59 +932,59 @@ msgid "No está permitido actualizar un formulario con calificaciones"
 msgstr "Não é permitido atualizar um formulário com qualificações"
 
 #: api_app/tests/tests_api_group_of_hour.py:79
-#: api_app/views/group_of_hour.py:46
+#: api_app/views/group_of_hour.py:47
 msgid "Se obtuvieron los grupos horarios de forma exitosa"
 msgstr "Os grupos horários foram obtidos com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:97
-#: api_app/views/group_of_hour.py:150
+#: api_app/views/group_of_hour.py:151
 msgid "Se obtuvo la informacion el grupo horario de forma exitosa"
 msgstr "A informação do grupo horário foi obtida com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:116
-#: api_app/views/group_of_hour.py:73
+#: api_app/views/group_of_hour.py:74
 msgid "Se creo el grupo horario de forma exitosa"
 msgstr "O grupo horário foi criado com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:134
-#: api_app/views/group_of_hour.py:180
+#: api_app/views/group_of_hour.py:181
 msgid "Se elimino el grupo horario de forma exitosa"
 msgstr "O grupo horário foi eliminado com sucesso"
 
 #: api_app/tests/tests_api_group_of_hour.py:145
-#: api_app/views/group_of_hour.py:186
+#: api_app/views/group_of_hour.py:187
 msgid ""
 "No está permitido eliminar un grupo horario asociado a Validacion Fecha Hora"
 msgstr ""
 "Não é permitido eliminar um grupo horário associado à Validação Data Hora"
 
 #: api_app/tests/tests_api_group_of_hour.py:188
-#: api_app/views/group_of_hour.py:108
+#: api_app/views/group_of_hour.py:109
 msgid "Se actualizo el grupo horario de forma exitosa"
 msgstr "O grupo horário foi atualizado com sucesso"
 
-#: api_app/tests/tests_api_inbound_route.py:77
+#: api_app/tests/tests_api_inbound_route.py:78
 #: api_app/tests/tests_api_outbound_route.py:114
 #: api_app/views/inbound_route.py:46 api_app/views/outbound_route.py:49
 msgid "Se obtuvieron las rutas entrantes de forma exitosa"
 msgstr "As rotas de entrada foram obtidas com sucesso"
 
-#: api_app/tests/tests_api_inbound_route.py:104
+#: api_app/tests/tests_api_inbound_route.py:105
 #: api_app/views/inbound_route.py:151
 msgid "Se obtuvo la informacion de la ruta entrante de forma exitosa"
 msgstr "A informação da rota de entrada foi obtida com sucesso"
 
-#: api_app/tests/tests_api_inbound_route.py:127
+#: api_app/tests/tests_api_inbound_route.py:128
 #: api_app/views/inbound_route.py:73
 msgid "Se creo la ruta entrante de forma exitosa"
 msgstr "A rota de entrada foi criada com sucesso"
 
-#: api_app/tests/tests_api_inbound_route.py:146
+#: api_app/tests/tests_api_inbound_route.py:147
 #: api_app/views/inbound_route.py:182
 msgid "Se elimino la ruta entrante de forma exitosa"
 msgstr "A rota de entrada foi eliminada com sucesso"
 
-#: api_app/tests/tests_api_inbound_route.py:192
+#: api_app/tests/tests_api_inbound_route.py:193
 #: api_app/views/inbound_route.py:107
 msgid "Se actualizo la ruta entrante de forma exitosa"
 msgstr "A rota de entrada foi atualizada com sucesso"
@@ -1188,6 +1188,14 @@ msgstr "Auditoria inexistente"
 msgid "No tiene permiso para modificar la auditoría"
 msgstr "Não tem permissão para modificar a auditoria"
 
+#: api_app/views/audios_asterisk.py:42
+msgid "Se obtuvieron los lenguajes de forma exitosa"
+msgstr "Os idiomas foram obtidos com sucesso"
+
+#: api_app/views/audios_asterisk.py:50
+msgid "Error al obtener los lenguajes"
+msgstr "Erro ao obter os idiomas"
+
 #: api_app/views/auditoria.py:80
 msgid "Fecha-Hora"
 msgstr "Data-Hora"
@@ -1295,7 +1303,7 @@ msgstr "Erro ao obter as qualificações"
 msgid "Se obtuvo el detalle de la calificacion de forma exitosa"
 msgstr "O detalhe da qualificação foi obtido com sucesso"
 
-#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:208
+#: api_app/views/call_disposition.py:79 api_app/views/call_disposition.py:211
 msgid "No existe la calificacion"
 msgstr "A qualificação não existe"
 
@@ -1303,28 +1311,28 @@ msgstr "A qualificação não existe"
 msgid "Error al obtener el detalle de la calificacion"
 msgstr "Erro ao obter o detalhe da qualificação"
 
-#: api_app/views/call_disposition.py:126
+#: api_app/views/call_disposition.py:127
 msgid "Error al crear la calificacion"
 msgstr "Erro ao criar a qualificação"
 
-#: api_app/views/call_disposition.py:170
+#: api_app/views/call_disposition.py:173
 msgid "No existe la calificacion que se quiere actualizar"
 msgstr "A qualificação que se deseja atualizar não existe"
 
-#: api_app/views/call_disposition.py:176
+#: api_app/views/call_disposition.py:179
 msgid "Error al actualizar la calificacion"
 msgstr "Erro ao atualizar a qualificação"
 
-#: api_app/views/call_disposition.py:200
+#: api_app/views/call_disposition.py:203
 msgid "No está permitido eliminar una calificacion reservada del sistema"
 msgstr "Não é permitido eliminar uma qualificação reservada do sistema"
 
-#: api_app/views/call_disposition.py:213
+#: api_app/views/call_disposition.py:216
 msgid "Error al eliminar la calificacion"
 msgstr "Erro ao eliminar a qualificação"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:59
-#: api_app/views/supervisor.py:407 api_app/views/supervisor.py:422
+#: api_app/views/supervisor.py:441 api_app/views/supervisor.py:456
 msgid "No existe la campaña"
 msgstr "A campanha não existe"
 
@@ -1500,22 +1508,22 @@ msgstr "Erro ao revelar o formulário"
 msgid "Exportación de grabaciones Zip en proceso"
 msgstr "Exportação de gravações Zip em andamento"
 
-#: api_app/views/group_of_hour.py:56
+#: api_app/views/group_of_hour.py:57
 msgid "Error al obtener los grupos horarios"
 msgstr "Erro ao obter os grupos horários"
 
-#: api_app/views/group_of_hour.py:79
+#: api_app/views/group_of_hour.py:80
 msgid ""
 "Se creo el grupo horario pero no se pudo cargar la configuración telefónica"
 msgstr ""
 "O grupo horário foi criado, mas a configuração telefônica não pôde ser "
 "carregada"
 
-#: api_app/views/group_of_hour.py:91
+#: api_app/views/group_of_hour.py:92
 msgid "Error al crear el grupo horario"
 msgstr "Erro ao criar o grupo horário"
 
-#: api_app/views/group_of_hour.py:117
+#: api_app/views/group_of_hour.py:118
 msgid ""
 "Se actualizo el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
@@ -1523,21 +1531,33 @@ msgstr ""
 "O grupo horário foi atualizado, mas a configuração telefônica não pôde ser "
 "carregada"
 
-#: api_app/views/group_of_hour.py:134
+#: api_app/views/group_of_hour.py:135
 msgid "Error al actualizar el grupo horario"
 msgstr "Erro ao atualizar o grupo horário"
 
-#: api_app/views/group_of_hour.py:164
+#: api_app/views/group_of_hour.py:165
 msgid "Error al obtener el detalle del grupo horario"
 msgstr "Erro ao obter o detalhe do grupo horário"
 
-#: api_app/views/group_of_hour.py:191
+#: api_app/views/group_of_hour.py:192
 msgid ""
 "Se elimino el grupo horario pero no se pudo cargar la configuración "
 "telefónica"
 msgstr ""
 "O grupo horário foi eliminado, mas a configuração telefônica não pôde ser "
 "carregada"
+
+#: api_app/views/group_of_hour.py:208
+msgid "Grupo Horario"
+msgstr "Grupo Horário"
+
+#: api_app/views/group_of_hour.py:206
+#, python-brace-format
+msgid ""
+"No está permitido eliminar el '{modelo}' porque está siendo usado por "
+"{related}."
+msgstr "Não é permitido eliminar o '{modelo}' porque esta sendo utilizado por "
+"{related}."
 
 #: api_app/views/inbound_route.py:56
 msgid "Error al obtener las rutas entrantes"
@@ -1882,107 +1902,107 @@ msgstr "Agente inexistente"
 msgid "Filtro \"status\" inválido"
 msgstr "Filtro \"status\" inválido"
 
-#: api_app/views/supervisor.py:300 api_app/views/supervisor.py:346
+#: api_app/views/supervisor.py:334 api_app/views/supervisor.py:380
 msgid "ID Agenda incorrecto"
 msgstr "ID de Agenda incorreto"
 
-#: api_app/views/supervisor.py:307
+#: api_app/views/supervisor.py:341
 msgid "ID Agente incorrecto"
 msgstr "ID de Agente incorreto"
 
-#: api_app/views/supervisor.py:315 api_app/views/supervisor.py:353
+#: api_app/views/supervisor.py:349 api_app/views/supervisor.py:387
 msgid "No tiene permiso para editar esta Agenda"
 msgstr "Não tem permissão para editar esta Agenda"
 
-#: api_app/views/supervisor.py:372
+#: api_app/views/supervisor.py:406
 msgid "Recibidas"
 msgstr "Recebidas"
 
-#: api_app/views/supervisor.py:373
+#: api_app/views/supervisor.py:407
 msgid "Efectuadas"
 msgstr "Realizadas"
 
-#: api_app/views/supervisor.py:374
+#: api_app/views/supervisor.py:408
 msgid "Atendidas"
 msgstr "Atendidas"
 
-#: api_app/views/supervisor.py:375
+#: api_app/views/supervisor.py:409
 msgid "Conectadas"
 msgstr "Conectadas"
 
-#: api_app/views/supervisor.py:376
+#: api_app/views/supervisor.py:410
 msgid "No Conectadas"
 msgstr "Não Conectadas"
 
-#: api_app/views/supervisor.py:377
+#: api_app/views/supervisor.py:411
 msgid "Abandonadas"
 msgstr "Abandonadas"
 
-#: api_app/views/supervisor.py:378
+#: api_app/views/supervisor.py:412
 msgid "Expiradas"
 msgstr "Expiradas"
 
-#: api_app/views/supervisor.py:379
+#: api_app/views/supervisor.py:413
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr "Tempo de Espera de Conexão (média)"
 
-#: api_app/views/supervisor.py:380
+#: api_app/views/supervisor.py:414
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr "Tempo de Espera de Atendimento (média)"
 
-#: api_app/views/supervisor.py:381
+#: api_app/views/supervisor.py:415
 msgid "Tiempo de Abandono(prom.)"
 msgstr "Tempo de Abandono (média)"
 
-#: api_app/views/supervisor.py:384
+#: api_app/views/supervisor.py:418
 msgid "Efectuadas Manuales"
 msgstr "Realizadas Manualmente"
 
-#: api_app/views/supervisor.py:385
+#: api_app/views/supervisor.py:419
 msgid "Conectadas Manuales"
 msgstr "Conectadas Manualmente"
 
-#: api_app/views/supervisor.py:386
+#: api_app/views/supervisor.py:420
 msgid "No Conectadas Manuales"
 msgstr "Não Conectadas Manualmente"
 
-#: api_app/views/supervisor.py:387
+#: api_app/views/supervisor.py:421
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr "Tempo de Espera de Conexão Manual (média)"
 
-#: api_app/views/supervisor.py:513
+#: api_app/views/supervisor.py:547
 msgid "Exportación de CSV en proceso"
 msgstr "Exportação de CSV em processo"
 
-#: api_app/views/supervisor.py:561
+#: api_app/views/supervisor.py:595
 msgid "Exportación de contactados a .csv en proceso"
 msgstr "Exportação de contactados para .csv em processo"
 
-#: api_app/views/supervisor.py:608
+#: api_app/views/supervisor.py:642
 msgid "Exportación de calificados a .csv en proceso"
 msgstr "Exportação de qualificados para .csv em processo"
 
-#: api_app/views/supervisor.py:655
+#: api_app/views/supervisor.py:689
 msgid "Exportación de no atendidos a .csv en proceso"
 msgstr "Exportação de não atendidos para .csv em processo"
 
-#: api_app/views/supervisor.py:667
+#: api_app/views/supervisor.py:701
 msgid "Finalizado"
 msgstr "Finalizado"
 
-#: api_app/views/supervisor.py:669
+#: api_app/views/supervisor.py:703
 msgid "Liberado"
 msgstr "Liberado"
 
-#: api_app/views/supervisor.py:671
+#: api_app/views/supervisor.py:705
 msgid "Reservado"
 msgstr "Reservado"
 
-#: api_app/views/supervisor.py:758
+#: api_app/views/supervisor.py:792
 msgid "Exportación de calificaciones a .csv en proceso"
 msgstr "Exportação de qualificações para .csv em processo"
 
-#: api_app/views/supervisor.py:803
+#: api_app/views/supervisor.py:837
 msgid "Exportación de Formularios de Gestiones a .csv en proceso"
 msgstr "Exportação de Formulários de Gestão para .csv em processo"
 

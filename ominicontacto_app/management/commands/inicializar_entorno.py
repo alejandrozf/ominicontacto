@@ -20,6 +20,7 @@ import os
 
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from constance import config as constance_config
 from api_app.utils.routes.inbound import escribir_ruta_entrante_config
 from ominicontacto_app.services.queue_member_service import QueueMemberService
@@ -65,6 +66,8 @@ class Command(BaseCommand):
             nombre=self.success.nombre, campana=campana, tipo=OpcionCalificacion.GESTION)
         OpcionCalificacionFactory(
             nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
+        OpcionCalificacionFactory(
+            nombre=settings.CALIFICACION_REAGENDA, campana=campana, tipo=OpcionCalificacion.AGENDA)
 
     def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual

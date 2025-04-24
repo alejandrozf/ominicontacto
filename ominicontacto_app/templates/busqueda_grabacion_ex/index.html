@@ -34,7 +34,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block content %}
-{% get_current_language as LANGUAGE_CODE %}
 
 <h1>{% trans 'Buscar grabación' %}</h1>
 <input id="user_id" type="hidden" value="{{ request.user.id }}">
@@ -48,7 +47,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div id="wrapperSearchForm" class="show">
         <form id="form-buscar-grabacion" role="form">
             <input type="hidden" name="BASE_URL" value="{{ request.scheme }}://{{ request.get_host }}">
-            <input type="hidden" name="LANG_CODE" value="{{ LANGUAGE_CODE }}">
             {% include "base_form_fields.html" with form=form %}
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                 {% trans 'Buscar' %}

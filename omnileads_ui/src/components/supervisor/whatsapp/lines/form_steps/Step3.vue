@@ -766,23 +766,10 @@ export default {
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.DIALER && c.whatsapp_habilitado
                   ) || [];
-                  if (inboundCampaigns.length > 0) {
-                        this.campaings.find(
-                            (c) => c.type === CAMPAIGN_TYPES.INBOUND
-                        ).items = inboundCampaigns;
-                    }
-                    if (manualCampaigns.length > 0) {
-                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL
-                      ).items = manualCampaigns;
-                    }
-                    if (previewCampaigns.length > 0) {
-                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW
-                        ).items = previewCampaigns;
-                    }
-                    if (dialerCampaigns.length > 0) {
-                        this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER
-                        ).items = dialerCampaigns;
-                    }
+                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
+                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
+                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
+                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
             }
             else {
                   const manualCampaigns =
@@ -889,11 +876,6 @@ export default {
                     }
                 }
             },
-            deep: true,
-            immediate: true
-        },
-        supWhatsappLine: {
-            handler () { this.initFormBase(); },
             deep: true,
             immediate: true
         },

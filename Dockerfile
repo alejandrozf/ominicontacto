@@ -63,7 +63,7 @@ RUN apk add --no-cache bash \
         libxslt \
         sox \
         tzdata \
-        postgresql-client \
+        postgresql16-client \
         pcre pcre-dev \
         aws-cli \
         git \

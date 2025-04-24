@@ -1,7 +1,11 @@
+from asyncio import coroutines
+
 from channels.consumer import SyncConsumer
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.apps import apps
+from django.core.handlers.asgi import ASGIRequest
+from django.utils import translation
 
 from .mixins import SearchRecordingsMixin
 
@@ -29,6 +33,9 @@ class BackgroundTasksConsumerClient(AsyncJsonWebsocketConsumer, *BACKGROUND_TASK
         if self.scope["user"].is_authenticated:
             tiene_permiso_oml = database_sync_to_async(self.scope["user"].tiene_permiso_oml)
             if await tiene_permiso_oml(self.scope["url_route"]["kwargs"]["viewname"]):
+                self.current_language = translation.get_language_from_request(
+                    ASGIRequest(dict(self.scope, method="get"), None)
+                )
                 await self.accept()
             else:
                 await self.close()
@@ -40,4 +47,7 @@ class BackgroundTasksConsumerClient(AsyncJsonWebsocketConsumer, *BACKGROUND_TASK
 
 
 class BackgroundTasksConsumerWorker(SyncConsumer, *BACKGROUND_TASKS_MIXINS):
-    pass
+
+    async def __call__(self, scope, receive, send):
+        send._is_coroutine = coroutines._is_coroutine
+        await super().__call__(scope, receive, send)

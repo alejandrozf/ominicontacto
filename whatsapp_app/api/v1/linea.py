@@ -196,19 +196,26 @@ class ViewSet(viewsets.ViewSet):
                 serializer_destino =\
                     DestinoDeLineaCreateSerializer(data=destino_data, context={'line': instance})
                 if serializer_destino.is_valid():
+                    # Primero desconectar destino anterior de la línea para poderlo borrar
+                    # pues es un campo PROTECT
+                    instance.destino = None
+                    instance.save()
                     for menu_old in instance.menuinteractivo.all():
-                        destino_old = DestinoEntrante.objects.get(
-                            object_id=menu_old.pk,
-                            tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
-                        opciones_destino =\
-                            OpcionDestino.objects.filter(destino_anterior=destino_old)
-                        for option in opciones_destino:
-                            if option.destino_siguiente.tipo ==\
-                               DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-                                option.destino_siguiente.delete()
-                            option.delete()
-                        destino_old.delete()
-                        menu_old.delete()
+                        try:
+                            destino_old = DestinoEntrante.objects.get(
+                                object_id=menu_old.pk,
+                                tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+                            opciones_destino =\
+                                OpcionDestino.objects.filter(destino_anterior=destino_old)
+                            for option in opciones_destino:
+                                if option.destino_siguiente.tipo ==\
+                                        DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                                    option.destino_siguiente.delete()
+                                option.delete()
+                            destino_old.delete()
+                            menu_old.delete()
+                        except Exception:
+                            instance.menuinteractivo.update(line=None)
                     serializer_destino.save()
                     destino = serializer_destino.destino
                     line = serializer.save(

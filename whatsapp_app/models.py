@@ -58,25 +58,25 @@ class Linea(AuditableModelMixin):
 
     nombre = models.CharField(max_length=100)  # appname requerido y unico
     proveedor = models.ForeignKey(
-        ConfiguracionProveedor, on_delete=models.CASCADE, related_name="lineas")
+        ConfiguracionProveedor, on_delete=models.PROTECT, related_name="lineas")
     numero = models.CharField(max_length=100)  # sender
     configuracion = JSONField(default=dict)  # appname, appid
     # TODO: Modelar en destino entrante whatsapp?
     destino = models.ForeignKey(
-        'configuracion_telefonia_app.DestinoEntrante', on_delete=models.CASCADE,
+        'configuracion_telefonia_app.DestinoEntrante', on_delete=models.PROTECT,
         related_name="lineas", blank=True, null=True)
     horario = models.ForeignKey(
-        'configuracion_telefonia_app.GrupoHorario', on_delete=models.CASCADE,
+        'configuracion_telefonia_app.GrupoHorario', on_delete=models.PROTECT,
         related_name="lineas", blank=True, null=True)
     mensaje_bienvenida = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_bienvenida")
+        on_delete=models.PROTECT, related_name="linea_mensaje_bienvenida")
     mensaje_despedida = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_despedida")
+        on_delete=models.PROTECT, related_name="linea_mensaje_despedida")
     mensaje_fueradehora = models.ForeignKey(
         "PlantillaMensaje", blank=True, null=True,
-        on_delete=models.CASCADE, related_name="linea_mensaje_fueradehora")
+        on_delete=models.PROTECT, related_name="linea_mensaje_fueradehora")
 
     @property
     def status(self):

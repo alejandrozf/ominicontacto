@@ -7,7 +7,7 @@
   >
     <template #header>
       <h2 v-if="formToCreate">{{ $t("views.call_dispositions.new_title") }}</h2>
-      <h2 v-if="formToAddSubdisposition">{{ $t("views.call_dispositions.add_subcategory") }}</h2>
+      <h2 v-else-if="formToAddSubdisposition">{{ $t("views.call_dispositions.add_subcategory") }}</h2>
       <h2 v-else>{{ $t("views.call_dispositions.edit_title") }}</h2>
     </template>
     <div class="card">
@@ -56,7 +56,7 @@
             <span class="p-inputgroup-addon">
               <i class="pi pi-sitemap"></i>
             </span>
-            <Listbox v-model="subcalificacion_selected" :options="callDisposition.subcalificaciones" class="w-full md:w-56" />
+            <Listbox v-model="subcalificacion_selected" :options="callDispositionForm.subcalificaciones" class="w-full md:w-56" />
           </div>
           <div class="p-inputgroup mt-2">
             <InputText
@@ -71,11 +71,13 @@
             <Button
               class="p-button-success ml-2"
               icon="pi pi-plus"
+              :disabled="!subcalificacion_new"
               @click="addSubcalificacion()"
             />
             <Button
             class="p-danger ml-2"
             icon="pi pi-times"
+            :disabled="!subcalificacion_selected"
             @click="deleteSubcalificacion()"
           />
           </div>
@@ -167,7 +169,7 @@ export default {
         };
     },
     created () {
-        this.initializeData();
+        // this.initializeData();
     },
     methods: {
         ...mapActions(['createCallDisposition', 'updateCallDisposition']),
@@ -189,14 +191,16 @@ export default {
             });
         },
         addSubcalificacion() {
-          this.callDispositionForm.subcalificaciones.push(this.subcalificacion_new)
-          this.subcalificacion_new = ""
+          this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.concat(this.subcalificacion_new)
+          this.subcalificacion_new = "";
         },
         deleteSubcalificacion() {
-          var arrayCopy;
-          arrayCopy = this.callDisposition.subcalificaciones.slice();
-          this.callDisposition.subcalificaciones = removeInPlace(arrayCopy, this.subcalificacion_selected);
-          this.callDispositionForm.subcalificaciones = this.callDisposition.subcalificaciones
+          const subcalificacion_selected = this.subcalificacion_selected
+          if (subcalificacion_selected) {
+            this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.filter(function(subcalificacion) {
+              return subcalificacion !== subcalificacion_selected
+            })
+          }
         },
         async save (isFormValid) {
             this.submitted = true;
@@ -265,7 +269,7 @@ export default {
                 this.initFormData();
             },
             deep: true,
-            immediate: true
+            immediate: false
         }
     }
 };
