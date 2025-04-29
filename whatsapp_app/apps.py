@@ -52,6 +52,8 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Agente', 'Supervisor']},
             {'nombre': 'template-whatsapp-sincronizar-templates',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'template-whatsapp-status-change',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'campana-list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'grupo-plantilla-whatsapp-list',
@@ -74,9 +76,15 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Agente']},
             {'nombre': 'conversacion-agent-chats-lists',
              'roles': ['Agente']},
+            {'nombre': 'conversacion-filter-chats',
+             'roles': ['Agente']},
+            {'nombre': 'conversacion-detail',
+             'roles': ['Agente']},
             {'nombre': 'conversacion-attend-chat',
              'roles': ['Agente']},
             {'nombre': 'conversacion-messages',
+             'roles': ['Agente']},
+            {'nombre': 'conversacion-reactive-expired-conversation',
              'roles': ['Agente']},
             {'nombre': 'conversacion-send-menssage-attachment',
              'roles': ['Agente']},
@@ -98,6 +106,8 @@ class WhatsappAppConfig(AppConfig):
              'roles': ['Agente']},
             {'nombre': 'contacto-detail',
              'roles': ['Agente']},
+            {'nombre': 'contacto-create-contact-from-conversation',
+             'roles': ['Agente']},
             {'nombre': 'contacto-db-fields',
              'roles': ['Agente']},
             {'nombre': 'calificacion-list',
@@ -107,6 +117,8 @@ class WhatsappAppConfig(AppConfig):
             {'nombre': 'calificacion-detail',
              'roles': ['Agente']},
             {'nombre': 'calificacion-history',
+             'roles': ['Agente']},
+            {'nombre': 'template-list',
              'roles': ['Agente']},
         ]
 
@@ -150,6 +162,9 @@ class WhatsappAppConfig(AppConfig):
         'template-whatsapp-sincronizar-templates':
             {'descripcion': _('template-whatsapp-sincronizar-templates'),
              'version': '1.26.0'},
+        'template-whatsapp-status-change':
+            {'descripcion': _('template-whatsapp-status-change'),
+             'version': '1.26.0'},
         'campana-list':
             {'descripcion': _('campana-list'),
              'version': '1.26.0'},
@@ -177,6 +192,12 @@ class WhatsappAppConfig(AppConfig):
         'conversacion-list':
             {'descripcion': _('conversacion-list'),
              'version': '1.26.0'},
+        'conversacion-filter-chats':
+            {'descripcion': _('conversacion-filter-chats'),
+             'version': '1.26.0'},
+        'conversacion-detail':
+            {'descripcion': _('conversacion-detail'),
+             'version': '1.26.0'},
         'conversacion-agent-chats-lists':
             {'descripcion': _('conversacion-agent-chats-lists'),
              'version': '1.26.0'},
@@ -185,6 +206,9 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'conversacion-messages':
             {'descripcion': _('conversacion-messages'),
+             'version': '1.26.0'},
+        'conversacion-reactive-expired-conversation':
+            {'descripcion': _('conversacion-reactive-expired-conversation'),
              'version': '1.26.0'},
         'conversacion-send-menssage-attachment':
             {'descripcion': _('conversacion-send-menssage-attachment'),
@@ -216,6 +240,9 @@ class WhatsappAppConfig(AppConfig):
         'contacto-detail':
             {'descripcion': _('contacto-detail'),
              'version': '1.26.0'},
+        'contacto-create-contact-from-conversation':
+            {'descripcion': _('contacto-create-contact-from-conversation'),
+             'version': '1.26.0'},
         'contacto-db-fields':
             {'descripcion': _('contacto-db-fields'),
              'version': '1.26.0'},
@@ -230,6 +257,9 @@ class WhatsappAppConfig(AppConfig):
              'version': '1.26.0'},
         'calificacion-history':
             {'descripcion': _('calificacion-history'),
+             'version': '1.26.0'},
+        'template-list':
+            {'descripcion': _('template-list'),
              'version': '1.26.0'},
         'whatsapp_reports':
             {'descripcion': _('whatsapp_reports'),
