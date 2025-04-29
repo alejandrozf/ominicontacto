@@ -3,6 +3,14 @@
 from django.db import migrations, models
 
 
+def truncate_data(apps, schema_editor):
+    OpcionMenuInteractivoWhatsapp = apps.get_model('whatsapp_app', 'OpcionMenuInteractivoWhatsapp')
+    for opcion in OpcionMenuInteractivoWhatsapp.objects.all():
+        if len(opcion.descripcion) > 72:
+            opcion.descripcion = opcion.descripcion[:71] + '*'
+            opcion.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +18,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(truncate_data, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name='menuinteractivowhatsapp',
             name='menu_body',
