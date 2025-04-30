@@ -423,6 +423,8 @@ DJANGO_EASY_AUDIT_REGISTERED_URLS = [
     r'^/grabacion/buscar/(\d+)/',
 ]
 
+DJANGO_EASY_AUDIT_REMOTE_ADDR_HEADER = 'HTTP_X_REAL_IP'
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
