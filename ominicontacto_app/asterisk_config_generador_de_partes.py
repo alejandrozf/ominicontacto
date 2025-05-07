@@ -438,7 +438,7 @@ class GeneradorParaPlaylist(GeneradorDePedazoDePlaylist):
         return """
         [{oml_nombre_playlist}]
         mode=files
-        directory=sounds/oml/moh/{oml_nombre_playlist}
+        directory=sounds/moh/{oml_nombre_playlist}
         """
 
     def get_parametros(self):
