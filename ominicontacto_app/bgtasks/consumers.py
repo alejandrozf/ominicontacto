@@ -49,5 +49,5 @@ class BackgroundTasksConsumerClient(AsyncJsonWebsocketConsumer, *BACKGROUND_TASK
 class BackgroundTasksConsumerWorker(SyncConsumer, *BACKGROUND_TASKS_MIXINS):
 
     async def __call__(self, scope, receive, send):
-        send._is_coroutine = coroutines._is_coroutine
+        send.__func__._is_coroutine = coroutines._is_coroutine
         await super().__call__(scope, receive, send)

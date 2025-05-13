@@ -235,7 +235,7 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data={
                     "message": _(
-                       "No está permitido eliminar el '{modelo}' porque está siendo "
+                        "No está permitido eliminar el '{modelo}' porque está siendo "
                         "usado por {related}.".format(
                             modelo=_("Mensaje Plantilla"),
                             related=", ".join(str(o) for o in exc.protected_objects),
