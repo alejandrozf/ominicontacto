@@ -54,7 +54,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <h2>{% trans 'Campañas Activas' %} <span style="color:red;">- {% trans 'Canales en uso' %}: {{ canales_en_uso }}</span></h2>
     {% if wombat_habilitado and user|has_oml_permission:'api_restart_wombat' and wombat_reload_enabled %}
         <input type="hidden" id="wombat_state" name="wombat_state" value="{{ wombat_state }}"/>
-        <h2>{% trans 'Estado  Marcador: ' %} 
+        <h2>{% trans 'Estado  Marcador: ' %}
             <span id="wombat_ready" style="color:green;"> {% trans 'Listo' %}
                 <span id="wombat_uptime" style="color:grey;font-size: 0.9rem;">{%if wombat_uptime %} ({{ wombat_uptime }}) {% endif %}</span>
             </span>
@@ -93,28 +93,4 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       {% include "campanas/campana_dialer/campana_list_table.html" with campanas=eliminadas state=4 %}
 
 </div>
-
- <div class="modal fade" id="myMapModal">
-        <div class="modal-dialog" id="modal_ventana">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 id="address" class="modal-title"></h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div id="map-canvas" class=""></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-
 {% endblock %}

@@ -30,5 +30,17 @@ $(function() {
 });
 
 $(function(){
-            interaccionUrl();
-        });
+    interaccionUrl();
+    var $errorsBDContacto = $('#errorsBDContacto').find('li');
+    if ($errorsBDContacto.length == 2 && $($errorsBDContacto[1]).text() == 'opcion_abortar_true') {
+        $('#errorsBDContacto').remove();
+        $('#id_0-opcion_abortar').val('on');
+        $('#modalAbort').modal('show');
+    }
+    $('#continueAbortModal').on('click', function(event) {
+        $('#wizardForm').submit();
+    });
+    $('#modalAbort').on('hidden.bs.modal', function (e) {
+        $('#id_0-opcion_abortar').val('False');
+    });
+});
