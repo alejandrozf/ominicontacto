@@ -178,7 +178,9 @@ export default {
             configuracion: {
                 api_key: 'API Key',
                 email_partner: 'Email Partner',
-                password_partner: 'Password Partner'
+                password_partner: 'Password Partner',
+                business_id: 'Business Id',
+                access_token: 'Token de acceso',
             }
         },
         line: {
