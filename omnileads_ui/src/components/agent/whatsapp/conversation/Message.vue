@@ -1,7 +1,7 @@
 <template>
   <Card class="border-round-xl" :class="getClasses(message?.itsMine)">
     <template #content>
-      <div class="py-0 my-0">
+      <div class="py-0 my-0 scrollable-content">
         <!-- <span
           >{{ message?.from }}</span
         > -->
@@ -129,5 +129,10 @@ export default {
 }
 .message-l {
   float: left;
+}
+.scrollable-content {
+ max-width: 500px;
+ overflow-x: auto;
+ padding-right: 8px;
 }
 </style>

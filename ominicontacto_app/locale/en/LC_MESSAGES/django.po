@@ -4043,7 +4043,7 @@ msgid "Pausar"
 msgstr "Pause"
 
 #: ominicontacto_app/templates/agente/base_agente.html:774
-msgid "Reaundar"
+msgid "Reanudar"
 msgstr "Resume"
 
 #: ominicontacto_app/templates/agente/base_agente.html:844
