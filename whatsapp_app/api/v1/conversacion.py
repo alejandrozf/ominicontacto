@@ -135,11 +135,10 @@ class ConversacionFilterSerializer(serializers.Serializer):
     error = serializers.BooleanField(default=False)
 
     def get_line(self, obj):
-        serializer = LineSerializer(instance=obj.line)
         return {
-            'id': serializer.data['id'],
-            'name': serializer.data['name'],
-            'number': serializer.data['number'],
+            'id': obj.line.id,
+            'name': obj.line.nombre,
+            'number': obj.line.numero,
         }
 
     def get_campaign(self, obj):
@@ -166,6 +165,7 @@ class ConversacionFilterSerializer(serializers.Serializer):
     def get_client(self, obj):
         if obj.client:
             serializer = ContactoSerializer(obj.client)
+            del serializer.fields['disposition']
             return serializer.data
         return None
 
@@ -820,7 +820,14 @@ class ViewSet(viewsets.ViewSet):
     def filter_chats(self, request, campaing_id):
         try:
             campaing = Campana.objects.get(id=campaing_id)
-            chats_of_campaing = campaing.conversaciones.all()
+            chats_of_campaing = campaing.conversaciones.select_related(
+                "conversation_disposition__opcion_calificacion",
+                "client__bd_contacto",
+                "agent__user",
+                "line",
+            ).prefetch_related(
+                "mensajes",
+            )
             start_date_str = request.data.get('start_date', None)
             end_date_str = request.data.get('end_date', None)
             phone = request.data.get('phone', None)
