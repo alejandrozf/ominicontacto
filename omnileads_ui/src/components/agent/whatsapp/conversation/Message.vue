@@ -1,17 +1,17 @@
 <template>
-  <Card class="border-round-xl" :class="getClasses(message?.itsMine)">
+  <Card class="border-round-xl" :class="getClasses(message?.itsMine)" style="max-width:65%">
     <template #content>
       <div class="py-0 my-0">
         <!-- <span
           >{{ message?.from }}</span
         > -->
         <div v-if="message.type==='text'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
             {{ message?.message.text }}
           </p>
         </div>
         <div v-if="message.type==='template'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
             {{ message?.message.text }}
           </p>
         </div>

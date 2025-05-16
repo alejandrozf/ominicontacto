@@ -1,5 +1,5 @@
 # Release Notes
-2025-04-24 develop + 2.4.0
+2025-05-16 develop + 2.4.0
 
 ## Added
 - oml-2923 Orden y filtrado al Agregar Agentes en Wizard de Campaña

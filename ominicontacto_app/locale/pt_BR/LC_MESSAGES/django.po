@@ -4077,7 +4077,7 @@ msgid "Pausar"
 msgstr "Pausar"
 
 #: ominicontacto_app/templates/agente/base_agente.html:774
-msgid "Reaundar"
+msgid "Reanudar"
 msgstr "Retomar"
 
 #: ominicontacto_app/templates/agente/base_agente.html:844

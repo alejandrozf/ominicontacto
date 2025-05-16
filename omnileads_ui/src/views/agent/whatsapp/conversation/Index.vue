@@ -128,6 +128,7 @@ export default {
                 conversationId: this.id,
                 $t: this.$t
             });
+            localStorage.setItem('agtWhatsappConversationAttending', this.id);
             this.scrollDown();
         },
         listenerEvents () {

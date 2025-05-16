@@ -3995,7 +3995,7 @@ msgid "Pausar"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/base_agente.html:774
-msgid "Reaundar"
+msgid "Reanudar"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/base_agente.html:844

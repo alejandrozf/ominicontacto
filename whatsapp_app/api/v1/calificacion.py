@@ -200,8 +200,10 @@ class OpcionCalificacionSerializer(serializers.Serializer):
     form_fields = serializers.SerializerMethodField()
 
     def get_form_fields(self, obj):
-        field_formulario = FieldFormulario.objects.filter(formulario=obj.formulario)
-        return FieldFormularioSerializer(field_formulario, many=True).data
+        if obj.formulario:
+            field_formulario = FieldFormulario.objects.filter(formulario=obj.formulario)
+            return FieldFormularioSerializer(field_formulario, many=True).data
+        return []
 
 
 class RespuestaFormularioGestionSerilializer(serializers.Serializer):

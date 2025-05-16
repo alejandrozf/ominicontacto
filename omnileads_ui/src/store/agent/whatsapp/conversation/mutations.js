@@ -57,13 +57,15 @@ export default {
                 date: data && data.timestamp ? new Date(data.timestamp) : new Date(),
                 type: data && data.type ? data.type : null,
             };
-            state.agtWhatsCoversationMessages.push(message);
             if (Number(localStorage.getItem('agtWhatsappConversationAttending')) !== data.chat_id) {
                 notificationEvent(
                     NOTIFICATION.TITLES.WHATSAPP_NEW_MESSAGE,
                     `Mensaje Nuevo de ${clientName || senderName || senderPhone}`,
                     NOTIFICATION.ICONS.INFO
                 );
+            }
+            else{
+                state.agtWhatsCoversationMessages.push(message);
             }
         }
     },
