@@ -29,8 +29,8 @@ from django.utils.translation import gettext as _
 
 from django.conf import settings
 from ominicontacto_app.utiles import elimina_comillas, reemplazar_no_alfanumericos_por_guion
-from ominicontacto_app.services.wombat_service import WombatService
-from ominicontacto_app.services.wombat_config import (
+from ominicontacto_app.services.dialer.wombat_api import WombatAPI
+from ominicontacto_app.services.dialer.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
 )
@@ -44,31 +44,6 @@ class WombatDialerError(OmlError):
 
 
 class CampanaService():
-
-    def validar_modificacion_bd_contacto(self, campana, base_datos_modificar):
-        """
-
-        :param campana: campana la cual se le va cambiar la base de datos
-        :param base_datos_modificar: base de datos a la cual se desea cambiar
-        :return: error=None lo cual el nombre de sus columnas coinciden.
-        Si es distinto de None lo cual te devuelve el error, no se puede realizar la
-        modificacion de la base de datos en esta campana
-        """
-        error = None
-        base_datos_actual = campana.bd_contacto
-        if base_datos_actual is None:
-            return error
-
-        metadata_actual = base_datos_actual.get_metadata()
-        metadata_modificar = base_datos_modificar.get_metadata()
-
-        for columna_base, columna_modificar in zip(
-                metadata_actual.nombres_de_columnas,
-                metadata_modificar.nombres_de_columnas):
-            if columna_base != columna_modificar:
-                error = _("Los nombres de las columnas no coinciden")
-
-        return error
 
     def obtener_nombre_lista_ascii(self, campana):
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
@@ -164,7 +139,7 @@ class CampanaService():
         :return: True si se realizo la creacion o False si no se pudo realizar la
         creacion de la campaign
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         # crea json de campaign para crear campaign en wombat
         service_wombat_config = CampanaCreator()
         service_wombat_config.create_json(campana)
@@ -185,7 +160,7 @@ class CampanaService():
         Crea trunk para una campaign en wombat via curl
         :param campana: campana a la cual se le creara un trunk en wombat
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         # crea json de trunk para crear trunk en una campana de wombat
         service_wombat_config = TrunkCreator()
         service_wombat_config.create_json(campana)
@@ -200,7 +175,7 @@ class CampanaService():
         :param campana: campana a la cual se le creara reschudule
         :param parametros: parametros de la reschudule en wombat
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         # crea json para reschedule
         service_wombat_config = RescheduleRuleCreator()
         service_wombat_config.create_json(campana, parametros)
@@ -209,21 +184,12 @@ class CampanaService():
         # crea reschedule wn wombat
         service_wombat.update_config_wombat("newcampaign_reschedule.json", url_edit)
 
-    def crear_reschedule_por_calificacion_wombat(self, campana, regla, estado_wombat):
-        """
-        Crea reschedule (regla de incidencia) por una calificacion
-        """
-        parametros = [
-            estado_wombat, regla.wombat_id, regla.intento_max, regla.reintentar_tarde,
-            regla.get_en_modo_wombat()]
-        self.crear_reschedule_campana_wombat(campana, parametros)
-
     def eliminar_reschedule_wombat(self, regla):
 
         campaign_id_wombat = regla.campaign_id_wombat
 
         list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         salida = service_wombat.list_config_wombat(list_url)
         reschedule_data = self.obtener_reschedule_data_wombat(salida, regla)
         delete_url = "api/edit/campaign/reschedule/?mode=D&parent={0}".format(campaign_id_wombat)
@@ -239,7 +205,7 @@ class CampanaService():
         wombat_id = regla.wombat_id
 
         list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         salida = service_wombat.list_config_wombat(list_url)
         reschedule_data = self.obtener_reschedule_data_wombat(
             salida, regla, wombat_custom_status_anterior, wombat_status_anterior)
@@ -275,16 +241,6 @@ class CampanaService():
                 if rule_data['statusExt'] == wombat_custom_status:
                     return rule_data
 
-    def notificar_incidencia_por_calificacion(self, dialer_call_id, regla):
-        """
-        Notifica que se califico una llamada con una opcion con regla de incidencia
-        Setea el extStatus correspondiente a la opcion elegida en la llamada de Wombat
-        """
-        service_wombat = WombatService()
-        url_notify = '/api/calls/?op=extstatus&wombatid={0}&status={1}'.format(
-            dialer_call_id, regla.wombat_id)
-        service_wombat.set_call_ext_status(url_notify)
-
     def guardar_endpoint_campana_wombat(self, campana):
         """
         Crea o edita endpoint para campaign en wombat via curl
@@ -292,7 +248,7 @@ class CampanaService():
         :return: True si se guardo el ep_id en la queue_campana
         False si no lo guardo
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         # crea json de endpoint para crear endpoint en wombat
         service_wombat_config = EndPointCreator()
         service_wombat_config.create_json(campana)
@@ -313,7 +269,7 @@ class CampanaService():
         Asociacion endpoint con campaign en wombat
         :param campana: campana a la cual se le desea asociar endpoint
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         # crear json de asociacion campana endpoint
         service_wombat_config = CampanaEndPointCreator()
         service_wombat_config.create_json(campana)
@@ -328,7 +284,7 @@ class CampanaService():
         datos de contactos de la campana
         :param campana: campana de la cual se creara la lista
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         nombre_lista_ascii = self.obtener_nombre_lista_ascii(campana)
         url_edit = "api/lists/?op=addToList&list={0}".format(nombre_lista_ascii)
         # crea lista de contactos en wombat
@@ -339,7 +295,7 @@ class CampanaService():
         crea asociacion de lista de contactos con campaign en wombat via curl
         :param campana: campana a la cual se le asociara la lista
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/edit/list/?mode=L"
         # Busco el listado de la lista de contactos de wombat
         salida = service_wombat.list_config_wombat(url_edit)
@@ -403,7 +359,7 @@ class CampanaService():
         Desasocia lista campana wombat
         :param campana: campana a la caul se desaciociara la lista
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/edit/campaign/list/?mode=L&parent={0}".format(
             campana.campaign_id_wombat)
         # obtiene listado de lista de contactos de wombat
@@ -449,7 +405,7 @@ class CampanaService():
         :param campana: campana a la cual deseo obtener sus datos
         :return: los datos de la campana
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
         if salida:
@@ -463,7 +419,7 @@ class CampanaService():
         :param campana: diccionario con campanas (por wombat_id) a la cual deseo obtener sus datos
         :return: dict con los datos de la campanas indexado por id de campaña
         """
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/live/runs/"
         salida = service_wombat.list_config_wombat(url_edit)
         if salida:
@@ -504,14 +460,14 @@ class CampanaService():
 
     def obtener_calls_live(self):
         """ retorna las llamada e en vivo en este momento"""
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/live/calls/"
         salida = service_wombat.list_config_wombat(url_edit)
         return self.obtener_datos_calls(salida)
 
     def obtener_status_campana_running(self, hopper_camp_id):
         """ retorona el status de la campana en wombat"""
-        service_wombat = WombatService()
+        service_wombat = WombatAPI()
         url_edit = "api/reports/stats/?id={0}".format(hopper_camp_id)
         salida = service_wombat.list_config_wombat(url_edit)
         result = salida['result']

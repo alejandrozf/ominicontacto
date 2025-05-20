@@ -42,7 +42,7 @@ from ominicontacto_app.models import (
     OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer import get_dialer_service, wombat_habilitado
 from ominicontacto_app.services.redis.call_contact_cache import CallContactCache
 from ominicontacto_app.utiles import DecimalEncoder
 from api_app.services.calificacion_llamada import CalificacionLLamada
@@ -423,14 +423,26 @@ class CalificacionClienteFormView(FormView):
         self._check_metadata_no_accion_delete(self.object_calificacion)
 
         # Verificar si es dialer y hay regla de incidencia por calificacion
-        if self.call_data and 'dialer_id' in self.call_data:
+        notificar_calificacion = False
+        if self.call_data is not None:
+            tipo_llamada = int(self.call_data['call_type'])
+            if tipo_llamada == LlamadaLog.LLAMADA_DIALER:
+                dialer_id = None
+                if wombat_habilitado():
+                    if 'dialer_id' in self.call_data:
+                        notificar_calificacion = True
+                        dialer_id = self.call_data['dialer_id']
+                else:
+                    notificar_calificacion = True
+        if notificar_calificacion:
             regla = ReglaIncidenciaPorCalificacion.objects.filter(
                 opcion_calificacion=self.object_calificacion.opcion_calificacion)
             if regla:
                 regla = regla[0]
-                campana_service = CampanaService()
-                campana_service.notificar_incidencia_por_calificacion(
-                    self.call_data['dialer_id'], regla)
+                dialer_service = get_dialer_service()
+                dialer_service.notificar_incidencia_por_calificacion(regla,
+                                                                     dialer_id,
+                                                                     self.contacto.id)
 
         if self.object_calificacion.es_gestion() and \
                 not self.campana.tipo_interaccion == Campana.SITIO_EXTERNO:

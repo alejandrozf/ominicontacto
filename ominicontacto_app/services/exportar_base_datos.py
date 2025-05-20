@@ -35,7 +35,7 @@ from django.utils.translation import gettext as _
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 from ominicontacto_app.models import Contacto
 from ominicontacto_app.services.base_de_datos_contactos import BaseDatosService
-from ominicontacto_app.services.wombat_config import CampanaListContactoConfigFile
+from ominicontacto_app.services.dialer.wombat_config import CampanaListContactoConfigFile
 
 logger = logging.getLogger(__name__)
 

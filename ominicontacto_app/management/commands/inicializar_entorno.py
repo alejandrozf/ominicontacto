@@ -152,7 +152,8 @@ class Command(BaseCommand):
         )
 
         self._crear_opciones_calificacion(campana)
-        ActuacionVigenteFactory.create(campana=campana)
+        ActuacionVigenteFactory(campana=campana, domingo=True, sabado=True,
+                                hora_desde='00:00', hora_hasta='23:59:59')
 
         return campana
 

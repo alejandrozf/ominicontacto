@@ -18,7 +18,7 @@
 from .addons import *
 from .defaults import *
 from .checks import (check_settings_variables, process_middleware_settings,
-                    check_asterisk_connect_settings, check_audio_conversor_settings)
+                     check_asterisk_connect_settings, check_audio_conversor_settings)
 
 COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
@@ -49,15 +49,10 @@ VARIABLES_LIST = [
     (EPHEMERAL_USER_TTL, 'EPHEMERAL_USER_TTL'),
     (OML_KAMAILIO_HOSTNAME, 'OML_KAMAILIO_HOSTNAME'),
     (OML_OMNILEADS_HOSTNAME, 'OML_OMNILEADS_HOSTNAME'),
-    (OML_WOMBAT_URL, 'OML_WOMBAT_URL'),
-    (OML_WOMBAT_FILENAME, 'OML_WOMBAT_FILENAME'),
     (OML_RUTAS_SALIENTES_FILENAME, 'OML_RUTAS_SALIENTES_FILENAME'),
-    (OML_WOMBAT_USER, 'OML_WOMBAT_USER'),
-    (OML_WOMBAT_PASSWORD, 'OML_WOMBAT_PASSWORD'),
-    (OML_WOMBAT_TIMEOUT, 'OML_WOMBAT_TIMEOUT'),
     (SENDFILE_ROOT, 'SENDFILE_ROOT'),
     (SENDFILE_URL, 'SENDFILE_URL'),
-    (SENDFILE_BACKEND, 'SENDFILE_BACKEND'),    
+    (SENDFILE_BACKEND, 'SENDFILE_BACKEND'),
     (SIP_SECRET_KEY, 'SIP_SECRET_KEY'),
     (TMPL_OML_AUDIO_CONVERSOR, 'TMPL_OML_AUDIO_CONVERSOR'),
     (CALIFICACION_REAGENDA, 'CALIFICACION_REAGENDA'),
@@ -71,6 +66,20 @@ VARIABLES_LIST = [
     (OML_COMMIT, 'OML_COMMIT'),
     (OML_BUILD_DATE, 'OML_BUILD_DATE')
 ]
+
+if OML_DIALER_ENGINE == 'wombat':
+    VARIABLES_LIST.extend([
+        (DIALER_HOSTNAME, 'WOMBAT_HOSTNAME'),
+        (OML_WOMBAT_URL, 'OML_WOMBAT_URL'),
+        (OML_WOMBAT_FILENAME, 'OML_WOMBAT_FILENAME'),
+        (OML_WOMBAT_USER, 'OML_WOMBAT_USER'),
+        (OML_WOMBAT_PASSWORD, 'OML_WOMBAT_PASSWORD'),
+        (OML_WOMBAT_TIMEOUT, 'OML_WOMBAT_TIMEOUT'),
+    ])
+else:
+    VARIABLES_LIST.extend([
+        (DIALER_HOSTNAME, 'OMNIDIALER_HOST'),
+    ])
 
 check_settings_variables(VARIABLES_LIST)
 

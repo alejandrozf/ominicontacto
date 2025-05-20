@@ -21,7 +21,7 @@ from redis.exceptions import RedisError
 
 from ominicontacto_app.services.asterisk.redis_database import AbstractRedisFamily
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer import get_dialer_service
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 from ominicontacto_app.models import CalificacionCliente, Campana, OpcionCalificacion
 
@@ -295,18 +295,12 @@ class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
             datos_campana['atendidas'] += 1
 
     def _contabilizar_llamadas_pendientes(self):
-        estados_running_wombat = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
-                                  Campana.ESTADO_FINALIZADA]
-        campanas_por_id_wombat = {}
-        for campana_id, campana in self.campanas.items():
-            if campana.estado in estados_running_wombat:
-                campanas_por_id_wombat[campana.campaign_id_wombat] = campana
-        campana_service = CampanaService()
-        dato_campanas = campana_service.obtener_datos_campanas_run(campanas_por_id_wombat)
-        for campana_id, datos_campana in dato_campanas.items():
+        dialer_service = get_dialer_service()
+        pendientes_por_id = dialer_service.obtener_llamadas_pendientes_por_id(self.campanas)
+        for campana_id, pendientes in pendientes_por_id.items():
             if campana_id not in self.estadisticas:
                 self._inicializar_conteo_de_campana(campana_id)
-            self.estadisticas[campana_id]['pendientes'] = datos_campana['n_est_remaining_calls']
+            self.estadisticas[campana_id]['pendientes'] = pendientes
 
     def _contabilizar_llamadas_en_curso(self):
         campanas_ids = []

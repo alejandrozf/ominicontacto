@@ -59,5 +59,6 @@ class TestsInicializarEntorno (OMLBaseTest):
         escribir_ruta_entrante_config.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
         ami_connect.assert_called()
+        sadd.assert_called()
         self.assertEqual(AgenteProfile.objects.count(), 3)
         self.assertEqual(SupervisorProfile.objects.count(), 4)  # 1 Admin, 1 Gerente, 2 Supervisor

@@ -21,8 +21,9 @@ Vista para administrar el modelo Campana de tipo dialer
 Observacion se copiaron varias vistas del modulo views_campana
 """
 
-from __future__ import unicode_literals
+from functools import partial
 
+from django.db import transaction
 from django.utils.translation import gettext as _
 from django.utils.timezone import now
 from django.contrib import messages
@@ -33,12 +34,12 @@ from django.views.generic import ListView, DeleteView, FormView, CreateView, Upd
 
 from constance import config as config_constance
 
-from ominicontacto.settings.omnileads import WOMBAT_TM
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
-from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
+from ominicontacto_app.services.dialer.campana_wombat import WombatDialerError
+from ominicontacto_app.services.dialer import wombat_habilitado, get_dialer_service
+from ominicontacto_app.services.dialer.wombat_api import WombatReloader
 from ominicontacto_app.forms.base import (
     UpdateBaseDatosForm, ReglaIncidenciaPorCalificacionForm, ReglasIncidenciaForm)
-from ominicontacto_app.services.wombat_service import WombatReloader
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 from requests.exceptions import RequestException
 
@@ -58,9 +59,7 @@ class CampanaDialerListView(ListView):
     context_object_name = 'campanas'
     model = Campana
 
-    def get_context_data(self, **kwargs):
-        context = super(CampanaDialerListView, self).get_context_data(
-            **kwargs)
+    def get_campanas(self):
         campanas = Campana.objects.obtener_campanas_dialer().select_related('queue_campana')
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
@@ -68,14 +67,25 @@ class CampanaDialerListView(ListView):
                 not self.request.user.get_is_administrador():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_asignadas_o_creadas_by_user(campanas, user)
+        # dialer_service = get_dialer_service
+        # error_finalizadas = dialer_service.chequear_campanas_finalizada_eliminarlas(    ???
+        #     campanas.filter(estado=Campana.ESTADO_ACTIVA))                              ???
+        # if error_finalizadas:                                                           ???
+        #     messages.add_message(self.request, messages.WARNING, error_finalizadas)     ???
 
-        # campana_service = CampanaService()
-        # error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
-        #     campanas.filter(estado=Campana.ESTADO_ACTIVA))
-        # if error_finalizadas:
-        #     messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        return campanas.filter(estado__in=[Campana.ESTADO_INACTIVA, Campana.ESTADO_PAUSADA,
+                                           Campana.ESTADO_ACTIVA, Campana.ESTADO_BORRADA,
+                                           Campana.ESTADO_FINALIZADA])
 
-        context['campanas'] = campanas
+    def get_context_data(self, **kwargs):
+        context = super(CampanaDialerListView, self).get_context_data(
+            **kwargs)
+        campanas = self.get_campanas()
+        datos_campanas = campanas.values_list('id', 'nombre', 'estado')
+        context['datos_campanas'] = {campana[0]: {'name': campana[1],
+                                                  'status': campana[2]}
+                                     for campana in datos_campanas}
+
         context['inactivas'] = campanas.filter(estado=Campana.ESTADO_INACTIVA)
         context['pausadas'] = campanas.filter(estado=Campana.ESTADO_PAUSADA)
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)
@@ -91,12 +101,16 @@ class CampanaDialerListView(ListView):
         context['finalizadas'] = context['finalizadas'].order_by("-id")
 
         context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
-        context['wombat_reload_enabled'] = config_constance.WOMBAT_DIALER_ALLOW_REFRESH
-        if config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
-            context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
-            if config_constance.WOMBAT_DIALER_STATE == WombatReloader.STATE_READY:
-                uptime = now() - config_constance.WOMBAT_DIALER_UP_SINCE
-                context['wombat_uptime'] = str(uptime).split('.')[0]
+
+        context['wombat_reload_enabled'] = False
+        context['wombat_habilitado'] = wombat_habilitado()
+        if wombat_habilitado():
+            context['wombat_reload_enabled'] = config_constance.WOMBAT_DIALER_ALLOW_REFRESH
+            if config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
+                context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
+                if config_constance.WOMBAT_DIALER_STATE == WombatReloader.STATE_READY:
+                    uptime = now() - config_constance.WOMBAT_DIALER_UP_SINCE
+                    context['wombat_uptime'] = str(uptime).split('.')[0]
         return context
 
 
@@ -107,8 +121,8 @@ class PlayCampanaDialerView(View):
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
-            campana_service = CampanaService()
-            campana_service.start_campana_wombat(campana)
+            dialer_service = get_dialer_service()
+            dialer_service.iniciar_campana(campana)
             campana.play()
             message = _(u'<strong>Operación Exitosa!</strong>\
                         Se llevó a cabo con éxito la activación de\
@@ -119,15 +133,7 @@ class PlayCampanaDialerView(View):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error: ") + "{0} .".format(e)
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        except RequestException as e:
+        except (WombatDialerError, RequestException) as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -146,8 +152,8 @@ class PausarCampanaDialerView(View):
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
-            campana_service = CampanaService()
-            campana_service.pausar_campana_wombat(campana)
+            dialer_service = get_dialer_service()
+            dialer_service.pausar_campana(campana)
             campana.pausar()
             message = _('<strong>Operación Exitosa!</strong>\
                          Se llevó a cabo con éxito la pausa de\
@@ -158,16 +164,7 @@ class PausarCampanaDialerView(View):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error: ") + "{0} .".format(e)
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
+        except (WombatDialerError, RequestException) as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -187,8 +184,8 @@ class ActivarCampanaDialerView(View):
     def post(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
-            campana_service = CampanaService()
-            campana_service.despausar_campana_wombat(campana)
+            dialer_service = get_dialer_service()
+            dialer_service.reanudar_campana(campana)
             campana.activar()
             message = _('<strong>Operación Exitosa!</strong>\
                          Se llevó a cabo con éxito la activación dela Campaña.')
@@ -198,16 +195,7 @@ class ActivarCampanaDialerView(View):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error: ") + "{0} .".format(e)
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
+        except (WombatDialerError, RequestException) as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -228,9 +216,9 @@ class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        service = CampanaService()
+        dialer_service = get_dialer_service()
         # remueve campana de wombat
-        remover = service.remove_campana_wombat(self.object)
+        remover = dialer_service.eliminar_campana(self.object)
         if not remover:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo eliminar la campana {0} del discador").format(
@@ -303,11 +291,8 @@ class UpdateBaseDatosDialerView(FormView):
         columnas = form.cleaned_data.get('telefonos')
         bd_contacto = form.cleaned_data.get('bd_contacto')
         self.object = self.get_object()
-        campana_service = CampanaService()
-        # valida de que se pueda cambiar la base de datos que tenga las misma columnas
-        # que la actualmente poseee
-        error = campana_service.validar_modificacion_bd_contacto(
-            self.get_object(), bd_contacto)
+        base_actual = self.object.bd_contacto
+        error = base_actual.validar_bd_de_reemplazo(bd_contacto)
         if error:
             return self.form_invalid(form, error=error)
         if self.object.bd_contacto == bd_contacto:
@@ -321,11 +306,24 @@ class UpdateBaseDatosDialerView(FormView):
                 message,
             )
 
-        self.object.bd_contacto = bd_contacto
-        self.object.save()
-        # realiza el cambio de la base de datos en wombat
-        campana_service.cambiar_base(self.get_object(), columnas, evitar_duplicados,
-                                     evitar_sin_telefono, prefijo_discador)
+        params = {
+            'telefonos': columnas,
+            'evitar_duplicados': evitar_duplicados,
+            'evitar_sin_telefono': evitar_sin_telefono,
+            'prefijo_discador': prefijo_discador
+        }
+        with transaction.atomic():
+            self.object.bd_contacto = bd_contacto
+            self.object.estado = Campana.ESTADO_INACTIVA
+            self.object.save()
+            if wombat_habilitado():
+                # Intento cambiar la BD en wombat como parte de la transaccion
+                self._cambiar_bd_contactos_en_dialer(params)
+
+        # Cambio BD en OMniDialer una vez que ya se cambió en base
+        if not wombat_habilitado():
+            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, params))
+
         message = _('Operación Exitosa!\
                      Se llevó a cabo con éxito el cambio de base de datos.')
 
@@ -334,10 +332,12 @@ class UpdateBaseDatosDialerView(FormView):
             messages.SUCCESS,
             message,
         )
-        self.object.estado = Campana.ESTADO_INACTIVA
-        self.object.save()
 
         return redirect(self.get_success_url())
+
+    def _cambiar_bd_contactos_en_dialer(self, params):
+        dialer_service = get_dialer_service()
+        dialer_service.cambiar_bd_contactos(self.object, params)
 
     def form_invalid(self, form, error=None):
 
@@ -377,7 +377,11 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
 
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerBorradasListView, self).get_context_data(**kwargs)
-        context['borradas'] = context['campanas'].filter(estado=Campana.ESTADO_BORRADA)
+        campanas = self.get_campanas().filter(estado=Campana.ESTADO_BORRADA)
+        context['state'] = Campana.ESTADO_BORRADA
+        context['campanas'] = campanas
+        datos_campanas = campanas.values_list('id', 'oculto')
+        context['campanas_ocultas'] = {campana[0]: campana[1] for campana in datos_campanas}
         return context
 
     def get(self, request, *args, **kwargs):
@@ -393,10 +397,9 @@ class FinalizarCampanasActivasView(View):
     """
 
     def post(self, request, *args, **kwargs):
-        campanas = Campana.objects.obtener_campanas_dialer()
-        campana_service = CampanaService()
-        error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
-            campanas.filter(estado=Campana.ESTADO_ACTIVA))
+        campanas = Campana.objects.obtener_campanas_dialer().filter(estado=Campana.ESTADO_ACTIVA)
+        dialer_service = get_dialer_service()
+        error_finalizadas = dialer_service.finalizar_campanas_sin_llamadas_pendientes(campanas)
         if error_finalizadas:
             messages.add_message(self.request, messages.WARNING, error_finalizadas)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
@@ -410,8 +413,8 @@ class FinalizarCampanaDialerView(View):
         campana_id = request.POST.get('campana_pk')
         campana = Campana.objects.get(pk=campana_id)
         try:
-            campana_service = CampanaService()
-            campana_service.remove_campana_wombat(campana)
+            dialer_service = get_dialer_service()
+            dialer_service.terminar_campana(campana)
             campana.finalizar()
             message = _('<strong>Operación Exitosa!</strong>\
                              Se llevó a cabo con éxito la finalización de\
@@ -422,16 +425,7 @@ class FinalizarCampanaDialerView(View):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError as e:
-            message = _("<strong>¡Cuidado!</strong> "
-                        "con el siguiente error: ") + "{0} .".format(e)
-            messages.add_message(
-                self.request,
-                messages.WARNING,
-                message,
-            )
-        except RequestException as e:
-            e = _(u'Imposible conectarse con el servicio {0}'.format(WOMBAT_TM))
+        except (WombatDialerError, RequestException) as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -473,8 +467,8 @@ class ReglasDeIncidenciaDeCalificacionesListView(ListView, VerificarPremisoEnCam
         """Returns user ordernado por id"""
         qs = chain(
             self.campana.reglas_incidencia.all(),
-            ReglaIncidenciaPorCalificacion.objects.
-            filter(opcion_calificacion__campana_id=self.campana.id))
+            ReglaIncidenciaPorCalificacion.objects.filter(
+                opcion_calificacion__campana_id=self.campana.id))
         return qs
 
 
@@ -496,9 +490,8 @@ class ReglasDeIncidenciaDeCalificacionesDeleteView(DeleteView, VerificarPremisoE
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        service = CampanaService()
-        # remueve campana de wombat
-        remover = service.eliminar_reschedule_wombat(self.object)
+        dialer_service = get_dialer_service()
+        remover = dialer_service.eliminar_regla_de_incidencia(self.object, es_de_calificacion=True)
         if not remover:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo eliminar la Regla de Incidencia por calificación: {0}").format(
@@ -509,8 +502,6 @@ class ReglasDeIncidenciaDeCalificacionesDeleteView(DeleteView, VerificarPremisoE
                 message,
             )
         else:
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                service.reload_campana_wombat(self.campana)
             super(ReglasDeIncidenciaDeCalificacionesDeleteView, self).delete(
                 request, *args, **kwargs)
             messages.success(request, _('Regla de incidencia eliminada.'))
@@ -546,11 +537,9 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
     def form_valid(self, form):
         regla = form.save(commit=False)
         try:
-            campana_service = CampanaService()
-            campana_service.crear_reschedule_por_calificacion_wombat(
-                self.campana, regla, ReglaIncidenciaPorCalificacion.ESTADO_WOMBAT)
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                campana_service.reload_campana_wombat(self.campana)
+            dialer_service = get_dialer_service()
+            if wombat_habilitado():
+                dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -558,7 +547,9 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
             return self.form_invalid(form)
 
         regla.save()
-
+        if not wombat_habilitado():
+            # Se cambia en Omnidialer una vez ya creada en BD
+            dialer_service.crear_regla_de_incidencia(regla, es_de_calificacion=True)
         return super(ReglasDeIncidenciaDeCalificacionesCreateView, self).form_valid(form)
 
 
@@ -590,14 +581,14 @@ class ReglasDeIncidenciaDeCalificacionesUpdateView(UpdateView, VerificarPremisoE
     def form_valid(self, form):
         regla = form.save(commit=False)
         try:
-            campana_service = CampanaService()
-            editado = campana_service.\
-                editar_reschedule_wombat(regla, self.wombat_id_anterior)
-            if not editado:
-                messages.error(_('No se pudo guardar la regla de incidencia.'))
-                return self.form_invalid(form)
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                campana_service.reload_campana_wombat(self.campana)
+            dialer_service = get_dialer_service()
+            editado = dialer_service.editar_regla_de_incidencia(regla, self.campana,
+                                                                self.wombat_id_anterior,
+                                                                es_de_calificacion=True)
+            if wombat_habilitado():
+                if not editado:
+                    messages.error(_('No se pudo guardar la regla de incidencia.'))
+                    return self.form_invalid(form)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -627,9 +618,8 @@ class ReglasDeIncidenciaDeleteView(DeleteView, VerificarPremisoEnCampanaMixin):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        service = CampanaService()
-        # remueve campana de wombat
-        remover = service.eliminar_reschedule_wombat(self.object)
+        dialer_service = get_dialer_service()
+        remover = dialer_service.eliminar_regla_de_incidencia(self.object, es_de_calificacion=False)
         if not remover:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo eliminar la Regla de Incidencia: {0}").format(
@@ -640,8 +630,6 @@ class ReglasDeIncidenciaDeleteView(DeleteView, VerificarPremisoEnCampanaMixin):
                 message,
             )
         else:
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                service.reload_campana_wombat(self.campana)
             super(ReglasDeIncidenciaDeleteView, self).delete(
                 request, *args, **kwargs)
             messages.success(request, _('Regla de incidencia eliminada.'))
@@ -678,14 +666,8 @@ class ReglasDeIncidenciaCreateView(CreateView, VerificarPremisoEnCampanaMixin):
         form.instance.campana = self.campana
         regla = form.save(commit=False)
         try:
-            campana_service = CampanaService()
-            parametros = [regla.get_estado_wombat(), str(regla.estado_personalizado or ""),
-                          regla.intento_max, regla.reintentar_tarde,
-                          regla.get_en_modo_wombat()]
-            campana_service.crear_reschedule_campana_wombat(self.campana, parametros)
-
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                campana_service.reload_campana_wombat(self.campana)
+            dialer_service = get_dialer_service()
+            dialer_service.crear_regla_de_incidencia(regla)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -726,15 +708,14 @@ class ReglasDeIncidenciaUpdateView(UpdateView, VerificarPremisoEnCampanaMixin):
     def form_valid(self, form):
         regla = form.save(commit=False)
         try:
-            campana_service = CampanaService()
-            editado = campana_service.\
-                editar_reschedule_wombat(
-                    regla, self.wombat_id_anterior, self.estado_wombat_anterior)
+            dialer_service = get_dialer_service()
+            editado = dialer_service.editar_regla_de_incidencia(regla, self.campana,
+                                                                self.wombat_id_anterior,
+                                                                self.estado_wombat_anterior,
+                                                                es_de_calificacion=False)
             if not editado:
                 messages.error(_('No se pudo guardar la regla de incidencia.'))
                 return self.form_invalid(form)
-            if self.campana.estado == Campana.ESTADO_ACTIVA:
-                campana_service.reload_campana_wombat(self.campana)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)

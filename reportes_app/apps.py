@@ -88,7 +88,7 @@ class ReportesAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_preview_detalle_express',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
-            {'nombre': 'campana_dialer_detalle_wombat',
+            {'nombre': 'campana_dialer_detalle_servicio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_detalle',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
@@ -150,7 +150,7 @@ class ReportesAppConfig(AppConfig):
         'campana_preview_detalle_express':
             {'descripcion': _('Detalle del estado de una campaña Preview (para ventana modal)'),
              'version': '1.7.0'},
-        'campana_dialer_detalle_wombat':
+        'campana_dialer_detalle_servicio':
             {'descripcion': _('Detalle del estado de una campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_detalle':
             {'descripcion': _('Detalle del estado de una campaña Dialer (para ventana modal)'),

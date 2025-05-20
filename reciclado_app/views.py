@@ -19,18 +19,21 @@
 """ Vistas para el reciclados de las campanas"""
 
 from __future__ import unicode_literals
+from functools import partial
 
+from django.db import transaction
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
-from ominicontacto_app.errors import OmlRecicladoCampanaError
 from django.views.generic import FormView
-from ominicontacto_app.models import Campana
+
 from reciclado_app.forms import RecicladoForm
 from reciclado_app.resultado_contactacion import (
     EstadisticasContactacion, RecicladorContactosCampanaDIALER)
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.errors import OmlRecicladoCampanaError
+from ominicontacto_app.models import Campana
+from ominicontacto_app.services.dialer import get_dialer_service, wombat_habilitado
 
 import logging as logging_
 
@@ -99,6 +102,8 @@ class ReciclarCampanaMixin(object):
             crea_campana_template = self._reciclar_crear_nueva_campana(campana_reciclada, campana)
             return HttpResponseRedirect(crea_campana_template)
         elif reciclado_radio == 'misma_campana':
+            # TODO: Ver si update_base... debe estar en _reciclar_misma por el tema de transaccion
+            # con el servicio omnidialer
             campana.update_basedatoscontactos(bd_contacto_reciclada)
             update_campana = self._reciclar_misma_campana(campana)
             return HttpResponseRedirect(reverse(update_campana, kwargs={"pk_campana": campana.pk}))
@@ -140,22 +145,38 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
 
     def _reciclar_crear_nueva_campana(self, campana_reciclada, campana):
         if campana.estado != Campana.ESTADO_FINALIZADA:
-            campana_service = CampanaService()
-            campana_service.remove_campana_wombat(campana)
             campana.estado = Campana.ESTADO_FINALIZADA
             campana.save()
+            dialer_service = get_dialer_service()
+            dialer_service.terminar_campana(campana)
         crea_campana_template = reverse("crea_campana_dialer_template",
                                         kwargs={"pk_campana_template": campana_reciclada.pk,
                                                 "borrar_template": 1})
         return crea_campana_template
 
     def _reciclar_misma_campana(self, campana):
-        campana_service = CampanaService()
-        campana_service.cambiar_base(campana, [], False, False, "")
+        # TODO: Ver que pasa con la llamada a
+        # campana.update_basedatoscontactos(bd_contacto_reciclada) antes de que se llame a esta
+        # funcion y el transaction siguiente
+        with transaction.atomic():
+            campana.estado = Campana.ESTADO_INACTIVA
+            campana.save()
+            if wombat_habilitado():
+                # Intento cambiar la BD en wombat como parte de la transaccion
+                self._cambiar_bd_contactos_en_dialer(campana)
+
+        # Cambio BD en OMniDialer una vez que ya se cambió en base
+        if not wombat_habilitado():
+            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, campana=campana))
+
         update_campana = "campana_dialer_update"
-        campana.estado = Campana.ESTADO_INACTIVA
-        campana.save()
         return update_campana
+
+    def _cambiar_bd_contactos_en_dialer(self, campana):
+        params = {'telefonos': [], 'evitar_duplicados': False,
+                  'evitar_sin_telefono': False, 'prefijo_discador': ''}
+        dialer_service = get_dialer_service()
+        dialer_service.cambiar_bd_contactos(campana, params)
 
 
 class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):
@@ -170,8 +191,8 @@ class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):
         return crea_campana_template
 
     def _reciclar_misma_campana(self, campana):
-        update_campana = "campana_preview_update"
         campana.estado = Campana.ESTADO_ACTIVA
         campana.save()
         campana.establecer_valores_iniciales_agente_contacto(False, False)
+        update_campana = "campana_preview_update"
         return update_campana

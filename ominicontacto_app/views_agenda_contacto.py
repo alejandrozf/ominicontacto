@@ -22,12 +22,8 @@ agente de desee agendar un llamado. Al modulo de agenda le esta faltando algun d
 o algo por el estilo para que lance una llamada agenda,etc
 """
 
-from __future__ import unicode_literals
-
-import requests
 import json
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import (
     PermissionDenied, ValidationError)
@@ -45,6 +41,7 @@ from ominicontacto_app.models import AgendaContacto, Contacto, Campana, Califica
 from ominicontacto_app.forms.base import (
     AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, FiltroAgendasForm)
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.dialer import get_dialer_service
 from notification_app.notification import AgentNotifier
 
 
@@ -119,16 +116,10 @@ class AgendaContactoCreateView(CreateView):
             campana = form.instance.campana
             if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
                     campana.type == Campana.TYPE_DIALER:
-                url_wombat = '/'.join(
-                    [settings.OML_WOMBAT_URL,
-                        'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
-                        'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
-                fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
-                requests.post(
-                    url_wombat.format(
-                        campana.nombre, self.object.telefono, fecha_hora,
-                        campana.pk, self.object.contacto.pk))
+                # Notificar al dialer que hay q volver a llamar al contacto
+                get_dialer_service().agendar_llamada(campana, self.object)
                 self.object.save()
+
             # Después de agendado el contacto se marca como agendado en la calificación
             calificacion = CalificacionCliente.objects.filter(
                 opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'])

@@ -15,13 +15,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-from django.urls import path
 
-from . import consumers
+from django.conf import settings
+from ominicontacto_app.services.dialer.phone_dialer import AbstractPhoneDialerService
+from ominicontacto_app.services.dialer.wombat_service import WombatService
+from ominicontacto_app.services.dialer.omnidialer import OmnidialerService
 
-websocket_urlpatterns = [
-    path('channels/agent-console', consumers.AgentConsole.as_asgi()),
-    path('channels/agent-console-whatsapp', consumers.AgentConsoleWhatsapp.as_asgi()),
-    path('channels/omnidialer', consumers.DialerStatsConsumer.as_asgi(), name='c1'),
-    path('channels/omnidialer/<secret>', consumers.DialerStatsConsumer.as_asgi(), name='c2'),
-]
+
+def wombat_habilitado():
+    return settings.OML_DIALER_ENGINE == 'wombat'
+
+
+def get_dialer_service() -> AbstractPhoneDialerService:
+    if wombat_habilitado():
+        return WombatService()
+    return OmnidialerService()

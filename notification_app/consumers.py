@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+from django.conf import settings
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.layers import get_channel_layer
+from ominicontacto_app.services.dialer.notification.subscription import (
+    DialerStatsSubscriptionManager, )
 
 
 class AgentConsole(AsyncJsonWebsocketConsumer):
@@ -80,3 +83,61 @@ class AgentConsoleWhatsapp(AsyncJsonWebsocketConsumer):
 
     async def broadcast(self, event):
         await self.send_json(event["payload"])
+
+
+class DialerStatsConsumer(AsyncJsonWebsocketConsumer):
+
+    GROUP_USER_CLS = 'supervisor-dialer'
+    GROUP_USER_OBJ = 'supervisor-dialer-{user_id}'
+    GROUPS = [
+        GROUP_USER_CLS,
+        GROUP_USER_OBJ,
+    ]
+    OMNIDIALER_USER_ID = 'omnidialer'
+
+    def __init__(self):
+        super(DialerStatsConsumer, self).__init__()
+        self.subscription_manager = DialerStatsSubscriptionManager()
+
+    async def connect(self):
+        self.is_omnidialer = False
+        if 'secret' in self.scope['url_route']['kwargs']:
+            # Accept OMNIDIALER Connection
+            secret = self.scope['url_route']['kwargs']['secret']
+            if secret != settings.OML_OMNIDIALER_SECRET:
+                return
+            self.is_omnidialer = True
+            for group in self.GROUPS:
+                await self.channel_layer.group_add(
+                    group.format(user_id=self.OMNIDIALER_USER_ID), self.channel_name)
+            await self.accept()
+            return
+
+        self.user = self.scope['user']
+        if self.user.is_authenticated and self.user.get_supervisor_profile():
+            for group in self.GROUPS:
+                await self.channel_layer.group_add(
+                    group.format(user_id=self.user.id), self.channel_name)
+            await self.accept()
+            self.subscription_manager.add_subscription(self.user)
+            return
+
+        return await self.close()
+
+    async def disconnect(self, close_code):
+        if not (self.is_omnidialer or hasattr(self, 'user')):
+            return
+        if self.is_omnidialer:
+            user_id = self.OMNIDIALER_USER_ID
+        else:
+            user_id = self.user.id
+
+        for group in self.GROUPS:
+            await self.channel_layer.group_discard(
+                group.format(user_id=user_id), self.channel_name)
+        if hasattr(self, 'user') and self.user.is_authenticated \
+                and self.user.get_supervisor_profile():
+            self.subscription_manager.remove_subscription(self.user)
+
+    async def broadcast(self, event):
+        await self.send_json(event['payload'])

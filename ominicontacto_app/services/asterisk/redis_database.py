@@ -213,12 +213,19 @@ class CampanaFamily(AbstractRedisFamily):
         else:
             dict_campana.update({'IDEXTERNALURL': ""})
 
-        if campana.queue_campana.destino:
-            dst = "{0},{1}".format(campana.queue_campana.destino.tipo,
-                                   campana.queue_campana.destino.object_id)
+        if campana.queue_campana.destino_failover:
+            dst = "{0},{1}".format(campana.queue_campana.destino_failover.tipo,
+                                   campana.queue_campana.destino_failover.object_id)
             dict_campana.update({'FAILOVER': 1, 'FAILOVERDST': dst})
         else:
             dict_campana.update({'FAILOVER': str(0)})
+
+        if campana.queue_campana.destino_dialer:
+            dst = "{0},{1}".format(campana.queue_campana.destino_dialer.tipo,
+                                   campana.queue_campana.destino_dialer.object_id)
+            dict_campana.update({'CUSTOMDIALERDST': 1, 'DIALERDST': dst})
+        else:
+            dict_campana.update({'CUSTOMDIALERDST': str(0)})
 
         if campana.queue_campana.ivr_breakdown:
             dict_campana.update(

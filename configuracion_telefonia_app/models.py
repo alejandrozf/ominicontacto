@@ -349,15 +349,27 @@ class DestinoEntrante(models.Model):
     MENU_INTERACTIVO_WHATSAPP = 10
     AGENTE = 11
 
+    CAMPANA_STR = _('Campaña entrante')
+    VALIDACION_FECHA_HORA_STR = _('Validación de fecha/hora')
+    IVR_STR = _('IVR')
+    EXTENSION_STR = _('Extension')
+    HANGUP_STR = _('HangUp')
+    SURVEY_STR = _('Encuesta')
+    CUSTOM_DST_STR = _('Destino personalizado')
+    VOICEMAIL_STR = _('Voicemail')
+    IDENTIFICADOR_CLIENTE_STR = _('Identificador cliente')
+    MENU_INTERACTIVO_WHATSAPP_STR = _('Menú Interactivo de Whatsapp')
+    AGENTE_STR = _('Agente')
+
     TIPOS_DESTINOS = (
-        (CAMPANA, _('Campaña entrante')),
-        (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
-        (IVR, _('IVR')),
-        (HANGUP, _('HangUp')),
-        (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
-        (CUSTOM_DST, _('Destino personalizado')),
-        (MENU_INTERACTIVO_WHATSAPP, _('Menú Interactivo de Whatsapp')),
-        (AGENTE, _('Agente')),
+        (CAMPANA, CAMPANA_STR),
+        (VALIDACION_FECHA_HORA, VALIDACION_FECHA_HORA_STR),
+        (IVR, IVR_STR),
+        (HANGUP, HANGUP_STR),
+        (IDENTIFICADOR_CLIENTE, IDENTIFICADOR_CLIENTE_STR),
+        (CUSTOM_DST, CUSTOM_DST_STR),
+        (MENU_INTERACTIVO_WHATSAPP, MENU_INTERACTIVO_WHATSAPP_STR),
+        (AGENTE, AGENTE_STR),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)

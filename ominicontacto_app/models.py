@@ -1808,9 +1808,13 @@ class Queue(models.Model):
         default=1.0, max_digits=3, decimal_places=1, blank=True, null=True)
 
     # destino por failover
-    destino = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
-                                related_name='campanas_destino_failover', blank=True, null=True,
-                                on_delete=models.CASCADE)
+    destino_failover = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                         related_name='campanas_destino_failover',
+                                         blank=True, null=True, on_delete=models.CASCADE)
+    # destino custom dialer
+    destino_dialer = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                       related_name='campanas_destino_dialer',
+                                       blank=True, null=True, on_delete=models.CASCADE)
 
     # para permitir al usuario especificar el tiempo promedio  que deberá
     # esperar el llamante para ser atendido
@@ -2650,6 +2654,17 @@ class BaseDatosContacto(models.Model):
                 id_externo=contacto.id_externo,
             )
         self.cantidad_contactos = len(lista_contactos)
+
+    def validar_bd_de_reemplazo(self, nueva_base):
+        metadata_actual = self.get_metadata()
+        metadata_modificar = nueva_base.get_metadata()
+
+        for columna_base, columna_modificar in zip(
+                metadata_actual.nombres_de_columnas,
+                metadata_modificar.nombres_de_columnas):
+            if columna_base != columna_modificar:
+                error = _("Los nombres de las columnas no coinciden")
+                return error
 
 
 class ContactoManager(models.Manager):

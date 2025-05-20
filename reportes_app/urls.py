@@ -124,10 +124,10 @@ urlpatterns = [
          login_required(
              views_campanas_preview_reportes.CampanaPreviewExpressView.as_view()),
          name="campana_preview_detalle_express"),
-    path('campana_dialer/detalle_wombat/',
+    path('campana_dialer/detalle_servicio/',
          login_required(
              views_campanas_dialer_reportes.detalle_campana_dialer_view),
-         name="campana_dialer_detalle_wombat"),
+         name="campana_dialer_detalle_servicio"),
     path('campana_dialer/<int:pk_campana>/detalle/',
          login_required(
              views_campanas_dialer_reportes.CampanaDialerDetailView.as_view()),
