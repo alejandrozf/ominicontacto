@@ -1,6 +1,6 @@
 from asgiref.sync import async_to_sync
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, Page
 from django.db import models
 from django.http import QueryDict
 from django.template.loader import render_to_string
@@ -124,7 +124,10 @@ class SearchRecordingsMixin(object):
                 ).values_list("id", flat=True),
             )
             paginator = Paginator(queryset, message["query"]["grabaciones_x_pagina"])
-            page = paginator.page(message["query"]["pagina"])
+            try:
+                page = paginator.page(message["query"]["pagina"])
+            except EmptyPage:
+                page = Page([], message["query"]["pagina"], paginator)
             if message["addressee"]["role"] == "agente":
                 fragments = {
                     "#table-body": render_to_string(
