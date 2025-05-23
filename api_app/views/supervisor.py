@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
 from json.decoder import JSONDecodeError
 
 import logging as _logging
@@ -25,21 +24,19 @@ import datetime
 import json
 import threading
 
-import redis
-
 from collections import OrderedDict
 from django.views.generic import View
 from django.utils.translation import gettext as _
 from django.utils.timezone import now
 from django.http import JsonResponse
 from django.db.models import Count
-from django.conf import settings
 from django.utils import timezone
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
+from rest_framework import status
 
 from simple_history.utils import update_change_reason
 
@@ -71,6 +68,8 @@ from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteFormularioGestionCampanaCSV)
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCalificacionesCampanaCSV
 from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
+from ominicontacto_app.services.redis.connection import create_redis_connection
+
 from ominicontacto_app.utiles import (
     datetime_hora_minima_dia, datetime_hora_maxima_dia, convert_fecha_datetime)
 from notification_app.notification import RedisStreamNotifier, AgentNotifier
@@ -179,14 +178,12 @@ class SupervisorCampanasActivasViewSet(APIView):
 class AgentesStatusAPIView(APIView):
     """Devuelve información de los agentes en el sistema"""
     permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
     def _obtener_datos_agentes(self, supervisor_pk):
-        redis_connection = redis.Redis(
-            host=settings.REDIS_HOSTNAME,
-            port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-            decode_responses=True)
+        redis_connection = create_redis_connection()
         response = redis_connection.hgetall('OML:SUPERVISOR:{0}'.format(supervisor_pk))
         result = {}
         for agent_id, dato in response.items():
@@ -213,6 +210,27 @@ class AgentesStatusAPIView(APIView):
                 data_agente['campana'] = campanas_activas
                 online.append(data_agente)
         return Response(data=online)
+
+
+class UsuariosAgentesAPIView(APIView):
+    """ Devuelve id, username y full_name de los Agentes asignados """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get']
+
+    def get(self, request):
+        supervisor = self.request.user.get_supervisor_profile()
+        agentes = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+        values = agentes.values('id', 'user__username', 'user__first_name', 'user__last_name')
+        data = {
+            item['id']: {
+                'username': item['user__username'],
+                'first_name': item['user__first_name'],
+                'lastname': item['user__last_name']
+            } for item in values
+        }
+        return Response(data=data)
 
 
 class StatusCampanasEntrantesView(APIView):
@@ -256,21 +274,26 @@ class StatusCampanasSalientesView(APIView):
 
 class InteraccionDeSupervisorSobreAgenteView(APIView):
     permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
 
-    def dispatch(self, request, *args, **kwargs):
-        self.supervisor = self.request.user.get_supervisor_profile()
-        self.agente_id = kwargs.get('pk')
-        # TODO: Verificar que el supervisor sea responsable del agente.
-        return super(InteraccionDeSupervisorSobreAgenteView, self).dispatch(
-            request, *args, **kwargs)
-
     def post(self, request, pk):
-        accion = request.POST.get('accion')
+        # TODO: Verificar que el supervisor sea responsable del agente.
+        self.supervisor = self.request.user.get_supervisor_profile()
+        if self.supervisor is None:
+            return Response(data={'status': 'ERROR', 'message': 'Wrong user profile'},
+                            status=status.HTTP_403_FORBIDDEN)
+        try:
+            agente_profile = AgenteProfile.objects.get(id=pk)
+        except AgenteProfile.DoesNotExist:
+            return Response(data={'status': 'ERROR', 'message': 'Agent not found'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        accion = request.data.get('accion')
         servicio_acciones = SupervisorActivityAmiManager()
         error = servicio_acciones.ejecutar_accion_sobre_agente(
-            self.supervisor, self.agente_id, accion)
+            self.supervisor, agente_profile, accion)
         if error:
             return Response(data={
                 'status': 'ERROR',
@@ -866,9 +889,7 @@ class DashboardSupervision(APIView):
 
     def _get_agentes_estados(self):
         data = dict.fromkeys(['ready', 'oncall', 'pause'], 0)
-        redis_connection = redis.Redis(
-            host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-            decode_responses=True)
+        redis_connection = create_redis_connection()
         keys_agentes = redis_connection.keys('OML:AGENT:*')
         cant_agentes_actives = 0
         for key in keys_agentes:

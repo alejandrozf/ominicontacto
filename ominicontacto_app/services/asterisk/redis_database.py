@@ -16,8 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
-
 import json
 import sys
 from collections import defaultdict
@@ -795,6 +793,12 @@ class CampanasDeAgenteFamily(object):
         self.get_redis_connection()
         key = self.get_agente_key(agente_id)
         self.redis_connection.srem(key, campana_id)
+
+    def borrar_agente_de_campanas(self, campanas_ids, agente_id):
+        """ Elimina N campanas ids de un agente """
+        self.get_redis_connection()
+        key = self.get_agente_key(agente_id)
+        self.redis_connection.srem(key, *campanas_ids)
 
 
 class CampaignAgentsFamily(object):
