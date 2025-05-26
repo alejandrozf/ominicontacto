@@ -179,8 +179,7 @@ export default {
                 email_partner: 'Email Partner',
                 password_partner: 'Password Partner',
                 business_id: 'Business Id',
-                access_token: 'Access Token',
-
+                verification_token: 'Verification Token',
             }
         },
         line: {
@@ -190,7 +189,9 @@ export default {
             numero: 'Number',
             configuracion: {
                 app_name: 'App name',
-                app_id: 'App ID'
+                app_id: 'App ID',
+                business_id: 'Business Id',
+                verification_token: 'Verification Token',
             },
             horario: 'Group of hour',
             mensaje_fueradehora: 'After Hours Message',

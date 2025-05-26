@@ -180,7 +180,7 @@ export default {
                 email_partner: 'Email Partner',
                 password_partner: 'Password Partner',
                 business_id: 'Business Id',
-                access_token: 'Token de acceso',
+                verification_token: 'Verification Token',
             }
         },
         line: {
@@ -189,7 +189,9 @@ export default {
             numero: 'Número',
             configuracion: {
                 app_name: 'App name',
-                app_id: 'App ID'
+                app_id: 'App ID',
+                business_id: 'Business Id',
+                verification_token: 'Verification Token',
             },
             horario: 'Grupo horario',
             destino: 'Destino',

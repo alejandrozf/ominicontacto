@@ -31,6 +31,7 @@ class ListSerializer(serializers.Serializer):
     name = serializers.CharField(source='nombre')
     number = serializers.CharField(source='numero')
     provider = serializers.IntegerField(source='proveedor.id')
+    provider_type = serializers.IntegerField(source='proveedor.tipo_proveedor')
     status = serializers.CharField()
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
@@ -87,8 +88,8 @@ class LineaCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'app_id': _('Ya existe una Linea con ese App ID')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuracion\
-                    or 'token_de_verificacion' not in configuracion:
+            if 'business_id' not in configuracion\
+                    or 'verification_token' not in configuracion:
                 raise serializers.ValidationError({
                     'configuration': _('Configuración incorrecta para el tipo de proveedor')})
 
@@ -420,6 +421,7 @@ class LineaRetrieveSerializer(serializers.Serializer):
     name = serializers.CharField(source='nombre')
     number = serializers.CharField(source='numero')
     provider = serializers.IntegerField(source='proveedor.id')
+    provider_type = serializers.IntegerField(source='proveedor.tipo_proveedor')
     configuration = serializers.JSONField(source='configuracion')
     schedule = serializers.IntegerField(source='horario.id', required=False)
     destination = DestinoEntranteRelatedField(source='*', read_only=True)
@@ -489,7 +491,7 @@ class UpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'app_id': _('Ya existe una Linea con ese App ID')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'app_id' not in configuracion\
-                    or 'token_de_verificacion' not in configuracion:
+            if 'business_id' not in configuracion\
+                    or 'verification_token' not in configuracion:
                 raise serializers.ValidationError({
                     'configuration': _('Configuración incorrecta para el tipo de proveedor')})
