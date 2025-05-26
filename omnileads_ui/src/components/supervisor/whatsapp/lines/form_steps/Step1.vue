@@ -59,6 +59,7 @@
             :class="{
               'p-invalid': v$.supWhatsappLine.proveedor.$invalid && submitted,
             }"
+            @change="updateTypeProveedor"
             :options="providers"
             :filter="true"
             :showClear="true"
@@ -147,6 +148,10 @@ export default {
             this.repeatedFormName =
         this.forms.find((f) => f.nombre === this.supWhatsappLine.nombre) !==
         undefined;
+        },
+        updateTypeProveedor () {
+          const proveedor = this.supWhatsappProviders.find(item => item.id === this.supWhatsappLine.proveedor) || null;
+          this.supWhatsappLine.provider_type = proveedor.provider_type
         },
         nextPage (isFormValid) {
             this.submitted = true;
