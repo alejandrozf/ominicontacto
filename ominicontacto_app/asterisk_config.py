@@ -67,7 +67,7 @@ class SipConfigCreator(object):
         :param externo: Indica si es un cliente Webphone
         :returns: str -- config sip para los agentes/supervisores/clientes webphone
         """
-        context = 'from-oml'
+        context = 'from-agent'
         if es_externo:
             context = 'from-pstn'
 
@@ -81,6 +81,8 @@ class SipConfigCreator(object):
             'oml_agente_name': agente.get_asterisk_caller_id(),
             'oml_agente_sip': agente.sip_extension,
             'oml_context': context,
+            'kamailio_hostname': settings.KAMAILIO_HOSTNAME,
+            'kamailio_port': settings.KAMAILIO_PORT,
         }
 
         generador_agente = self._generador_factory.crear_generador_para_agente(

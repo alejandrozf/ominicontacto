@@ -32,7 +32,6 @@ endpoint/rtp_symmetric=no\n\
 endpoint/force_rport=no\n\
 endpoint/rewrite_contact=yes\n\
 endpoint/timers=yes\n\
-aor/qualify_frequency=60\n\
 endpoint/allow=alaw,ulaw,opus\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pstn\n\
@@ -64,6 +63,8 @@ endpoint/context=from-pstn\n\
 ;endpoint/from_user=****Your SIP Trunk User****\n\
 ;endpoint/from_domain=****Your Your net domain ****\n\
 ;registration/contact_user=****Your DID number****\n\
+;outbound_auth/username=****YOUR SIP_USERNAME****\n\
+;outbound_auth/password=****YOUR SIP_PASSWORD****\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
@@ -114,10 +115,8 @@ endpoint/context=from-pbx\n\
 ;endpoint/from_user=****Your SIP Trunk User****\n\
 ;endpoint/from_domain=****Your Your net domain ****\n\
 ;registration/contact_user=****Your DID number****\n\
-inbound_auth/username=****SIP_USER PBX -> OML****\n\
-inbound_auth/password=****SIP_PASS PBX -> OML****\n\
-outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+;outbound_auth/username=****YOUR SIP_USERNAME****\n\
+;outbound_auth/password=****YOUR SIP_PASSWORD****\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
@@ -137,14 +136,14 @@ aor/qualify_frequency=60\n\
 endpoint/allow=alaw,ulaw\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pbx\n\
-endpoint/from_user=****Your SIP Trunk User****,\n\
+;endpoint/from_user=****Your SIP Trunk User****\n\
 ;endpoint/from_domain=****Your Your net domain ****\n\
-;registration/contact_user=****Your DID number****,\n\
-external_media_address=****Container engine Host IP -> OML****\n\
-external_signaling_address=****Container engine Host IP -> OML****\n\
-external_signaling_port=****Container engine Host port forward -> OML****\n\
-outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+;registration/contact_user=****Your DID number****\n\
+;outbound_auth/username=****YOUR SIP_USERNAME****\n\
+;outbound_auth/password=****YOUR SIP_PASSWORD****\n\
+outbound_proxy=sip:$YOUR_SIP_PROXY_IPADDR_OR_FQDN:5060;lr\n\
+endpoint/set_var=PJSIP_HEADER(add,OMniLeadsOutbound)=yes\n\
+identify/match=$YOUR_SIP_PROXY_IPADDR\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
@@ -177,15 +176,15 @@ function getTemplateName(template_id){
     var OMNILEADS_TM = $('#omnileads_tm').val() == undefined? 'asterisk':$('#omnileads_tm').val();
     switch (template_id) {
     case 0:
-        return 'LAN SIP Trunk';
+        return 'LAN SIP';
     case 1:
-        return 'Public IP SIP Trunk';
+        return 'Public SIP';
     case 2: 
         return 'PBX SIP Trunk';
     case 3:
-        return 'Behind NAT SIP Trunk';
+        return 'Behind NAT SIP';
     case 4:
-        return 'Container Bridge NET';
+        return 'Outbound SIP Proxy';
     case 5:
         return 'Custom';
     }
