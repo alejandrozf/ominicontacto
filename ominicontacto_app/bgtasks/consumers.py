@@ -1,6 +1,7 @@
+import logging
 from asyncio import coroutines
 
-from channels.consumer import SyncConsumer
+from channels.consumer import SyncConsumer, get_handler_name
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.apps import apps
@@ -8,6 +9,8 @@ from django.core.handlers.asgi import ASGIRequest
 from django.utils import translation
 
 from .mixins import SearchRecordingsMixin
+
+logger = logging.getLogger("background-tasks")
 
 BACKGROUND_TASKS_MIXINS = [
     SearchRecordingsMixin,
@@ -47,6 +50,17 @@ class BackgroundTasksConsumerClient(AsyncJsonWebsocketConsumer, *BACKGROUND_TASK
 
 
 class BackgroundTasksConsumerWorker(SyncConsumer, *BACKGROUND_TASKS_MIXINS):
+
+    @database_sync_to_async
+    def dispatch(self, message):
+        handler = getattr(self, get_handler_name(message), None)
+        if handler:
+            try:
+                handler(message)
+            except Exception:
+                logger.exception(message)
+        else:
+            raise ValueError("No handler for message type %s" % message["type"])
 
     async def __call__(self, scope, receive, send):
         try:
