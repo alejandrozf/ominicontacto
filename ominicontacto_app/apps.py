@@ -609,7 +609,11 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'ordenar_entrega_contactos_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'actualizar_contactos_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'descargar_orden_contactos_actual_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'descargar_datos_contactos_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
@@ -1037,8 +1041,14 @@ class OminicontactoAppConfig(AppConfig):
         'ordenar_entrega_contactos_preview':
             {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),
              'version': '1.5.2'},
+        'actualizar_contactos_preview':
+            {'descripcion': _('Actualizar contactos de una campaña Preview'),
+             'version': '1.5.2'},
         'descargar_orden_contactos_actual_preview':
             {'descripcion': _('Descargar orden de asignacion de contactos de una campaña Preview'),
+             'version': '1.5.2'},
+        'descargar_datos_contactos_preview':
+            {'descripcion': _('Descargar contactos de una campaña Preview'),
              'version': '1.5.2'},
         'campana_list':
             {'descripcion': _('Ver lista de campañas Entrantes'), 'version': '1.7.0'},
