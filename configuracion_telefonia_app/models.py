@@ -494,6 +494,9 @@ class RutaEntrante(models.Model):
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes',
                                 on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.nombre} [id={self.id}]"
+
 
 class HangUp(models.Model):
 

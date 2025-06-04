@@ -363,6 +363,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'user_bulk_delete',
+             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_update',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'agent_delete',
@@ -753,6 +755,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Importar lista de usuarios a CSV'), 'version': '?'},
         'user_delete':
             {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
+        'user_bulk_delete':
+            {'descripcion': _('Borrar Usuarios'), 'version': '2.6.0'},
         'user_update':
             {'descripcion': _('Editar Usuario (no agente)'), 'version': '1.7.0'},
         'agent_delete':

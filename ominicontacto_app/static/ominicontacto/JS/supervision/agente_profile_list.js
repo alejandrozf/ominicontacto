@@ -19,7 +19,7 @@
 /* global gettext */
 
 var agents_table;
-var GROUP_COL = 3;
+var GROUP_COL = 4;
 
 $(function () {
     initializeAgentsTable();
@@ -39,9 +39,11 @@ function initializeAgentsTable() {
             lengthMenu: gettext('Mostrar _MENU_ entradas'),
             info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
         },
+        order: [[ 1, 'asc' ]],
         columnDefs: [
-            {'searchable': false, 'targets': [4, 5]},
-            {'orderable': false, 'targets': [4, 5]}
+            {'orderable': false, 'targets': [0]},
+            {'searchable': false, 'targets': [5, 6]},
+            {'orderable': false, 'targets': [5, 6]}
         ],
     });
 }
