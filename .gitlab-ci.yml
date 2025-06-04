@@ -64,12 +64,12 @@ container-image:
 
       if [[ "${CI_COMMIT_BRANCH}" == "master" || "${CI_COMMIT_BRANCH}" == pre-release-* ]]; then
         echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-        IMAGE_VERSION=$(cat .omnileads_version)
+        IMAGE_VERSION="$(date +%Y%m%d)-${CI_COMMIT_SHORT_SHA}"
         docker tag run omnileads/omlapp:$IMAGE_VERSION
         docker push docker.io/omnileads/omlapp:$IMAGE_VERSION
       else
         echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
-        IMAGE_VERSION=$(cat .omnileads_version)
+        IMAGE_VERSION="$(date +%Y%m%d)-${CI_COMMIT_SHORT_SHA}"
         docker tag run freetechsolutions/omlapp:$IMAGE_VERSION
         docker push docker.io/freetechsolutions/omlapp:$IMAGE_VERSION
       fi
