@@ -138,10 +138,9 @@ class SearchRecordingsMixin(object):
                         },
                     ),
                     "#pagination": render_to_string(
-                        "agente/frame/busqueda_grabacion_ex/_pagination.html",
+                        "_pagination.html",
                         {
-                            "paginator": paginator,
-                            "page_number": page.number,
+                            "page": page,
                         },
                     ),
                 }
@@ -201,10 +200,9 @@ class SearchRecordingsMixin(object):
                         },
                     ),
                     "#pagination": render_to_string(
-                        "busqueda_grabacion_ex/_pagination.html",
+                        "_pagination.html",
                         {
-                            "paginator": paginator,
-                            "page_number": page.number,
+                            "page": page,
                         },
                     ),
                     "#calificaciones": render_to_string(
