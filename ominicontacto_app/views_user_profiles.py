@@ -37,6 +37,10 @@ from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.views.generic import (
     View, UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
 
+from django.views.generic.base import TemplateResponseMixin, ContextMixin
+from django.contrib.admin.utils import NestedObjects
+from django.db.utils import DEFAULT_DB_ALIAS
+
 from constance import config
 
 from ominicontacto_app.services.queue_member_service import QueueMemberService
@@ -49,7 +53,7 @@ from ominicontacto_app.models import (
     SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, Grupo, Campana,
     AutenticacionExternaDeUsuario
 )
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, RutaEntrante
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
@@ -520,6 +524,34 @@ class UserListView(ListView):
             users = users.annotate(full_name=Concat('first_name', V(' '), 'last_name')).\
                 filter(Q(full_name__icontains=search) | Q(username__icontains=search))
         return users
+
+
+class UserBulkDeleteView(ContextMixin, TemplateResponseMixin, View):
+
+    template_name = "user/bulk_delete.html"
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        users = User.objects.filter(id__in=request.POST.getlist("id"))
+        redirect_to = request.POST.get("_next", "/")
+        collector = NestedObjects(using=DEFAULT_DB_ALIAS)
+        collector.collect(users)
+        if RutaEntrante in collector.model_objs:
+            collector.protected.update(collector.model_objs[RutaEntrante])
+        if request.POST.get("_confirmed") and not collector.protected:
+            collector.delete()
+            return HttpResponseRedirect(redirect_to)
+        context.update({
+            "collector_nested": collector.nested(lambda x: repr(x)),
+            "collector_protected": collector.protected,
+            "collector_summary": {
+                model._meta.verbose_name_plural: len(objects)
+                for model, objects in collector.model_objs.items()
+            }.items(),
+            "redirect_to": redirect_to,
+            "users": users,
+        })
+        return self.render_to_response(context)
 
 
 class SupervisorProfileUpdateView(FormView):

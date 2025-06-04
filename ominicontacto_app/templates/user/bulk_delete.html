@@ -1,0 +1,77 @@
+<!--
+Copyright (C) 2025 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/user/bulk_delete.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if collector_protected %}
+<h2>{% trans "La eliminación de los Usuarios seleccionados" %}</h2>
+<p>{% trans "Requeriría eliminar los siguientes objetos relacionados protegidos:" %}</p>
+<ul>
+    {% for obj in collector_protected %}
+    <li>{{ obj }}</li>
+    {% endfor %}
+</ul>
+<a data-toggle="collapse" href="#objetos" role="button" aria-expanded="false" aria-controls="objetos">
+    {% trans "Objectos" %}
+</a>
+<ul id="objetos" class="collapse">
+    {{ collector_nested | unordered_list }}
+</ul>
+<hr>
+<a href="{{ redirect_to }}" class="btn btn-link mr-4">
+    {% trans "Regresar" %}
+</a>
+{% else %}
+<h2>{% trans "¿Estás seguro de que quieres borrar los Usuarios seleccionados?" %}</h2>
+<p>{% trans "Se borrarán los siguientes objetos relacionados:" %}</p>
+<h3>{% trans "Sumario" %}</h3>
+<ul>
+{% for name, count in collector_summary %}
+    <li>{{ name }}: <b>{{ count }}</b></li>
+{% endfor %}
+</ul>
+<a data-toggle="collapse" href="#objetos" role="button" aria-expanded="false" aria-controls="objetos">
+    {% trans "Objectos" %}
+</a>
+<ul id="objetos" class="collapse">
+    {{ collector_nested | unordered_list }}
+</ul>
+<form method="POST" action="{% url 'user_bulk_delete' %}">
+    {% csrf_token %}
+    {% for user in users %}
+    <input type="hidden" name="id" value="{{ user.id }}">
+    {% endfor %}
+    <input type="hidden" name="_next" value="{{ redirect_to }}">
+    <input type="hidden" name="_confirmed" value="yes">
+    <hr>
+    <button type="submit" class="btn btn-primary">
+        {% trans 'Si, estoy seguro' %}
+    </button>
+    <a href="{{ redirect_to }}" class="btn btn-link mr-4">
+        {% trans "No, llévame atrás" %}
+    </a>
+</form>
+{% endif %}
+{% endblock %}

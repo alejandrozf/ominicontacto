@@ -23,6 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block head_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/agente_profile_list.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/ext/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/user/user_list_delete.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -31,22 +32,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 <div class="form-row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <h1>{% trans 'Agentes' %}</h1>
     </div>
     <div class="col-md-1">
         <label for="group-filter">{% trans 'Grupo' %}</label>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <select class="form-control" name="group-filter" id="group-filter">
             <option value="">{% trans 'Todos' %}</option>
         </select>
+    </div>
+    <div class="col-md-2">
+        <form id="user-bulk-delete" class="d-inline-block" method="POST" action="{% url 'user_bulk_delete' %}">
+            {% csrf_token %}  
+            <input type="hidden" name="_next" value="{{ request.get_full_path }}" />
+            <button type="submit" class="btn btn-danger mb-2">
+                {% trans 'Eliminar usuarios' %}
+            </button>
+        </form>
     </div>
 </div>
 
 <table class="table" id="agents-table">
     <thead>
         <tr>
+            <th>
+                <input type="checkbox" id="_selected_item">
+            </th>
             <th>{% trans 'id' %}</th>
             <th>{% trans 'nombre del agente' %}</th>
             <th>{% trans 'sip_extension' %}</th>
@@ -58,6 +71,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <tbody>
     {% for agente in object_list%}
         <tr id="{{agente.user}}">
+            <td>
+                {% if user.id != agente.user.id %}
+                <input type="checkbox" name="_selected_item" value="{{ agente.user.id }}">
+                {% endif %}
+            </td>
             <td>{{ agente.id }}</td>
             <td>{{ agente.user.first_name}} {{ agente.user.last_name}}</td>
             <td>{{ agente.sip_extension }}</td>
