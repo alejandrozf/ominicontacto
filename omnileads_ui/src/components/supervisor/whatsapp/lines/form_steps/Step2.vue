@@ -109,7 +109,7 @@
                       v$.supWhatsappLine.configuracion.app_id.$invalid &&
                       submitted,
                   }"
-                  :placeholder="$t('forms.form.enter_name')"
+                  :placeholder="$t('forms.form.enter_value')"
                   v-model="v$.supWhatsappLine.configuracion.app_id.$model"
                 />
               </div>
@@ -137,7 +137,7 @@
                     v$.supWhatsappLine.configuracion.app_name.$invalid &&
                     submitted,
                 }"
-                >{{ $t("models.whatsapp.line.configuracion.business_id") }}*</label
+                >{{ $t("models.whatsapp.line.configuracion.waba_id") }}*</label
               >
               <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
@@ -149,7 +149,7 @@
                       v$.supWhatsappLine.configuracion.app_name.$invalid &&
                       submitted,
                   }"
-                  :placeholder="$t('forms.form.business_id')"
+                  :placeholder="$t('forms.form.enter_value')"
                   v-model="v$.supWhatsappLine.configuracion.app_name.$model"
                 />
               </div>
@@ -163,7 +163,7 @@
                 >{{
                   v$.supWhatsappLine.configuracion.app_name.required.$message.replace(
                     "Value",
-                    $t("models.whatsapp.line.configuracion.business_id")
+                    $t("models.whatsapp.line.configuracion.waba_id")
                   )
                 }}</small
               >
@@ -175,7 +175,7 @@
                     v$.supWhatsappLine.configuracion.app_id.$invalid &&
                     submitted,
                 }"
-                >{{ $t("models.whatsapp.line.configuracion.verification_token") }}*</label
+                >{{ $t("models.whatsapp.line.configuracion.app_id") }}*</label
               >
               <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">
@@ -189,7 +189,7 @@
                       v$.supWhatsappLine.configuracion.app_id.$invalid &&
                       submitted,
                   }"
-                  :placeholder="$t('forms.form.verification_token')"
+                  :placeholder="$t('forms.form.enter_value')"
                   v-model="v$.supWhatsappLine.configuracion.app_id.$model"
                 />
               </div>
@@ -203,11 +203,52 @@
                 >{{
                   v$.supWhatsappLine.configuracion.app_id.required.$message.replace(
                     "Value",
+                    $t("models.whatsapp.line.configuracion.app_id")
+                  )
+                }}</small
+              >
+            </div>
+            <div class="field col-6">
+              <label
+                :class="{
+                  'p-error':
+                    v$.supWhatsappLine.configuracion.verification_token.$invalid &&
+                    submitted,
+                }"
+                >{{ $t("models.whatsapp.line.configuracion.verification_token") }}*</label
+              >
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-list"></i>
+                </span>
+                <Password
+                  toggleMask
+                  :feedback="false"
+                  :class="{
+                    'p-invalid':
+                      v$.supWhatsappLine.configuracion.verification_token.$invalid &&
+                      submitted,
+                  }"
+                  :placeholder="$t('forms.form.enter_value')"
+                  v-model="v$.supWhatsappLine.configuracion.verification_token.$model"
+                />
+              </div>
+              <small
+                v-if="
+                  (v$.supWhatsappLine.configuracion.verification_token.$invalid &&
+                    submitted) ||
+                  v$.supWhatsappLine.configuracion.verification_token.$pending.$response
+                "
+                class="p-error"
+                >{{
+                  v$.supWhatsappLine.configuracion.verification_token.required.$message.replace(
+                    "Value",
                     $t("models.whatsapp.line.configuracion.verification_token")
                   )
                 }}</small
               >
             </div>
+
           </div>
         </Fieldset>
       </div>
@@ -251,7 +292,8 @@ export default {
                 },
                 configuracion: {
                     app_name: { required },
-                    app_id: { required }
+                    app_id: { required },
+                    verification_token: { }
                 }
             }
         };

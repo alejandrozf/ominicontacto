@@ -88,10 +88,14 @@ class LineaCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'app_id': _('Ya existe una Linea con ese App ID')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'business_id' not in configuracion\
+            if 'app_id' not in configuracion\
+                    or 'waba_id' not in configuracion\
                     or 'verification_token' not in configuracion:
                 raise serializers.ValidationError({
                     'configuration': _('Configuración incorrecta para el tipo de proveedor')})
+            if Linea.objects.filter(configuracion__app_id=configuracion['app_id']).exists():
+                raise serializers.ValidationError({
+                    'app_id': _('Ya existe una Linea con ese App ID')})
 
 
 class JSONSerializerField(serializers.Field):
@@ -491,7 +495,12 @@ class UpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'app_id': _('Ya existe una Linea con ese App ID')})
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-            if 'business_id' not in configuracion\
+            if 'app_id' not in configuracion\
+                    or 'waba_id' not in configuracion\
                     or 'verification_token' not in configuracion:
                 raise serializers.ValidationError({
                     'configuration': _('Configuración incorrecta para el tipo de proveedor')})
+            otras_lineas = Linea.objects.exclude(id=self.instance.id)
+            if otras_lineas.filter(configuracion__app_id=configuracion['app_id']).exists():
+                raise serializers.ValidationError({
+                    'app_id': _('Ya existe una Linea con ese App ID')})

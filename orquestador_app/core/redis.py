@@ -23,7 +23,7 @@ from orquestador_app.core.asyncio import Loop
 from orquestador_app.core.asyncio import create_task
 from orquestador_app.core.outbound_chat_event_management import outbound_chat_event
 from orquestador_app.core.inbound_chat_event_management import inbound_chat_event
-from whatsapp_app.models import Linea
+from whatsapp_app.models import Linea, ConfiguracionProveedor
 
 from django.utils import timezone
 from datetime import datetime
@@ -66,7 +66,10 @@ async def connect_to_stream(name: str, line: Linea, redis: RedisServer):
 
 
 def get_stream_name(line):
-    return 'whatsapp_webhook_gupshup_{}'.format(line.configuracion["app_id"])
+    if line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+        return 'whatsapp_webhook_gupshup_{}'.format(line.configuracion["app_id"])
+    elif line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+        return 'whatsapp_webhook_meta_{}'.format(line.configuracion["app_id"])
 
 
 async def subscribe(line: Linea, redis_host: RedisServer, loop: Loop):
@@ -92,7 +95,57 @@ async def unsubscribe(line):
         print("error >>>", e)
 
 
-async def handler_messages(line, payloads):
+async def meta_handler_messages(line, payloads):
+    try:
+        for msg in payloads:
+            msg_json = loads(msg)
+            value_object = msg_json['entry'][0]['changes'][0]['value']
+            if 'errors' in value_object:
+                await outbound_chat_event(
+                    timestamp, message_id, status, expire=expire,
+                    destination=destination, error_ex=error_ex)
+
+            if 'statuses' in value_object:
+                timestamp = datetime.fromtimestamp(
+                    int(value_object['statuses'][0]['timestamp']), timezone.get_current_timezone())
+                status = value_object['statuses'][0]['status']
+                message_id = value_object['statuses'][0]['id']
+                destination = value_object['statuses'][0]['recipient_id']
+                expire = None
+                error_ex = {}
+                if 'errors' in value_object['statuses'][0]:
+                    error_ex = value_object['statuses'][0]['errors'][0]
+                if status == 'sent':
+                    expire = datetime.fromtimestamp(
+                        int(value_object['statuses'][0]['conversation']['expiration_timestamp']),
+                        timezone.get_current_timezone())
+                await outbound_chat_event(
+                    timestamp, message_id, status, expire=expire,
+                    destination=destination, error_ex=error_ex)
+            if 'messages' in value_object:
+                timestamp = datetime.fromtimestamp(
+                    int(value_object['messages'][0]['timestamp']), timezone.get_current_timezone())
+                message_id = value_object['messages'][0]['id']
+                origen = value_object['messages'][0]['from']
+                type = value_object['messages'][0]['type']
+                content = value_object['messages'][0][type]
+                context = value_object['messages']['context'] if type == 'list_reply' else {}
+                sender = value_object['contacts'][0]
+                await inbound_chat_event(
+                    line,
+                    timestamp,
+                    message_id,
+                    origen,
+                    content,
+                    sender,
+                    context,
+                    type,
+                )
+    except Exception as e:
+        print(">>>>>", e)
+
+
+async def gupshup_handler_messages(line, payloads):
     try:
         for msg in payloads:
             msg_json = loads(msg)
@@ -134,3 +187,10 @@ async def handler_messages(line, payloads):
                 )
     except Exception as e:
         print("Error----->>>>", e)
+
+
+async def handler_messages(line, payloads):
+    if line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+        await gupshup_handler_messages(line, payloads)
+    elif line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+        await meta_handler_messages(line, payloads)
