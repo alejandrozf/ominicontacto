@@ -35,6 +35,7 @@ from django.utils.translation import gettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
 from django.contrib.auth.models import Group
+from ominicontacto_app.services.dialer import wombat_habilitado
 
 from constance import config
 
@@ -1289,7 +1290,10 @@ class FormularioCRMForm(forms.Form):
 
 class SincronizaDialerForm(forms.Form):
     evitar_duplicados = forms.BooleanField(required=False)
-    evitar_sin_telefono = forms.BooleanField(required=False)
+    if wombat_habilitado():
+        evitar_sin_telefono = forms.BooleanField(required=False)
+    else:
+        evitar_sin_telefono = forms.BooleanField(required=False, initial=True)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'class-fecha form-control'}))
 
@@ -1679,6 +1683,11 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     telefono_habilitado = forms.BooleanField(required=False, disabled=True)
     video_habilitado = forms.BooleanField(required=False, disabled=True)
+    opcion_abortar = forms.BooleanField(
+        required=False,
+        initial=False,
+        widget=forms.HiddenInput()
+    )
 
     def __init__(self, *args, **kwargs):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
@@ -1699,6 +1708,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data['bd_contacto']
+        opcion_abortar = self.data.get('0-opcion_abortar')
         instance = getattr(self, 'instance', None)
         es_template = self.initial.get('es_template', False)
         # Si uno desea modificar una campaña dialer, con instance no se permitira cambiar la BD
@@ -1706,6 +1716,11 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             return instance.bd_contacto
         if not es_template and not bd_contacto.contactos.exists():
             raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
+        if not wombat_habilitado() and opcion_abortar == 'False' and \
+           bd_contacto.contactos.filter(Q(telefono__isnull=True) |
+                                        Q(telefono__exact='')).exists():
+            raise forms.ValidationError([_('La BD tiene contactos sin teléfono'),
+                                         'opcion_abortar_true'])
         return self.cleaned_data['bd_contacto']
 
     class Meta:
