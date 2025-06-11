@@ -70,7 +70,7 @@ class OmnidialerService(AbstractPhoneDialerService):
             raise
 
     def crear_campana(self, campana, evitar_duplicados, evitar_sin_telefono, prefijo_discador):
-        data = {'contact-strategy': [1, 3, 4]}
+        data = {'contact-strategy': [1, 3, 4], 'prefix': prefijo_discador}
         return self._request(CREATE_URL.format(campana.id), data)
 
     def eliminar_campana(self, campana) -> bool:
