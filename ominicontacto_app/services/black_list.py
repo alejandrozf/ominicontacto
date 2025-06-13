@@ -28,13 +28,11 @@ import csv
 import logging
 import os
 
+from django.db import connection
 from django.utils.encoding import smart_text
 from django.utils.translation import gettext as _
 
-from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
-    OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
-from ominicontacto_app.models import ContactoBlacklist
-from ominicontacto_app.parser import ParserCsv
+from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, OmlError
 
 from utiles_globales import validar_estructura_csv
 
@@ -72,42 +70,44 @@ class CreacionBlacklistService(object):
         data = csv.reader(file_obj, skipinitialspace=True)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
+    def forzar_borrado_completo(self, object=None):
+        """ Borra la blacklist """
+
+        if object is None:
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM ominicontacto_app_contactoblacklist;')
+                cursor.execute('DELETE FROM ominicontacto_app_blacklist;')
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute('DELETE FROM ominicontacto_app_contactoblacklist WHERE '
+                               f'black_list_id={object.id}')
+                object.delete()
+
     def importa_contactos(self, blacklist):
         """
         Segundo paso de la creación de una Blacklist.
-        Este método se encarga de generar los objectos Contacto por cada linea
-        del archivo de importación especificado para la base de datos de
-        contactos.
+        Importa los contactos directamente a la BD ignorando conflictos por repetidos
         """
+        file = blacklist.archivo_importacion.file.name
+        with connection.cursor() as cursor:
+            # 1. Crear tabla temporal sin índice
+            cursor.execute("""
+                CREATE TEMP TABLE tmp_telefonos (
+                    telefono TEXT
+                ) ON COMMIT DROP;
+            """)
 
-        parser = ParserCsv()
+            # 2. Cargar el archivo CSV a la tabla temporal
+            with open(file, 'r') as f:
+                cursor.copy_expert("COPY tmp_telefonos (telefono) FROM STDIN WITH CSV", f)
 
-        try:
-            estructura_archivo = parser.get_estructura_archivo(blacklist)
-            telefonos = set(ContactoBlacklist.objects.values_list('telefono', flat=True))
-            cant_viejos = len(telefonos)
-            cant_nuevos = 0
-            ContactoBlacklist.objects.all().delete()
-            for lista_dato in estructura_archivo[1:]:
-                telefonos.add(lista_dato[0])
-                cant_nuevos += 1
-            contactos = []
-            for telefono in telefonos:
-                contactos.append(ContactoBlacklist(telefono=telefono, black_list=blacklist))
-            ContactoBlacklist.objects.bulk_create(contactos)
-        except OmlParserMaxRowError:
-            blacklist.contactosblacklist.all().delete()
-            raise
-
-        except OmlParserCsvImportacionError:
-            blacklist.contactosblacklist.all().delete()
-            raise
-
-        cantidad_contactos = len(telefonos)
-        contactos_repetidos = not (cantidad_contactos == (cant_viejos + cant_nuevos))
-        blacklist.cantidad_contactos = cantidad_contactos
-        blacklist.save()
-        return contactos_repetidos
+            # 3. Insertar en la tabla real, asociando el ID de blacklist, ignorando conflictos
+            cursor.execute("""
+                INSERT INTO ominicontacto_app_contactoblacklist (telefono, black_list_id)
+                SELECT DISTINCT telefono, %s
+                FROM tmp_telefonos
+                ON CONFLICT (telefono) DO NOTHING;
+            """, [blacklist.id])
 
 
 class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):
@@ -169,6 +169,6 @@ class ValidaDataService(object):
             raise NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
                                                   "columna"))
 
-        if str(primer_linea[0]).lower() != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
-                                                             "columna debe ser telefono")))
+        # if str(primer_linea[0]).lower() != 'telefono':
+        #     raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
+        #                                                      "columna debe ser telefono")))

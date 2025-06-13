@@ -173,9 +173,13 @@ class BlacklistCreateView(CreateView):
             )
             return self.form_invalid(form)
 
-        self._eliminar_blacklist_anterior()
+        # self._eliminar_blacklist_anterior()
+        self.blacklist_service.forzar_borrado_completo()
         self.object.save()
         self.blacklist_service.importa_contactos(self.object)
+        self.object.cantidad_contactos = ContactoBlacklist.objects.count()
+        self.object.save()
+
         blacklist_family = BlacklistFamily()
         blacklist_family.regenerar_families(self.object)
         return redirect(self.get_success_url())
@@ -332,7 +336,8 @@ class BlacklistDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.delete()
+        service = CreacionBlacklistService()
+        service.forzar_borrado_completo(self.object)
         blacklist_family = BlacklistFamily()
         blacklist_family.delete_family()
         message = _("<strong>Operación Exitosa:</strong> \
