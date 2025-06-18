@@ -552,16 +552,43 @@ class ActualizarContactosResourceExport(resources.ModelResource):
 
 
 class ActualizarContactosBDResourceImport(resources.ModelResource):
+    """ Atención: clase muy acoplada a como se guardan los datos en el modelo Contacto
+                  según la lógica de MetadataBaseDatosContactoDTO """
 
     def before_import_row(self, row, **kwargs):
-        nombres_columnas = kwargs.get('nombres_columnas')
-        nombre_campo_telefono = kwargs.get('campo_telefono')
         row['id'] = row['contacto_id']
-        row['telefono'] = row[nombre_campo_telefono]
-        columnas_values = [row['telefono']]
-        for columna in nombres_columnas[1:]:
-            columnas_values.append(row[columna])
-        row['datos'] = json.dumps(columnas_values)
+
+    def import_obj(self, instance, row, dry_run, **kwargs):
+        """ Actualizar en "row" los nuevos datos a guardar en instance """
+        try:
+            nombre_campo_telefono = kwargs.get('nombre_campo_telefono')
+            index_campos_a_actualizar = kwargs.get('index_campos_a_actualizar')
+            read_row = row
+
+            # Tomo los datos viejos de la instancia
+            telefono = instance.telefono
+            datos = json.loads(instance.datos)
+
+            for campo in index_campos_a_actualizar:
+                if campo == nombre_campo_telefono:
+                    # Actualizo el campo telefónico si corresponde
+                    telefono = read_row[nombre_campo_telefono]
+                else:
+                    # Actualizo los campos de datos correspondientes
+                    pos = index_campos_a_actualizar[campo]
+                    datos[pos] = read_row[campo]
+
+            row = {
+                'id': instance.id,
+                'telefono': telefono,
+                'datos': json.dumps(datos),
+            }
+        except Exception as e:
+            logger.error(e)
+            raise e
+
+        super(ActualizarContactosBDResourceImport, self).import_obj(
+            instance, row, dry_run, **kwargs)
 
     class Meta:
         model = Contacto
@@ -571,20 +598,35 @@ class ActualizarContactosBDResourceImport(resources.ModelResource):
 
 class ActualizarContactosResourceImport(resources.ModelResource):
 
-    def before_import_row(self, row, **kwargs):
-        nombres_columnas_datos = kwargs.get('nombres_columnas')
-        nombre_campo_telefono = kwargs.get('campo_telefono')
-        datos_contacto = {}
-        row['telefono_contacto'] = row[nombre_campo_telefono]
-        for columna in nombres_columnas_datos:
-            datos_contacto[columna] = row[columna]
-        row['datos_contacto_new'] = datos_contacto
-
     def import_obj(self, instance, row, dry_run, **kwargs):
-        datos_contacto_instance = json.loads(instance.datos_contacto)
-        datos_contacto_new = row['datos_contacto_new']
-        datos_contacto_instance.update(datos_contacto_new)
-        row['datos_contacto'] = json.dumps(datos_contacto_instance)
+        """ Actualizar en "row" los nuevos datos a guardar en instance """
+        try:
+
+            campos_a_actualizar = kwargs.get('campos_a_actualizar')
+            nombre_campo_telefono = kwargs.get('nombre_campo_telefono')
+            read_row = row
+
+            # Tomo los datos viejos de la instancia
+            telefono = instance.telefono_contacto
+            datos_contacto = json.loads(instance.datos_contacto)
+
+            for campo in campos_a_actualizar:
+                if campo == nombre_campo_telefono:
+                    # Actualizo el campo telefónico si corresponde
+                    telefono = read_row[nombre_campo_telefono]
+                else:
+                    # Actualizo los campos de datos correspondientes
+                    datos_contacto[campo] = read_row[campo]
+
+            row = {
+                'id': instance.id,
+                'telefono_contacto': telefono,
+                'datos_contacto': json.dumps(datos_contacto)
+            }
+        except Exception as e:
+            logger.error(e)
+            raise e
+
         super(ActualizarContactosResourceImport, self).import_obj(
             instance, row, dry_run, **kwargs)
 
@@ -627,18 +669,27 @@ class ActualizarContactosView(FormView):
 
         campana = Campana.objects.get(pk=pk_campana)
         metadata_bd = campana.bd_contacto.get_metadata()
-        campo_telefono = metadata_bd.nombre_campo_telefono
-        nombres_columnas_completas = metadata_bd.nombres_de_columnas
+        nombre_campo_telefono = metadata_bd.nombre_campo_telefono
+        # Voy a necesitar las posiciones de los campos en los "datos" del Contacto
+        index_campos_a_actualizar = {}
+        for campo in campos_a_actualizar:
+            pos = -1
+            if campo != nombre_campo_telefono:
+                pos = metadata_bd.nombres_de_columnas_de_datos.index(campo)
+            index_campos_a_actualizar[campo] = pos
+
         # import file
         agents_in_contacts_dat = csv_file.read()
         # we need the id in the columns
         imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'), format='csv')
         result_agente_en_contactos = ActualizarContactosResourceImport().import_data(
-            imported_data, nombres_columnas=campos_a_actualizar, campo_telefono=campo_telefono,
+            imported_data, campos_a_actualizar=campos_a_actualizar,
+            nombre_campo_telefono=nombre_campo_telefono,
             dry_run=False)
         result_contactos = ActualizarContactosBDResourceImport().import_data(
-            imported_data, nombres_columnas=nombres_columnas_completas,
-            campo_telefono=campo_telefono, dry_run=False)
+            imported_data, index_campos_a_actualizar=index_campos_a_actualizar,
+            nombre_campo_telefono=nombre_campo_telefono,
+            dry_run=False)
         if not result_agente_en_contactos.has_errors() and not result_contactos.has_errors():
             message = _('Se ha realizado la importación con éxito.')
             messages.success(self.request, message)
