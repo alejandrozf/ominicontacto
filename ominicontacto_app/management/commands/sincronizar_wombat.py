@@ -20,7 +20,7 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 
-from ominicontacto_app.services.dialer.wombat_service import WombatReloader
+from ominicontacto_app.services.dialer.wombat_api import WombatReloader
 
 logger = logging.getLogger(__name__)
 
