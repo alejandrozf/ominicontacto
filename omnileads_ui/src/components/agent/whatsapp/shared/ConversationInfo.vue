@@ -9,7 +9,7 @@
         v-if="conversationInfo.numMessages > 0"
         class="flex align-items-center justify-content-center"
       >
-        <Badge :value="conversationInfo.numMessages" />
+        <Badge v-if="conversationInfo.isMine && conversationInfo.numMessagesUnread > 0" :value="conversationInfo.numMessagesUnread" />
         <Button
           icon="pi pi-arrow-circle-left"
           class="p-button-secondary p-button-rounded ml-2"
@@ -87,6 +87,7 @@ export default {
                     campaignId: '',
                     campaignName: '',
                     numMessages: 0,
+                    numMessagesUnread: 0,
                     isMine: false,
                     isNew: false,
                     expire: null,

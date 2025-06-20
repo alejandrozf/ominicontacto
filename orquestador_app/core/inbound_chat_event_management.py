@@ -44,7 +44,8 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     'timestamp': timestamp,
                     'sender': sender,
                     'content': content,
-                    'type': type
+                    'type': type,
+                    'status': 'delivered'
                 }
             )
         if created_message or not message_inbound.conversation:

@@ -89,6 +89,7 @@ class ConversacionSerializer(serializers.Serializer):
     timestamp = serializers.DateTimeField()
     date_last_interaction = serializers.DateTimeField()
     message_number = serializers.SerializerMethodField()
+    message_unread = serializers.SerializerMethodField()
     messages = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
     line = serializers.SerializerMethodField()
@@ -106,6 +107,9 @@ class ConversacionSerializer(serializers.Serializer):
 
     def get_message_number(self, obj):
         return obj.mensajes.count()
+
+    def get_message_unread(self, obj):
+        return obj.mensajes.mensajes_recibidos().filter(status='delivered').count()
 
     def get_messages(self, obj):
         return MensajeListSerializer(obj.mensajes.all().order_by('timestamp', 'id'), many=True).data
@@ -229,6 +233,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             queryset = ConversacionWhatsapp.objects.all()
             instance = queryset.get(pk=pk)
+            instance.mensajes.mensajes_recibidos().update(status='read')
             serializer = ConversacionSerializer(instance)
             return response.Response(
                 data=get_response_data(
@@ -853,6 +858,20 @@ class ViewSet(viewsets.ViewSet):
                 chats_of_campaing, many=True)
             return response.Response(
                 data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+                status=status.HTTP_200_OK)
+        except Exception as e:
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={}, message=_(str(e))),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @decorators.action(detail=False,
+                       methods=["POST"])
+    def mark_as_read(self, request):
+        try:
+            MensajeWhatsapp.objects.filter(id__in=request.data).update(status='read')
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data=[]),
                 status=status.HTTP_200_OK)
         except Exception as e:
             return response.Response(

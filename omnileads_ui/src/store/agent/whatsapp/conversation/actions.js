@@ -331,5 +331,17 @@ export default {
                 message: 'Error al iniciar nueva conversacion'
             };
         }
+    },
+    async markMessageAsRead ({ commit }, data) {
+        try {
+            return await service.markMessageAsRead(data);
+        } catch (error) {
+            console.error('===> ERROR al marcar msg como leido');
+            console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'ERROR al marcar msg como leido'
+            };
+        }
     }
 };
