@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
 import logging as _logging
 from django.utils.translation import gettext as _
 from api_app.serializers.base import CampanaSerializer, GrupoSerializer
@@ -133,6 +132,81 @@ class ActualizaAgentesCampana(APIView):
             data['status'] = 'ERROR'
             data['message'] = _(u'No se pudo confirmar la creación del dialplan')
             return Response(data=data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ActualizarCampanasDeAgente(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        self.supervisor = request.user.get_supervisor_profile()
+        error, agente, campanas, campanas_supervisor = self.validar_parametros(request)
+        if error is not None:
+            return self._get_error_response(error)
+        error = self.actualizar_asignacion_de_campanas(agente, campanas, campanas_supervisor)
+        if error is not None:
+            return self._get_error_response(error)
+
+        data = {
+            'status': 'SUCCESS',
+            'message': _(u'Asignación de agente a campañas actualizada')}
+        return Response(data=data, status=status.HTTP_200_OK)
+
+    def validar_parametros(self, request):
+        agent_id = request.data.get('agent_id', None)
+        if agent_id is None:
+            return _('Parámetro "agent_id" requerido'), None, None, None
+        try:
+            agente = AgenteProfile.objects.get(id=agent_id)
+        except (AgenteProfile.DoesNotExist, ValueError):
+            return _('agente_id incorrecto'), None, None, None
+        # TODO: Verificar que el supervisor tiene permiso sobre el agente
+
+        campanas_ids = request.data.get('campaigns', None)
+        if not isinstance(campanas_ids, list):
+            return _('Parámetro "campaigns" de tipo "list" requerido'), None, None, None
+        campanas_ids = set(campanas_ids)
+
+        if self.supervisor.is_administrador:
+            campanas_supervisor = Campana.objects.obtener_actuales()
+        else:
+            campanas_supervisor = self.supervisor.campanas_asignadas_actuales()
+        campanas = campanas_supervisor.filter(id__in=campanas_ids)
+        # Verificar que las campañas existen o que el supervisor tiene permiso sobre ellas
+        if len(campanas_ids) > campanas.count():
+            ids_incorrectas = campanas_ids - set(campanas.values_list('id', flat=True))
+            return _('IDs de campañas inválidas: {0}').format(ids_incorrectas), None, None, None
+
+        campanas_supervisor = set(campanas_supervisor.values_list('id', flat=True))
+        return None, agente, campanas_ids, campanas_supervisor
+
+    def actualizar_asignacion_de_campanas(self, agente, campanas, campanas_supervisor):
+        # Obtener campanas previamente asignadas
+        previas = set(agente.campana_member.values_list('queue_name__campana__id', flat=True))
+        previas = previas.intersection(campanas_supervisor)
+        # Calcular campañas no asignadas todavia y asignar
+        nuevas = campanas - previas
+        # Calcular campañas a desasignar y desasignar
+        eliminar = previas - campanas
+
+        try:
+            queue_service = QueueMemberService()
+            if eliminar:
+                campanas_a_eliminar = Campana.objects.filter(id__in=eliminar)
+                queue_service.eliminar_agente_de_colas(agente, campanas_a_eliminar, eliminar)
+            if nuevas:
+                campanas_a_agregar = Campana.objects.filter(id__in=nuevas)
+                queue_service.agregar_agente_a_campanas(agente, campanas_a_agregar,
+                                                        verificar_sesion_activa=True)
+        except Exception:
+            logger.error('Error updating agent campaigns:', exc_info=True)
+            return _(u'Error asignando campañas. No se pudo confirmar la creación del dialplan')
+
+    def _get_error_response(self, message):
+        data = {'status': 'ERROR', 'message': message}
+        return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AgentesActivos(APIView):
