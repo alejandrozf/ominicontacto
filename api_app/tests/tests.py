@@ -148,7 +148,7 @@ class APITest(OMLBaseTest):
     def test_servicio_agentes_activos_usuario_no_logueado_no_accede_a_servicio(self):
         url = reverse('api_agentes_activos')
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertEqual(response.status_code, 403)
 
     def test_servicio_opciones_calificaciones_usuario_no_logueado_no_accede_a_servicio(self):
         url = reverse('api_campana_opciones_calificacion-list', args=[self.campana_activa.pk, 1])
@@ -266,7 +266,7 @@ class APITest(OMLBaseTest):
 
         return redis_mock_class
 
-    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    @patch('redis.Redis')
     def test_servicio_agentes_activos_funciona_correctamente(
             self, Redis):
         ag1_pk = self.agente_profile.pk
@@ -312,7 +312,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(ag1_value['id'], ag1_pk)
         self.assertEqual(ag2_value['id'], ag2.pk)
 
-    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    @patch('redis.Redis')
     def test_servicio_agentes_activos_no_muestra_entradas_status_vacio(
             self, Redis):
         ag1_pk = self.agente_profile.pk
@@ -351,7 +351,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(len(response_json), 1)
         self.assertEqual(ag_value['id'], ag1_pk)
 
-    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    @patch('redis.Redis')
     def test_servicio_agentes_activos_no_muestra_entradas_con_menos_campos(
             self, Redis):
         ag1_pk = self.agente_profile.pk
