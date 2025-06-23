@@ -793,10 +793,18 @@ urlpatterns = [
             login_required(
                 views_campana_preview.OrdenarAsignacionContactosView.as_view()),
             name="ordenar_entrega_contactos_preview"),
+    re_path(r'^campana_preview/actualizar_contactos/(?P<pk_campana>\d+)/$',
+            login_required(
+                views_campana_preview.ActualizarContactosView.as_view()),
+            name="actualizar_contactos_preview"),
     re_path(r'^campana_preview/descargar_asignacion_contactos/(?P<pk_campana>\d+)/$',
             login_required(
                 views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
             name="descargar_orden_contactos_actual_preview"),
+    re_path(r'^campana_preview/descargar_datos_contactos/(?P<pk_campana>\d+)/$',
+            login_required(
+                views_campana_preview.DescargarDatosContactosView.as_view()),
+            name="descargar_datos_contactos_preview"),
     re_path(r'^campana_preview/finalizar/$',
             login_required(
                 views_campana_preview.FinalizarCampanaPreviewView.as_view()),

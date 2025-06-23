@@ -42,7 +42,5 @@ echo "WA mkdir zip calrec dir with omnileads ownership"
 mkdir -p /opt/omnileads/asterisk/var/spool/asterisk/
 chown -R omnileads:omnileads /opt/omnileads/asterisk/var/spool/asterisk/
 echo "Init uWSGI"
-su omnileads -c "$COMMAND listening_whatsapp_events &"
 exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --http-socket ${DJANGO_HOSTNAME}:${UWSGI_PORT} --stats ${DJANGO_HOSTNAME}:9191 --stats-http
-# exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini --socket ${DJANGO_HOSTNAME}:${UWSGI_PORT} --stats ${DJANGO_HOSTNAME}:9191 --stats-http
 

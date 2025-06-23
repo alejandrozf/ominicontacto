@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
 from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
 from django.urls import include, re_path, path
@@ -31,7 +30,7 @@ from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
     SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
-    SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
+    SupervisorCampanasActivasViewSet, AgentesStatusAPIView, UsuariosAgentesAPIView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
     LlamadasDeCampanaView, CalificacionesDeCampanaView,
     ReasignarAgendaContactoView, DataAgendaContactoView,
@@ -41,7 +40,7 @@ from api_app.views.supervisor import (
     ExportarCSVResultadosBaseContactados, DashboardSupervision, AuditSupervisor,
     EnviarMensajeAgentesView)
 from api_app.views.campaigns.add_agents_to_campaign import (
-    AgentesCampana, ActualizaAgentesCampana, AgentesActivos)
+    AgentesCampana, ActualizaAgentesCampana, ActualizarCampanasDeAgente, AgentesActivos)
 from api_app.views.pause_set import (
     ConjuntoDePausaCreate, ConjuntoDePausaDelete, ConjuntoDePausaDetalle,
     ConjuntoDePausaList, ConjuntoDePausaUpdate, ConfiguracionDePausaCreate,
@@ -155,21 +154,25 @@ urlpatterns = [
             EnviarKeyRegistro.as_view(),
             name='reenviar_key_registro'),
     # ###########   SUPERVISOR    ############ #
-    re_path(r'api/v1/supervisor/campanas',
-            SupervisorCampanasActivasViewSet.as_view(),
-            name='api_campanas_de_supervisor'),
-    re_path(r'api/v1/supervision/agentes',
-            login_required(AgentesStatusAPIView.as_view()),
-            name='api_agentes_activos'),
+    path('api/v1/supervision/campaigns/',
+         SupervisorCampanasActivasViewSet.as_view(),
+         name='api_campanas_de_supervisor'),
+    # Verificar uso api_agentes_activos (parece haber sidousado en supervision):
+    path('api/v1/supervision/agents/',
+         AgentesStatusAPIView.as_view(),
+         name='api_agentes_activos'),
+    path('api/v1/supervision/agents_users/',
+         UsuariosAgentesAPIView.as_view(),
+         name='api_agents_users'),
     re_path(r'api/v1/supervision/status_campanas/entrantes/$',
             login_required(StatusCampanasEntrantesView.as_view()),
             name='api_supervision_campanas_entrantes'),
     re_path(r'api/v1/supervision/status_campanas/salientes/$',
             login_required(StatusCampanasSalientesView.as_view()),
             name='api_supervision_campanas_salientes'),
-    re_path(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
-            login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
-            name='api_accion_sobre_agente'),
+    path('api/v1/supervision/action_on_agent/<int:pk>/',
+         InteraccionDeSupervisorSobreAgenteView.as_view(),
+         name='api_accion_sobre_agente'),
     re_path(r'api/v1/supervision/enviar_mensaje_agentes/$',
             login_required(EnviarMensajeAgentesView.as_view()),
             name='api_enviar_mensaje_agentes'),
@@ -214,9 +217,12 @@ urlpatterns = [
     re_path(r'api/v1/campaign/(?P<pk_campana>\d+)/agents/$',
             AgentesCampana.as_view(),
             name='api_agents_campaign'),
-    re_path(r'api/v1/campaign/agents_update/$',
-            ActualizaAgentesCampana.as_view(),
-            name='api_update_agents_campaign'),
+    path('api/v1/campaign/agents_update/',
+         ActualizaAgentesCampana.as_view(),
+         name='api_update_campaign_agents'),
+    path('api/v1/agent/campaigns_update/',
+         ActualizarCampanasDeAgente.as_view(),
+         name='api_update_agent_campaigns'),
     re_path(r'api/v1/active_agents/$',
             AgentesActivos.as_view(),
             name='api_active_agents'),

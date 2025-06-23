@@ -16,18 +16,14 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from __future__ import unicode_literals
-
-import redis
-
 from time import time
 
-from django.conf import settings
 from django.utils.translation import gettext as _
 
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.agent.presence import AgentPresenceManager
+from ominicontacto_app.services.redis.connection import create_redis_connection
 from ominicontacto_app.models import AgenteProfile
 
 LONGITUD_MINIMA_HEADERS = 4
@@ -52,9 +48,7 @@ class SupervisorActivityAmiManager(object):
 
     def obtener_agentes_activos(self):
         agentes_activos = []
-        redis_connection = redis.Redis(
-            host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
-            decode_responses=True)
+        redis_connection = create_redis_connection()
         # TODO: cambiar a usar el metodo 'scan' que es mas eficiente con datos muy grandes
         # y realiza una especie de paginación
         keys_agentes = redis_connection.keys('OML:AGENT:*')
@@ -81,12 +75,11 @@ class SupervisorActivityAmiManager(object):
                 agentes_activos.append(agente_info)
         return agentes_activos
 
-    def ejecutar_accion_sobre_agente(self, supervisor, agente_id, exten):
-        agente_profile = AgenteProfile.objects.get(id=agente_id)
+    def ejecutar_accion_sobre_agente(self, supervisor, agente_profile, exten):
         if exten not in self.EXTENSIONES:
             return _("La acción indicada no existe")
         channel = "PJSIP/{0}".format(supervisor.sip_extension)
-        channel_vars = {'OMLAGENTID': str(agente_id), }
+        channel_vars = {'OMLAGENTID': str(agente_profile.id), }
         originate_data = [channel, exten, 'oml-sup-actions', channel_vars]
         # Genero la llamada via originate por AMI
         if exten == "AGENTLOGOUT":

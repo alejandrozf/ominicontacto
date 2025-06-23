@@ -2404,8 +2404,24 @@ class OrdenarAsignacionContactosForm(forms.Form):
             attrs={'id': 'campoDesactivacionImport'}))
 
 
-class CampanaPreviewCampoDesactivacion(forms.ModelForm):
+class ActualizarContactosPreviewForm(forms.Form):
+    """Formulario para import cambios a contactos en campaña Preview
+    desde un archivo .csv
+    """
+    csv_actualizaciones_contactos = forms.FileField()
+    campos_a_actualizar = forms.MultipleChoiceField(
+        required=True, widget=forms.CheckboxSelectMultiple(
+            attrs={'id': 'camposActualizar'}))
 
+    def __init__(self, *args, **kwargs):
+        super(ActualizarContactosPreviewForm, self).__init__(*args, **kwargs)
+        campana = kwargs['initial']['campana']
+        nombres_columnas = campana.bd_contacto.get_metadata().nombres_de_columnas
+        nombres_columnas_choices = [(i, i) for i in nombres_columnas]
+        self.fields['campos_a_actualizar'].choices = nombres_columnas_choices
+
+
+class CampanaPreviewCampoDesactivacion(forms.ModelForm):
     campo_desactivacion = forms.ChoiceField(
         required=False, widget=forms.Select(
             attrs={'class': 'form-control', 'id': 'campoDesactivacion'}))

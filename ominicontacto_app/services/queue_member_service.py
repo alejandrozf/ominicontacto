@@ -26,6 +26,7 @@ from ominicontacto_app.services.asterisk.redis_database import CampanasDeAgenteF
 from ominicontacto_app.services.asterisk.redis_database import CampaignAgentsFamily
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
+from ominicontacto_app.services.redis.connection import create_redis_connection
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ class QueueMemberService(object):
             self.ami_client.connect()
         self.campanas_de_agente_family = CampanasDeAgenteFamily()
         self.campaign_agents_family = CampaignAgentsFamily()
+        self.redis_connection = None
 
     def disconnect(self):
         self.ami_client.disconnect()
@@ -86,6 +88,18 @@ class QueueMemberService(object):
                 self._remover_agente_cola_asterisk(campana, agente)
             self.campanas_de_agente_family.borrar_agente_de_campana(campana.id, agente.id)
             self.campaign_agents_family.borrar_agente_de_campana(campana.id, agente.id)
+
+    def eliminar_agente_de_colas(self, agente, campanas, campanas_ids):
+        QueueMember.objects.filter(
+            member=agente,
+            queue_name__campana_id__in=campanas_ids).delete()
+        sesion_agente_activa = self.sesion_agente_esta_activa(agente)
+        for campana in campanas:
+            if sesion_agente_activa:
+                self._remover_agente_cola_asterisk(campana, agente)
+        self.campanas_de_agente_family.borrar_agente_de_campanas(campanas_ids, agente.id)
+        for campana_id in campanas_ids:
+            self.campaign_agents_family.borrar_agente_de_campana(campana_id, agente.id)
 
     def _remover_agente_cola_asterisk(self, campana, agente):
         queue = campana.get_queue_id_name()
@@ -136,10 +150,9 @@ class QueueMemberService(object):
 
     def agregar_agente_a_campanas(self, agente, campanas, verificar_sesion_activa=False):
         """ Agrega el agente a multiples campañas """
-        agregar_en_asterisk = False
+        sesion_agente_activa = False
         if verificar_sesion_activa:
-            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-            agregar_en_asterisk = agente.sip_extension in sip_agentes_logueados
+            sesion_agente_activa = self.sesion_agente_esta_activa(agente)
         try:
             campanas_ids = []
             for campana in campanas:
@@ -149,10 +162,18 @@ class QueueMemberService(object):
                     penalty=0,
                     queue_name=campana.queue_campana,
                     defaults=QueueMember.get_defaults(agente, campana))
-                if agregar_en_asterisk:
-                    self._adicionar_agente_cola_asterisk(
-                        agente, queue_member, campana)
+                if sesion_agente_activa:
+                    self._adicionar_agente_cola_asterisk(agente, queue_member, campana)
             self.campanas_de_agente_family.registrar_campanas_a_agente(agente.id, campanas_ids)
             self.campaign_agents_family.registrar_campanas_a_agente(campanas_ids, agente.id)
         except Exception as e:
             logger.exception(f'Error al adicionar agente a la cola de la campaña {e.__str__()}')
+
+    def sesion_agente_esta_activa(self, agente):
+        self._get_redis_connection()
+        status = self.redis_connection.hget(f'OML:AGENT:{agente.id}', 'STATUS')
+        return status and status != 'OFFLINE'
+
+    def _get_redis_connection(self):
+        if not self.redis_connection:
+            self.redis_connection = create_redis_connection()
