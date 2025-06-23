@@ -8,7 +8,7 @@
 
 ## Changed
 
-- No changes in this release
+- oml-782 Whatsapp Events Listener runs in another container.
 
 ## Fixed
 
