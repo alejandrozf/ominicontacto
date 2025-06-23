@@ -25,7 +25,6 @@ from collections import defaultdict
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext as _
-from django.core.paginator import Paginator
 
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from ominicontacto_app.models import (
@@ -706,12 +705,26 @@ class BlacklistFamily(object):
             if blacklist is None:
                 return
 
-        qs = blacklist.contactosblacklist.order_by('id').values_list('telefono', flat=True)
-        paginator = Paginator(qs, 10000, allow_empty_first_page=False)
+        # Armo batchs de tamaño manejable usando un iterator
+        qs = blacklist.contactosblacklist.order_by('id').values_list(
+            'telefono', flat=True).iterator(chunk_size=10000)
 
-        for page_num in paginator.page_range:
-            telefonos = paginator.page(page_num).object_list
-            self.redis_connection.sadd(self.BLACKLIST_KEY, *telefonos)
+        pipeline = self.redis_connection.pipeline()
+        batch = []
+        batch_size = 10000
+
+        for telefono in qs:
+            batch.append(telefono)
+            if len(batch) >= batch_size:
+                pipeline.sadd(self.BLACKLIST_KEY, *batch)
+                batch.clear()
+
+        # Última carga
+        if batch:
+            pipeline.sadd(self.BLACKLIST_KEY, *batch)
+
+        # Ejecutar todo en Redis
+        pipeline.execute()
 
     def delete_family(self):
         self.get_redis_connection()
