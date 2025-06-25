@@ -162,9 +162,10 @@ class WombatService():
             state = response['state']
             if 'uptimeMs' in response:
                 uptime = response['uptimeMs']
-            return (state, uptime)
+            return state, uptime
         else:
-            logger.warn(_("No se pudo obtener el estado del dialer"))
+            logger.warning(_("No se pudo obtener el estado del dialer"))
+            return None, None
 
 
 class WombatReloader(object):
@@ -173,76 +174,114 @@ class WombatReloader(object):
     STATE_STARTING = 'STARTING'
     STATE_READY = 'READY'
 
+    def __init__(self):
+        self.service = WombatService()
+
     def reload(self):
+        """ Inicia el proceso de reload """
         # Obtener estado "/api/engine/?op=STATE"
-        service = WombatService()
-        config_constance.WOMBAT_DIALER_STATE = self.STATE_DOWN
-        response = service.list_config_wombat(WombatService.STOP_SERVICE_URL)
-        if response is None or 'state' not in response:
-            logger.warn('No se pudo reiniciar Wombat Dialer.')
+        if config_constance.WOMBAT_DIALER_STATE == self.STATE_DOWN:
+            self._start_dialer_for_reload()
+            return
+        stop_status = self.stop_dialer()
+        if stop_status is None:
+            logger.warning(
+                'No se pudo reiniciar Wombat Dialer. Error en _start_dialer_for_reload')
             return
         time.sleep(5)
         self.start_tries = 0
-        self.start_dialer(service)
+        self._start_dialer_for_reload()
 
-    def start_dialer(self, service):
+    def _start_dialer_for_reload(self):
         # Sólo lo inicia si el estado es "DOWN"
         # Si tarda mucho los unicos otros estados que deberia tener es
         # "TERMINATION_REQD" o "TIMEOUT_NO_REPLY"
-        state, uptime = service.get_dialer_state()
-        if state is not None and state == 'DOWN':
+        logger.debug('Starteando')
+        state, uptime = self.service.get_dialer_state()
+        if state is not None and state == self.STATE_DOWN:
             config_constance.WOMBAT_DIALER_STATE = self.STATE_STARTING
-            response = service.list_config_wombat(WombatService.START_SERVICE_URL)
+            response = self.service.list_config_wombat(WombatService.START_SERVICE_URL)
             if 'state' in response and response['state'] == self.STATE_READY:
                 uptime = response['uptimeMs']
                 config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
-                self.save_datetime_since_up(uptime)
-                print('Wombat Reload OK')
+                self.save_update_datetime(uptime)
+                logger.debug('Wombat Reload OK')
                 return
             time.sleep(5)
             self.confirm_tries = 0
-            self.confirm_dialer_is_ready(service)
+            self._confirm_dialer_is_ready()
+        elif state is not None and state == self.STATE_READY:
+            config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
+            self.save_update_datetime(uptime)
+            return
         else:
-            # Pruebo hacer el start varias veces hasta cancelar.
+            # "TERMINATION_REQD" o "TIMEOUT_NO_REPLY" Espero a ver si deriva en DOWN o READY
+            # Intento varias veces hasta cancelar.
             self.start_tries += 1
             if self.start_tries > 5:
-                logger.warn('No se pudo reiniciar Wombat Dialer. Error en start_dialer')
+                logger.warning(
+                    'No se pudo reiniciar Wombat Dialer. Error en _start_dialer_for_reload')
                 return
             time.sleep(5)
-            self.start_dialer(service)
+            self._start_dialer_for_reload()
 
-    def confirm_dialer_is_ready(self, service):
+    def _confirm_dialer_is_ready(self):
         # Termina cuando wombat dialer llega al estado "READY"
         # Si tarda mucho el unico otro estado que deberia tener es "TIMEOUT_NO_REPLY" (?)
-        state, uptime = service.get_dialer_state()
+        state, uptime = self.service.get_dialer_state()
         if state == 'READY':
             self.config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
-            self.save_datetime_since_up(uptime)
+            self.save_update_datetime(uptime)
             return
         else:
             # Espero la confirmación un cierto numero de veces
             self.confirm_tries += 1
             if self.confirm_tries > 5:
-                logger.warn('No se pudo reiniciar Wombat Dialer. Error en confirm_dialer_is_ready')
+                logger.warning(
+                    'No se pudo reiniciar Wombat Dialer. Error en confirm_dialer_is_ready')
                 return
             time.sleep(5)
-            self.confirm_dialer_is_ready(service)
+            self._confirm_dialer_is_ready()
 
     def synchronize_local_state(self):
-        service = WombatService()
-        state, uptime = service.get_dialer_state()
-        if state == 'READY':
+        """ Obtiene el estado de Wombat y actualiza el valor en Constance """
+        state, uptime = self.service.get_dialer_state()
+        if state is None:
+            logger.warning('Error al buscar estado de wombat: ', state)
+            return None, None, None
+        if state == self.STATE_READY:
             config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
-            self.save_datetime_since_up(uptime)
-            print('Wombat Status: READY')
+            self.save_update_datetime(uptime)
+            return self.STATE_READY, state, uptime
         elif state in ['TIMEOUT_NO_REPLY', 'TERMINATION_REQD', self.STATE_DOWN]:
             config_constance.WOMBAT_DIALER_STATE = self.STATE_DOWN
-            print('Wombat Status: DOWN. '
-                  'Verifique el estado del servicio Wombat Dialer y vuelva a correr el comando.')
+            self.save_update_datetime()
+            return self.STATE_DOWN, state, uptime
         else:
-            print('Error al buscar estado de wombat: ', state)
+            logger.warning('Error al buscar estado de wombat: ', state)
+            return None, None, None
 
-    def save_datetime_since_up(self, uptime):
-        since = now() - timedelta(microseconds=uptime)
-        config_constance.WOMBAT_DIALER_UP_SINCE = since
+    def stop_dialer(self):
+        config_constance.WOMBAT_DIALER_STATE = self.STATE_DOWN
+        response = self.service.list_config_wombat(WombatService.STOP_SERVICE_URL)
+        if response is None or 'state' not in response:
+            logger.warning('Wombat Dialer STOP Failure.')
+            logger.warning(response)
+            return None
+        return response['state']
+
+    def force_start_dialer(self):
+        response = self.service.list_config_wombat(WombatService.START_SERVICE_URL)
+        if response and 'state' in response and response['state'] == self.STATE_READY:
+            uptime = response['uptimeMs']
+            config_constance.WOMBAT_DIALER_STATE = self.STATE_READY
+            self.save_update_datetime(uptime)
+        else:
+            config_constance.WOMBAT_DIALER_STATE = self.STATE_DOWN
+            self.save_update_datetime()
+        return response
+
+    def save_update_datetime(self, uptime=0):
+        since = now() - timedelta(milliseconds=uptime)
+        config_constance.WOMBAT_DIALER_UPDATE_DATETIME = since
         return since

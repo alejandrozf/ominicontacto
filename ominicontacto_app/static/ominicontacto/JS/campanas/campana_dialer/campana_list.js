@@ -124,6 +124,9 @@ class WombatReloader {
         if (this.wombat_state != undefined) {
             var self = this;
             $('#submit_restart_wombat').click(function() {self.reload_wombat();});
+            $('#submit_stop_wombat').click(function() {self.stop_wombat();});
+            $('#submit_start_wombat').click(function() {self.start_wombat();});
+            $('#submit_sync_wombat').click(function() {self.getWombatState();});
             this.configureButtons();
         }
     }
@@ -134,6 +137,12 @@ class WombatReloader {
         }
         else {
             this.disableReload();
+            let delta = $('#wombat_uptime').html();
+            delta = delta.replaceAll(new RegExp('[${():}]', 'gi'), '');
+            delta = delta.replace(/^.*,(?=[^,]*$)/, '');
+            if (delta > 30){
+                $('#submit_restart_wombat').prop('disabled', false);
+            }
         }
     }
 
@@ -149,7 +158,7 @@ class WombatReloader {
 
     reloadingStart(data) {
         var self = this;
-        this.wombat_state = data['WD-state'];
+        this.wombat_state = data['OML-state'];
         setTimeout(function() { self.getReloadState(); }, 10000);
     }
 
@@ -163,7 +172,7 @@ class WombatReloader {
             startWindowRefresh();
         }
         else {
-            this.wombat_state = data['WD-state'];
+            this.wombat_state = data['OML-state'];
             console.log(data['message']);
             setTimeout(function() { self.getReloadState(); }, 10000);
         }
@@ -178,8 +187,9 @@ class WombatReloader {
     }
 
     checkReloadState(data) {
-        if (data['WD-state'] == STATE_READY) {
-            this.wombat_state = data['WD-state'];
+console.log(data)
+        if (data['OML-state'] == STATE_READY) {
+            this.wombat_state = data['OML-state'];
             $('#wombat_uptime').html('(' + data['uptime'] + ')');
             this.reloaded();
         }
@@ -189,21 +199,80 @@ class WombatReloader {
         }
     }
 
+    getWombatState() {
+        var self = this;
+        oml_api.getWombatState(
+            function(data) { self.updateState(data); },
+            function(data) { self.commandError(data); }
+        );
+    }
+
+    stop_wombat() {
+        var self = this;
+        oml_api.stopWombatDialer(
+            function(data) { self.updateState(data); },
+            function(data) { self.commandError(data); }
+        );
+    }
+
+    start_wombat() {
+        var self = this;
+        oml_api.startWombatDialer(
+            function(data) { self.updateState(data); },
+            function(data) { self.commandError(data); }
+        );
+    }
+
+    updateState(data) {
+        console.log('UPDATE STATE:');
+        console.log(data);
+        console.log(data['state']);
+        $('#wombat_uptime').html('(' + data['uptime'] + ')');
+        if (data['state'] == 'READY'){
+            this.enableReload();
+            $('#submit_stop_wombat').prop('disabled', false);
+            $('#submit_start_wombat').prop('disabled', true);
+        }
+        else if (data['state'] == 'DOWN'){
+            this.disableReload();
+            $('#wombat_state_label').html(gettext('Detenido'));
+            $('#submit_stop_wombat').prop('disabled', true);
+            $('#submit_start_wombat').prop('disabled', false);
+        }
+        else {
+            this.disableReload();
+            $('#wombat_state_label').html(data['state']);
+            $('#submit_stop_wombat').prop('disabled', false);
+            $('#submit_start_wombat').prop('disabled', false);
+        }
+
+    }
+
+    commandError(error) {
+        $.growl.error({
+            'title': gettext('Error en el comando'),
+            'message': gettext('Fallo en la ejecución del comando.'),
+            'duration': 5000});
+    }
+
+
     reloaded(data) {
         this.enableReload();
         startWindowRefresh();
     }
 
     enableReload() {
-        $('#wombat_ready').show();
-        $('#wombat_reloading').hide();
+        $('#wombat_state_label').html(gettext('Listo'));
+        $('#wombat_state_label').css('color', 'green');
         $('#submit_restart_wombat').prop('disabled', false);
+        
     }
 
     disableReload() {
-        $('#wombat_ready').hide();
-        $('#wombat_reloading').show();
+        $('#wombat_state_label').html(gettext('Refrescando'));
+        $('#wombat_state_label').css('color', 'red');
         $('#submit_restart_wombat').prop('disabled', true);
     }
+
 }
 
