@@ -20,7 +20,7 @@ import json
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from orquestador_app.core.apis_urls import (
-    URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES)
+    URL_SEND_TEMPLATE, META_URL_SEND_MESSAGE, URL_SYNC_TEMPLATES)
 from whatsapp_app.models import MensajeWhatsapp
 
 
@@ -171,13 +171,16 @@ def send_text_message(line, destination, message):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
         data = {
-            "channel": "whatsapp",
-            "source": line.numero,
-            "src.name": line.configuracion['app_name'],
-            "destination": destination,
-            "message": message['text']
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": destination,
+            "type": "text",
+            "text": {
+                "preview_url": False,
+                "body": message['text']
+            }
         }
-        response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
+        response = requests.post(META_URL_SEND_MESSAGE, headers=headers, data=data)
         return response.json()
     except Exception as e:
         print("send_text_message >>>>>>", e)

@@ -20,8 +20,8 @@ import json
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from orquestador_app.core.apis_urls import (
-    URL_SEND_TEMPLATE, URL_SEND_MESSAGE, URL_SYNC_TEMPLATES)
-from whatsapp_app.models import MensajeWhatsapp
+    URL_SEND_TEMPLATE,  URL_SEND_MESSAGE, META_URL_SEND_MESSAGE, URL_SYNC_TEMPLATES, META_SYNC_TEMPLATES)
+from whatsapp_app.models import MensajeWhatsapp, ConfiguracionProveedor
 
 
 headers = {
@@ -29,15 +29,26 @@ headers = {
     "Content-Type": "application/x-www-form-urlencoded"
 }
 
+def send_text_message(line, destination, message):
+    if line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+        response = meta_send_text_message(line, destination, message)
+        if response.status_code==200:
+            return response.json()['messages'][0]['id']
+    elif line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+        response = gupshup_send_text_message(line, destination, message).json()
+        if response['status'] == "submitted":
+            return response['messageId']
+    return None
+
 
 def autoresponse_welcome(line, conversation, timestamp):
     try:
         message = line.mensaje_bienvenida.configuracion
         if message:
-            response = send_text_message(line, conversation.destination, message)
-            if response['status'] == "submitted":
+            message_id = send_text_message(line, conversation.destination, message)
+            if message_id:
                 MensajeWhatsapp.objects.get_or_create(
-                    message_id=response['messageId'],
+                    message_id=message_id,
                     conversation=conversation,
                     defaults={
                         'origen': line.numero,
@@ -144,30 +155,63 @@ def autoresponse_out_of_time(line, conversation, timestamp):
         print("autoresponse_out_of_time >>>>>>>>", e)
 
 
-def send_template_message(line, destination, template_id, template_tipo, params, media_id=None):
+def send_template_message(line, destination, template, params):
+    if line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+        response = meta_send_template_message(line, destination, template, params)
+        if response.status_code==200:
+            return response.json()['messages'][0]['id']
+    elif line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+        response = gupshup_send_template_message(line, destination, template, params).json()
+        if response['status'] == "submitted":
+            return response['messageId']
+    return None
+
+def gupshup_send_template_message(line, destination, template, params):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
         data = {
             'source': line.numero,
             'destination': destination,
-            'template': json.dumps({"id": template_id, "params": params})
+            'template': json.dumps({"id": template.template_id, "params": params})
         }
-        if template_tipo == 'IMAGE':
-            message = json.dumps({'image': {'id': media_id}, 'type': template_tipo})
+        if template.tipo == 'IMAGE':
+            message = json.dumps({'image': {'id': template.identificador_media}, 'type': 'IMAGE'})
             data.update({"message": message})
-        elif template_tipo == 'DOCUMENT':
-            message = json.dumps({'document': {'id': media_id, 'link': ''}, 'type': template_tipo})
+        elif template.tipo == 'DOCUMENT':
+            message = json.dumps({'document': {'id': template.identificador_media, 'link': ''}, 'type': 'DOCUMENT'})
             data.update({"message": message})
-        elif template_tipo == 'VIDEO':
-            message = json.dumps({'video': {'id': media_id, 'link': ''}, 'type': template_tipo})
+        elif template.tipo == 'VIDEO':
+            message = json.dumps({'video': {'id': template.identificador_media, 'link': ''}, 'type': 'VIDEO'})
             data.update({"message": message})
         response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data)
-        return response.json()
+        return response
     except Exception as e:
         print("error en send_template_message >>>>>>>", e)
 
 
-def send_text_message(line, destination, message):
+def meta_send_template_message(line, destination, template, params):
+    try:
+        headers.update({'Authorization': 'Bearer ' + line.proveedor.configuracion['access_token']})
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": destination,
+            "type": "template",
+            "template": json.dumps({
+                "name": template.nombre,
+                "language":  {
+                    "code": template.idioma
+                }
+            })
+        }
+        print(META_URL_SEND_MESSAGE.format(line.numero))
+        response = requests.post(META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=data)
+        print("-----", response.status_code)
+        return response
+    except Exception as e:
+        print("send_text_message >>>>>>", e)
+
+def gupshup_send_text_message(line, destination, message):
     try:
         headers.update({'apikey': line.proveedor.configuracion['api_key']})
         data = {
@@ -179,6 +223,26 @@ def send_text_message(line, destination, message):
         }
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
         return response.json()
+    except Exception as e:
+        print("send_text_message >>>>>>", e)
+
+
+def meta_send_text_message(line, destination, message):
+    try:
+        headers.update({'Authorization': 'Bearer ' + line.proveedor.configuracion['access_token']})
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": destination,
+            "type": "text",
+            "text": json.dumps({
+                "preview_url": False,
+                "body": message['text']
+            })
+        }
+        response = requests.post(META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=data)
+        print(response.status_code)
+        return response
     except Exception as e:
         print("send_text_message >>>>>>", e)
 
@@ -201,11 +265,20 @@ def send_multimedia_file(line, destination, message):
 
 def sync_templates(line):
     try:
-        app_id = line.configuracion['app_id']
-        url = URL_SYNC_TEMPLATES.format(app_id)
-        headers.update({'apikey': line.proveedor.configuracion['api_key']})
-        response = requests.get(url, headers=headers)
-        templates = json.loads(response.text)['templates']
-        return templates
+        if line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+            waba_id = line.configuracion['waba_id']
+            url = META_SYNC_TEMPLATES.format(waba_id)
+            headers.update({'Authorization': 'Bearer ' + line.proveedor.configuracion['access_token']})
+            response = requests.get(url, headers=headers)
+            templates = response.json()['data']
+            return templates
+        elif line.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+            app_id = line.configuracion['app_id']
+            url = URL_SYNC_TEMPLATES.format(app_id)
+            headers.update({'apikey': line.proveedor.configuracion['api_key']})
+            response = requests.get(url, headers=headers)
+            templates = json.loads(response.text)['templates']
+            return templates
+        return []
     except Exception as e:
         print(e)

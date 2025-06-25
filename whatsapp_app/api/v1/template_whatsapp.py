@@ -29,7 +29,7 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
-from orquestador_app.core.gupshup_send_menssage import sync_templates
+from orquestador_app.core.send_menssage import sync_templates
 from orquestador_app.core.media_management import get_media_url
 
 
@@ -46,6 +46,7 @@ class ListSerializer(serializers.Serializer):
     created = serializers.CharField(source='creado')
     updated = serializers.CharField(source='modificado')
     type = serializers.CharField(source='tipo')
+    category = serializers.CharField(source='categoria')
     is_active = serializers.BooleanField(default=True)
 
 
@@ -60,6 +61,7 @@ class RetrieveSerializer(serializers.Serializer):
     created = serializers.CharField(source='creado')
     updated = serializers.CharField(source='modificado')
     type = serializers.CharField(source='tipo')
+    category = serializers.CharField(source='categoria')
     is_active = serializers.BooleanField(default=True)
 
 
@@ -109,8 +111,8 @@ class ViewSet(viewsets.ViewSet):
         try:
             linea = Linea.objects.get(pk=linea_pk)
             proveedor = linea.proveedor
+            templates = sync_templates(linea)
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
-                templates = sync_templates(linea)
                 for attrs in templates:
                     containerMeta = json.loads(attrs['containerMeta'])
                     linea.templates_whatsapp.update_or_create(
@@ -128,6 +130,34 @@ class ViewSet(viewsets.ViewSet):
                             'link_media':
                                 get_media_url(attrs['appId'], containerMeta['mediaId'])
                                 if 'mediaId' in containerMeta else ''
+                        }
+                    )
+            if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+                templates = sync_templates(linea)
+                print(templates)
+                for attrs in templates:
+                    tipo = ''
+                    texto = ''
+                    for comp in attrs['components']:
+                        comp_type = comp.get('type')
+                        if comp_type=='HEADER':
+                            tipo = comp.get('format')
+                        if comp_type=='BODY':
+                            texto = comp.get('text')
+                    linea.templates_whatsapp.update_or_create(
+                        identificador=attrs['id'], defaults={
+                            'nombre': attrs['name'],
+                            'texto': texto,
+                            'idioma': attrs['language'],
+                            'status': attrs['status'],
+                            'tipo': tipo,
+                            'categoria': attrs['category'],
+                            'is_active': attrs['status'] == 'APPROVED'
+                            # 'identificador_media':
+                            #     containerMeta['mediaId'] if 'mediaId' in containerMeta else '',
+                            # 'link_media':
+                            #     get_media_url(attrs['appId'], containerMeta['mediaId'])
+                            #     if 'mediaId' in containerMeta else ''
                         }
                     )
             return response.Response(

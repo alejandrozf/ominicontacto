@@ -128,7 +128,7 @@ async def meta_handler_messages(line, payloads):
                 message_id = value_object['messages'][0]['id']
                 origen = value_object['messages'][0]['from']
                 type = value_object['messages'][0]['type']
-                content = value_object['messages'][0][type]
+                content = {type: value_object['messages'][0][type]['body']}
                 context = value_object['messages']['context'] if type == 'list_reply' else {}
                 sender = value_object['contacts'][0]
                 await inbound_chat_event(
