@@ -23,6 +23,7 @@ from orquestador_app.core.asyncio import Loop
 from orquestador_app.core.asyncio import create_task
 from orquestador_app.core.outbound_chat_event_management import outbound_chat_event
 from orquestador_app.core.inbound_chat_event_management import inbound_chat_event
+from orquestador_app.core.media_management import meta_get_media_content
 from whatsapp_app.models import Linea, ConfiguracionProveedor
 
 from django.utils import timezone
@@ -100,11 +101,6 @@ async def meta_handler_messages(line, payloads):
         for msg in payloads:
             msg_json = loads(msg)
             value_object = msg_json['entry'][0]['changes'][0]['value']
-            if 'errors' in value_object:
-                await outbound_chat_event(
-                    timestamp, message_id, status, expire=expire,
-                    destination=destination, error_ex=error_ex)
-
             if 'statuses' in value_object:
                 timestamp = datetime.fromtimestamp(
                     int(value_object['statuses'][0]['timestamp']), timezone.get_current_timezone())
@@ -128,8 +124,16 @@ async def meta_handler_messages(line, payloads):
                 message_id = value_object['messages'][0]['id']
                 origen = value_object['messages'][0]['from']
                 type = value_object['messages'][0]['type']
-                content = {type: value_object['messages'][0][type]['body']}
-                context = value_object['messages']['context'] if type == 'list_reply' else {}
+                context = None
+                if type == 'text':
+                    content = {type: value_object['messages'][0][type]['body']}
+                if type in ['video', 'image', 'document']:
+                    content = meta_get_media_content(line, type, value_object['messages'][0])
+                if type == 'interactive':
+                    context = value_object['messages'][0]['context']
+                    if 'list_reply' in value_object['messages'][0]['interactive']:
+                        type = 'list_reply'
+                        content = value_object['messages'][0]['interactive']['list_reply']
                 sender = value_object['contacts'][0]
                 await inbound_chat_event(
                     line,

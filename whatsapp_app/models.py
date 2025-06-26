@@ -104,7 +104,8 @@ class TemplateWhatsapp(models.Model):
     nombre = models.CharField(max_length=100)
     identificador = models.CharField(max_length=100)  # id gupshup
     identificador_media = models.CharField(max_length=100, blank=True, null=True)
-    link_media = models.CharField(max_length=200, blank=True, null=True)
+    link_media = models.CharField(max_length=500, blank=True, null=True)
+    texto_header = models.TextField(blank=True, null=True, default="")
     texto = models.TextField(blank=True, null=True)
     idioma = models.CharField(max_length=100)
     status = models.CharField(max_length=100)

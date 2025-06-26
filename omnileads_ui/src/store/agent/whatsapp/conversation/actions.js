@@ -133,7 +133,7 @@ export default {
     },
     async agtWhatsCoversationSendWhatsappTemplateMessage (
         { commit },
-        { conversationId = null, templateId = null, params, phoneLine, messages, $t }
+        { conversationId = null, templateId = null, params_header, params, phoneLine, messages, $t }
     ) {
         try {
             if (!conversationId || !templateId) {
@@ -144,7 +144,7 @@ export default {
             }
             const result = await service.sendWhatsappTemplateMessage(
                 conversationId,
-                { template_id: templateId, params }
+                { template_id: templateId, params_header, params }
             );
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
@@ -168,7 +168,7 @@ export default {
     },
     async agtWhatsCoversationReactiveExpiredConversation (
         { commit },
-        { conversationId = null, templateId = null, params, phoneLine, messages, $t }
+        { conversationId = null, templateId = null, params_header, params, phoneLine, messages, $t }
     ) {
         try {
             if (!conversationId || !templateId) {
@@ -179,7 +179,7 @@ export default {
             }
             const result = await service.reactiveExpiredConversation(
                 conversationId,
-                { template_id: templateId, params }
+                { template_id: templateId, params_header, params }
             );
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {

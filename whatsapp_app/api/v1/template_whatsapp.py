@@ -18,6 +18,7 @@
 
 # APIs para visualizar lineas
 import json
+from django.conf import settings
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -30,7 +31,7 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
 from orquestador_app.core.send_menssage import sync_templates
-from orquestador_app.core.media_management import get_media_url
+from orquestador_app.core.media_management import meta_get_media_template
 
 
 class ListSerializer(serializers.Serializer):
@@ -40,6 +41,7 @@ class ListSerializer(serializers.Serializer):
     identifier = serializers.CharField(source='identificador')
     identifier_media = serializers.CharField(source='identificador_media')
     link_media = serializers.CharField()
+    text_header = serializers.CharField(source='texto_header')
     text = serializers.CharField(source='texto')
     language = serializers.CharField(source='idioma')
     status = serializers.CharField()
@@ -55,6 +57,7 @@ class RetrieveSerializer(serializers.Serializer):
     line = serializers.IntegerField(source='linea.id')
     name = serializers.CharField(source='nombre')
     identifier = serializers.CharField(source='identificador')
+    text_header = serializers.CharField(source='texto_header')
     text = serializers.CharField(source='texto')
     language = serializers.CharField(source='idioma')
     status = serializers.CharField()
@@ -115,6 +118,10 @@ class ViewSet(viewsets.ViewSet):
             if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
                 for attrs in templates:
                     containerMeta = json.loads(attrs['containerMeta'])
+                    if 'buttons' in containerMeta:
+                        tipo = 'BUTTON'
+                    else:
+                        tipo = attrs['templateType']
                     linea.templates_whatsapp.update_or_create(
                         identificador=attrs['id'], defaults={
                             'nombre': attrs['elementName'],
@@ -123,49 +130,65 @@ class ViewSet(viewsets.ViewSet):
                             'status': attrs['status'],
                             'creado': attrs['createdOn'],
                             'modificado': attrs['modifiedOn'],
-                            'tipo': attrs['templateType'],
+                            'tipo': tipo,
                             'categoria': attrs['category'],
+                            'is_active': attrs['status'] == 'APPROVED',
                             'identificador_media':
                                 containerMeta['mediaId'] if 'mediaId' in containerMeta else '',
                             'link_media':
-                                get_media_url(attrs['appId'], containerMeta['mediaId'])
-                                if 'mediaId' in containerMeta else ''
+                                containerMeta['mediaUrl'] if 'mediaUrl' in containerMeta else '',
                         }
                     )
-            if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
-                templates = sync_templates(linea)
-                print(templates)
+            elif proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
                 for attrs in templates:
-                    tipo = ''
+                    tipo = 'TEXT'
                     texto = ''
+                    texto_header = ''
+                    link_template_media = ''
                     for comp in attrs['components']:
                         comp_type = comp.get('type')
-                        if comp_type=='HEADER':
-                            tipo = comp.get('format')
-                        if comp_type=='BODY':
-                            texto = comp.get('text')
+                        if comp_type == 'HEADER':
+                            if comp.get('format') in ['IMAGE', 'VIDEO', 'DOCUMENT']:
+                                tipo = comp.get('format')
+                                example = comp.get('example')
+                                nombre_archivo = meta_get_media_template(
+                                    linea, example['header_handle'][0]
+                                )
+                                domain = request.build_absolute_uri('/')[:-1]
+                                # domain = "https://nominally-hopeful-condor.ngrok-free.app"
+                                url_media = domain + settings.MEDIA_URL + 'archivos_whatsapp/'
+                                link_template_media = url_media + nombre_archivo
+                            if 'text' in comp:
+                                texto_header = comp.get('text')
+                        if comp_type == 'BUTTONS':
+                            tipo = 'BUTTONS'
+                            texto = '-'
+                        if comp_type == 'BODY':
+                            if 'text' in comp:
+                                texto = comp.get('text')
                     linea.templates_whatsapp.update_or_create(
                         identificador=attrs['id'], defaults={
                             'nombre': attrs['name'],
+                            'texto_header': texto_header,
                             'texto': texto,
                             'idioma': attrs['language'],
                             'status': attrs['status'],
                             'tipo': tipo,
                             'categoria': attrs['category'],
-                            'is_active': attrs['status'] == 'APPROVED'
-                            # 'identificador_media':
-                            #     containerMeta['mediaId'] if 'mediaId' in containerMeta else '',
-                            # 'link_media':
-                            #     get_media_url(attrs['appId'], containerMeta['mediaId'])
-                            #     if 'mediaId' in containerMeta else ''
+                            'is_active': attrs['status'] == 'APPROVED',
+                            'link_media': link_template_media
                         }
                     )
+            else:
+                raise NotImplementedError()
+
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
                     message=_('Se obtuvieron los templates de whatsapp de forma exitosa')),
                 status=status.HTTP_200_OK)
         except Exception as e:
+            print("error >>>>>>>>>>>", e)
             return response.Response(
                 data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

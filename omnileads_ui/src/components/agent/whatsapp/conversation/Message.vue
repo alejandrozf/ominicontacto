@@ -48,7 +48,7 @@
         <div v-if="message.type==='contact'">
           <pre>{{message?.message.contacts}}</pre>
         </div>
-        <div v-if="message.type==='list'">
+        <div v-if="message.type==='list-gupshup' || message.type==='list-meta'">
           <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
             {{ message?.message.text }}
           </p>

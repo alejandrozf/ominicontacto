@@ -70,8 +70,8 @@
         :sortable="true"
       ></Column>
       <Column
-        field="category"
-        :header="$t('models.whatsapp.whatsapp_template.categoria')"
+        field="type"
+        :header="$t('models.whatsapp.whatsapp_template.tipo')"
       ></Column>
       <Column
         :header="$t('models.whatsapp.whatsapp_template.active')"
@@ -189,7 +189,7 @@ export default {
                                 nombre: wt.name,
                                 idioma: wt.language,
                                 status: wt.status,
-                                category: wt.category,
+                                type: wt.type,
                                 identificador: wt.identifier,
                                 created: wt.created,
                                 updated: wt.updated,
