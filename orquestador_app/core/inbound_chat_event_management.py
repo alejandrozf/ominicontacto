@@ -53,11 +53,7 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
             destination_entrante = line.destino
             conversations_from_origen = ConversacionWhatsapp.objects.filter(
                 line=line, whatsapp_id=origen)
-            conversation_with_identified_contact =\
-                conversations_from_origen.filter(client__isnull=False).last()
             client = None
-            if conversation_with_identified_contact:
-                client = conversation_with_identified_contact.client
             conversation =\
                 conversations_from_origen.filter(expire__gte=timestamp, is_disposition=False).last()
             if not conversation:
@@ -65,6 +61,9 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 campana = None
                 if destination_entrante.content_type == ContentType.objects.get(model='campana'):
                     campana = destination_entrante.content_object
+                if campana:
+                    client = campana.bd_contacto.contactos.filter(
+                        telefono=origen).last()
                 conversation = ConversacionWhatsapp.objects.create(
                     line=line,
                     client=client,
@@ -145,7 +144,11 @@ async def asignar_campana(line, conversation, content, context):
         auto_response = {}
         if destino:
             if isinstance(destino.destino_siguiente.content_object, Campana):
-                conversation.campana = destino.destino_siguiente.content_object
+                campana = destino.destino_siguiente.content_object
+                client = campana.bd_contacto.contactos.filter(
+                    telefono=conversation.destination).last()
+                conversation.campana = campana
+                conversation.client = client
                 conversation.save()
                 await send_notify('notify_whatsapp_new_chat', conversation=conversation)
                 if destination_entrante.content_object.texto_derivacion:
