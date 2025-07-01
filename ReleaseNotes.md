@@ -1,18 +1,19 @@
 # Release Notes
-2025-06-23
+2025-07-01
 
 ## Added
 
-- oml-3036 New APIs for agents management.
-- oml-3043 Preview campaigns contacts updates.
+- oml-2977 Allow for showing extra non Contact data from landing page.
+- oml-3070 Buttons for calling Wombat Dialer Start/Stop APIs 
 
 ## Changed
 
-- oml-782 Whatsapp Events Listener runs in another container.
+- No changes in this release
 
 ## Fixed
 
-- oml-3067 Optimization for blacklist uploading.
+- oml-3073 Fix Calling External System interactions
+- oml-3034 Whatsapp Interface for contact data and popups improvements.
 
 ## Removed
 
