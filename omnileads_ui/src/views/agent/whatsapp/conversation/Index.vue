@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-full flex flex-column">
     <HeaderConversation :isExpired="isExpired" />
     <div v-if="agtWhatsCoversationInfo.error">
       <Message severity="error" :closable="true" class="mt-0 mb-3"
@@ -44,10 +44,9 @@
         ></Tag>
       </div>
     </div>
-    <ListMessages id="listMessages" class="scroll" />
+    <ListMessages id="listMessages" class="flex-grow-1 overflow-y-scroll" />
       <TextBox
         v-if="!isExpired && !isDisposition && !isTransferred"
-        class="footer"
         :conversationId="id"
         @scrollDownEvent="scrollDown"
       />
@@ -217,16 +216,6 @@ export default {
 </script>
 
 <style scoped>
-.scroll {
-  overflow-y: scroll;
-  height: calc(100vh - 180px);
-}
-
-.footer {
-  bottom: 0px;
-  position: fixed;
-  width: 100%;
-}
 
 a:hover {
   text-decoration: underline;

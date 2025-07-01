@@ -1,5 +1,5 @@
 <template>
-  <div class="grid mr-2">
+  <div class="grid">
     <div class="xl:col-11 lg:col-10 md:col-8 sm:col-9">
       <InputText
         class="w-full"

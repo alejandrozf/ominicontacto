@@ -157,4 +157,23 @@ export default class WhatsappConversationService extends BaseService {
             this.initPayload();
         }
     }
+
+    async markMessageAsRead (data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.ChatMarkAsRead(),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al marcar como leido el mensaje`);
+            return {
+                success: false,
+                message: 'Error inesperado'
+            };
+        } finally {
+            this.initPayload();
+        }
+    }
 }
