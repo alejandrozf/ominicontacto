@@ -899,8 +899,7 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
             call_data['id_calificacion'] = self.calificacion.id
             call_data['nombre_opcion_calificacion'] = \
                 self.calificacion.opcion_calificacion.nombre
-            call_data['nombre_opcion_subcalificacion'] = \
-                self.calificacion.calificacion.subcalificacion
+            call_data['nombre_opcion_subcalificacion'] = self.calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,
