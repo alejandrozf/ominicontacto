@@ -38,6 +38,7 @@ export default {
                 campaignId: data && data.campaignId ? data.campaignId : null,
                 campaignName: data && data.campaignName ? data.campaignName : null,
                 numMessages: data && data.numMessages ? data.numMessages : null,
+                numMessagesUnread: data && data.numMessagesUnread ? data.numMessagesUnread : null,
                 isMine: data && data.isMine ? data.isMine : null,
                 isNew: data && data.isNew ? data.isNew : null,
                 expire: data && data.expire ? data.expire : null,

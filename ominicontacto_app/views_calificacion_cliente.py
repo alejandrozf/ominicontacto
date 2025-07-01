@@ -322,10 +322,21 @@ class CalificacionClienteFormView(FormView):
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
 
         force_disposition = False
+        extra_client_data = {}
         if self.call_data:
             force_disposition = self.agente.grupo.obligar_calificacion
             if 'force_disposition' in self.call_data:
                 force_disposition = self.call_data['force_disposition']
+            if self.call_data.get('CRM_contact_data'):
+                try:
+                    contact_data = json.loads(self.call_data['CRM_contact_data'])
+                    campos_bd = bd_metadata.nombres_de_columnas
+                    for key, value in contact_data.items():
+                        if key not in campos_bd or key in self.campos_ocultos:
+                            extra_client_data[key] = value
+                except (json.JSONDecodeError, AttributeError):
+                    pass
+
         if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             calificacion_llamada.create_family(self.agente, self.call_data,
@@ -358,6 +369,7 @@ class CalificacionClienteFormView(FormView):
             campana=self.campana,
             llamada_entrante=formulario_llamada_entrante,
             call_data=self.call_data,
+            extra_client_data=extra_client_data,
             configuracion_sitio_externo=json.dumps(self.configuracion_sitio_externo)))
 
     def post(self, request, *args, **kwargs):
@@ -887,8 +899,7 @@ class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpd
             call_data['id_calificacion'] = self.calificacion.id
             call_data['nombre_opcion_calificacion'] = \
                 self.calificacion.opcion_calificacion.nombre
-            call_data['nombre_opcion_subcalificacion'] = \
-                self.calificacion.calificacion.subcalificacion
+            call_data['nombre_opcion_subcalificacion'] = self.calificacion.subcalificacion
             error = servicio.ejecutar_interaccion(
                 sitio_externo,
                 self.agente,

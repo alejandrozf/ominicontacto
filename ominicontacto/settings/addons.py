@@ -46,8 +46,8 @@ CONSTANCE_CONFIG = {
     # OMniLeads:
     'WOMBAT_DIALER_ALLOW_REFRESH': (False, 'WOMBAT_DIALER_ALLOW_REFRESH', bool),
     'WOMBAT_DIALER_STATE': ('READY', 'WOMBAT_DIALER_STATE', str),
-    'WOMBAT_DIALER_UP_SINCE': (datetime(2022, 2, 2, 22, 2, 22, 2222, timezone(timedelta(0))),
-                               'WOMBAT_DIALER_UP_SINCE', datetime),
+    'WOMBAT_DIALER_UPDATE_DATETIME': (datetime(2022, 2, 2, 22, 2, 22, 2222, timezone(timedelta(0))),
+                                      'WOMBAT_DIALER_UPDATE_DATETIME', datetime),
     'EXTERNAL_AUTH_TYPE': ('0', 'EXTERNAL_AUTH_TYPE', str),
     'EXTERNAL_AUTH_SERVER': ('', 'EXTERNAL_AUTH_SERVER', str),
     'EXTERNAL_AUTH_DN': ('', 'EXTERNAL_AUTH_DN', str),
@@ -80,7 +80,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'collapse': False
     },
     'Omnileads': {
-        'fields': ('WOMBAT_DIALER_ALLOW_REFRESH', 'WOMBAT_DIALER_STATE', 'WOMBAT_DIALER_UP_SINCE',
+        'fields': ('WOMBAT_DIALER_ALLOW_REFRESH', 'WOMBAT_DIALER_STATE',
+                   'WOMBAT_DIALER_UPDATE_DATETIME',
                    'EXTERNAL_AUTH_TYPE', 'EXTERNAL_AUTH_SERVER', 'EXTERNAL_AUTH_DN',
                    'EXTERNAL_AUTH_ACTIVATION', 'EXTERNAL_AUTH_MS_SIMPLE_AUTH',
                    ),

@@ -38,7 +38,6 @@ from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, Re
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
 from ominicontacto_app.forms.base import (
     UpdateBaseDatosForm, ReglaIncidenciaPorCalificacionForm, ReglasIncidenciaForm)
-from ominicontacto_app.services.wombat_service import WombatReloader
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 from requests.exceptions import RequestException
 
@@ -94,9 +93,8 @@ class CampanaDialerListView(ListView):
         context['wombat_reload_enabled'] = config_constance.WOMBAT_DIALER_ALLOW_REFRESH
         if config_constance.WOMBAT_DIALER_ALLOW_REFRESH:
             context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
-            if config_constance.WOMBAT_DIALER_STATE == WombatReloader.STATE_READY:
-                uptime = now() - config_constance.WOMBAT_DIALER_UP_SINCE
-                context['wombat_uptime'] = str(uptime).split('.')[0]
+            uptime = now() - config_constance.WOMBAT_DIALER_UPDATE_DATETIME
+            context['wombat_uptime'] = str(uptime).split('.')[0]
         return context
 
 
