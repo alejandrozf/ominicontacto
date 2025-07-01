@@ -98,7 +98,7 @@ from api_app.views.grabaciones import (
 )
 from api_app.views.auditoria import ObtenerArchivoAuditoriaView
 from api_app.views.audios import ListadoAudiosView
-from api_app.views.wombat_dialer import ReiniciarWombat, WombatState
+from api_app.views.wombat_dialer import ReiniciarWombat, WombatState, WombatStart, WombatStop
 from api_app.views.system import AsteriskQueuesData, NotifyAttendedMultinumCall
 
 from api_app.views.destino_entrante import DestinoEntranteView, DestinoEntranteTiposView
@@ -562,6 +562,10 @@ urlpatterns = [
          ReiniciarWombat.as_view(), name='api_restart_wombat'),
     path('api/v1/wombat_dialer/status/',
          WombatState.as_view(), name='api_wombat_state'),
+    path('api/v1/wombat_dialer/start/',
+         WombatStart.as_view(), name='api_wombat_start'),
+    path('api/v1/wombat_dialer/stop/',
+         WombatStop.as_view(), name='api_wombat_stop'),
 
     # ###########  ASTERISK    ############ #
     path('api/v1/asterisk/queues_data/',
