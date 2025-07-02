@@ -59,7 +59,8 @@ export default {
             const agtWhatsCoversationInfo = localStorage.getItem('agtWhatsCoversationInfo');
             if (agtWhatsCoversationInfo && agtWhatsCoversationInfo !== 'null') {
                 this.conversationInfo = JSON.parse(agtWhatsCoversationInfo);
-                this.formToCreate = this.conversationInfo.client.id === null
+                this.formToCreate = this.conversationInfo.client.id === null;
+                this.formToCreateFromNewConversation = false;
                 this.agtWhatsSetCoversationInfo(this.conversationInfo);
                 this.$helpers.openLoader(this.$t);
                 const { status, message } = await this.agtWhatsContactDBFieldsInit({
