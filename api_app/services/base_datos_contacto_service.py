@@ -96,6 +96,7 @@ class BaseDatosContactoService(object):
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             numero_fila = 0
+            objs = []
             for lista_dato in estructura_archivo[1:]:
                 numero_fila += 1
                 telefono, datos, id_externo = self._obtener_telefono_y_datos(
@@ -111,14 +112,17 @@ class BaseDatosContactoService(object):
                                                                      id_externo)
                     else:
                         ids_externos.add(id_externo)
-
-                contacto = Contacto.objects.create(
-                    telefono=telefono,
-                    datos=datos,
-                    bd_contacto=base_datos_contacto,
-                    id_externo=id_externo
+                objs.append(
+                    Contacto(
+                        telefono=telefono,
+                        datos=datos,
+                        bd_contacto=base_datos_contacto,
+                        id_externo=id_externo
+                    )
                 )
-                ids_nuevos_contactos.append(contacto.id)
+            contactos = Contacto.objects.bulk_create(objs, batch_size=1000)
+            ids_nuevos_contactos.extend(contacto.id for contacto in contactos)
+
         except CreacionBaseDatosServiceIdExternoError as e:
             raise e
 
