@@ -1864,7 +1864,7 @@ class ReglasIncidenciaForm(forms.ModelForm):
     def save(self, commit=True):
         regla = super(ReglasIncidenciaForm, self).save(commit=False)
         if regla.estado == ReglasIncidencia.TERMINATED:
-            regla.estado_personalizado = ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR
+            regla.estado_personalizado = str(ReglasIncidencia.ESTADO_PERSONALIZADO_CONTESTADOR)
         else:
             regla.estado_personalizado = ""
         if commit:
