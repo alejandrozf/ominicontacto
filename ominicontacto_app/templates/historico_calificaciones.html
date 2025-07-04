@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% for calificacion in calificaciones %}
                         <tr>
                             <td>{{ calificacion.opcion_calificacion.nombre }}</td>
-                            <td>{{ calificacion.history_date }}</td>
+                            <td>{{ calificacion.history_date | date:"d/m/Y - H:i" }}</td>
                             <td>{{ calificacion.observaciones }}</td>
                             <td>{{ calificacion.agente.user.get_full_name }}</td>
                         </tr>
