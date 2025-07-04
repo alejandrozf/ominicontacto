@@ -66,7 +66,7 @@
             <small class="font-italic">
               {{ message?.date?.toLocaleString() }}
             </small>
-            <i class="ml-2" :class="getIconMessageStatus(message?.status)" :style="{color: getIconStatusColor(message?.status)}" ></i>
+            <i v-if="message?.itsMine" class="ml-2" :class="getIconMessageStatus(message?.status)" :style="{color: getIconStatusColor(message?.status)}" ></i>
           </div>
         </div>
       </div>

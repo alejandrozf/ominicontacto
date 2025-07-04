@@ -1,20 +1,28 @@
 # Release Notes
-2025-05-16 develop + 2.4.0
+pre.release
 
 ## Added
-- oml-2923 Orden y filtrado al Agregar Agentes en Wizard de Campaña
-- oml-2893 Descargar y eliminar agendas en forma masiva
-- oml-2886-dev-blanklayout Allow contact database structure definition on campaign wizard
-- oml-2921 Permitir derivación a Agentes desde IVR
+- oml-2679 New Omnidialer service.
+- oml-2923 Order and filtering adding agents in Campaigns Wizard.
+- oml-2893 Massive download and deletion of agendas.
+- oml-2886 Allow contact database structure definition on campaign wizard.
+- oml-2921 Allow configuring Agents as IVR destinations.
 
 ## Changed
 
 - oml-2750 Whatsapp Line Wizard allows selection of any inbound campaign.
+- oml-3040 The generation of the oml_pjsip_agents.conf file was optimized to search for PJSIP endpoints in Kamailio
+- oml-3035 Replacement of slowsql logger 
 
 ## Fixed
 
-- oml-2931-fix-enmodoselect Incidence rule
+- oml-2931 Fix "enmodoselect" Incidence rule.
+- oml-2997 Fix 'easyaudits' logs ip field.
 
 ## Removed
 
 No removals in this release.
+
+## Migrations
+
+ominicontacto_app: 0111

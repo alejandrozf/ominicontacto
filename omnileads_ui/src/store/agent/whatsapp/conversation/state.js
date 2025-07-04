@@ -18,6 +18,7 @@ export default {
         expire: null,
         timestamp: null,
         messageNumber: null,
+        messageUnreadNumber: null,
         photo: null,
         error: false,
         errorEx: {},

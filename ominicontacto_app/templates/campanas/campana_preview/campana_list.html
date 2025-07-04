@@ -59,6 +59,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'campana_preview_update' campana.pk %}">
                             <span class="icon icon-pencil"></span>{% trans 'Modificar'  %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'actualizar_contactos_preview' campana.pk %}">
+                            <span class="icon icon-pencil"></span>{% trans 'Actualizar contactos'  %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                             <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
                         </a>

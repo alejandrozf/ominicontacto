@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-from __future__ import unicode_literals
 
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
@@ -53,6 +52,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'api_agentes_activos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'api_agents_users',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_supervision_campanas_entrantes',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'api_supervision_campanas_salientes',
@@ -141,9 +142,15 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'api_wombat_state',
              'roles': ['Administrador', ]},
+            {'nombre': 'api_wombat_start',
+             'roles': ['Administrador', ]},
+            {'nombre': 'api_wombat_stop',
+             'roles': ['Administrador', ]},
             {'nombre': 'api_agents_campaign',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-            {'nombre': 'api_update_agents_campaign',
+            {'nombre': 'api_update_campaign_agents',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_update_agent_campaigns',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_active_agents',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
@@ -343,6 +350,9 @@ class ApiAppConfig(AppConfig):
         'api_agentes_activos':
             {'descripcion': _('Devuelve información de los agentes en el sistema'),
              'version': '1.7.0'},
+        'api_agents_users':
+            {'descripcion': _('Devuelve datos de usuario de los agentes'),
+             'version': '2.4.3'},
         'api_supervision_campanas_entrantes':
             {'descripcion': _('Reporte de llamadas entrantes de supervisión.'), 'version': '1.7.0'},
         'api_supervision_campanas_salientes':
@@ -464,12 +474,21 @@ class ApiAppConfig(AppConfig):
         'api_wombat_state':
             {'descripcion': _('Estado del servicio {0} Dialer'.format(WOMBAT_TM)),
              'version': '1.22.0'},
+        'api_wombat_start':
+            {'descripcion': _('Start servicio Dialer'),
+             'version': '2.4.4'},
+        'api_wombat_stop':
+            {'descripcion': _('Stop servicio Dialer'),
+             'version': '2.4.4'},
         'api_agents_campaign':
             {'descripcion': _('Lista de agentes por campaña'),
              'version': '1.19.0'},
-        'api_update_agents_campaign':
+        'api_update_campaign_agents':
             {'descripcion': _('Actualiza los agentes de una campaña'),
              'version': '1.19.0'},
+        'api_update_agent_campaigns':
+            {'descripcion': _('Actualiza las campañas de un agente'),
+             'version': '2.4.3'},
         'api_active_agents':
             {'descripcion': _('Obtiene todos los agentes activos'),
              'version': '1.19.0'},

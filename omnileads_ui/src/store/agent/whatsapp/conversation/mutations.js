@@ -63,6 +63,10 @@ export default {
                     `Mensaje Nuevo de ${clientName || senderName || senderPhone}`,
                     NOTIFICATION.ICONS.INFO
                 );
+                var a =state.agtWhatsChatsList.find(m => m.id === data.chat_id);
+                a.numMessagesUnread = a.numMessagesUnread + 1
+                console.log("*******", a.numMessagesUnread)
+
             }
             else{
                 state.agtWhatsCoversationMessages.push(message);
@@ -109,6 +113,10 @@ export default {
                 conversation && conversation.message_number
                     ? conversation.message_number
                     : null,
+            messageUnreadNumber:
+                    conversation && conversation.message_unread
+                        ? conversation.message_unread
+                        : null,
             photo:
                 conversation && conversation.photo ? conversation.photo : null,
             client: setClientInfo(
@@ -135,6 +143,7 @@ export default {
                     campaignId: e.campaing_id ? e.campaing_id : null,
                     campaignName: e.campaing_name ? e.campaing_name : '-------',
                     numMessages: e.message_number ? e.message_number : 0,
+                    numMessagesUnread: e.message_unread ? e.message_unread : 0,
                     photo: e.photo ? e.photo : '',
                     isNew: true,
                     isMine: false,
@@ -154,6 +163,7 @@ export default {
                     campaignId: e.campaing_id ? e.campaing_id : null,
                     campaignName: e.campaing_name ? e.campaing_name : '-------',
                     numMessages: e.message_number ? e.message_number : 0,
+                    numMessagesUnread: e.message_unread ? e.message_unread : 0,
                     photo: e.photo,
                     isNew: false,
                     isMine: true,
@@ -177,6 +187,8 @@ export default {
             campaignName: chat && chat.campaing_name ? chat.campaing_name : '-------',
             numMessages:
                 chat && chat.number_messages ? chat.number_messages : 1,
+            numMessagesUnread:
+                chat && chat.message_unread ? chat.message_unread : 1,
             photo: chat && chat.photo ? chat.photo : '',
             isNew: true,
             isMine: false,
@@ -226,6 +238,10 @@ export default {
             messageNumber:
                 conversation && conversation.messageNumber
                     ? conversation.messageNumber
+                    : null,
+            messageUnreadNumber:
+                conversation && conversation.messageUnreadNumber
+                    ? conversation.messageUnreadNumber
                     : null,
             photo:
                 conversation && conversation.photo ? conversation.photo : null,

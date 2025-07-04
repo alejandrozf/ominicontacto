@@ -74,4 +74,44 @@ class OMLAPI {
         });
     }
 
+    startWombatDialer(callback_ok, callback_error) {
+        var URL = Urls.api_wombat_start();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error(data);
+                }
+                else
+                    callback_ok(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
+    stopWombatDialer(callback_ok, callback_error) {
+        var URL = Urls.api_wombat_stop();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error(data);
+                }
+                else
+                    callback_ok(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
 }

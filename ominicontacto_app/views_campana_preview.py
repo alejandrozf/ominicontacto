@@ -43,7 +43,8 @@ from ominicontacto_app.forms.base import (CampanaPreviewForm, OpcionCalificacion
                                           QueueMemberFormset, AsignacionContactosForm,
                                           OrdenarAsignacionContactosForm,
                                           CampanaPreviewCampoDesactivacion,
-                                          CampanaConfiguracionWhatsappForm)
+                                          CampanaConfiguracionWhatsappForm,
+                                          ActualizarContactosPreviewForm)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -542,6 +543,165 @@ class AgenteEnContactoResourceImport(resources.ModelResource):
             'id', 'agente_id', 'contacto_id', 'telefono_contacto', 'datos_contacto', 'orden')
 
 
+class ActualizarContactosResourceExport(resources.ModelResource):
+
+    class Meta:
+        model = AgenteEnContacto
+        fields = ('id', 'contacto_id', 'telefono_contacto', 'datos_contacto')
+        export_order = ('id', 'contacto_id', 'telefono_contacto', 'datos_contacto')
+
+
+class ActualizarContactosBDResourceImport(resources.ModelResource):
+    """ Atención: clase muy acoplada a como se guardan los datos en el modelo Contacto
+                  según la lógica de MetadataBaseDatosContactoDTO """
+
+    def before_import_row(self, row, **kwargs):
+        row['id'] = row['contacto_id']
+
+    def import_obj(self, instance, row, dry_run, **kwargs):
+        """ Actualizar en "row" los nuevos datos a guardar en instance """
+        try:
+            nombre_campo_telefono = kwargs.get('nombre_campo_telefono')
+            index_campos_a_actualizar = kwargs.get('index_campos_a_actualizar')
+            read_row = row
+
+            # Tomo los datos viejos de la instancia
+            telefono = instance.telefono
+            datos = json.loads(instance.datos)
+
+            for campo in index_campos_a_actualizar:
+                if campo == nombre_campo_telefono:
+                    # Actualizo el campo telefónico si corresponde
+                    telefono = read_row[nombre_campo_telefono]
+                else:
+                    # Actualizo los campos de datos correspondientes
+                    pos = index_campos_a_actualizar[campo]
+                    datos[pos] = read_row[campo]
+
+            row = {
+                'id': instance.id,
+                'telefono': telefono,
+                'datos': json.dumps(datos),
+            }
+        except Exception as e:
+            logger.error(e)
+            raise e
+
+        super(ActualizarContactosBDResourceImport, self).import_obj(
+            instance, row, dry_run, **kwargs)
+
+    class Meta:
+        model = Contacto
+        fields = ('id', 'telefono', 'datos')
+        export_order = ('id', 'telefono', 'datos')
+
+
+class ActualizarContactosResourceImport(resources.ModelResource):
+
+    def import_obj(self, instance, row, dry_run, **kwargs):
+        """ Actualizar en "row" los nuevos datos a guardar en instance """
+        try:
+
+            campos_a_actualizar = kwargs.get('campos_a_actualizar')
+            nombre_campo_telefono = kwargs.get('nombre_campo_telefono')
+            read_row = row
+
+            # Tomo los datos viejos de la instancia
+            telefono = instance.telefono_contacto
+            datos_contacto = json.loads(instance.datos_contacto)
+
+            for campo in campos_a_actualizar:
+                if campo == nombre_campo_telefono:
+                    # Actualizo el campo telefónico si corresponde
+                    telefono = read_row[nombre_campo_telefono]
+                else:
+                    # Actualizo los campos de datos correspondientes
+                    datos_contacto[campo] = read_row[campo]
+
+            row = {
+                'id': instance.id,
+                'telefono_contacto': telefono,
+                'datos_contacto': json.dumps(datos_contacto)
+            }
+        except Exception as e:
+            logger.error(e)
+            raise e
+
+        super(ActualizarContactosResourceImport, self).import_obj(
+            instance, row, dry_run, **kwargs)
+
+    class Meta:
+        model = AgenteEnContacto
+        fields = ('id', 'telefono_contacto', 'datos_contacto')
+        export_order = (
+            'id', 'telefono_contacto', 'datos_contacto')
+
+
+class ActualizarContactosView(FormView):
+    """Vista que permite al supervisor actualizar los datos de los contactos que
+    seran entregados a los agentes"""
+    template_name = 'campanas/campana_preview/actualizar_contactos.html'
+
+    form_class = ActualizarContactosPreviewForm
+
+    def get_success_url(self):
+        pk_campana = self.kwargs.get('pk_campana')
+        return reverse("actualizar_contactos_preview",
+                       kwargs={'pk_campana': pk_campana})
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['campana'] = Campana.objects.get(pk=self.kwargs.get('pk_campana'))
+        return initial
+
+    def get_context_data(self, **kwargs):
+        pk_campana = self.kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        context = super(ActualizarContactosView, self).get_context_data(**kwargs)
+        context['campana'] = campana
+        return context
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        csv_file = cleaned_data['csv_actualizaciones_contactos']
+        campos_a_actualizar = cleaned_data['campos_a_actualizar']
+        pk_campana = self.kwargs.get('pk_campana')
+
+        campana = Campana.objects.get(pk=pk_campana)
+        metadata_bd = campana.bd_contacto.get_metadata()
+        nombre_campo_telefono = metadata_bd.nombre_campo_telefono
+        # Voy a necesitar las posiciones de los campos en los "datos" del Contacto
+        index_campos_a_actualizar = {}
+        for campo in campos_a_actualizar:
+            pos = -1
+            if campo != nombre_campo_telefono:
+                pos = metadata_bd.nombres_de_columnas_de_datos.index(campo)
+            index_campos_a_actualizar[campo] = pos
+
+        # import file
+        agents_in_contacts_dat = csv_file.read()
+        # we need the id in the columns
+        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'), format='csv')
+        result_agente_en_contactos = ActualizarContactosResourceImport().import_data(
+            imported_data, campos_a_actualizar=campos_a_actualizar,
+            nombre_campo_telefono=nombre_campo_telefono,
+            dry_run=False)
+        result_contactos = ActualizarContactosBDResourceImport().import_data(
+            imported_data, index_campos_a_actualizar=index_campos_a_actualizar,
+            nombre_campo_telefono=nombre_campo_telefono,
+            dry_run=False)
+        if not result_agente_en_contactos.has_errors() and not result_contactos.has_errors():
+            message = _('Se ha realizado la importación con éxito.')
+            messages.success(self.request, message)
+        else:
+            message = _('Hubo un error al importar el archivo de status de contactos')
+            logger.error(
+                'Error al importar el archivo de status de contactos en campana {0}'.format(
+                    campana))
+            messages.error(self.request, message)
+        return super(ActualizarContactosView, self).form_valid(form)
+
+
 class OrdenarAsignacionContactosView(FormView):
     """Vista que permite al supervisor reordenar el orden en que seran entregados
     los contactos a los agentes"""
@@ -621,6 +781,37 @@ class DescargarOrdenAgentesEnContactosView(View):
         writer = csv.writer(response)
         columnas_headers = ['id', 'agent_id', 'contact_id', 'phone'] + nombres_columnas_datos
         writer.writerow(columnas_headers)
+
+        for row in dataset:
+            datos_contacto = json.loads(row[-1])
+            row = row[:-1]
+            for nombre_columna in nombres_columnas_datos:
+                row = row + (datos_contacto[nombre_columna],)
+            writer.writerow(row)
+        return response
+
+
+class DescargarDatosContactosView(View):
+    """Vista que genera y descarga un archivo .csv con los datos de los contactos"""
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        pk_campana = kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+
+        bd_contacto = campana.bd_contacto
+        metadata = bd_contacto.get_metadata()
+        nombre_campo_telefono = metadata.nombre_campo_telefono
+        nombres_columnas_datos = metadata.nombres_de_columnas_de_datos
+        response = HttpResponse(content_type='text/csv')
+        content_disposition = 'attachment; filename="agents-contacts-campaign-data-{0}.csv"'.format(
+            pk_campana)
+        response['Content-Disposition'] = content_disposition
+        agentes_en_contacto_qs = AgenteEnContacto.objects.filter(
+            campana_id=pk_campana)
+        dataset = ActualizarContactosResourceExport().export(agentes_en_contacto_qs)
+        writer = csv.writer(response)
+        writer.writerow(['id', 'contacto_id', nombre_campo_telefono] + nombres_columnas_datos)
 
         for row in dataset:
             datos_contacto = json.loads(row[-1])

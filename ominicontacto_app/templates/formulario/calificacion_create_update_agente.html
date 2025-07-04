@@ -51,6 +51,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div><b>{% trans "ID Contacto ICS:" %}</b> {{ call_data.id_contacto_ics }}</div>
         <br>
     {% endif %}
+    {% if extra_client_data %}
+    <h2>{% trans "Información de cliente extra:" %}</h2>
+        {% for key, value in extra_client_data.items %}
+        <div><b>{{ key }}:</b> {{ value }}</div>
+        {% endfor %}
+        <br>
+    {% endif %}
 
     <form id="form_sitio_externo">
         <input id="submit_interaccion" type="hidden" name="" value="{% trans 'Interacción CRM' %}">
