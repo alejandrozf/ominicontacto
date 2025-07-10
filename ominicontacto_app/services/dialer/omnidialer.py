@@ -150,8 +150,12 @@ class OmnidialerService(AbstractPhoneDialerService):
 
     def editar_regla_de_incidencia(self, regla, campana, id_anterior, estado_anterior=None,
                                    es_de_calificacion=False) -> bool:
-        self.eliminar_regla_de_incidencia(regla, es_de_calificacion)
-        self.crear_regla_de_incidencia(regla, es_de_calificacion)
+        try:
+            self.eliminar_regla_de_incidencia(regla, es_de_calificacion)
+            self.crear_regla_de_incidencia(regla, es_de_calificacion)
+            return True
+        except Exception:
+            return False
 
     def cambiar_bd_contactos(self, campana, params=None):
         return self._request(CHANGE_DATABASE_URL.format(campana.id))
