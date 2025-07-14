@@ -24,8 +24,9 @@ max-requests=${UWSGI_MAX_REQUESTS:-2000}
 EOF
 fi
 
-chown omnileads:omnileads ${INSTALL_PREFIX}/run/oml_uwsgi.ini
-su omnileads -c "touch  /var/spool/cron/crontabs/omnileads"
+touch /var/spool/cron/crontabs/omnileads
+chown omnileads:omnileads ${INSTALL_PREFIX}/run/oml_uwsgi.ini /var/spool/cron/crontabs/omnileads
+chmod 600 /var/spool/cron/crontabs/omnileads
 
 echo "Run django command compilemessages"
 $COMMAND compilemessages
