@@ -18,6 +18,7 @@
 -->
 {% extends "campanas/wizard_base.html" %}
 {% load i18n %}
+{% load dialer %}
 
 {% block nav %}
     <h1>{% trans 'Campaña Dialer: Sincronizar'  %} </h1>
@@ -50,7 +51,8 @@
                 {{ form.evitar_duplicados }}
                 {{ form.evitar_duplicados.errors }}
             </div>
-            {% if wombat_habilitado_tag  %}
+            {% wombat_habilitado_tag as wombat_habilitado %}
+            {% if wombat_habilitado %}
                 <div class="col-md-6">
                     <label for="{{ form.evitar_sin_telefono.id_for_label }}">{% trans 'Evitar sin telefono:' %}</label>
                     {{ form.evitar_sin_telefono }}
