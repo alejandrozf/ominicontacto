@@ -22,6 +22,6 @@ from ominicontacto_app.services.dialer import wombat_habilitado
 register = Library()
 
 
-@register.filter
+@register.simple_tag
 def wombat_habilitado_tag():
     return wombat_habilitado()
