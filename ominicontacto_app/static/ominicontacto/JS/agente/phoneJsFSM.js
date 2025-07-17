@@ -44,7 +44,7 @@ var PhoneFSM = new StateMachine.factory({
         // ConnLossReady
         { name: 'unregistered',           from: 'ConnLossReady',      to: 'ConnLossReady' },
         { name: 'registered',             from: 'ConnLossReady',      to: 'Ready' },
-        
+
         // Pausing
         { name: 'pauseSet',               from: 'Pausing',            to: 'Paused' },
         { name: 'pauseAborted',           from: 'Pausing',            to: 'Ready' },
@@ -61,6 +61,7 @@ var PhoneFSM = new StateMachine.factory({
         { name: 'registered',             from: 'ConnLossPaused',     to: 'Paused' },
 
         // OnCall
+        { name: 'unregistered',           from: 'OnCall',             to: 'End' },
         { name: 'endCall',                from: 'OnCall',             to: 'Ready' },
         { name: 'dialTransfer',           from: 'OnCall',             to: 'DialingTransfer' },
         { name: 'startOnHold',            from: 'OnCall',             to: 'OnHold' },
