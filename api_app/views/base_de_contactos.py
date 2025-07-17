@@ -19,6 +19,7 @@
 import re
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
+from django.core.exceptions import ValidationError
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
@@ -30,6 +31,7 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.serializers.base_de_contactos import (CampaingsOnDBSerializer)
 from ominicontacto_app.forms.base import FormularioNuevoContacto
 from ominicontacto_app.models import SistemaExterno, Campana, BaseDatosContacto, Contacto
+from ominicontacto_app.models import TelephoneValidator
 from ominicontacto_app.utiles import (
     validar_solo_alfanumericos_o_guiones, validar_longitud_nombre_base_de_contactos, elimina_tildes)
 
@@ -408,12 +410,10 @@ class ContactoCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validar_telefono(self, field, value):
-        if not value.isdigit():
-            msg = _('Debe ser solo numérico.')
-            raise serializers.ValidationError({field: msg})
-        if not 3 <= len(value) <= 20:
-            msg = _('Solo se permiten de 3-20 dígitos.')
-            raise serializers.ValidationError({field: msg})
+        try:
+            TelephoneValidator(value)
+        except ValidationError as error:
+            raise serializers.ValidationError({field: error.message})
         return value
 
     def validar_id_externo(self, field, value):

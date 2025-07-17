@@ -48,13 +48,13 @@ from ominicontacto_app.models import (
     AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida,
     AutenticacionExternaDeUsuario
 )
+from ominicontacto_app.models import TelephoneValidator
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
                                       contiene_solo_alfanumericos_o_guiones,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from whatsapp_app.models import ConfiguracionWhatsappCampana
-from ominicontacto_app.parser import is_valid_length
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
@@ -625,6 +625,7 @@ class ContactoListaRapidaForm(forms.ModelForm):
     telefono = forms.CharField(
         required=True,
         max_length=25,
+        validators=[TelephoneValidator],
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -632,17 +633,6 @@ class ContactoListaRapidaForm(forms.ModelForm):
             }
         )
     )
-
-    # Fields cleanners
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if not telefono.isdigit():
-            msg = _("Debe ser en formato '99999999' y numérico.")
-            raise forms.ValidationError(msg)
-        if not is_valid_length(telefono, 3, 25):
-            msg = _("Solo se permiten de 3-25 dígitos.")
-            raise forms.ValidationError(msg)
-        return telefono
 
     class Meta:
         model = ContactoListaRapida
@@ -1335,6 +1325,7 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
+        self.fields['telefono'].validators.append(TelephoneValidator)
         if self.es_campana_entrante:
             self.fields['telefono'].required = False
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
@@ -1416,16 +1407,6 @@ class FormularioNuevoContacto(forms.ModelForm):
                 return True
         return False
 
-    def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono'))
-        if telefono and not telefono.isdigit():
-            msg = _('Debe ser en formato "999999999" y solo numérico.')
-            raise forms.ValidationError(msg)
-        if telefono and not 3 <= len(telefono) <= 20:
-            msg = _('Solo se permiten de 3-20 dígitos.')
-            raise forms.ValidationError(msg)
-        return telefono
-
     def clean_id_externo(self):
         id_externo = self.cleaned_data.get('id_externo')
         # Si el campo no esta vacío
@@ -1475,12 +1456,10 @@ class FormularioNuevoContacto(forms.ModelForm):
             return
         field = str(self.cleaned_data.get(field_name))
         if field:
-            if not field.isdigit():
-                msg = _('Debe ser en formato "999999999" y solo numérico.')
-                self.add_error(field_name, forms.ValidationError(msg))
-            if not 3 <= len(field) <= 20:
-                msg = _('Solo se permiten de 3-20 dígitos.')
-                self.add_error(field_name, forms.ValidationError(msg))
+            try:
+                TelephoneValidator(field)
+            except forms.ValidationError as error:
+                self.add_error(field_name, error)
 
 
 class BloquearCamposParaAgenteForm(forms.Form):
@@ -1799,6 +1778,7 @@ class ContactoBlacklistForm(forms.ModelForm):
     telefono = forms.CharField(
         required=True,
         max_length=25,
+        validators=[TelephoneValidator],
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -1806,17 +1786,6 @@ class ContactoBlacklistForm(forms.ModelForm):
             }
         )
     )
-
-    # Fields cleanners
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if not telefono.isdigit():
-            msg = _("Debe ser en formato '99999999' y numérico.")
-            raise forms.ValidationError(msg)
-        if not is_valid_length(telefono, 3, 25):
-            msg = _("Solo se permiten de 3-25 dígitos.")
-            raise forms.ValidationError(msg)
-        return telefono
 
     class Meta:
         model = ContactoBlacklist
