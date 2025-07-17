@@ -23,7 +23,7 @@ $(function () {
 
 function subscribeToChangeOptionCalification(opcion_calificar) {
     $(opcion_calificar).change(function(){
-        var $nombre_subcalificaciones = JSON.parse($('#id_nombre_subcalificaciones').val().replace(/'/g, '"'));
+        var $nombre_subcalificaciones = JSON.parse($('#id_nombre_subcalificaciones').val());
         $nombre_subcalificaciones.forEach((obj, index) => {
             if (obj['id'] == opcion_calificar.val()){
                 $('#id_subcalificacion').empty();

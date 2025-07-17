@@ -380,7 +380,7 @@ class CalificacionClienteFormView(FormView):
         calificacion_form = self.get_form()
         contacto_form_valid = contacto_form.is_valid()
         calificacion_form_valid = calificacion_form.is_valid()
-        usuario_califica = 'opcion_calificacion' in calificacion_form.changed_data
+        usuario_califica = bool(calificacion_form.changed_data)
         formulario_llamada_entrante = self._formulario_llamada_entrante()
         # cuando el formulario es generado por una llamada entrante y el usuario no desea
         # calificar al contacto, solo requerimos que el formulario del contacto sea válido
