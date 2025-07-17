@@ -1190,8 +1190,9 @@ class CalificacionClienteForm(forms.ModelForm):
                     choices=choices, required=False,
                     widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
-        self.fields['nombre_subcalificaciones'].initial = list(
-            campana.opciones_calificacion.values("id", "subcalificaciones"))
+        self.fields['nombre_subcalificaciones'].initial = json.dumps(
+            list(campana.opciones_calificacion.values("id", "subcalificaciones"))
+        )
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
