@@ -134,7 +134,7 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
         no_contactados = form.get('no_contactados_choice')
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         if campana.estado not in [Campana.ESTADO_FINALIZADA, Campana.ESTADO_PAUSADA]:
-            message = _(u'Solo se pueden reciclar campañas activas o pausadas.')
+            message = _(u'Solo se pueden reciclar campañas finalizadas y/o pausadas.')
             messages.add_message(self.request, messages.WARNING, message)
             return HttpResponseRedirect(reverse('campana_dialer_list'))
         if not (contactados or no_contactados) and campana.estado != Campana.ESTADO_FINALIZADA:
