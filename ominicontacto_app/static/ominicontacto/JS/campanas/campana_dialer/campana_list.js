@@ -49,7 +49,7 @@ $(function(){
     $('#modal_ventana').on('hidden.bs.modal', function(e) {
         campaignInModal = undefined;
     });
-    
+
     tableToDataTable(
         [
             null,
@@ -297,7 +297,7 @@ console.log(data)
         $('#wombat_state_label').html(gettext('Listo'));
         $('#wombat_state_label').css('color', 'green');
         $('#submit_restart_wombat').prop('disabled', false);
-        
+
     }
 
     disableReload() {
@@ -470,7 +470,7 @@ const ITEMS = [
 const STATE_ITEMS = {
     // Active
     '2': [
-        'detail', 'edit', 'queue', 'pause', 'recycle', 'end', 'grant', 'add-one', 'add-many',
+        'detail', 'edit', 'queue', 'pause', 'end', 'grant', 'add-one', 'add-many',
         'block', 'agendas', 'incidence', 'config', 'delete'
     ],
     // Paused
