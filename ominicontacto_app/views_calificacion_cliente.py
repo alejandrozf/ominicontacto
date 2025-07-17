@@ -40,6 +40,7 @@ from ominicontacto_app.forms.base import (CalificacionClienteForm, FormularioNue
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
     OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
+from ominicontacto_app.models import TelephoneValidator
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
 from ominicontacto_app.services.dialer import get_dialer_service, wombat_habilitado
@@ -112,7 +113,12 @@ class CalificacionClienteFormView(FormView):
     def _es_numero_privado(self, telefono):
         if not telefono:
             return False
-        return not telefono.isdigit()
+        try:
+            TelephoneValidator(telefono)
+        except ValidationError:
+            return True
+        else:
+            return False
 
     def _get_agente(self):
         return self.request.user.get_agente_profile()

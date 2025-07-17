@@ -67,6 +67,13 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_ALFANUMERICO = r'^[\w]+$'
 SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
+TelephoneValidator = RegexValidator(
+    regex=r'^\+?\d{3,25}$',
+    message=_(
+        'Solo se permiten de 3-25 dígitos y puede comenzar con "+".'
+    )
+)
+
 TYPE_PERSONAL = 1
 """Tipo de agenda Personal"""
 
