@@ -694,8 +694,9 @@ export default {
                   number: this.supWhatsappLine.numero,
                   provider: this.supWhatsappLine.proveedor,
                   configuration: {
-                      business_id: this.supWhatsappLine.configuracion.app_name,
-                      verification_token: this.supWhatsappLine.configuracion.app_id,
+                      waba_id: this.supWhatsappLine.configuracion.app_name,
+                      app_id: this.supWhatsappLine.configuracion.app_id,
+                      verification_token: this.supWhatsappLine.configuracion.verification_token,
                   },
                   destination: this.getDestinationData(),
                   schedule: this.form.horario,

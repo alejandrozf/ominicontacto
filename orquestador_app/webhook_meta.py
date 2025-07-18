@@ -31,7 +31,7 @@ class WebhookMetaView(APIView):
         self.redis_stream = RedisStreams()
         return super(WebhookMetaView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, identificador):
+    def get(self, request, app_id):
         try:
             mode = request.GET.get("hub.mode", None)
             token = request.GET.get("hub.verify_token", None)
@@ -39,18 +39,19 @@ class WebhookMetaView(APIView):
             if token:
                 line_token = Linea.objects.filter(
                     proveedor__tipo_proveedor=ConfiguracionProveedor.TIPO_META,
-                    configuracion__contains={'app_id': identificador}).first()
+                    configuracion__contains={'app_id': app_id}).first()
                 if mode and line_token:
                     if mode == "subscribe" and\
-                       token == line_token.configuracion['token_validacion']:
+                       token == line_token.configuracion['verification_token']:
                         return HttpResponse(challenge, status=status.HTTP_200_OK)
                 return HttpResponse(challenge, status=status.HTTP_403_FORBIDDEN)
             else:
                 return HttpResponse(challenge, status=status.HTTP_200_OK)
-        except Exception:
+        except Exception as e:
+            print("*****", e)
             return HttpResponse(challenge, status=status.HTTP_403_FORBIDDEN)
 
-    def post(self, request, identificador):
-        stream_name = 'whatsapp_webhook_meta_{}'.format(identificador)
+    def post(self, request, app_id):
+        stream_name = 'whatsapp_webhook_meta_{}'.format(app_id)
         self.redis_stream.write_stream(stream_name, request.body, max_stream_length=100000)
         return HttpResponse(status=status.HTTP_200_OK)

@@ -13,8 +13,9 @@ export default {
             }
             else if (line.provider_type === 1){
                 configuracion = {
-                    app_name: line.configuration.business_id,
-                    app_id: line.configuration.verification_token,
+                    app_name: line.configuration.waba_id,
+                    app_id: line.configuration.app_id,
+                    verification_token: line.configuration.verification_token,
                 };
             }
             state.supWhatsappLine = {
@@ -44,8 +45,6 @@ export default {
                 provider_type: null,
                 numero: '',
                 configuracion: {
-                    // app_name: '',
-                    // app_id: ''
                 },
                 destination: {
                     data: null,

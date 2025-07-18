@@ -23,7 +23,7 @@ from orquestador_app.webhook_gupshup import WebhookGupshupView
 
 
 urlpatterns = [
-    path('webhookmeta/<str:identificador>', WebhookMetaView.as_view(),
+    path('webhookmeta/<str:app_id>', WebhookMetaView.as_view(),
          name='webhook-meta',
          ),
     path('webhook/<str:identificador>/', WebhookGupshupView.as_view(),
