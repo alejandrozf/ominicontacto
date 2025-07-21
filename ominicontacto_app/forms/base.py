@@ -2473,7 +2473,8 @@ class FiltroAgendasForm(forms.Form):
 
     campana = forms.ModelMultipleChoiceField(
         queryset=Campana.objects.filter(
-            estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_INACTIVA, Campana.ESTADO_PAUSADA]),
+            estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_INACTIVA, Campana.ESTADO_PAUSADA,
+                        Campana.ESTADO_FINALIZADA]),
         label=_('Campana'),
         required=False)
 
