@@ -376,7 +376,7 @@ class Command(BaseCommand):
         self._crear_campana_preview('PRW_SUCCESS_TEMPLATE', self.bd_contacto_prw_success, True)
 
         activacion_queue_service = ActivacionQueueService()
-        activacion_queue_service.activar()
+        activacion_queue_service.activar_campanas()
 
         caller_id = '01177660010'
         remote_host = 'pbxemulator:5070'
@@ -432,9 +432,6 @@ class Command(BaseCommand):
         # Asigno 1 Agente por campaña entrante
         queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_base[0], ))
         queue_service.agregar_agentes_en_cola(campana_entrante, (agentes_base[1], ))
-
-        # Luego de agregar los agentes refresco datos en asterisk
-        queue_service.activar_cola()
 
         # Asigno campañas a gerente
         campanas.extend([campana_entrante, campana_entrante_2])

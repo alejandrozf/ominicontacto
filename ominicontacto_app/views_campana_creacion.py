@@ -314,7 +314,7 @@ class CampanaWizardMixin(object):
         """ Sincronizar informacion de Campaña / Queue """
         activacion_queue_service = ActivacionQueueService()
         try:
-            activacion_queue_service.activar()
+            activacion_queue_service.activar(queue.campana)
         except RestablecerDialplanError:
             raise
 

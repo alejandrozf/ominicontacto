@@ -44,7 +44,7 @@ class TestsInicializarEntorno (OMLBaseTest):
            'SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk.regenerar_asterisk')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
            'SincronizadorDeConfiguracionTroncalSipEnAsterisk.regenerar_troncales')
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar_campanas')
     @patch('ominicontacto_app.services.asterisk_service.ActivacionAgenteService.activar')
     def test_multiples_agentes(self, activar_agente, activar_queue, regenerar_troncales,
                                regenerar_asterisk, escribir_ruta_entrante_config,
