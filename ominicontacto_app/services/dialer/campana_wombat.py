@@ -445,11 +445,6 @@ class CampanaService():
         service_base.crear_lista(campana, evitar_duplicados, evitar_sin_telefono, prefijo_discador)
 
         # remueve la campana de las campanas corriendo en wombat
-        resultado = self.remove_campana_wombat(campana)
-        if resultado:
-            campana.remover()
-        else:
-            pass  # TODO: Verificar si se debe seguir con estos pasos o no!
         time.sleep(30)          # FIXME: por qué este sleep ??
         # elimina la lista de contactos de la campana en wombat
         self.desasociacion_campana_wombat(campana)
