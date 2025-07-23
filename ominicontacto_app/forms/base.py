@@ -2183,6 +2183,7 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
+                  'acceso_cambiar_contrasena_agente',
                   'obligar_despausa', 'whatsapp_habilitado',
                   'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
                   'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',

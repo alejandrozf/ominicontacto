@@ -311,6 +311,8 @@ class Grupo(models.Model):
         'Acceso a las calificaciones como agente'))
     acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso a las campañas preview como agente'))
+    acceso_cambiar_contrasena_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a cambiar la contraseña como agente'))
     whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
         'Permiso de uso de la canalidad WhatsApp'))
     restringir_tipo_llamadas_manuales = models.BooleanField(default=False, verbose_name=_(
