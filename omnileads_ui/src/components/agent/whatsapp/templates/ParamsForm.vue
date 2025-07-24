@@ -27,9 +27,12 @@
       </div>
     </div>
     <Panel header="Vista previa" class="field col-12 bg-green-200">
-      <p class="m-0">
-        {{ getPreviewMessage }}
-      </p>
+        <p class="m-0">
+            {{ getPreviewMessageHeader }}
+          </p>
+          <p class="m-0">
+            {{ getPreviewMessage }}
+          </p>
     </Panel>
     <div class="flex justify-content-end flex-wrap mt-2">
       <div class="flex align-items-center">
@@ -60,9 +63,11 @@ export default {
                     id: null,
                     name: '',
                     configuration: {
+                        text_header: '',
                         text: '',
                         type: '',
-                        numParams: 0
+                        numParams_header: 0,
+                        numParams_text: 0
                     }
                 };
             }
@@ -88,12 +93,27 @@ export default {
     computed: {
         ...mapState(['agtWhatsCoversationInfo']),
         getPreviewMessage () {
-            if (!this.template.configuration || this.form === {}) { return this.template.configuration.text || ''; }
+            if (!this.template.configuration || this.form === {}) {
+                return this.template.configuration.text;
+            }
             const self = this;
             return this.template.configuration.text.replace(
                 /{{(\d+)}}/g,
                 function (match, numero) {
                     const field = self.form[`param_${numero}`];
+                    return field.value || `${match}`;
+                }
+            );
+        },
+        getPreviewMessageHeader () {
+            if (!this.template.configuration || this.form === {}) {
+                return this.template.configuration.text_header
+            }
+            const self = this;
+            return this.template.configuration.text_header.replace(
+                /{{(\d+)}}/g,
+                function (match, numero) {
+                    const field = self.form[`param_header_${numero}`];
                     return field.value || `${match}`;
                 }
             );
@@ -122,8 +142,12 @@ export default {
         },
         initFormData () {
             this.form = {};
-            for (let i = 0; i < this.template.configuration.numParams; i++) {
+            for (let i = 0; i < this.template.configuration.numParams_text; i++) {
                 const name = `param_${i + 1}`;
+                this.form[name] = { name, empty: false, value: null };
+            }
+            for (let i = 0; i < this.template.configuration.numParams_header; i++) {
+                const name = `param_header_${i + 1}`;
                 this.form[name] = { name, empty: false, value: null };
             }
         },
@@ -141,8 +165,20 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                const field = this.form[clave];
-                formData.push(field.value);
+                if (!clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
+            }
+            return formData;
+        },
+        getFormDataHeader () {
+            const formData = [];
+            for (const clave in this.form) {
+                if (clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
             }
             return formData;
         },
@@ -164,14 +200,17 @@ export default {
                     localStorage.getItem('agtWhatsappConversationMessages')
                 );
                 let result = null;
+                console.log("-------------");
                 const reqData = {
                     conversationId: this.agtWhatsCoversationInfo.id,
                     templateId: this.template.id,
                     phoneLine: this.agtWhatsCoversationInfo.line.number,
+                    params_header: this.getFormDataHeader(),
                     params: this.getFormData(),
                     messages,
                     $t: this.$t
                 };
+                console.log("-------------", reqData);
                 if (this.onlyWhatsappTemplates) {
                     result = await this.agtWhatsCoversationReactiveExpiredConversation(
                         reqData

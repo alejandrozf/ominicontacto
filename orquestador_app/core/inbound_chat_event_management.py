@@ -23,7 +23,7 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 
-from orquestador_app.core.gupshup_send_menssage import (
+from orquestador_app.core.send_menssage import (
     autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
     send_text_message)
 from orquestador_app.core.check_out_of_time import is_out_of_time
@@ -34,7 +34,6 @@ redis_2 = create_redis_connection(db=2)
 
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     try:
-        print(context)
         print("mensaje entrante por la linea >>>", line.nombre, "content >>>>", content)
         is_out_of_time_chat = is_out_of_time(line, timestamp)
         message_inbound, created_message =\
@@ -55,7 +54,8 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                 line=line, whatsapp_id=origen)
             client = None
             conversation =\
-                conversations_from_origen.filter(expire__gte=timestamp, is_disposition=False).last()
+                conversations_from_origen.filter(
+                    expire__gte=timestamp, is_disposition=False).last()
             if not conversation:
                 client_alias = sender['name'] if 'name' in sender else ""
                 campana = None
@@ -136,7 +136,12 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
 
 async def asignar_campana(line, conversation, content, context):
     try:
-        mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])
+        try:
+            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
+        except Exception as e:
+            print(e)
+            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
+
         destino_entrante_id = mensaje_origen.sender['destino_entrante']
         destination_entrante = DestinoEntrante.objects.get(id=destino_entrante_id)
         destino = destination_entrante.destinos_siguientes.filter(
@@ -155,11 +160,11 @@ async def asignar_campana(line, conversation, content, context):
                     auto_response = {"text": destination_entrante.content_object.texto_derivacion}
                     if auto_response:
                         timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                        orquestador_response = send_text_message(
+                        message_id = send_text_message(
                             line, conversation.destination, auto_response)
-                        if orquestador_response["status"] == "submitted":
+                        if message_id:
                             MensajeWhatsapp.objects.get_or_create(
-                                message_id=orquestador_response['messageId'],
+                                message_id=message_id,
                                 conversation=conversation,
                                 defaults={
                                     'origen': line.numero,

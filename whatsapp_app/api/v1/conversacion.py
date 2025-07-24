@@ -42,9 +42,8 @@ from whatsapp_app.models import (
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
-from orquestador_app.core.gupshup_send_menssage import (
+from orquestador_app.core.send_menssage import (
     send_template_message, send_text_message, send_multimedia_file)
-from orquestador_app.core.media_management import get_media_url
 from orquestador_app.core.gupshup_code_error import GUPSHUP_CODE_ERROR
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
 
@@ -305,8 +304,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('No se puede asignar una conversación que no existe')),
                 status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print("Error al asignar la conversación")
-            print(e)
+            print("Error al asignar la conversación >>>", e)
             return response.Response(
                 data=get_response_data(message=_('Error al asignar la conversación')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -387,11 +385,12 @@ class ViewSet(viewsets.ViewSet):
                         data = request.data.copy()
                         line = conversation.line
                         message = {"text": data['message'], "type": "text"}
-                        orquestador_response = send_text_message(
+                        print('>>> send_message_text')
+                        message_id = send_text_message(
                             line, destination, message)  # orquestador
-                        if orquestador_response["status"] == "submitted":
+                        if message_id:
                             mensaje = MensajeWhatsapp.objects.create(
-                                message_id=orquestador_response['messageId'],
+                                message_id=message_id,
                                 conversation=conversation,
                                 origen=line.numero,
                                 timestamp=timestamp,
@@ -400,14 +399,14 @@ class ViewSet(viewsets.ViewSet):
                                 type="text",
                             )
                             serializer = MensajeListSerializer(mensaje)
+                            return response.Response(
+                                data=get_response_data(
+                                    status=HttpResponseStatus.SUCCESS,
+                                    data=serializer.data),
+                                status=status.HTTP_200_OK)
                         else:
                             raise Exception(
                                 _('Este mensaje no se pudo enviar'))
-                        return response.Response(
-                            data=get_response_data(
-                                status=HttpResponseStatus.SUCCESS,
-                                data=serializer.data),
-                            status=status.HTTP_200_OK)
                     return response.Response(
                         data=get_response_data(
                             message=_(
@@ -448,7 +447,7 @@ class ViewSet(viewsets.ViewSet):
                         serializer = MensajeAtachmentCreateSerializer(data=data)
                         serializer.is_valid(raise_exception=True)
                         mensaje = serializer.save()
-                        filename = data['file'].name
+                        filename = data['file'].name[:100]
                         file_type = get_type(filename)
                         domain = request.build_absolute_uri('/')[:-1]
                         # domain = "https://nominally-hopeful-condor.ngrok-free.app"
@@ -461,10 +460,10 @@ class ViewSet(viewsets.ViewSet):
                             "name": filename,
                             "filename": filename
                         }
-                        orquestador_response = send_multimedia_file(
+                        message_id = send_multimedia_file(
                             line, destination, message_dict)
-                        if orquestador_response["status"] == "submitted":
-                            mensaje.message_id = orquestador_response['messageId']
+                        if message_id:
+                            mensaje.message_id = message_id
                             mensaje.origen = line.numero
                             mensaje.timestamp = timestamp
                             mensaje.sender = {
@@ -497,7 +496,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Conversacion es erronea')),
                 status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            print(e)
+            print(">>>>>>>>", e)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.ERROR, data={},
@@ -520,11 +519,11 @@ class ViewSet(viewsets.ViewSet):
                         data = request.data.copy()  # template_id
                         line = conversation.line
                         message = PlantillaMensaje.objects.get(pk=data['template_id']).configuracion
-                        orquestador_response = send_text_message(
+                        message_id = send_text_message(
                             line, destination, message)  # orquestador
-                        if orquestador_response["status"] == "submitted":
+                        if message_id:
                             mensaje = MensajeWhatsapp.objects.create(
-                                message_id=orquestador_response['messageId'],
+                                message_id=message_id,
                                 conversation=conversation,
                                 origen=line.numero,
                                 timestamp=timestamp,
@@ -553,8 +552,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Conversacion erronea')),
                 status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            print("Error al enviar el mensaje")
-            print(e)
+            print("Error al enviar el mensaje>>>", e)
             return response.Response(
                 data=get_response_data(message=_('Error al enviar el mensaje'),
                                        status=HttpResponseStatus.ERROR, data={}, errors=str(e)),
@@ -564,13 +562,12 @@ class ViewSet(viewsets.ViewSet):
     def send_message_whatsapp_template(self, request, pk):
         try:
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
+            print("conversation>>>>", conversation)
             if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
                 destination = conversation.destination
                 data = request.data.copy()  # Id Template
                 template = TemplateWhatsapp.objects.get(id=data['template_id'])
-                template_id = template.identificador
                 template_tipo = template.tipo
-                multimedia_id = template.identificador_media
                 sender = request.user.get_agente_profile()
                 if not conversation.agent or conversation.agent != sender:
                     raise Exception(_('Esta conversación ya está siendo atendida por otro agente'))
@@ -578,17 +575,15 @@ class ViewSet(viewsets.ViewSet):
                 if conversation.expire and conversation.expire >= timestamp:
                     if conversation.is_active:
                         line = conversation.line
-                        orquestador_response = send_template_message(
-                            line, destination, template_id, template_tipo,
-                            data['params'], multimedia_id)  # orquestador
-                        if orquestador_response["status"] == "submitted":
+                        message_id = send_template_message(
+                            line, destination, template, data)
+                        if message_id:
                             text = template.texto.replace('{{', '{').\
                                 replace('}}', '}').format("", *data['params'])
                             if template_tipo == 'TEXT':
                                 message_dict = {"text": text, "type": template_tipo}
                             else:
-                                app_id = template.linea.configuracion['app_id']
-                                media_url = get_media_url(app_id, multimedia_id)
+                                media_url = template.link_media
                                 message_dict = {
                                     "type": template_tipo.lower(),
                                     "previewUrl": media_url,
@@ -599,7 +594,7 @@ class ViewSet(viewsets.ViewSet):
                                     "caption": text
                                 }
                             mensaje = MensajeWhatsapp.objects.create(
-                                message_id=orquestador_response['messageId'],
+                                message_id=message_id,
                                 conversation=conversation,
                                 origen=line.numero,
                                 timestamp=timestamp,
@@ -608,12 +603,12 @@ class ViewSet(viewsets.ViewSet):
                                 type=template_tipo.lower(),
                             )
                             serializer = MensajeListSerializer(mensaje)
-                        return response.Response(
-                            data=get_response_data(
-                                status=HttpResponseStatus.SUCCESS, data=serializer.data,
-                                message=_('Se envió el mensaje de forma exitosa')
-                            ),
-                            status=status.HTTP_200_OK)
+                            return response.Response(
+                                data=get_response_data(
+                                    status=HttpResponseStatus.SUCCESS, data=serializer.data,
+                                    message=_('Se envió el mensaje de forma exitosa')
+                                ),
+                                status=status.HTTP_200_OK)
                     return response.Response(
                         data=get_response_data(
                             message=_(
@@ -636,6 +631,7 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=True, methods=["post"])
     def reactive_expired_conversation(self, request, pk):
         try:
+            print('reactive_expired_conversation >>>>', request.data)
             data = request.data.copy()  # Id Template
             conversation = ConversacionWhatsapp.objects.get(pk=pk)
             or_filter = Q(destination=conversation.destination)
@@ -658,20 +654,17 @@ class ViewSet(viewsets.ViewSet):
             sender = request.user.get_agente_profile()
             line = conversation.line
             template = TemplateWhatsapp.objects.get(id=data['template_id'])
-            template_id = template.identificador
             template_tipo = template.tipo
-            multimedia_id = template.identificador_media
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-            orquestador_response = send_template_message(
-                line, destination, template_id, template_tipo, data['params'], multimedia_id)
-            if orquestador_response["status"] == "submitted":
+            message_id = send_template_message(
+                line, destination, template, data)
+            if message_id:
                 text = template.texto.replace('{{', '{').\
                     replace('}}', '}').format("", *data['params'])
                 if template_tipo == 'TEXT':
                     message_dict = {"text": text, "type": template_tipo}
                 else:
-                    app_id = template.linea.configuracion['app_id']
-                    media_url = get_media_url(app_id, multimedia_id)
+                    media_url = template.link_media
                     message_dict = {
                         "type": template_tipo.lower(),
                         "previewUrl": media_url,
@@ -683,13 +676,18 @@ class ViewSet(viewsets.ViewSet):
                     }
                 mensaje = MensajeWhatsapp.objects.create(
                     conversation=conversation,
-                    message_id=orquestador_response['messageId'],
+                    message_id=message_id,
                     origen=line.numero,
                     timestamp=timestamp,
                     sender={"name": sender.user.username, "agent_id": sender.user.id},
                     content=message_dict,
                     type=template_tipo.lower(),
                 )
+                conversation.expire = (
+                    timestamp + timezone.timedelta(days=1)) - timezone.timedelta(
+                        seconds=timestamp.second, microseconds=timestamp.microsecond)
+                conversation.is_active = False
+                conversation.save()
                 serializer = MensajeListSerializer(mensaje)
             return response.Response(
                 data=get_response_data(
@@ -711,7 +709,8 @@ class ViewSet(viewsets.ViewSet):
             sender = request.user.get_agente_profile()
             data = request.data.copy()  # Id Template
             # Verifico parametros
-            required_fields = {'campaign', 'template_id', 'destination', 'params', 'contact', }
+            required_fields = {
+                'campaign', 'template_id', 'destination', 'params', 'params_header', 'contact', }
             missing_fields = required_fields.difference(data.keys())
             if missing_fields:
                 return response.Response(
@@ -741,10 +740,9 @@ class ViewSet(viewsets.ViewSet):
                 return response.Response(
                     data=get_response_data(message=_('Template inválido')),
                     status=status.HTTP_400_BAD_REQUEST)
-            template_id = template.identificador
             template_tipo = template.tipo
-            multimedia_id = template.identificador_media
             destination = data['destination']
+            print("destination >>>", destination)
             contact_id = data['contact']
             try:
                 contact = campana.bd_contacto.contactos.get(id=contact_id)
@@ -757,27 +755,28 @@ class ViewSet(viewsets.ViewSet):
             conversation_started = ConversacionWhatsapp.objects\
                 .conversaciones_en_curso().filter(line_id=line.pk).filter(or_filter)
             if not conversation_started:
-                orquestador_response = send_template_message(
-                    line, destination, template_id, template_tipo, data['params'], multimedia_id)
-                if orquestador_response["status"] == "submitted":
+                message_id = send_template_message(
+                    line, destination, template, data)
+                if message_id:
                     conversation_started = ConversacionWhatsapp.objects.create(
                         line=line,
                         destination=destination,
+                        whatsapp_id=destination,
                         date_last_interaction=timestamp,
                         campana=campana,
                         agent=sender,
                         saliente=True,
-                        client=contact
-                    )
+                        client=contact,
+                        expire=(timestamp + timezone.timedelta(days=1)) - timezone.timedelta(
+                            seconds=timestamp.second, microseconds=timestamp.microsecond))
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
                     if template_tipo == 'TEXT':
                         message_dict = {"text": text, "type": template_tipo}
                     else:
-                        app_id = template.linea.configuracion['app_id']
-                        media_url = get_media_url(app_id, multimedia_id)
+                        media_url = template.link_media
                         message_dict = {
-                            "type": template_tipo.lower(),
+                            "type": template.tipo.lower(),
                             "previewUrl": media_url,
                             "originalUrl": media_url,
                             "url": media_url,
@@ -787,12 +786,12 @@ class ViewSet(viewsets.ViewSet):
                         }
                     mensaje = MensajeWhatsapp.objects.create(
                         conversation=conversation_started,
-                        message_id=orquestador_response['messageId'],
+                        message_id=message_id,
                         origen=line.numero,
                         timestamp=timestamp,
                         sender={"name": sender.user.username, "agent_id": sender.user.id},
                         content=message_dict,
-                        type=template_tipo.lower(),
+                        type=template.tipo.lower(),
                     )
                     serializer = MensajeListSerializer(mensaje)
                     redis_2.sadd(

@@ -18,3 +18,7 @@
 URL_SEND_TEMPLATE = 'https://api.gupshup.io/wa/api/v1/template/msg'
 URL_SEND_MESSAGE = 'https://api.gupshup.io/wa/api/v1/msg'
 URL_SYNC_TEMPLATES = 'https://api.gupshup.io/wa/app/{}/template'
+
+META_URL_SEND_MESSAGE = 'https://graph.facebook.com/v22.0/{}/messages'
+META_SYNC_TEMPLATES = 'https://graph.facebook.com/v22.0/{}/message_templates'
+META_GET_MEDIA_URL = 'https://graph.facebook.com/v22.0/{}?phone_number_id={}'
