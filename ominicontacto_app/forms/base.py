@@ -50,7 +50,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
-                                      contiene_solo_alfanumericos_o_guiones,
+                                      contiene_solo_alfanumericos_guion_o_punto,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from whatsapp_app.models import ConfiguracionWhatsappCampana
@@ -2265,7 +2265,7 @@ class ParametrosCrmForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre', '')
         if not nombre:
             raise forms.ValidationError(_('Debe definir un nombre para el parámetro'))
-        if contiene_solo_alfanumericos_o_guiones(nombre):
+        if contiene_solo_alfanumericos_guion_o_punto(nombre):
             return nombre
         if self.es_placeholder(nombre):
             return nombre
