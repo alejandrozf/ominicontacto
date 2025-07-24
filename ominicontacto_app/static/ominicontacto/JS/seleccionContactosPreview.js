@@ -26,11 +26,8 @@ $(function () {
 
     if ($nuevoContactoPreview.length > 0) {
         $nuevoContactoPreview.on('click', function () {
-            var ultimaCampPreviewSeleccionada = sessionStorage.getItem('ultimaCampanaPreviewSeleccionada');
-            $('#dataView').attr('src', Urls.campana_preview_activas_miembro());
-            setTimeout(function () {
-                $('#dataView').contents().find('#preview-' + ultimaCampPreviewSeleccionada).click();
-            }, 1000);
+            let url = Urls.campana_preview_activas_miembro('1');
+            $('#dataView').attr('src', url);
         });
     }
 });

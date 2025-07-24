@@ -38,6 +38,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
         {% endcompress %}
     </head>
+    <input type="hidden" id="get_contact" name="get_contact" value="{{ get_contact }}">
+
     <body>
         <!-- { % include 'messages.html' % } -->
         {% for message in messages %}
@@ -90,12 +92,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="panel-body">
                         <form id="llamar_preview" action="{% url 'agente_llamar_contacto' %}" method="POST" role="form">
                             {% csrf_token %}
-                            <input type="hidden" id="pk_agente" name="pk_agente">
                             <input type="hidden" id="pk_contacto" name="pk_contacto">
                             <input type="hidden" id="pk_campana" name="pk_campana">
-                            <input type="hidden" id="campana_nombre" name="campana_nombre">
                             <input type="hidden" id="click2call_type" name="click2call_type" value="preview">
-                            <input type="hidden" id="tipo_campana" name="tipo_campana" value="4">
                             <button id="llamar_contacto" type="submit" class="hidden"></button>
                         </form>
                         <button id="validar_contacto" class="btn btn-info">

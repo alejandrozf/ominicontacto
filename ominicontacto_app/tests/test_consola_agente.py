@@ -144,7 +144,7 @@ class TestConsolaAgente (OMLBaseTest):
         response = self.client.get(self.url, follow=True)
         self.assertContains(
             response,
-            '<a class="menu-link" href="/agente/campanas_preview/activas/" target="crm">')
+            '<a class="menu-link" href="/agente/campanas_preview/activas" target="crm">')
 
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
@@ -155,4 +155,4 @@ class TestConsolaAgente (OMLBaseTest):
         response = self.client.get(self.url, follow=True)
         self.assertNotContains(
             response,
-            '<a class="menu-link" href="/agente/campanas_preview/activas/" target="crm">')
+            '<a class="menu-link" href="/agente/campanas_preview/activas" target="crm">')

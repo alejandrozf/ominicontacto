@@ -397,6 +397,32 @@ class AgenteCampanaTests(CampanasTests):
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
         send.assert_called_with('calification', self.agente_profile.id)
 
+    def test_usuario_no_logueado_no_valida_asignacion_agente_contacto(self):
+        self.client.logout()
+        AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
+            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('validar_contacto_asignado')
+        post_data = {
+            'pk_campana': self.campana_activa.pk,
+            'pk_contacto': self.contacto.pk
+        }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, u'registration/login.html')
+
+    def test_vista_validacion_asignacion_contacto_a_agente(self):
+        AgenteEnContactoFactory.create(
+            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
+            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
+        url = reverse('validar_contacto_asignado')
+        post_data = {
+            'pk_campana': self.campana_activa.pk,
+            'pk_contacto': self.contacto.pk
+        }
+        response = self.client.post(url, post_data, follow=True)
+        dict_response = json.loads(response.content)
+        self.assertTrue(dict_response['contacto_asignado'])
+
 
 class SupervisorCampanaTests(CampanasTests):
 
@@ -658,34 +684,6 @@ class SupervisorCampanaTests(CampanasTests):
         agente_en_contacto.refresh_from_db()
         self.assertEqual(AgenteEnContacto.objects.filter(
             estado=AgenteEnContacto.ESTADO_ENTREGADO).count(), 1)
-
-    def test_usuario_no_logueado_no_valida_asignacion_agente_contacto(self):
-        self.client.logout()
-        AgenteEnContactoFactory.create(
-            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
-            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
-        url = reverse('validar_contacto_asignado')
-        post_data = {
-            'pk_agente': self.agente_profile.pk,
-            'pk_campana': self.campana_activa.pk,
-            'pk_contacto': self.contacto.pk
-        }
-        response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
-
-    def test_vista_validacion_asignacion_contacto_a_agente(self):
-        AgenteEnContactoFactory.create(
-            campana_id=self.campana_activa.pk, contacto_id=self.contacto.pk,
-            agente_id=self.agente_profile.pk, estado=AgenteEnContacto.ESTADO_ENTREGADO)
-        url = reverse('validar_contacto_asignado')
-        post_data = {
-            'pk_agente': self.agente_profile.pk,
-            'pk_campana': self.campana_activa.pk,
-            'pk_contacto': self.contacto.pk
-        }
-        response = self.client.post(url, post_data, follow=True)
-        dict_response = json.loads(response.content)
-        self.assertTrue(dict_response['contacto_asignado'])
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
