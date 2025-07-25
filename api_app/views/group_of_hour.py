@@ -203,7 +203,7 @@ class GroupOfHourDelete(APIView):
                 data={
                     "status": "ERROR",
                     "message": _(
-                       "No está permitido eliminar el '{modelo}' porque está siendo "
+                        "No está permitido eliminar el '{modelo}' porque está siendo "
                         "usado por {related}.".format(
                             modelo=_("Grupo Horario"),
                             related=", ".join(str(o) for o in exc.protected_objects),

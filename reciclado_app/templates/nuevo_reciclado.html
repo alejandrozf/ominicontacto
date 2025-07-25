@@ -20,6 +20,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'reciclado_app/JS/reciclado.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <div clas="row">
@@ -54,13 +58,42 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tbody>
         </table>
 
-        <h2>{% trans 'Como desea reciclar esta campana' %}</h2>
-        <div class="form-row">
-                    {{ form.reciclado_radio.0 }}
+        <h2 class="mb-4">{% trans 'Como desea reciclar esta campana' %}</h2>
+
+        <div class="p-3 mb-4">
+            <!-- Opción 1 -->
+            <div class="form-check mb-3">
+                {{ form.reciclado_radio.0.tag }}
+                <label class="form-check-label">
+                    {{ form.reciclado_radio.0.choice_label }}
+                </label>
+            </div>
+
+            <!-- Opción 2 con checkbox al lado derecho en la misma línea -->
+            <div class="d-flex align-items-center flex-wrap">
+                <!-- Radio + label -->
+                <div class="form-check me-3 mb-2">
+                    {{ form.reciclado_radio.1.tag }}
+                    <label class="form-check-label">
+                        {{ form.reciclado_radio.1.choice_label }}
+                    </label>
+                </div>
+
+                <!-- Checkbox con label al lado derecho del input -->
+                {% if es_campana_preview %}
+                    <div id="retomarContactacionNodo">
+                        <div class="form-check mb-2 ms-4 d-flex align-items-center">
+                            {{ form.retomar_contactacion }}
+                            <label class="form-check-label ms-2 mb-0">
+                                {{ form.retomar_contactacion.label }}
+                            </label>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        <div class="form-row">
-                    {{ form.reciclado_radio.1 }}
-        </div>
+
+
         <hr>
         <button type="submit" id="id_registrar" class="btn btn-primary">
             {% trans 'Reciclar' %}

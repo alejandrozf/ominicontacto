@@ -332,6 +332,13 @@ class RecicladorContactosCampanaDIALER():
 
         return campana.bd_contacto.contactos.filter(id__in=id_contactos)
 
+    def retomar_contactacion(self, campana, reciclado_calificacion, reciclado_no_contactacion):
+        contactos_reciclados = self.obtener_contactos_reciclados(
+            campana, reciclado_calificacion, reciclado_no_contactacion)
+        campana.establecer_valores_iniciales_agente_contacto(False, False, contactos_reciclados)
+        campana.estado = Campana.ESTADO_ACTIVA
+        campana.save()
+
     def reciclar(self, campana, reciclado_calificacion, reciclado_no_contactacion):
 
         # Obtener los contactos reciclados
