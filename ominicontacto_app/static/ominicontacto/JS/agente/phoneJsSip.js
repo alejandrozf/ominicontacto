@@ -191,6 +191,17 @@ class PhoneJS {
             self.currentSession.on('failed', function(e) {
                 phone_logger.log('session: failed');
                 self.Sounds('', 'stop');
+                if (e.cause == "User Denied Media Access") {
+                    $.growl.error({
+                        title: gettext('Atención!'),
+                        message: gettext('No se ha podido acceder a su micrófono. \n\
+                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
+                            duration: 15000,
+                    });
+                    self.logout();
+                    return;
+                }
+                phone_logger.log(`Error: ${e.cause}`);
                 if (self.session_data.is_call) {
                     self.eventsCallbacks.onSessionFailed.fire();
                     self.eventsCallbacks.onRingingEnd.fire();
@@ -492,10 +503,10 @@ class SessionData {
 
         if (invite_request.headers.Omldid)
             call_data.Omldid = invite_request.headers.Omldid[0].raw;
-        
+
         if (invite_request.headers.Omlcampname)
             call_data.Omlcampname = invite_request.headers.Omlcampname[0].raw;
-        
+
         if (invite_request.headers.Omlinroutename)
             call_data.Omlinroutename = invite_request.headers.Omlinroutename[0].raw;
 
