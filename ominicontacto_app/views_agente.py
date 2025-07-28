@@ -322,6 +322,7 @@ class AgenteCampanasPreviewActivasView(TemplateView):
         campanas_preview_activas = agente_profile.get_campanas_preview_activas_miembro()
         context['campanas_preview_activas'] = campanas_preview_activas.values_list(
             'queue_name__campana', 'queue_name__campana__nombre')
+        context['get_contact'] = kwargs.get('get_contact') is not None
         return context
 
 
