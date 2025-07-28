@@ -642,6 +642,7 @@ body > h1 {
 /* Admin content area */
 .wrapper-content {
   width: 100%;
+  overflow-x: auto;
 }
 
 .wrapper-info {
