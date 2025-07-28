@@ -766,6 +766,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% endif %}
                     </div>
                     <div id="timersControls">
+                        <span id="onHoldTimer" class="label label-default d-none">
+                            <span id="horaOnHold"></span><span id="minsOnHold"></span><span id="segsOnHold"></span>
+                        </span>
                         <span id="UserStatus"></span>
                         <button type="button" id="Pause" class="btn btn-warning btn-sm">
                             <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
