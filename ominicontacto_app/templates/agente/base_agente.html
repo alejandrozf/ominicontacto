@@ -781,11 +781,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
                 <div class="wrapper-info">
                     {% if agente_profile.grupo.acceso_dashboard_agente %}
-                        <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
+                        <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="agent-console-iframe" name="crm"></iframe>
                     {% elif agente_profile.grupo.acceso_agendas_agente %}
-                        <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="crm" name="crm"></iframe>
+                        <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="agent-console-iframe" name="crm"></iframe>
                     {% else %}
-                        <iframe src="{% url 'view_blanco' %}" id="dataView" class="crm" name="crm"></iframe>
+                        <iframe src="{% url 'view_blanco' %}" id="dataView" class="agent-console-iframe" name="crm"></iframe>
                     {% endif %}
                 </div>
             </div>
