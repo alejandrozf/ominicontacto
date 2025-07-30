@@ -524,6 +524,10 @@ class PhoneJSController {
             // Si pierde conexión, en cada intento fallido de reconexión se dispara este evento.
         });
 
+        this.phone.eventsCallbacks.onUserDeniedMediaAccess.add(function () {
+            self.handleMediaDisabled();
+        });
+
         /** Calls **/
         this.phone.eventsCallbacks.onTransferDialed.add(function(transfer_data) {
             phone_logger.log('onTransferDialed');
@@ -784,17 +788,21 @@ class PhoneJSController {
             .then(function(permissionStatus){
                 permissionStatus.onchange = function(){
                     if (this.state=='denied'){
-                        self.phone.logout();
-                        self.oml_api.makeDisabled();
-                        $.growl.error({
-                            title: gettext('Atención!'),
-                            message: gettext('No se ha podido acceder a su micrófono. \n\
-                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
-                            duration: 15000,
-                        });
+                        self.handleMediaDisabled();
                     }
                 };
             });
+    }
+
+    handleMediaDisabled() {
+        this.phone.logout();
+        this.oml_api.makeDisabled();
+        $.growl.error({
+            title: gettext('Atención!'),
+            message: gettext('No se ha podido acceder a su micrófono. \n\
+                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
+            duration: 15000,
+        });
     }
 
     goToReadyAfterLogin() {

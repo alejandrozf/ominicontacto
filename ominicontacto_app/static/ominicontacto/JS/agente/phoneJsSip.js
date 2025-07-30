@@ -100,6 +100,8 @@ class PhoneJS {
 
             onRingingEnd: $.Callbacks(),
 
+            onUserDeniedMediaAccess: $.Callbacks(),
+
         };
     }
 
@@ -192,13 +194,7 @@ class PhoneJS {
                 phone_logger.log('session: failed');
                 self.Sounds('', 'stop');
                 if (e.cause == "User Denied Media Access") {
-                    $.growl.error({
-                        title: gettext('Atención!'),
-                        message: gettext('No se ha podido acceder a su micrófono. \n\
-                            Permita el acceso al mismo y recargue la página para comenzar a trabajar.'),
-                            duration: 15000,
-                    });
-                    self.logout();
+                    self.eventsCallbacks.onUserDeniedMediaAccess.fire();
                     return;
                 }
                 phone_logger.log(`Error: ${e.cause}`);
