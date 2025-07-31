@@ -245,7 +245,7 @@ export default {
                 if (this.agtWhatsCoversationInfo) {
                     if (this.agtWhatsCoversationInfo.client.id) {
                         this.clientInfo.name =
-              this.agtWhatsCoversationInfo.client.data.nombre ||
+              this.agtWhatsCoversationInfo.client.data.nombre || this.agtWhatsCoversationInfo.client.data.name
               this.agtWhatsCoversationInfo.client_alias;
                         this.clientInfo.phone = this.agtWhatsCoversationInfo.client.phone;
                     } else {
