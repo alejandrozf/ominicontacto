@@ -377,7 +377,7 @@ export default {
             }
         },
         findDestinationOptions() {
-          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId && !item.is_main)
+          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
         },
         save (isFormValid) {
             this.submitted = true;
