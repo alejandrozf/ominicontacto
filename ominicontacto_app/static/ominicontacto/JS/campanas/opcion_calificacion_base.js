@@ -104,4 +104,5 @@ function subscribeToChangeNombre(select_nombre) {
     $(select_nombre).change(function(){
         setSubdispositionsOptions(select_nombre);
     });
+    setSubdispositionsOptions(select_nombre);
 }

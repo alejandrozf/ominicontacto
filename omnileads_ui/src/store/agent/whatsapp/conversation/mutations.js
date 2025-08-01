@@ -25,6 +25,9 @@ const setFromInfo = (info = null) => {
         if (info.client.data.nombre) {
             return info.client.data.nombre;
         }
+        if (info.client.data.name) {
+            return info.client.data.name;
+        }
     } else if (info && info.client_alias) {
         return info.client_alias;
     }
@@ -44,7 +47,13 @@ export default {
             const itsMine = data && data.origin ? data.origin === data.line_phone : false;
             const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
             const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
-            const clientName = data && data.contact_data && data.contact_data.nombre ? data.contact_data.nombre : null;
+            var clientName = "-"
+            if (data && data.contact_data) {
+                if (data.contact_data.nombre)
+                    clientName = data.contact_data.nombre;
+                else if (data.contact_data.name)
+                    clientName = data.contact_data.name;
+            }
             const message = {
                 id: newMessageId,
                 from: itsMine

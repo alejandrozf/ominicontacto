@@ -712,6 +712,7 @@ input[type=file].form-control {
 */
 .wrapper-content {
   width: 100%;
+  overflow-x: auto;
 }
 
 .wrapper-info {

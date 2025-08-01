@@ -49,18 +49,15 @@ class ReporteDeResultadosDeCampana(object):
 
     def obtener_contactos(self, todos_contactos):
         contactos = self.campana.bd_contacto.contactos.order_by("id")
-        if self.campana.type == Campana.TYPE_PREVIEW:
-            contactos = contactos.filter(es_originario=True)
-            if todos_contactos:
-                return contactos
+        if todos_contactos:
+            return contactos
+        contactos = contactos.filter(es_originario=True)
+        if self.campana.type == Campana.TYPE_PREVIEW and \
+           self.campana.estado == Campana.ESTADO_ACTIVA:
             ids_activos = AgenteEnContacto.objects.activos(self.campana.id).values_list(
                 'contacto_id')
             return contactos.filter(id__in=ids_activos)
-
-        if todos_contactos:
-            return contactos
-        else:
-            return contactos.filter(es_originario=True)
+        return contactos
 
     @property
     def is_paginated(self):

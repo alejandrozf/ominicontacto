@@ -1,19 +1,22 @@
 # Release Notes
-2025-07-01
+2025-07-28
 
 ## Added
 
-- oml-2977 Allow for showing extra non Contact data from landing page.
-- oml-3070 Buttons for calling Wombat Dialer Start/Stop APIs 
+- oml-3080 Show historical dispositions for preview campaigns.
+- oml-3096 Allow preview recicling without changing database. 
+- oml-3087 Detects Media Access Denied on SIP session failure.
+- oml-3099 Add Timer for call on hold.
 
 ## Changed
 
-- No changes in this release
+- oml-3069 Database upload optimizations for speed.
+- oml-3108 Allow CRM interactions parameters with character "."
 
 ## Fixed
 
-- oml-3073 Fix Calling External System interactions
-- oml-3034 Whatsapp Interface for contact data and popups improvements.
+- oml-3107 Fix button "Get preview contact".
+- oml-3041 Fix empty subdisposition in campaign creation from template.
 
 ## Removed
 

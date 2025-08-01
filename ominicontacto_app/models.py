@@ -1422,13 +1422,16 @@ class Campana(models.Model):
         return agente_en_contacto
 
     def establecer_valores_iniciales_agente_contacto(
-            self, asignacion_proporcional, asignacion_aleatoria):
+            self, asignacion_proporcional, asignacion_aleatoria, contactos=None):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
         en relación con los agentes
         """
-        # obtenemos todos los contactos de la campaña
-        campana_contactos = list(self.bd_contacto.contactos.all())
+        # obtenemos todos los contactos de la campaña en caso de no recibirlos por parámetro
+        if contactos is None:
+            campana_contactos = list(self.bd_contacto.contactos.all())
+        else:
+            campana_contactos = contactos
 
         # obtenemos los campos de la BD del contacto
         metadata = self.bd_contacto.get_metadata()
@@ -2982,7 +2985,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
         campana = self.opcion_calificacion.campana
         contacto = self.contacto
-        if campana.type == Campana.TYPE_PREVIEW and self.pk is None:
+        if campana.type == Campana.TYPE_PREVIEW:
             campana.gestionar_finalizacion_relacion_agente_contacto(self)
         # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
