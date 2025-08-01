@@ -91,7 +91,8 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def get_datos_json(self, data):
         datos = []
-        for field in json.loads(self.campana.bd_contacto.metadata)['nombres_de_columnas']:
+        metadata = self.campana.bd_contacto.get_metadata()
+        for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
                 if not data.get(field).isdigit():
                     msg = _('Debe ser en formato "999999999" y solo numérico.')
@@ -99,9 +100,8 @@ class CreateSerializer(serializers.ModelSerializer):
                 if not 3 <= len(data.get(field)) <= 20:
                     msg = _('Solo se permiten de 3-20 dígitos.')
                     raise serializers.ValidationError({field: msg})
-            if field != 'telefono':
-                campo = data.get(field, '')
-                datos.append(campo if campo else "")
+            campo = data.get(field, '')
+            datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):
@@ -156,7 +156,8 @@ class UpdateSerializer(serializers.ModelSerializer):
 
     def get_datos_json(self, data):
         datos = []
-        for field in json.loads(self.campana.bd_contacto.metadata)['nombres_de_columnas']:
+        metadata = self.campana.bd_contacto.get_metadata()
+        for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
                 if not data.get(field).isdigit():
                     msg = _('Debe ser en formato "999999999" y solo numérico.')
@@ -164,9 +165,8 @@ class UpdateSerializer(serializers.ModelSerializer):
                 if not 3 <= len(data.get(field)) <= 20:
                     msg = _('Solo se permiten de 3-20 dígitos.')
                     raise serializers.ValidationError({field: msg})
-            if field != 'telefono':
-                campo = data.get(field, '')
-                datos.append(campo if campo else "")
+            campo = data.get(field, '')
+            datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):

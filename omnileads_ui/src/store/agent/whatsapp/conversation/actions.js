@@ -7,7 +7,13 @@ const service = new Service();
 const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
     const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
     const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : $t('globals.whatsapp.automatic_agent');
-    const clientName =  data && data.contact_data && data.contact_data && data.contact_data.data && data.contact_data.data.nombre ? data.contact_data.data.nombre : null;
+    var clientName = "-"
+    if (data && data.contact_data) {
+        if (data.contact_data.nombre)
+            clientName = data.contact_data.nombre;
+        else if (data.contact_data.name)
+            clientName = data.contact_data.name;
+    }
     return {
         id: data.id,
         from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : clientName || senderName || senderPhone,
