@@ -17,6 +17,9 @@
 
 - oml-3107 Fix button "Get preview contact".
 - oml-3041 Fix empty subdisposition in campaign creation from template.
+- oml-3114 Fix Whatsapp contact data saving. Show contact name.
+- oml-3106 Fix multiple scrollbars in agent console.
+- oml-3074 Fix base report for ended Preview Campaigns. 
 
 ## Removed
 
