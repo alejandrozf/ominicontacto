@@ -50,7 +50,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
-                                      contiene_solo_alfanumericos_o_guiones,
+                                      contiene_solo_alfanumericos_guion_o_punto,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from whatsapp_app.models import ConfiguracionWhatsappCampana
@@ -1063,6 +1063,13 @@ class OpcionCalificacionForm(forms.ModelForm):
                 return formulario
             return None
 
+    def clean_nombre_subcalificaciones(self):
+        # Si ya tiene una opción calificacion, uso sus subcalificaciones
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.subcalificaciones
+        return self.cleaned_data.get('nombre_subcalificaciones', None)
+
 
 class OpcionCalificacionBaseFormset(BaseInlineFormSet):
 
@@ -1073,8 +1080,22 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
             'nombre', 'subcalificaciones')
         kwargs['nombres_calificaciones'] = tuple(
             (nombre, nombre) for nombre, subcalificaciones in nombres_calificaciones_qs)
-        kwargs['nombre_subcalificaciones'] = list(
-            {nombre: subcalificaciones} for nombre, subcalificaciones in nombres_calificaciones_qs)
+        nombre_subcalificaciones = []
+        calificaciones_actuales = []
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            # Cargo las subcalificaciones actuales
+            subcalificaciones_actuales_qs = self.instance.opciones_calificacion.exclude(
+                tipo=OpcionCalificacion.AGENDA).values_list('nombre', 'subcalificaciones')
+            for nombre, subcalificaciones in subcalificaciones_actuales_qs:
+                calificaciones_actuales.append(nombre)
+                nombre_subcalificaciones.append({nombre: subcalificaciones})
+        # Cargo subcalificaciones "nuevas" sin pisar las actuales
+        for nombre, subcalificaciones in nombres_calificaciones_qs:
+            if nombre not in calificaciones_actuales:
+                nombre_subcalificaciones.append({nombre: subcalificaciones})
+        kwargs['nombre_subcalificaciones'] = nombre_subcalificaciones
+
         return super(OpcionCalificacionBaseFormset, self)._construct_form(index, **kwargs)
 
     def _validar_numero_opciones_calificacion(self, save_candidates_forms):
@@ -2316,7 +2337,7 @@ class ParametrosCrmForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre', '')
         if not nombre:
             raise forms.ValidationError(_('Debe definir un nombre para el parámetro'))
-        if contiene_solo_alfanumericos_o_guiones(nombre):
+        if contiene_solo_alfanumericos_guion_o_punto(nombre):
             return nombre
         if self.es_placeholder(nombre):
             return nombre

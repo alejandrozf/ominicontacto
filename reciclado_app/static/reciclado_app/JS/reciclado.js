@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Freetech Solutions
+/* Copyright (C) 2025 Freetech Solutions
 
  This file is part of OMniLeads
 
@@ -15,19 +15,12 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
-/* global Urls */
 
 $(function () {
-    var campanasPreviewActivas = $('#campanas_preview_activas').val();
-    var $nuevoContactoPreview = $('#nuevoContactoPreview');
-    if (campanasPreviewActivas == 'True') {
-        $nuevoContactoPreview.attr('class', 'btn btn-info btn-sm');
-    }
-
-    if ($nuevoContactoPreview.length > 0) {
-        $nuevoContactoPreview.on('click', function () {
-            let url = Urls.campana_preview_activas_miembro('1');
-            $('#dataView').attr('src', url);
-        });
-    }
+    $('#id_reciclado_radio_0').on('click', function () {
+        $('#retomarContactacionNodo').hide();
+    });
+    $('#id_reciclado_radio_1').on('click', function () {
+        $('#retomarContactacionNodo').show();
+    });
 });

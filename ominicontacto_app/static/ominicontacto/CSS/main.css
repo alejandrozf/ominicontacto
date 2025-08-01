@@ -563,6 +563,15 @@ body > h1 {
   margin-bottom: 100px;
 }
 
+.agent-console-iframe {
+  border: none;
+  display: block;
+  height: calc(100vh - 111px - 59px - 34px - 30px);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .whatsapp_panel_view {
   width: 600px;
   height: 850px;
@@ -642,6 +651,7 @@ body > h1 {
 /* Admin content area */
 .wrapper-content {
   width: 100%;
+  overflow-x: auto;
 }
 
 .wrapper-info {

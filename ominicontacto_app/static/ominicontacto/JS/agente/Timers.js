@@ -142,6 +142,9 @@ class Timer {
         this.segundos = 0;
         this.minutos = 0;
         this.horas = 0;
+        this._show_segundos()
+        this._show_minutos()
+        this._show_horas()
     }
 
     start_countdown(sec_to_end) {

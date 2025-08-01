@@ -428,7 +428,7 @@ urlpatterns = [
     # ==========================================================================
     # Vistas varias para Agente: Reportes, logout
     # ==========================================================================
-    re_path(r'^agente/campanas_preview/activas/$',
+    re_path(r'^agente/campanas_preview/activas(?:/(?P<get_contact>\d+))?/?$',
             login_required(
                 views_agente.AgenteCampanasPreviewActivasView.as_view()),
             name="campana_preview_activas_miembro"),
@@ -777,10 +777,10 @@ urlpatterns = [
             login_required(
                 views_campana_preview.ObtenerContactoView.as_view()),
             name="campana_preview_dispatcher"),
-    re_path(r'^campana_preview/validar_contacto_asignado/$',
-            login_required(
-                views_campana_preview.campana_validar_contacto_asignado_view),
-            name="validar_contacto_asignado"),
+    path('campana_preview/validar_contacto_asignado/',
+         login_required(
+             views_campana_preview.campana_validar_contacto_asignado_view),
+         name="validar_contacto_asignado"),
     re_path(r'^campana_preview/contactos_asignados/(?P<pk_campana>\d+)/$',
             login_required(
                 views_campana_preview.CampanaPreviewContactosAsignados.as_view()),

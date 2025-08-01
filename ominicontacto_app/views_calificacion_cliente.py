@@ -314,10 +314,16 @@ class CalificacionClienteFormView(FormView):
         llamada_entrante = (tipo_llamada == LlamadaLog.LLAMADA_ENTRANTE)
         return llamada_entrante
 
+    def _mostrar_historico(self):
+        if self.campana.type == Campana.TYPE_PREVIEW:
+            return True
+        return self._formulario_llamada_entrante()
+
     def get(self, request, *args, **kwargs):
         formulario_llamada_entrante = self._formulario_llamada_entrante()
+        mostrar_historico = self._mostrar_historico()
         contacto_form = self.get_contacto_form(usar_crm=True)
-        calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
+        calificacion_form = self.get_form(historico_calificaciones=mostrar_historico)
         bd_metadata = self.campana.bd_contacto.get_metadata()
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
 
