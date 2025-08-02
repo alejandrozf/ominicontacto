@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e
 
-COMMAND="python3 ${INSTALL_PREFIX}ominicontacto/manage.py"
-
+# Zona horaria
 [ ! -f /etc/localtime ] && ln -s /usr/share/zoneinfo/$TZ /etc/localtime
 
 echo "=== Generate crontab OMniLeads ==="
-touch /var/spool/cron/crontabs/omnileads
-chown omnileads:omnileads /var/spool/cron/crontabs/omnileads
-chmod 600 /var/spool/cron/crontabs/omnileads
-su omnileads -c "${COMMAND} regenerar_cronos"
+CRON_FILE=/var/spool/cron/crontabs/omnileads
+touch  $CRON_FILE
+chown omnileads:omnileads $CRON_FILE
+chmod 600 $CRON_FILE
 
-exec crond -f
+su omnileads -c "python3 ${INSTALL_PREFIX}ominicontacto/manage.py regenerar_cronos"
+
+# Reaper de zombies
+trap 'while wait -n; do :; done' CHLD
+crond -f &
+wait
