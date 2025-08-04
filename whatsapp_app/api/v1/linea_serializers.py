@@ -205,12 +205,12 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                 else:
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
-                    if destino_siguiente\
-                            and object_dict['destino_anterior'].id in destino_siguiente.\
-                            destinos_siguientes.values_list('destino_siguiente', flat=True).\
-                            distinct():
-                        raise serializers.ValidationError({
-                            'data': _('No puede existir dependencias recursiva entre menus')})
+                    # if destino_siguiente\
+                    #         and object_dict['destino_anterior'].id in destino_siguiente.\
+                    #         destinos_siguientes.values_list('destino_siguiente', flat=True).\
+                    #         distinct():
+                    #     raise serializers.ValidationError({
+                    #         'data': _('No puede existir dependencias recursiva entre menus')})
                 if destino_siguiente:
                     option_data['destination'] = destino_siguiente.content_object.id
                     opcion = OpcionDestino.crear_opcion_destino(
@@ -222,71 +222,10 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                         descripcion=option_data['description'] if 'description'
                                                                   in option_data else "")
 
-    def update_opcions(self, destino_whith_options):
-        # TODO NO SE USA ACTUALMENTE IMPLEMENTACION INCOMPLETA
-        for object_dict in destino_whith_options:
-            for option_data in object_dict['opcions']:
-                if not option_data['type_option'] == DestinoEntrante.CAMPANA:
-                    campana = Campana.objects.get(id=option_data['destination'])
-                    destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
-                else:
-                    destino_siguiente = self.find_destination(
-                        destino_whith_options, option_data['destination'])
-            return destino_siguiente
-
     def find_destination(self, destino_whith_options, value):
         for object_dict in destino_whith_options:
             if object_dict['id_temp'] == value:
                 return object_dict['destino_anterior']
-
-    def update_menu_interactivo(self, instance, validated_data):
-        list_menu_data = validated_data['data']
-        destino_whith_options = []
-        for menu_data in list_menu_data:
-            menu = MenuInteractivoWhatsapp.objects.get(pk=menu_data['id'])
-            menu.menu_header = menu_data['menu_header']
-            menu.menu_body = menu_data['temenu_bodyxt']
-            menu.menu_body = menu_data['menu_body']
-            menu.menu_button = menu_data['menu_button']
-            menu.texto_opcion_incorrecta = menu_data['wrong_answer']
-            menu.texto_derivacion = menu_data['success']
-            menu.timeout = menu_data['timeout']
-            menu.save()
-            opcions = {
-                "id": menu_data['id'],
-                'destino_anterior': instance,
-                "opcions": menu_data['options']
-            }
-            destino_whith_options.append(opcions)
-        self.update_opcions(destino_whith_options)
-
-    def borrar_destino_sobrante(self, destino_previo, destino):
-        # Si pasa de un menu a una campaña, borro el menu, su destino y sus componentes asociados.
-        if destino_previo and destino_previo.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
-                and destino.tipo == DestinoEntrante.CAMPANA:
-            destino_previo.delete()
-            destino_previo.content_object.delete()
-
-    def update(self, instance, validated_data):
-        # Cambio destino de una campaña por otro
-        if instance.tipo == validated_data['type'] == DestinoEntrante.CAMPANA:
-            pass
-        # Cambio destino Menu Interactivo por Campaña:
-        if instance.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
-                and validated_data['type'] == DestinoEntrante.CAMPANA:
-            pass
-            # Se debe borrar después de guardar la Linea por la referencia al destino anterior.
-            # self.borrar_destino_sobrante(instance, self.destino)
-        # Cambio destino campaña por Menu Interactivo:
-        if instance.tipo == DestinoEntrante.CAMPANA \
-                and validated_data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            self.create_menu_interactivo(validated_data)
-        # Cambio destino campaña por Menu Interactivo:
-        if instance.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP \
-                and validated_data['type'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            self.update_menu_interactivo(instance, validated_data)
-
-        return validated_data
 
 
 class OpcionMenuSerializer(serializers.BaseSerializer):
@@ -355,6 +294,16 @@ class MenuInteractivoSerializer(serializers.Serializer):
 
 class DestinoEntranteRelatedField(serializers.RelatedField):
 
+    def _option_representation(self, option):
+        return {
+            'id': option.id,
+            'type_option': option.destino_siguiente.tipo,
+            'destination': option.destino_siguiente.content_object.id,
+            'value': option.valor,
+            'description': option.opcion_menu_whatsapp.descripcion,
+            'destination_name': option.destino_siguiente.content_object.nombre
+        }
+
     def _menu_representation(self, value, data_list):
         menu = value.content_object
         menu_representation = {
@@ -370,54 +319,47 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             'timeout': 0,
             'options': []
         }
+        data_list.append(menu_representation)
         for opcion in value.destinos_siguientes.all():
-            menu_representation['options'].append({
-                'id': opcion.id,
-                'type_option': opcion.destino_siguiente.tipo,
-                'destination': opcion.destino_siguiente.content_object.id,
-                'value': opcion.valor,
-                'description': opcion.opcion_menu_whatsapp.descripcion,
-                'destination_name': opcion.destino_siguiente.content_object.nombre
-            })
+            menu_representation['options'].append(self._option_representation(opcion))
             if opcion.destino_siguiente.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-                if not [item for item in data_list
-                        if item['id'] == opcion.destino_siguiente.content_object.id]:
-                    data_list.insert(
-                        0, self._menu_representation(opcion.destino_siguiente, data_list))
-        return menu_representation
+                if not any(item['id'] ==
+                        opcion.destino_siguiente.content_object.id for item in data_list):
+                    self._menu_representation(opcion.destino_siguiente, data_list)
+        return data_list
 
     def to_representation(self, line):
-        value = line.destino
-        representation = {
-            'type': value.tipo,
-            'id': value.content_object.id,
-        }
-        if value.tipo == DestinoEntrante.CAMPANA:
-            representation['data'] = value.content_object.id
-        elif value.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-            data_list = []
-            menu_representation = self._menu_representation(value, data_list)
-            data_list.insert(0, menu_representation)
-            try:
-                menu_used_list = [menu.get('id') for menu in data_list if 'id' in menu]
-                orphan_menus =\
-                    MenuInteractivoWhatsapp.objects.filter(line=line).exclude(
-                        id__in=menu_used_list)
-                for menu in orphan_menus:
+        if line.destino:
+            value = line.destino
+            representation = {
+                'type': value.tipo,
+                'id': value.content_object.id,
+            }
+            if value.tipo == DestinoEntrante.CAMPANA:
+                representation['data'] = value.content_object.id
+            elif value.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                data_list = []
+                self._menu_representation(value, data_list)
+                try:
                     menu_used_list = [menu.get('id') for menu in data_list if 'id' in menu]
-                    if menu.id not in menu_used_list:
-                        destino = DestinoEntrante.objects.filter(
-                            object_id=menu.id,
-                            tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP).last()
-                        menu_representation = self._menu_representation(destino, data_list)
-                        data_list.append(menu_representation)
-                representation['data'] = data_list
-            except Exception as e:
-                print(e)
-                pass
-        else:
-            raise Exception('Tipo de destino incorrecto')
-        return representation
+                    orphan_menus =\
+                        MenuInteractivoWhatsapp.objects.filter(line=line).exclude(
+                            id__in=menu_used_list)
+                    for menu in orphan_menus:
+                        menu_used_list = [menu.get('id') for menu in data_list if 'id' in menu]
+                        if menu.id not in menu_used_list:
+                            destino = DestinoEntrante.objects.filter(
+                                object_id=menu.id,
+                                tipo=DestinoEntrante.MENU_INTERACTIVO_WHATSAPP).last()
+                            self._menu_representation(destino, data_list)
+                    representation['data'] = sorted(data_list, key=lambda x: x["id"])
+                except Exception as e:
+                    print("*************", e)
+                    pass
+            else:
+                raise Exception('Tipo de destino incorrecto')
+            return representation
+        return {}
 
 
 class LineaRetrieveSerializer(serializers.Serializer):
