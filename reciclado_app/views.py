@@ -65,6 +65,7 @@ class ReciclarCampanaMixin(object):
         reciclado_calificacion = form.cleaned_data.get('reciclado_calificacion')
         reciclado_no_contactacion = form.cleaned_data.get('reciclado_no_contactacion')
         reciclado_radio = form.cleaned_data.get('reciclado_radio')
+        retomar_contactacion = form.cleaned_data.get('retomar_contactacion')
 
         if not (reciclado_calificacion or reciclado_no_contactacion):
             message = _(u'<strong>Operación Errónea!</strong> \
@@ -79,6 +80,10 @@ class ReciclarCampanaMixin(object):
 
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         reciclador = RecicladorContactosCampanaDIALER()
+        if campana.es_preview and retomar_contactacion:
+            reciclador.retomar_contactacion(
+                campana, reciclado_calificacion, reciclado_no_contactacion)
+            return HttpResponseRedirect(reverse('campana_preview_list'))
         bd_contacto_reciclada = reciclador.reciclar(
             campana, reciclado_calificacion, reciclado_no_contactacion)
         if reciclado_radio == 'nueva_campaña':
@@ -120,6 +125,7 @@ class ReciclarCampanaMixin(object):
                                  for key, value in no_contactados.items()]
         context['contactados'] = contactados_choice
         context['no_contactados'] = no_contactados_choice
+        context['es_campana_preview'] = campana.es_preview
         return context
 
 
@@ -134,7 +140,7 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
         no_contactados = form.get('no_contactados_choice')
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         if campana.estado not in [Campana.ESTADO_FINALIZADA, Campana.ESTADO_PAUSADA]:
-            message = _(u'Solo se pueden reciclar campañas activas o pausadas.')
+            message = _(u'Solo se pueden reciclar campañas finalizadas y/o pausadas.')
             messages.add_message(self.request, messages.WARNING, message)
             return HttpResponseRedirect(reverse('campana_dialer_list'))
         if not (contactados or no_contactados) and campana.estado != Campana.ESTADO_FINALIZADA:

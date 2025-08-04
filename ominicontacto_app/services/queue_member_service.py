@@ -24,7 +24,6 @@ from ominicontacto_app.services.asterisk.asterisk_ami import (
     AMIManagerConnectorError, AmiManagerClient)
 from ominicontacto_app.services.asterisk.redis_database import CampanasDeAgenteFamily
 from ominicontacto_app.services.asterisk.redis_database import CampaignAgentsFamily
-from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from ominicontacto_app.services.redis.connection import create_redis_connection
 
@@ -60,10 +59,6 @@ class QueueMemberService(object):
     def disconnect(self):
         self.ami_client.disconnect()
 
-    def activar_cola(self):
-        activacion_queue_service = ActivacionQueueService()
-        activacion_queue_service.activar()
-
     def eliminar_agente_de_colas_asignadas(self, agente):
         # ahora vamos a remover el agente de la cola de asterisk
         sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
@@ -72,8 +67,6 @@ class QueueMemberService(object):
             for queue_member in queues_member_agente:
                 campana = queue_member.queue_name.campana
                 self._remover_agente_cola_asterisk(campana, agente)
-        # TODO: Revisar si efectivamente hace falta activar_cola al borrar agente de las colas
-        self.activar_cola()
         QueueMember.objects.borrar_member_queue(agente)
         self.campanas_de_agente_family.eliminar_datos_de_agente(agente.id)
         self.campaign_agents_family.eliminar_datos_de_agente(agente.id)

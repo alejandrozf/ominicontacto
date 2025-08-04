@@ -54,7 +54,7 @@ logger = _logging.getLogger(__name__)
 SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 REGEX_NO_ALFANUMERICOS = re.compile(r'([^.a-zA-Z0-9])')
 REGEX_NO_ALFANUMERICOS_O_GUIONES = re.compile(r'([^a-zA-Z0-9_-])')
-REGEX_NO_VALOR_PARAMETRO_CRM_CUSTOM = re.compile(r'([^a-zA-Z0-9+_-])')
+REGEX_ALFANUMERICOS_GUION_PUNTO = re.compile(r'^[a-zA-Z0-9_.-]+$')
 
 
 def _upload_to(prefix, max_length, instance, filename):
@@ -373,6 +373,10 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
+
+
+def contiene_solo_alfanumericos_guion_o_punto(name):
+    return bool(REGEX_ALFANUMERICOS_GUION_PUNTO.match(name))
 
 
 def contiene_solo_alfanumericos_o_guiones(cadena):

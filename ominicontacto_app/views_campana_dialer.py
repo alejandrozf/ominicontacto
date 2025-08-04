@@ -713,12 +713,12 @@ class ReglasDeIncidenciaUpdateView(UpdateView, VerificarPremisoEnCampanaMixin):
                                                                 self.estado_wombat_anterior,
                                                                 es_de_calificacion=False)
             if not editado:
-                messages.error(_('No se pudo guardar la regla de incidencia.'))
+                messages.error(self.request, _('No se pudo guardar la regla de incidencia.'))
                 return self.form_invalid(form)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
-            messages.error(_('No se pudo guardar la regla de incidencia.'))
+            messages.error(self.request, _('No se pudo guardar la regla de incidencia.'))
             return self.form_invalid(form)
 
         regla.save()

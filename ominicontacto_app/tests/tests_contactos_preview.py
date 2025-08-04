@@ -63,8 +63,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         # Contacto 1 no esta reservado
         url = reverse('validar_contacto_asignado')
         post_data = {'pk_campana': self.campana_preview.id,
-                     'pk_contacto': self.contacto_1.id,
-                     'pk_agente': self.agente_1.id}
+                     'pk_contacto': self.contacto_1.id}
         response = self.client.post(url, post_data, follow=True)
         resultado = json.loads(response.content)
         self.assertEqual(resultado['contacto_asignado'], False)

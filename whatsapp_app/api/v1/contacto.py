@@ -91,15 +91,15 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def get_datos_json(self, data):
         datos = []
-        for field in json.loads(self.campana.bd_contacto.metadata)['nombres_de_columnas']:
+        metadata = self.campana.bd_contacto.get_metadata()
+        for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
                 try:
                     TelephoneValidator(data.get(field))
                 except ValidationError as error:
                     raise serializers.ValidationError({field: error.message})
-            if field != 'telefono':
-                campo = data.get(field, '')
-                datos.append(campo if campo else "")
+            campo = data.get(field, '')
+            datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):
@@ -152,15 +152,15 @@ class UpdateSerializer(serializers.ModelSerializer):
 
     def get_datos_json(self, data):
         datos = []
-        for field in json.loads(self.campana.bd_contacto.metadata)['nombres_de_columnas']:
+        metadata = self.campana.bd_contacto.get_metadata()
+        for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
                 try:
                     TelephoneValidator(data.get(field))
                 except ValidationError as error:
                     raise serializers.ValidationError({field: error.message})
-            if field != 'telefono':
-                campo = data.get(field, '')
-                datos.append(campo if campo else "")
+            campo = data.get(field, '')
+            datos.append(campo if campo else "")
         return json.dumps(datos)
 
     def to_internal_value(self, data):

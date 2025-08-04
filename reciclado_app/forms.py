@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 class RecicladoForm(forms.Form):
@@ -26,6 +27,9 @@ class RecicladoForm(forms.Form):
                ('misma_campana', 'Reciclar y utilizar la campaña actual')]
 
     reciclado_radio = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
+    retomar_contactacion = forms.BooleanField(
+        required=False, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Retomar contactación'), initial=False)
 
     def __init__(self, *args, **kwargs):
         reciclado_choice = kwargs.pop('reciclado_choice', None)

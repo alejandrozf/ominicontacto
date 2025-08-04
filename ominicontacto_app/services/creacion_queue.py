@@ -67,7 +67,15 @@ class ActivacionQueueService(object):
             raise RestablecerDialplanError(mensaje_error)
         else:
             self.reload_asterisk_config.reload_asterisk()
-            self.asterisk_database.regenerar_families()
 
-    def activar(self):
+    def activar_campanas(self):
         self._generar_y_recargar_configuracion_asterisk()
+        self.asterisk_database.regenerar_families()
+
+    def activar(self, campana):
+        self._generar_y_recargar_configuracion_asterisk()
+        self.asterisk_database.regenerar_family(campana)
+
+    def sincronizar_por_eliminacion(self, campana):
+        self._generar_y_recargar_configuracion_asterisk()
+        self.asterisk_database.delete_family(campana)

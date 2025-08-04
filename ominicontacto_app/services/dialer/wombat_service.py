@@ -55,7 +55,7 @@ class WombatService(AbstractPhoneDialerService):
         self.campana_service.crear_lista_asociacion_campana_wombat(campana)
 
     def eliminar_campana(self, campana) -> bool:
-        return self.campana_service.remove_campana_wombat(self.object)
+        return self.campana_service.remove_campana_wombat(campana)
 
     def editar_campana(self, campana):
         service_ok = self.campana_service.crear_campana_wombat(campana)

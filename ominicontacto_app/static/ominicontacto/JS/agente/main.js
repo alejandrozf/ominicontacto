@@ -61,6 +61,7 @@ function startPhoneJs() {
         'pausa': new Timer('horaP', 'minsP', 'segsP'),
         'llamada': new Timer('horaC', 'minsC', 'segsC'),
         'toEndPause': new Timer('horaTEP', 'minsTEP', 'segsTEP', 'timeToEndPause'),
+        'onHold': new Timer('horaOnHold', 'minsOnHold', 'segsOnHold', 'onHoldTimer'),
         // 'timer_total' = new Timer('horaT', 'minsT', 'segsT');
     };
     var agent_id = $('#idagt').val();
