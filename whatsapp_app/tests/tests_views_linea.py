@@ -119,6 +119,7 @@ class LineaTest(OMLBaseTest):
             'name': self.linea_a_campana.nombre,
             'number': self.linea_a_campana.numero,
             'provider': self.proveedor_gupshup.id,
+            'provider_type': ConfiguracionProveedor.TIPO_GUPSHUP,
             'configuration': self.proveedor_gupshup.configuracion,
             'status': '-'
         }
@@ -127,6 +128,7 @@ class LineaTest(OMLBaseTest):
             'name': self.linea_a_menu.nombre,
             'number': self.linea_a_menu.numero,
             'provider': self.proveedor_gupshup.id,
+            'provider_type': ConfiguracionProveedor.TIPO_GUPSHUP,
             'configuration': self.proveedor_gupshup.configuracion,
             'status': '-'
         }
@@ -174,7 +176,7 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(response_data['data']['destination']['data'], self.campana.id)
         notificar_nueva_linea.assert_called()
 
-    def get_menu_post_data(self):
+    def get_menu_options_campana_post_data(self):
         return {
             'name': 'linea1',
             'number': '43332221',
@@ -207,6 +209,94 @@ class LineaTest(OMLBaseTest):
             'configuration': {'app_name': 'LineaAppName', 'app_id': 'LineaAppId'},
         }
 
+    def get_menu_options_menus_post_data(self):
+        return {
+            'name': 'line',
+            'number': '645645654',
+            'provider': self.proveedor_gupshup.id,
+            'configuration': {'app_name': 'LineaAppName', 'app_id': 'LineaAppId'},
+            'destination': {
+                'type': 10,
+                'data': [
+                    {
+                        'id_tmp': 1,
+                        'is_main': True,
+                        'menu_header': 'm1',
+                        'menu_body': 'Body',
+                        'menu_footer': 'Footer',
+                        'menu_button': 'Button',
+                        'wrong_answer': 'Wrong answer',
+                        'success': 'Success response',
+                        'timeout': 0,
+                        'options': [
+                            {
+                                'type_option': 1,
+                                'destination': 2,
+                                'value': '1',
+                                'description': 'Description',
+                                'destination_name': 'test_entrante_01'
+                            },
+                            {
+                                'type_option': 10,
+                                'destination': 2,
+                                'value': '2',
+                                'description': 'ir a m2',
+                                'destination_name': 'm2'
+                            }
+                        ]
+                    },
+                    {
+                        'id_tmp': 2,
+                        'is_main': False,
+                        'menu_header': 'm2',
+                        'menu_body': 'Body2',
+                        'menu_footer': 'Footer2',
+                        'menu_button': 'Button',
+                        'wrong_answer': 'Wrong answer',
+                        'success': 'Success response',
+                        'timeout': 0,
+                        'options': [
+                            {
+                                'type_option': 1,
+                                'destination': 2,
+                                'value': '1',
+                                'description': 'Description_',
+                                'destination_name': 'test_entrante_01'
+                            },
+                            {
+                                'type_option': 10,
+                                'destination': 3,
+                                'value': '2',
+                                'description': 'ir a m3',
+                                'destination_name': 'm3'
+                            }
+                        ]
+                    },
+                    {
+                        'id_tmp': 3,
+                        'is_main': False,
+                        'menu_header': 'm3',
+                        'menu_body': 'Body',
+                        'menu_footer': 'Footer3',
+                        'menu_button': 'Button3',
+                        'wrong_answer': 'Wrong answer3',
+                        'success': 'Success response3',
+                        'timeout': 0,
+                        'options': [
+                            {
+                                'type_option': 10,
+                                'destination': 2,
+                                'value': '1',
+                                'description': 'volver a m2',
+                                'destination_name': 'm2'
+                            }
+                        ]
+                    }
+                ],
+                'id_tmp': 1
+            },
+        }
+
     @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
     def test_creacion_linea_gupshup_con_destino_menu_interactivo(self, notificar_nueva_linea):
         num_lineas = Linea.objects.count()
@@ -214,7 +304,7 @@ class LineaTest(OMLBaseTest):
         num_opcion = OpcionMenuInteractivoWhatsapp.objects.count()
         num_opcion_destino = OpcionDestino.objects.count()
         url = reverse('whatsapp_app:linea-list')
-        data = self.get_menu_post_data()
+        data = self.get_menu_options_campana_post_data()
         response = self.client.post(url, data, content_type="application/json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response_data = response.json()
@@ -339,7 +429,7 @@ class LineaTest(OMLBaseTest):
         url = reverse('whatsapp_app:linea-detail', args=[self.linea_a_campana.id])
         proveedor_2 = ConfiguracionProveedorFactory(
             tipo_proveedor=ConfiguracionProveedor.TIPO_GUPSHUP)
-        destination_data = self.get_menu_post_data()['destination']
+        destination_data = self.get_menu_options_campana_post_data()['destination']
         data = {
             'name': 'Nuevo Nombre',
             'provider': proveedor_2.id,
@@ -372,7 +462,7 @@ class LineaTest(OMLBaseTest):
         notificar_nueva_linea.assert_called()
 
     @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
-    def test_update_linea_gupshup_con_menu_interactivo(self, notificar_nueva_linea):
+    def test_update_linea_gupshup_con_menu_interactivo_options_campana(self, notificar_nueva_linea):
         self.crear_linea_a_menu()
         num_lineas = Linea.objects.count()
         num_menu = MenuInteractivoWhatsapp.objects.count()
@@ -380,7 +470,7 @@ class LineaTest(OMLBaseTest):
         num_opcion_destino = OpcionDestino.objects.count()
         url = reverse('whatsapp_app:linea-detail', args=[self.linea_a_menu.id])
 
-        destination_data = self.get_menu_post_data()['destination']
+        destination_data = self.get_menu_options_campana_post_data()['destination']
         destination_data['data'][0]['options'] = [{
             'type_option': 1,
             'value': 'Campana 1',
@@ -413,4 +503,54 @@ class LineaTest(OMLBaseTest):
         opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres')
         self.assertEqual(opcion_3.destino_siguiente, self.destino_3)
         self.assertEqual(linea.nombre, 'Nuevo Nombre')
+        notificar_nueva_linea.assert_called()
+
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_create_linea_gupshup_con_menu_interactivo_options_menus(self, notificar_nueva_linea):
+        num_lineas = Linea.objects.count()
+        num_menu = MenuInteractivoWhatsapp.objects.count()
+        num_opcion = OpcionMenuInteractivoWhatsapp.objects.count()
+        num_opcion_destino = OpcionDestino.objects.count()
+        url = reverse('whatsapp_app:linea-list')
+        data = self.get_menu_options_menus_post_data()
+        response = self.client.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = response.json()
+        linea = Linea.objects.get(id=response_data['data']['id'])
+        self.assertEqual(linea.destino.tipo, DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+        self.assertEqual(Linea.objects.count(), num_lineas + 1)
+        self.assertEqual(MenuInteractivoWhatsapp.objects.count(), num_menu + 3)
+        self.assertEqual(OpcionMenuInteractivoWhatsapp.objects.count(), num_opcion + 5)
+        self.assertEqual(OpcionDestino.objects.count(), num_opcion_destino + 5)
+        notificar_nueva_linea.assert_called()
+
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_update_linea_gupshup_con_menu_interactivo_options_menus_a_campana(
+            self, notificar_nueva_linea):
+        num_menu = MenuInteractivoWhatsapp.objects.count()
+        num_opcion = OpcionMenuInteractivoWhatsapp.objects.count()
+        num_opcion_destino = OpcionDestino.objects.count()
+        url = reverse('whatsapp_app:linea-list')
+        data = self.get_menu_options_menus_post_data()
+        response = self.client.post(url, data, content_type="application/json")
+        response_data = response.json()
+        linea = Linea.objects.get(id=response_data['data']['id'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(linea.destino.tipo, DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+        self.assertEqual(MenuInteractivoWhatsapp.objects.count(), num_menu + 3)
+        self.assertEqual(OpcionMenuInteractivoWhatsapp.objects.count(), num_opcion + 5)
+        self.assertEqual(OpcionDestino.objects.count(), num_opcion_destino + 5)
+        # cambio destino a campana
+        response_data['destination'] = {
+            'type': DestinoEntrante.CAMPANA,
+            'data': self.campana_2.id,
+        }
+        url = reverse('whatsapp_app:linea-detail', args=[linea.id])
+        response = self.client.put(url, response_data, content_type="application/json")
+        response_data = response.json()
+        linea = Linea.objects.get(id=response_data['data']['id'])
+        self.assertEqual(linea.destino.tipo, DestinoEntrante.CAMPANA)
+        self.assertEqual(MenuInteractivoWhatsapp.objects.count(), num_menu)
+        self.assertEqual(OpcionMenuInteractivoWhatsapp.objects.count(), num_opcion)
+        self.assertEqual(OpcionDestino.objects.count(), num_opcion_destino)
         notificar_nueva_linea.assert_called()

@@ -174,7 +174,9 @@ class ViewSet(viewsets.ViewSet):
                             destino_old.delete()
                             menu_old.delete()
                         except Exception:
-                            instance.menuinteractivo.update(line=None)
+                            # DestinoEntrante.DoesNotExist no existe pq se elimino anteriormente
+                            # como opción de otro menú interactivo')
+                            menu_old.delete()
                     serializer_destino.save()
                     destino = serializer_destino.destino
                     line = serializer.save(
