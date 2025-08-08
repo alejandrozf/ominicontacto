@@ -174,15 +174,15 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
-                self.timers.onHold.start()
-                self.timers.onHold.show_element()
+                self.timers.onHold.start();
+                self.timers.onHold.show_element();
                 self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
-                self.timers.onHold.reset()
-                self.timers.onHold.hide_element()
+                self.timers.onHold.reset();
+                self.timers.onHold.hide_element();
                 self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else {
                 phone_logger.log('Error');
@@ -541,11 +541,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
-            $('#numberAni').html(session_data.from);
-            $('#callerid').html(session_data.from_agent_name);
-            $('#extraInfo').html(session_data.transfer_type_str);
-            $('#modalReceiveCalls').modal('show');
-            self.oml_api.eventRinging();
+            self.manageCallReceipt(session_data);
         });
 
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
@@ -1099,7 +1095,14 @@ class PhoneJSController {
                 // Seteo datos para redial
                 this.lastDialedCall = session_data.remote_call;
             }
-        } else {
+        } else if (session_data.is_transfered) {
+            $('#numberAni').html(session_data.from);
+            $('#callerid').html(session_data.from_agent_name);
+            $('#extraInfo').html(session_data.transfer_type_str);
+            $('#modalReceiveCalls').modal('show');
+            this.oml_api.eventRinging();
+        }
+        else {
             var from = session_data.from;
             $('#callerid').text(from);
             $('#omlcampname').text(session_data.remote_call['Omlcampname']);
@@ -1109,6 +1112,7 @@ class PhoneJSController {
             this.oml_api.eventRinging();
         }
     }
+
 
     forcesAutoAttend(session_data) {
         if (session_data.is_click2call) {
@@ -1123,6 +1127,14 @@ class PhoneJSController {
             }
         }
         if (session_data.is_inbound){
+            if (session_data.remote_call.auto_attend){
+                return session_data.remote_call.auto_attend == 'True';
+            }
+            else if (this.agent_config.auto_attend_IN) {
+                return true;
+            }
+        }
+        if (session_data.is_transfered){
             if (session_data.remote_call.auto_attend){
                 return session_data.remote_call.auto_attend == 'True';
             }
