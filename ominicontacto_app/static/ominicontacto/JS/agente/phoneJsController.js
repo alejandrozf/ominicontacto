@@ -599,6 +599,8 @@ class PhoneJSController {
             else { phone_logger.log('No se sabe volver desde: ' + self.phone_fsm.state);}
 
             self.timers.llamada.stop();
+            self.timers.onHold.reset()
+            self.timers.onHold.hide_element()
 
             if (self.pause_manager.pause_enabled) {
                 self.phone_fsm.startPause();
@@ -653,6 +655,8 @@ class PhoneJSController {
             self.phone_fsm.endCall();
             self.timers.llamada.stop();
             self.timers.llamada.restart();
+            self.timers.onHold.reset()
+            self.timers.onHold.hide_element()
             self.callEndTransition();
             self.updateCallHistory();
             self.view.holdButton.html('hold');
