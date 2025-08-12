@@ -1134,11 +1134,8 @@ class PhoneJSController {
                 return true;
             }
         }
-        if (session_data.is_transfered){
-            if (session_data.remote_call.auto_attend){
-                return session_data.remote_call.auto_attend == 'True';
-            }
-            else if (this.agent_config.auto_attend_IN) {
+        if (session_data.is_campaign_transfer){
+            if (this.agent_config.auto_attend_IN) {
                 return true;
             }
         }
