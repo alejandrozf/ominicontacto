@@ -124,8 +124,9 @@ class TestRestriccionEliminacionValidacionFechaHora(BaseTestRestriccionEliminaci
 
 class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
 
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    def test_elimina_campana_ok(self, mock_activacion):
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService'
+           '.sincronizar_por_eliminacion')
+    def test_elimina_campana_ok(self, sincronizar_por_eliminacion):
         # Intento Eliminar una Campaña que no es destino
         total_campanas = Campana.objects.count()
         campanas_iniciales = Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count()
@@ -138,7 +139,7 @@ class TestRestriccionEliminacionCampanaEntrante(BaseTestRestriccionEliminacion):
         self.assertEqual(Campana.objects.filter(estado=Campana.ESTADO_ACTIVA).count(),
                          campanas_iniciales - 1)
         self.assertEqual(DestinoEntrante.objects.count(), destinos_iniciales - 1)
-        mock_activacion.assert_called()
+        sincronizar_por_eliminacion.assert_called()
 
     def test_no_elimina_campana_utilizado_en_ruta_entrante(self):
         # Pongo la campaña entrante 1 como destino de una Ruta Entrante
