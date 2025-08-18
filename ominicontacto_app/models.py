@@ -3079,6 +3079,26 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         return calificaciones
 
 
+class CalificacionTelefono(TimeStampedModel, models.Model):
+
+    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
+    campana = models.ForeignKey(Campana, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    agente = models.ForeignKey(AgenteProfile, related_name="calificaciones_telefonos",
+                               on_delete=models.CASCADE)
+    calificacion = models.CharField(max_length=200)
+    campo_contacto = models.CharField(max_length=200)
+    history = HistoricalRecords()
+
+    class Meta:
+        unique_together = ('campana', 'contacto', 'campo_contacto')
+
+    def __str__(self):
+        campo_contacto_valor = self.contacto.obtener_datos()[self.campo_contacto]
+        return "Calificacion para el telefono {0} en la campana {1} para el contacto " \
+               "{2} ".format(campo_contacto_valor, self.campana, self.contacto)
+
+
 class RespuestaFormularioGestion(models.Model):
     """Representa información del formulario de gestión completado en una Calificacion"""
     calificacion = models.ForeignKey(CalificacionCliente,
