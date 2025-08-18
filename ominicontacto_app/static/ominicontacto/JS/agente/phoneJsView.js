@@ -41,6 +41,7 @@ class PhoneJSView {
         this.timebar = $('#timeBar');
         this.callButton = $('#call');
         this.callOffCampaignMenuButton = $('#call_off_campaign_menu');
+        this.callAnotherAgentMenuButton = $('#call_another_agent_menu');
         this.callAgentButton = $('#call_agent');
         this.callPhoneOffCampaignButton = $('#call_phone_off_campaign');
         this.callQuickOffCampaignButton = $('#call_quick_contact');
@@ -66,10 +67,11 @@ class PhoneJSView {
         this.inputs_ids = ['Resume', 'Pause', 'changeCampAssocManualCall',
             'call', 'numberToCall', 'redial', 'onHold', 'Transfer', 'dtmf',
             'Confer', 'EndTransfer', 'SignCall', 'endCall',
-            'call_off_campaign_menu', 'recordCall'];
+            'call_off_campaign_menu', 'call_another_agent_menu','recordCall'];
         this.modal_menus_ids = ['modalPause', 'modalSelectCmp',
             'modalTransfer', 'modalReceiveCalls', 'modalCallOffCamp',
-            'modalDtmf'];
+            'modalDtmf',
+            'modalCallAnotherAgent',];
 
         /* Outputs */
         this.sipStatus = $('#SipStatus');
@@ -86,6 +88,7 @@ class PhoneJSView {
         this.confirmTransferButton = $('#buttonContinueTransfer');
         this.cancelTransferButton = $('#buttonCancelTransfer');
         this.callOffCampaignMenu = $('#modalCallOffCamp');
+        this.callAnotherAgentMenu = $('#modalCallAnotherAgent');
         this.reload_video_button = $('#reload_video_id');
         this.buttonVideo = $('#buttonVideo');
         this.videoJitsi = $('#video-container');
