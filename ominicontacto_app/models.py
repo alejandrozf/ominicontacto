@@ -1341,6 +1341,7 @@ class Campana(models.Model):
     campo_direccion = models.CharField(max_length=128, null=True, blank=True)
     mostrar_did = models.BooleanField(default=False)
     mostrar_nombre_ruta_entrante = models.BooleanField(default=False)
+    mostrar_callid = models.BooleanField(default=False)
     control_de_duplicados = models.PositiveIntegerField(
         choices=CONTROL_DE_DUPLICADOS,
         default=PERMITIR_DUPLICADOS,
