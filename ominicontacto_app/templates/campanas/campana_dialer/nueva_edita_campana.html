@@ -78,7 +78,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
         <div class="form-row">
             {{ form.opcion_abortar }}
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
                 {{ form.nombre|add_class:"form-control" }}
                 <small id="nameHelpBlock" class="form-text text-muted">
@@ -90,10 +90,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans "Mostrar nombre al recibir llamado" %}: </label>
                 {{ form.mostrar_nombre }}
             </div>
-            <div class="col-md-5">
-                <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
-                {{ form.bd_contacto }}
-                <div id="errorsBDContacto">{{ form.bd_contacto.errors }}</div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-9">
+                        <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
+                        {{ form.bd_contacto }}
+                        <div id="errorsBDContacto">{{ form.bd_contacto.errors }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.permitir_calificar_telefonos.id_for_label }}">{% trans 'Permitir calificar teléfonos:' %}</label>
+                        {{ form.permitir_calificar_telefonos }}
+                        {{ form.permitir_calificar_telefonos.errors }}
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
                 <label for="{{ form.control_de_duplicados.id_for_label }}">{% trans 'Control de contactos duplicados:' %}</label>

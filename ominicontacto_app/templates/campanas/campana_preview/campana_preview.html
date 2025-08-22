@@ -78,11 +78,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.nombre.errors }}
             </div>
             <div class="col-md-6">
-                <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
-                {{ form.bd_contacto }}
-                {{ form.bd_contacto.errors }}
+                <div class="row">
+                    <div class="col-md-9">
+                        <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
+                        {{ form.bd_contacto }}
+                        {{ form.bd_contacto.errors }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.permitir_calificar_telefonos.id_for_label }}">{% trans 'Permitir calificar teléfonos:' %}</label>
+                        {{ form.permitir_calificar_telefonos }}
+                        {{ form.permitir_calificar_telefonos.errors }}
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="{{ form.control_de_duplicados.id_for_label }}">{% trans 'Control de contactos duplicados:' %}</label>
                 {{ form.control_de_duplicados }}
                 {{ form.control_de_duplicados.errors }}
