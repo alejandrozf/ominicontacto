@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-05 16:30-0300\n"
+"POT-Creation-Date: 2025-08-25 12:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,10 @@ msgstr "Dialer Campaings recycling"
 #: reciclado_app/apps.py:37
 msgid "Reciclado de campañas Preview"
 msgstr "Preview Campaings recycling"
+
+#: reciclado_app/forms.py:32
+msgid "Retomar contactación"
+msgstr "Restart contact"
 
 #: reciclado_app/resultado_contactacion.py:51
 msgid "No Contesta"
@@ -76,27 +80,27 @@ msgstr "Routing problem"
 msgid "Agente no califico"
 msgstr "Agent doesn't qualified"
 
-#: reciclado_app/templates/nuevo_reciclado.html:32
+#: reciclado_app/templates/nuevo_reciclado.html:36
 msgid "Nombre"
 msgstr "Name"
 
-#: reciclado_app/templates/nuevo_reciclado.html:33
+#: reciclado_app/templates/nuevo_reciclado.html:37
 msgid "Cantidad"
 msgstr "Ammount"
 
-#: reciclado_app/templates/nuevo_reciclado.html:34
+#: reciclado_app/templates/nuevo_reciclado.html:38
 msgid "Seleccionar"
 msgstr "Select"
 
-#: reciclado_app/templates/nuevo_reciclado.html:57
+#: reciclado_app/templates/nuevo_reciclado.html:61
 msgid "Como desea reciclar esta campana"
 msgstr "How do you want to recycle this campaign?"
 
-#: reciclado_app/templates/nuevo_reciclado.html:66
+#: reciclado_app/templates/nuevo_reciclado.html:99
 msgid "Reciclar"
 msgstr "Recycle"
 
-#: reciclado_app/views.py:67
+#: reciclado_app/views.py:71
 msgid ""
 "<strong>Operación Errónea!</strong>                         Debe seleccionar "
 "al menos una opcion para reciclar "
@@ -104,7 +108,7 @@ msgstr ""
 "<strong>Errr!</strong>                         You must select at least one "
 "option to recycle"
 
-#: reciclado_app/views.py:89
+#: reciclado_app/views.py:97
 msgid ""
 "<strong>Operación Errónea!</strong>                No se pudo reciclar la "
 "Campana."
@@ -112,10 +116,10 @@ msgstr ""
 "<strong>Error!</strong>                         Campaign could not be "
 "recycled "
 
-#: reciclado_app/views.py:132
-msgid "Solo se pueden reciclar campañas activas o pausadas."
-msgstr "Only Active or Paused campaigns can be recycled."
+#: reciclado_app/views.py:143
+msgid "Solo se pueden reciclar campañas finalizadas y/o pausadas."
+msgstr "Only Ended or Paused campaigns can be recycled."
 
-#: reciclado_app/views.py:136
+#: reciclado_app/views.py:147
 msgid "Esta campaña no se puede reciclar."
 msgstr "This campaign cannot be recycled."
