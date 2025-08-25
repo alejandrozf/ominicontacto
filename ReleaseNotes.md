@@ -1,5 +1,5 @@
 # Release Notes
-pre.release
+250825.01
 
 ## Added
 - oml-2679 New Omnidialer service.
