@@ -1,26 +1,32 @@
 # Release Notes
-2025-07-28
+pre.release
 
 ## Added
-
-- oml-3080 Show historical dispositions for preview campaigns.
-- oml-3096 Allow preview recicling without changing database. 
-- oml-3087 Detects Media Access Denied on SIP session failure.
-- oml-3099 Add Timer for call on hold.
+- oml-2679 New Omnidialer service.
+- oml-2923 Order and filtering adding agents in Campaigns Wizard.
+- oml-2893 Massive download and deletion of agendas.
+- oml-2886 Allow contact database structure definition on campaign wizard.
+- oml-2921 Allow configuring Agents as IVR destinations.
 
 ## Changed
 
-- oml-3069 Database upload optimizations for speed.
-- oml-3108 Allow CRM interactions parameters with character "."
+- oml-2750 Whatsapp Line Wizard allows selection of any inbound campaign.
+- oml-3040 The generation of the oml_pjsip_agents.conf file was optimized to search for PJSIP endpoints in Kamailio
+- oml-3035 Replacement of slowsql logger.
+- oml-3102 Ended campaigns added when filtering Agendas search.
+- oml-800  Command regenerar_asterisk no longer regenerates cron tasks.
 
 ## Fixed
 
-- oml-3107 Fix button "Get preview contact".
-- oml-3041 Fix empty subdisposition in campaign creation from template.
-- oml-3114 Fix Whatsapp contact data saving. Show contact name.
-- oml-3106 Fix multiple scrollbars in agent console.
-- oml-3074 Fix base report for ended Preview Campaigns. 
+- oml-2931 Fix "enmodoselect" Incidence rule.
+- oml-2997 Fix 'easyaudits' logs ip field.
+- oml-3079 Avoid unnecessary regeneration of all Campaigns data in redis.
+- oml-3117 Fix On Hold Timer stop condition.
 
 ## Removed
 
 No removals in this release.
+
+## Migrations
+
+ominicontacto_app: 0111

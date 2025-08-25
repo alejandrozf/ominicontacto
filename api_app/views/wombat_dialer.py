@@ -31,7 +31,7 @@ from constance import config as config_constance
 
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
-from ominicontacto_app.services.wombat_service import WombatReloader
+from ominicontacto_app.services.dialer.wombat_api import WombatReloader
 
 
 class ReiniciarWombat(APIView):

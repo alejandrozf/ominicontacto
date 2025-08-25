@@ -44,7 +44,7 @@ class TestsInicializarEntorno (OMLBaseTest):
            'SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk.regenerar_asterisk')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
            'SincronizadorDeConfiguracionTroncalSipEnAsterisk.regenerar_troncales')
-    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
+    @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar_campanas')
     @patch('ominicontacto_app.services.asterisk_service.ActivacionAgenteService.activar')
     def test_multiples_agentes(self, activar_agente, activar_queue, regenerar_troncales,
                                regenerar_asterisk, escribir_ruta_entrante_config,
@@ -59,5 +59,6 @@ class TestsInicializarEntorno (OMLBaseTest):
         escribir_ruta_entrante_config.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
         ami_connect.assert_called()
+        sadd.assert_called()
         self.assertEqual(AgenteProfile.objects.count(), 3)
         self.assertEqual(SupervisorProfile.objects.count(), 4)  # 1 Admin, 1 Gerente, 2 Supervisor

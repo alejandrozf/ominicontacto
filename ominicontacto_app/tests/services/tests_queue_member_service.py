@@ -42,18 +42,18 @@ class QueueMemberServiceTests(OMLBaseTest):
     @patch('redis.Redis.srem')
     @patch('redis.Redis.keys')
     @patch('redis.Redis.delete')
-    @patch('ominicontacto_app.services.queue_member_service.QueueMemberService.activar_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_eliminar_agente_de_colas_asignadas(
-            self, connect, activar_cola, delete, keys, srem,
+            self, connect, delete, keys, srem,
             obtener_sip_agentes_sesiones_activas):
+        keys.return_value = []
         service = QueueMemberService()
         self.assertEqual(self.agente1.queue_set.count(), 2)
         keys.return_value = ['OML:CAMPAIGN-AGENTS:1']
         service.eliminar_agente_de_colas_asignadas(self.agente1)
         connect.assert_called()
-        activar_cola.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
+        keys.assert_called_with('OML:CAMPAIGN-AGENTS:*')
         delete.assert_called_with('OML:AGENT-CAMPAIGNS:' + str(self.agente1.id))
         srem.assert_called_with('OML:CAMPAIGN-AGENTS:1', self.agente1.id)
         self.assertEqual(self.agente1.queue_set.count(), 0)
@@ -64,19 +64,19 @@ class QueueMemberServiceTests(OMLBaseTest):
     @patch('redis.Redis.srem')
     @patch('redis.Redis.keys')
     @patch('redis.Redis.delete')
-    @patch('ominicontacto_app.services.queue_member_service.QueueMemberService.activar_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_eliminar_agente_conectado_de_colas_asignadas(
-            self, connect, activar_cola, delete, keys, srem,
+            self, connect, delete, keys, srem,
             obtener_sip_agentes_sesiones_activas, _remover_agente_cola_asterisk):
         obtener_sip_agentes_sesiones_activas.return_value = [self.agente1.sip_extension, ]
+        keys.return_value = []
         service = QueueMemberService()
         self.assertEqual(self.agente1.queue_set.count(), 2)
         keys.return_value = ['OML:CAMPAIGN-AGENTS:1']
         service.eliminar_agente_de_colas_asignadas(self.agente1)
         connect.assert_called()
-        activar_cola.assert_called()
         obtener_sip_agentes_sesiones_activas.assert_called()
+        keys.assert_called_with('OML:CAMPAIGN-AGENTS:*')
         delete.assert_called_with('OML:AGENT-CAMPAIGNS:' + str(self.agente1.id))
         self.assertEqual(self.agente1.queue_set.count(), 0)
         _remover_agente_cola_asterisk.assert_has_calls([call(self.campana1, self.agente1),

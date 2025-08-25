@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% endblock %}
     <br>
     <div>
-        <form action="" method="post" id="wizardForm">
+        <form action="" method="post" id="wizardForm" novalidate>
             {% csrf_token %}
             {% block extra_content %}{% endblock %}
             <table>

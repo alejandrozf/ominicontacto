@@ -1,0 +1,37 @@
+# Archivo .dockerignore para tu proyecto Omnileads
+
+# Metadatos y control de versiones
+.git
+.gitignore
+.gitlab
+.gitlab-ci.yml
+
+# Archivos de Docker (para no copiarlos dentro de la imagen)
+Dockerfile
+.dockerignore
+
+# Cache de Python y entornos virtuales
+__pycache__/
+venv/
+env/
+
+# Archivos de configuración de IDEs y linters
+.vscode/
+.idea/
+.coveragerc
+.eslintignore
+.eslintrc.js
+.flake8
+.pre-commit-config.yaml
+
+# Documentación y otros archivos que no necesita la app en producción
+CONTRIBUTING.md
+LICENSE.txt
+README.md
+ReleaseNotes.md
+TRANSLATING.md
+
+# Scripts que no son de ejecución directa en el contenedor
+check-js.sh
+checks.py
+coverage.sh

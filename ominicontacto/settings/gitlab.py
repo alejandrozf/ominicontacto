@@ -111,10 +111,13 @@ ASTERISK = {
     'AMI_PASSWORD': "fop222",  # Password para usuario para AMI
 }
 
+
+OML_DIALER_ENGINE = 'wombat'
+
 # 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
 # ejemplo "http://172.16.20.222/wombat"
 
-OML_WOMBAT_URL = "http://172.16.20.222:8080/wombat"
+OML_WOMBAT_URL = "trash"
 
 # 'OML_WOMBAT_FILENAME': donde se alojara temporalmente los json de wombat
 # ejemplo "http://172.16.20.222/wombat"
@@ -244,6 +247,7 @@ CHANNEL_LAYERS = {
 TOKEN_EXPIRED_AFTER_SECONDS = 600
 
 KAMAILIO_HOSTNAME = 'trash'
+KAMAILIO_PORT = 'trash'
 NGINX_HOSTNAME = 'trash'
 OML_EXTERNAL_PORT = 'trash'
 

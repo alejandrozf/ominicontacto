@@ -27,7 +27,7 @@ from ominicontacto_app.models import (
     Campana
 )
 
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer.campana_wombat import CampanaService
 
 
 import logging as logging_
@@ -47,6 +47,6 @@ class LlamadasActivasView(ListView):
     def get_context_data(self, **kwargs):
         context = super(LlamadasActivasView, self).get_context_data(
             **kwargs)
-        service = CampanaService()
+        service = CampanaService()  # TODO: Ver si Omnidialer requiere funcinalidad similar
         context['llamadas'] = service.obtener_calls_live()
         return context

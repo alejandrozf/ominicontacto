@@ -55,7 +55,7 @@ from ominicontacto_app.utiles import (
     convertir_ascii_string,
 )
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer.campana_wombat import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, IVRFactory
 from whatsapp_app.tests.factories import LineaFactory, MenuInteractivoFactory
@@ -484,14 +484,14 @@ class SupervisorCampanaTests(CampanasTests):
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana_borrada.nombre)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_preview(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
@@ -508,16 +508,16 @@ class SupervisorCampanaTests(CampanasTests):
         campana = Campana.objects.get(nombre=nombre_campana)
         connect.assert_called()
         disconnect.assert_called()
-        _generar_y_recargar_configuracion_asterisk.assert_called()
+        activar.assert_called_with(campana)
         args, kwargs = agregar_agentes_en_cola.call_args
         self.assertEqual(campana, args[0])
         self.assertEqual(set((self.agente_profile, )), set(args[1]))
         penalties = {self.agente_profile.id: 3}
         self.assertEqual(penalties, args[2])
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     def test_usuario_logueado_puede_modificar_campana_preview(
-            self, _generar_y_recargar_configuracion_asterisk):
+            self, activar):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
         (post_step0_data, post_step1_data,
@@ -534,12 +534,12 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.assertEqual(Campana.objects.get(pk=self.campana_activa.pk).objetivo, nuevo_objetivo)
-        _generar_y_recargar_configuracion_asterisk.assert_called()
+        activar.assert_called_with(self.campana_activa)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     def test_usuario_logueado_puede_eliminar_campana_preview(
-            self, eliminar__generar_y_recargar_configuracion_asterisk, connect):
+            self, activar, connect):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_ACTIVA)
@@ -568,14 +568,14 @@ class SupervisorCampanaTests(CampanasTests):
         agente_en_contacto = AgenteEnContactoFactory.create()
         self.assertTrue(isinstance(agente_en_contacto, AgenteEnContacto))
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
@@ -583,8 +583,6 @@ class SupervisorCampanaTests(CampanasTests):
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
-        # import ipdb
-        # ipdb.set_trace()
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
         # self.client.post(url, post_step2_data, follow=True)
@@ -595,7 +593,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     @patch('redis.Redis.sadd')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service'
@@ -605,7 +603,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto_proporcionalmente(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk, sadd):
+            activar, sadd):
         url = reverse('campana_preview_create')
         contacto2 = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(contacto2)
@@ -685,14 +683,14 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(AgenteEnContacto.objects.filter(
             estado=AgenteEnContacto.ESTADO_ENTREGADO).count(), 1)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
@@ -752,6 +750,17 @@ class SupervisorCampanaTests(CampanasTests):
         post_step2_data = {
             'campana_entrante_create_view-current_step': 2,
         }
+        post_step_cbdc_data = {
+            'campana_entrante_create_view-current_step': 'custom-basedatoscontacto',
+            'custom-basedatoscontacto-nombre': nombre_campana,
+            'custom-basedatoscontacto-metadata': json.dumps({
+                "prim_fila_enc": False,
+                "cant_col": 4,
+                "nombres_de_columnas": ["telefono", "nombre", "apellido", "dni"],
+                "col_id_externo": 3,
+                "cols_telefono": [0]
+            })
+        }
         post_step3_data = {
             'campana_entrante_create_view-current_step': 3,
             '3-0-nombre': 'Venta',
@@ -790,11 +799,19 @@ class SupervisorCampanaTests(CampanasTests):
             '6-MAX_NUM_FORMS': 1000,
         }
 
-        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-                post_step4_data, post_step5_data, post_step6_data)
+        return (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data,
+            post_step6_data,
+        )
 
     def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso,
-                                                          destino):
+                                                          destino_failover):
         fecha_inicio = timezone.now()
         fecha_fin = fecha_inicio + timezone.timedelta(days=5)
         post_step0_data = {
@@ -830,8 +847,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-name': nombre_campana,
             '1-audio_para_contestadores': audio_ingreso.pk,
             '1-dial_timeout': 25,
-            '1-tipo_destino': destino.tipo,
-            '1-destino': destino.pk,
+            '1-tipo_destino_failover': destino_failover.tipo,
+            '1-destino_failover': destino_failover.pk,
             'campana_dialer_create_view-current_step': 1,
         }
         post_step2_data = {
@@ -871,9 +888,10 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step6_data = {
             'campana_dialer_create_view-current_step': 6,
-            '6-0-estado': '',
-            '6-0-reintentar_tarde': '',
-            '6-0-intento_max': '',
+            '6-0-estado': '1',
+            '6-0-reintentar_tarde': '1',
+            '6-0-intento_max': '1',
+            '6-0-en_modo': '1',
             '6-TOTAL_FORMS': '1',
             '6-INITIAL_FORMS': '0',
             '6-MIN_NUM_FORMS': '0',
@@ -904,12 +922,12 @@ class SupervisorCampanaTests(CampanasTests):
                 post_step5_data, post_step6_data, post_step7_data, post_step8_data, post_step9_data)
 
     def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso,
-                                                              destino):
+                                                              destino_failover):
         queue_member = QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data,
          post_step5_data, __, post_step7_data,
          post_step8_data, __) = self._obtener_post_data_wizard_creacion_campana_dialer(
-            nombre_campana, audio_ingreso, destino)
+            nombre_campana, audio_ingreso, destino_failover)
         post_step0_data.pop('campana_dialer_create_view-current_step')
         post_step3_data.pop('campana_dialer_create_view-current_step')
         post_step4_data.pop('campana_dialer_create_view-current_step')
@@ -928,8 +946,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
             '1-dial_timeout': 25,
-            '1-tipo_destino': destino.tipo,
-            '1-destino': destino.pk,
+            '1-tipo_destino_failover': destino_failover.tipo,
+            '1-destino_failover': destino_failover.pk,
             'campana_dialer_update_view-current_step': 1,
             '1-campana': self.campana_dialer.pk,
             '1-name': nombre_campana,
@@ -990,6 +1008,17 @@ class SupervisorCampanaTests(CampanasTests):
             '2-MIN_NUM_FORMS': 1,
             '2-MAX_NUM_FORMS': 1000,
         }
+        post_step_cbdc_data = {
+            'campana_manual_create_view-current_step': 'custom-basedatoscontacto',
+            'custom-basedatoscontacto-nombre': nombre_campana,
+            'custom-basedatoscontacto-metadata': json.dumps({
+                "prim_fila_enc": False,
+                "cant_col": 4,
+                "nombres_de_columnas": ["telefono", "nombre", "apellido", "dni"],
+                "col_id_externo": 3,
+                "cols_telefono": [0]
+            })
+        }
         post_step3_data = {
             'campana_manual_create_view-current_step': 3,
             '3-0-tipo': ParametrosCrm.CUSTOM,
@@ -1017,6 +1046,7 @@ class SupervisorCampanaTests(CampanasTests):
         }
 
         return (post_step0_data, post_step1_data, post_step2_data,
+                post_step_cbdc_data,
                 post_step3_data, post_step4_data, post_step5_data)
 
     def _obtener_post_data_wizard_creacion_campana_preview(self, nombre_campana):
@@ -1024,7 +1054,7 @@ class SupervisorCampanaTests(CampanasTests):
         # por lo que se reutiliza el código del método que genera los parámetros para las campañas
         # manuales y sólo se modifican algunos
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data,
+         post_step2_data, __, post_step3_data,
          post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
             nombre_campana)
@@ -1088,47 +1118,53 @@ class SupervisorCampanaTests(CampanasTests):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_crear_campana_entrante_sin_bd_le_asigna_bd_contactos_defecto(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
         audio_ingreso = ArchivoDeAudioFactory.create()
-        (post_step0_data, post_step1_data, post_step2_data,
-         post_step3_data, post_step4_data, post_step5_data,
-         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
-             nombre_campana, audio_ingreso)
+        (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data,
+            post_step6_data
+        ) = self._obtener_post_data_wizard_creacion_campana_entrante(nombre_campana, audio_ingreso)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
-        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
+        self.assertEqual(campana.bd_contacto.get_metadata().columna_id_externo, 3)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_crear_campana_entrante_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data, post_step2_data,
-         post_step3_data, post_step4_data, post_step5_data,
+         post_step3_data, post_step_cbdc_data, post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
         post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
@@ -1137,7 +1173,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
 
@@ -1145,26 +1181,26 @@ class SupervisorCampanaTests(CampanasTests):
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is not None)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_entrante(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data, post_step2_data,
-         post_step3_data, post_step4_data, post_step5_data,
+         post_step3_data, post_step_cbdc_data, post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
 
@@ -1174,40 +1210,46 @@ class SupervisorCampanaTests(CampanasTests):
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_entrante_crea_nodo_ruta_entrante(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
         audio_ingreso = ArchivoDeAudioFactory.create()
-        (post_step0_data, post_step1_data, post_step2_data,
-         post_step3_data, post_step4_data, post_step5_data,
-         post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
-             nombre_campana, audio_ingreso)
+        (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data,
+            post_step6_data
+        ) = self._obtener_post_data_wizard_creacion_campana_entrante(nombre_campana, audio_ingreso)
 
-        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
-        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 3)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         campana_entrante_template = CampanaFactory.create(
             type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
             whatsapp_habilitado=False)
@@ -1221,66 +1263,66 @@ class SupervisorCampanaTests(CampanasTests):
         # ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante_desde_template(
              campana_entrante_template, audio_ingreso)
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-name'] = nombre_campana
-        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
-        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
+        self.assertEqual(DestinoEntrante.objects.all().count(), 3)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
-        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
+        self.assertEqual(campana.bd_contacto.get_metadata().columna_id_externo, 3)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
@@ -1290,18 +1332,18 @@ class SupervisorCampanaTests(CampanasTests):
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_wizard_crear_campana_manual_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
@@ -1309,7 +1351,7 @@ class SupervisorCampanaTests(CampanasTests):
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
@@ -1327,14 +1369,14 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
     @patch.object(CampanaService, 'crear_campana_wombat')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_dialer(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk,
+            activar,
             crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             guardar_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_contactos_wombat, reload_campana_wombat,
@@ -1344,12 +1386,13 @@ class SupervisorCampanaTests(CampanasTests):
         nombre_campana = 'campana_dialer_test'
         audio_ingreso = ArchivoDeAudioFactory.create()
         ivr = IVRFactory.create()
-        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
+        destino_failover = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR,
+                                                         content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data, post_step7_data, post_step8_data,
          post_step9_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso, destino)
+             nombre_campana, audio_ingreso, destino_failover)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1377,13 +1420,14 @@ class SupervisorCampanaTests(CampanasTests):
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()
         ivr = IVRFactory.create()
-        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
-        self.campana_dialer.queue_campana.destino = destino
+        destino_failover = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR,
+                                                         content_object=ivr)
+        self.campana_dialer.queue_campana.destino_failover = destino_failover
         self.campana_dialer.queue_campana.save()
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data, post_step4_data, post_step5_data, post_step6_data,
          post_step7_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
-             self.campana_dialer.nombre, audio_ingreso, destino)
+             self.campana_dialer.nombre, audio_ingreso, destino_failover)
         self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
         post_step0_data['0-objetivo'] = nuevo_objetivo
         # realizamos la modificación de la campaña mediante el wizard
@@ -1401,31 +1445,43 @@ class SupervisorCampanaTests(CampanasTests):
     def _obtener_post_data_wizard_creacion_template_campana_entrante(
             self, nombre_campana, audio_ingreso):
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data, post_step5_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
         post_step0_data['campana_entrante_template_create_view-current_step'] = 0
         post_step1_data['campana_entrante_template_create_view-current_step'] = 1
         post_step2_data['campana_entrante_template_create_view-current_step'] = 2
+        post_step_cbdc_data['campana_entrante_template_create_view-current_step'] = \
+            'custom-basedatoscontacto'
         post_step3_data['campana_entrante_template_create_view-current_step'] = 3
         post_step4_data['campana_entrante_template_create_view-current_step'] = 4
         post_step0_data.pop('campana_entrante_create_view-current_step')
         post_step1_data.pop('campana_entrante_create_view-current_step')
         post_step2_data.pop('campana_entrante_create_view-current_step')
+        post_step_cbdc_data.pop('campana_entrante_create_view-current_step')
         post_step3_data.pop('campana_entrante_create_view-current_step')
         post_step4_data.pop('campana_entrante_create_view-current_step')
 
-        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data)
+        return (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step3_data,
+            post_step_cbdc_data,
+            post_step4_data,
+        )
 
     def _obtener_post_data_wizard_creacion_campana_entrante_desde_template(
             self, campana, audio_ingreso):
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data, post_step5_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              campana.nombre, audio_ingreso)
         post_step0_data['campana_entrante_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_entrante_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_entrante_template_create_campana_view-current_step'] = 2
+        post_step_cbdc_data['campana_entrante_template_create_campana_view-current_step'] = \
+            'custom-basedatoscontacto'
         post_step3_data['campana_entrante_template_create_campana_view-current_step'] = 3
         post_step4_data['campana_entrante_template_create_campana_view-current_step'] = 4
         post_step5_data['campana_entrante_template_create_campana_view-current_step'] = 5
@@ -1433,6 +1489,7 @@ class SupervisorCampanaTests(CampanasTests):
         post_step0_data.pop('campana_entrante_create_view-current_step')
         post_step1_data.pop('campana_entrante_create_view-current_step')
         post_step2_data.pop('campana_entrante_create_view-current_step')
+        post_step_cbdc_data.pop('campana_entrante_create_view-current_step')
         post_step3_data.pop('campana_entrante_create_view-current_step')
         post_step4_data.pop('campana_entrante_create_view-current_step')
         post_step5_data.pop('campana_entrante_create_view-current_step')
@@ -1445,34 +1502,43 @@ class SupervisorCampanaTests(CampanasTests):
         # post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
         # post_step3_data['3-0-columna'] = param_extra_web_form.columna
 
-        return (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data,
-                post_step5_data, post_step6_data)
+        return (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data,
+            post_step6_data,
+        )
 
     def test_usuario_logueado_puede_crear_template_campana_entrante(self):
         url = reverse('campana_entrante_template_create')
         nombre_campana = 'campana_entrante_template'
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step_cbdc_data,
          post_step4_data) = self._obtener_post_data_wizard_creacion_template_campana_entrante(
              nombre_campana, audio_ingreso)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(
             nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
             type=Campana.TYPE_ENTRANTE).exists())
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_entrante_desde_template(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         campana_entrante_template = CampanaFactory.create(
             type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
         nombre_campana = 'campana_entrante_clonada'
@@ -1486,10 +1552,11 @@ class SupervisorCampanaTests(CampanasTests):
         # parametro_web_form = ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data, post_step5_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_entrante_desde_template(
              campana_entrante_template, audio_ingreso)
         post_step0_data['0-nombre'] = nombre_campana
+        post_step0_data['0-bd_contacto'] = campana_entrante_template.bd_contacto_id
         post_step1_data['1-name'] = nombre_campana
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
@@ -1512,11 +1579,11 @@ class SupervisorCampanaTests(CampanasTests):
         # self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
 
     def _obtener_post_data_wizard_creacion_template_campana_dialer(
-            self, nombre_campana, audio_ingreso, destino):
+            self, nombre_campana, audio_ingreso, destino_failover):
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data, post_step6_data, __, __,
          __) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso, destino)
+             nombre_campana, audio_ingreso, destino_failover)
         post_step0_data['campana_dialer_template_create_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_view-current_step'] = 2
@@ -1540,11 +1607,12 @@ class SupervisorCampanaTests(CampanasTests):
         nombre_campana = 'campana_dialer_template'
         audio_ingreso = ArchivoDeAudioFactory.create()
         ivr = IVRFactory.create()
-        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
+        destino_failover = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR,
+                                                         content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data,
          post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_template_campana_dialer(
-             nombre_campana, audio_ingreso, destino)
+             nombre_campana, audio_ingreso, destino_failover)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1558,12 +1626,12 @@ class SupervisorCampanaTests(CampanasTests):
             type=Campana.TYPE_DIALER).exists())
 
     def _obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-            self, nombre_campana, audio_ingreso, destino):
+            self, nombre_campana, audio_ingreso, destino_failover):
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data, post_step4_data, post_step5_data,
          post_step6_data, post_step7_data, post_step8_data,
          post_step9_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso, destino)
+             nombre_campana, audio_ingreso, destino_failover)
         post_step0_data['campana_dialer_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_campana_view-current_step'] = 2
@@ -1614,14 +1682,14 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'reload_campana_wombat')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk,
+            activar,
             reload_campana_wombat, crear_campana_wombat, crear_trunk_campana_wombat,
             crear_reschedule_campana_wombat, guardar_endpoint_campana_wombat,
             crear_endpoint_asociacion_campana_wombat, crear_lista_contactos_wombat,
@@ -1631,13 +1699,14 @@ class SupervisorCampanaTests(CampanasTests):
         nombre_campana = 'campana_dialer_clonada'
         audio_ingreso = ArchivoDeAudioFactory.create()
         ivr = IVRFactory.create()
-        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
+        destino_failover = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR,
+                                                         content_object=ivr)
         # parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
         opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data, post_step6_data, post_step7_data, post_step8_data,
          post_step9_data) = self._obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-             nombre_campana, audio_ingreso, destino)
+             nombre_campana, audio_ingreso, destino_failover)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1670,44 +1739,58 @@ class SupervisorCampanaTests(CampanasTests):
 
     def _obtener_post_data_wizard_creacion_template_campana_manual(self, nombre_campana):
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         post_step0_data['campana_manual_template_create_view-current_step'] = 0
         post_step1_data['campana_manual_template_create_view-current_step'] = 1
         post_step2_data['campana_manual_template_create_view-current_step'] = 2
+        post_step_cbdc_data['campana_manual_template_create_view-current_step'] = \
+            'custom-basedatoscontacto'
         post_step3_data['campana_manual_template_create_view-current_step'] = 3
         post_step5_data['campana_manual_template_create_view-current_step'] = 4
         post_step4_data['campana_manual_template_create_view-current_step'] = 5
         post_step0_data.pop('campana_manual_create_view-current_step')
         post_step1_data.pop('campana_manual_create_view-current_step')
         post_step2_data.pop('campana_manual_create_view-current_step')
+        post_step_cbdc_data.pop('campana_manual_create_view-current_step')
         post_step3_data.pop('campana_manual_create_view-current_step')
         post_step4_data.pop('campana_manual_create_view-current_step')
         return (post_step0_data, post_step1_data, post_step2_data,
+                post_step_cbdc_data,
                 post_step3_data, post_step4_data, post_step5_data)
 
     def test_usuario_logueado_puede_crear_template_campana_manual(self):
         url = reverse('campana_manual_template_create')
         nombre_campana = 'campana_manual_template'
-        (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data,
-         post_step5_data) = self._obtener_post_data_wizard_creacion_template_campana_manual(
-             nombre_campana)
+        (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data
+        ) = self._obtener_post_data_wizard_creacion_template_campana_manual(nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
-        self.client.post(url, post_step4_data, follow=True)
-        self.client.post(url, post_step5_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(
             nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
             type=Campana.TYPE_MANUAL).exists())
 
     def _obtener_post_data_wizard_creacion_campana_manual_desde_template(self, nombre_campana):
-        (post_step0_data, post_step1_data, post_step2_data, post_step3_data, post_step4_data,
-         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
-             nombre_campana)
+        (
+            post_step0_data,
+            post_step1_data,
+            post_step2_data,
+            _post_step_cbdc_data,
+            post_step3_data,
+            post_step4_data,
+            post_step5_data
+        ) = self._obtener_post_data_wizard_creacion_campana_manual(nombre_campana)
         post_step0_data['campana_manual_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_manual_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_manual_template_create_campana_view-current_step'] = 2
@@ -1723,14 +1806,14 @@ class SupervisorCampanaTests(CampanasTests):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_manual_desde_template(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)
@@ -1744,6 +1827,7 @@ class SupervisorCampanaTests(CampanasTests):
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual_desde_template(
              nombre_campana)
         post_step0_data['0-nombre'] = nombre_campana
+        post_step0_data['0-bd_contacto'] = campana.bd_contacto_id
         post_step2_data['2-0-nombre'] = opt_calif.nombre
         post_step2_data['2-0-tipo'] = opt_calif.tipo
         # post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
@@ -1818,14 +1902,14 @@ class SupervisorCampanaTests(CampanasTests):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data, post_step6_data)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_usuario_logueado_puede_crear_campana_preview_desde_template(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
             campana=campana, pk=campana.nombre)
@@ -1865,9 +1949,8 @@ class SupervisorCampanaTests(CampanasTests):
         # self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_no_se_puede_eliminar_campana_entrante_failover_de_otra(
-            self, _generar_y_recargar_configuracion_asterisk, connect):
+            self, connect):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         self.campana_activa.save()
         self.campana.type = Campana.TYPE_ENTRANTE
@@ -1881,9 +1964,9 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "sincronizar_por_eliminacion")
     def test_se_puede_eliminar_campana_entrante_no_failover_de_otra(
-            self, _generar_y_recargar_configuracion_asterisk, connect):
+            self, sincronizar_por_eliminacion, connect):
         DestinoEntranteFactory(content_object=self.campana_activa)
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         self.campana_activa.save()
@@ -1892,9 +1975,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url)
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)
+        sincronizar_por_eliminacion.assert_called_with(self.campana_activa)
 
     @patch('redis.Redis.sadd')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
@@ -1903,18 +1987,18 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk, sadd):
+            activar, sadd):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         count_queue_members = QueueMember.objects.count()
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
@@ -1922,7 +2006,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
     @patch('redis.Redis.sadd')
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
@@ -1931,7 +2015,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_agentes(
             self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
             registrar_agentes_en_campana,
-            _generar_y_recargar_configuracion_asterisk, sadd):
+            activar, sadd):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)
         opt_calif = OpcionCalificacionFactory.create(
@@ -1943,6 +2027,7 @@ class SupervisorCampanaTests(CampanasTests):
          post_step4_data, post_step5_data) =\
             self._obtener_post_data_wizard_creacion_campana_manual_desde_template(nombre_campana)
         post_step0_data['0-nombre'] = nombre_campana
+        post_step0_data['0-bd_contacto'] = campana.bd_contacto_id
         post_step1_data['2-0-nombre'] = opt_calif.nombre
         post_step1_data['2-0-tipo'] = opt_calif.tipo
         count_queue_members = QueueMember.objects.count()
@@ -1956,25 +2041,25 @@ class SupervisorCampanaTests(CampanasTests):
         # comprobamos que se realizó una nueva asignación de agente a campañas
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_incluye_etapa_asignacion_supervisores(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
         (post_step0_data, post_step1_data,
-         post_step2_data, post_step3_data, post_step4_data,
+         post_step2_data, post_step_cbdc_data, post_step3_data, post_step4_data,
          post_step5_data) = self._obtener_post_data_wizard_creacion_campana_manual(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.assertFalse(Campana.objects.filter(nombre=nombre_campana).exists())
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step_cbdc_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         campana = Campana.objects.get(nombre=nombre_campana)
@@ -1982,14 +2067,14 @@ class SupervisorCampanaTests(CampanasTests):
         # comprobamos que se asigno supervisor a la campaña creada
         self.assertTrue(campana.supervisors.exists())
 
-    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.queue_member_service.QueueMemberService'
            '.agregar_agentes_en_cola')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_supervisores(
             self, connect, disconnect, agregar_agentes_en_cola,
-            _generar_y_recargar_configuracion_asterisk):
+            activar):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)
         opt_calif = OpcionCalificacionFactory.create(
@@ -2001,6 +2086,7 @@ class SupervisorCampanaTests(CampanasTests):
          post_step5_data) =\
             self._obtener_post_data_wizard_creacion_campana_manual_desde_template(nombre_campana)
         post_step0_data['0-nombre'] = nombre_campana
+        post_step0_data['0-bd_contacto'] = campana.bd_contacto_id
         post_step2_data['2-0-nombre'] = opt_calif.nombre
         post_step2_data['2-0-tipo'] = opt_calif.tipo
         self.assertFalse(Campana.objects.filter(nombre=nombre_campana).exists())

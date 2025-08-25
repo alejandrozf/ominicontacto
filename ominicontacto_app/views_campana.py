@@ -58,7 +58,7 @@ class CampanasDeleteMixin(object):
         # actualizamos el archivo de dialplan
         activacion_queue_service = ActivacionQueueService()
         try:
-            activacion_queue_service.activar()
+            activacion_queue_service.sincronizar_por_eliminacion(self.object)
         except RestablecerDialplanError as e:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo confirmar la creación del dialplan  "

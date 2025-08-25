@@ -25,7 +25,7 @@ from django.utils.translation import gettext as _
 from django.shortcuts import render
 from ominicontacto_app.models import Campana, OpcionCalificacion
 from django.views.generic.detail import DetailView
-from ominicontacto_app.services.campana_service import CampanaService
+from ominicontacto_app.services.dialer import get_dialer_service
 from reportes_app.models import LlamadaLog
 
 
@@ -39,25 +39,24 @@ class CampanaDialerDetailView(DetailView):
         context = super(
             CampanaDialerDetailView, self).get_context_data(**kwargs)
         campana = self.get_object()
-        campana_service = CampanaService()
-        estados_running_wombat = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
-                                  Campana.ESTADO_FINALIZADA]
         opciones_calificacion = campana.opciones_calificacion.all()
         context['opciones_calificacion'] = opciones_calificacion.values('nombre')
         context['opciones_calificacion_gestion'] = opciones_calificacion.filter(
             tipo=OpcionCalificacion.GESTION).values('nombre')
-        if campana.estado in estados_running_wombat:
-            dato_campana = campana_service.obtener_dato_campana_run(campana)
-            if dato_campana:
-                status = campana_service.obtener_status_campana_running(
-                    dato_campana['hoppercampId'])
-                context['efectuadas'] = dato_campana['n_calls_attempted']
-                context['terminadas'] = dato_campana['n_calls_completed']
-                context['estimadas'] = dato_campana['n_est_remaining_calls']
-                context['reintentos_abiertos'] = dato_campana['n_open_retries']
-                context['cant_contactos_llamados'] = \
-                    LlamadaLog.objects.cantidad_contactos_llamados(campana)
-                context['status'] = status
+        estados_running = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                           Campana.ESTADO_FINALIZADA]
+        if campana.estado in estados_running:
+
+            dialer_service = get_dialer_service()
+            datos_campana = dialer_service.obtener_estado_campana(campana)
+            if datos_campana:
+                cant_contactos_llamados = LlamadaLog.objects.cantidad_contactos_llamados(campana)
+                context['cant_contactos_llamados'] = cant_contactos_llamados
+                context['efectuadas'] = datos_campana['efectuadas']
+                context['terminadas'] = datos_campana['terminadas']
+                context['estimadas'] = datos_campana['estimadas']
+                context['reintentos_abiertos'] = datos_campana['reintentos_abiertos']
+                context['status'] = datos_campana['status']
                 context['resultado'] = True
             else:
                 context['resultado'] = False
@@ -68,24 +67,25 @@ class CampanaDialerDetailView(DetailView):
 
 
 def detalle_campana_dialer_view(request):
-    """Vista que muestrar el detalle de campana en wombat"""
+    """Vista que muestrar el detalle de campana en el servicio"""
     pk_campana = int(request.GET['pk_campana'])
     campana = Campana.objects.get(pk=pk_campana)
-    campana_service = CampanaService()
-    dato_campana = campana_service.obtener_dato_campana_run(campana)
-    if dato_campana:
-        status = campana_service.obtener_status_campana_running(
-            dato_campana['hoppercampId'])
+    dialer_service = get_dialer_service()
+    datos_campana = dialer_service.obtener_estado_campana(campana)
+    if datos_campana:
+        cant_contactos_llamados = LlamadaLog.objects.cantidad_contactos_llamados(campana)
         data = {
             'error_consulta': False,
             'campana': campana,
-            'efectuadas': dato_campana['n_calls_attempted'],
-            'terminadas': dato_campana['n_calls_completed'],
-            'estimadas': dato_campana['n_est_remaining_calls'],
-            'reintentos_abiertos': dato_campana['n_open_retries'],
-            'cant_contactos_llamados': LlamadaLog.objects.cantidad_contactos_llamados(campana),
-            'status': status
-
+            'cant_contactos_llamados': cant_contactos_llamados,
+            'efectuadas': datos_campana['efectuadas'],
+            'terminadas': datos_campana['terminadas'],
+            'terminadas_ok': datos_campana['terminadas_ok'],
+            'terminadas_no': datos_campana['terminadas_no'],
+            'estimadas': datos_campana['estimadas'],
+            'estimadas_iniciales': datos_campana['estimadas_iniciales'],
+            'reintentos_abiertos': datos_campana['reintentos_abiertos'],
+            'status': datos_campana['status']
         }
     else:
         data = {

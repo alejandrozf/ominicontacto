@@ -33,13 +33,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
+            <input type="hidden" id='id_CONTACTED_SUCCESSFULLY' value="{{ terminadas_ok }}">
+            <input type="hidden" id='id_FINALIZED_WITH_NO_CONTACT' value="{{ terminadas_no }}">
+            <input type="hidden" id='id_PENDING_INITIAL_CONTACT_ATTEMPTS' value="{{ estimadas_iniciales }}">
+
             <p>{% trans 'Nombre:' %} <strong>{{ campana.nombre }}</strong></p>
             <p>{% trans 'Estado:' %} <strong>{{ campana.get_estado_display}}</strong></p>
             <hr>
-            <p>{% trans 'Llamadas efectuadas:' %} <strong>{{ efectuadas }}</strong></p>
-            <p>{% trans 'Llamadas Terminadas' %}<strong>{{ terminadas }}</strong></p>
-            <p>{% trans 'Llamadas restantes estimadas' %}<strong>{{ estimadas }}</strong></p>
-            <p>{% trans 'Reintentos abiertos' %}: <strong>{{ reintentos_abiertos }}</strong></p>
+            <p>{% trans 'Llamadas efectuadas' %}: <strong id="id_ATTEMPTED_CALLS">{{ efectuadas }}</strong></p>
+            <p>{% trans 'Llamadas Terminadas' %}: <strong id="id_FINALIZED">{{ terminadas }}</strong></p>
+            <p>{% trans 'Llamadas restantes estimadas' %}: <strong id="id_PENDING">{{ estimadas }}</strong></p>
+            <p>{% trans 'Reintentos abiertos' %}: <strong id="id_NO_CONTACTS_WITH_PENDING_ATTEMPTS">{{ reintentos_abiertos }}</strong></p>
             <p>{% trans 'Cantidad de contactos llamados' %}: <strong>{{ cant_contactos_llamados }}</strong></p>
             {% for statu in status %}
                 <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>

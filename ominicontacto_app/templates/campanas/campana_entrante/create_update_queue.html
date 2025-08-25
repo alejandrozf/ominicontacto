@@ -27,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'configuracion_telefonia_app/JS/rutas-entrantes-lib.js' %}"></script>
-    <script src="{% static 'configuracion_telefonia_app/JS/ruta-entrante.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/campanas/campana_entrante/create_update_queue.js' %}"></script>
 {% endblock %}
 
 {% block nav %}
@@ -40,6 +40,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <li class="disabled"><a>{% trans 'Configuración de Whatsapp' %}</a></li>
         {% endif %}
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if custom_basedatoscontacto %}
+            <li class="disabled"><a>{% trans 'Base Datos de Contactos' %}</a></li>
+        {% endif %}
         {% if interaccion_crm %}
             <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
         {% endif %}
@@ -115,14 +118,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <div class="row">
         <div class="col-md-3">
-            <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
-            {{ form.tipo_destino }}
-            {{ form.tipo_destino.errors }}
+            <label for="{{ form.tipo_destino_failover.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+            {{ form.tipo_destino_failover }}
+            {{ form.tipo_destino_failover.errors }}
         </div>
         <div class="col-md-3">
-            <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
-            {{ form.destino }}
-            {{ form.destino.errors }}
+            <label for="{{ form.destino_failover.id_for_label }}">{% trans 'Destino:' %}</label>
+            {{ form.destino_failover }}
+            {{ form.destino_failover.errors }}
         </div>
         <div class="col-md-3">
             <label for="">{% trans 'Anuncio de entrada para el agente:'%}</label>

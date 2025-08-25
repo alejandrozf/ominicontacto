@@ -22,12 +22,8 @@ agente de desee agendar un llamado. Al modulo de agenda le esta faltando algun d
 o algo por el estilo para que lance una llamada agenda,etc
 """
 
-from __future__ import unicode_literals
-
-import requests
 import json
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import (
     PermissionDenied, ValidationError)
@@ -37,10 +33,15 @@ from django.utils.translation import gettext as _
 from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
+from django.http import StreamingHttpResponse
+from import_export import fields
+from import_export.resources import ModelResource
+
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
 from ominicontacto_app.forms.base import (
-    AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
+    AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, FiltroAgendasForm)
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.dialer import get_dialer_service
 from notification_app.notification import AgentNotifier
 
 
@@ -115,16 +116,10 @@ class AgendaContactoCreateView(CreateView):
             campana = form.instance.campana
             if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
                     campana.type == Campana.TYPE_DIALER:
-                url_wombat = '/'.join(
-                    [settings.OML_WOMBAT_URL,
-                        'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
-                        'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
-                fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
-                requests.post(
-                    url_wombat.format(
-                        campana.nombre, self.object.telefono, fecha_hora,
-                        campana.pk, self.object.contacto.pk))
+                # Notificar al dialer que hay q volver a llamar al contacto
+                get_dialer_service().agendar_llamada(campana, self.object)
                 self.object.save()
+
             # Después de agendado el contacto se marca como agendado en la calificación
             calificacion = CalificacionCliente.objects.filter(
                 opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'])
@@ -259,3 +254,64 @@ class AgendaContactosPorCampanaView(FormView):
         context = super(AgendaContactosPorCampanaView, self).get_context_data(**kwargs)
         context['members'] = self.campana.queue_campana.queuemember.all()
         return context
+
+
+class AgendaContactosExportResource(ModelResource):
+    first_name = fields.Field(attribute="agente__user__first_name")
+    last_name = fields.Field(attribute="agente__user__last_name")
+    campana = fields.Field(attribute="campana__nombre")
+
+    class Meta:
+        model = AgendaContacto
+        fields = [
+            "id",
+            "fecha",
+            "hora",
+            "tipo_agenda",
+            "first_name",
+            "last_name",
+            "campana",
+            "telefono"
+        ]
+        export_order = fields
+
+
+class AgendaContactosView(FormView):
+    """ Vista para que el supervisor pueda gestionar Agendas """
+    form_class = FiltroAgendasForm
+    template_name = 'agenda_contacto/listar_agendas.html'
+
+    def get(self, request, *args, **kwargs):
+        agendas = AgendaContacto.objects.agendas_filtradas_por_fecha('', '')
+        return self.render_to_response(
+            self.get_context_data(agendas=agendas[:10], cantidad=agendas.count()))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial']['fecha'] = now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        return kwargs
+
+    def form_valid(self, form):
+        fecha_desde = form.fecha_desde
+        fecha_hasta = form.fecha_hasta
+        agendas = AgendaContacto.objects.agendas_filtradas_por_fecha(fecha_desde, fecha_hasta)
+        agente = form.cleaned_data['agente']
+        campana_list = form.cleaned_data['campana']
+        if agente:
+            agendas = agendas.filter(agente_id=agente.id)
+        if campana_list:
+            agendas = agendas.filter(campana__in=campana_list)
+
+        if '_exportar' in self.request.POST:
+            filename = "agendas_" + now().date().strftime('%d/%m/%Y') + ".csv"
+            queryset = agendas
+            return StreamingHttpResponse(
+                streaming_content=AgendaContactosExportResource().export(queryset).csv,
+                content_type="text/csv",
+                headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+            )
+        elif '_eliminar' in self.request.POST:
+            agendas.delete()
+
+        return self.render_to_response(
+            self.get_context_data(agendas=agendas[:10], cantidad=agendas.count()))

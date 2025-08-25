@@ -161,7 +161,7 @@ class ActualizarCampanasDeAgente(APIView):
         try:
             agente = AgenteProfile.objects.get(id=agent_id)
         except (AgenteProfile.DoesNotExist, ValueError):
-            return _('agente_id incorrecto'), None, None, None
+            return _('agent_id incorrecto'), None, None, None
         # TODO: Verificar que el supervisor tiene permiso sobre el agente
 
         campanas_ids = request.data.get('campaigns', None)

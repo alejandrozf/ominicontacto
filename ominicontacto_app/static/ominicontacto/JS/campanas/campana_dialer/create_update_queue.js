@@ -16,15 +16,26 @@
 
 */
 
+/* global nodosEntrantesCambioPorTipo */
+
 $(function() {
     $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
     actualizarEstadoDeSelectorDeAudios();
+    
+    // cuando se escoge un tipo de nodo destino se despliegan en el campo selector de destinos
+    // todos los nodos destinos de este tipo
+    var $tipoDestinoFailover = $('#tipo_destino_failover');
+    var $destinoFailover = $('#destino_failover');
+    nodosEntrantesCambioPorTipo($tipoDestinoFailover, $destinoFailover);
+    var $tipoDestinoDialer = $('#tipo_destino_dialer');
+    var $destinoDialer = $('#destino_dialer');
+    nodosEntrantesCambioPorTipo($tipoDestinoDialer, $destinoDialer);
 });
 
 function actualizarEstadoDeSelectorDeAudios(){
-    var detectar = $('#id_detectar_contestadores').prop("checked");
+    var detectar = $('#id_detectar_contestadores').prop('checked');
     if (!detectar){
-    	$('#id_audio_para_contestadores').val('');
+        $('#id_audio_para_contestadores').val('');
     }
-    $('#id_audio_para_contestadores').prop("disabled", !detectar);
-};
+    $('#id_audio_para_contestadores').prop('disabled', !detectar);
+}

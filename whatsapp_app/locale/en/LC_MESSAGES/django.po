@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-14 16:26-0300\n"
+"POT-Creation-Date: 2025-08-25 12:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,40 +17,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: whatsapp_app/api/v1/calificacion.py:226
+#: whatsapp_app/api/v1/calificacion.py:228
 msgid "respuestaFormularioGestion es obligatorio"
 msgstr "respuestaFormularioGestion is mandatory"
 
-#: whatsapp_app/api/v1/calificacion.py:239
-#: whatsapp_app/api/v1/calificacion.py:266
+#: whatsapp_app/api/v1/calificacion.py:241
+#: whatsapp_app/api/v1/calificacion.py:268
 msgid "error en los campos del formulario"
 msgstr "error in form fields"
 
-#: whatsapp_app/api/v1/calificacion.py:281
+#: whatsapp_app/api/v1/calificacion.py:283
 msgid "Se obtuvo la calificacion de forma exitosa"
 msgstr "Disposition fetched successfully"
 
-#: whatsapp_app/api/v1/calificacion.py:287
-#: whatsapp_app/api/v1/calificacion.py:446
+#: whatsapp_app/api/v1/calificacion.py:289
+#: whatsapp_app/api/v1/calificacion.py:448
 msgid "Calificacion no encontrada"
 msgstr "Disposition not found"
 
-#: whatsapp_app/api/v1/calificacion.py:293
+#: whatsapp_app/api/v1/calificacion.py:295
 msgid "Error al obtener las calificacio"
 msgstr "Error fetching dispositions"
 
-#: whatsapp_app/api/v1/calificacion.py:326
-#: whatsapp_app/api/v1/calificacion.py:400
+#: whatsapp_app/api/v1/calificacion.py:328
+#: whatsapp_app/api/v1/calificacion.py:402
 msgid "Error en los datos del formulario"
 msgstr "Error in form data"
 
-#: whatsapp_app/api/v1/calificacion.py:333
-#: whatsapp_app/api/v1/calificacion.py:349
+#: whatsapp_app/api/v1/calificacion.py:335
+#: whatsapp_app/api/v1/calificacion.py:351
 msgid "Se creo la calificacion de forma exitosa"
 msgstr "Disposition successfully created"
 
-#: whatsapp_app/api/v1/calificacion.py:355
-#: whatsapp_app/api/v1/calificacion.py:418
+#: whatsapp_app/api/v1/calificacion.py:357
+#: whatsapp_app/api/v1/calificacion.py:420
 #: whatsapp_app/api/v1/configuracion_whatsapp_campana.py:129
 #: whatsapp_app/api/v1/configuracion_whatsapp_campana.py:174
 #: whatsapp_app/api/v1/contacto.py:240 whatsapp_app/api/v1/contacto.py:267
@@ -66,27 +66,27 @@ msgstr "Disposition successfully created"
 msgid "Error en los datos"
 msgstr "Data error"
 
-#: whatsapp_app/api/v1/calificacion.py:412
+#: whatsapp_app/api/v1/calificacion.py:414
 msgid "Se actualizo la calificacion de forma exitosa"
 msgstr "Disposition updated successfully"
 
-#: whatsapp_app/api/v1/calificacion.py:423
+#: whatsapp_app/api/v1/calificacion.py:425
 msgid "CalificacionCliente no encontrada"
 msgstr "Disposition not found"
 
-#: whatsapp_app/api/v1/calificacion.py:429
+#: whatsapp_app/api/v1/calificacion.py:431
 msgid "Error al actualizar la CalificacionCliente"
 msgstr "Error updating Disposition"
 
-#: whatsapp_app/api/v1/calificacion.py:452
+#: whatsapp_app/api/v1/calificacion.py:454
 msgid "Error al obtener el historial de calificacion"
 msgstr "Error fetching disposition history"
 
-#: whatsapp_app/api/v1/calificacion.py:465
+#: whatsapp_app/api/v1/calificacion.py:467
 msgid "Se obtuvieron las opciones de calificacion de forma exitosa"
 msgstr "Disposition options fetched successfully "
 
-#: whatsapp_app/api/v1/calificacion.py:472
+#: whatsapp_app/api/v1/calificacion.py:474
 msgid "Error al obtener opciones de calificacion"
 msgstr "Error fetching disposition options"
 
@@ -150,13 +150,13 @@ msgstr "WhatsApp configuration not found"
 msgid "Error al eliminar la Configuración de whatsapp"
 msgstr "Error deleting whatsapp configuration"
 
-#: whatsapp_app/api/v1/contacto.py:85 whatsapp_app/api/v1/contacto.py:97
-#: whatsapp_app/api/v1/contacto.py:150 whatsapp_app/api/v1/contacto.py:162
+#: whatsapp_app/api/v1/contacto.py:85 whatsapp_app/api/v1/contacto.py:98
+#: whatsapp_app/api/v1/contacto.py:150 whatsapp_app/api/v1/contacto.py:163
 msgid "Debe ser en formato \"999999999\" y solo numérico."
 msgstr "Format should be \"999999999\" and numeric only"
 
-#: whatsapp_app/api/v1/contacto.py:88 whatsapp_app/api/v1/contacto.py:100
-#: whatsapp_app/api/v1/contacto.py:153 whatsapp_app/api/v1/contacto.py:165
+#: whatsapp_app/api/v1/contacto.py:88 whatsapp_app/api/v1/contacto.py:101
+#: whatsapp_app/api/v1/contacto.py:153 whatsapp_app/api/v1/contacto.py:166
 msgid "Solo se permiten de 3-20 dígitos."
 msgstr "Only 3-20 digits allowed"
 
@@ -212,143 +212,143 @@ msgstr "Contacts fetched successfully"
 msgid "Error al obtener contactos"
 msgstr "Error fetching contacts"
 
-#: whatsapp_app/api/v1/conversacion.py:216
+#: whatsapp_app/api/v1/conversacion.py:220
 msgid "Se obtuvieron las conversaciones de forma exitosa"
 msgstr "Chats fetched successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:225
+#: whatsapp_app/api/v1/conversacion.py:229
 msgid "Error al obtener las conversaciones"
 msgstr "Error fetching chats"
 
-#: whatsapp_app/api/v1/conversacion.py:237
+#: whatsapp_app/api/v1/conversacion.py:242
 msgid "Se obtuvo la conversacion de forma exitosa"
 msgstr "Chat fetched successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:241
+#: whatsapp_app/api/v1/conversacion.py:246
 msgid "Conversacion no encontrada"
 msgstr "Chat not found"
 
-#: whatsapp_app/api/v1/conversacion.py:247
+#: whatsapp_app/api/v1/conversacion.py:252
 msgid "Error al obtener la conversacion"
 msgstr "Error fetching chat"
 
-#: whatsapp_app/api/v1/conversacion.py:290
+#: whatsapp_app/api/v1/conversacion.py:295
 msgid "Se asignó la conversación de forma exitosa"
 msgstr "Conversation assigned successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:295
-#: whatsapp_app/api/v1/conversacion.py:381
-#: whatsapp_app/api/v1/conversacion.py:438
-#: whatsapp_app/api/v1/conversacion.py:514
-#: whatsapp_app/api/v1/conversacion.py:571
+#: whatsapp_app/api/v1/conversacion.py:300
+#: whatsapp_app/api/v1/conversacion.py:386
+#: whatsapp_app/api/v1/conversacion.py:443
+#: whatsapp_app/api/v1/conversacion.py:519
+#: whatsapp_app/api/v1/conversacion.py:576
 msgid "Esta conversación ya está siendo atendida por otro agente"
 msgstr "This conversation is beign attended by another agent"
 
-#: whatsapp_app/api/v1/conversacion.py:300
-#: whatsapp_app/api/v1/conversacion.py:336
+#: whatsapp_app/api/v1/conversacion.py:305
+#: whatsapp_app/api/v1/conversacion.py:341
 msgid "No se puede asignar una conversación que no existe"
 msgstr "Can't assign non existent conversation"
 
-#: whatsapp_app/api/v1/conversacion.py:306
+#: whatsapp_app/api/v1/conversacion.py:311
 msgid "Error al asignar la conversación"
 msgstr "Error assigning conversation"
 
-#: whatsapp_app/api/v1/conversacion.py:318
+#: whatsapp_app/api/v1/conversacion.py:323
 msgid "El contacto no pertenece a la base de datos de la campaña"
 msgstr "Contact does not belong to campaign database"
 
-#: whatsapp_app/api/v1/conversacion.py:324
+#: whatsapp_app/api/v1/conversacion.py:329
 msgid "El contacto ya tiene una conversación activa"
 msgstr "Contact already has an active conversation"
 
-#: whatsapp_app/api/v1/conversacion.py:331
+#: whatsapp_app/api/v1/conversacion.py:336
 msgid "Se asigno el contacto a la conversacion de forma satisfactoria"
 msgstr "Contact assigned to conversation succesfully"
 
-#: whatsapp_app/api/v1/conversacion.py:341
+#: whatsapp_app/api/v1/conversacion.py:346
 msgid "No existe el contacto que se quiere asignar"
 msgstr "Contact does not exist"
 
-#: whatsapp_app/api/v1/conversacion.py:348
+#: whatsapp_app/api/v1/conversacion.py:353
 msgid "Error al asignar el contacto a la conversación"
 msgstr "Error assign"
 
-#: whatsapp_app/api/v1/conversacion.py:400
-#: whatsapp_app/api/v1/conversacion.py:476
+#: whatsapp_app/api/v1/conversacion.py:405
+#: whatsapp_app/api/v1/conversacion.py:481
 msgid "Este mensaje no se pudo enviar"
 msgstr "This message could not be sent"
 
-#: whatsapp_app/api/v1/conversacion.py:409
-#: whatsapp_app/api/v1/conversacion.py:485
-#: whatsapp_app/api/v1/conversacion.py:539
-#: whatsapp_app/api/v1/conversacion.py:615
+#: whatsapp_app/api/v1/conversacion.py:414
+#: whatsapp_app/api/v1/conversacion.py:490
+#: whatsapp_app/api/v1/conversacion.py:544
+#: whatsapp_app/api/v1/conversacion.py:620
 msgid "La conversacion esta inactiva hasta que el cliente responda"
 msgstr "The conversation is inactive until the client responds"
 
-#: whatsapp_app/api/v1/conversacion.py:412
-#: whatsapp_app/api/v1/conversacion.py:488
-#: whatsapp_app/api/v1/conversacion.py:544
-#: whatsapp_app/api/v1/conversacion.py:618
+#: whatsapp_app/api/v1/conversacion.py:417
+#: whatsapp_app/api/v1/conversacion.py:493
+#: whatsapp_app/api/v1/conversacion.py:549
+#: whatsapp_app/api/v1/conversacion.py:623
 msgid "La conversacion ha expirado. Inicie una nueva conversacion."
 msgstr "The conversation has expired. Init a new conversation."
 
-#: whatsapp_app/api/v1/conversacion.py:416
-#: whatsapp_app/api/v1/conversacion.py:492
+#: whatsapp_app/api/v1/conversacion.py:421
+#: whatsapp_app/api/v1/conversacion.py:497
 msgid "Conversacion es erronea"
 msgstr "Wrong conversation"
 
-#: whatsapp_app/api/v1/conversacion.py:423
-#: whatsapp_app/api/v1/conversacion.py:499
-#: whatsapp_app/api/v1/conversacion.py:554
-#: whatsapp_app/api/v1/conversacion.py:627
-#: whatsapp_app/api/v1/conversacion.py:699
-#: whatsapp_app/api/v1/conversacion.py:813
+#: whatsapp_app/api/v1/conversacion.py:428
+#: whatsapp_app/api/v1/conversacion.py:504
+#: whatsapp_app/api/v1/conversacion.py:559
+#: whatsapp_app/api/v1/conversacion.py:632
+#: whatsapp_app/api/v1/conversacion.py:704
+#: whatsapp_app/api/v1/conversacion.py:818
 msgid "Error al enviar el mensaje"
 msgstr "Error sending message"
 
-#: whatsapp_app/api/v1/conversacion.py:534
-#: whatsapp_app/api/v1/conversacion.py:609
+#: whatsapp_app/api/v1/conversacion.py:539
+#: whatsapp_app/api/v1/conversacion.py:614
 msgid "Se envió el mensaje de forma exitosa"
 msgstr "Message sent successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:548
-#: whatsapp_app/api/v1/conversacion.py:622
-#: whatsapp_app/api/v1/conversacion.py:645
+#: whatsapp_app/api/v1/conversacion.py:553
+#: whatsapp_app/api/v1/conversacion.py:627
+#: whatsapp_app/api/v1/conversacion.py:650
 msgid "Conversacion erronea"
 msgstr "Wrong conversation"
 
-#: whatsapp_app/api/v1/conversacion.py:650
+#: whatsapp_app/api/v1/conversacion.py:655
 msgid "Ya existe una conversacion iniciada con el cliente"
 msgstr "A conversation with this client already exist"
 
-#: whatsapp_app/api/v1/conversacion.py:691
+#: whatsapp_app/api/v1/conversacion.py:696
 msgid "Se envio el mensaje de forma exitosa"
 msgstr "Message sent successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:714
+#: whatsapp_app/api/v1/conversacion.py:719
 #, python-brace-format
 msgid "Campos esperados: {0}"
 msgstr "Expected fields: {0}"
 
-#: whatsapp_app/api/v1/conversacion.py:721
 #: whatsapp_app/api/v1/conversacion.py:726
 #: whatsapp_app/api/v1/conversacion.py:731
+#: whatsapp_app/api/v1/conversacion.py:736
 msgid "Campaña inválida"
 msgstr "Invalid campaign"
 
-#: whatsapp_app/api/v1/conversacion.py:737
+#: whatsapp_app/api/v1/conversacion.py:742
 msgid "Template inválido"
 msgstr "Invalid template"
 
-#: whatsapp_app/api/v1/conversacion.py:748
+#: whatsapp_app/api/v1/conversacion.py:753
 msgid "Contacto inválido"
 msgstr "Invalid contact"
 
-#: whatsapp_app/api/v1/conversacion.py:803
+#: whatsapp_app/api/v1/conversacion.py:808
 msgid "Conversacion creada correctamente"
 msgstr "Conversation created successfully"
 
-#: whatsapp_app/api/v1/conversacion.py:807
+#: whatsapp_app/api/v1/conversacion.py:812
 msgid "Ya existe una conversacion iniciada"
 msgstr "A started conversation already exists"
 
@@ -652,11 +652,11 @@ msgstr "Provider configuration not found"
 msgid "Error al eliminar la Configuración del proveedor"
 msgstr "Error deleting provider configuration"
 
-#: whatsapp_app/api/v1/reporte.py:140
+#: whatsapp_app/api/v1/reporte.py:143
 msgid "Error al obtener el reporte"
 msgstr "Error fetching report"
 
-#: whatsapp_app/api/v1/reporte.py:145
+#: whatsapp_app/api/v1/reporte.py:148
 msgid "Reporte obtenido exitosamente"
 msgstr "Report fetched successfully"
 
@@ -696,167 +696,191 @@ msgstr "Error fetching agents"
 msgid "Error al tranferir conversacion"
 msgstr "Error transfering conversation"
 
-#: whatsapp_app/apps.py:115
+#: whatsapp_app/apps.py:127
 msgid "whatsapp_providers_configuration"
 msgstr "whatsapp_providers_configuration"
 
-#: whatsapp_app/apps.py:118
+#: whatsapp_app/apps.py:130
 msgid "whatsapp_lines_configuration"
 msgstr "whatsapp_lines_configuration"
 
-#: whatsapp_app/apps.py:121
+#: whatsapp_app/apps.py:133
 msgid "message_templates_configuration"
 msgstr "message_templates_configuration"
 
-#: whatsapp_app/apps.py:124
+#: whatsapp_app/apps.py:136
 msgid "whatsapp_message_template_groups"
 msgstr "whatsapp_message_template_groups"
 
-#: whatsapp_app/apps.py:127
+#: whatsapp_app/apps.py:139
 msgid "proveedor-list"
 msgstr "proveedor-list"
 
-#: whatsapp_app/apps.py:130
+#: whatsapp_app/apps.py:142
 msgid "proveedor-detail"
 msgstr "proveedor-detail"
 
-#: whatsapp_app/apps.py:133
+#: whatsapp_app/apps.py:145
 msgid "linea-list"
 msgstr "linea-list"
 
-#: whatsapp_app/apps.py:136
+#: whatsapp_app/apps.py:148
 msgid "linea-detail"
 msgstr "linea-detail"
 
-#: whatsapp_app/apps.py:139
+#: whatsapp_app/apps.py:151
 msgid "destino-list"
 msgstr "destino-list"
 
-#: whatsapp_app/apps.py:142
+#: whatsapp_app/apps.py:154
 msgid "plantilla-mensaje-list"
 msgstr "plantilla-mensaje-list"
 
-#: whatsapp_app/apps.py:145
+#: whatsapp_app/apps.py:157
 msgid "plantilla-mensaje-detail"
 msgstr "plantilla-mensaje-detail"
 
-#: whatsapp_app/apps.py:148
+#: whatsapp_app/apps.py:160
 msgid "template-whatsapp-list"
 msgstr "template-whatsapp-list"
 
-#: whatsapp_app/apps.py:151
+#: whatsapp_app/apps.py:163
 msgid "template-whatsapp-sincronizar-templates"
 msgstr "template-whatsapp-sincronizar-templates"
 
-#: whatsapp_app/apps.py:154
+#: whatsapp_app/apps.py:166
+msgid "template-whatsapp-status-change"
+msgstr "template-whatsapp-status-change"
+
+#: whatsapp_app/apps.py:169
 msgid "campana-list"
 msgstr "campana-list"
 
-#: whatsapp_app/apps.py:157
+#: whatsapp_app/apps.py:172
 msgid "grupo-plantilla-whatsapp-listp"
 msgstr "grupo-plantilla-whatsapp-listp"
 
-#: whatsapp_app/apps.py:160
+#: whatsapp_app/apps.py:175
 msgid "grupo-plantilla-whatsapp-detail"
 msgstr "grupo-plantilla-whatsapp-detail"
 
-#: whatsapp_app/apps.py:163
+#: whatsapp_app/apps.py:178
 msgid "grupo-template-whatsapp-list"
 msgstr "grupo-template-whatsapp-list"
 
-#: whatsapp_app/apps.py:166
+#: whatsapp_app/apps.py:181
 msgid "grupo-template-whatsapp-detail"
 msgstr "grupo-template-whatsapp-detail"
 
-#: whatsapp_app/apps.py:169
+#: whatsapp_app/apps.py:184
 msgid "configuracion-whatsapp-campana-list"
 msgstr "configuracion-whatsapp-campana-list"
 
-#: whatsapp_app/apps.py:172
+#: whatsapp_app/apps.py:187
 msgid "configuracion-whatsapp-campana-templates"
 msgstr "configuracion-whatsapp-campana-templates"
 
-#: whatsapp_app/apps.py:175
+#: whatsapp_app/apps.py:190
 msgid "configuracion-whatsapp-campana-detai"
 msgstr "configuracion-whatsapp-campana-detai"
 
-#: whatsapp_app/apps.py:178
+#: whatsapp_app/apps.py:193
 msgid "conversacion-list"
 msgstr "conversacion-list"
 
-#: whatsapp_app/apps.py:181
+#: whatsapp_app/apps.py:196
+msgid "conversacion-filter-chats"
+msgstr "conversacion-filter-chats"
+
+#: whatsapp_app/apps.py:199
+msgid "conversacion-detail"
+msgstr "conversacion-detail"
+
+#: whatsapp_app/apps.py:202
 msgid "conversacion-agent-chats-lists"
 msgstr "conversacion-agent-chats-lists"
 
-#: whatsapp_app/apps.py:184
+#: whatsapp_app/apps.py:205
 msgid "conversacion-attend-chat"
 msgstr "conversacion-attend-chat"
 
-#: whatsapp_app/apps.py:187
+#: whatsapp_app/apps.py:208
 msgid "conversacion-messages"
 msgstr "conversacion-messages"
 
-#: whatsapp_app/apps.py:190
+#: whatsapp_app/apps.py:211
+msgid "conversacion-reactive-expired-conversation"
+msgstr "conversacion-reactive-expired-conversation"
+
+#: whatsapp_app/apps.py:214
 msgid "conversacion-send-menssage-attachment"
 msgstr "conversacion-send-menssage-attachment"
 
-#: whatsapp_app/apps.py:193
+#: whatsapp_app/apps.py:217
 msgid "conversacion-send-menssage-text"
 msgstr "conversacion-send-menssage-text"
 
-#: whatsapp_app/apps.py:196
+#: whatsapp_app/apps.py:220
 msgid "conversacion-send-message-template"
 msgstr "conversacion-send-message-template"
 
-#: whatsapp_app/apps.py:199
+#: whatsapp_app/apps.py:223
 msgid "conversacion-send-message-whatsapp-template"
 msgstr "conversacion-send-message-whatsapp-template"
 
-#: whatsapp_app/apps.py:202
+#: whatsapp_app/apps.py:226
 msgid "transfer-to-agent"
 msgstr "transfer-to-agent"
 
-#: whatsapp_app/apps.py:205
+#: whatsapp_app/apps.py:229
 msgid "transfer-agents"
 msgstr "transfer-agents"
 
-#: whatsapp_app/apps.py:208
+#: whatsapp_app/apps.py:232
 msgid "conversacion-assign-contact"
 msgstr "conversacion-assign-contact"
 
-#: whatsapp_app/apps.py:211
+#: whatsapp_app/apps.py:235
 msgid "contacto-search"
 msgstr "contacto-search"
 
-#: whatsapp_app/apps.py:214
+#: whatsapp_app/apps.py:238
 msgid "contacto-list"
 msgstr "contacto-list"
 
-#: whatsapp_app/apps.py:217
+#: whatsapp_app/apps.py:241
 msgid "contacto-detail"
 msgstr "contacto-detail"
 
-#: whatsapp_app/apps.py:220
+#: whatsapp_app/apps.py:244
+msgid "contacto-create-contact-from-conversation"
+msgstr "contacto-create-contact-from-conversation"
+
+#: whatsapp_app/apps.py:247
 msgid "contacto-db-fields"
 msgstr "contacto-db-fields"
 
-#: whatsapp_app/apps.py:223
+#: whatsapp_app/apps.py:250
 msgid "calificacion-list"
 msgstr "calificacion-list"
 
-#: whatsapp_app/apps.py:226
+#: whatsapp_app/apps.py:253
 msgid "calificacion-options"
 msgstr "calificacion-options"
 
-#: whatsapp_app/apps.py:229
+#: whatsapp_app/apps.py:256
 msgid "calificacion-detail"
 msgstr "calificacion-detail"
 
-#: whatsapp_app/apps.py:232
+#: whatsapp_app/apps.py:259
 msgid "calificacion-history"
 msgstr "calificacion-history"
 
-#: whatsapp_app/apps.py:235
+#: whatsapp_app/apps.py:262
+msgid "template-list"
+msgstr "template-list"
+
+#: whatsapp_app/apps.py:265
 msgid "whatsapp_reports"
 msgstr "whatsapp_reports"
 

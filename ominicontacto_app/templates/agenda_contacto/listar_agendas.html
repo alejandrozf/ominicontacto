@@ -1,0 +1,104 @@
+<!--
+Copyright (C) 2025 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.growl.css' %}">
+{% endblock extra_css %}
+
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/reasignarAgendas.js' %}"></script>
+{% endblock head_js %}
+<h1>{% trans 'Gestionar Agendas' %}</h1>
+
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
+    <div id="wrapperSearchForm" class="show">
+        <form id="form-gestionar-agendas" name="form_gestionar_agendas" role="form" method="post" enctype="multipart/form-data" >
+            {% include "base_form_fields.html" with form=form %}
+            <button type="submit" id="id_buscar_btn" name="_buscar" class="btn btn-primary">
+                {% trans 'Buscar' %}
+            </button>
+            <button type="submit" id="id_exportar_btn" name="_exportar" class="btn btn-primary">
+                {% trans 'Exportar a CSV' %}
+            </button>
+            <button type="button" id="id_eliminar_btn" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
+                {% trans 'Eliminar' %}
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="wrapper-results">
+    <h2>{% trans 'Cantidad de agendas' %} {{ cantidad }}</div>
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>{% trans 'id' %}</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'hora' %}</th>
+                <th>{% trans 'Tipo Agenda' %}</th>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Apellido' %}</th>
+                <th>{% trans 'Campaña' %}</th>
+                <th>{% trans 'Teléfono' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agenda in agendas %}
+            <tr>
+              <td>{{ agenda.id }}</td>
+              <td>{{ agenda.fecha }}</td>
+              <td>{{ agenda.hora }}</td>
+              <td>{{ agenda.tipo_agenda }}</td>
+              <td>{{ agenda.agente.user.first_name }}</td>
+              <td>{{ agenda.agente.user.last_name }}</td>
+              <td>{{ agenda.campana }}</td>
+              <td>{{ agenda.telefono}}</td>
+          </tr>
+       {% empty %}
+            <tr>
+                <td colspan="7">{% trans 'No existen agendas para esta campaña' %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Confirmar borrado' %}</h4>
+        </div>
+        <div class="modal-body">
+            <p>{% trans '¿Está seguro(a) que desea borrar estas agendas?' %}</p>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancelar' %}</button>
+            <button type="submit" form="form-gestionar-agendas" name="_eliminar" class="btn btn-primary"> {% trans 'Confirmar'%}</button>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

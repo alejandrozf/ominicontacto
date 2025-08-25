@@ -471,6 +471,14 @@ class AgenteProfile(models.Model):
             destino__content_type=ContentType.objects.get_for_model(self),
         )
 
+    def is_ivr_destino(self):
+        OpcionDestino = apps.get_model('configuracion_telefonia_app.OpcionDestino')
+        DestinoEntrante = apps.get_model('configuracion_telefonia_app.DestinoEntrante')
+        return OpcionDestino.objects.filter(
+            destino_siguiente__object_id=self.id,
+            destino_siguiente__tipo=DestinoEntrante.AGENTE,
+            destino_anterior__tipo=DestinoEntrante.IVR).exists()
+
     def desactivar(self):
         self.destinos_entrantes.all().delete()
         self.is_inactive = True
@@ -1803,9 +1811,13 @@ class Queue(models.Model):
         default=1.0, max_digits=3, decimal_places=1, blank=True, null=True)
 
     # destino por failover
-    destino = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
-                                related_name='campanas_destino_failover', blank=True, null=True,
-                                on_delete=models.CASCADE)
+    destino_failover = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                         related_name='campanas_destino_failover',
+                                         blank=True, null=True, on_delete=models.CASCADE)
+    # destino custom dialer
+    destino_dialer = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                       related_name='campanas_destino_dialer',
+                                       blank=True, null=True, on_delete=models.CASCADE)
 
     # para permitir al usuario especificar el tiempo promedio  que deberá
     # esperar el llamante para ser atendido
@@ -2646,6 +2658,17 @@ class BaseDatosContacto(models.Model):
             )
         self.cantidad_contactos = len(lista_contactos)
 
+    def validar_bd_de_reemplazo(self, nueva_base):
+        metadata_actual = self.get_metadata()
+        metadata_modificar = nueva_base.get_metadata()
+
+        for columna_base, columna_modificar in zip(
+                metadata_actual.nombres_de_columnas,
+                metadata_modificar.nombres_de_columnas):
+            if columna_base != columna_modificar:
+                error = _("Los nombres de las columnas no coinciden")
+                return error
+
 
 class ContactoManager(models.Manager):
 
@@ -3151,6 +3174,16 @@ class AgendaContactoManager(models.Manager):
             hoy = fecha_local(now())
             eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
+
+    def agendas_filtradas_por_fecha(self, fecha_desde, fecha_hasta):
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            agendas = self.filter(fecha__range=(fecha_desde, fecha_hasta))
+        else:
+            hoy = fecha_local(now())
+            agendas = self.filter(fecha__gte=hoy)
+        return agendas.order_by('id')
 
     def proximas(self, agente):
         """ Devuelve las agendas programadas para las proximas 8 horas para un agente """

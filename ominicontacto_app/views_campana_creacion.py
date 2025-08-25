@@ -37,42 +37,23 @@ from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.forms.base import (
     CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
     CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm,
+    CustomBaseDatosContactoForm,
     CampanaConfiguracionWhatsappForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SitioExterno, SupervisorProfile,
                                       AgenteProfile)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
-from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS_DB_DEFAULT
+from ominicontacto_app.tests.factories import COLUMNAS_DB_DEFAULT
+from ominicontacto_app.tests.factories import COLUMNAS_DB_DEFAULT_TELEFONO
+from ominicontacto_app.tests.factories import COLUMNAS_DB_DEFAULT_ID_EXTERNO
 from ominicontacto_app.utiles import cast_datetime_part_date, obtener_opciones_columnas_bd
 
 import logging as logging_
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError
 
+from django.core.serializers import json
+
 logger = logging_.getLogger(__name__)
-
-
-def asignar_bd_contactos_defecto_campo_vacio(campana_form):
-    """
-    Crea una base de datos de contactos vacía en caso de que el usuario no escoja
-    una de las existentes en el sistema y la campaña no sea un template, la asigna a
-    la instancia que crea el formulario de campaña y devuelve el formulario con el
-    cambio
-    """
-    if (campana_form.cleaned_data['bd_contacto'] is None and
-            not campana_form.initial.get('es_template', False)):
-        bd_contacto = BaseDatosContactoFactory.build(
-            metadata=BaseDatosContactoFactory.create_default_metadata())
-        sistema_externo = campana_form.cleaned_data.get('sistema_externo', False)
-        if sistema_externo:
-            columna_dni = 3
-            metadata = bd_contacto.get_metadata()
-            metadata.columna_id_externo = columna_dni
-            metadata.save()
-            bd_contacto = metadata.bd
-        else:
-            bd_contacto.save()
-        campana_form.instance.bd_contacto = bd_contacto
-    return campana_form
 
 
 class CampanaTemplateCreateMixin(object):
@@ -161,8 +142,14 @@ class CampanaTemplateCreateCampanaMixin(object):
             if not params_crm_init_formset.is_bound:
                 initial_data = campana_template.parametros_crm.values(
                     'tipo', 'valor', 'nombre')
-                bd_contacto = campana_template.bd_contacto
-                columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+                bd_contacto = self.get_cleaned_data_for_step(self.INICIAL)['bd_contacto']
+                if bd_contacto is None:
+                    columnas_db_default = json.json.loads(
+                        self.get_cleaned_data_for_step(self.CUSTOM_BASEDATOSCONTACTO)["metadata"]
+                    )['nombres_de_columnas']
+                else:
+                    columnas_db_default = COLUMNAS_DB_DEFAULT
+                columnas_bd = obtener_opciones_columnas_bd(bd_contacto, columnas_db_default)
                 # Calculo form Kwargs
                 form_kwargs = {'columnas_bd': columnas_bd}
                 if campana_template.sitio_externo:
@@ -203,6 +190,11 @@ def mostrar_form_configuracion_whatsapp_form(wizard):
     return cleaned_data.get('whatsapp_habilitado', '')
 
 
+def use_custom_basedatoscontacto_form(wizard):
+    cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL)
+    return cleaned_data and cleaned_data.get("bd_contacto") is None
+
+
 class CampanaWizardMixin(object):
     INICIAL = '0'
     COLA = '1'
@@ -211,11 +203,13 @@ class CampanaWizardMixin(object):
     PARAMETROS_CRM = '4'
     ADICION_SUPERVISORES = '5'
     ADICION_AGENTES = '6'
+    CUSTOM_BASEDATOSCONTACTO = 'custom-basedatoscontacto'
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (CUSTOM_BASEDATOSCONTACTO, CustomBaseDatosContactoForm),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
              (ADICION_AGENTES, QueueMemberFormset)]
@@ -224,6 +218,8 @@ class CampanaWizardMixin(object):
                  COLA: "campanas/campana_entrante/create_update_queue.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
+                 CUSTOM_BASEDATOSCONTACTO:
+                 "campanas/campana_entrante/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_entrante/adicionar_supervisores.html",
                  ADICION_AGENTES: "campanas/campana_entrante/adicionar_agentes.html"}
@@ -231,6 +227,7 @@ class CampanaWizardMixin(object):
     form_list = FORMS
     condition_dict = {
         PARAMETROS_CRM: mostrar_form_parametros_crm_form,
+        CUSTOM_BASEDATOSCONTACTO: use_custom_basedatoscontacto_form,
         CONFIGURACION_WHATSAPP: mostrar_form_configuracion_whatsapp_form
     }
 
@@ -278,7 +275,13 @@ class CampanaWizardMixin(object):
             # flexible y sólo usa kwargs para instanciar
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
-            columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+            if bd_contacto is None:
+                columnas_db_default = json.json.loads(
+                    self.get_cleaned_data_for_step(self.CUSTOM_BASEDATOSCONTACTO)["metadata"]
+                )['nombres_de_columnas']
+            else:
+                columnas_db_default = COLUMNAS_DB_DEFAULT
+            columnas_bd = obtener_opciones_columnas_bd(bd_contacto, columnas_db_default)
             form_class = self.form_list[step]
             con_crm_calificacion = campana.get("sitio_externo", None) and \
                 campana.get("sitio_externo", None).disparador == SitioExterno.CALIFICACION
@@ -311,7 +314,7 @@ class CampanaWizardMixin(object):
         """ Sincronizar informacion de Campaña / Queue """
         activacion_queue_service = ActivacionQueueService()
         try:
-            activacion_queue_service.activar()
+            activacion_queue_service.activar(queue.campana)
         except RestablecerDialplanError:
             raise
 
@@ -325,7 +328,9 @@ class CampanaWizardMixin(object):
             context['interaccion_crm'] = tipo_interaccion in \
                 [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
             context['whatsapp_habilitado'] = cleaned_data_step_initial['whatsapp_habilitado']
+            context['custom_basedatoscontacto'] = cleaned_data_step_initial['bd_contacto'] is None
         else:
+            context['custom_basedatoscontacto'] = False
             pk = self.kwargs.get('pk_campana', False)
             if pk:
                 campana = get_object_or_404(Campana, pk=pk)
@@ -446,7 +451,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.save()
         return queue_form.instance
 
-    def _save_forms(self, form_list, estado):
+    def _save_forms(self, form_list, form_dict, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
         campana = campana_form.instance
         interaccion_crm = campana_form.instance.tiene_interaccion_con_sitio_externo
@@ -456,7 +461,11 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
         campana_form.instance.estado = estado
-        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
+        if custom_basedatoscontacto_form := form_dict.get(self.CUSTOM_BASEDATOSCONTACTO):
+            bd_contacto = custom_basedatoscontacto_form.save(commit=False)
+            bd_contacto.define()
+            bd_contacto.save()
+            campana_form.instance.bd_contacto = bd_contacto
         campana_form.save()
         offset = 1
         if whatsapp_habilitado:
@@ -479,8 +488,8 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
             parametros_crm_formset.save()
         return queue
 
-    def done(self, form_list, **kwargs):
-        queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+    def done(self, form_list, form_dict, **kwargs):
+        queue = self._save_forms(form_list, form_dict, Campana.ESTADO_ACTIVA)
         self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
@@ -499,6 +508,19 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
             step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
             name = step_cleaned_data['nombre']
             initial_data.update({'name': name})
+        if step == self.CUSTOM_BASEDATOSCONTACTO:
+            initial_data.update({
+                "metadata": json.json.dumps(
+                    {
+                        "prim_fila_enc": False,
+                        "cant_col": len(COLUMNAS_DB_DEFAULT),
+                        "nombres_de_columnas": COLUMNAS_DB_DEFAULT,
+                        "cols_telefono": COLUMNAS_DB_DEFAULT_TELEFONO,
+                        "col_id_externo": COLUMNAS_DB_DEFAULT_ID_EXTERNO,
+                    },
+                    cls=json.DjangoJSONEncoder
+                )
+            })
         return initial_data
 
 
@@ -529,7 +551,6 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, *args, **kwargs):
         campana_form = list(form_list)[int(self.INICIAL)]
-        campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.instance.save()
 
         queue_form = list(form_list)[int(self.COLA)]
@@ -588,23 +609,27 @@ class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntra
     CONFIGURACION_WHATSAPP = '2'
     OPCIONES_CALIFICACION = '3'
     PARAMETROS_CRM = '4'
+    CUSTOM_BASEDATOSCONTACTO = 'custom-basedatoscontacto'
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (CUSTOM_BASEDATOSCONTACTO, CustomBaseDatosContactoForm),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
+                 CUSTOM_BASEDATOSCONTACTO:
+                 "campanas/campana_entrante/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
-    def done(self, form_list, **kwargs):
-        self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO)
+    def done(self, form_list, form_dict, **kwargs):
+        self._save_forms(form_list, form_dict, Campana.ESTADO_TEMPLATE_ACTIVO)
         return HttpResponseRedirect(reverse('campana_entrante_template_list'))
 
 

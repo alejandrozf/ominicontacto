@@ -1,28 +1,28 @@
 <!--
-Copyright (C) 2018 Freetech Solutions
+     Copyright (C) 2018 Freetech Solutions
 
-This file is part of OMniLeads
+     This file is part of OMniLeads
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License version 3, as published by
-the Free Software Foundation.
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU Lesser General Public License version 3, as published by
+     the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends "campanas/wizard_base.html" %}
 {% load i18n %}
 {% load static %}
+{% load dialer %}
 
 {% block extra_js %}
     <script src="{% static 'configuracion_telefonia_app/JS/rutas-entrantes-lib.js' %}"></script>
-    <script src="{% static 'configuracion_telefonia_app/JS/ruta-entrante.js' %}"></script>
 {% endblock %}
 {% block head_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/create_update_queue.js' %}"></script>
@@ -140,17 +140,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.musiconhold }}
                 {{ form.musiconhold.errors }}
             </div>
+            {% wombat_habilitado_tag as wombat_habilitado %}
+            {% if not wombat_habilitado %}
+                <div class="col-md-6">
+                    <label >{% trans 'Destino llamada Dialer' %}</label>
+                    <div class="col-md-12">
+                        <label for="{{ form.tipo_destino_dialer.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+                        {{ form.tipo_destino_dialer }}
+                        {{ form.tipo_destino_dialer.errors }}
+                    </div>
+                    <div class="col-md-12">
+                        <label for="{{ form.destino_dialer.id_for_label }}">{% trans 'Destino:' %}</label>
+                        {{ form.destino_dialer }}
+                        {{ form.destino_dialer.errors }}
+                    </div>
+                </div>
+            {% endif %}
             <div class="col-md-6">
                 <label >{% trans 'Destino en caso de timeout' %}</label>
                 <div class="col-md-12">
-                    <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
-                    {{ form.tipo_destino }}
-                    {{ form.tipo_destino.errors }}
+                    <label for="{{ form.tipo_destino_failover.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+                    {{ form.tipo_destino_failover }}
+                    {{ form.tipo_destino_failover.errors }}
                 </div>
                 <div class="col-md-12">
-                    <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
-                    {{ form.destino }}
-                    {{ form.destino.errors }}
+                    <label for="{{ form.destino_failover.id_for_label }}">{% trans 'Destino:' %}</label>
+                    {{ form.destino_failover }}
+                    {{ form.destino_failover.errors }}
                 </div>
             </div>
         </div>

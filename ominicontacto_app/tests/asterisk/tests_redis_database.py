@@ -215,6 +215,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'OUTCID': "",
             'IDEXTERNALURL': "",
             'FAILOVER': "0",
+            'CUSTOMDIALERDST': "0",
             'TC': "",  # a partir de esta variable no se usan las siguientes variables:
             'IDJSON': "",
             'PERMITOCCULT': "",
@@ -243,6 +244,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'OUTCID': "",
             'IDEXTERNALURL': "",
             'FAILOVER': "0",
+            'CUSTOMDIALERDST': "0",
             'TC': "",  # a partir de esta variable no se usan las siguientes variables:
             'IDJSON': "",
             'PERMITOCCULT': "",
@@ -271,6 +273,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'OUTCID': "",
             'IDEXTERNALURL': "",
             'FAILOVER': "0",
+            'CUSTOMDIALERDST': "0",
             'TC': "",  # a partir de esta variable no se usan las siguientes variables:
             'IDJSON': "",
             'PERMITOCCULT': "",
@@ -299,6 +302,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'OUTCID': "",
             'IDEXTERNALURL': "",
             'FAILOVER': "0",
+            'CUSTOMDIALERDST': "0",
             'TC': "",  # a partir de esta variable no se usan las siguientes variables:
             'IDJSON': "",
             'PERMITOCCULT': "",

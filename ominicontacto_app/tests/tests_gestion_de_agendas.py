@@ -161,3 +161,112 @@ class CalificacionTests(OMLBaseTest):
         self.client.login(username=self.agente_1.user.username, password=PASSWORD)
         response = self.client.post(url_update, {'telefono': telefono}, follow=True)
         self.assertNotEqual(response.context['agendacontacto'].telefono, telefono)
+
+
+class ExportCsvAgendasTests(OMLBaseTest):
+    def setUp(self):
+        super().setUp()
+        self.agente_1 = self.crear_agente_profile()
+        self.agente_2 = self.crear_agente_profile()
+        self.agente_3 = self.crear_agente_profile()
+        self.supervisor = self.crear_supervisor_profile()
+
+        self.campana1 = CampanaFactory.create(nombre='campana1', estado=Campana.ESTADO_ACTIVA)
+        self.campana2 = CampanaFactory.create(nombre='campana2', estado=Campana.ESTADO_ACTIVA)
+        self.campana3 = CampanaFactory.create(nombre='campana3', estado=Campana.ESTADO_ACTIVA)
+
+        self.contacto_1 = ContactoFactory.create()
+        self.contacto_2 = ContactoFactory.create()
+
+        self.agenda_1 = AgendaContactoFactory(
+            agente=self.agente_1, tipo_agenda=AgendaContacto.TYPE_PERSONAL,
+            contacto=self.contacto_1, campana=self.campana1, telefono=11111)
+        self.agenda_2 = AgendaContactoFactory(
+            agente=self.agente_1, tipo_agenda=AgendaContacto.TYPE_PERSONAL,
+            contacto=self.contacto_2, campana=self.campana2, telefono=22222)
+        self.agenda_3 = AgendaContactoFactory(
+            agente=self.agente_1, tipo_agenda=AgendaContacto.TYPE_PERSONAL,
+            contacto=self.contacto_2, campana=self.campana2, telefono=33333)
+        self.client.login(username=self.supervisor.user.username, password=PASSWORD)
+
+    def test_filtrado_ok(self):
+        fecha = timezone.now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "agente": self.agente_1.id,
+                "fecha": fecha
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['cantidad'], 3)
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "campana": [self.campana1.id],
+                "fecha": fecha
+            },
+        )
+        self.assertEqual(response.context['cantidad'], 1)
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "campana": [self.campana1.id, self.campana2.id],
+                "fecha": fecha
+            },
+        )
+        self.assertEqual(response.context['cantidad'], 3)
+
+    def test_exportar_ok(self):
+        fecha = timezone.now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        csv_row_0 = "id,fecha,hora,tipo_agenda,first_name,last_name,campana,telefono"
+        csv_row_1 = "{},{},{},1,User_0,Test,campana1,11111".format(
+            self.agenda_1.id, self.agenda_1.fecha, self.agenda_1.hora.strftime('%H:%M:%S'))
+        csv_row_2 = "{},{},{},1,User_0,Test,campana2,22222".format(
+            self.agenda_2.id, self.agenda_2.fecha, self.agenda_2.hora.strftime('%H:%M:%S'))
+        csv_row_3 = "{},{},{},1,User_0,Test,campana2,33333".format(
+            self.agenda_3.id, self.agenda_3.fecha, self.agenda_3.hora.strftime('%H:%M:%S'))
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "campana": [self.campana1.id],
+                "fecha": fecha,
+                '_exportar': ['']
+            },
+        )
+        self.assertEqual(
+            response.getvalue().decode().splitlines(),
+            [
+                csv_row_0,
+                csv_row_1,
+            ],
+        )
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "campana": [self.campana2.id],
+                "fecha": fecha,
+                '_exportar': ['']
+            },
+        )
+        self.assertEqual(
+            response.getvalue().decode().splitlines(),
+            [
+                csv_row_0,
+                csv_row_2,
+                csv_row_3
+            ],
+        )
+
+    def test_eliminar_ok(self):
+        fecha = timezone.now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        response = self.client.post(
+            reverse("agenda_contactos"),
+            {
+                "agente": self.agente_1.id,
+                "fecha": fecha,
+                "_eliminar": ['']
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['cantidad'], 0)

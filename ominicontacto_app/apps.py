@@ -222,6 +222,12 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Sitios Externos'),
                 'url': reverse('sitio_externo_list')
             })
+        # Agendas
+        if 'agenda_contactos' in permissions:
+            campanas.append({
+                'label': _('Agendas'),
+                'url': reverse('agenda_contactos')
+            })
         #  Autenticacion Sitios Externos
         if 'sitio_externo_autenticacion_list' in permissions:
             campanas.append({
@@ -526,6 +532,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'agenda_contacto_listado',
              'roles': ['Agente', ]},
             {'nombre': 'agenda_contactos_por_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'agenda_contactos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
@@ -946,6 +954,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Listado de Agendas de contactos'), 'version': '1.7.0'},
         'agenda_contactos_por_campana':
             {'descripcion': _('Listado para reasignar Agendas de contactos por Campaña'),
+             'version': '1.7.0'},
+        'agenda_contactos':
+            {'descripcion': _('Listado de Agendas de contactos'),
              'version': '1.7.0'},
         'campana_dialer_list':
             {'descripcion': _('Ver listado de campañas Dialer'), 'version': '1.7.0'},

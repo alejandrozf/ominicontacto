@@ -1,3 +1,7 @@
+variables:
+  # Default IMAGE_VERSION is empty so GitLab shows it in the UI as optional
+  IMAGE_VERSION: ""
+
 stages:
   - test
   - build
@@ -9,13 +13,11 @@ test:
     - name: freetechsolutions/omlpgsql:develop
       alias: plpython
     - redis
-
   before_script:
     - mkdir -p /opt/omnileads/ominicontacto/
     - mkdir -p /opt/omnileads/static
     - mkdir -p /opt/omnileads/media_root
     - rm "${CI_PROJECT_DIR}"/omnileads_ui/.eslintrc.js
-
   variables:
     POSTGRES_DB: omnileads
     POSTGRES_USER: omnileads
@@ -62,14 +64,17 @@ container-image:
         exit 1
       fi
 
+      # If IMAGE_VERSION is empty, calculate default
+      if [ -z "${IMAGE_VERSION}" ]; then
+        IMAGE_VERSION="$(date +%Y%m%d)-${CI_COMMIT_SHORT_SHA}"
+      fi
+
       if [[ "${CI_COMMIT_BRANCH}" == "master" || "${CI_COMMIT_BRANCH}" == pre-release-* ]]; then
         echo "${DOCKER_SECRET}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
-        IMAGE_VERSION=$(cat .omnileads_version)
         docker tag run omnileads/omlapp:$IMAGE_VERSION
         docker push docker.io/omnileads/omlapp:$IMAGE_VERSION
       else
         echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USER}" --password-stdin
-        IMAGE_VERSION=$(cat .omnileads_version)
         docker tag run freetechsolutions/omlapp:$IMAGE_VERSION
         docker push docker.io/freetechsolutions/omlapp:$IMAGE_VERSION
       fi

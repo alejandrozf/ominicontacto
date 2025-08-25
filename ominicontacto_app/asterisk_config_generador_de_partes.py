@@ -381,7 +381,9 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         """
 
     def get_parametros(self):
-        return self._parametros
+
+        parametros = dict(self._parametros)
+        return parametros
 
 
 # ==============================================================================
