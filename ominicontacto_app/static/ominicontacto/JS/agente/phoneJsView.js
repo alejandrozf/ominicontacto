@@ -49,6 +49,7 @@ class PhoneJSView {
         this.holdButton = $('#onHold');
         this.transferButton = $('#Transfer');
         this.conferButton = $('#Confer');
+        this.dtmfButton = $('#dtmf');
         this.endTransferButton = $('#EndTransfer');
         this.transferOutMenu = $('#modalTransfer');
         this.inboundCallMenu = $('#modalReceiveCalls');
@@ -61,11 +62,12 @@ class PhoneJSView {
         this.keypad_buttons_ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
             'asterisk', 'hashtag'];
         this.inputs_ids = ['Resume', 'Pause', 'changeCampAssocManualCall',
-            'call', 'numberToCall', 'redial', 'onHold', 'Transfer',
+            'call', 'numberToCall', 'redial', 'onHold', 'Transfer', 'dtmf',
             'Confer', 'EndTransfer', 'SignCall', 'endCall',
             'call_off_campaign_menu', 'recordCall'];
         this.modal_menus_ids = ['modalPause', 'modalSelectCmp',
-            'modalTransfer', 'modalReceiveCalls', 'modalCallOffCamp'];
+            'modalTransfer', 'modalReceiveCalls', 'modalCallOffCamp',
+            'modalDtmf'];
 
         /* Outputs */
         this.sipStatus = $('#SipStatus');
@@ -85,6 +87,10 @@ class PhoneJSView {
         this.reload_video_button = $('#reload_video_id');
         this.buttonVideo = $('#buttonVideo');
         this.videoJitsi = $('#video-container');
+        this.modalDtmf = $('#modalDtmf');
+        this.dtmfInput = $('#dtmfInput');
+        this.dtmfError = $('#dtmfError');
+        this.sendDtmfButton = $('#sendDtmf');
 
         this.startKeypad();
         this.startTransferMenu();
@@ -396,7 +402,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'OnCall': {
         keypad_enabled: true,
-        enabled_buttons: ['onHold', 'Transfer', 'endCall', 'SignCall', 'recordCall'],
+        enabled_buttons: ['onHold', 'Transfer', 'dtmf','endCall', 'SignCall', 'recordCall'],
         color: '#8fc641',
     },
     'DialingTransfer': {

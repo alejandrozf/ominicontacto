@@ -37,7 +37,8 @@ class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
     constructor(
         agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher,
-        keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp) {
+        keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp,
+        dtmf_duration, dtmf_inter_tone_gap){
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
@@ -63,6 +64,8 @@ class PhoneJSController {
         this.campaign_name = '';
         this.llamada_calificada = null;
         this.transfer = null;
+        this.dtmf_duration = dtmf_duration;
+        this.dtmf_inter_tone_gap = dtmf_inter_tone_gap;
         /*-----------------*/
 
         this.disableOnHold();
@@ -196,6 +199,10 @@ class PhoneJSController {
                 self.view.callAgentButton.prop('disabled', true);
             }
         });
+        /* dtmfButton*/
+        this.view.dtmfButton.click(function() {
+            self.view.modalDtmf.modal('show');
+        });
 
         this.view.callAgentButton.click(function() {
             var agent_id = $('#agente_off_camp').val();
@@ -285,6 +292,26 @@ class PhoneJSController {
                 self.view.setConferenceAgent(agtmessage, 'orange');
             }
             self.phone.confer();
+        });
+
+        this.view.sendDtmfButton.click(function () {
+            // TODO: Refactor responsabilidad de enviar DTMF corresponde a PhoneJS
+            const dtmf_duration = parseInt(self.dtmf_duration, 10) || 50;
+            const dtmf_inter_tone_gap = parseInt(self.dtmf_inter_tone_gap, 10) || 100;
+            const DTMF_REGEX = /^[0-9A-DR#*,]+$/i; // Regex para validar caracteres DTMF
+            if (!DTMF_REGEX.test(self.view.dtmfInput.val())) {
+                self.view.dtmfError.addClass('d-block');
+                return;
+            }
+            self.view.dtmfError.removeClass('d-block');
+            const digits = self.view.dtmfInput.val().split('');
+            var options = { duration: dtmf_duration, interToneGap: dtmf_inter_tone_gap };
+            for (let i = 0; i < digits.length; i++) {
+                const digit = digits[i];
+                self.phone.currentSession.sendDTMF(digit, options);
+            }
+            self.view.dtmfInput.val('');
+            self.view.modalDtmf.modal('hide');
         });
 
         this.subscribeToKeypadEvents();
@@ -595,8 +622,8 @@ class PhoneJSController {
             else { phone_logger.log('No se sabe volver desde: ' + self.phone_fsm.state);}
 
             self.timers.llamada.stop();
-            self.timers.onHold.reset()
-            self.timers.onHold.hide_element()
+            self.timers.onHold.reset();
+            self.timers.onHold.hide_element();
 
             if (self.pause_manager.pause_enabled) {
                 self.phone_fsm.startPause();
@@ -651,8 +678,8 @@ class PhoneJSController {
             self.phone_fsm.endCall();
             self.timers.llamada.stop();
             self.timers.llamada.restart();
-            self.timers.onHold.reset()
-            self.timers.onHold.hide_element()
+            self.timers.onHold.reset();
+            self.timers.onHold.hide_element();
             self.callEndTransition();
             self.updateCallHistory();
             self.view.holdButton.html('hold');
