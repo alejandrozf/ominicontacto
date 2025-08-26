@@ -3087,7 +3087,7 @@ class CalificacionTelefono(TimeStampedModel, models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones_telefonos",
                                on_delete=models.CASCADE)
-    calificacion = models.CharField(max_length=200)
+    calificacion = models.CharField(max_length=200, blank=True, null=True)
     campo_contacto = models.CharField(max_length=200)
     history = HistoricalRecords()
 

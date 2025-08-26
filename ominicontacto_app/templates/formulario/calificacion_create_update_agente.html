@@ -73,7 +73,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="col-md-6 mb-2">
                 {{ contacto_form.non_field_errors }}
                 {% for hidden_field in contacto_form.hidden_fields %}
-                  {{ hidden_field.errors }}
+                    {{ hidden_field.errors }}
                   {{ hidden_field }}
                 {% endfor %}
                 {% if contacto_form.confirmar_duplicado in contacto_form.hidden_fields %}
@@ -87,15 +87,44 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <th>{{ field.label_tag}}</th>
                             <th>{{ field.errors }}</th>
                             <td> {{ field }}
-                            {% if contacto and field.name in campos_telefono %}
-                                    <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
-                            {% endif %}
+                                {% if contacto and field.name in campos_telefono %}
+                                    <div class="row mt-1">
+                                        <div class="col-auto">
+                                            <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id=contacto-{{field.name}}></div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endif %}
                 {% endfor %}
             </div>
             <div class="col-md-6 mb-2">
+                <input class="hidden" value='{{ campana.permitir_calificar_telefonos }}'
+                       id="permitirCalificacionTelefono">
+                {% if campana.permitir_calificar_telefonos %}
+                    <div class="row">
+                        {% for form in calificaciones_telefonos_formset %}
+                            <div class="col-md-9">
+                                <div class="hidden">{{ form.id }}</div>
+                                <div class="hidden">{{ form.campana }}</div>
+                                <div class="hidden">{{ form.contacto }}</div>
+                                <div class="hidden">{{ form.agente }}</div>
+                                <div class="hidden">{{ form.campo_contacto }}</div>
+                                <div class="hidden">
+                                    <label for="{{ form.calificacion.id_for_label }}">{% trans 'Calificacion teléfono' %}</label>
+                                    <div class="calificacionTelefonoValor" data-id="{{ form.campo_contacto.value }}">{{ form.calificacion }}</div>
+                                    {{ form.calificacion.errors }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {{ calificaciones_telefonos_formset.management_form }}
+                    </div>
+                {% endif %}
+
                 {% if calificacion_form %}
                 <div class="card">
                     <div class="card-body">
@@ -154,7 +183,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAPS_CENTER}}">
 </div>
 </div>
-{% if campana.campo_direccion %}    
+{% if campana.campo_direccion %}
     <script src="{% static 'ominicontacto/JS/agente/googlemap.js' %}">
     </script>
     <script
