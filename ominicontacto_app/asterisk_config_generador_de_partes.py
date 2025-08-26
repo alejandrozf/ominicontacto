@@ -375,7 +375,8 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         return """
         [{oml_agente_sip}](agents)
         endpoint/callerid={oml_agente_name} <{oml_agente_sip}>
-        aor/contact=sip:{oml_agente_sip}@{kamailio_hostname}:{kamailio_port}
+        inbound_auth/username={oml_agente_sip}
+        inbound_auth/password=
         endpoint/context={oml_context}
         """
 

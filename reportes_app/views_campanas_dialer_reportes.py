@@ -80,13 +80,14 @@ def detalle_campana_dialer_view(request):
             'cant_contactos_llamados': cant_contactos_llamados,
             'efectuadas': datos_campana['efectuadas'],
             'terminadas': datos_campana['terminadas'],
-            'terminadas_ok': datos_campana['terminadas_ok'],
-            'terminadas_no': datos_campana['terminadas_no'],
             'estimadas': datos_campana['estimadas'],
-            'estimadas_iniciales': datos_campana['estimadas_iniciales'],
             'reintentos_abiertos': datos_campana['reintentos_abiertos'],
             'status': datos_campana['status']
         }
+        if 'terminadas_ok' in datos_campana:  # Datos solo disponibles para OMniDialer
+            data['terminadas_ok'] = datos_campana['terminadas_ok']
+            data['terminadas_no'] = datos_campana['terminadas_no']
+            data['estimadas_iniciales'] = datos_campana['estimadas_iniciales']
     else:
         data = {
             'campana': campana,

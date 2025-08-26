@@ -24,7 +24,9 @@ from __future__ import unicode_literals
 from configuracion_telefonia_app.models import MusicaDeEspera, Playlist
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTelefonicaEnAsterisk)
-from ominicontacto_app.services.asterisk.redis_database import RegenerarAsteriskFamilysOML
+from ominicontacto_app.services.asterisk.redis_database import (
+    RegenerarAsteriskFamilysOML,
+)
 
 import logging
 
@@ -32,8 +34,13 @@ from django.utils.translation import gettext as _
 
 from ominicontacto.settings.omnileads import ASTERISK_TM
 from ominicontacto_app.errors import OmlError
-from ominicontacto_app.asterisk_config import AsteriskConfigReloader, AudioConfigFile, \
-    PlaylistsConfigCreator, QueuesCreator, SipConfigCreator
+from ominicontacto_app.asterisk_config import (
+    AsteriskConfigReloader,
+    AudioConfigFile,
+    PlaylistsConfigCreator,
+    QueuesCreator,
+    SipConfigCreator,
+)
 from ominicontacto_app.models import ArchivoDeAudio
 from whatsapp_app.services.redis.linea import StreamDeLineas
 
@@ -54,8 +61,11 @@ class RegeneracionAsteriskService(object):
         # Sincroniza Sip De Agentes
         self.sip_config_creator = SipConfigCreator()
         # Sincroniza Modelos de Configuracion Telefonica
-        self.sincronizador_config_telefonica = SincronizadorDeConfiguracionTelefonicaEnAsterisk()
-        # Sincroniza en AstDB las que faltan en el Sincronizador de Configuracion Telefonica
+        self.sincronizador_config_telefonica = (
+            SincronizadorDeConfiguracionTelefonicaEnAsterisk()
+        )
+        # Sincroniza en AstDB las que faltan en el Sincronizador de
+        # Configuracion Telefonica
         self.asterisk_database = RegenerarAsteriskFamilysOML()
         self.playlist_config_creator = PlaylistsConfigCreator()
 
@@ -73,8 +83,10 @@ class RegeneracionAsteriskService(object):
                                "intentar queues_config_creator()"))
 
             proceso_ok = False
-            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
-                               'configuracion del queues de {0}. '.format(ASTERISK_TM))
+            mensaje_error += _(
+                'Hubo un inconveniente al crear el archivo de '
+                'configuracion del queues de {0}. '
+            ).format(ASTERISK_TM)
 
         try:
             self.sip_config_creator.create_config_sip()
@@ -83,8 +95,10 @@ class RegeneracionAsteriskService(object):
                                "intentar create_config_sip()"))
 
             proceso_ok = False
-            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
-                               'configuracion del config sip de {0}. '.format(ASTERISK_TM))
+            mensaje_error += _(
+                'Hubo un inconveniente al crear el archivo de '
+                'configuracion del config sip de {0}. '
+            ).format(ASTERISK_TM)
 
         try:
             self.playlist_config_creator.create_config_asterisk()
@@ -93,8 +107,10 @@ class RegeneracionAsteriskService(object):
                                "intentar create_config_sip()"))
 
             proceso_ok = False
-            mensaje_error += _('Hubo un inconveniente al crear el archivo de '
-                               'configuracion Playlists (MOH) en {0}. '.format(ASTERISK_TM))
+            mensaje_error += _(
+                'Hubo un inconveniente al crear el archivo de '
+                'configuracion Playlists (MOH) en {0}. '
+            ).format(ASTERISK_TM)
 
         if not proceso_ok:
             raise RestablecerDialplanError(mensaje_error)
@@ -110,7 +126,9 @@ class RegeneracionAsteriskService(object):
     def _reenviar_archivos_playlist_asterisk(self):
         playlists = Playlist.objects.all()
         for playlist in playlists:
-            musica_espera_list = MusicaDeEspera.objects.filter(playlist=playlist.pk)
+            musica_espera_list = MusicaDeEspera.objects.filter(
+                playlist=playlist.pk
+            )
             print(list(musica_espera_list))
             for musica in musica_espera_list:
                 audio_file_asterisk = AudioConfigFile(musica)
@@ -128,3 +146,8 @@ class RegeneracionAsteriskService(object):
         self._regenerar_redis_data()
         self._reenviar_archivos_playlist_asterisk()
         self._reenviar_archivos_audio_asterisk()
+        if not os.getenv('WALLBOARD_VERSION', '') == '':
+            from wallboard_app.redis.regeneracion import (
+                regenerar_wallboard_data
+            )
+            regenerar_wallboard_data()
