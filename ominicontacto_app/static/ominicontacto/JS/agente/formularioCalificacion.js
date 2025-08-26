@@ -19,6 +19,24 @@ $(function () {
     var $opcion_calificar = $('#id_opcion_calificacion');
     $opcion_calificar.removeAttr('required');
     subscribeToChangeOptionCalification($opcion_calificar);
+    // si la campaña permite calificaciones a telefonos
+    // se sincronizan los select(s) asociados a las calificaciones de los campos seleccionados con
+    // los respectivos campos en el formulario de contacto
+    // console.log($('#permitirCalificacionTelefono'));
+    // console.log($('.calificacionTelefonoValor'));
+    $('.calificacionTelefonoValor').each(function(index) {
+        var $currentNode = $(this);
+        var $clon = $currentNode.clone().attr('id', 'clon' + index);
+        $clon.val($currentNode.val());
+        var campo = $clon.attr('data-id');
+        $('#contacto-' + campo).append($clon);
+        $clon.on('change', function() {
+            var valueSelected = $(this).find("option:selected").val();
+            $currentNode.val(valueSelected);
+            $currentNode.find('option').prop('selected', false);
+            $currentNode.find(`option[value="${valueSelected}"]`).prop('selected', true);
+        });
+    });
 });
 
 function subscribeToChangeOptionCalification(opcion_calificar) {
