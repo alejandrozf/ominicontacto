@@ -179,6 +179,10 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 # 10 Mb limit
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
+
+DTMF_DURATION = 50  # Duración de cada tono en ms
+DTMF_INTER_TONE_GAP = 100  # Intervalo entre tonos en ms
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
