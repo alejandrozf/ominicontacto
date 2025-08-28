@@ -15,6 +15,8 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global gettext */
+
 $(function () {
     var $opcion_calificar = $('#id_opcion_calificacion');
     $opcion_calificar.removeAttr('required');
@@ -30,11 +32,23 @@ $(function () {
         $clon.val($currentNode.val());
         var campo = $clon.attr('data-id');
         $('#contacto-' + campo).append($clon);
+        // Creo checkbox de positiva.
+        let id_positiva = 'positiva-contacto-' + campo;
+        let div_positiva = $('<div class="positiva">' + gettext('Positiva') + '<input type="checkbox" ' +
+                       'class="form-control" id="' + id_positiva + '"></div>');
+        $('#contacto-' + campo).parent().after(div_positiva);
+        $('#' + id_positiva).click(function(){
+            if ($(this).prop('checked')){
+                clearOtherPositiveCheckboxess(this);
+                updateDisposition($clon);
+            }
+        });
         $clon.on('change', function() {
-            var valueSelected = $(this).find("option:selected").val();
+            var valueSelected = $(this).find('option:selected').val();
             $currentNode.val(valueSelected);
             $currentNode.find('option').prop('selected', false);
             $currentNode.find(`option[value="${valueSelected}"]`).prop('selected', true);
+            $('#' + id_positiva).prop('checked', false);
         });
     });
 });
@@ -58,5 +72,22 @@ function subscribeToChangeOptionCalification(opcion_calificar) {
                 });
             }
         });
+    });
+}
+
+function updateDisposition(div_calificacion_telefono){
+    let nombre_calificacion = $(div_calificacion_telefono).children().val();
+    $('#id_opcion_calificacion').children().each(function (i,option) {
+        if(option.text == nombre_calificacion){
+            $('#id_opcion_calificacion').val(option.value);
+        }
+    });
+}
+
+function clearOtherPositiveCheckboxess(current_positive) {
+    $('[id^="positiva-contacto-"]').each(function(i, positive_checkbox){
+        if (positive_checkbox != current_positive){
+            $(positive_checkbox).prop('checked', false);
+        }
     });
 }
