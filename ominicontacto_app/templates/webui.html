@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+{% if name == "premiumreports" %}
+<style>body { background-color: oklch(98.4% 0.003 247.858); /*slate-50*/ }</style>
+{% endif %}
+{% endblock %}
+
 {% block content %}
   <iframe
     name="webui"

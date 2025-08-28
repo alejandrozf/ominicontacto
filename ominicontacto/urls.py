@@ -30,6 +30,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  re_path(r'^blog/', include('blog.urls'))
 """
 from django.urls import include, re_path
+from django.urls import path
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -53,8 +54,14 @@ urlpatterns = [
             name="logout"),
 ]
 
-for (regex, module) in settings.ADDON_URLPATTERNS:
-    urlpatterns += [re_path(regex, include(module)), ]
+for (route, module) in settings.ADDON_URLPATTERNS:
+    try:
+        if route == '^':
+            urlpatterns += [re_path(route, include(module)),]
+        else:
+            urlpatterns.append(path(f"{route}/", include((module, route), namespace=route)))
+    except ModuleNotFoundError:
+        pass
 
 urlpatterns += [
     re_path(r'^jsi18n/$', JavaScriptCatalog.as_view(packages=js_info_packages),
