@@ -22,6 +22,7 @@ from collections import OrderedDict
 from django.core.paginator import Paginator
 from django.utils.translation import gettext_lazy as _
 from django.db import connection
+from django.db.models import Count
 from ominicontacto_app.models import CalificacionCliente, Campana, AgenteEnContacto
 from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
 from reportes_app.models import LlamadaLog
@@ -70,6 +71,7 @@ class ReporteDeResultadosDeCampana(object):
             self.contactaciones[contacto.id] = {
                 'contacto': contacto,
                 'calificacion': None,
+                'subcalificacion': None,
                 'contactacion': None
             }
         return ids
@@ -84,6 +86,7 @@ class ReporteDeResultadosDeCampana(object):
             calificados_ids.append(contacto_id)
             nombre = calificacion.opcion_calificacion.nombre
             self.contactaciones[contacto_id]['calificacion'] = nombre
+            self.contactaciones[contacto_id]['subcalificacion'] = calificacion.subcalificacion
         return calificados_ids
 
     def _registrar_no_calificados(self, contactos_ids, calificados_ids):
@@ -131,3 +134,11 @@ class ReporteDeResultadosDeCampana(object):
             return _("Contactado")
         # No debería ocurrir:
         return _("Sin datos")
+
+    def registrar_cantidad_de_contactos(self):
+        ids = self.contactaciones.keys()
+        cantidades = LlamadaLog.objects.filter(campana_id=self.campana.id, contacto_id__in=ids).\
+            values('contacto_id').annotate(intentos=Count('callid', distinct=True))
+        for cantidad in cantidades:
+            self.contactaciones[cantidad['contacto_id']]['intentos'] = cantidad['intentos']
+        return

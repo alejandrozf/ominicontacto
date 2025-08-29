@@ -86,6 +86,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{{ columna }}</th>
                 {% endfor %}
                 <th>{% trans "Calificación" %}</th>
+                <th>{% trans "Subcalificación" %}</th>
                 <th>{% trans "Contactación" %}</th>
             </tr>
         </thead>
@@ -97,6 +98,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{ dato }}</td>
                 {% endfor %}
                 <td>{{ contactacion.calificacion|default_if_none:'' }}</td>
+                <td>{{ contactacion.subcalificacion|default_if_none:'' }}</td>
                 <td>{{ contactacion.contactacion|default_if_none:'' }}</td>
             </tr>
             {% empty %}
