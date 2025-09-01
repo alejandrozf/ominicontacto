@@ -522,7 +522,11 @@ export default {
               }
             } else {
               const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
+              if (menu.menu_header){
                 return `${menu.menu_header}`;
+              } else {
+                  return '----------';
+              }
             }
         },
         handleModalEvent ({ showModal = false, formToCreate = false }) {

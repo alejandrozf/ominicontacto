@@ -160,7 +160,7 @@ export default {
                 );
                 let result = null;
                 if (template.type === TEMPLATE_TYPES.WHATSAPP) {
-                    if (template.configuration.numParams > 0) {
+                    if (template.configuration.numParams_text > 0 || template.configuration.numParams_header > 0) {
                         this.setParamsToTemplate(template);
                         return;
                     } else {
@@ -169,6 +169,7 @@ export default {
                             conversationId: this.agtWhatsCoversationInfo.id,
                             templateId: template.id,
                             phoneLine: this.agtWhatsCoversationInfo.line.number,
+                            params_header: [],
                             params: [],
                             messages,
                             $t: this.$t

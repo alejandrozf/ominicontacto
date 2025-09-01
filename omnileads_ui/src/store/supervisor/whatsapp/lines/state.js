@@ -1,3 +1,5 @@
+import { provide } from "vue";
+
 export default {
     supWhatsappLines: [],
     supWhatsappLineCampaigns: [],
@@ -5,11 +7,10 @@ export default {
         id: null,
         nombre: '',
         proveedor: null,
+        provide_type: '',
         status: '',
         numero: '',
         configuracion: {
-            app_name: '',
-            app_id: ''
         },
         destination: {
             data: null,

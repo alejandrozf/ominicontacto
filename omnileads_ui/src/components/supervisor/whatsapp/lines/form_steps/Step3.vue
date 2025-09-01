@@ -409,6 +409,7 @@ import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_
 import ModalNewGroupOfHour from '@/components/supervisor/whatsapp/lines/options_form/ModalNewGroupOfHour';
 import ModalNewMessageTemplate from '@/components/supervisor/whatsapp/lines/options_form/ModalNewMessageTemplate';
 import FormMenuInteractivo from '@/components/supervisor/whatsapp/lines/options_form/FormMenuInteractivo';
+import { PROVIDER_TYPES } from '@/globals/supervisor/whatsapp/provider';
 
 export default {
     inject: ['$helpers'],
@@ -670,20 +671,41 @@ export default {
                 return null;
             }
             let response = null;
-            const form = {
-                name: this.supWhatsappLine.nombre,
-                number: this.supWhatsappLine.numero,
-                provider: this.supWhatsappLine.proveedor,
-                configuration: {
-                    app_name: this.supWhatsappLine.configuracion.app_name,
-                    app_id: this.supWhatsappLine.configuracion.app_id,
-                },
-                destination: this.getDestinationData(),
-                schedule: this.form.horario,
-                welcome_message: this.form.mensaje_bienvenida,
-                farewell_message: this.form.mensaje_despedida,
-                afterhours_message: this.form.mensaje_fueradehora
-            };
+            var form = null
+            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.GUPSHUP){
+                form = {
+                  name: this.supWhatsappLine.nombre,
+                  number: this.supWhatsappLine.numero,
+                  provider: this.supWhatsappLine.proveedor,
+                  configuration: {
+                      app_name: this.supWhatsappLine.configuracion.app_name,
+                      app_id: this.supWhatsappLine.configuracion.app_id,
+                  },
+                  destination: this.getDestinationData(),
+                  schedule: this.form.horario,
+                  welcome_message: this.form.mensaje_bienvenida,
+                  farewell_message: this.form.mensaje_despedida,
+                  afterhours_message: this.form.mensaje_fueradehora
+                };
+            }
+            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.META){
+               form = {
+                  name: this.supWhatsappLine.nombre,
+                  number: this.supWhatsappLine.numero,
+                  provider: this.supWhatsappLine.proveedor,
+                  configuration: {
+                      waba_id: this.supWhatsappLine.configuracion.app_name,
+                      app_id: this.supWhatsappLine.configuracion.app_id,
+                      verification_token: this.supWhatsappLine.configuracion.verification_token,
+                  },
+                  destination: this.getDestinationData(),
+                  schedule: this.form.horario,
+                  welcome_message: this.form.mensaje_bienvenida,
+                  farewell_message: this.form.mensaje_despedida,
+                  afterhours_message: this.form.mensaje_fueradehora
+                };
+            }
+            // if(this.supWhatsappLine.proveedor.pro)
             if (this.isFormToCreate) {
               response = await this.createWhatsappLine(form);
             } else {

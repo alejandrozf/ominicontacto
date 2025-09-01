@@ -178,7 +178,9 @@ export default {
             configuracion: {
                 api_key: 'API Key',
                 email_partner: 'Email Partner',
-                password_partner: 'Password Partner'
+                password_partner: 'Password Partner',
+                business_id: 'Business Id',
+                verification_token: 'Verification Token',
             }
         },
         line: {
@@ -187,7 +189,10 @@ export default {
             numero: 'Número',
             configuracion: {
                 app_name: 'App name',
-                app_id: 'App ID'
+                app_id: 'App ID',
+                business_id: 'Business Id',
+                verification_token: 'Verification Token',
+                waba_id: 'WABA ID'
             },
             horario: 'Grupo horario',
             destino: 'Destino',

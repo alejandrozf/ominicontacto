@@ -15,64 +15,43 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
-import json
-
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
-from whatsapp_app.models import Linea
+from whatsapp_app.models import Linea, ConfiguracionProveedor
 
 
 class WebhookMetaView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request, identificador):
-        print("get")
+    def dispatch(self, request, *args, **kwargs):
+        self.redis_stream = RedisStreams()
+        return super(WebhookMetaView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, app_id):
         try:
             mode = request.GET.get("hub.mode", None)
             token = request.GET.get("hub.verify_token", None)
             challenge = request.GET.get("hub.challenge", None)
-            # Check if a token and mode were sent
-            print(token)
             if token:
                 line_token = Linea.objects.filter(
-                    identificador=identificador).first().token_validacion
-                if mode and token == token:
-                    # Check the mode and token sent are correct
-                    if mode == "subscribe" and token == line_token:
+                    proveedor__tipo_proveedor=ConfiguracionProveedor.TIPO_META,
+                    configuracion__contains={'app_id': app_id}).first()
+                if mode and line_token:
+                    if mode == "subscribe" and\
+                       token == line_token.configuracion['verification_token']:
                         return HttpResponse(challenge, status=status.HTTP_200_OK)
                 return HttpResponse(challenge, status=status.HTTP_403_FORBIDDEN)
             else:
                 return HttpResponse(challenge, status=status.HTTP_200_OK)
-
-        except Exception:
+        except Exception as e:
+            print("*****", e)
             return HttpResponse(challenge, status=status.HTTP_403_FORBIDDEN)
 
-    def post(self, request, identificador):
-        if request.body:
-            body = json.loads(request.body)
-            identificador = Linea.objects.get(identificador=identificador).proveedor.identificador
-            if body["entry"][0]["id"] == identificador or True:
-                if body["entry"][0]["changes"][0]['field'] == 'messages':
-                    messages(body["entry"][0]["changes"][0]['value'])
-                if body["entry"][0]["changes"][0]['field'] == 'message_template_status_update':
-                    message_template_status_update(body["entry"][0]["changes"][0]['value'])
-            return HttpResponse("OK", status=status.HTTP_200_OK)
-        return HttpResponse("OK", status=status.HTTP_403_FORBIDDEN)
-
-
-def messages(value):
-    if 'contacts' in value and 'messages' in value:
-        print('From: ', value['contacts'][0], 'messages: ', value['messages'][0]['text']['body'])
-    if 'statuses' in value:
-        print(
-            'recipient_id: ', value['statuses'][0]['recipient_id'],
-            'status: ', value['statuses'][0]['status']
-        )
-
-
-def message_template_status_update(value):
-    print('template_id:', value['message_template_id'], 'status', value['event'])
+    def post(self, request, app_id):
+        stream_name = 'whatsapp_webhook_meta_{}'.format(app_id)
+        self.redis_stream.write_stream(stream_name, request.body, max_stream_length=100000)
+        return HttpResponse(status=status.HTTP_200_OK)

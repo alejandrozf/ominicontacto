@@ -4,16 +4,28 @@ export default {
     },
     initWhatsappLine (state, line = null) {
         if (line) {
+            var configuracion = {}
+            if (line.provider_type === 2){
+                configuracion = {
+                    app_name: line.configuration.app_name,
+                    app_id: line.configuration.app_id,
+                };
+            }
+            else if (line.provider_type === 1){
+                configuracion = {
+                    app_name: line.configuration.waba_id,
+                    app_id: line.configuration.app_id,
+                    verification_token: line.configuration.verification_token,
+                };
+            }
             state.supWhatsappLine = {
                 id: line.id,
                 nombre: line.name,
                 status: line.status,
                 proveedor: line.provider,
+                provider_type: line.provider_type,
                 numero: line.number,
-                configuracion: {
-                    app_name: line.configuration.app_name,
-                    app_id: line.configuration.app_id,
-                },
+                configuracion: configuracion,
                 destination: {
                     data: line.destination ? line.destination.data : null,
                     type: line.destination ? line.destination.type : null,
@@ -30,10 +42,9 @@ export default {
                 id: null,
                 nombre: '',
                 proveedor: null,
+                provider_type: null,
                 numero: '',
                 configuracion: {
-                    app_name: '',
-                    app_id: ''
                 },
                 destination: {
                     data: null,
