@@ -30,6 +30,20 @@ export default {
             }, interval);
         }
     },
+    created() {
+        document.documentElement.style.setProperty(
+            '--primary-color',
+            window.parent.document.documentElement.style.getPropertyValue('--primary-color')
+        )
+        document.documentElement.style.setProperty(
+            '--primary-light-color',
+            window.parent.document.documentElement.style.getPropertyValue('--primary-light-color')
+        )
+        document.documentElement.style.setProperty(
+            '--secondary-color',
+            window.parent.document.documentElement.style.getPropertyValue('--secondary-color')
+        )
+    },
     mounted () {
         this.listenCookieChange(({ newValue }) => {
             this.$i18n.locale = newValue;

@@ -14,7 +14,7 @@
 }
 
 .aprobada {
-  background: #fa4da0;
+  background: var(--primary-light-color, #fa4da0);
 }
 
 .observada {
@@ -29,7 +29,7 @@
 Resultados de Auditoria en calificacion styles
 */
 .calificacion_auditada {
-  border: 1px solid #f71883;
+  border: 1px solid var(--primary-color, #f71883);
   border-radius: 10px;
   padding-left: 10%;
   padding-top: 3%;
@@ -37,21 +37,21 @@ Resultados de Auditoria en calificacion styles
 
 .calificacion_auditada h2 {
   text-decoration: underline;
-  text-decoration-color: #f71883;
+  text-decoration-color: var(--primary-color, #f71883);
   text-transform: uppercase;
   color: gray;
 }
 
 .modalAuditoria .modal-header,
 .modalAuditoria .modal-header span {
-  background-color: #f71883;
+  background-color: var(--primary-color, #f71883);
   color: white;
   text-transform: uppercase;
 }
 
 .calificacion_auditada b,
 .modalAuditoria .modal-body b {
-  color: #f71883;
+  color: var(--primary-color, #f71883);
 }
 
 #calificacion_form textarea {
