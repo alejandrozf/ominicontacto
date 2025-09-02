@@ -19,35 +19,43 @@
 """
 Genera archivos de configuración para Asterisk: dialplan y queues.
 """
-
 from __future__ import unicode_literals
 
+import base64
 import datetime
+import json
+import logging
 import os
 import tempfile
-import traceback
 import time
-import json
-import base64
+import traceback
 from pathlib import Path
 
 from django.conf import settings
 from django.utils.translation import gettext as _
-from api_app.services.storage_service import StorageService
 
+from api_app.services.storage_service import StorageService
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist
-from ominicontacto_app.models import (
-    AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
-)
 from ominicontacto_app.asterisk_config_generador_de_partes import (
-    GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
-    GeneradorDePedazoDeRutasSalientesFactory, GeneradorDePedazoDePlaylistFactory,
+    GeneradorDePedazoDeAgenteFactory,
+    GeneradorDePedazoDePlaylistFactory,
+    GeneradorDePedazoDeQueueFactory,
+    GeneradorDePedazoDeRutasSalientesFactory
+)
+from ominicontacto_app.models import (
+    AgenteProfile,
+    Campana,
+    ClienteWebPhoneProfile,
+    SupervisorProfile
 )
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
-import logging as _logging
 
-logger = _logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+
+def _is_true(val):
+    return str(val or "").strip().lower() in {"1", "true", "yes", "y"}
 
 
 class SipConfigCreator(object):
@@ -833,51 +841,132 @@ class PlaylistsConfigFile(ConfigFile):
         super(PlaylistsConfigFile, self).__init__(filename)
 
 
-class AudioConfigFile(object):
-    PLAYLIST_LOCAL_FOLDER = 'musicas_asterisk'
-    ASTERISK_MOH_FOLDER = 'moh'
+class AudioConfigFile:
+    """
+    Gestiona las operaciones de archivos de audio para Asterisk.
+    """
+
+    PLAYLIST_LOCAL_FOLDER = "musicas_asterisk"
+    ASTERISK_MOH_FOLDER = "moh"
 
     def __init__(self, audio):
-        filename = audio.audio_asterisk.name
+        """
+        Inicializa el manejador del archivo de audio.
+
+        Args:
+            audio (Model): Modelo con campo 'audio_asterisk'.
+        """
+        filename = getattr(audio.audio_asterisk, "name", None)
+
+        if not filename:
+            self.file_name = None
+            self._filename = None
+            self.nombre_archivo = None
+            self.is_playlist_file = False
+            logger.warning(
+                "El objeto de audio %s no tiene archivo y será ignorado.",
+                audio,
+            )
+            return
+
         self.file_name = filename
-        self._filename = os.path.join(settings.MEDIA_ROOT, filename)
-        self.es_archivo_playlist = False
-        if self.PLAYLIST_LOCAL_FOLDER in filename:
-            self.es_archivo_playlist = True
-            self.nombre_archivo = filename.replace(
-                self.PLAYLIST_LOCAL_FOLDER, self.ASTERISK_MOH_FOLDER)
+        joined = os.path.join(settings.MEDIA_ROOT, self.file_name)
+        self._filename = os.path.normpath(joined)
+
+        self.is_playlist_file = (
+            self.PLAYLIST_LOCAL_FOLDER in self.file_name
+        )
+        if self.is_playlist_file:
+            self.nombre_archivo = self.file_name.replace(
+                self.PLAYLIST_LOCAL_FOLDER, self.ASTERISK_MOH_FOLDER
+            )
         else:
-            __, self.nombre_archivo = os.path.split(self._filename)
+            _, self.nombre_archivo = os.path.split(self._filename)
+
         self.redis_stream = RedisStreams()
 
     def copy_asterisk(self):
-        self._filename = self._filename.replace('//', '/')
+        """Envía un comando a Redis para copiar el archivo de audio."""
+        if not self.file_name:
+            return
+
         content = {
-            'archivo': self.nombre_archivo,
-            'type': 'AUDIO_CUSTOM',
-            'action': 'COPY',
-            'content': self._encode_audio_base64_str()
+            "archivo": self.nombre_archivo,
+            "type": "AUDIO_CUSTOM",
+            "action": "COPY",
+            "content": self._encode_audio_base64(),
         }
-        self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
+
+        # Si es dir, no hay contenido para copiar como base64
+        if content["content"] == "" and self._is_dir_path():
+            logger.warning(
+                "Se detectó playlist/directorio en '%s'. No se envía "
+                "contenido base64. Definí una política para directorios.",
+                self._filename,
+            )
+
+        self.redis_stream.write_stream(
+            "asterisk_conf_updater", json.dumps(content)
+        )
 
     def delete_asterisk(self):
-        self._filename = self._filename.replace('//', '/')
+        """Envía un comando a Redis para eliminar el archivo de audio."""
+        if not self.file_name:
+            return
+
         content = {
-            'archivo': self.nombre_archivo,
-            'type': 'AUDIO_CUSTOM',
-            'action': 'DELETE',
-            'content': ''
+            "archivo": self.nombre_archivo,
+            "type": "AUDIO_CUSTOM",
+            "action": "DELETE",
+            "content": "",
         }
-        self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
+        self.redis_stream.write_stream(
+            "asterisk_conf_updater", json.dumps(content)
+        )
 
-    def _encode_audio_base64_str(self):
-        if os.getenv('S3_STORAGE_ENABLED'):
-            # Solo descargo el audio de S3 si no existe localmente
-            if not os.path.exists(self._filename):
-                media_root = settings.MEDIA_ROOT.replace('//', '/')
-                s3_handler = StorageService()
-                s3_handler.download_file(self.file_name, media_root, 'media_root')
+    def _is_dir_path(self):
+        try:
+            return Path(self._filename).is_dir()
+        except Exception:  # noqa: BLE001
+            return False
 
-        data = Path(self._filename).read_bytes()
-        res = base64.b64encode(data)
-        return res.decode('utf-8')
+    def _ensure_local_if_s3(self):
+        s3_enabled = _is_true(os.getenv("S3_STORAGE_ENABLED"))
+        file_missing = not os.path.exists(self._filename)
+        if s3_enabled and file_missing:
+            media_root = os.path.normpath(settings.MEDIA_ROOT)
+            s3 = StorageService()
+            s3.download_file(self.file_name, media_root, "media_root")
+
+    def _encode_audio_base64(self):
+        """
+        Codifica el archivo en base64 si es un archivo regular.
+
+        Si S3/Minio está activo, intenta descargar si no existe.
+        """
+        self._ensure_local_if_s3()
+
+        p = Path(self._filename)
+        if not p.exists():
+            logger.error("No existe la ruta: %s", self._filename)
+            return ""
+
+        if p.is_dir():
+            logger.warning(
+                "Se recibió un directorio en lugar de archivo: %s",
+                self._filename,
+            )
+            return ""
+
+        try:
+            return base64.b64encode(p.read_bytes()).decode("utf-8")
+        except PermissionError as exc:
+            logger.error("Sin permisos para leer %s: %s", self._filename, exc)
+            return ""
+        except Exception as exc:  # noqa: BLE001
+            logger.error(
+                "Error al codificar %s en base64: %s",
+                self._filename,
+                exc,
+            )
+            return ""
