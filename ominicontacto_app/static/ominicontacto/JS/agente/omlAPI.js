@@ -265,6 +265,33 @@ class OMLAPI {
 
     }
 
+    consultativeConferHold(callid, action, target, callback_granted, callback_error){
+        var URL = Urls.api_consultative_confer_hold();
+        var post_data = {
+            'callid': callid,
+            'action': action,
+            'target': target
+        };
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: post_data,
+            dataType: 'json',
+            success: function(data){
+                if (data['status'] == 'OK'){
+                    callback_granted();
+                }
+                else if (data['status'] == 'ERROR'){
+                    callback_error();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+
+    }
+
     eventRinging(ringing=true){
         var URL = Urls.api_make_ringing();
         var post_data = {

@@ -919,6 +919,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled" hidden>{% trans 'Hold' %}</button>
                                     {% endif %}
                                 </div>
+                                <div id="conferHolds" class="btn-group" data-toggle="buttons" hidden>
+                                    <button id="onHoldClient" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Mute Client' %}</button>
+                                    <button id="onHoldConsultant" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Mute Consultant' %}</button>
+                                </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
                                     {% trans 'Campaña: ' %}<span id="campAssocManualCall"></span>
                                 </button>
