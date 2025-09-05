@@ -1,26 +1,18 @@
 # Release Notes
-pre.release
+pre.release.2.6
 
 ## Added
-- oml-3000 Add Agent Group setting to restrict password update.
-- oml-3002 User bulk remove.
-- oml-3115 Add Campaign setting to allow showing callid in disposition form.
-- oml-3116 DTMF input form for agent's softphone (allowing copying long DTMF codes).
+- oml-3032 Meta Whatsapp Provider
+- oml-2987 White Label for Enterprise version
+- oml-2976 
 
 ## Changed
 
-- oml-2996 Disposition form is always displayed for Inbound calls.
+No changes this release
 
 ## Fixed
 
-- oml-2999 Fix phone validation regex.
-- oml-3037 Fix recording search tests.
-- oml-3028 Fix recording search pagination buttons.
-- oml-3048 Fix Respect call autoattend configuration for transfers to campaigns (OOS)
-- oml-3145 Fix error Show Campaigns modal in agents list.
-- oml-3127 Fix observation column missing when blank in dispositions report.
-- oml-3146 Fix agent dropdown menu placement.
-- oml-3154 Fix custom contact DB validation in campaign wizard.
+No fixes this release
 
 ## Removed
 
@@ -28,4 +20,4 @@ No removals in this release.
 
 ## Migrations
 
-ominicontacto_app: 0112, 0113
+whatsapp_app: 0015
