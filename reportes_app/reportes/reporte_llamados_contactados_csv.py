@@ -348,6 +348,8 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
         lista_opciones.append(calificacion.opcion_calificacion.nombre)
         if calificacion.observaciones:
             lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
+        else:
+            lista_opciones.append('')
         lista_opciones.append(calificacion.agente)
         if calificacion.contacto.es_originario:
             lista_opciones.append(calificacion.contacto.bd_contacto)
