@@ -1730,7 +1730,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'control_de_duplicados',
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado')
+                  'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado',
+                  'mostrar_callid')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -2103,7 +2104,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
                   'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
-                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado')
+                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado', 'mostrar_callid')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -2144,7 +2145,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech',
-                  'whatsapp_habilitado')
+                  'whatsapp_habilitado', 'mostrar_callid')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
