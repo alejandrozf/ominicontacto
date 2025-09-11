@@ -412,7 +412,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Transfering': {
         keypad_enabled: true,
-        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer', 'recordCall'],
+        enabled_buttons: ['EndTransfer', 'SignCall', 'dtmf', 'endCall', 'Confer', 'recordCall'],
         color: '#bfef7a',
     },
     'ReceivingCall': {
