@@ -65,9 +65,16 @@ function buscarGrupo(nombre_grupo) {
 }
 
 function obtener_campanas_agente(pk_agent) {
+
     var $campanasAgenteModal = $('#campanasAgenteModal');
+    var $tbl = $('#campanasAgenteTable');
+
+    if ($.fn.DataTable.isDataTable($tbl)) {
+        $tbl.DataTable().clear().destroy();
+    }
+
     var filter = '?status=[2,5,6]&agent=' + pk_agent;
-    var table = $('#campanasAgenteTable').DataTable( {
+    var table = $tbl.DataTable( {
         ajax: {
             url: Urls.api_campanas_de_supervisor() + filter,
             dataSrc: '',
@@ -79,6 +86,8 @@ function obtener_campanas_agente(pk_agent) {
         ],
         paging: false,
     } );
+    $campanasAgenteModal.on('shown.bs.modal', function () {
+        table.columns.adjust().draw(false);
+    });
     $campanasAgenteModal.modal('show');
-    table.destroy();
 }
