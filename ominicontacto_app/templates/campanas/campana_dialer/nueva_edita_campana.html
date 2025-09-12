@@ -153,6 +153,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.2 }}</div>
                 </div>
             {% endif %}
+            <div class="col-md-3">
+                <label for="{{ form.mostrar_callid.id_for_label }}">{% trans 'Mostrar Callid' %}: </label>
+                {{ form.mostrar_callid }}
+            </div>
             <div class="col-md-5">
                 <label><div class="myradio" id="url_externa">
                 {% trans "Url Externa" %}</div> </label>

@@ -103,6 +103,7 @@ if not os.getenv('LIMIT_USERS_VERSION', '') == '':
 if not os.getenv('PREMIUM_REPORTS_VERSION', '') == '':
     ADDONS_APPS.append('premium_reports_app.apps.PremiumReportsAppConfig')
     ADDON_URLPATTERNS.append((r'^', 'premium_reports_app.urls'))
+    ADDON_URLPATTERNS.append((r"premium-reports", "premium_reports_app.api.urls"))
     ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'premium_reports_app/locale'), )
 if not os.getenv('SURVEY_VERSION', '') == '':
     ADDONS_APPS.append('survey_app.apps.SurveyAppConfig')

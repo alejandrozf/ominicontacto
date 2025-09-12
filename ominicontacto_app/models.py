@@ -67,6 +67,13 @@ SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_ALFANUMERICO = r'^[\w]+$'
 SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
+TelephoneValidator = RegexValidator(
+    regex=r'^\+?\d{3,25}$',
+    message=_(
+        'Solo se permiten de 3-25 dígitos y puede comenzar con "+".'
+    )
+)
+
 TYPE_PERSONAL = 1
 """Tipo de agenda Personal"""
 
@@ -304,6 +311,8 @@ class Grupo(models.Model):
         'Acceso a las calificaciones como agente'))
     acceso_campanas_preview_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso a las campañas preview como agente'))
+    acceso_cambiar_contrasena_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso a cambiar la contraseña como agente'))
     whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
         'Permiso de uso de la canalidad WhatsApp'))
     restringir_tipo_llamadas_manuales = models.BooleanField(default=False, verbose_name=_(
@@ -1332,6 +1341,7 @@ class Campana(models.Model):
     campo_direccion = models.CharField(max_length=128, null=True, blank=True)
     mostrar_did = models.BooleanField(default=False)
     mostrar_nombre_ruta_entrante = models.BooleanField(default=False)
+    mostrar_callid = models.BooleanField(default=False)
     control_de_duplicados = models.PositiveIntegerField(
         choices=CONTROL_DE_DUPLICADOS,
         default=PERMITIR_DUPLICADOS,

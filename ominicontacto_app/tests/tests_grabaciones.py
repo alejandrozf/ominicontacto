@@ -129,10 +129,9 @@ class BaseGrabacionesTests(TransactionTestCase, OMLTestUtilsMixin):
         )
         ws_communicator_connected, _ = await ws_communicator.connect(timeout=1)
         self.assertTrue(ws_communicator_connected)
-        with (
-            patch("channels_redis.core.RedisChannelLayer.send") as channel_layer_send,
-            patch("channels_redis.core.RedisChannelLayer.group_send") as channel_layer_group_send,
-        ):
+        CHANNEL_LAYER_BACKEND = settings.CHANNEL_LAYERS['default']['BACKEND']
+        with patch(f"{CHANNEL_LAYER_BACKEND}.send") as channel_layer_send, \
+             patch(f"{CHANNEL_LAYER_BACKEND}.group_send") as channel_layer_group_send:
             formdata.setdefault("pagina", "1")
             formdata.setdefault("grabaciones_x_pagina", "10")
             formdata.setdefault("BASE_URL", "/")

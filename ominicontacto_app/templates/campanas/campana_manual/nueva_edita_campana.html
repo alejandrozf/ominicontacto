@@ -131,6 +131,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.auto_grabacion.errors }}
             </div>
             <div class="col-md-3">
+                <label for="{{ form.mostrar_callid.id_for_label }}">{% trans 'Mostrar Callid' %}: </label>
+                {{ form.mostrar_callid }}
+            </div>
+            <div class="col-md-3">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}
                 {{ form.objetivo.errors }}

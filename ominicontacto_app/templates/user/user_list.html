@@ -14,17 +14,20 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
-
 -->
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/user/user_list_delete.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 
 <div class="form-row">
-    <div class="col-md-5">
+    <div class="col-md-4">
         <h1>{% trans 'Usuarios' %}</h1>
         <h3>{% trans 'Activos:' %} {{ numero_usuarios_activos  }}</h1>
     </div>
@@ -34,7 +37,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
         </form>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form method="POST" action="{% url 'descargar_usuarios_csv' %}" class="d-inline-block">
             {% csrf_token %}
             <input class="hidden" id="filtroUsuariosCSV" name="search" type="text" value="{{ search }}"/>
@@ -49,12 +52,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% trans 'Importar lista de usuarios (CSV)' %}
             </label>
         </form>
+        <form id="user-bulk-delete" class="d-inline-block" method="POST" action="{% url 'user_bulk_delete' %}">
+            {% csrf_token %}  
+            <input type="hidden" name="_next" value="{{ request.get_full_path }}" />
+            <button type="submit" class="btn btn-danger mb-2">
+                {% trans 'Eliminar usuarios' %}
+            </button>
+        </form>
     </div>
 </div>
 
 <table class="table">
     <thead>
         <tr>
+            <th>
+              <input type="checkbox" id="_selected_item">
+            </th>
             <th>{% trans 'id' %}</th>
             <th>{% trans 'username' %}</th>
             <th>{% trans 'Nombre' %}</th>
@@ -69,6 +82,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <tbody>
     {% for usuario in page_obj %}
         <tr id="{{usuario.username}}">
+            <td>
+              {% if user.id != usuario.id %}
+              <input type="checkbox" name="_selected_item" value="{{ usuario.id }}">
+              {% endif %}
+            </td>
             <td>{{ usuario.id }}</td>
             <td>{{ usuario.username }}</td>
             <td>{{ usuario.first_name }}</td>

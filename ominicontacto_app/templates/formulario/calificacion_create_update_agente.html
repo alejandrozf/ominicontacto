@@ -42,6 +42,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% if call_data and call_data.Omlinroutename and campana.mostrar_nombre_ruta_entrante%}
         <h1>{{ call_data.Omlinroutename }}</h1>
     {% endif %}
+    {% if call_data and call_data.call_id and campana.mostrar_callid %}
+       <div>{% trans "Callid:" %} <b>{{ call_data.call_id }}</b></div>
+       <br>
+    {% endif %}
     {% if campana.mostrar_nombre %}
         <h1>{{ campana.nombre }}</h1>
     {% endif %}
@@ -65,16 +69,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     <form id="form-calificacion" action = "" method = "post">
         {% csrf_token %}
-        {% if llamada_entrante %}
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="false" id="mostrarFormCalificacion" name="usuario_califica">
-                <label class="form-check-label" for="mostrarFormCalificacion">
-                    {% trans '¿Desea calificar al contacto?' %}
-                </label>
-            </div>
-        {% endif %}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-2">
                 {{ contacto_form.non_field_errors }}
                 {% for hidden_field in contacto_form.hidden_fields %}
                   {{ hidden_field.errors }}
@@ -98,17 +94,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </tr>
                     {% endif %}
                 {% endfor %}
-                <br>
-                <button type="submit" id="id_guardar" class="btn btn-primary">
-                    {% trans 'Guardar'  %}
-                </button>
             </div>
-            <div class="col-md-6">
-                <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
-                    {{calificacion_form.as_table}}
-                </div>
-                    {% with auditoria=calificacion_form.instance.obtener_auditoria %}
-                        {% if auditoria%}
+            <div class="col-md-6 mb-2">
+                {% if calificacion_form %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans '¿Desea calificar al contacto?' %}</h5>
+                        {{ calificacion_form.as_p }}
+                        {% with auditoria=calificacion_form.instance.obtener_auditoria %}
+                            {% if auditoria %}
                             <div class="calificacion_auditada">
                                 <h2>{% trans 'Calificación Auditada'%}</h2>
                                 <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
@@ -127,28 +121,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 </p>
                                 {% endif %}
                             </div>
+                            {% endif %}
+                        {% endwith %}
+                        {% if campana.speech %}
+                            <div>
+                            <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
+                            </div>
                         {% endif %}
-                    {% endwith %}
-                {% if campana.speech %}
-                    <div>
-                      <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
+                        {% if campana.campo_direccion %}    
+                            <div class="mapouter">
+                                <div class="gmap_canvas" id="map"></div>
+                                <div id="infowindow-content">
+                                    <span id="place-name" class="title"></span><br />
+                                    <span id="place-address"></span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if calificacion_form.historico_calificaciones %}
+                            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
+                        {% endif %}
                     </div>
-                {% endif %}
-                {% if campana.campo_direccion %}    
-                    <div class="mapouter">
-                        <div class="gmap_canvas" id="map"></div>
-                        <div id="infowindow-content">
-                            <span id="place-name" class="title"></span><br />
-                            <span id="place-address"></span>
-                        </div>
-                    </div>
-                {% endif %}
-                <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
-                    {% if calificacion_form.historico_calificaciones %}
-                        {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
+        </div>
+        <div class="">
+            <button type="submit" id="id_guardar" class="btn btn-primary">
+                {% trans 'Guardar'  %}
+            </button>
         </div>
     </form>
     <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAPS_CENTER}}">

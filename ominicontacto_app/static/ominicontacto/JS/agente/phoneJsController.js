@@ -37,7 +37,8 @@ class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
     constructor(
         agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher,
-        keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp) {
+        keep_alive_sender, video_domain, notification_agent, notification_agent_whatsapp,
+        dtmf_duration, dtmf_inter_tone_gap){
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
@@ -63,6 +64,8 @@ class PhoneJSController {
         this.campaign_name = '';
         this.llamada_calificada = null;
         this.transfer = null;
+        this.dtmf_duration = dtmf_duration;
+        this.dtmf_inter_tone_gap = dtmf_inter_tone_gap;
         /*-----------------*/
 
         this.disableOnHold();
@@ -174,15 +177,15 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
-                self.timers.onHold.start()
-                self.timers.onHold.show_element()
+                self.timers.onHold.start();
+                self.timers.onHold.show_element();
                 self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
-                self.timers.onHold.reset()
-                self.timers.onHold.hide_element()
+                self.timers.onHold.reset();
+                self.timers.onHold.hide_element();
                 self.oml_api.eventHold(self.phone.session_data.remote_call.call_id);
             } else {
                 phone_logger.log('Error');
@@ -195,6 +198,10 @@ class PhoneJSController {
             if ($('#agente_off_camp').find('option').length == 0){
                 self.view.callAgentButton.prop('disabled', true);
             }
+        });
+        /* dtmfButton*/
+        this.view.dtmfButton.click(function() {
+            self.view.modalDtmf.modal('show');
         });
 
         this.view.callAgentButton.click(function() {
@@ -285,6 +292,26 @@ class PhoneJSController {
                 self.view.setConferenceAgent(agtmessage, 'orange');
             }
             self.phone.confer();
+        });
+
+        this.view.sendDtmfButton.click(function () {
+            // TODO: Refactor responsabilidad de enviar DTMF corresponde a PhoneJS
+            const dtmf_duration = parseInt(self.dtmf_duration, 10) || 50;
+            const dtmf_inter_tone_gap = parseInt(self.dtmf_inter_tone_gap, 10) || 100;
+            const DTMF_REGEX = /^[0-9A-DR#*,]+$/i; // Regex para validar caracteres DTMF
+            if (!DTMF_REGEX.test(self.view.dtmfInput.val())) {
+                self.view.dtmfError.addClass('d-block');
+                return;
+            }
+            self.view.dtmfError.removeClass('d-block');
+            const digits = self.view.dtmfInput.val().split('');
+            var options = { duration: dtmf_duration, interToneGap: dtmf_inter_tone_gap };
+            for (let i = 0; i < digits.length; i++) {
+                const digit = digits[i];
+                self.phone.currentSession.sendDTMF(digit, options);
+            }
+            self.view.dtmfInput.val('');
+            self.view.modalDtmf.modal('hide');
         });
 
         this.subscribeToKeypadEvents();
@@ -541,11 +568,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
-            $('#numberAni').html(session_data.from);
-            $('#callerid').html(session_data.from_agent_name);
-            $('#extraInfo').html(session_data.transfer_type_str);
-            $('#modalReceiveCalls').modal('show');
-            self.oml_api.eventRinging();
+            self.manageCallReceipt(session_data);
         });
 
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
@@ -599,8 +622,8 @@ class PhoneJSController {
             else { phone_logger.log('No se sabe volver desde: ' + self.phone_fsm.state);}
 
             self.timers.llamada.stop();
-            self.timers.onHold.reset()
-            self.timers.onHold.hide_element()
+            self.timers.onHold.reset();
+            self.timers.onHold.hide_element();
 
             if (self.pause_manager.pause_enabled) {
                 self.phone_fsm.startPause();
@@ -655,8 +678,8 @@ class PhoneJSController {
             self.phone_fsm.endCall();
             self.timers.llamada.stop();
             self.timers.llamada.restart();
-            self.timers.onHold.reset()
-            self.timers.onHold.hide_element()
+            self.timers.onHold.reset();
+            self.timers.onHold.hide_element();
             self.callEndTransition();
             self.updateCallHistory();
             self.view.holdButton.html('hold');
@@ -1099,7 +1122,14 @@ class PhoneJSController {
                 // Seteo datos para redial
                 this.lastDialedCall = session_data.remote_call;
             }
-        } else {
+        } else if (session_data.is_transfered) {
+            $('#numberAni').html(session_data.from);
+            $('#callerid').html(session_data.from_agent_name);
+            $('#extraInfo').html(session_data.transfer_type_str);
+            $('#modalReceiveCalls').modal('show');
+            this.oml_api.eventRinging();
+        }
+        else {
             var from = session_data.from;
             $('#callerid').text(from);
             $('#omlcampname').text(session_data.remote_call['Omlcampname']);
@@ -1109,6 +1139,7 @@ class PhoneJSController {
             this.oml_api.eventRinging();
         }
     }
+
 
     forcesAutoAttend(session_data) {
         if (session_data.is_click2call) {
@@ -1127,6 +1158,11 @@ class PhoneJSController {
                 return session_data.remote_call.auto_attend == 'True';
             }
             else if (this.agent_config.auto_attend_IN) {
+                return true;
+            }
+        }
+        if (session_data.is_campaign_transfer){
+            if (this.agent_config.auto_attend_IN) {
                 return true;
             }
         }

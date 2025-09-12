@@ -375,6 +375,12 @@ class UpdateAgentPasswordView(UpdateView):
     form_class = UpdateAgentPasswordForm
     template_name = 'agente/update_agent_password.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        if not agente_profile.grupo.acceso_cambiar_contrasena_agente:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self):
         agente_profile = self.request.user.get_agente_profile()
         return agente_profile

@@ -48,13 +48,13 @@ from ominicontacto_app.models import (
     AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida,
     AutenticacionExternaDeUsuario
 )
+from ominicontacto_app.models import TelephoneValidator
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_alfanumericos_o_guiones,
                                       contiene_solo_alfanumericos_guion_o_punto,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from whatsapp_app.models import ConfiguracionWhatsappCampana
-from ominicontacto_app.parser import is_valid_length
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
@@ -625,6 +625,7 @@ class ContactoListaRapidaForm(forms.ModelForm):
     telefono = forms.CharField(
         required=True,
         max_length=25,
+        validators=[TelephoneValidator],
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -632,17 +633,6 @@ class ContactoListaRapidaForm(forms.ModelForm):
             }
         )
     )
-
-    # Fields cleanners
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if not telefono.isdigit():
-            msg = _("Debe ser en formato '99999999' y numérico.")
-            raise forms.ValidationError(msg)
-        if not is_valid_length(telefono, 3, 25):
-            msg = _("Solo se permiten de 3-25 dígitos.")
-            raise forms.ValidationError(msg)
-        return telefono
 
     class Meta:
         model = ContactoListaRapida
@@ -968,7 +958,8 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
-                  'videocall_habilitada', 'whatsapp_habilitado', 'speech', 'control_de_duplicados')
+                  'videocall_habilitada', 'whatsapp_habilitado', 'speech', 'control_de_duplicados',
+                  'mostrar_callid')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1211,8 +1202,9 @@ class CalificacionClienteForm(forms.ModelForm):
                     choices=choices, required=False,
                     widget=forms.Select(attrs={'class': 'form-control'}))
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
-        self.fields['nombre_subcalificaciones'].initial = list(
-            campana.opciones_calificacion.values("id", "subcalificaciones"))
+        self.fields['nombre_subcalificaciones'].initial = json.dumps(
+            list(campana.opciones_calificacion.values("id", "subcalificaciones"))
+        )
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
@@ -1355,6 +1347,7 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
+        self.fields['telefono'].validators.append(TelephoneValidator)
         if self.es_campana_entrante:
             self.fields['telefono'].required = False
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
@@ -1436,16 +1429,6 @@ class FormularioNuevoContacto(forms.ModelForm):
                 return True
         return False
 
-    def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono'))
-        if telefono and not telefono.isdigit():
-            msg = _('Debe ser en formato "999999999" y solo numérico.')
-            raise forms.ValidationError(msg)
-        if telefono and not 3 <= len(telefono) <= 20:
-            msg = _('Solo se permiten de 3-20 dígitos.')
-            raise forms.ValidationError(msg)
-        return telefono
-
     def clean_id_externo(self):
         id_externo = self.cleaned_data.get('id_externo')
         # Si el campo no esta vacío
@@ -1495,12 +1478,10 @@ class FormularioNuevoContacto(forms.ModelForm):
             return
         field = str(self.cleaned_data.get(field_name))
         if field:
-            if not field.isdigit():
-                msg = _('Debe ser en formato "999999999" y solo numérico.')
-                self.add_error(field_name, forms.ValidationError(msg))
-            if not 3 <= len(field) <= 20:
-                msg = _('Solo se permiten de 3-20 dígitos.')
-                self.add_error(field_name, forms.ValidationError(msg))
+            try:
+                TelephoneValidator(field)
+            except forms.ValidationError as error:
+                self.add_error(field_name, error)
 
 
 class BloquearCamposParaAgenteForm(forms.Form):
@@ -1749,7 +1730,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin', 'control_de_duplicados',
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado')
+                  'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado',
+                  'mostrar_callid')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1819,6 +1801,7 @@ class ContactoBlacklistForm(forms.ModelForm):
     telefono = forms.CharField(
         required=True,
         max_length=25,
+        validators=[TelephoneValidator],
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -1826,17 +1809,6 @@ class ContactoBlacklistForm(forms.ModelForm):
             }
         )
     )
-
-    # Fields cleanners
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        if not telefono.isdigit():
-            msg = _("Debe ser en formato '99999999' y numérico.")
-            raise forms.ValidationError(msg)
-        if not is_valid_length(telefono, 3, 25):
-            msg = _("Solo se permiten de 3-25 dígitos.")
-            raise forms.ValidationError(msg)
-        return telefono
 
     class Meta:
         model = ContactoBlacklist
@@ -2132,7 +2104,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
                   'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
-                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado')
+                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado', 'mostrar_callid')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -2173,7 +2145,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech',
-                  'whatsapp_habilitado')
+                  'whatsapp_habilitado', 'mostrar_callid')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
@@ -2232,6 +2204,7 @@ class GrupoForm(forms.ModelForm):
                   'show_console_timers', 'acceso_contactos_agente',
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
+                  'acceso_cambiar_contrasena_agente',
                   'obligar_despausa', 'whatsapp_habilitado',
                   'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
                   'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',
@@ -2596,7 +2569,7 @@ class CustomBaseDatosContactoForm(forms.ModelForm):
             },
             "cant_col": {
                 "type": "integer",
-                "minimum": 0,
+                "minimum": 1,
             },
             "nombres_de_columnas": {
                 "type": "array",
@@ -2610,6 +2583,7 @@ class CustomBaseDatosContactoForm(forms.ModelForm):
                     "type": "integer",
                     "minimum": 0,
                 },
+                "minItems": 1,
             },
             "col_id_externo": {
                 "type": ["integer", "null"],
@@ -2640,7 +2614,11 @@ class CustomBaseDatosContactoForm(forms.ModelForm):
         try:
             jsonschema.validate(metadata, self.metadata_schema)
         except jsonschema.ValidationError as error:
-            raise forms.ValidationError(error.message)
+            if error.path[0] == "cant_col" and error.validator == "minimum":
+                raise forms.ValidationError(_("Es requerido al menos un campo."))
+            if error.path[0] == "cols_telefono" and error.validator == "minItems":
+                raise forms.ValidationError(_("Es requerido al menos un campo telefónico."))
+            raise forms.ValidationError(error)
         if metadata["cant_col"] != len(metadata["nombres_de_columnas"]):
             raise forms.ValidationError(_("El valor de {0} es incorrecto".format('cant_col')))
         if any(col >= metadata["cant_col"] for col in metadata["cols_telefono"]):

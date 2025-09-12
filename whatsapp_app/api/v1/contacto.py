@@ -18,6 +18,7 @@
 import json
 from functools import reduce
 from operator import or_
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -31,6 +32,7 @@ from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 
 from ominicontacto_app.models import Campana, Contacto
+from ominicontacto_app.models import TelephoneValidator
 from whatsapp_app.models import ConversacionWhatsapp
 
 
@@ -81,12 +83,10 @@ class CreateSerializer(serializers.ModelSerializer):
         return False
 
     def validar_telefono(self, field, value):
-        if not value.isdigit():
-            msg = _('Debe ser en formato "999999999" y solo numérico.')
-            raise serializers.ValidationError({field: msg})
-        if not 3 <= len(value) <= 20:
-            msg = _('Solo se permiten de 3-20 dígitos.')
-            raise serializers.ValidationError({field: msg})
+        try:
+            TelephoneValidator(value)
+        except ValidationError as error:
+            raise serializers.ValidationError({field: error.message})
         return value
 
     def get_datos_json(self, data):
@@ -94,12 +94,10 @@ class CreateSerializer(serializers.ModelSerializer):
         metadata = self.campana.bd_contacto.get_metadata()
         for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
-                if not data.get(field).isdigit():
-                    msg = _('Debe ser en formato "999999999" y solo numérico.')
-                    raise serializers.ValidationError({field: msg})
-                if not 3 <= len(data.get(field)) <= 20:
-                    msg = _('Solo se permiten de 3-20 dígitos.')
-                    raise serializers.ValidationError({field: msg})
+                try:
+                    TelephoneValidator(data.get(field))
+                except ValidationError as error:
+                    raise serializers.ValidationError({field: error.message})
             campo = data.get(field, '')
             datos.append(campo if campo else "")
         return json.dumps(datos)
@@ -146,12 +144,10 @@ class UpdateSerializer(serializers.ModelSerializer):
         return False
 
     def validar_telefono(self, field, value):
-        if not value.isdigit():
-            msg = _('Debe ser en formato "999999999" y solo numérico.')
-            raise serializers.ValidationError({field: msg})
-        if not 3 <= len(value) <= 20:
-            msg = _('Solo se permiten de 3-20 dígitos.')
-            raise serializers.ValidationError({field: msg})
+        try:
+            TelephoneValidator(value)
+        except ValidationError as error:
+            raise serializers.ValidationError({field: error.message})
         return value
 
     def get_datos_json(self, data):
@@ -159,12 +155,10 @@ class UpdateSerializer(serializers.ModelSerializer):
         metadata = self.campana.bd_contacto.get_metadata()
         for field in metadata.nombres_de_columnas_de_datos:
             if data.get(field, '') and self.es_campo_telefonico(field):
-                if not data.get(field).isdigit():
-                    msg = _('Debe ser en formato "999999999" y solo numérico.')
-                    raise serializers.ValidationError({field: msg})
-                if not 3 <= len(data.get(field)) <= 20:
-                    msg = _('Solo se permiten de 3-20 dígitos.')
-                    raise serializers.ValidationError({field: msg})
+                try:
+                    TelephoneValidator(data.get(field))
+                except ValidationError as error:
+                    raise serializers.ValidationError({field: error.message})
             campo = data.get(field, '')
             datos.append(campo if campo else "")
         return json.dumps(datos)

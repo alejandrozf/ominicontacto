@@ -503,7 +503,13 @@ class CalificacionTests(OMLBaseTest):
             sitio_externo.url, headers={}, params=parametros, verify=True, timeout=10)
 
     def test_se_muestra_historico_calificaciones_contacto_llamada_entrante(self):
-        self.campana.type = Campana.TYPE_ENTRANTE
+        self._se_muestra_historico_calificaciones_contacto(Campana.TYPE_ENTRANTE)
+
+    def test_se_muestra_historico_calificaciones_contacto_llamada_preview(self):
+        self._se_muestra_historico_calificaciones_contacto(Campana.TYPE_PREVIEW)
+
+    def _se_muestra_historico_calificaciones_contacto(self, tipo_campana):
+        self.campana.type = tipo_campana
         self.campana.save()
         observacion_anterior = self.calificacion_cliente.observaciones
         self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"
@@ -516,7 +522,7 @@ class CalificacionTests(OMLBaseTest):
         self.assertContains(response, observacion_anterior)
 
     def test_no_se_muestra_historico_calificaciones_contacto_llamada_no_entrante(self):
-        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.type = Campana.TYPE_MANUAL
         self.campana.save()
         observacion_anterior = self.calificacion_cliente.observaciones
         self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"

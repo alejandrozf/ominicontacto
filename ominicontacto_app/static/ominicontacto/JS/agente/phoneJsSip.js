@@ -193,7 +193,7 @@ class PhoneJS {
             self.currentSession.on('failed', function(e) {
                 phone_logger.log('session: failed');
                 self.Sounds('', 'stop');
-                if (e.cause == "User Denied Media Access") {
+                if (e.cause == 'User Denied Media Access') {
                     self.eventsCallbacks.onUserDeniedMediaAccess.fire();
                     return;
                 }
@@ -551,6 +551,10 @@ class SessionData {
 
     get is_consultative_transfer () {
         return this.is_transfered && this.transfer_type == CONSULTATIVE_TRANSFER;
+    }
+
+    get is_campaign_transfer () {
+        return this.is_transfered && this.transfer_type == CAMPAIGN_TRANSFER;
     }
 
     get transfer_type_str () {

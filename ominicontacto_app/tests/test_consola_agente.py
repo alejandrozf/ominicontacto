@@ -156,3 +156,21 @@ class TestConsolaAgente (OMLBaseTest):
         self.assertNotContains(
             response,
             '<a class="menu-link" href="/agente/campanas_preview/activas" target="crm">')
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_allows_cambiar_contrasena_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_cambiar_contrasena_agente = True
+        self.grupo.save()
+        response = self.client.get(reverse('update_agent_password'))
+        self.assertEqual(response.status_code, 200)
+
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
+    def test_forbid_cambiar_contrasena_agente(self, generar_sip_password, generar_sip_user):
+        self.grupo.acceso_cambiar_contrasena_agente = False
+        self.grupo.save()
+        response = self.client.get(reverse('update_agent_password'))
+        self.assertEqual(response.status_code, 403)

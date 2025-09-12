@@ -36,7 +36,7 @@ class RegeneracionCronosService:
     """
     Servicio para crear o actualizar las tareas cron necesarias
     para funcionamiento de OMniLeads/Asterisk.
-    Agrupa las tareas de frecuencia 1m y 5m en un solo comando 
+    Agrupa las tareas de frecuencia 1m y 5m en un solo comando
     `cron_tick_1`& `cron_tick_5`.
     """
     tareas_programadas_ids = [

@@ -1,0 +1,61 @@
+{% load i18n %}
+
+{% if page.object_list %}
+<ul class="pagination justify-content-center">
+    <li class="page-item {% if not page.has_previous %}disabled{% endif %}">
+        <button class="page-link" data-page="1">
+            {% trans 'Principio' %}
+        </button>
+    </li>
+
+    <li class="page-item {% if not page.has_previous %}disabled{% endif %}">
+        <button class="page-link" {% if page.has_previous %}data-page="{{ page.previous_page_number }}"{% endif %}>
+            {% trans 'Anterior' %}
+        </button>
+    </li>
+
+    {% if page.number|add:'-4' > 1 %}
+    <li class="page-item">
+        <button class="page-link" data-page="{{ page.number|add:'-5' }}">
+            <span>&hellip;</span>
+        </button>
+    </li>
+    {% endif %}
+
+    {% for i in page.paginator.page_range %}
+    {% if page.number == i %}
+    <li class="page-item active disabled">
+        <button class="page-link">
+            {{ i }}
+        </button>
+    </li>
+    {% elif i > page.number|add:'-5' and i < page.number|add:'5' %}
+    <li class="page-item">
+        <button class="page-link" data-page="{{ i }}">
+            {{ i }}
+        </button>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if page.paginator.num_pages > page.number|add:'4' %}
+    <li class="page-item">
+        <button class="page-link" data-page="{{ page.number|add:'5' }}">
+            &hellip;
+        </button>
+    </li>
+    {% endif %}
+
+    <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+        <button class="page-link" {% if page.has_next %}data-page="{{ page.next_page_number }}"{% endif %}>
+            {% trans 'Siguiente' %}
+        </button>
+    </li>
+
+    <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+        <button class="page-link" {% if page.has_next %}data-page="{{ page.paginator.num_pages }}"{% endif %}>
+            {% trans 'Final' %}
+        </button>
+    </li>
+</ul>
+{% endif %}

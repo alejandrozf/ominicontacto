@@ -28,12 +28,9 @@ from ominicontacto_app.services.asterisk.redis_database import (
     RegenerarAsteriskFamilysOML,
 )
 
-import getpass
 import logging
 import os
-import sys
 
-from django.conf import settings
 from django.utils.translation import gettext as _
 
 from ominicontacto.settings.omnileads import ASTERISK_TM

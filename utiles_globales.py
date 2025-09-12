@@ -27,6 +27,7 @@ from django.utils.translation import gettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.models import TelephoneValidator
 
 
 def validar_extension_archivo_audio(valor):
@@ -51,10 +52,10 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
     # chequea que el csv tenga un formato estándar de base de contactos o black list o
     # así podemos descartar archivos csv corruptos
     for i, row in enumerate(data_csv_memory):
-        # controlamos que el primer valor sea numérico, como campo teléfonico
+        # controlamos que el primer valor sea un número de teléfono válido
         try:
             if i > 0:
-                int(row[0])
+                TelephoneValidator(row[0])
         except Exception as e:
             logger.warn("Error: {0}".format(e))
             raise OmlArchivoImportacionInvalidoError(err_message)
