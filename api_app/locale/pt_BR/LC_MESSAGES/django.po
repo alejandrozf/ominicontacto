@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 13:39-0300\n"
+"POT-Creation-Date: 2025-09-12 12:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -643,7 +643,7 @@ msgid "No existe una encuesta para esa campaña"
 msgstr "Não existe uma pesquisa para essa campanha"
 
 #: api_app/services/base_datos_contacto_service.py:44
-#: api_app/views/base_de_contactos.py:293
+#: api_app/views/base_de_contactos.py:295
 msgid "Ya existe una base de datos de contactos con ese nombre"
 msgstr "Já existe um banco de dados de contatos com esse nome"
 
@@ -780,12 +780,12 @@ msgstr "Escolha uma opção válida. Essa opção não está entre as disponíve
 #: api_app/tests/tests_api_click2call.py:157
 #: api_app/tests/tests_api_contactos.py:169
 #: api_app/tests/tests_api_contactos.py:261 api_app/views/agente.py:230
-#: api_app/views/base_de_contactos.py:89 api_app/views/base_de_contactos.py:221
+#: api_app/views/base_de_contactos.py:91 api_app/views/base_de_contactos.py:223
 msgid "Sistema externo inexistente."
 msgstr "Sistema externo inexistente."
 
 #: api_app/tests/tests_api_contactos.py:113
-#: api_app/views/base_de_contactos.py:178
+#: api_app/views/base_de_contactos.py:180
 msgid "Contacto agregado"
 msgstr "Contato adicionado"
 
@@ -793,8 +793,8 @@ msgstr "Contato adicionado"
 #: api_app/tests/tests_api_contactos.py:159
 #: api_app/tests/tests_api_contactos.py:228
 #: api_app/tests/tests_api_contactos.py:251
-#: api_app/views/base_de_contactos.py:120
-#: api_app/views/base_de_contactos.py:253
+#: api_app/views/base_de_contactos.py:122
+#: api_app/views/base_de_contactos.py:255
 msgid "No tiene permiso para editar la campaña."
 msgstr "Não tem permissão para editar a campanha."
 
@@ -802,15 +802,15 @@ msgstr "Não tem permissão para editar a campanha."
 #: api_app/tests/tests_api_contactos.py:194
 #: api_app/tests/tests_api_contactos.py:271
 #: api_app/tests/tests_api_contactos.py:291
-#: api_app/views/base_de_contactos.py:113
-#: api_app/views/base_de_contactos.py:246
+#: api_app/views/base_de_contactos.py:115
+#: api_app/views/base_de_contactos.py:248
 msgid "Campaña inexistente."
 msgstr "Campanha inexistente."
 
 #: api_app/tests/tests_api_contactos.py:185
 #: api_app/tests/tests_api_contactos.py:281
-#: api_app/views/base_de_contactos.py:101
-#: api_app/views/base_de_contactos.py:233
+#: api_app/views/base_de_contactos.py:103
+#: api_app/views/base_de_contactos.py:235
 msgid "Debe indicar un idCampaign válido."
 msgstr "Deve indicar um idCampaign válido."
 
@@ -819,12 +819,12 @@ msgid "Ya existe un contacto con ese id externo en la base de datos"
 msgstr "Já existe um contato com esse id externo no banco de dados"
 
 #: api_app/tests/tests_api_contactos.py:333
-#: api_app/views/base_de_contactos.py:137
+#: api_app/views/base_de_contactos.py:139
 msgid "El campo es obligatorio"
 msgstr "O campo é obrigatório"
 
 #: api_app/tests/tests_api_contactos.py:344
-#: api_app/views/base_de_contactos.py:129
+#: api_app/views/base_de_contactos.py:131
 msgid "Se recibieron campos incorrectos"
 msgstr "Foram recebidos campos incorretos"
 
@@ -1172,7 +1172,7 @@ msgid "Error al generar sip password"
 msgstr "Erro ao gerar senha sip"
 
 #: api_app/views/agente.py:229 api_app/views/agente.py:264
-#: api_app/views/base_de_contactos.py:78 api_app/views/base_de_contactos.py:210
+#: api_app/views/base_de_contactos.py:80 api_app/views/base_de_contactos.py:212
 msgid "Hubo errores en los datos recibidos"
 msgstr "Houve erros nos dados recebidos"
 
@@ -1248,43 +1248,35 @@ msgstr "Pendente"
 msgid "Exportación de auditoria a .csv en proceso"
 msgstr "Exportação de auditoria para .csv em processo"
 
-#: api_app/views/base_de_contactos.py:51
+#: api_app/views/base_de_contactos.py:53
 msgid ""
 "Se obtuvieron las campanas asociadas a la base de contactos de forma exitosa"
 msgstr "As campanhas associadas à base de contatos foram obtidas com sucesso"
 
-#: api_app/views/base_de_contactos.py:65
+#: api_app/views/base_de_contactos.py:67
 msgid "Error al obtener las campañas asociadas a la base de datos de contactos"
 msgstr "Erro ao obter as campanhas associadas à base de dados de contatos"
 
-#: api_app/views/base_de_contactos.py:316
+#: api_app/views/base_de_contactos.py:318
 msgid "Debe ingresar una lista"
 msgstr "Deve inserir uma lista"
 
-#: api_app/views/base_de_contactos.py:318
+#: api_app/views/base_de_contactos.py:320
 msgid "Debe ingresar al menos un campo"
 msgstr "Deve inserir pelo menos um campo"
 
-#: api_app/views/base_de_contactos.py:340
+#: api_app/views/base_de_contactos.py:342
 msgid "Los nombres de los campos no pueden estar repetidos"
 msgstr "Os nomes dos campos não podem estar repetidos"
 
-#: api_app/views/base_de_contactos.py:386
+#: api_app/views/base_de_contactos.py:388
 msgid "Se creo la BD de Contactos de forma exitosa"
 msgstr "O BD de Contatos foi criado com sucesso"
 
-#: api_app/views/base_de_contactos.py:389
+#: api_app/views/base_de_contactos.py:391
 #: api_app/views/base_de_contactos.py:494
 msgid "Error en los datos"
 msgstr "Erro nos dados"
-
-#: api_app/views/base_de_contactos.py:412
-msgid "Debe ser solo numérico."
-msgstr "Deve ser somente numérico."
-
-#: api_app/views/base_de_contactos.py:415
-msgid "Solo se permiten de 3-20 dígitos."
-msgstr "Somente são permitidos de 3-20 dígitos."
 
 #: api_app/views/base_de_contactos.py:422
 msgid "El id externo debe ser único en la base de datos - {}"
@@ -1391,8 +1383,9 @@ msgstr "IDs de campanhas inválidos: {0}"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:205
 msgid "Error asignando campañas. No se pudo confirmar la creación del dialplan"
-msgstr "Erro ao atribuir campanhas. Não foi possível confirmar a criação do "
-"plano de discagem"
+msgstr ""
+"Erro ao atribuir campanhas. Não foi possível confirmar a criação do plano de "
+"discagem"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:240
 msgid "Error al obtener los agentes activos"
@@ -2054,6 +2047,6 @@ msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr ""
 "Atualizando. Aguarde pelo menos 15 segundos enquanto o processo é finalizado."
 
-#: utiles_globales.py:34
+#: utiles_globales.py:35
 msgid "Archivos permitidos: .wav"
 msgstr "Arquivos permitidos: .wav"

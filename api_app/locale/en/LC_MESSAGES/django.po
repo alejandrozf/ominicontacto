@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 13:39-0300\n"
+"POT-Creation-Date: 2025-09-12 12:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -643,7 +643,7 @@ msgid "No existe una encuesta para esa campaña"
 msgstr "A survey does not exist for this campaign"
 
 #: api_app/services/base_datos_contacto_service.py:44
-#: api_app/views/base_de_contactos.py:293
+#: api_app/views/base_de_contactos.py:295
 msgid "Ya existe una base de datos de contactos con ese nombre"
 msgstr "A contact database with that name already exists"
 
@@ -778,12 +778,12 @@ msgstr "Choose a valid option. That option is not available."
 #: api_app/tests/tests_api_click2call.py:157
 #: api_app/tests/tests_api_contactos.py:169
 #: api_app/tests/tests_api_contactos.py:261 api_app/views/agente.py:230
-#: api_app/views/base_de_contactos.py:89 api_app/views/base_de_contactos.py:221
+#: api_app/views/base_de_contactos.py:91 api_app/views/base_de_contactos.py:223
 msgid "Sistema externo inexistente."
 msgstr "Unkown external system"
 
 #: api_app/tests/tests_api_contactos.py:113
-#: api_app/views/base_de_contactos.py:178
+#: api_app/views/base_de_contactos.py:180
 msgid "Contacto agregado"
 msgstr "Contact added"
 
@@ -791,8 +791,8 @@ msgstr "Contact added"
 #: api_app/tests/tests_api_contactos.py:159
 #: api_app/tests/tests_api_contactos.py:228
 #: api_app/tests/tests_api_contactos.py:251
-#: api_app/views/base_de_contactos.py:120
-#: api_app/views/base_de_contactos.py:253
+#: api_app/views/base_de_contactos.py:122
+#: api_app/views/base_de_contactos.py:255
 msgid "No tiene permiso para editar la campaña."
 msgstr "You don't have permission to edit the campaign"
 
@@ -800,15 +800,15 @@ msgstr "You don't have permission to edit the campaign"
 #: api_app/tests/tests_api_contactos.py:194
 #: api_app/tests/tests_api_contactos.py:271
 #: api_app/tests/tests_api_contactos.py:291
-#: api_app/views/base_de_contactos.py:113
-#: api_app/views/base_de_contactos.py:246
+#: api_app/views/base_de_contactos.py:115
+#: api_app/views/base_de_contactos.py:248
 msgid "Campaña inexistente."
 msgstr "Campaign not found"
 
 #: api_app/tests/tests_api_contactos.py:185
 #: api_app/tests/tests_api_contactos.py:281
-#: api_app/views/base_de_contactos.py:101
-#: api_app/views/base_de_contactos.py:233
+#: api_app/views/base_de_contactos.py:103
+#: api_app/views/base_de_contactos.py:235
 msgid "Debe indicar un idCampaign válido."
 msgstr "You must provide a valid idCampaign"
 
@@ -817,12 +817,12 @@ msgid "Ya existe un contacto con ese id externo en la base de datos"
 msgstr "A contact with that external id already exist in database"
 
 #: api_app/tests/tests_api_contactos.py:333
-#: api_app/views/base_de_contactos.py:137
+#: api_app/views/base_de_contactos.py:139
 msgid "El campo es obligatorio"
 msgstr "The field is required"
 
 #: api_app/tests/tests_api_contactos.py:344
-#: api_app/views/base_de_contactos.py:129
+#: api_app/views/base_de_contactos.py:131
 msgid "Se recibieron campos incorrectos"
 msgstr "Incorrect fields were received"
 
@@ -1167,7 +1167,7 @@ msgid "Error al generar sip password"
 msgstr "Error creating sip password"
 
 #: api_app/views/agente.py:229 api_app/views/agente.py:264
-#: api_app/views/base_de_contactos.py:78 api_app/views/base_de_contactos.py:210
+#: api_app/views/base_de_contactos.py:80 api_app/views/base_de_contactos.py:212
 msgid "Hubo errores en los datos recibidos"
 msgstr "There were errors on received data"
 
@@ -1243,43 +1243,35 @@ msgstr "Pending"
 msgid "Exportación de auditoria a .csv en proceso"
 msgstr "Exportation of audits to a .csv file in process"
 
-#: api_app/views/base_de_contactos.py:51
+#: api_app/views/base_de_contactos.py:53
 msgid ""
 "Se obtuvieron las campanas asociadas a la base de contactos de forma exitosa"
 msgstr "Campaigns associated to contact database fetched successfully"
 
-#: api_app/views/base_de_contactos.py:65
+#: api_app/views/base_de_contactos.py:67
 msgid "Error al obtener las campañas asociadas a la base de datos de contactos"
 msgstr "Error fetching campaigns associated to Contact Database"
 
-#: api_app/views/base_de_contactos.py:316
+#: api_app/views/base_de_contactos.py:318
 msgid "Debe ingresar una lista"
 msgstr "You must insert a list"
 
-#: api_app/views/base_de_contactos.py:318
+#: api_app/views/base_de_contactos.py:320
 msgid "Debe ingresar al menos un campo"
 msgstr "You must insert at least one field"
 
-#: api_app/views/base_de_contactos.py:340
+#: api_app/views/base_de_contactos.py:342
 msgid "Los nombres de los campos no pueden estar repetidos"
 msgstr "Field names can not be repeated"
 
-#: api_app/views/base_de_contactos.py:386
+#: api_app/views/base_de_contactos.py:388
 msgid "Se creo la BD de Contactos de forma exitosa"
 msgstr "Contact DB created successfully"
 
-#: api_app/views/base_de_contactos.py:389
+#: api_app/views/base_de_contactos.py:391
 #: api_app/views/base_de_contactos.py:494
 msgid "Error en los datos"
 msgstr "There were errors on the data"
-
-#: api_app/views/base_de_contactos.py:412
-msgid "Debe ser solo numérico."
-msgstr "Must be numeric only."
-
-#: api_app/views/base_de_contactos.py:415
-msgid "Solo se permiten de 3-20 dígitos."
-msgstr "Only 3-20 digits are allowed"
 
 #: api_app/views/base_de_contactos.py:422
 msgid "El id externo debe ser único en la base de datos - {}"
@@ -1372,7 +1364,7 @@ msgid "Parámetro \"agent_id\" requerido"
 msgstr "Parameter \"agent_id\" required"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:164
-msgid "agente_id incorrecto"
+msgid "agent_id incorrecto"
 msgstr "Wrong agent_id"
 
 #: api_app/views/campaigns/add_agents_to_campaign.py:169
@@ -2026,6 +2018,6 @@ msgstr "Exportation of Disposition Forms to a .csv file in process"
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr "Refreshing. Wait at least 15 seconds while the process ends."
 
-#: utiles_globales.py:34
+#: utiles_globales.py:35
 msgid "Archivos permitidos: .wav"
 msgstr "Allowed files: .wav"

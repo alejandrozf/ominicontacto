@@ -123,6 +123,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.campo_direccion_choice.errors }}
         </div>
         <div class="col-md-3">
+            <label for="{{ form.mostrar_callid.id_for_label }}">{% trans 'Mostrar Callid' %}: </label>
+            {{ form.mostrar_callid }}
+        </div>
+        <div class="col-md-3">
             <label>{% trans 'Grabar llamados:' %}</label>
             {{ form.auto_grabacion }}
             {{ form.auto_grabacion.errors }}
