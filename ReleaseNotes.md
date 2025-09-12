@@ -17,6 +17,10 @@ pre.release
 - oml-3037 Fix recording search tests.
 - oml-3028 Fix recording search pagination buttons.
 - oml-3048 Fix Respect call autoattend configuration for transfers to campaigns (OOS)
+- oml-3145 Fix error Show Campaigns modal in agents list.
+- oml-3127 Fix observation column missing when blank in dispositions report.
+- oml-3146 Fix agent dropdown menu placement.
+- oml-3154 Fix custom contact DB validation in campaign wizard.
 
 ## Removed
 

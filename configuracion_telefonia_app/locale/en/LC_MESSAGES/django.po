@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 13:39-0300\n"
+"POT-Creation-Date: 2025-09-12 12:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -252,37 +252,37 @@ msgid "Los destinos deben ser distintos"
 msgstr "Destinations must be different"
 
 #: configuracion_telefonia_app/forms.py:127
-#: configuracion_telefonia_app/models.py:631
+#: configuracion_telefonia_app/models.py:634
 msgid "Español"
 msgstr "Spanish"
 
 #: configuracion_telefonia_app/forms.py:128
-#: configuracion_telefonia_app/models.py:632
+#: configuracion_telefonia_app/models.py:635
 msgid "Inglés"
 msgstr "English"
 
 #: configuracion_telefonia_app/forms.py:129
-#: configuracion_telefonia_app/models.py:633
+#: configuracion_telefonia_app/models.py:636
 msgid "Francés"
 msgstr "French"
 
 #: configuracion_telefonia_app/forms.py:130
-#: configuracion_telefonia_app/models.py:634
+#: configuracion_telefonia_app/models.py:637
 msgid "Italiano"
 msgstr "Italian"
 
 #: configuracion_telefonia_app/forms.py:131
-#: configuracion_telefonia_app/models.py:635
+#: configuracion_telefonia_app/models.py:638
 msgid "Japonés"
 msgstr "Japanese"
 
 #: configuracion_telefonia_app/forms.py:132
-#: configuracion_telefonia_app/models.py:636
+#: configuracion_telefonia_app/models.py:639
 msgid "Ruso"
 msgstr "Russian"
 
 #: configuracion_telefonia_app/forms.py:133
-#: configuracion_telefonia_app/models.py:637
+#: configuracion_telefonia_app/models.py:640
 msgid "Sueco"
 msgstr "Swedish"
 
@@ -370,9 +370,9 @@ msgstr "pjsip"
 #: configuracion_telefonia_app/models.py:172
 #: configuracion_telefonia_app/models.py:277
 #: configuracion_telefonia_app/models.py:314
-#: configuracion_telefonia_app/models.py:511
-#: configuracion_telefonia_app/models.py:520
-#: configuracion_telefonia_app/models.py:556
+#: configuracion_telefonia_app/models.py:514
+#: configuracion_telefonia_app/models.py:523
+#: configuracion_telefonia_app/models.py:559
 #: configuracion_telefonia_app/templates/lista_destino_personalizados.html:31
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:31
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:30
@@ -561,7 +561,7 @@ msgid "Extension"
 msgstr "Extension"
 
 #: configuracion_telefonia_app/models.py:356
-#: configuracion_telefonia_app/models.py:506
+#: configuracion_telefonia_app/models.py:509
 msgid "HangUp"
 msgstr "HangUp"
 
@@ -599,11 +599,11 @@ msgstr "Error: HangUp node is unique."
 msgid "Desde nodo {0} a nodo {1}"
 msgstr "From node {0} to node {1}"
 
-#: configuracion_telefonia_app/models.py:514
+#: configuracion_telefonia_app/models.py:517
 msgid "Localización destino"
 msgstr "Custom destination"
 
-#: configuracion_telefonia_app/models.py:643
+#: configuracion_telefonia_app/models.py:646
 msgid "Paquete de idioma"
 msgstr "Language packages"
 

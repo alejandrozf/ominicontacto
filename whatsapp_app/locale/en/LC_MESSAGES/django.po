@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 12:39-0300\n"
+"POT-Creation-Date: 2025-09-12 12:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,8 +53,8 @@ msgstr "Disposition successfully created"
 #: whatsapp_app/api/v1/calificacion.py:420
 #: whatsapp_app/api/v1/configuracion_whatsapp_campana.py:129
 #: whatsapp_app/api/v1/configuracion_whatsapp_campana.py:174
-#: whatsapp_app/api/v1/contacto.py:240 whatsapp_app/api/v1/contacto.py:267
-#: whatsapp_app/api/v1/contacto.py:296
+#: whatsapp_app/api/v1/contacto.py:234 whatsapp_app/api/v1/contacto.py:261
+#: whatsapp_app/api/v1/contacto.py:290
 #: whatsapp_app/api/v1/grupo_plantilla_whatsapp.py:113
 #: whatsapp_app/api/v1/grupo_plantilla_whatsapp.py:157
 #: whatsapp_app/api/v1/linea.py:82 whatsapp_app/api/v1/linea.py:129
@@ -150,65 +150,55 @@ msgstr "WhatsApp configuration not found"
 msgid "Error al eliminar la Configuración de whatsapp"
 msgstr "Error deleting whatsapp configuration"
 
-#: whatsapp_app/api/v1/contacto.py:85 whatsapp_app/api/v1/contacto.py:98
-#: whatsapp_app/api/v1/contacto.py:150 whatsapp_app/api/v1/contacto.py:163
-msgid "Debe ser en formato \"999999999\" y solo numérico."
-msgstr "Format should be \"999999999\" and numeric only"
-
-#: whatsapp_app/api/v1/contacto.py:88 whatsapp_app/api/v1/contacto.py:101
-#: whatsapp_app/api/v1/contacto.py:153 whatsapp_app/api/v1/contacto.py:166
-msgid "Solo se permiten de 3-20 dígitos."
-msgstr "Only 3-20 digits allowed"
-
-#: whatsapp_app/api/v1/contacto.py:116
+#: whatsapp_app/api/v1/contacto.py:114
 msgid "campo requerido"
 msgstr "required field"
 
-#: whatsapp_app/api/v1/contacto.py:121
+#: whatsapp_app/api/v1/contacto.py:119
 msgid "Faltan campos requeridos"
 msgstr "Required fields missing"
 
-#: whatsapp_app/api/v1/contacto.py:123 whatsapp_app/api/v1/contacto.py:189
+#: whatsapp_app/api/v1/contacto.py:121 whatsapp_app/api/v1/contacto.py:183
 msgid "Error en los campos de contacto"
 msgstr "Contact fields errors"
 
-#: whatsapp_app/api/v1/contacto.py:187
+#: whatsapp_app/api/v1/contacto.py:181
 msgid "No puede editar campos ocultos o bloqueados"
 msgstr "Can't edit hidden or blocked fields"
 
-#: whatsapp_app/api/v1/contacto.py:210
+#: whatsapp_app/api/v1/contacto.py:204
 msgid "Se obtuvieron las contactos de forma exitosa"
 msgstr "Contacts fetched successfully"
 
-#: whatsapp_app/api/v1/contacto.py:235 whatsapp_app/api/v1/contacto.py:262
+#: whatsapp_app/api/v1/contacto.py:229 whatsapp_app/api/v1/contacto.py:256
 msgid "Se creo el nuevo contacto de forma exitosa"
 msgstr "Contact successfully created"
 
-#: whatsapp_app/api/v1/contacto.py:245 whatsapp_app/api/v1/contacto.py:272
+#: whatsapp_app/api/v1/contacto.py:239 whatsapp_app/api/v1/contacto.py:266
 msgid "Error al crear el contacto"
 msgstr "Error creating contact"
 
-#: whatsapp_app/api/v1/contacto.py:290
+#: whatsapp_app/api/v1/contacto.py:284
 msgid "Se actualizo el nuevo contacto de forma exitosa"
 msgstr "Contact updated successfully"
 
-#: whatsapp_app/api/v1/contacto.py:300
+#: whatsapp_app/api/v1/contacto.py:294
 msgid "Contacto no encontrado"
 msgstr "Contact not found"
 
-#: whatsapp_app/api/v1/contacto.py:306
+#: whatsapp_app/api/v1/contacto.py:300
 msgid "Error al actualizar el contacto"
 msgstr "Error updating contact"
 
-#: whatsapp_app/api/v1/contacto.py:332
+#: whatsapp_app/api/v1/contacto.py:326
 msgid "Error al obtener los campos de contacto"
 msgstr "Error fetching contact fields"
 
-#: whatsapp_app/api/v1/contacto.py:359
+#: whatsapp_app/api/v1/contacto.py:353
 msgid "Se obtuvieron los contactos de forma exitosa"
 msgstr "Contacts fetched successfully"
 
-#: whatsapp_app/api/v1/contacto.py:366
+#: whatsapp_app/api/v1/contacto.py:360
 msgid "Error al obtener contactos"
 msgstr "Error fetching contacts"
 
