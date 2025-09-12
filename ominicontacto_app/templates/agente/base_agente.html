@@ -732,7 +732,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <span class="fas fa-bars"></span>
             </button>
             <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-boundary="viewport">
                 <span class="icon icon-user"></span>
                 <span class="user-name">{{ user.get_full_name }}</span>
               </button>
@@ -744,6 +744,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               </div>
             </div>
         </div>
+        <style>
+            @media (max-width: 768px) {
+                #topBar .dropdown.position-static {
+                    position: absolute !important;
+                } 
+            }
+        </style>
 
         <div id="wrapperInner">
             <div id="wrapperInnerContent">
