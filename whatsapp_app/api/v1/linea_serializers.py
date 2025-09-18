@@ -197,7 +197,7 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                 if option_data['type_option'] == DestinoEntrante.CAMPANA:
                     campana = Campana.objects.get(id=option_data['destination'])
                     destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
-                else:
+                elif option_data['type_option'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
                     if destino_siguiente\
@@ -206,6 +206,12 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                             distinct():
                         raise serializers.ValidationError({
                             'data': _('No puede existir dependencias recursiva entre menus')})
+                elif option_data['type_option'] == DestinoEntrante.CLOSING_MESSAGE:
+                    plantilla = PlantillaMensaje.objects.get(id=option_data['destination'])
+                    try:
+                        destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(plantilla)
+                    except Exception:
+                        destino_siguiente = DestinoEntrante.crear_nodo_ruta_entrante(plantilla)
                 if destino_siguiente:
                     option_data['destination'] = destino_siguiente.content_object.id
                     opcion = OpcionDestino.crear_opcion_destino(
@@ -316,12 +322,13 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
         }
         if instance["type_option"] == DestinoEntrante.CAMPANA:
             representation['destination_name'] = instance.nombre
+        elif instance["type_option"] == DestinoEntrante.CLOSING_MESSAGE:
+            representation['destination_name'] = instance.nombre
         elif instance["type_option"] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
             destination = DestinoDeLineaCreateSerializer(data=instance["destination"])
             destination.is_valid(raise_exception=True)
             representation['destination'] = destination.data
             representation['destination_name'] = destination.name
-        print('representation', representation)
         return representation
 
 

@@ -649,6 +649,15 @@ export default {
                     id_tmp: this.supWhatsappLine.destination.id_tmp
                 };
             }
+          else if (
+            this.form.destination_type ===
+        this.destinationType.CLOSING_MESSAGE
+            ) {
+                return {
+                    type: DESTINATION_TYPES_BACK.CLOSING_MESSAGE,
+                    data: this.form.destination,
+                };
+            }
         },
         async save (isFormValid) {
             this.submitted = true;

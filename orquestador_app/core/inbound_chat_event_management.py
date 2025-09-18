@@ -21,7 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.models import Campana
 from ominicontacto_app.services.redis.connection import create_redis_connection
-from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
+from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje
 
 from orquestador_app.core.gupshup_send_menssage import (
     autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
@@ -169,6 +169,27 @@ async def asignar_campana(line, conversation, content, context):
                                     'type': 'text'
                                 }
                             )
+            if isinstance(destino.destino_siguiente.content_object, PlantillaMensaje):
+                plantilla = destino.destino_siguiente.content_object
+                conversation.is_disposition = True
+                conversation.save()
+                auto_response = {"text": plantilla.configuracion['text']}
+                if auto_response:
+                    timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                    orquestador_response = send_text_message(
+                        line, conversation.destination, auto_response)
+                    if orquestador_response["status"] == "submitted":
+                        MensajeWhatsapp.objects.get_or_create(
+                            message_id=orquestador_response['messageId'],
+                            conversation=conversation,
+                            defaults={
+                                'origen': line.numero,
+                                'timestamp': timestamp,
+                                'sender': {},
+                                'content': auto_response,
+                                'type': 'text'
+                            }
+                        )
             else:
                 autoreponse_destino_interactivo(line, destino.destino_siguiente, conversation)
         else:

@@ -476,6 +476,10 @@ export default {
                 {
                     name: this.$t('forms.whatsapp.line.destination_types.menu'),
                     value: DESTINATION_OPTION_TYPES.INTERACTIVE
+                },
+                {
+                    name: this.$t('forms.whatsapp.line.destination_types.closing_menssage'),
+                    value: DESTINATION_OPTION_TYPES.CLOSING_MESSAGE
                 }
             ],
           showModal: false
@@ -486,7 +490,8 @@ export default {
             'supWhatsappLine',
             'supWhatsappLineOptionForm',
             'supWhatsappLineCampaigns',
-            'supWhatsappLineOptions'
+            'supWhatsappLineOptions',
+            'supWhatsappMessageTemplates'
         ])
     },
     methods: {
@@ -520,9 +525,16 @@ export default {
               } else {
                   return '----------';
               }
-            } else {
+            } else if (data.type_option === DESTINATION_OPTION_TYPES.INTERACTIVE) {
               const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
                 return `${menu.menu_header}`;
+            } else if (data.type_option === DESTINATION_OPTION_TYPES.CLOSING_MESSAGE) {
+              const template = this.supWhatsappMessageTemplates.find((c) => c.id === data.destination);
+              if (template) {
+                  return `${template.name}`;
+              } else {
+                  return '----------';
+              }
             }
         },
         handleModalEvent ({ showModal = false, formToCreate = false }) {
