@@ -180,6 +180,7 @@ export default {
                 password_partner: 'Password Partner',
                 business_id: 'Business Id',
                 verification_token: 'Verification Token',
+                access_token: 'Permanent Access Token'
             }
         },
         line: {
@@ -187,6 +188,7 @@ export default {
             proveedor: 'Provider',
             status: 'Status',
             numero: 'Number',
+            phone_id: 'Telephone Number Identifier',
             configuracion: {
                 app_name: 'App name',
                 app_id: 'App ID',

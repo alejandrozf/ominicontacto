@@ -7,12 +7,19 @@
             {{ $t("views.whatsapp.line.step2.sender") }}
           </template>
           <div>
-            <label
+            <label v-if="supWhatsappLine.provider_type===providersType.GUPSHUP"
               :class="{
                 'p-error': v$.supWhatsappLine.numero.$invalid && submitted,
               }"
-              >{{ $t("models.whatsapp.line.numero") }}*</label
-            >
+              > 
+              {{ $t("models.whatsapp.line.numero") }}*</label>
+            <label v-if="supWhatsappLine.provider_type===providersType.META"
+              :class="{
+                'p-error': v$.supWhatsappLine.numero.$invalid && submitted,
+              }"
+              > 
+              {{ $t("models.whatsapp.line.phone_id") }}*</label>
+
             <div class="p-inputgroup mt-2">
               <span class="p-inputgroup-addon">
                 <i class="pi pi-phone"></i>
