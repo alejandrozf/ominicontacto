@@ -28,7 +28,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
-from whatsapp_app.models import MenuInteractivoWhatsapp, Linea
+from whatsapp_app.models import MenuInteractivoWhatsapp, Linea, PlantillaMensaje
 
 import os
 import re
@@ -348,6 +348,7 @@ class DestinoEntrante(models.Model):
     IDENTIFICADOR_CLIENTE = 9
     MENU_INTERACTIVO_WHATSAPP = 10
     AGENTE = 11
+    CLOSING_MESSAGE = 12
 
     CAMPANA_STR = _('Campaña entrante')
     VALIDACION_FECHA_HORA_STR = _('Validación de fecha/hora')
@@ -360,6 +361,7 @@ class DestinoEntrante(models.Model):
     IDENTIFICADOR_CLIENTE_STR = _('Identificador cliente')
     MENU_INTERACTIVO_WHATSAPP_STR = _('Menú Interactivo de Whatsapp')
     AGENTE_STR = _('Agente')
+    CLOSING_MESSAGE_STR = _('Mensaje de Cierre')
 
     TIPOS_DESTINOS = (
         (CAMPANA, CAMPANA_STR),
@@ -370,6 +372,7 @@ class DestinoEntrante(models.Model):
         (CUSTOM_DST, CUSTOM_DST_STR),
         (MENU_INTERACTIVO_WHATSAPP, MENU_INTERACTIVO_WHATSAPP_STR),
         (AGENTE, AGENTE_STR),
+        (CLOSING_MESSAGE, CLOSING_MESSAGE_STR),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -405,6 +408,8 @@ class DestinoEntrante(models.Model):
         elif info_nodo_entrante.__class__.__name__ == 'Encuesta' and \
                 info_nodo_entrante.__module__ == 'survey_app.models':
             tipo = cls.SURVEY
+        elif isinstance(info_nodo_entrante, PlantillaMensaje):
+            tipo = cls.CLOSING_MESSAGE
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,

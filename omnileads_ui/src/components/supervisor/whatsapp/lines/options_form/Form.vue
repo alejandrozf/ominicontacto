@@ -219,6 +219,51 @@
           }}</small
         >
       </div>
+      <div v-if="v$.form.type_option.$model==destinationTypesValues.CLOSING_MESSAGE" class="sm:col-12 md:col-12 lg:col-6 xl:col-6">
+        <label
+          :class="{
+            'p-error': v$.form.destination.$invalid && submitted,
+          }"
+          >{{ $t("models.whatsapp.line.options.destination") }}*</label
+        >
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-sign-in"></i>
+          </span>
+          <Dropdown
+            v-model="v$.form.destination.$model"
+            class="w-full"
+            :class="{
+              'p-invalid': v$.form.destination.$invalid && submitted,
+            }"
+            @change="findDuplicated()"
+            :options="messageTemplates"
+            placeholder="-----"
+            optionLabel="name"
+            optionValue="id"
+            optionGroupLabel="label"
+            optionGroupChildren="items"
+            :emptyFilterMessage="$t('globals.without_data')"
+            :filter="true"
+            v-bind:filterPlaceholder="
+              $t('globals.find_by', { field: $tc('globals.name') }, 1)
+            "
+          />
+        </div>
+        <small
+          v-if="
+            (v$.form.destination.$invalid && submitted) ||
+            v$.form.destination.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.form.destination.required.$message.replace(
+              "Value",
+              $t("models.whatsapp.line.options.destination")
+            )
+          }}</small
+        >
+      </div>
     </div>
     <div class="flex justify-content-end flex-wrap mt-4">
       <div class="flex align-items-center">
@@ -243,6 +288,7 @@ import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { DESTINATION_OPTION_TYPES } from '@/globals/supervisor/whatsapp/line';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
 import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 
 export default {
@@ -289,12 +335,17 @@ export default {
                 {
                     name: this.$t('forms.whatsapp.line.destination_types.menu'),
                     value: DESTINATION_OPTION_TYPES.INTERACTIVE
+                },
+                {
+                    name: this.$t('forms.whatsapp.line.destination_types.closing_menssage'),
+                    value: DESTINATION_OPTION_TYPES.CLOSING_MESSAGE
                 }
             ],
             destinationTypesValues:
             {
                 CAMPAIGN: DESTINATION_OPTION_TYPES.CAMPAIGN,
-                INTERACTIVE: DESTINATION_OPTION_TYPES.INTERACTIVE
+                INTERACTIVE: DESTINATION_OPTION_TYPES.INTERACTIVE,
+                CLOSING_MESSAGE: DESTINATION_OPTION_TYPES.CLOSING_MESSAGE
             },
             campaings: [
                 {
@@ -318,7 +369,14 @@ export default {
                     items: []
                 }
             ],
-            destinationmenuoptions : []
+            destinationmenuoptions : [],
+            messageTemplates: [
+                {
+                    type: TEMPLATE_TYPES.TEXT,
+                    label: this.$t('forms.whatsapp.message_template.types.text'),
+                    items: []
+                }
+            ],
         };
     },
     created () {
@@ -331,6 +389,7 @@ export default {
             'supWhatsappLineCampaigns',
             'supWhatsappLineOptions',
             'supWhatsappDestinationMenuOptions',
+            'supWhatsappMessageTemplates'
         ])
     },
     methods: {
@@ -360,8 +419,9 @@ export default {
             this.form.type_option = this.supWhatsappLineOptionForm.type_option;
             this.form.destination = this.supWhatsappLineOptionForm.destination;
             this.form.destination_name = this.supWhatsappLineOptionForm.destination_name;
-            this.findDestinationOptions()
+            this.findDestinationOptions();
             this.findDuplicated();
+            // this.findMsgTemplateOptions();
         },
         findDuplicated () {
             const duplicated = this.supWhatsappLineOptions.find(
@@ -484,7 +544,20 @@ export default {
             handler () {},
             deep: true,
             immediate: true
-        }
+        },
+        supWhatsappMessageTemplates: {
+            handler () {
+                if (this.supWhatsappMessageTemplates.length > 0) {
+                    this.messageTemplates.find(
+                        (mt) => mt.type === TEMPLATE_TYPES.TEXT
+                    ).items = this.supWhatsappMessageTemplates.filter(
+                        (mt) => mt.type === TEMPLATE_TYPES.TEXT
+                    );
+                }
+            },
+            deep: true,
+            immediate: true
+        },
     }
 };
 </script>

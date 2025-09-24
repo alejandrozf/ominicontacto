@@ -267,7 +267,8 @@ export default {
             },
             destination_types: {
                 campaign: 'Campaign',
-                menu: 'Interactive Menu'
+                menu: 'Interactive Menu',
+                closing_menssage: 'Closing Message'
             },
             options: {
                 success_create: 'Destination option created successfully',
