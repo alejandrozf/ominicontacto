@@ -16,8 +16,8 @@ No fixes this release
 
 ## Removed
 
-No removals in this release.
+- No removals in this release.
 
 ## Migrations
 
-whatsapp_app: 0015
+2.6.0 whatsapp_app: 0015
