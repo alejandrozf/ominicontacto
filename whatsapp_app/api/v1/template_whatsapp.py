@@ -162,7 +162,7 @@ class ViewSet(viewsets.ViewSet):
                                 texto_header = comp.get('text')
                         if comp_type == 'BUTTONS':
                             tipo = 'BUTTONS'
-                            texto = '-'
+                            buttons = comp.get('buttons', [])
                         if comp_type == 'BODY':
                             if 'text' in comp:
                                 texto = comp.get('text')
@@ -171,6 +171,7 @@ class ViewSet(viewsets.ViewSet):
                             'nombre': attrs['name'],
                             'texto_header': texto_header,
                             'texto': texto,
+                            'botones': buttons if tipo == 'BUTTONS' else [],
                             'idioma': attrs['language'],
                             'status': attrs['status'],
                             'tipo': tipo,

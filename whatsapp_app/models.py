@@ -107,6 +107,7 @@ class TemplateWhatsapp(models.Model):
     link_media = models.CharField(max_length=500, blank=True, null=True)
     texto_header = models.TextField(blank=True, null=True, default="")
     texto = models.TextField(blank=True, null=True)
+    botones = JSONField(default=list, blank=True)  # botones call to action
     idioma = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
     creado = models.CharField(max_length=100)
