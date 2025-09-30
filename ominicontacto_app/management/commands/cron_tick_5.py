@@ -32,6 +32,7 @@ class Command(BaseCommand):
         for cmd in [
             'actualizar_reporte_supervisores',
             'actualizar_campanas_preview',
+            'logout_unavailable_agents',
         ]:
             try:
                 call_command(cmd)
