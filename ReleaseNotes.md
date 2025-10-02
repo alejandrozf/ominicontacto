@@ -1,8 +1,8 @@
 # Release Notes
-250918.01
+251002.01
 
 ## Added
-- oml-3120 Whatsapp Automatic closing message.
+- No features added in this release.
 
 ## Changed
 
@@ -10,7 +10,7 @@
 
 ## Fixed
 
-- No fixes in this release
+- Fixed permission for API conversacion-filter-chats
 
 ## Removed
 
