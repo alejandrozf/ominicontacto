@@ -2,9 +2,9 @@
 pre.release.2.6
 
 ## Added
-- oml-3032 Meta Whatsapp Provider
-- oml-2987 White Label for Enterprise version
-- oml-2976 
+- oml-3032 Meta Whatsapp Provider.
+- oml-2987 White Label for Enterprise version.
+- oml-2976 Consultative conference holds for enterprise addon.
 
 ## Changed
 
