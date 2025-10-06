@@ -79,7 +79,7 @@ class WhatsappAppConfig(AppConfig):
             {'nombre': 'conversacion-filter-chats',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},  # TODO: Agente la usa?
             {'nombre': 'conversacion-detail',
-             'roles': ['Agente']},
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'conversacion-attend-chat',
              'roles': ['Agente']},
             {'nombre': 'conversacion-messages',
