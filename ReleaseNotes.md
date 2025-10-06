@@ -1,5 +1,5 @@
 # Release Notes
-251002.01
+251006.01
 
 ## Added
 - No features added in this release.
@@ -10,7 +10,8 @@
 
 ## Fixed
 
-- Fixed permission for API conversacion-filter-chats
+- Fixed error creating template without a contact database.
+- Fixed permission for API conversacion-detail.
 
 ## Removed
 
