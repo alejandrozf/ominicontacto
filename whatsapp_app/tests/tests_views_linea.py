@@ -231,7 +231,7 @@ class LineaTest(OMLBaseTest):
                         'options': [
                             {
                                 'type_option': 1,
-                                'destination': 2,
+                                'destination': self.campana.pk,
                                 'value': '1',
                                 'description': 'Description',
                                 'destination_name': 'test_entrante_01'
@@ -258,7 +258,7 @@ class LineaTest(OMLBaseTest):
                         'options': [
                             {
                                 'type_option': 1,
-                                'destination': 2,
+                                'destination': self.campana.pk,
                                 'value': '1',
                                 'description': 'Description_',
                                 'destination_name': 'test_entrante_01'
