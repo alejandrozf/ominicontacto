@@ -42,9 +42,11 @@ export default {
                     id: null,
                     name: '',
                     configuration: {
+                        text_header: '',
                         text: '',
                         type: '',
-                        numParams: 0
+                        numParams_header: 0,
+                        numParams_text: 0
                     }
                 };
             }

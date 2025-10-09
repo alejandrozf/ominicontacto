@@ -72,7 +72,7 @@ class CreateSerializer(serializers.ModelSerializer):
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:
             if 'business_id' not in configuration\
-                    or 'token_de_acceso' not in configuration:
+                    or 'access_token' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         return configuration
@@ -115,7 +115,7 @@ class UpdateSerializer(serializers.ModelSerializer):
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if tipo_proveedor == ConfiguracionProveedor.TIPO_META:
             if 'business_id' not in configuration\
-                    or 'token_de_acceso' not in configuration:
+                    or 'access_token' not in configuration:
                 raise serializers.ValidationError({
                     'error': _('Configuración incorrecta para el tipo de proveedor')})
         if configuration.get('password_partner') == '**********':

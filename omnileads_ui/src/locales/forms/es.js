@@ -42,6 +42,7 @@ export default {
     },
     form: {
         enter_name: 'Ingresa el nombre',
+        enter_value: 'Ingresa el valor',
         enter_description: 'Ingresa la descripcion',
         new_field: 'Nuevo campo',
         options_list: 'Opciones para la lista',

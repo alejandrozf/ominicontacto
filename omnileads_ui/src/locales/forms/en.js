@@ -42,6 +42,7 @@ export default {
     },
     form: {
         enter_name: 'Enter the name',
+        enter_value: 'Enter the value',
         enter_description: 'Enter the description',
         new_field: 'New Field',
         options_list: 'Options for the list',

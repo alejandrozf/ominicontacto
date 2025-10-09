@@ -6,7 +6,7 @@
 /* Gris muy clarito */
 /* naranja clarito */
 #text_line {
-  text-decoration-color: #f71883;
+  text-decoration-color: var(--primary-color, #f71883);
   text-decoration-line: underline;
   text-underline-position: under;
   padding-bottom: 10px;

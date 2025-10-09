@@ -23,15 +23,41 @@ from operator import itemgetter
 from django.conf import settings
 from django.apps import apps
 
-from ominicontacto.settings.omnileads import ASTERISK_TM, OMNILEADS_TM
+from constance import config
 from ominicontacto_app.permisos import PermisoOML
 import os
 
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.files.storage import default_storage
+
 
 def global_settings(request):
+    if config.FAVICON == settings.CONSTANCE_CONFIG['FAVICON'][0]:
+        FAVICON = staticfiles_storage.url(config.FAVICON)
+    else:
+        FAVICON = default_storage.url(config.FAVICON)
+    if config.IC_LOGO == settings.CONSTANCE_CONFIG['IC_LOGO'][0]:
+        IC_LOGO = staticfiles_storage.url(config.IC_LOGO)
+    else:
+        IC_LOGO = default_storage.url(config.IC_LOGO)
+    if config.IC_LOGO_FULL == settings.CONSTANCE_CONFIG['IC_LOGO_FULL'][0]:
+        IC_LOGO_FULL = staticfiles_storage.url(config.IC_LOGO_FULL)
+    else:
+        IC_LOGO_FULL = default_storage.url(config.IC_LOGO_FULL)
+    if config.IC_LOGO_SYMBOL == settings.CONSTANCE_CONFIG['IC_LOGO_SYMBOL'][0]:
+        IC_LOGO_SYMBOL = staticfiles_storage.url(config.IC_LOGO_SYMBOL)
+    else:
+        IC_LOGO_SYMBOL = default_storage.url(config.IC_LOGO_SYMBOL)
     return {
-        'ASTERISK_TM': ASTERISK_TM,
-        'OMNILEADS_TM': OMNILEADS_TM,
+        'ASTERISK_TM': config.ASTERISK_TM,
+        'OMNILEADS_TM': config.OMNILEADS_TM,
+        'PRIMARY_COLOR': config.PRIMARY_COLOR,
+        'PRIMARY_LIGHT_COLOR': config.PRIMARY_LIGHT_COLOR,
+        'SECONDARY_COLOR': config.SECONDARY_COLOR,
+        'FAVICON': FAVICON,
+        'IC_LOGO': IC_LOGO,
+        'IC_LOGO_FULL': IC_LOGO_FULL,
+        'IC_LOGO_SYMBOL': IC_LOGO_SYMBOL,
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
         'GOOGLE_MAPS_API_KEY': os.getenv('GOOGLE_MAPS_API_KEY'),
         'GOOGLE_MAPS_CENTER': os.getenv('GOOGLE_MAPS_CENTER'),

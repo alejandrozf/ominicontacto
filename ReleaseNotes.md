@@ -1,17 +1,18 @@
 # Release Notes
-251006.01
+pre.release.2.6
 
 ## Added
-- No features added in this release.
+- oml-3032 Meta Whatsapp Provider.
+- oml-2987 White Label for Enterprise version.
+- oml-2976 Consultative conference holds for enterprise addon.
 
 ## Changed
 
-- No changes in this release.
+No changes this release
 
 ## Fixed
 
-- Fixed error creating template without a contact database.
-- Fixed permission for API conversacion-detail.
+No fixes this release
 
 ## Removed
 
@@ -19,5 +20,4 @@
 
 ## Migrations
 
-- 2.5.1: ominicontacto_app: 0112, 0113
-- 2.5.2: configuracion_telefonia_app: 0023
+2.6.0 whatsapp_app: 0015

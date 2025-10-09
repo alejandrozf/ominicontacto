@@ -23,12 +23,19 @@ export default {
                 templates = data.message_templates || [];
                 if (lineId) {
                     templates = templates.concat(data.whatsapp_templates.map((t) => {
-                        const regexResults = t.text.match(PARAMS_REGEX);
+                        var regexResults_header = []
+                        if(t.text_header){
+                            regexResults_header = t.text_header.match(PARAMS_REGEX);
+                        }
+                        console.log(">>>> regexResults_header", regexResults_header);
+                        var regexResults_text = t.text.match(PARAMS_REGEX);
+                        console.log(">>>> regexResults_text", regexResults_text);
                         return {
                             id: t.id,
                             name: t.name,
                             type: TEMPLATE_TYPES.WHATSAPP,
                             configuration: {
+                                text_header: t.text_header ? t.text_header : "",
                                 text: t.text,
                                 type: t.type,
                                 status: t.status,
@@ -36,7 +43,8 @@ export default {
                                 updated: t.updated,
                                 identifier_media: t.identifier_media,
                                 link_media: t.link_media,
-                                numParams: regexResults ? regexResults.length : 0
+                                numParams_header: regexResults_header ? regexResults_header.length : 0,
+                                numParams_text: regexResults_text ? regexResults_text.length : 0
                             }
                         };
                     }));

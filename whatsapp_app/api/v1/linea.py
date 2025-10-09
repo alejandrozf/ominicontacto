@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from django.utils.translation import ugettext as _
-from django.db.models import F, Func, Value, JSONField
 from rest_framework import response
 from rest_framework import status
 from rest_framework import viewsets
@@ -39,28 +38,7 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = Linea.objects.filter(
-                is_active=True
-            ).annotate(
-                created_jsonb=Func(
-                    Value("date"),
-                    Func(F("created_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("created_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-                updated_jsonb=Func(
-                    Value("date"),
-                    Func(F("updated_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("updated_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-            ).order_by(
-                "nombre",
-            )
+            queryset = Linea.objects.filter(is_active=True)
             serializer = ListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
@@ -141,26 +119,7 @@ class ViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk):
         try:
-            queryset = Linea.objects.filter(
-                is_active=True
-            ).annotate(
-                created_jsonb=Func(
-                    Value("date"),
-                    Func(F("created_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("created_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-                updated_jsonb=Func(
-                    Value("date"),
-                    Func(F("updated_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("updated_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-            )
+            queryset = Linea.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
             serializer = LineaRetrieveSerializer(instance)
             return response.Response(
@@ -215,7 +174,9 @@ class ViewSet(viewsets.ViewSet):
                             destino_old.delete()
                             menu_old.delete()
                         except Exception:
-                            instance.menuinteractivo.update(line=None)
+                            # DestinoEntrante.DoesNotExist no existe pq se elimino anteriormente
+                            # como opción de otro menú interactivo')
+                            menu_old.delete()
                     serializer_destino.save()
                     destino = serializer_destino.destino
                     line = serializer.save(
