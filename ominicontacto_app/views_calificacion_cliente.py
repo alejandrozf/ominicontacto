@@ -214,7 +214,10 @@ class CalificacionClienteFormView(FormView):
 
         if self.campana.sitio_externo.disparador is not SitioExterno.CALIFICACION:
             # Analizar interaccion con Sitio Externo
-            en_recepcion_de_llamada = self.request.method == 'GET'
+            en_recepcion_de_llamada = self.call_data.get(
+                'en_recepcion_de_llamada',
+                self.request.method == 'GET'
+            )
             sitio_externo = self.campana.sitio_externo
             # Metodo      Disparador            Formato         Target
             # GET/POST    Agente/JS/Server      HTML/JSON       Iframe/NewTab
@@ -654,6 +657,7 @@ class CalificacionClienteFormView(FormView):
                   "pk_contacto": self.contacto.id}
         if self.call_data:
             self.call_data['force_disposition'] = False
+            self.call_data['en_recepcion_de_llamada'] = False
             kwargs.update(call_data_json=json.dumps(self.call_data))
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs=kwargs)
