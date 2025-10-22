@@ -316,6 +316,8 @@ class Grupo(models.Model):
         'Acceso a cambiar la contraseña como agente'))
     whatsapp_habilitado = models.BooleanField(default=False, verbose_name=_(
         'Permiso de uso de la canalidad WhatsApp'))
+    meta_facebook_habilitado = models.BooleanField(default=False, verbose_name=_(
+        'Permiso de uso de la canalidad Meta Facebook'))
     restringir_tipo_llamadas_manuales = models.BooleanField(default=False, verbose_name=_(
         'Restringir tipo de llamadas manuales'))
     permitir_llamadas_manuales_a_manuales = models.BooleanField(default=False, verbose_name=_(
@@ -1348,6 +1350,7 @@ class Campana(models.Model):
         default=PERMITIR_DUPLICADOS,
     )
     whatsapp_habilitado = models.BooleanField(default=False)
+    meta_facebook_habilitado = models.BooleanField(default=False)
     permitir_calificar_telefonos = models.BooleanField(default=False, blank=True)
 
     def __str__(self):

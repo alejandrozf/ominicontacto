@@ -93,7 +93,20 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'id': 'menuWhatsapp',
                 'children': whatsapp
             })
-
+        messenger = []
+        if 'messager_pages_configuration' in permissions or True:  # Deshabilitado hasta nueva implementacion
+            messenger.append({
+                'label': _('Páginas'),
+                'url': reverse('messenger_meta_configuration')
+            })
+        if messenger:
+            conexiones.append({
+                'label': _('Meta/Facebook'),
+                'class': "main-menu-beta",
+                'icon': 'icon-audio-file',
+                'id': 'menuMessenger',
+                'children': messenger
+            })
         recursos = []
         audios = []
         if 'adicionar_audios_asterisk' in permissions:

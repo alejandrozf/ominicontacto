@@ -38,7 +38,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView, FormView
 
-from ominicontacto_app.forms.base import (CampanaPreviewForm, OpcionCalificacionFormSet,
+from ominicontacto_app.forms.base import (CampanaConfiguracionMetaFacebookForm, CampanaPreviewForm, OpcionCalificacionFormSet,
                                           ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
                                           QueueMemberFormset, AsignacionContactosForm,
                                           OrdenarAsignacionContactosForm,
@@ -63,14 +63,16 @@ class CampanaPreviewMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     CONFIGURACION_WHATSAPP = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
-    ADICION_SUPERVISORES = '4'
-    ADICION_AGENTES = '5'
-    ASIGNACION_CONTACTOS = '6'
+    CONFIGURACION_META_FACEBOOK = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
+    ADICION_SUPERVISORES = '5'
+    ADICION_AGENTES = '6'
+    ASIGNACION_CONTACTOS = '7'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
+             (CONFIGURACION_META_FACEBOOK, CampanaConfiguracionMetaFacebookForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
@@ -78,7 +80,8 @@ class CampanaPreviewMixin(CampanaWizardMixin):
              (ASIGNACION_CONTACTOS, AsignacionContactosForm)]
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
-                 CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
+                 CONFIGURACION_WHATSAPP: "campanas/campana_preview/configuracion_whatsapp.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_preview/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
@@ -142,16 +145,19 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
     INICIAL = '0'
     COLA = None
     CONFIGURACION_WHATSAPP = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
+    CONFIGURACION_META_FACEBOOK = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
+             (CONFIGURACION_META_FACEBOOK, CampanaConfiguracionMetaFacebookForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html"}
 

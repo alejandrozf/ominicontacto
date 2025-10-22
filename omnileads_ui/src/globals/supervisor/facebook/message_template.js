@@ -1,0 +1,14 @@
+export const TEMPLATE_TYPES = {
+    TEXT: 0,
+    IMAGE: 1,
+    FILE: 2,
+    AUDIO: 3,
+    VIDEO: 4,
+    STICKER: 5,
+    INTERACTIVE_LIST: 6,
+    QUICK_REPLY_TEXT: 7,
+    QUICK_REPLY_IMAGE: 8,
+    QUICK_REPLY_FILE: 9,
+    LOCATION: 10,
+    CONTACT: 11
+};

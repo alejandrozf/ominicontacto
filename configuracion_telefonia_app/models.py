@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 from whatsapp_app.models import MenuInteractivoWhatsapp, Linea, PlantillaMensaje
+from facebook_meta_app.models import PaginaMetaFacebook
 
 import os
 import re
@@ -462,6 +463,23 @@ class DestinoEntrante(models.Model):
         # Y las lineas que tengan este destino directamente
         q_lineas_directo = Q(destino_id=self.id)
         return Linea.objects.filter(q_lineas_menu | q_lineas_directo)
+
+    def paginas_meta_facebook_antecesoras(self):
+        """ Devuelve las páginas de Facebook de las que es destino directo, o a traves de un
+            Menu Interactivo de WhatsApp.
+        """
+        # Busco las paginas de los menues que tengan este destino
+        # nodos_anteriores = self.destinos_anteriores.filter(
+        #     destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
+        # ids_menues_anteriores = nodos_anteriores.values_list('destino_anterior__object_id')
+        # ids_paginas_menues_anteriores = MenuInteractivoWhatsapp.objects.filter(
+        #     id__in=ids_menues_anteriores).values_list('pagina_meta_id', flat=True)
+        # q_paginas_menu = Q(id__in=ids_paginas_menues_anteriores)
+        # Y las paginas que tengan este destino directamente
+        q_paginas_directo = Q(destino_id=self.id)
+
+        return PaginaMetaFacebook.objects.filter(q_paginas_directo)
+
 
 
 class OpcionDestino(models.Model):

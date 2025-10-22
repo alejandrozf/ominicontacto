@@ -71,6 +71,20 @@ export default {
             contact_admin: 'If the problem persists, contact the administrator'
         }
     },
+    facebook: {
+        title: 'Facebook',
+        page: 'Facebook page | Facebook pages',
+        message_template: 'Message template | Message templates',
+        facebook_template: 'Facebook template | Facebook templates',
+        group_of_message_template: 'Group of message templates | Message template groups',
+        group_of_facebook_template: 'Facebook template group | Facebook template groups',
+        template: 'Template | Templates',
+        automatic_agent: 'Automatic | Automatic',
+        validations: {
+            socket_disconnect: 'Facebook Socket: Connection could not be established, please reload the page',
+            contact_admin: 'If the problem persists, contact the administrator'
+        }
+    },
     // -------------
     // -- Actions --
     // -------------

@@ -220,6 +220,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
         </h4>
     </li>
+        <li>
+        <h4>{% trans 'Permiso de uso de la canalidad Facebook' %}: 
+            {% if grupo.meta_facebook_habilitado %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
     <li>
         <h4>{% trans 'Permiso para cambiar la contraseña' %}: 
             {% if grupo.acceso_cambiar_contrasena_agente %}

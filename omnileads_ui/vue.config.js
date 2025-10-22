@@ -69,7 +69,15 @@ module.exports = {
         agent_whatsapp_message_transfer: getPageConfig('agent_whatsapp_message_transfer'),
         agent_whatsapp_image_uploader: getPageConfig('agent_whatsapp_image_uploader'),
         agent_whatsapp_file_uploader: getPageConfig('agent_whatsapp_file_uploader'),
-        agent_whatsapp_contact_form: getPageConfig('agent_whatsapp_contact_form')
+        agent_whatsapp_contact_form: getPageConfig('agent_whatsapp_contact_form'),
+        // Supervisor Facebook Pages
+        supervisor_facebook_pages: getPageConfig('supervisor_facebook_pages'),
+        supervisor_facebook_message_templates: getPageConfig('supervisor_facebook_message_templates'),
+        supervisor_facebook_templates: getPageConfig('supervisor_facebook_templates'),
+        supervisor_facebook_group_of_message_templates: getPageConfig('supervisor_facebook_group_of_message_templates'),
+        supervisor_facebook_report_campaign_conversations: getPageConfig('supervisor_facebook_report_campaign_conversations'),
+        supervisor_facebook_report_general: getPageConfig('supervisor_facebook_report_general'),
+        // Agent Facebook Pages
     },
     devServer: {
         historyApiFallback,

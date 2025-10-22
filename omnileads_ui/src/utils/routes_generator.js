@@ -17,3 +17,14 @@ export function getRestWhatsappRoutesByModule (module) {
         Update: (id) => `/api/v1/whatsapp/${module}/${id}`
     };
 }
+
+export function getRestFacebookRoutesByModule (module) {
+    return {
+        List: `/api/v1/facebook/${module}`,
+        Create: `/api/v1/facebook/${module}`,
+        Detail: (id) => `/api/v1/facebook/${module}/${id}`,
+        Delete: (id) => `/api/v1/facebook/${module}/${id}`,
+        Update: (id) => `/api/v1/facebook/${module}/${id}`
+    };
+}
+

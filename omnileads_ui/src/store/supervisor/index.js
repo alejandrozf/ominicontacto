@@ -37,6 +37,7 @@ import RegisterServerActions from './register_server/actions';
 import RegisterServerMutations from './register_server/mutations';
 import RegisterServerState from './register_server/state';
 import { SupervisorWhatsappActions, SupervisorWhatsappMutations, SupervisorWhatsappState } from './whatsapp';
+import { SupervisorFacebookActions, SupervisorFacebookMutations, SupervisorFacebookState } from './facebook';
 const agentsCampaignService = new AgentsCampaignService();
 
 export const supervisorState = {
@@ -56,7 +57,8 @@ export const supervisorState = {
     ...GroupOfHourState,
     ...IVRState,
     ...RegisterServerState,
-    ...SupervisorWhatsappState
+    ...SupervisorWhatsappState,
+    ...SupervisorFacebookState
 };
 
 export const supervisorMutations = {
@@ -95,7 +97,8 @@ export const supervisorMutations = {
     ...GroupOfHourMutations,
     ...IVRMutations,
     ...RegisterServerMutations,
-    ...SupervisorWhatsappMutations
+    ...SupervisorWhatsappMutations,
+    ...SupervisorFacebookMutations
 };
 
 export const supervisorActions = {
@@ -130,7 +133,8 @@ export const supervisorActions = {
     ...GroupOfHourActions,
     ...IVRActions,
     ...RegisterServerActions,
-    ...SupervisorWhatsappActions
+    ...SupervisorWhatsappActions,
+    ...SupervisorFacebookActions
 };
 
 export const supervisorGetters = {

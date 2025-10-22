@@ -1,3 +1,5 @@
+import facebook from "../../router/supervisor/facebook";
+
 export default {
     dashboard_home_page: {
         active_campaign_by_type: 'Active {type} Campaigns',
@@ -188,6 +190,110 @@ export default {
             },
             step3: {
                 title: 'Conection data',
+                display_name: 'Name:',
+                display_description: 'Description:',
+                message: 'Messages',
+                destination: 'Destination',
+                time_group: 'Time group',
+                empty_options: 'There must be at least one destination option'
+            },
+            option_form: {
+                new_title: 'New option',
+                edit_title: 'Edit option'
+            }
+        },
+        group_of_message_template: {
+            new_title: 'New group',
+            edit_title: 'Edit group',
+            add_template: 'Add template'
+        },
+        group_of_whatsapp_template: {
+            new_title: 'New group',
+            edit_title: 'Edit group',
+            add_template: 'Add template'
+        },
+        disposition_form: {
+            form: 'Form',
+            record: 'Record',
+            management: 'Management'
+        },
+        media_uploader: {
+            title: 'File management'
+        },
+        message_transfer: {
+            title: 'Transfer chat'
+        },
+        conversations: {
+            answered: 'Answered',
+            new: 'New',
+            expired_conversation: 'Expired conversation',
+            restart_conversation: 'Restart conversation',
+            error_conversation_detail: 'Could not start the Conversation correctly',
+            error_conversation: 'Wrong conversation'
+        },
+        contact: {
+            new: 'Create contact',
+            edit: 'Edit contact',
+            detail: 'Contact information',
+            info: 'The contact is not yet registered, you can identify it',
+            settings: {
+                show_info: 'Show information',
+                edit_info: 'Edit user'
+            }
+        },
+        reports: {
+            general: {
+                title: 'WhatsApp general report',
+                general_report: 'General report',
+                sent_messages: 'Sent messages',
+                received_messages: 'Received messages',
+                interactions_started: 'Interactions started',
+                attended_chats: 'Active chats',
+                not_attended_chats: 'Inactive chats',
+                inbound_chats_attended: 'Incoming Active chats',
+                inbound_chats_not_attended: 'Incoming Inactive chats',
+                inbound_chats_expired: 'Expired incoming chats',
+                outbound_chats_attended: 'Outbound Active chats',
+                outbound_chats_not_attended: 'Outbound Inactive chats',
+                outbound_chats_expired: 'Expired outgoing chats',
+                outbound_chats_failed: 'Failed outbound chats'
+            },
+            campaign: {
+                conversation: {
+                    title: 'Conversation report',
+                    table_title: 'Conversation list',
+                    detail_title: 'Detail of the conversation',
+                    system_closed: 'System Closed?'
+                }
+            }
+        }
+    },
+    facebook: {
+        message_template: {
+            new_title: 'New message template',
+            edit_title: 'Edit message template'
+        },
+        facebook_template: {
+            new_title: 'New Facebook template',
+            edit_title: 'Edit Facebook template'
+        },
+        page: {
+            new_title: 'create facebook page',
+            edit_title: 'edit facebook page',
+            tipos_de_destino: {
+                campana: 'Campaign',
+                interactivo: 'Interactive'
+            },
+            step1: {
+                title: 'Basic data'
+            },
+            step2: {
+                title: 'Channel data',
+                webhook: 'Webhook',
+                page_info: 'Page info'
+            },
+            step3: {
+                title: 'Derivation data',
                 display_name: 'Name:',
                 display_description: 'Description:',
                 message: 'Messages',
