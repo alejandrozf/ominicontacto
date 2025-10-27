@@ -81,6 +81,19 @@
           />
         </template>
       </Column>
+      <Column
+        field="configuracion.business_id"
+        :header="$t('models.whatsapp.provider.configuracion.business_id')"
+      >
+        <template #body="slotProps">
+          <Password
+            :modelValue="slotProps.data.configuracion.business_id"
+            :disabled="true"
+            :feedback="false"
+            toggleMask
+          />
+        </template>
+      </Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">
         <template #body="slotProps">
           <Button

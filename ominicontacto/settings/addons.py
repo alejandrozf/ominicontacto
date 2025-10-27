@@ -31,6 +31,10 @@ CONSTANCE_ADDITIONAL_FIELDS = {
         'disabled': True,
         'required': False,
     }],
+    'char_field': ['django.forms.fields.CharField', {
+        'disabled': False,
+        'required': True,
+    }],
 }
 
 CONSTANCE_CONFIG = {
@@ -62,6 +66,20 @@ CONSTANCE_CONFIG = {
     'LIMIT_USERS_TO': (2, 'LIMIT_USERS_TO', int),
     'LIMIT_AGENTS_CONCURRENT_ACTIVE': (False, 'LIMIT_AGENTS_CONCURRENT_ACTIVE', bool),
     'LIMIT_AGENTS_CONCURRENT_NUMBER': (1, 'LIMIT_AGENTS_CONCURRENT_NUMBER', int),
+
+    # white-label
+    "ASTERISK_TM": ("Asterisk", "", "char_field"),
+    "OMNILEADS_TM": ("OMniLeads", "", "char_field"),
+    "SUGGEST_REGISTER": (True, "", bool),
+    "WOMBAT_TM": ("Wombat", "", "char_field"),
+    "PRIMARY_COLOR": ("#F71883", "", "char_field"),
+    "PRIMARY_LIGHT_COLOR": ("#FA4DA0", "", "char_field"),
+    "SECONDARY_COLOR": ("#89468B", "", "char_field"),
+    "FAVICON": ("ominicontacto/Img/favicon.png", "", "char_field"),
+    "IC_LOGO": ("ominicontacto/Img/ic_logo.png", "", "char_field"),
+    "IC_LOGO_FULL": ("ominicontacto/Img/ic_logo_full.png", "", "char_field"),
+    "IC_LOGO_SYMBOL": ("ominicontacto/Img/ic_logo_symbol.png", "", "char_field"),
+
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -97,6 +115,10 @@ TEMPLATES_CONTEXT_PROCESORS_APPEND = []
 
 ADDON_URLPATTERNS = []
 
+if os.getenv('ENTERPRISE_VERSION'):
+    ADDONS_APPS.append("enterprise_app.apps.AppConfig")
+    ADDON_URLPATTERNS.append((r"enterprise", "enterprise_app.urls"))
+    ADDONS_LOCALE_PATHS += (os.path.join(BASE_DIR, 'enterprise_app/locale'), )
 if not os.getenv('LIMIT_USERS_VERSION', '') == '':
     ADDONS_APPS.append('limit_users_app.apps.LimitUsersAppConfig')
     MIDDLEWARE_APPEND.append('limit_users_app.middleware.limits.LimitUsersMiddleware')

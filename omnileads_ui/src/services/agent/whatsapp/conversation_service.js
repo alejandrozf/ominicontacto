@@ -20,6 +20,7 @@ export default class WhatsappConversationService extends BaseService {
 
     async getConversationDetail (chatId) {
         try {
+            this.initPayload();
             const resp = await fetch(this.urls.ChatAgentConversationsDetail(chatId), this.payload);
             return await resp.json();
         } catch (error) {

@@ -192,6 +192,22 @@ class PhoneJSController {
             }
         });
 
+        this.view.holdClientButton.click(function() {
+            let action = 'hold';
+            if (self.client_on_hold) {
+                action = 'unhold';
+            }
+            self.setConsultativeHold(action, 'client');
+        });
+
+        this.view.holdConsultantButton.click(function() {
+            let action = 'hold';
+            if (self.consultant_on_hold) {
+                action = 'unhold';
+            }
+            self.setConsultativeHold(action, 'consultant');
+        });
+
         /* Off Campaign */
         this.view.callOffCampaignMenuButton.click(function() {
             self.view.callOffCampaignMenu.modal('show');
@@ -277,6 +293,7 @@ class PhoneJSController {
             self.phone_fsm.endTransfer();
             self.phone.endTransfer();
             self.view.setConferenceAgent('', 'orange');
+            self.view.disableConferenceHold();
         });
 
         this.view.conferButton.click(function() {
@@ -290,6 +307,7 @@ class PhoneJSController {
                     gettext('En Conferencia con: %(from)s y %(member)s'),
                     {from:self.phone.session_data.from, member: member}, true);
                 self.view.setConferenceAgent(agtmessage, 'orange');
+                self.view.enableConferenceHold();
             }
             self.phone.confer();
         });
@@ -781,6 +799,7 @@ class PhoneJSController {
                         gettext('El agente %(member)s finalizó la llamada'),
                         { member: member}, true);
                     self.view.setConferenceAgent(agtmessage, 'orange');
+                    self.view.disableConferenceHold();
                 }
 
             }
@@ -880,6 +899,7 @@ class PhoneJSController {
             );
         }
         self.view.setConferenceAgent('', 'orange');
+        self.view.disableConferenceHold();
         // else { Stay in ACW Pause }:
     }
 
@@ -1297,6 +1317,50 @@ class PhoneJSController {
             PHONE_STATUS_CONFIGS['OnHold'].enabled_buttons = filter_on_hold;
         }
     }
+
+    setConsultativeHold(action, target){
+        console.log(action, target);
+        let self = this;
+        this.oml_api.consultativeConferHold(
+            this.phone.session_data.remote_call.call_id,
+            action,
+            target,
+            function() {self.conferenceHoldGranted(action, target);},
+            this.conferenceHoldNotAllowed
+        );
+    }
+
+    conferenceHoldGranted(action, target) {
+        if (target == 'client'){
+            if (action == 'hold'){
+                this.client_on_hold = true;
+                this.view.holdClientButton.text(gettext('Unmute Client'));
+            }
+            else {  // action == 'unhold'
+                this.client_on_hold = false;
+                this.view.holdClientButton.text(gettext('Mute Client'));
+            }
+        }
+        else {  // target == 'consultant'
+            if (action == 'hold'){
+                this.consultant_on_hold = true;
+                this.view.holdConsultantButton.text(gettext('Unmute Consultant'));
+            }
+            else {  // action == 'unhold'
+                this.consultant_on_hold = false;
+                this.view.holdConsultantButton.text(gettext('Mute Consultant'));
+            }
+        }
+    }
+
+    conferenceHoldNotAllowed() {
+        $.growl.error({
+            title: gettext('¡No tiene permiso para efectuar esta acción!'),
+            message: gettext('Funcionalidad solo disponible en la versión Enterprise.'),
+            duration: 15000,
+        });
+    }
+
 
     agentRejectCall() {
         this.oml_api.eventReject();

@@ -527,7 +527,9 @@ export default {
               }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.INTERACTIVE) {
               const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
+              if (menu.menu_header){
                 return `${menu.menu_header}`;
+              }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.CLOSING_MESSAGE) {
               const template = this.supWhatsappMessageTemplates.find((c) => c.id === data.destination);
               if (template) {

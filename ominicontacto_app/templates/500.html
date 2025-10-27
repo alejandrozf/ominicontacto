@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 <!DOCTYPE html>
-<html>
+<html style="--primary-color: {{ PRIMARY_COLOR }}; --primary-light-color: {{ PRIMARY_LIGHT_COLOR }}; --secondary-color: {{ SECONDARY_COLOR }};">
 <head>
 <meta charset="UTF-8">
 <title>{% blocktranslate %} {{ OMNILEADS_TM }} - Error Interno {% endblocktranslate %}</title>
@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
 <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
 </head>
-<body class="wrapper-page-error">
+<body class="wrapper-page-error" style="--ic-logo-symbol: url('{{ IC_LOGO_SYMBOL }}')">
     <div class="page-error-bg"></div>
     <div>
         <h1>{% trans 'Se ha producido un error' %}<span>500</span></h1>

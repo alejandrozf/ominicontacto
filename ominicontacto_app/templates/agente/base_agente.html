@@ -21,11 +21,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 <!DOCTYPE html>
-<html lang='es'>
+<html lang='es' style="--primary-color: {{ PRIMARY_COLOR }}; --primary-light-color: {{ PRIMARY_LIGHT_COLOR }}; --secondary-color: {{ SECONDARY_COLOR }};">
 <head>
     <meta charset="utf-8">
     <title>{{ OMNILEADS_TM }}</title>
-    <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
+    <link rel="shortcut icon" href="{{ FAVICON }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Stylesheets -->
@@ -637,7 +637,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <ul id="navMainMenu" class="list-unstyled">
             <div class="row">
                 <div class="col-md-3">
-                  <img src="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
+                  <img src="{{ IC_LOGO }}" id="nav-logo">
                 </div>
             </div>
             {% if agente_profile.grupo.acceso_dashboard_agente %}
@@ -918,6 +918,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     {% else %}
                                         <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled" hidden>{% trans 'Hold' %}</button>
                                     {% endif %}
+                                </div>
+                                <div id="conferHolds" class="btn-group" data-toggle="buttons" hidden>
+                                    <button id="onHoldClient" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Mute Client' %}</button>
+                                    <button id="onHoldConsultant" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Mute Consultant' %}</button>
                                 </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
                                     {% trans 'Campaña: ' %}<span id="campAssocManualCall"></span>

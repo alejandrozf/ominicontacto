@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.apps import AppConfig
-from ominicontacto.settings.omnileads import ASTERISK_TM
+from constance import config
 
 
 class ConfiguracionTelefoniaAppConfig(AppConfig):
@@ -98,7 +98,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         audios = []
         if 'adicionar_audios_asterisk' in permissions:
             audios.append({
-                'label': _('Paquetes de Audio de {0}').format(ASTERISK_TM),
+                'label': _('Paquetes de Audio de {0}').format(config.ASTERISK_TM),
                 'url': reverse('adicionar_audios_asterisk')
             })
         if 'lista_archivo_audio' in permissions:
@@ -279,7 +279,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         'eliminar_destino_personalizado':
             {'descripcion': _('Eliminar un Destino personalizado'), 'version': '1.7.0'},
         'adicionar_audios_asterisk':
-            {'descripcion': _('Menu para instalar paquetes de audio de {0}'.format(ASTERISK_TM)),
+            {'descripcion': _('Menu para instalar paquetes de audio de Asterisk'),
              'version': '1.7.0'},
         'lista_playlist':
             {'descripcion': _('Ver listas de Musicas de espera'), 'version': '1.7.0'},

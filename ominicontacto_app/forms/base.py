@@ -1695,6 +1695,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         super(CampanaDialerForm, self).__init__(*args, **kwargs)
 
         es_template = self.initial.get('es_template', False)
+        self.es_template = es_template
 
         self.fields['fecha_inicio'].help_text = 'Ejemplo: 10/04/2014'
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
@@ -1706,19 +1707,18 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             self.fields['bd_contacto'].disabled = True
 
     def requiere_bd_contacto(self):
-        return True
+        return not self.es_template
 
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data['bd_contacto']
         opcion_abortar = self.data.get('0-opcion_abortar')
         instance = getattr(self, 'instance', None)
-        es_template = self.initial.get('es_template', False)
         # Si uno desea modificar una campaña dialer, con instance no se permitira cambiar la BD
         if instance and instance.pk:
             return instance.bd_contacto
-        if not es_template and not bd_contacto.contactos.exists():
+        if bd_contacto and not bd_contacto.contactos.exists():
             raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
-        if not wombat_habilitado() and opcion_abortar == 'False' and \
+        if bd_contacto and not wombat_habilitado() and opcion_abortar == 'False' and \
            bd_contacto.contactos.filter(Q(telefono__isnull=True) |
                                         Q(telefono__exact='')).exists():
             raise forms.ValidationError([_('La BD tiene contactos sin teléfono'),

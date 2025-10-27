@@ -47,6 +47,9 @@
         </video>
       </div>
       <p class="m-0">
+        {{ getPreviewMessageHeader }}
+      </p>
+      <p class="m-0">
         {{ getPreviewMessage }}
       </p>
     </Panel>
@@ -91,9 +94,11 @@ export default {
                     id: null,
                     name: '',
                     configuration: {
+                        text_header: '',
                         text: '',
                         type: '',
-                        numParams: 0
+                        numParams_header: 0,
+                        numParams_text: 0
                     }
                 };
             }
@@ -116,13 +121,26 @@ export default {
         ...mapState(['agtWhatsCoversationInfo']),
         getPreviewMessage () {
             if (!this.template.configuration || this.form === {}) {
-                return this.template.configuration.text || '';
+                return this.template.configuration.text;
             }
             const self = this;
             return this.template.configuration.text.replace(
                 /{{(\d+)}}/g,
                 function (match, numero) {
                     const field = self.form[`param_${numero}`];
+                    return field.value || `${match}`;
+                }
+            );
+        },
+        getPreviewMessageHeader () {
+            if (!this.template.configuration || this.form === {}) {
+                return this.template.configuration.text_header
+            }
+            const self = this;
+            return this.template.configuration.text_header.replace(
+                /{{(\d+)}}/g,
+                function (match, numero) {
+                    const field = self.form[`param_header_${numero}`];
                     return field.value || `${match}`;
                 }
             );
@@ -148,10 +166,15 @@ export default {
         },
         initFormData () {
             this.form = {};
-            for (let i = 0; i < this.template.configuration.numParams; i++) {
+            for (let i = 0; i < this.template.configuration.numParams_header; i++) {
+                const name = `param_header_${i + 1}`;
+                this.form[name] = { name, empty: false, value: null };
+            }
+            for (let i = 0; i < this.template.configuration.numParams_text; i++) {
                 const name = `param_${i + 1}`;
                 this.form[name] = { name, empty: false, value: null };
             }
+            console.log("this.form", this.form)
         },
         clearFilter () {
             this.initFilters();
@@ -167,8 +190,20 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                const field = this.form[clave];
-                formData.push(field.value);
+                if (!clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
+            }
+            return formData;
+        },
+        getFormDataHeader () {
+            const formData = [];
+            for (const clave in this.form) {
+                if (clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
             }
             return formData;
         },
@@ -189,10 +224,12 @@ export default {
                 const reqData = {
                     destination: this.contactPhone,
                     template_id: this.template.id,
+                    params_header: this.getFormDataHeader(),
                     params: this.getFormData(),
                     campaign: this.campaignId,
                     contact: this.contactId
                 };
+                console.log(">>>>", reqData)
                 const result = await this.agtWhatsInitNewConversation(reqData);
                 const { status, data } = result;
                 localStorage.setItem(

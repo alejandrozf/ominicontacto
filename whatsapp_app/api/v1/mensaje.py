@@ -53,7 +53,7 @@ class MensajeListSerializer(serializers.Serializer):
 
     def get_content(self, obj):
         if obj.content:
-            if obj.type == 'list':
+            if obj.type == 'list-gupshup':
                 content = json.loads(obj.content[0]['text'])
                 text = content['title'] + '\n'
                 options = content['items'][0]['options']
@@ -62,6 +62,17 @@ class MensajeListSerializer(serializers.Serializer):
                             .format(option['title'],
                                     option['description'] if 'description' in option else '')
                 return {'text': text}
+            elif obj.type == 'list-meta':
+                content = json.loads(obj.content[0]['text'])
+                text = content['header']['text'] + '\n'
+                text += content['body']['text'] + '\n'
+                options = content['action']['sections'][0]['rows']
+                for option in options:
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
+                return {'text': text}
+
             elif obj.type == 'list_reply':
                 text = "Reply-option:\n {}-{}"\
                     .format(obj.content['title'],

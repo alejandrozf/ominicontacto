@@ -47,6 +47,8 @@ class PhoneJSView {
         this.numberDisplay = $('#numberToCall');
         this.redialButton = $('#redial');
         this.holdButton = $('#onHold');
+        this.holdClientButton = $('#onHoldClient');
+        this.holdConsultantButton = $('#onHoldConsultant');
         this.transferButton = $('#Transfer');
         this.conferButton = $('#Confer');
         this.dtmfButton = $('#dtmf');
@@ -266,6 +268,20 @@ class PhoneJSView {
         conferAgentEM.id = 'confer_agent';
         conferAgentEM.append(textConferAgent);
         this.conferAgent.append(conferAgentEM);
+    }
+
+    enableConferenceHold() {
+        this.holdClientButton.parent().prop('hidden', false);
+        this.holdClientButton.text(gettext('Mute Client'));
+        this.holdClientButton.prop('disabled', false);
+        this.holdConsultantButton.text(gettext('Mute Consultant'));
+        this.holdConsultantButton.prop('disabled', false);
+    }
+
+    disableConferenceHold() {
+        this.holdClientButton.parent().prop('hidden', true);
+        this.holdClientButton.prop('disabled', false);
+        this.holdConsultantButton.prop('disabled', false);
     }
 
     cargarAgentes(agentes) {

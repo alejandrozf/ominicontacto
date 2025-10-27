@@ -1,7 +1,7 @@
 /*---Color que SI hay que modificar para los rebrands*/
-$primary-color: #f71883;
-$primary-light-color: #fa4da0;
-$secondary-color: #89468b; /* Color para :hover, :focus,etc */
+$primary-color: var(--primary-color, #f71883);
+$primary-light-color: var(--primary-light-color, #fa4da0);
+$secondary-color: var(--secondary-color, #89468b); /* Color para :hover, :focus,etc */
 
 /* ---Color que no hay que modificar para los rebrands---*/
 $dark-grey: #333333; /* Gris oscuro */

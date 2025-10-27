@@ -18,7 +18,6 @@
 
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
-from ominicontacto.settings.omnileads import ASTERISK_TM, OMNILEADS_TM, WOMBAT_TM
 
 
 class ApiAppConfig(AppConfig):
@@ -123,6 +122,8 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
+             'roles': ['Agente', ]},
+            {'nombre': 'api_consultative_confer_hold',
              'roles': ['Agente', ]},
             {'nombre': 'api_agent_call_transfer_options',
              'roles': ['Agente', ]},
@@ -399,13 +400,13 @@ class ApiAppConfig(AppConfig):
         'api_hangup_call':
             {'descripcion': _('Ejecuta un hangup call via AMI'), 'version': '1.32.0'},
         'api_agent_asterisk_login':
-            {'descripcion': _('Ejecuta el login del agente en {0}.'.format(ASTERISK_TM)),
+            {'descripcion': _('Ejecuta el login del agente en Asterisk.'),
              'version': '1.7.0'},
         'api_agent_asterisk_logout':
-            {'descripcion': _('Ejecuta el logout del agente en {0}'.format(ASTERISK_TM)),
+            {'descripcion': _('Ejecuta el logout del agente en Asterisk'),
              'version': '1.7.0'},
         'api_agente_logout':
-            {'descripcion': _('Logout del agente en {0}'.format(OMNILEADS_TM)), 'version': '1.7.0'},
+            {'descripcion': _('Logout del agente en Asterisk'), 'version': '1.7.0'},
         'api_make_pause':
             {'descripcion': _('Pone al agente en una pausa'), 'version': '1.7.0'},
         'api_make_unpause':
@@ -447,6 +448,9 @@ class ApiAppConfig(AppConfig):
         'api_evento_hold':
             {'descripcion': _('Loggea el evento hold o unhold'),
              'version': '1.13.0'},
+        'api_consultative_confer_hold':
+            {'descripcion': _('Des/Silenciar participante conferencia transferencia consultativa'),
+             'version': '2.6.0'},
         'api_agent_call_transfer_options':
             {'descripcion': _('Lista de agentes para transferir llamadas'),
              'version': '1.29.0'},
@@ -469,10 +473,10 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Listas de nombres de columnas para Base de datos de Contactos'),
              'version': '1.20.0'},
         'api_restart_wombat':
-            {'descripcion': _('Reinicia servicio {0} Dialer'.format(WOMBAT_TM)),
+            {'descripcion': _('Reinicia servicio Dialer'),
              'version': '1.22.0'},
         'api_wombat_state':
-            {'descripcion': _('Estado del servicio {0} Dialer'.format(WOMBAT_TM)),
+            {'descripcion': _('Estado del servicio Dialer'),
              'version': '1.22.0'},
         'api_wombat_start':
             {'descripcion': _('Start servicio Dialer'),
