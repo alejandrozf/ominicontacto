@@ -4,12 +4,66 @@ import os
 import sys
 import time
 import typing
-
 import django.db
 import pygments
 import pygments.formatters
 import pygments.lexers
 import sqlparse
+import tabulate
+from psycopg2.extensions import cursor
+
+
+class Psycopg2VerboseCursor(cursor):
+
+    def print_formatted_fetch(self, rows, limit=10):
+        if len(rows) > limit:
+            rows = rows[:limit - 1] + [["..." for _ in rows[limit]]] + [rows[-1]]
+        formatted_fetch = tabulate.tabulate(
+            rows,
+            headers=[col.name for col in self.description],
+            tablefmt="psql",
+        )
+        sys.stdout.write(formatted_fetch)
+        sys.stdout.write("\n\n")
+
+    def print_formatted_query(
+        self,
+        lexer=pygments.lexers.get_lexer_by_name("sql"),
+        fmter=pygments.formatters.get_formatter_by_name("terminal16m", style="one-dark"),
+    ):
+        formatted_query = pygments.highlight(
+            sqlparse.format(
+                self.query,
+                keyword_case="upper",
+                reindent_aligned=True,
+                wrap_after=10,
+            ),
+            lexer,
+            fmter,
+        )
+        sys.stdout.write(formatted_query)
+        sys.stdout.write("\n")
+
+    def fetchall(self):
+        rows = super().fetchall()
+        self.print_formatted_query()
+        self.print_formatted_fetch(rows)
+        return rows
+
+    def fetchmany(self, size=None):
+        rows = super().fetchmany(size)
+        if rows:
+            if b"constance_config" in self.query:
+                return rows
+            self.print_formatted_query()
+            self.print_formatted_fetch(rows)
+        return rows
+
+    def fetchone(self):
+        row = super().fetchone()
+        self.print_formatted_query()
+        self.print_formatted_fetch([row] if row else [])
+        return row
 
 
 class QueryLogger:
