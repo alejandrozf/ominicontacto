@@ -634,6 +634,7 @@ class CalificacionTests(OMLBaseTest):
         # TODO investigar como realizar el cambio utilizando:
         # http://docs.python.org/3/library/unittest.mock-examples.html#coping-with-mutable-arguments
         call_data['force_disposition'] = False
+        call_data['en_recepcion_de_llamada'] = False
 
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
                                          calificado=True, es_agenda=False,
