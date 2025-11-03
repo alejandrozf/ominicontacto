@@ -45,6 +45,7 @@ class ReporteContactacionesCSV(ReporteCSV):
             self.campana,
             todos_contactos=todos_contactos
         )
+        self.reporte.registrar_cantidad_de_contactos()
         self.contactaciones = self.reporte.contactaciones.values()
         cant_contactaciones = len(self.contactaciones)
 
@@ -66,6 +67,7 @@ class ReporteContactacionesCSV(ReporteCSV):
             encabezado.append(nombre)
         encabezado.append(_("Calificación"))
         encabezado.append(_("Contactación"))
+        encabezado.append(_("Intentos"))
 
         lista_datos_utf8 = [force_text(item) for item in encabezado]
         self.datos.append(lista_datos_utf8)
@@ -82,6 +84,8 @@ class ReporteContactacionesCSV(ReporteCSV):
             lista_opciones.append(contactacion['contactacion'])
         else:
             lista_opciones.append('')
+        intentos = contactacion.get('intentos', 0)
+        lista_opciones.append(intentos)
 
         lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
         self.datos.append(lista_opciones_utf8)
