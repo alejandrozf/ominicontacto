@@ -2208,7 +2208,7 @@ class GrupoForm(forms.ModelForm):
                   'obligar_despausa', 'whatsapp_habilitado',
                   'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
                   'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',
-                  'permitir_llamadas_manuales_a_preview')
+                  'permitir_llamadas_manuales_a_preview', 'call_another_agent')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={

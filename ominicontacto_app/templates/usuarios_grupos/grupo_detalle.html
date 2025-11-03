@@ -59,6 +59,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </h4>
     </li>
     <li>
+        <h4>{% trans 'Llamar a otro agente' %}: 
+            {% if grupo.call_another_agent %}
+                <span class="icon icon-check" aria-hidden="true"></span>
+            {% else %}
+                <span class="icon icon-cancel" aria-hidden="true"></span>
+            {% endif %}
+        </h4>
+    </li>
+    <li>
         <h4>{% trans 'Despausar automaticamente' %}: 
             {% if grupo.auto_unpause %}
                 <span class="icon icon-check" aria-hidden="true"></span>

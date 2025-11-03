@@ -288,6 +288,7 @@ class Grupo(models.Model):
     obligar_despausa = models.BooleanField(default=False, verbose_name=_(
         'Forzar Despausa'))
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
+    call_another_agent = models.BooleanField(default=False, verbose_name=_('Llamar a otro agente'))
     acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso grabaciones agentes'))
     acceso_dashboard_agente = models.BooleanField(default=True, verbose_name=_(

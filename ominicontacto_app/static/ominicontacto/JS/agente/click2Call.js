@@ -166,6 +166,7 @@ class Click2CallDispatcher {
             var self = this;
             this.click2call_cooldown = setTimeout(function() {self.click2call_cooldown = undefined;}, 2000);
             this.oml_api.startCallOutsideCampaign(this.AGENT, agent_id);
+            $('#modalCallAnotherAgent').modal('hide');
         }
         else {
             console.log('Alertar al usuario que no es posible hacer una click2call');

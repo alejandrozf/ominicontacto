@@ -79,6 +79,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
     <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
     <input type="hidden" value="{{ agente_profile.grupo.call_off_camp }}" id="call_off_camp">
+    <input type="hidden" value="{{ agente_profile.grupo.call_another_agent }}" id="call_another_agent">
     <input type="hidden" value="{{ agente_profile.grupo.on_hold }}" id="on_hold">
     <input value="{{ dtmf_duration }}" id="dtmf_duration" type="hidden"/>
     <input value="{{ dtmf_inter_tone_gap }}" id="dtmf_inter_tone_gap" type="hidden"/>
@@ -199,14 +200,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-footer">
-                <select class="form-control" id="agente_off_camp">
-                    {% for agente in agentes %}
-                        <option value = "{{ agente.id }}"> {{ agente.user.get_full_name }} </option>
-                    {% endfor %}
-                </select>
-                <button type="button" id="call_agent" class="btn btn-primary">{% trans 'Llamar Agente' %}</button>
-            </div>
-            <div class="modal-footer">
                 <label for="number_off_camp" ></label>
                 <input type="text" id="phone_off_camp" id="phone_off_camp" class="form-control"/>
                 <button type="button" id="call_phone_off_campaign" class="btn btn-primary">{% trans 'Llamar numero' %}</button>
@@ -220,6 +213,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <button type="button" id="call_quick_contact" class="btn btn-primary">{% trans 'Llamar lista rápida' %}</button>
             </div>
 
+        </div>
+    </div>
+</div>
+<!-- Modal que se despliega al dar clic en llamar a otro agente -->
+<div id="modalCallAnotherAgent" class="modal">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Llamada fuera de Campaña' %}</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-footer">
+                <select class="form-control" id="agente_off_camp">
+                    {% for agente in agentes %}
+                        <option value = "{{ agente.id }}"> {{ agente.user.get_full_name }} </option>
+                    {% endfor %}
+                </select>
+                <button type="button" id="call_agent" class="btn btn-primary">{% trans 'Llamar Agente' %}</button>
+            </div>
         </div>
     </div>
 </div>
@@ -928,6 +940,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 </button>
                                 <button id="call_off_campaign_menu" class="btn btn-outline-secondary btn-sm">
                                     {% trans 'Llamar Fuera de Campaña: ' %}
+                                </button>
+                                <button id="call_another_agent_menu" class="btn btn-outline-secondary btn-sm">
+                                    {% trans 'Llamar a otro agente ' %}
                                 </button>
                             </div>
                         </div>
