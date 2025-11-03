@@ -36,10 +36,15 @@ from django.views.generic import FormView, CreateView, DetailView, TemplateView
 from simple_history.utils import update_change_reason
 
 from ominicontacto_app.forms.base import (CalificacionClienteForm, FormularioNuevoContacto,
-                                          RespuestaFormularioGestionForm, )
+                                          RespuestaFormularioGestionForm,
+                                          CalificacionTelefonoForm,
+                                          CalificacionTelefonoModelFormSetInit,
+                                          EMPTY_CHOICE)
+from django.forms.models import modelformset_factory
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
-    OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
+    OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion,
+    CalificacionTelefono)
 from ominicontacto_app.models import TelephoneValidator
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
@@ -334,8 +339,48 @@ class CalificacionClienteFormView(FormView):
         contacto_form = self.get_contacto_form(usar_crm=True)
         calificacion_form = self.get_form(historico_calificaciones=mostrar_historico)
         bd_metadata = self.campana.bd_contacto.get_metadata()
-        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+        campos_telefono_calificacion = bd_metadata.nombres_de_columnas_de_telefonos
+        campos_telefono = campos_telefono_calificacion + ['telefono']
 
+        opciones_calificacion_campana = [
+            (opcion, opcion) for opcion in self.campana.opciones_calificacion.values_list(
+                'nombre', flat=True)
+        ]
+        calificaciones_telefonos_formset = None
+        if self.campana.permitir_calificar_telefonos:
+            calificaciones_telefonos_qs = CalificacionTelefono.objects.filter(
+                campana=self.campana, contacto=self.contacto)
+            if calificaciones_telefonos_qs.exists():
+                CalificacionTelefonoModelFormSet = modelformset_factory(
+                    CalificacionTelefono,
+                    form=CalificacionTelefonoForm,
+                    extra=0,
+                )
+                calificaciones_telefonos_formset = CalificacionTelefonoModelFormSet(
+                    form_kwargs={
+                        'opciones': opciones_calificacion_campana,
+                    },
+                    queryset=calificaciones_telefonos_qs
+                )
+            else:
+                CalificacionTelefonoModelFormSet = modelformset_factory(
+                    CalificacionTelefono,
+                    form=CalificacionTelefonoForm,
+                    extra=len(campos_telefono_calificacion),
+                )
+                initial_data = [{'calificacion': EMPTY_CHOICE[1],
+                                 'campana': self.campana.pk,
+                                 'contacto': self.contacto.pk,
+                                 'agente': self.agente.pk,
+                                 'campo_contacto': campo_telefono}
+                                for campo_telefono in campos_telefono_calificacion]
+                calificaciones_telefonos_formset = CalificacionTelefonoModelFormSet(
+                    form_kwargs={
+                        'opciones': opciones_calificacion_campana,
+                    },
+                    initial=initial_data,
+                    queryset=CalificacionTelefono.objects.none(),
+                )
         force_disposition = False
         extra_client_data = {}
         if self.call_data:
@@ -381,6 +426,7 @@ class CalificacionClienteFormView(FormView):
             campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
+            calificaciones_telefonos_formset=calificaciones_telefonos_formset,
             campana=self.campana,
             llamada_entrante=formulario_llamada_entrante,
             call_data=self.call_data,
@@ -394,6 +440,12 @@ class CalificacionClienteFormView(FormView):
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form()
         contacto_form_valid = contacto_form.is_valid()
+        calificaciones_telefonos_qs = CalificacionTelefono.objects.filter(
+            campana=self.campana, contacto=self.contacto)
+        calificaciones_telefonos_formset = CalificacionTelefonoModelFormSetInit(
+            request.POST,
+            queryset=calificaciones_telefonos_qs)
+        calificaciones_telefonos_formset_valid = calificaciones_telefonos_formset.is_valid()
         calificacion_form_valid = calificacion_form.is_valid()
         usuario_califica = bool(calificacion_form.changed_data)
         formulario_llamada_entrante = self._formulario_llamada_entrante()
@@ -404,10 +456,18 @@ class CalificacionClienteFormView(FormView):
                 return self.form_valid(contacto_form)
             else:
                 return self.form_invalid(contacto_form)
-        if contacto_form_valid and calificacion_form_valid:
-            return self.form_valid(contacto_form, calificacion_form)
+        if contacto_form_valid and calificacion_form_valid and \
+           calificaciones_telefonos_formset_valid:
+            return self.form_valid(
+                contacto_form, calificacion_form, calificaciones_telefonos_formset)
+        if contacto_form_valid and calificacion_form_valid and \
+           not calificaciones_telefonos_formset_valid and \
+           calificaciones_telefonos_formset.forms == []:
+            return self.form_valid(
+                contacto_form, calificacion_form)
         else:
-            return self.form_invalid(contacto_form, calificacion_form)
+            return self.form_invalid(
+                contacto_form, calificacion_form, calificaciones_telefonos_formset)
 
     def _check_metadata_no_accion_delete(self, calificacion):
         """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
@@ -538,7 +598,10 @@ class CalificacionClienteFormView(FormView):
                 repr(error) if error else None,
             )
 
-    def form_valid(self, contacto_form, calificacion_form=None):
+    def form_valid(
+            self, contacto_form, calificacion_form=None, calificaciones_telefonos_formset=None):
+        if calificaciones_telefonos_formset is not None:
+            calificaciones_telefonos_formset.save()
         # Elimino CRM DATA para que no moleste:
         if self.call_data and 'CRM_contact_data' in self.call_data:
             self.call_data.pop('CRM_contact_data')
@@ -611,9 +674,11 @@ class CalificacionClienteFormView(FormView):
             messages.error(self.request, e.message)
             return self.render_to_response(self.get_context_data(
                 contacto_form=contacto_form,
+                calificaciones_telefonos_formset=calificaciones_telefonos_formset,
                 calificacion_form=calificacion_form))
 
-    def form_invalid(self, contacto_form, calificacion_form=None):
+    def form_invalid(
+            self, contacto_form, calificacion_form=None, calificaciones_telefonos_formset=None):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
@@ -629,6 +694,7 @@ class CalificacionClienteFormView(FormView):
             campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
+            calificaciones_telefonos_formset=calificaciones_telefonos_formset,
             campana=self.campana,
             call_data=self.call_data,
             configuracion_sitio_externo=json.dumps(self.configuracion_sitio_externo))

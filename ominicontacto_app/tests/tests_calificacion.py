@@ -665,3 +665,13 @@ class CalificacionTests(OMLBaseTest):
             subcalificaciones=nombre_calificacion.subcalificaciones)
         self.assertEqual(nombre_calificacion.subcalificaciones,
                          opcion_calificacion.subcalificaciones)
+
+    def test_campana_muestra_calificaciones_telefonos_si_se_habilita(self):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.permitir_calificar_telefonos = True
+        self.campana.save()
+        call_data = self.get_call_data()
+        call_data["call_type"] = str(self.campana.type)
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+        response = self.client.get(url)
+        self.assertContains(response, "calificacionTelefonoValor")

@@ -177,6 +177,12 @@ class EstadisticasContactacion():
 
         return calificaciones
 
+    def obtener_cantidad_no_calificados(self, campana):
+        # Cantidad de contactos no calificados, con o sin llamadas.
+        return campana.bd_contacto.contactos.count() - CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id=campana.id,
+            contacto__bd_contacto_id=campana.bd_contacto_id).count()
+
 
 class CantidadContactacion(object):
 
@@ -332,13 +338,6 @@ class RecicladorContactosCampanaDIALER():
 
         return campana.bd_contacto.contactos.filter(id__in=id_contactos)
 
-    def retomar_contactacion(self, campana, reciclado_calificacion, reciclado_no_contactacion):
-        contactos_reciclados = self.obtener_contactos_reciclados(
-            campana, reciclado_calificacion, reciclado_no_contactacion)
-        campana.establecer_valores_iniciales_agente_contacto(False, False, contactos_reciclados)
-        campana.estado = Campana.ESTADO_ACTIVA
-        campana.save()
-
     def reciclar(self, campana, reciclado_calificacion, reciclado_no_contactacion):
 
         # Obtener los contactos reciclados
@@ -355,3 +354,20 @@ class RecicladorContactosCampanaDIALER():
         bd_contacto_reciclada.genera_contactos(contactos_reciclados)
         bd_contacto_reciclada.define()
         return bd_contacto_reciclada
+
+
+class RecicladorContactosCampanaPreview(RecicladorContactosCampanaDIALER):
+
+    def retomar_contactacion(self, campana, reciclado_calificacion, reciclado_no_contactacion):
+        contactos_reciclados = self.obtener_contactos_reciclados(
+            campana, reciclado_calificacion, reciclado_no_contactacion)
+        campana.establecer_valores_iniciales_agente_contacto(False, False, contactos_reciclados)
+        campana.estado = Campana.ESTADO_ACTIVA
+        campana.save()
+
+    def _obtener_contactos_no_contactados(self, campana, reciclado_no_contactacion):
+        """Campañas preview solo filtra contactos no Calificados (con o sin llamadas)"""
+        calificados = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id=campana.id,
+            contacto__bd_contacto_id=campana.bd_contacto_id).values_list('contacto_id', flat=True)
+        return campana.bd_contacto.contactos.exclude(id__in=calificados)
