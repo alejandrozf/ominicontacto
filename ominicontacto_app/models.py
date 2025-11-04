@@ -2899,11 +2899,9 @@ class CalificacionClienteManager(models.Manager):
 
     def obtener_calificaciones_auditoria(self):
         """Devuelve un queryset con todas las calificaciones finales
-        de gestion o que tengan una auditoria asociada
+        ordenadas por fecha
         """
-        calificaciones_gestion = self.obtener_calificaciones_gestion()
-        calificaciones_auditadas = self.obtener_calificaciones_auditadas()
-        result = calificaciones_gestion | calificaciones_auditadas
+        result = CalificacionCliente.objects.all()
         result = result.prefetch_related('auditoriacalificacion', 'contacto', 'agente')
         return result.order_by('-fecha')
 

@@ -127,7 +127,7 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         calificaciones = response.context_data['listado_de_calificaciones']
         self.assertFalse(calificaciones.filter(opcion_calificacion__campana=self.campana1).exists())
 
-    def test_inicialmente_se_muestran_calificaciones_auditadas_o_gestion(self):
+    def test_inicialmente_se_muestran_todas_las_calificaciones(self):
         today = now().date()
         rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
             '%d/%m/%Y')
@@ -136,8 +136,8 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
-        self.assertEqual(calificaciones.count(), 6)
-        self.assertFalse(calificaciones.filter(
+        self.assertEqual(calificaciones.count(), 7)
+        self.assertTrue(calificaciones.filter(
             opcion_calificacion__tipo=OpcionCalificacion.NO_ACCION,
             auditoriacalificacion__isnull=True).exists())
 
