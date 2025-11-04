@@ -2144,7 +2144,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         if instance and instance.pk and not self.initial.get('es_template', False):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
-            self.fields['tiempo_desconexion'].disabled = True
             # self.fields['tipo_interaccion'].required = False
 
     class Meta:
