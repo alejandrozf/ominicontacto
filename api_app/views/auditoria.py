@@ -84,6 +84,7 @@ class ReporteCalificacionesCampanaCSV(ReporteCSV):
         encabezado.append(_("Status"))
         if self.mostrar_detalles:
             encabezado.append(_("Calificado"))
+            encabezado.append(_("Subcalificación"))
             encabezado.append(_("Observaciones"))
         lista_datos_utf8 = [force_text(item) for item in encabezado]
         self.datos.append(lista_datos_utf8)
@@ -107,6 +108,8 @@ class ReporteCalificacionesCampanaCSV(ReporteCSV):
                 opcion_calificacion_nombre = "{} {}".\
                     format(opcion_calificacion_nombre, calificacion.get_tipo_agenda_display())
             lista_opciones.append(opcion_calificacion_nombre)
+            subcalificacion = calificacion.subcalificacion if calificacion.subcalificacion else ''
+            lista_opciones.append(subcalificacion)
             if calificacion.observaciones:
                 lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
         lista_datos_utf8 = [force_text(item) for item in lista_opciones]
