@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-25 12:39-0300\n"
+"POT-Creation-Date: 2025-11-05 12:51-0300\n"
 "PO-Revision-Date: 2020-03-21 22:12-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -94,15 +94,15 @@ msgstr "Quantia"
 msgid "Seleccionar"
 msgstr "Selecionar"
 
-#: reciclado_app/templates/nuevo_reciclado.html:61
+#: reciclado_app/templates/nuevo_reciclado.html:64
 msgid "Como desea reciclar esta campana"
 msgstr "Como deseja reciclar esta campana"
 
-#: reciclado_app/templates/nuevo_reciclado.html:99
+#: reciclado_app/templates/nuevo_reciclado.html:102
 msgid "Reciclar"
 msgstr "Reciclar"
 
-#: reciclado_app/views.py:71
+#: reciclado_app/views.py:69
 msgid ""
 "<strong>Operación Errónea!</strong>                         Debe seleccionar "
 "al menos una opcion para reciclar "
@@ -110,7 +110,7 @@ msgstr ""
 "<strong>Operação Errada!</strong>                         Deve selecionar "
 "pelo menos uma opção para reciclar "
 
-#: reciclado_app/views.py:97
+#: reciclado_app/views.py:95
 msgid ""
 "<strong>Operación Errónea!</strong>                No se pudo reciclar la "
 "Campana."
@@ -118,10 +118,14 @@ msgstr ""
 "<strong>Operação Errada!</strong>                  Não foi possível reciclar "
 "a Campanha."
 
-#: reciclado_app/views.py:143
+#: reciclado_app/views.py:148
 msgid "Solo se pueden reciclar campañas finalizadas y/o pausadas."
 msgstr "Somente e possível reciclar finalizadas ou em pausa."
 
-#: reciclado_app/views.py:147
+#: reciclado_app/views.py:152
 msgid "Esta campaña no se puede reciclar."
 msgstr "Essa campanha não pode ser reciclada."
+
+#: reciclado_app/views.py:225 reciclado_app/views.py:229
+msgid "No calificados"
+msgstr "Não qualificados"
