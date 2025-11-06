@@ -67,112 +67,125 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <input id="submit_interaccion" type="hidden" name="" value="{% trans 'Interacción CRM' %}">
     </form>
 
-    <form id="form-calificacion" action = "" method = "post">
+    <form id="form-calificacion" action="" method="post">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-md-6 mb-2">
-                {{ contacto_form.non_field_errors }}
-                {% for hidden_field in contacto_form.hidden_fields %}
-                    {{ hidden_field.errors }}
-                  {{ hidden_field }}
-                {% endfor %}
-                {% if contacto_form.confirmar_duplicado in contacto_form.hidden_fields %}
-                    {{ contacto_form.confirmar_duplicado }}
-                {% else %}
-                    {{ contacto_form.confirmar_duplicado.label_tag }}{{ contacto_form.confirmar_duplicado }}
-                {% endif %}
-                {% for field in contacto_form %}
-                    {% if field.name != "confirmar_duplicado" %}
-                        <tr>
-                            <th>{{ field.label_tag}}</th>
-                            <th>{{ field.errors }}</th>
-                            <td> {{ field }}
-                                {% if contacto and field.name in campos_telefono %}
-                                    <div class="row mt-1">
-                                        <div class="col-auto">
-                                            <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div id=contacto-{{field.name}}></div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div class="col-md-6 mb-2">
-                <input class="hidden" value='{{ campana.permitir_calificar_telefonos }}'
-                       id="permitirCalificacionTelefono">
-                {% if campana.permitir_calificar_telefonos %}
-                    <div class="row">
-                        {% for form in calificaciones_telefonos_formset %}
-                            <div class="col-md-9">
-                                <div class="hidden">{{ form.id }}</div>
-                                <div class="hidden">{{ form.campana }}</div>
-                                <div class="hidden">{{ form.contacto }}</div>
-                                <div class="hidden">{{ form.agente }}</div>
-                                <div class="hidden">{{ form.campo_contacto }}</div>
-                                <div class="hidden">
-                                    <label for="{{ form.calificacion.id_for_label }}">{% trans 'Calificacion teléfono' %}</label>
-                                    <div class="calificacionTelefonoValor" data-id="{{ form.campo_contacto.value }}">{{ form.calificacion }}</div>
-                                    {{ form.calificacion.errors }}
-                                </div>
-                            </div>
-                        {% endfor %}
-                        {{ calificaciones_telefonos_formset.management_form }}
-                    </div>
-                {% endif %}
+        {% if contacto_form.confirmar_duplicado in contacto_form.hidden_fields %}
+            {{ contacto_form.confirmar_duplicado }}
+        {% else %}
+            {{ contacto_form.confirmar_duplicado.label_tag }}{{ contacto_form.confirmar_duplicado }}
+        {% endif %}
 
-                {% if calificacion_form %}
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{% trans '¿Desea calificar al contacto?' %}</h5>
-                        {{ calificacion_form.as_p }}
-                        {% with auditoria=calificacion_form.instance.obtener_auditoria %}
-                            {% if auditoria %}
-                            <div class="calificacion_auditada">
-                                <h2>{% trans 'Calificación Auditada'%}</h2>
-                                <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
-                                <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
-                                {% if auditoria.es_observada %}
-                                <p>
-                                    {% if auditoria.revisada %}
-                                        <div id="toggle_revision" class="btn btn-primary btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
-                                            {% trans 'Revisada' %}
-                                        </div>
-                                    {% else %}
-                                        <div id="toggle_revision" class="btn btn-warning btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
-                                            {% trans 'No revisada'  %}
-                                        </div>
-                                    {% endif %}
-                                </p>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        {% endwith %}
-                        {% if campana.speech %}
-                            <div>
-                            <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
-                            </div>
-                        {% endif %}
-                        {% if campana.campo_direccion %}    
-                            <div class="mapouter">
-                                <div class="gmap_canvas" id="map"></div>
-                                <div id="infowindow-content">
-                                    <span id="place-name" class="title"></span><br />
-                                    <span id="place-address"></span>
-                                </div>
-                            </div>
-                        {% endif %}
-                        {% if calificacion_form.historico_calificaciones %}
-                            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
-                        {% endif %}
+        <input class="hidden" value='{{ campana.permitir_calificar_telefonos }}' id="permitirCalificacionTelefono">
+        {% if campana.permitir_calificar_telefonos %}
+        <div class="form-row hidden">
+            {% for form in calificaciones_telefonos_formset %}
+            <div class="col-sm-3">
+                <div class="hidden">{{ form.id }}</div>
+                <div class="hidden">{{ form.campana }}</div>
+                <div class="hidden">{{ form.contacto }}</div>
+                <div class="hidden">{{ form.agente }}</div>
+                <div class="hidden">{{ form.campo_contacto }}</div>
+                <div class="hidden">
+                    <label for="{{ form.calificacion.id_for_label }}">{% trans 'Calificacion teléfono' %}</label>
+                    <div class="calificacionTelefonoValor mt-1" data-id="{{ form.campo_contacto.value }}">
+                        {{ form.calificacion }}
                     </div>
+                    {{ form.calificacion.errors }}
                 </div>
-                {% endif %}
             </div>
+            {% endfor %}
+            {{ calificaciones_telefonos_formset.management_form }}
+        </div>
+        {% endif %}
+
+        {% if calificacion_form %}
+        {% with form=calificacion_form %}
+        <div class="form-row mb-4">
+            {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+            {{ form.non_field_errors }}
+            {% for field in form.visible_fields %}
+                <div class="form-group pr-0 {% if field.widget_type == 'textarea' %}col-sm-6{% else %}col-sm-3{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endwith %}
+
+        {% if calificacion_form.instance.obtener_auditoria %}
+        {% with auditoria=calificacion_form.instance.obtener_auditoria %}
+        <div class="calificacion_auditada">
+            <h2>{% trans 'Calificación Auditada'%}</h2>
+            <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
+            <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
+            {% if auditoria.es_observada %}
+            <p>
+                {% if auditoria.revisada %}
+                    <div id="toggle_revision" class="btn btn-primary btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
+                        {% trans 'Revisada' %}
+                    </div>
+                {% else %}
+                    <div id="toggle_revision" class="btn btn-warning btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
+                        {% trans 'No revisada'  %}
+                    </div>
+                {% endif %}
+            </p>
+            {% endif %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if campana.speech %}
+        <div>
+            <label>{% trans "Speech:" %}</label>
+            <textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea>
+        </div>
+        {% endif %}
+        
+        {% if campana.campo_direccion %}    
+            <div class="mapouter">
+                <div class="gmap_canvas" id="map"></div>
+                <div id="infowindow-content">
+                    <span id="place-name" class="title"></span><br />
+                    <span id="place-address"></span>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if calificacion_form.historico_calificaciones %}
+            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
+        {% endif %}
+
+        {% endif %}
+
+        <div class="form-row mb-4">
+            {% with form=contacto_form %}
+                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                {{ form.non_field_errors }}
+                {% for field in form.visible_fields %}
+                {% if field.name != "confirmar_duplicado" %}
+                    <div id=contacto-{{field.name}} class="form-group col-sm-3 pr-0">
+                        {{ field.label_tag}}
+                        <div class="input-group">
+                            {{ field }}
+                            <div class="input-group-append">
+                            {% if contacto and field.value %}
+                            {% if field.name in campos_telefono %}
+                                <button class="btn btn-submit btn-outline-primary" type="button"
+                                    onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');">
+                                    <i class="fa fa-phone"></i>
+                                </button>
+                            {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+                {% endfor %}
+            
+            {% endwith %}
         </div>
         <div class="">
             <button type="submit" id="id_guardar" class="btn btn-primary">

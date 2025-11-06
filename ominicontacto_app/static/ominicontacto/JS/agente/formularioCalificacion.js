@@ -34,9 +34,11 @@ $(function () {
         $('#contacto-' + campo).append($clon);
         // Creo checkbox de positiva.
         let id_positiva = 'positiva-contacto-' + campo;
-        let div_positiva = $('<div class="positiva">' + gettext('Positiva') + '<input type="checkbox" ' +
-                       'class="form-control" id="' + id_positiva + '"></div>');
-        $('#contacto-' + campo).parent().after(div_positiva);
+        let div_positiva = $(`<div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="${id_positiva}">
+            <label class="form-check-label" for="${id_positiva}">${gettext('Positiva')}</label>
+        </div>`);
+        $('#contacto-' + campo).append(div_positiva);
         $('#' + id_positiva).click(function(){
             if ($(this).prop('checked')){
                 clearOtherPositiveCheckboxess(this);

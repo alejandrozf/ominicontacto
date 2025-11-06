@@ -1172,6 +1172,7 @@ class CalificacionClienteForm(forms.ModelForm):
         widgets = {
             'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
             'subcalificacion': forms.Select(attrs={'class': 'form-control'}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
         }
         labels = {
             'observaciones': _('Observaciones'),
