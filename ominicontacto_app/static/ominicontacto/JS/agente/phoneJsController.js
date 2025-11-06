@@ -211,6 +211,11 @@ class PhoneJSController {
         /* Off Campaign */
         this.view.callOffCampaignMenuButton.click(function() {
             self.view.callOffCampaignMenu.modal('show');
+        });
+
+        /* To call another agent */
+        this.view.callAnotherAgentMenuButton.click(function() {
+            self.view.callAnotherAgentMenu.modal('show');
             if ($('#agente_off_camp').find('option').length == 0){
                 self.view.callAgentButton.prop('disabled', true);
             }
@@ -412,6 +417,7 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
                 self.callOfCampPrivilege();
+                self.callAnotherAgentPrivilege();
             },
             onPausing: function() {
                 phone_logger.log('FSM: onPausing');
@@ -427,6 +433,7 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
                 self.callOfCampPrivilege();
+                self.callAnotherAgentPrivilege();
             },
             onChangePause: function() {
                 phone_logger.log('FSM: onChangePause');
@@ -1305,6 +1312,15 @@ class PhoneJSController {
         }
     }
 
+    callAnotherAgentPrivilege() {
+        if (this.agent_config.call_another_agent){
+            this.view.callAnotherAgentMenuButton.prop('disabled', true);
+        }
+        else {
+            this.view.callAnotherAgentMenuButton.prop('disabled', false);
+        }
+    }
+
     disableOnHold() {
         if (this.agent_config.on_hold){
             var filter_on_call = PHONE_STATUS_CONFIGS['OnCall'].enabled_buttons.filter(function(value, index, arr){
@@ -1473,6 +1489,7 @@ class AgentConfig {
         this.auto_attend_DIALER = $('#auto_attend_DIALER').val() == 'True';
         this.auto_attend_IN = $('#auto_attend_IN').val() == 'True';
         this.call_off_camp = $('#call_off_camp').val() == 'False';
+        this.call_another_agent = $('#call_another_agent').val() == 'False';
         this.on_hold = $('#on_hold').val() == 'False';
     }
 }

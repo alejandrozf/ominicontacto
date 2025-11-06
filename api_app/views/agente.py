@@ -676,7 +676,7 @@ class ApiConsultativeConferHold(APIView):
                                   'message': _('Campo requerido: "{0}"').format('target')})
         if target not in ['client', 'consultant']:
             return Response(data={'status': 'ERROR',
-                                  'message': _('Valor inválido para el campo:: "{0}"').format(
+                                  'message': _('Valor inválido para el campo: "{0}"').format(
                                       'target')})
 
         if not apps.is_installed("enterprise_app"):

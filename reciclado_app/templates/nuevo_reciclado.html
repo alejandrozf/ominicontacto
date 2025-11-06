@@ -46,6 +46,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td width="20%" style="text-align: center"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" /></td>
                     </tr>
                 {% endfor %}
+                {% if no_contactados %}
+                    <tr><td></td><td></td><td></td></tr>
+                {% endif%}
                 {% for pk, nombre, numero in no_contactados %}
                 <div class="form-row">
                     <tr>

@@ -239,8 +239,8 @@ class ReporteDeLlamadas(object):
         for log in self.logs:
             fecha = fecha_hora_local(log.time).strftime('%d-%m-%Y')
             tipo_campana = str(log.tipo_campana)
-            # Patch OML-2663 <--
-            if tipo_campana == '-1':
+            # Patch OML-2663 + 3229 <--
+            if tipo_campana != self.tipo_por_campana[log.campana_id]:
                 logger.error(f'Log con tipo_campana erroneo: {log.id}')
                 tipo_campana = self.tipo_por_campana[log.campana_id]
                 log.tipo_campana = int(tipo_campana)

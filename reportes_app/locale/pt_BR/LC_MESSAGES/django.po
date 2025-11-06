@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-17 15:14-0300\n"
+"POT-Creation-Date: 2025-11-05 12:51-0300\n"
 "PO-Revision-Date: 2020-03-24 12:08-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -205,7 +205,7 @@ msgid "On Whatsapp"
 msgstr "On WhatsApp"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:61
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:512
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:514
 #, python-brace-format
 msgid ""
 "ArchivoDeReporteCsv: Ya existe archivo CSV de reporte para la campana {0}. "
@@ -220,7 +220,7 @@ msgstr ""
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:217
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:175
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:308
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:427
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:429
 #: reportes_app/templates/reporte_agente.html:29
 #: reportes_app/templates/reporte_grafico_campana.html:239
 #: reportes_app/templates/reportes_agentes_tiempos.html:123
@@ -376,7 +376,7 @@ msgid "FUERA DE CAMPAÑA"
 msgstr "FORA DE CAMPANHA"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:294
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:545
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:547
 #, python-brace-format
 msgid ""
 "obtener_url_reporte_csv_descargar(): NO existe archivo CSV de descarga para "
@@ -670,7 +670,7 @@ msgstr "Chamada Atendida Sem Qualificação"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:155
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:156
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:355
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:357
 msgid "Fuera de base"
 msgstr "Fora da base"
 
@@ -687,36 +687,36 @@ msgstr "Número de telefone contatado"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:173
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:303
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:425
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:427
 msgid "Fecha-Hora Contacto"
 msgstr "Contato Data/Hora"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:174
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:304
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:426
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:428
 msgid "Tel status"
 msgstr "Tel status"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:176
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:310
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:428
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:430
 msgid "Callid"
 msgstr "Callid"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:177
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:311
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:429
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:431
 msgid "Tipo llamada"
 msgstr "Tipo chamada"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:178
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:430
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:432
 msgid "id base de datos"
 msgstr "id base de dados"
 
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:179
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:309
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:431
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:433
 msgid "base de datos"
 msgstr "base de dados"
 
@@ -740,7 +740,7 @@ msgstr "Comentários"
 msgid "Tel contactado"
 msgstr "Tel contato"
 
-#: reportes_app/reportes/reporte_llamados_contactados_csv.py:423
+#: reportes_app/reportes/reporte_llamados_contactados_csv.py:425
 msgid "Telefono de llamada"
 msgstr "Número de telefone"
 
@@ -840,6 +840,7 @@ msgid "Calificación"
 msgstr "Qualifacação"
 
 #: reportes_app/templates/calificaciones_campana.html:117
+#: reportes_app/templates/reporte_de_resultados.html:89
 msgid "Subcalificación"
 msgstr "Subqualifacação"
 
@@ -878,22 +879,22 @@ msgid "No se encontraron Calificaciones para esta campaña."
 msgstr "Não foram encontradas qualificações para esta campanha."
 
 #: reportes_app/templates/calificaciones_campana.html:199
-#: reportes_app/templates/reporte_de_resultados.html:124
+#: reportes_app/templates/reporte_de_resultados.html:126
 msgid "Principio"
 msgstr "Princípio"
 
 #: reportes_app/templates/calificaciones_campana.html:205
-#: reportes_app/templates/reporte_de_resultados.html:130
+#: reportes_app/templates/reporte_de_resultados.html:132
 msgid "Anterior"
 msgstr "Anterior"
 
 #: reportes_app/templates/calificaciones_campana.html:216
-#: reportes_app/templates/reporte_de_resultados.html:143
+#: reportes_app/templates/reporte_de_resultados.html:145
 msgid "Siguiente"
 msgstr "Seguinte"
 
 #: reportes_app/templates/calificaciones_campana.html:222
-#: reportes_app/templates/reporte_de_resultados.html:149
+#: reportes_app/templates/reporte_de_resultados.html:151
 msgid "Final"
 msgstr "Final"
 
@@ -954,11 +955,11 @@ msgstr "Contar todos os contatados"
 msgid "Descargar Reporte de Todas las Contactaciones (CSV)"
 msgstr "Fazer download de Relatório de Todos os contatos realizados (CSV)"
 
-#: reportes_app/templates/reporte_de_resultados.html:89
+#: reportes_app/templates/reporte_de_resultados.html:90
 msgid "Contactación"
 msgstr "Contato"
 
-#: reportes_app/templates/reporte_de_resultados.html:105
+#: reportes_app/templates/reporte_de_resultados.html:107
 msgid "No se encontraron Contactaciones para esta campaña."
 msgstr "Não foram encontrados contatos para esta campanha."
 
@@ -1450,7 +1451,7 @@ msgstr "para a pausa"
 msgid "Exportación de CSV en proceso"
 msgstr "Exportação de CSV em processo"
 
-#: reportes_app/views_campanas_dialer_reportes.py:93
+#: reportes_app/views_campanas_dialer_reportes.py:94
 msgid ""
 "No se pudo consultar el estado actual de la campaña. Consulte con su "
 "administrador."
