@@ -9,7 +9,7 @@
 {% block content %}
   <iframe
     name="webui"
-    src="/{{ prefix }}-{{ name }}/{{ path }}"
+    src="/{{ prefix }}-{{ name }}/{{ path }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}"
     style="border: none; display: block; height: calc(100vh - 124px); margin: 0; padding: 0; width: 100%;">
   </iframe>
   <script>

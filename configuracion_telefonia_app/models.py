@@ -355,7 +355,7 @@ class DestinoEntrante(models.Model):
     IVR_STR = _('IVR')
     EXTENSION_STR = _('Extension')
     HANGUP_STR = _('HangUp')
-    SURVEY_STR = _('Encuesta')
+    SURVEY_STR = _('CX Survey')
     CUSTOM_DST_STR = _('Destino personalizado')
     VOICEMAIL_STR = _('Voicemail')
     IDENTIFICADOR_CLIENTE_STR = _('Identificador cliente')
@@ -372,6 +372,7 @@ class DestinoEntrante(models.Model):
         (CUSTOM_DST, CUSTOM_DST_STR),
         (MENU_INTERACTIVO_WHATSAPP, MENU_INTERACTIVO_WHATSAPP_STR),
         (AGENTE, AGENTE_STR),
+        (SURVEY, SURVEY_STR),
         (CLOSING_MESSAGE, CLOSING_MESSAGE_STR),
     )
     nombre = models.CharField(max_length=128)

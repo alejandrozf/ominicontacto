@@ -10,6 +10,7 @@
                 &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
             </a>
         </td>
+        <td>{{ campana.queue_campana.destino_dialer.get_tipo_display }}</td>
         <td>{{ campana.queue_campana.maxlen }}</td>
         <td>
             {{ campana.fecha_inicio|date:"d/m/Y" }}
@@ -60,6 +61,11 @@
                     </a>
                     <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                         <span class="icon icon-graph"></span>{% trans 'Reportes' %}
+                    </a>
+                    <a
+                        class="dropdown-item {% if campana.queue_campana.destino_dialer.tipo != campana.queue_campana.destino_dialer.SURVEY %}disabled{% endif %}" 
+                        href="{% url 'webui' name='survey' path='SurveyReport/' %}{{ campana.queue_campana.destino_dialer.content_object.id }}?campaign={{ campana.pk }}">
+                        <span class="icon icon-graph"></span>{% trans 'Reportes CX Survey' %}
                     </a>
                     <a id="camp-{{campana.pk}}-add-one" class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
                         <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}

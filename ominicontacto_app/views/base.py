@@ -309,7 +309,7 @@ class WebUI(TemplateView):
     NOTICE: impl of url+view+template are hard-coded, but works for now
     """
     prefix = "webui"
-    repath = f"{prefix}/(?P<name>[^/]+)/(?P<path>.+)"
+    repath = f"{prefix}/(?P<name>[^/]+)/(?P<path>.*)"
 
     extra_context = {"prefix": prefix}
     template_name = "webui.html"
