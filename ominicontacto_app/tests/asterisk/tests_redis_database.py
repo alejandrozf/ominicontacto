@@ -224,6 +224,8 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'SHOWCAMPNAME': self.campana_entrante.nombre,
             'SHOWDID': 'False',
             'SHOWINROUTENAME': 'False',
+            'TRANSCRIPTION_PER': 100,
+            'RESUME_PER': 100,
         }
         family = CampanaFamily()
 
@@ -253,6 +255,8 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'SHOWCAMPNAME': self.campana_dialer.nombre,
             'SHOWDID': 'False',
             'SHOWINROUTENAME': 'False',
+            'TRANSCRIPTION_PER': 100,
+            'RESUME_PER': 100,
         }
         family = CampanaFamily()
 
@@ -282,6 +286,8 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'SHOWCAMPNAME': self.campana_manual.nombre,
             'SHOWDID': 'False',
             'SHOWINROUTENAME': 'False',
+            'TRANSCRIPTION_PER': 100,
+            'RESUME_PER': 100,
         }
         family = CampanaFamily()
 
@@ -311,6 +317,8 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'SHOWCAMPNAME': self.campana_preview.nombre,
             'SHOWDID': 'False',
             'SHOWINROUTENAME': 'False',
+            'TRANSCRIPTION_PER': 100,
+            'RESUME_PER': 100,
         }
         family = CampanaFamily()
 

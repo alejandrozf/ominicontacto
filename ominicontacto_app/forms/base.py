@@ -362,7 +362,8 @@ class QueueEntranteForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
-                  'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
+                  'strategy', 'weight', 'wait', 'summarize_percentage',
+                  'transcription_percentage', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino_failover', 'destino_failover', 'ivr_breakdown',
                   'announce_holdtime', 'announce_position', 'musiconhold',
@@ -375,6 +376,8 @@ class QueueEntranteForm(forms.ModelForm):
             'wait': _('En segundos'),
             'wrapuptime': _('En segundos'),
             'wait_announce_frequency': _('En segundos'),
+            'summarize_percentage': _('Porcentaje (0-100)'),
+            'transcription_percentage': _('Porcentaje (0-100)'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -388,6 +391,10 @@ class QueueEntranteForm(forms.ModelForm):
             'announce_holdtime': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
             'wait': forms.TextInput(attrs={'class': 'form-control'}),
+            'summarize_percentage': forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+            'transcription_percentage': forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0, 'max': 100}),
             'audios': forms.Select(attrs={'class': 'form-control'}),
             'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
@@ -1932,7 +1939,8 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores', 'musiconhold',
+                  'wait', 'summarize_percentage', 'transcription_percentage', 'auto_grabacion',
+                  'campana', 'detectar_contestadores', 'musiconhold',
                   'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
                   'dial_timeout', 'tipo_destino_failover', 'tipo_destino_dialer',
                   'destino_failover', 'destino_dialer',
@@ -1947,6 +1955,10 @@ class QueueDialerForm(forms.ModelForm):
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
+            'summarize_percentage': forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+            'transcription_percentage': forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0, 'max': 100}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
             "initial_boost_factor": forms.NumberInput(
                 attrs={'class': 'form-control', 'min': 0.1, 'max': 5}),
@@ -1966,6 +1978,8 @@ class QueueDialerForm(forms.ModelForm):
             definido en la ruta saliente. En segundos"""),
             'wrapuptime': _('En segundos'),
             'wait': _('En segundos'),
+            'summarize_percentage': _('Porcentaje (0-100)'),
+            'transcription_percentage': _('Porcentaje (0-100)'),
         }
 
     def clean(self):
@@ -2048,6 +2062,8 @@ class QueueDialerForm(forms.ModelForm):
         if not instance.pk:
             self.initial['wrapuptime'] = 2
             self.initial['auto_grabacion'] = True
+            self.initial['summarize_percentage'] = 0
+            self.initial['transcription_percentage'] = 0
 
 
 ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
@@ -2088,6 +2104,18 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False, initial=True)
     detectar_contestadores = forms.BooleanField(required=False)
+    summarize_percentage = forms.IntegerField(
+        min_value=0,
+        max_value=100,
+        initial=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+        label=_('Porcentaje a resumir (0-100)'))
+    transcription_percentage = forms.IntegerField(
+        min_value=0,
+        max_value=100,
+        initial=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+        label=_('Porcentaje a transcribir (0-100)'))
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -2104,6 +2132,17 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
             # self.fields['tipo_interaccion'].required = False
+        if instance and instance.pk:
+            try:
+                queue = instance.queue_campana
+            except Queue.DoesNotExist:
+                queue = None
+            if queue:
+                self.initial.setdefault('summarize_percentage', queue.summarize_percentage)
+                self.initial.setdefault('transcription_percentage', queue.transcription_percentage)
+        else:
+            self.initial.setdefault('summarize_percentage', 0)
+            self.initial.setdefault('transcription_percentage', 0)
 
     class Meta:
         model = Campana
@@ -2132,6 +2171,18 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
 class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False, initial=True)
+    summarize_percentage = forms.IntegerField(
+        min_value=0,
+        max_value=100,
+        initial=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+        label=_('Porcentaje a resumir (0-100)'))
+    transcription_percentage = forms.IntegerField(
+        min_value=0,
+        max_value=100,
+        initial=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+        label=_('Porcentaje a transcribir (0-100)'))
     campo_direccion_choice = forms.CharField(
         required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     telefono_habilitado = forms.BooleanField(required=False, disabled=True)
@@ -2146,6 +2197,17 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             # self.fields['tipo_interaccion'].required = False
+        if instance and instance.pk:
+            try:
+                queue = instance.queue_campana
+            except Queue.DoesNotExist:
+                queue = None
+            if queue:
+                self.initial.setdefault('summarize_percentage', queue.summarize_percentage)
+                self.initial.setdefault('transcription_percentage', queue.transcription_percentage)
+        else:
+            self.initial.setdefault('summarize_percentage', 0)
+            self.initial.setdefault('transcription_percentage', 0)
 
     class Meta:
         model = Campana

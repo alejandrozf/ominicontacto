@@ -146,6 +146,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
 
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
+        summarize_percentage = campana_form.cleaned_data['summarize_percentage']
+        transcription_percentage = campana_form.cleaned_data['transcription_percentage']
 
         queue = Queue.objects.create(
             campana=campana,
@@ -160,6 +162,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             setinterfacevar=True,
             weight=0,
             wait=120,
+            summarize_percentage=summarize_percentage,
+            transcription_percentage=transcription_percentage,
             auto_grabacion=auto_grabacion)
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
@@ -208,15 +212,21 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         campana = self.get_form_instance(step)
         if step == self.INICIAL:
             initial['auto_grabacion'] = campana.queue_campana.auto_grabacion
+            initial['summarize_percentage'] = campana.queue_campana.summarize_percentage
+            initial['transcription_percentage'] = campana.queue_campana.transcription_percentage
         return initial
 
     def _save_forms(self, form_list, **kwargs):
         campana_form = list(form_list)[int(self.INICIAL)]
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
+        summarize_percentage = campana_form.cleaned_data['summarize_percentage']
+        transcription_percentage = campana_form.cleaned_data['transcription_percentage']
         campana = campana_form.instance
         queue = campana.queue_campana
         queue.auto_grabacion = auto_grabacion
+        queue.summarize_percentage = summarize_percentage
+        queue.transcription_percentage = transcription_percentage
         queue.save()
         offset = 1
         if campana.whatsapp_habilitado:
@@ -299,7 +309,10 @@ class CampanaManualTemplateCreateCampanaView(
         if step == self.INICIAL:
             pk = self.kwargs.get('pk_campana_template', None)
             campana_template = get_object_or_404(Campana, pk=pk)
-            initial['auto_grabacion'] = campana_template.queue_campana.auto_grabacion
+            qc = campana_template.queue_campana
+            initial['auto_grabacion'] = qc.auto_grabacion
+            initial['summarize_percentage'] = qc.summarize_percentage
+            initial['transcription_percentage'] = qc.transcription_percentage
         return initial
 
 

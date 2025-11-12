@@ -1795,6 +1795,14 @@ class Queue(models.Model):
                                          verbose_name='Grabar llamados')
     detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
+    summarize_percentage = models.PositiveSmallIntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        verbose_name='Porcentaje a resumir')
+    transcription_percentage = models.PositiveSmallIntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        verbose_name='Porcentaje a transcribir')
 
     # TODO: OML-496 Borrar, usar 'audios.audio_asterisk.name'
     # announcements

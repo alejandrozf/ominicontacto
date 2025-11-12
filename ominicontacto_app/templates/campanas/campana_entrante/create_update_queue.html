@@ -111,6 +111,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.servicelevel.errors }}
         </div>
     </div>
+    <div class="form-row">
+        <div class="col-md-3">
+            <label for="{{ form.transcription_percentage.id_for_label }}">{% trans 'Porcentaje a transcribir:' %}</label>
+            {{ form.transcription_percentage }}
+            {{ form.transcription_percentage.errors }}
+        </div>
+        <div class="col-md-3">
+            <label for="{{ form.summarize_percentage.id_for_label }}">{% trans 'Porcentaje a resumir:' %}</label>
+            {{ form.summarize_percentage }}
+            {{ form.summarize_percentage.errors }}
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <label><h3>{% trans 'Destino en caso de timeout:' %}</h3></label>

@@ -98,6 +98,16 @@
                 </small>
             </div>
             <div class="col-md-6">
+                <label for="{{ form.transcription_percentage.id_for_label }}">{% trans 'Porcentaje a transcribir:' %}</label>
+                {{ form.transcription_percentage }}
+                {{ form.transcription_percentage.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.summarize_percentage.id_for_label }}">{% trans 'Porcentaje a resumir:' %}</label>
+                {{ form.summarize_percentage }}
+                {{ form.summarize_percentage.errors }}
+            </div>
+            <div class="col-md-6">
                 <label>{% trans 'Grabar llamados:' %}</label>
                 {{ form.auto_grabacion }}
                 {{ form.auto_grabacion.errors }}

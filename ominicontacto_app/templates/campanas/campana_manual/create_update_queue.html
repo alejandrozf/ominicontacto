@@ -77,6 +77,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               {{ form.wait }}
         </div>
     </div>
+        <div class="form-group row">
+        {{ form.transcription_percentage.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.transcription_percentage.id_for_label }}">{% trans 'Porcentaje a transcribir:' %}</label>
+        <div class="col-sm-3">
+              {{ form.transcription_percentage }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.summarize_percentage.errors }}
+        <label class="col-sm-3 control-label" for="{{ form.summarize_percentage.id_for_label }}">{% trans 'Porcentaje a resumir:' %}</label>
+        <div class="col-sm-3">
+              {{ form.summarize_percentage }}
+        </div>
+    </div>
     <div class="form-group row">
         {{ form.auto_grabacion.errors }}
         <label class="col-sm-3 control-label">{% trans 'Grabar llamados:' %}</label>

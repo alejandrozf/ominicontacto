@@ -180,7 +180,9 @@ class CampanaFamily(AbstractRedisFamily):
             'VIDEOCALL': str(campana.videocall_habilitada),
             'SHOWDID': str(campana.mostrar_did),
             'SHOWINROUTENAME': str(campana.mostrar_nombre_ruta_entrante),
-            'SHOWCAMPNAME': campana.nombre if campana.mostrar_nombre else ""
+            'SHOWCAMPNAME': campana.nombre if campana.mostrar_nombre else "",
+            'TRANSCRIPTION_PER': campana.queue_campana.transcription_percentage,
+            'RESUME_PER': campana.queue_campana.summarize_percentage,
         }
 
         if campana.queue_campana.timeout:
