@@ -9,8 +9,8 @@
       <h2>
         {{
           formToCreate
-            ? $t("views.whatsapp.line.option_form.new_title")
-            : $t("views.whatsapp.line.option_form.edit_title")
+            ? $t("views.facebook.page.option_form.new_title")
+            : $t("views.facebook.page.option_form.edit_title")
         }}
       </h2>
     </template>
@@ -20,7 +20,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Form from '@/components/supervisor/whatsapp/lines/options_form/Form';
+import Form from '@/components/supervisor/facebook/pages/options_form/Form';
 
 export default {
     props: {

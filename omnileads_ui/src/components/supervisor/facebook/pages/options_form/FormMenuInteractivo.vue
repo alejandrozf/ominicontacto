@@ -53,177 +53,6 @@
           }}
         </small>
       </div>
-      <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error':
-              (isEmptyField(interactiveForm.menu_body) || isNoValidLen(interactiveForm.menu_body, 1024))&& submitted,
-          }"
-          >{{
-            $t("models.whatsapp.line.interactive_form.menu_body")
-          }}*</label
-        >
-        <div class="p-inputgroup mt-2">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-comment"></i>
-          </span>
-          <InputText
-            :class="{
-              'p-invalid':
-              (isEmptyField(interactiveForm.menu_body) || isNoValidLen(interactiveForm.menu_body, 1024)) && submitted,
-            }"
-            v-model="interactiveForm.menu_body"
-          />
-        </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 1024
-            }
-          )
-        }}</small>
-        <div
-          v-if="isEmptyField(interactiveForm.menu_body) && submitted"
-        >
-          <small class="p-error">
-            {{
-              $t(
-                "forms.whatsapp.line.validations.field_is_required",
-                {
-                  field: $t(
-                    "models.whatsapp.line.interactive_form.menu_body"
-                  ),
-                }
-              )
-            }}
-          </small>
-        </div>
-        <div
-          v-if="isNoValidLen(interactiveForm.menu_body, 1024) && submitted"
-        >
-        <small class="p-error">
-          {{
-            $t(
-              "forms.whatsapp.line.validations.max_len",
-              {
-                max_len:1024
-              }
-            )
-          }}
-        </small>
-        </div>
-      </div>
-    </div>
-    <div class="grid formgrid">
-      <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error':
-              isNoValidLen(interactiveForm.menu_footer, 60) && submitted,
-          }"
-        >{{
-            $t("models.whatsapp.line.interactive_form.menu_footer")
-          }}</label
-        >
-        <div class="p-inputgroup mt-2">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-comment"></i>
-          </span>
-          <InputText
-          :class="{
-            'p-invalid':
-             isNoValidLen(interactiveForm.menu_footer, 60) && submitted,
-          }"
-            v-model="interactiveForm.menu_footer"
-          />
-        </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 60
-            }
-          )
-        }}</small>
-        <div
-          v-if="isNoValidLen(interactiveForm.menu_footer, 60) && submitted"
-        >
-          <small class="p-error">
-            {{
-              $t(
-                "forms.whatsapp.line.validations.max_len",
-                {
-                  max_len:60
-                }
-              )
-            }}
-          </small>
-        </div>
-      </div>
-      <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error':
-            (isEmptyField(interactiveForm.menu_button) || isNoValidLen(interactiveForm.menu_button, 20)) && submitted,
-          }"
-          >{{
-            $t("models.whatsapp.line.interactive_form.menu_button")
-          }}*</label
-        >
-        <div class="p-inputgroup mt-2">
-          <span class="p-inputgroup-addon">
-            <i class="pi pi-comment"></i>
-          </span>
-          <InputText
-            :class="{
-              'p-invalid':
-                (isEmptyField(interactiveForm.menu_button) || isNoValidLen(interactiveForm.menu_button, 20)) && submitted,
-            }"
-            v-model="interactiveForm.menu_button"
-          />
-        </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 20
-            }
-          )
-        }}</small>
-        <div
-          v-if="isEmptyField(interactiveForm.menu_button) && submitted"
-        >
-          <br />
-          <small class="p-error">
-            {{
-              $t(
-                "forms.whatsapp.line.validations.field_is_required",
-                {
-                  field: $t(
-                    "models.whatsapp.line.interactive_form.menu_button"
-                  ),
-                }
-              )
-            }}
-          </small>
-        </div>
-        <div
-        v-if="isNoValidLen(interactiveForm.menu_button, 20) && submitted"
-        >
-        <br />
-        <small class="p-error">
-          {{
-            $t(
-              "forms.whatsapp.line.validations.max_len",
-              {
-                max_len: 20
-              }
-            )
-          }}
-        </small>
-        </div>
-      </div>
     </div>
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
@@ -429,8 +258,8 @@
 import { integer, required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
-import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
-import { DESTINATION_OPTION_TYPES } from '@/globals/supervisor/whatsapp/line';
+import ModalToHandleOption from '@/components/supervisor/facebook/pages/options_form/ModalToHandleOption';
+import { DESTINATION_OPTION_TYPES } from '@/globals/supervisor/facebook/page';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -438,9 +267,6 @@ export default {
         return {
             form: {
               menuHeader: { required },
-              menuBody: { required },
-              menuFooter: { },
-              menuButton: {required },
               wrongAnswer: { required },
               successAnswer: { required },
               timeout: { required },
@@ -487,19 +313,19 @@ export default {
     },
     computed: {
         ...mapState([
-            'supWhatsappLine',
-            'supWhatsappLineOptionForm',
-            'supWhatsappLineCampaigns',
-            'supWhatsappLineOptions',
-            'supWhatsappMessageTemplates'
+            'supFacebookPage',
+            'supFacebookPageOptionForm',
+            'supFacebookPageCampaigns',
+            'supFacebookPageOptions',
+            'supFacebookPageTemplates'
         ])
     },
     methods: {
         ...mapActions([
-            'createWhatsappLineOption',
-            'updateWhatsappLineOption',
-            'initWhatsappLineOptionForm',
-            'deleteWhatsappLineOption',
+            'createFacebookPageOption',
+            'updateFacebookPageOption',
+            'initFacebookPageOptionForm',
+            'deleteFacebookPageOption',
         ]),
         isEmptyField (field = null) {
             return field === null || field === undefined || field === '';
@@ -519,19 +345,19 @@ export default {
         },
         getDestination (data) {
             if (data.type_option === DESTINATION_OPTION_TYPES.CAMPAIGN){
-              const campaign = this.supWhatsappLineCampaigns.find((c) => c.id === data.destination);
+              const campaign = this.supFacebookPageCampaigns.find((c) => c.id === data.destination);
               if (campaign) {
                   return `${campaign.name}`;
               } else {
                   return '----------';
               }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.INTERACTIVE) {
-              const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
+              const menu = this.supFacebookPage.destination.data.find((c) => c.id_tmp === data.destination);
               if (menu.menu_header){
                 return `${menu.menu_header}`;
               }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.CLOSING_MESSAGE) {
-              const template = this.supWhatsappMessageTemplates.find((c) => c.id === data.destination);
+              const template = this.supFacebookPageTemplates.find((c) => c.id === data.destination);
               if (template) {
                   return `${template.name}`;
               } else {
@@ -544,18 +370,19 @@ export default {
             this.formToCreate = formToCreate;
         },
         newOption () {
-            this.initWhatsappLineOptionForm({});
+            this.initFacebookPageOptionForm({});
             this.showModal = true;
             this.formToCreate = true;
         },
         edit (option) {
+            console.log("option >>>>", option);
             this.showModal = true;
             this.formToCreate = false;
-            this.initWhatsappLineOptionForm(option);
+            this.initFacebookPageOptionForm(option);
         },
         remove (option) {
             const id = option.id ? option.id : option.index
-            this.deleteWhatsappLineOption({
+            this.deleteFacebookPageOption({
               id: id, menuId: this.interactiveForm.id_tmp
             });
             this.$swal(
@@ -568,14 +395,14 @@ export default {
         },
         delete_menu (menuId) {
           if (menuId !=0){
-            this.supWhatsappLine.destination.data = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== menuId);
+            this.supFacebookPage.destination.data = this.supFacebookPage.destination.data.filter(item => item.id_tmp !== menuId);
           }
         }
     },
     watch: {
-      supWhatsappLineOptions: {
+      supFacebookPageOptions: {
             handler () {
-              this.supWhatsappLineOptions.forEach(({menuId, ...option})=>{
+              this.supFacebookPageOptions.forEach(({menuId, ...option})=>{
                 if (option.index !== undefined && menuId === this.interactiveForm.id_tmp) {
                   if (this.interactiveForm.options){
                     const idx = this.interactiveForm.options.findIndex(({index}) => index === option.index)

@@ -189,7 +189,7 @@ export default {
                         app_id: page.app_id,
                         page_id: page.page_id,
                         destination: page.destination,
-                        horario: page.schedule,
+                        horario: page.horario,
                         mensaje_bienvenida: page.welcome_message,
                         mensaje_despedida: page.farewell_message,
                         mensaje_fueradehora: page.afterhours_message

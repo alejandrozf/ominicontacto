@@ -29,7 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 from whatsapp_app.models import MenuInteractivoWhatsapp, Linea, PlantillaMensaje
-from facebook_meta_app.models import PaginaMetaFacebook
+from facebook_meta_app.models import MenuInteractivoMessengerMetaApp, PaginaMetaFacebook
 
 import os
 import re
@@ -350,6 +350,7 @@ class DestinoEntrante(models.Model):
     MENU_INTERACTIVO_WHATSAPP = 10
     AGENTE = 11
     CLOSING_MESSAGE = 12
+    MENU_INTERACTIVO_MESSENGER_META_APP = 13
 
     CAMPANA_STR = _('Campaña entrante')
     VALIDACION_FECHA_HORA_STR = _('Validación de fecha/hora')
@@ -363,6 +364,7 @@ class DestinoEntrante(models.Model):
     MENU_INTERACTIVO_WHATSAPP_STR = _('Menú Interactivo de Whatsapp')
     AGENTE_STR = _('Agente')
     CLOSING_MESSAGE_STR = _('Mensaje de Cierre')
+    MENU_INTERACTIVO_MESSENGER_META_APP_STR = _('Menú Interactivo de Messenger Meta App')
 
     TIPOS_DESTINOS = (
         (CAMPANA, CAMPANA_STR),
@@ -375,6 +377,7 @@ class DestinoEntrante(models.Model):
         (AGENTE, AGENTE_STR),
         (SURVEY, SURVEY_STR),
         (CLOSING_MESSAGE, CLOSING_MESSAGE_STR),
+        (MENU_INTERACTIVO_MESSENGER_META_APP, MENU_INTERACTIVO_MESSENGER_META_APP_STR),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -412,6 +415,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.SURVEY
         elif isinstance(info_nodo_entrante, PlantillaMensaje):
             tipo = cls.CLOSING_MESSAGE
+        elif isinstance(info_nodo_entrante, MenuInteractivoMessengerMetaApp):
+            tipo = cls.MENU_INTERACTIVO_MESSENGER_META_APP
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -479,7 +484,6 @@ class DestinoEntrante(models.Model):
         q_paginas_directo = Q(destino_id=self.id)
 
         return PaginaMetaFacebook.objects.filter(q_paginas_directo)
-
 
 
 class OpcionDestino(models.Model):

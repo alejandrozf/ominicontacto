@@ -38,8 +38,9 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView, FormView
 
-from ominicontacto_app.forms.base import (CampanaConfiguracionMetaFacebookForm, CampanaPreviewForm, OpcionCalificacionFormSet,
-                                          ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+from ominicontacto_app.forms.base import (CampanaConfiguracionMetaFacebookForm, CampanaPreviewForm,
+                                          OpcionCalificacionFormSet, ParametrosCrmFormSet,
+                                          CampanaSupervisorUpdateForm,
                                           QueueMemberFormset, AsignacionContactosForm,
                                           OrdenarAsignacionContactosForm,
                                           CampanaPreviewCampoDesactivacion,
@@ -81,7 +82,8 @@ class CampanaPreviewMixin(CampanaWizardMixin):
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_preview/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_preview/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_preview/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
@@ -157,7 +159,7 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html"}
 

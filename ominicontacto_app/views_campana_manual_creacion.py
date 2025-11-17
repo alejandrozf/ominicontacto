@@ -57,10 +57,12 @@ def mostrar_form_configuracion_whatsapp_form(wizard):
     whatasapp_habilitado = cleaned_data.get('whatsapp_habilitado', '')
     return whatasapp_habilitado
 
+
 def mostrar_form_configuracion_meta_facebook_form(wizard):
     cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
     meta_facebook_habilitado = cleaned_data.get('meta_facebook_habilitado', '')
     return meta_facebook_habilitado
+
 
 class CampanaManualMixin(CampanaWizardMixin):
     INICIAL = '0'
@@ -84,7 +86,7 @@ class CampanaManualMixin(CampanaWizardMixin):
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  CUSTOM_BASEDATOSCONTACTO: "campanas/campana_manual/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html",
@@ -154,7 +156,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
         if meta_facebook_habilitado:
-            configuracion_meta_facebook_formset = list(form_list)[int(self.CONFIGURACION_META_FACEBOOK) - offset]
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
                 configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()
@@ -219,7 +222,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
 
@@ -261,7 +264,8 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         opciones_calificacion_formset.save()
 
         if campana.meta_facebook_habilitado:
-            configuracion_meta_facebook_formset = list(form_list)[int(self.CONFIGURACION_META_FACEBOOK) - offset]
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
                 if not configuracion_meta_facebook_formset.instance.pk:
                     configuracion_meta_facebook_formset.instance.campana = campana
@@ -315,7 +319,7 @@ class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualC
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  CUSTOM_BASEDATOSCONTACTO: "campanas/campana_manual/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}

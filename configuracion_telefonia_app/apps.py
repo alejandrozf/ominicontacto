@@ -94,7 +94,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'children': whatsapp
             })
         messenger = []
-        if 'messager_pages_configuration' in permissions or True:  # Deshabilitado hasta nueva implementacion
+        if 'messager_pages_configuration' in permissions or True:  # TEMPORAL
             messenger.append({
                 'label': _('Páginas'),
                 'url': reverse('messenger_meta_configuration')

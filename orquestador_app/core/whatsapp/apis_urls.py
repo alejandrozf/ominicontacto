@@ -15,17 +15,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+URL_SEND_TEMPLATE = 'https://api.gupshup.io/wa/api/v1/template/msg'
+URL_SEND_MESSAGE = 'https://api.gupshup.io/wa/api/v1/msg'
+URL_SYNC_TEMPLATES = 'https://api.gupshup.io/wa/app/{}/template'
 
-from django.urls import path
-from django.contrib.auth.decorators import login_required
-from django.conf.urls import include
-
-from facebook_meta_app.views import MessengerMetaConfigurationView
-from facebook_meta_app.api.urls import api_urls_v1
-
-urlpatterns = [
-    path('connections/facebook/pages/',
-         login_required(MessengerMetaConfigurationView.as_view()),
-         name='messenger_meta_configuration',),
-    path('api/v1/facebook/', include((api_urls_v1, 'facebook_meta_app'), namespace='v1')),
-]
+META_URL_SEND_MESSAGE = 'https://graph.facebook.com/v22.0/{}/messages'
+META_SYNC_TEMPLATES = 'https://graph.facebook.com/v22.0/{}/message_templates'
+META_GET_MEDIA_URL = 'https://graph.facebook.com/v22.0/{}?phone_number_id={}'

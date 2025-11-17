@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from django.urls import path
 from facebook_meta_app.api import page_configuration
 from facebook_meta_app.api import campaigns
 

@@ -42,9 +42,9 @@ from whatsapp_app.models import (
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
-from orquestador_app.core.send_menssage import (
+from orquestador_app.core.whatsapp.send_message import (
     send_template_message, send_text_message, send_multimedia_file)
-from orquestador_app.core.gupshup_code_error import GUPSHUP_CODE_ERROR
+from orquestador_app.core.whatsapp.gupshup_code_error import GUPSHUP_CODE_ERROR
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
 
 redis_2 = create_redis_connection(db=2)

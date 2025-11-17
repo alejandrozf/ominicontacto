@@ -13,7 +13,7 @@ export default {
             data: null,
             type: 0
         },
-        schedule: null,
+        horario: null,
         welcome_message: null,
         goodbye_message: null,
         out_of_hours_message: null
@@ -30,7 +30,7 @@ export default {
         menuId: null
     },
     supFacebookPageOptions: [],
-    supWhatsappDestinationMenuOptions: [],
+    supFacebookPageDestinationMenuOptions: [],
     supFacebookPageIteractiveForm: {
         id_tmp: 0,
         is_main: true,

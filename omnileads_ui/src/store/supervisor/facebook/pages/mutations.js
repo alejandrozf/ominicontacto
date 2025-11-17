@@ -16,14 +16,14 @@ export default {
                 destination: {
                     data: page.destination ? page.destination.data : null,
                     type: page.destination ? page.destination.type : null,
-                    id_tmp: page.destination && page.destination.type === 10 ? page.destination.id : 0
+                    id_tmp: page.destination && page.destination.type === 13 ? page.destination.id : 0
                 },
-                schedule: page.schedule,
+                schedule: page.horario,
                 welcome_message: page.welcome_message,
                 goodbye_message: page.goodbye_message,
                 out_of_hours_message: page.out_of_hours_message
             };
-            state.supFacebookDestinationMenuOptions = page.destination ? page.destination.data : []
+            state.supFacebookPageDestinationMenuOptions = page.destination ? page.destination.data : []
             console.log('state.supFacebookPage >>>>>>>`>', state.supFacebookPage)
         } else {
             state.supFacebookPage = {
@@ -64,6 +64,7 @@ export default {
             type_option: option ? option.type_option : 0,
             destination: option ? option.destination : null,
         };
+        console.log('initFacebookPageOptionForm >>>', state.supFacebookPageOptionForm)
     },
     createFacebookPageOption (state, { data, menuId }) {
         const ultimoElemento = state.supFacebookPageOptions[state.supFacebookPageOptions.length - 1];

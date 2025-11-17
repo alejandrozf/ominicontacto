@@ -955,7 +955,6 @@ class CampanaMixinForm(object):
         return meta_facebook_habilitado
 
 
-
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     campo_direccion_choice = forms.CharField(
@@ -993,14 +992,9 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
-<<<<<<< HEAD
-                  'videocall_habilitada', 'whatsapp_habilitado', 'speech', 'control_de_duplicados',
-                  'mostrar_callid', 'permitir_calificar_telefonos')
-=======
                   'videocall_habilitada', 'whatsapp_habilitado', 'meta_facebook_habilitado',
-                  'speech', 'control_de_duplicados',
-                  'mostrar_callid')
->>>>>>> ccb2d62ab (configuracion en el supervisor de meta-facebook)
+                  'speech', 'control_de_duplicados', 'mostrar_callid',
+                  'permitir_calificar_telefonos')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -2183,13 +2177,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
                   'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
-<<<<<<< HEAD
-                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado', 'mostrar_callid',
-                  'permitir_calificar_telefonos')
-=======
                   'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado',
-                  'meta_facebook_habilitado', 'mostrar_callid')
->>>>>>> ccb2d62ab (configuracion en el supervisor de meta-facebook)
+                  'meta_facebook_habilitado', 'mostrar_callid', 'permitir_calificar_telefonos')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -2254,11 +2243,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech',
-<<<<<<< HEAD
-                  'whatsapp_habilitado', 'mostrar_callid', 'permitir_calificar_telefonos')
-=======
-                  'whatsapp_habilitado', 'meta_facebook_habilitado', 'mostrar_callid')
->>>>>>> ccb2d62ab (configuracion en el supervisor de meta-facebook)
+                  'whatsapp_habilitado', 'meta_facebook_habilitado',
+                  'mostrar_callid', 'permitir_calificar_telefonos')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
@@ -2670,6 +2656,8 @@ class CampanaConfiguracionWhatsappForm(forms.ModelForm):
             'grupo_plantilla_whatsapp': forms.Select(attrs={'class': 'form-control'}),
             'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
 class CampanaConfiguracionMetaFacebookForm(forms.ModelForm):
     class Meta:
         model = ConfiguracionMetaFacebookCampana
@@ -2679,6 +2667,7 @@ class CampanaConfiguracionMetaFacebookForm(forms.ModelForm):
             'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
             'grupo_plantilla_facebook': forms.Select(attrs={'class': 'form-control'})
         }
+
 
 class CustomBaseDatosContactoForm(forms.ModelForm):
 

@@ -191,9 +191,11 @@ def mostrar_form_configuracion_whatsapp_form(wizard):
     cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
     return cleaned_data.get('whatsapp_habilitado', '')
 
+
 def mostrar_form_configuracion_meta_facebook_form(wizard):
     cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
     return cleaned_data.get('meta_facebook_habilitado', '')
+
 
 def use_custom_basedatoscontacto_form(wizard):
     cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL)
@@ -210,7 +212,6 @@ class CampanaWizardMixin(object):
     ADICION_SUPERVISORES = '6'
     ADICION_AGENTES = '7'
     CUSTOM_BASEDATOSCONTACTO = 'custom-basedatoscontacto'
-    
 
     FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
@@ -225,7 +226,8 @@ class CampanaWizardMixin(object):
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_entrante/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_entrante/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
                  CUSTOM_BASEDATOSCONTACTO:
                  "campanas/campana_entrante/custom-basedatoscontacto.html",
@@ -342,7 +344,8 @@ class CampanaWizardMixin(object):
             context['interaccion_crm'] = tipo_interaccion in \
                 [Campana.SITIO_EXTERNO, Campana.FORMULARIO_Y_SITIO_EXTERNO]
             context['whatsapp_habilitado'] = cleaned_data_step_initial['whatsapp_habilitado']
-            context['meta_facebook_habilitado'] = cleaned_data_step_initial['meta_facebook_habilitado']
+            context['meta_facebook_habilitado'] =\
+                cleaned_data_step_initial['meta_facebook_habilitado']
             context['custom_basedatoscontacto'] = cleaned_data_step_initial['bd_contacto'] is None
         else:
             context['custom_basedatoscontacto'] = False
@@ -494,7 +497,8 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
         if meta_facebook_habilitado:
-            configuracion_meta_facebook_formset = list(form_list)[int(self.CONFIGURACION_META_FACEBOOK) - offset]
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
                 print("Guardo configuración de Meta Facebook")
                 print(configuracion_meta_facebook_formset.cleaned_data)
@@ -574,7 +578,8 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
                  COLA: "campanas/campana_entrante/create_update_queue.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_entrante/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_entrante/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_entrante/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 
@@ -606,12 +611,9 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.save()
 
         if campana.meta_facebook_habilitado:
-            configuracion_meta_facebook_formset = list(form_list)[int(self.CONFIGURACION_META_FACEBOOK) - offset]
-            print("Configuración Meta Facebook Formset cleaned data:", configuracion_meta_facebook_formset.cleaned_data)
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
-                print("Guardo configuración de Meta Facebook")
-                print("Campaña: ", campana.id)
-                print("Configuración Meta Facebook Formset instance pk:", configuracion_meta_facebook_formset.instance.pk)
                 if not configuracion_meta_facebook_formset.instance.pk:
                     configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()

@@ -343,6 +343,25 @@
                 }}</small
               >
             </div>
+                        <div
+              class="field col-12"
+              v-if="
+                form.destination_type === destinationType.INTERACTIVE
+              "
+            >
+            <div class="flex justify-content-between flex-wrap mt-4">
+              <div class="flex align-items-center justify-content-center">
+              </div>
+              <div class="flex align-items-center justify-content-center">
+              <Button
+                :label="$t('globals.new')"
+                icon="pi pi-plus"
+                @click="addInteractiveMenuItem"
+              />
+              </div>
+            </div>
+              <FormMenuInteractivo :data="menu" :submitted="submitted" v-for="menu in supFacebookPage.destination.data" :key="menu.id"></FormMenuInteractivo>
+            </div>
           </div>
         </Fieldset>
       </div>
@@ -380,17 +399,17 @@
 import { mapActions, mapState } from 'vuex';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/facebook/message_template';
 import {
     DESTINATION_TYPES_BACK,
     DESTINATION_FORM_TYPES
-} from '@/globals/supervisor/whatsapp/line';
+} from '@/globals/supervisor/facebook/page';
 import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { HTTP_STATUS } from '@/globals';
-import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
-import ModalNewGroupOfHour from '@/components/supervisor/whatsapp/lines/options_form/ModalNewGroupOfHour';
-import ModalNewMessageTemplate from '@/components/supervisor/whatsapp/lines/options_form/ModalNewMessageTemplate';
-import FormMenuInteractivo from '@/components/supervisor/whatsapp/lines/options_form/FormMenuInteractivo';
+import ModalToHandleOption from '@/components/supervisor/facebook/pages/options_form/ModalToHandleOption';
+import ModalNewGroupOfHour from '@/components/supervisor/facebook/pages/options_form/ModalNewGroupOfHour';
+import ModalNewMessageTemplate from '@/components/supervisor/facebook/pages/options_form/ModalNewMessageTemplate';
+import FormMenuInteractivo from '@/components/supervisor/facebook/pages/options_form/FormMenuInteractivo';
 
 
 export default {
@@ -607,13 +626,17 @@ export default {
             this.supFacebookPage.destination.type = this.destinationType.CAMPAIGN
         },
         getDestinationData () {
-            if (
-                this.form.destination_type ===
-        this.destinationType.CAMPAIGN
-            ) {
+            if (this.form.destination_type === this.destinationType.CAMPAIGN) {
                 return {
                     type: DESTINATION_TYPES_BACK.CAMPAIGN,
                     data: this.form.destination
+                };
+            }else if (this.form.destination_type === this.destinationType.INTERACTIVE) {
+                console.log('this.supFacebookPage.destination.data >>>', this.supFacebookPage.destination.data)
+                return {
+                    type: DESTINATION_TYPES_BACK.INTERACTIVE,
+                    data: this.supFacebookPage.destination.data,
+                    id_tmp: this.supFacebookPage.destination.id_tmp
                 };
             }
         },
@@ -653,7 +676,6 @@ export default {
               out_of_hours_message: this.form.out_of_hours_message
             };
             
-            // if(this.supWhatsappLine.proveedor.pro)
             if (this.isFormToCreate) {
               response = await this.createFacebookPage(form);
             } else {
@@ -849,12 +871,12 @@ export default {
             deep: true,
             immediate: true
         },
-        supWhatsappLineOptions: {
+        supFacebookPageOptions: {
             handler () {
                 if (
                     this.form.destination_type ===
             this.destinationType.INTERACTIVE &&
-          this.supWhatsappLineOptions.length === 0
+          this.supFacebookPageOptions.length === 0
                 ) {
                     this.isEmptyOptions = true;
                 } else {

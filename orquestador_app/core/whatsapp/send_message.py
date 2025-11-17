@@ -20,7 +20,7 @@ import requests
 import json
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from orquestador_app.core.apis_urls import (
+from .apis_urls import (
     URL_SEND_TEMPLATE, URL_SEND_MESSAGE, META_URL_SEND_MESSAGE, URL_SYNC_TEMPLATES,
     META_SYNC_TEMPLATES
 )

@@ -47,7 +47,7 @@ export default {
             };
         }
     },
-    intFacebookPageOptionForm ({ commit }, option = null) {
+    initFacebookPageOptionForm ({ commit }, option = null) {
         commit('initFacebookPageOptionForm', option);
     },
     createFacebookPageOption ({ commit }, { data, menuId }) {

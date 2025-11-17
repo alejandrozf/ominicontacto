@@ -82,6 +82,13 @@ class Linea(AuditableModelMixin):
     def status(self):
         return linea_gupshup.get_line_status(self)
 
+    @property
+    def get_stream_name(self):
+        if self.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+            return 'whatsapp_webhook_gupshup_{}'.format(self.configuracion["app_id"])
+        elif self.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+            return 'whatsapp_webhook_meta_{}'.format(self.configuracion["app_id"])
+
     def __str__(self) -> str:
         return f"Linea: {self.nombre}"
 

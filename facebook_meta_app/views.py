@@ -17,10 +17,8 @@
 #
 
 from django.views.generic import TemplateView
-from ominicontacto_app.models import Campana
 
 
 class MessengerMetaConfigurationView(TemplateView):
     """Configuración de pages de messenger"""
     template_name = "page_configuration.html"
-

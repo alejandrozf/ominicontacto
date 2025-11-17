@@ -384,19 +384,20 @@ export default {
     },
     computed: {
         ...mapState([
-            'supWhatsappLine',
-            'supWhatsappLineOptionForm',
-            'supWhatsappLineCampaigns',
-            'supWhatsappLineOptions',
-            'supWhatsappDestinationMenuOptions',
-            'supWhatsappMessageTemplates'
+            'supFacebookPage',
+            'supFacebookPageCampaigns',
+            'supFacebookPageOptions',
+            'supFacebookPageOptionForm',
+            'supFacebookPageDestinationMenuOptions',
+            'supFacebookPageTemplates'
         ])
     },
     methods: {
         ...mapActions([
-            'createWhatsappLineOption',
-            'updateWhatsappLineOption',
-            'initWhatsappLineOptionForm'
+            'createFacebookPageOption',
+            'updateFacebookPageOption',
+            'initFacebookPageOptionForm',
+            'initFacebookPageTemplates'
         ]),
         updateOption (event) {
             const newValue = event.value;
@@ -412,19 +413,20 @@ export default {
             this.submitted = false;
         },
         initFormData () {
-            this.form.id = this.supWhatsappLineOptionForm.id;
-            this.form.index = this.supWhatsappLineOptionForm.index;
-            this.form.value = this.supWhatsappLineOptionForm.value;
-            this.form.description = this.supWhatsappLineOptionForm.description;
-            this.form.type_option = this.supWhatsappLineOptionForm.type_option;
-            this.form.destination = this.supWhatsappLineOptionForm.destination;
-            this.form.destination_name = this.supWhatsappLineOptionForm.destination_name;
+            console.log('initFormData() >>>', this.supFacebookPageOptionForm);
+            this.form.id = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.id : null;
+            this.form.index = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.index : null;
+            this.form.value = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.value : null;
+            this.form.description = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.description : null;
+            this.form.type_option = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.type_option : null;
+            this.form.destination = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.destination : null;
+            this.form.destination_name = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.destination_name : null;
             this.findDestinationOptions();
             this.findDuplicated();
             // this.findMsgTemplateOptions();
         },
         findDuplicated () {
-            const duplicated = this.supWhatsappLineOptions.find(
+            const duplicated = this.supFacebookPageOptions.find(
                 (option) =>
                     option.value === this.form.value &&
           option.description === this.form.description &&
@@ -437,7 +439,7 @@ export default {
             }
         },
         findDestinationOptions() {
-          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
+          this.destinationmenuoptions = this.supFacebookPage.destination.data.filter(item => item.id_tmp !== this.menuId)
         },
         save (isFormValid) {
             this.submitted = true;
@@ -445,13 +447,13 @@ export default {
                 return null;
             }
             if (this.formToCreate) {
-                this.createWhatsappLineOption({
+                this.createFacebookPageOption({
                     data: this.form,
                     menuId: this.menuId,
                 });
             } else {
                 const id = this.form.id ? this.form.id : this.form.index
-                this.updateWhatsappLineOption({
+                this.updateFacebookPageOption({
                     id: id,
                     data: this.form,
                     menuId: this.menuId
@@ -470,30 +472,30 @@ export default {
         }
     },
     watch: {
-        supWhatsappLineOptionForm: {
+        supFacebookPageOptionForm: {
             handler () {
                 this.initFormData();
             },
             deep: true,
             immediate: true
         },
-        supWhatsappLineCampaigns: {
+        supFacebookPageCampaigns: {
             handler () {
-                if (this.supWhatsappLineCampaigns.length > 0) {
+                if (this.supFacebookPageCampaigns.length > 0) {
                     const manualCampaigns =
-            this.supWhatsappLineCampaigns.filter(
+            this.supFacebookPageCampaigns.filter(
                 (c) => c.type === CAMPAIGN_TYPES.MANUAL
             ) || [];
                     const inboundCampaigns =
-            this.supWhatsappLineCampaigns.filter(
+            this.supFacebookPageCampaigns.filter(
                 (c) => c.type === CAMPAIGN_TYPES.INBOUND
             ) || [];
                     const previewCampaigns =
-            this.supWhatsappLineCampaigns.filter(
+            this.supFacebookPageCampaigns.filter(
                 (c) => c.type === CAMPAIGN_TYPES.PREVIEW
             ) || [];
                     const dialerCampaigns =
-            this.supWhatsappLineCampaigns.filter(
+            this.supFacebookPageCampaigns.filter(
                 (c) => c.type === CAMPAIGN_TYPES.DIALER
             ) || [];
                     if (inboundCampaigns.length > 0) {
@@ -540,17 +542,18 @@ export default {
             deep: true,
             immediate: true
         },
-        supWhatsappLineOptions: {
+        supFacebookPageOptions: {
             handler () {},
             deep: true,
             immediate: true
         },
-        supWhatsappMessageTemplates: {
+        supFacebookPageTemplates: {
             handler () {
-                if (this.supWhatsappMessageTemplates.length > 0) {
+                console.log('Updating message templates...', this.supFacebookPageTemplates);
+                if (this.supFacebookPageTemplates.length > 0) {
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT
-                    ).items = this.supWhatsappMessageTemplates.filter(
+                    ).items = this.supFacebookPageTemplates.filter(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT
                     );
                 }

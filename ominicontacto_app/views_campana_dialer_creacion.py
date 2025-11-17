@@ -27,8 +27,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from ominicontacto_app.forms.base import (CampanaConfiguracionMetaFacebookForm, QueueDialerForm, SincronizaDialerForm,
-                                          ActuacionVigenteForm,
+from ominicontacto_app.forms.base import (CampanaConfiguracionMetaFacebookForm, QueueDialerForm,
+                                          SincronizaDialerForm, ActuacionVigenteForm,
                                           ReglasIncidenciaFormSet, CampanaDialerForm,
                                           OpcionCalificacionFormSet,
                                           ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
@@ -74,7 +74,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
     TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  CONFIGURACION_WHATSAPP: "campanas/campana_dialer/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
                  PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html',
@@ -171,7 +171,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
             offset = offset - 1
             offset_partial = offset_partial - 1
             opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
-            configuracion_meta_facebook_formset = list(form_list)[int(self.CONFIGURACION_META_FACEBOOK)]
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK)]
             if configuracion_meta_facebook_formset.is_valid():
                 configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()
@@ -269,7 +270,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
     TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  CONFIGURACION_WHATSAPP: "campanas/campana_dialer/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_meta_facebook.html",
+                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_facebook.html",
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
                  PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html', }

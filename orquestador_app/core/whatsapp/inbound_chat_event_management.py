@@ -25,7 +25,7 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje
 
-from orquestador_app.core.send_menssage import (
+from .send_message import (
     autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
     send_text_message)
 from orquestador_app.core.check_out_of_time import is_out_of_time
@@ -204,7 +204,7 @@ def asignar_campana(line, conversation, content, context):
                                     'type': 'text'
                                 }
                             )
-            if isinstance(destino.destino_siguiente.content_object, PlantillaMensaje):
+            elif isinstance(destino.destino_siguiente.content_object, PlantillaMensaje):
                 plantilla = destino.destino_siguiente.content_object
                 conversation.is_disposition = True
                 conversation.save()

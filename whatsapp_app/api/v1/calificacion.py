@@ -33,7 +33,7 @@ from ominicontacto_app.models import (
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
 from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
 from whatsapp_app.models import ConversacionWhatsapp
-from orquestador_app.core.send_menssage import autoresponse_goodbye
+from orquestador_app.core.whatsapp.send_message import autoresponse_goodbye
 
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
