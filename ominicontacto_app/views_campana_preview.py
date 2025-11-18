@@ -201,8 +201,11 @@ class CampanaPreviewTemplateCreateCampanaView(
         if step == self.INICIAL:
             pk = self.kwargs.get('pk_campana_template', None)
             campana_template = get_object_or_404(Campana, pk=pk)
-            initial['auto_grabacion'] = campana_template.queue_campana.auto_grabacion
+            qc = campana_template.queue_campana
+            initial['auto_grabacion'] = qc.auto_grabacion
             initial['tiempo_desconexion'] = campana_template.tiempo_desconexion
+            initial['summarize_percentage'] = qc.summarize_percentage
+            initial['transcription_percentage'] = qc.transcription_percentage
         return initial
 
     def done(self, form_list, *args, **kwargs):

@@ -107,6 +107,8 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'strategy': queue.strategy,
                 'weight': queue.weight,
                 'wait': queue.wait,
+                'summarize_percentage': queue.summarize_percentage,
+                'transcription_percentage': queue.transcription_percentage,
                 'announce_frequency': queue.announce_frequency,
                 'audio_de_ingreso': queue.audio_de_ingreso,
                 'auto_grabacion': queue.auto_grabacion,

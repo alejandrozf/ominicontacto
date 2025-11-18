@@ -152,11 +152,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
         {% endif %}
-
-        {% if calificacion_form.historico_calificaciones %}
-            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
-        {% endif %}
-
         {% endif %}
 
         <div class="form-row mb-4">
@@ -187,6 +182,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             
             {% endwith %}
         </div>
+
+        {% if calificacion_form %}
+        {% if calificacion_form.historico_calificaciones %}
+            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
+        {% endif %}
+        {% endif %}
+
         <div class="">
             <button type="submit" id="id_guardar" class="btn btn-primary">
                 {% trans 'Guardar'  %}

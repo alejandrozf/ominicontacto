@@ -158,9 +158,34 @@ class PhoneJSController {
             var pause_id = pause_data[0];
             var pause_name = pause_data[1];
             var pause_time = parseInt(pause_data[2]);
+            
+            if (self.phone_fsm.state == 'OnCall') {
+                self.view.pauseMenu.modal('hide');
+                // Programo la pausa LUEGO de cerrar modal de pausa
+                self.pause_manager.setNextPause(pause_id, pause_name, pause_time);
+                $.growl.notice({
+                    title: gettext('Pausa programada:'),
+                    message: pause_name,
+                    duration: 5000
+                });
+                return;
+            }
+
             clearTimeout(self.ACW_pause_timeout_handler);
             clearTimeout(self.pause_timeout_handler);
             self.setPause(pause_id, pause_name, pause_time);
+        });
+
+        this.view.pauseMenu.on('hide.bs.modal', function (e) {
+            // Al cerrar modal de pausa, si tiene pausa programada la cancelo.
+            if(self.pause_manager.has_programmed_pause){
+                $.growl.notice({
+                    title: gettext('Pausa desprogramada:'),
+                    message: self.pause_manager.next_pause_name,
+                    duration: 5000
+                });
+                self.pause_manager.unsetNextPause();
+            }
         });
 
         this.view.hangUpButton.click(function() {
@@ -869,14 +894,24 @@ class PhoneJSController {
     }
 
     callEndTransition() {
+
+        this.view.setConferenceAgent('', 'orange');
+        self.view.disableConferenceHold();
+        var call_auto_unpause = this.phone.session_data.remote_call.auto_unpause;
+        this.phone.cleanLastCallData();
+
+        if (this.pause_manager.has_programmed_pause){
+            this.setPause(this.pause_manager.next_pause_id, this.pause_manager.next_pause_name,
+                this.pause_manager.next_pause_time);
+            return;
+        }
+
         var return_to_pause = this.pause_manager.pause_enabled && !this.pause_manager.in_ACW_pause;
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
         var pause_name = return_to_pause? this.pause_manager.pause_name: undefined;
 
         // Al finalizar la llamada se manda el agente a Pausa forzada.
         var self = this;
-        var call_auto_unpause = this.phone.session_data.remote_call.auto_unpause;
-        this.phone.cleanLastCallData();
         this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
 
         // Si se fuerza la calificación no se sale automaticamente de Pausa forzada
@@ -905,8 +940,6 @@ class PhoneJSController {
                 m_seconds
             );
         }
-        self.view.setConferenceAgent('', 'orange');
-        self.view.disableConferenceHold();
         // else { Stay in ACW Pause }:
     }
 
@@ -1403,18 +1436,33 @@ class PauseManager {
         this.pause_name = undefined;
         this.pause_time = undefined;
         this.pause_enabled = false;
+        this.unsetNextPause();
     }
     setPause(id, name, time) {
         this.pause_id = id;
         this.pause_name = name;
         this.pause_time = time;
         this.pause_enabled = true;
+        this.unsetNextPause();
     }
     leavePause() {
         this.initPause();
     }
     get in_ACW_pause() {
         return this.pause_enabled && this.pause_id == ACW_PAUSE_ID;
+    }
+    setNextPause(id, name, time = 0) {
+        this.next_pause_id = id;
+        this.next_pause_name = name;
+        this.next_pause_time = time;
+    }
+    unsetNextPause() {
+        this.next_pause_id = undefined;
+        this.next_pause_name = undefined;
+        this.next_pause_time = undefined;
+    }
+    get has_programmed_pause() {
+        return this.next_pause_id != undefined;
     }
 }
 

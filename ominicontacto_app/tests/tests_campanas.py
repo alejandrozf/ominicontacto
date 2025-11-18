@@ -241,7 +241,9 @@ class CampanasTests(OMLBaseTest):
                                 'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                 'objetivo': 1,
                                 'sitio_externo': sitio_externo.pk,
-                                'tiempo_desconexion': 2}
+                                'tiempo_desconexion': 2,
+                                'summarize_percentage': 50,
+                                'transcription_percentage': 50}
         campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
         message = _('No se puede elegir un URL externo si selecciono un formulario.')
         self.assertEqual(campana_preview_form.errors['sitio_externo'], [message])
@@ -293,7 +295,9 @@ class CampanasTests(OMLBaseTest):
                                 'tipo_interaccion': Campana.FORMULARIO,
                                 'control_de_duplicados': Campana.EVITAR_DUPLICADOS,
                                 'objetivo': 1,
-                                'tiempo_desconexion': 2}
+                                'tiempo_desconexion': 2,
+                                'summarize_percentage': 50,
+                                'transcription_percentage': 50}
         campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
         message = _('No puede seleccionar una BD vacia')
         self.assertEqual(campana_preview_form.errors['bd_contacto'], [message])
@@ -713,7 +717,9 @@ class SupervisorCampanaTests(CampanasTests):
                                 'tipo_interaccion': Campana.FORMULARIO,
                                 'auto_grabacion': True,
                                 'objetivo': 1,
-                                'tiempo_desconexion': tiempo_desconexion}
+                                'tiempo_desconexion': tiempo_desconexion,
+                                'summarize_percentage': 50,
+                                'transcription_percentage': 50}
         campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
         message = _('Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION))
         self.assertEqual(campana_preview_form.errors['tiempo_desconexion'], [message])
@@ -738,6 +744,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-weight': 1,
             '1-wrapuptime': 2,
             '1-wait': 1,
+            '1-transcription_percentage': 50,
+            '1-summarize_percentage': 50,
             '1-auto_grabacion': 'on',
             '1-audios': audio_ingreso.pk,
             '1-announce_frequency': 1,
@@ -835,6 +843,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-weight': 1,
             '1-wait': 1,
             '1-auto_grabacion': 'on',
+            '1-transcription_percentage': 50,
+            '1-summarize_percentage': 50,
             '1-audios': audio_ingreso.pk,
             '1-announce_frequency': 1,
             '1-name': nombre_campana,
@@ -942,6 +952,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-auto_grabacion': 'on',
             '1-detectar_contestadores': 'on',
             '1-audio_para_contestadores': audio_ingreso.pk,
+            '1-transcription_percentage': 50,
+            '1-summarize_percentage': 50,
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
             '1-dial_timeout': 25,
@@ -989,6 +1001,8 @@ class SupervisorCampanaTests(CampanasTests):
             '0-tipo_interaccion': self.campana.tipo_interaccion,
             '0-control_de_duplicados': self.campana.control_de_duplicados,
             '0-objetivo': 0,
+            '0-summarize_percentage': 50,
+            '0-transcription_percentage': 50,
             'campana_manual_create_view-current_step': 0,
             '0-whatsapp_habilitado': False
         }

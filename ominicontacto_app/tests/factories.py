@@ -309,6 +309,8 @@ class QueueFactory(DjangoModelFactory):
     setinterfacevar = True
 
     wait = lazy_attribute(lambda a: faker.random_number(5))
+    summarize_percentage = 100
+    transcription_percentage = 100
 
 
 class AgenteEnContactoFactory(DjangoModelFactory):

@@ -421,7 +421,8 @@ var PHONE_STATUS_CONFIGS = {
     },
     'OnCall': {
         keypad_enabled: true,
-        enabled_buttons: ['onHold', 'Transfer', 'dtmf','endCall', 'SignCall', 'recordCall'],
+        enabled_buttons: ['onHold', 'Transfer', 'dtmf','endCall', 'SignCall', 'recordCall',
+            'Pause'],
         color: '#8fc641',
     },
     'DialingTransfer': {
