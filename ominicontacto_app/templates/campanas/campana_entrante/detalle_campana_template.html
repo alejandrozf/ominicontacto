@@ -63,6 +63,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{object.queue_campana.wait}}</td>
             </tr>
             <tr>
+                <td>{% trans 'Porcentaje a resumir' %}:</td>
+                <td>{{ object.queue_campana.summarize_percentage }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Porcentaje a transcribir' %}:</td>
+                <td>{{ object.queue_campana.transcription_percentage }}</td>
+            </tr>
+            <tr>
                 <td>{% trans 'Grabar llamados' %}:</td>
                 <td>
                     {% if object.queue_campana.auto_grabacion %}
