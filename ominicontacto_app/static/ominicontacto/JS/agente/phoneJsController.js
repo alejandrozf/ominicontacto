@@ -896,7 +896,7 @@ class PhoneJSController {
     callEndTransition() {
 
         this.view.setConferenceAgent('', 'orange');
-        self.view.disableConferenceHold();
+        this.view.disableConferenceHold();
         var call_auto_unpause = this.phone.session_data.remote_call.auto_unpause;
         this.phone.cleanLastCallData();
 
