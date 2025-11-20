@@ -2717,6 +2717,27 @@ class CalificacionTelefonoForm(forms.ModelForm):
         opciones_personalizadas = kwargs.pop('opciones', None)
         super().__init__(*args, **kwargs)
 
+        # Estos campos solo reciben un valor fijo y no deberían renderizar selects
+        # con todos los objetos de la base. Limitar el queryset evita construir
+        # listas enormes y las entradas ocultas reducen el HTML generado.
+        for field_name in ('campana', 'contacto', 'agente'):
+            self.fields[field_name].widget = forms.HiddenInput()
+            self.fields[field_name].required = False
+
+        contacto_id = self.initial.get('contacto') or getattr(self.instance, 'contacto_id', None)
+        if contacto_id:
+            self.fields['contacto'].queryset = Contacto.objects.filter(pk=contacto_id)
+
+        campana_id = self.initial.get('campana') or getattr(self.instance, 'campana_id', None)
+        if campana_id:
+            self.fields['campana'].queryset = Campana.objects.filter(pk=campana_id)
+
+        agente_id = self.initial.get('agente') or getattr(self.instance, 'agente_id', None)
+        if agente_id:
+            self.fields['agente'].queryset = AgenteProfile.objects.filter(pk=agente_id)
+
+        self.fields['campo_contacto'].widget = forms.HiddenInput()
+
         if opciones_personalizadas:
             self.fields['calificacion'].widget.choices = opciones_default + opciones_personalizadas
         else:
