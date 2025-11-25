@@ -29,9 +29,9 @@ from ominicontacto_app.services.asterisk.redis_database import (
 )
 
 import logging
-import os
 
 from django.utils.translation import gettext as _
+from django.apps import apps
 
 from constance import config
 from ominicontacto_app.errors import OmlError
@@ -139,10 +139,21 @@ class RegeneracionAsteriskService(object):
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._regenerar_redis_data()
+        self._regenerar_redis_data_enterprise()
         self._reenviar_archivos_playlist_asterisk()
         self._reenviar_archivos_audio_asterisk()
-        if not os.getenv('WALLBOARD_VERSION', '') == '':
+
+    def _regenerar_redis_data_enterprise(self):
+        # Regenera datos necesarios en redis para Addons Enterprise
+        print('# Regenera datos necesarios en redis para Addons Enterprise')
+        if apps.is_installed("wallboard_app"):
+            print('# Regenera datos Wallboard App')
             from wallboard_app.redis.regeneracion import (
                 regenerar_wallboard_data
             )
             regenerar_wallboard_data()
+        if apps.is_installed("survey_app"):
+            print('# Regenera datos SurveyApp')
+            from survey_app.api.redis_family import SurveyFamily
+            sf = SurveyFamily()
+            sf.regenerar_families()
