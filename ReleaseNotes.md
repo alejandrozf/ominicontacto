@@ -12,7 +12,8 @@
 
 ## Fixed
 
-- No fixes this release.
+- oml-3239 Added Survey families regeneration.
+- oml-3233 Only new inbound contacts calls can omit disposition.
 
 ## Removed
 
