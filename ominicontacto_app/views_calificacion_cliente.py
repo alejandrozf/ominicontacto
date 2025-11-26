@@ -447,10 +447,12 @@ class CalificacionClienteFormView(FormView):
             queryset=calificaciones_telefonos_qs)
         calificaciones_telefonos_formset_valid = calificaciones_telefonos_formset.is_valid()
         calificacion_form_valid = calificacion_form.is_valid()
-        usuario_califica = bool(calificacion_form.changed_data)
+        con_calificacion_previa = bool(calificacion_form.instance.id)
+        usuario_califica = bool(calificacion_form.changed_data) or con_calificacion_previa
         formulario_llamada_entrante = self._formulario_llamada_entrante()
-        # cuando el formulario es generado por una llamada entrante y el usuario no desea
-        # calificar al contacto, solo requerimos que el formulario del contacto sea válido
+        # cuando el formulario es generado por una llamada entrante sin una calificacion previa
+        # para ese contacto y el usuario no desea calificar al contacto,
+        # solo requerimos que el formulario del contacto sea válido
         if formulario_llamada_entrante and not usuario_califica:
             if contacto_form_valid:
                 return self.form_valid(contacto_form)
