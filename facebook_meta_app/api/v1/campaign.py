@@ -34,18 +34,18 @@ class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(source='nombre')
     type = serializers.IntegerField()
-    line_id = serializers.SerializerMethodField()
+    page_id = serializers.SerializerMethodField()
     whatsapp_habilitado = serializers.BooleanField()
     meta_facebook_habilitado = serializers.BooleanField()
 
-    def get_line_id(self, obj):
+    def get_page_id(self, obj):
         configuracionwhatsapp = obj.configuracionwhatsapp.last()
-        if configuracionwhatsapp and configuracionwhatsapp.linea:
-            return configuracionwhatsapp.linea.id
+        if configuracionwhatsapp and configuracionwhatsapp.pagina:
+            return configuracionwhatsapp.pagina.id
         return ""
 
 
-class MessengerMetaAppCampaignsViewSet(viewsets.ViewSet):
+class ViewSet(viewsets.ViewSet):
     permission_classes = [TienePermisoOML]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 

@@ -326,7 +326,7 @@ class MessengerMetaAppPageConfigurationSerializer(serializers.Serializer):
         source='out_of_hours_message.id', required=False)
 
 
-class MessengerMetaAppPageConfigurationViewSet(viewsets.ViewSet):
+class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         queryset = PaginaMetaFacebook.objects.all()

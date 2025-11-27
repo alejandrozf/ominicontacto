@@ -16,17 +16,28 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from facebook_meta_app.api import page_configuration
-from facebook_meta_app.api import campaigns
-
+import facebook_meta_app.api.v1.page_configuration
+import facebook_meta_app.api.v1.campaign
+import facebook_meta_app.api.v1.conversation
+import facebook_meta_app.api.v1.destination
+import facebook_meta_app.api.v1.transfer
+import facebook_meta_app.api.v1.contact
+import facebook_meta_app.api.v1.disposition
+import facebook_meta_app.api.v1.template
 
 from facebook_meta_app.api import ViewSetRouter
 
-router = ViewSetRouter(trailing_slash=False)
 
+router = ViewSetRouter(trailing_slash=False)
 routes = (
-    (r"page", page_configuration.MessengerMetaAppPageConfigurationViewSet),
-    (r"campaigns", campaigns.MessengerMetaAppCampaignsViewSet),
+    (r"page", facebook_meta_app.api.v1.page_configuration.ViewSet),
+    (r"destination", facebook_meta_app.api.v1.destination.ViewSet),
+    (r"campaigns", facebook_meta_app.api.v1.campaign.ViewSet),
+    (r"chat", facebook_meta_app.api.v1.conversation.ViewSet),
+    (r"contact/(?P<campana_pk>[^/.]+)", facebook_meta_app.api.v1.contact.ViewSet),
+    (r"disposition", facebook_meta_app.api.v1.disposition.ViewSet),
+    (r"transfer", facebook_meta_app.api.v1.transfer.ViewSet),
+    (r"template/(?P<campana_pk>[^/.]+)", facebook_meta_app.api.v1.template.ViewSet),
 )
 
 for route in routes:
