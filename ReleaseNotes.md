@@ -1,5 +1,5 @@
 # Release Notes
-251118.01
+251202.01
 
 ## Added
 - oml-3205 Possibility for programming custom pause while on call.
@@ -14,6 +14,7 @@
 
 - oml-3239 Added Survey families regeneration.
 - oml-3233 Only new inbound contacts calls can omit disposition.
+- oml-3245 Error when changing Campaign Contact Database. Omnidialer Max boost factor=20. 
 
 ## Removed
 
