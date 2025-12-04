@@ -58,6 +58,16 @@
             {{ message?.message.text }}
           </p>
         </div>
+        <div v-if="message.type==='button_reply'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+            {{ message?.message.title }}
+          </p>
+        </div>
+        <div v-if="message.type==='button'">
+          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+            {{ message?.message.text }}
+          </p>
+        </div>
         <div v-if="message?.fail_reason" class="flex justify-content-end flex-wrap">
           <Tag severity="danger" :value="message?.fail_reason"></Tag>
         </div>
