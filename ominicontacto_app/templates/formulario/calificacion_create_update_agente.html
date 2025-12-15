@@ -183,17 +183,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endwith %}
         </div>
 
+        <div class="form-row">
+            <button type="submit" id="id_guardar" class="btn btn-primary">
+                {% trans 'Guardar'  %}
+            </button>
+        </div></br>
+
         {% if calificacion_form %}
         {% if calificacion_form.historico_calificaciones %}
             {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
         {% endif %}
         {% endif %}
 
-        <div class="">
-            <button type="submit" id="id_guardar" class="btn btn-primary">
-                {% trans 'Guardar'  %}
-            </button>
-        </div>
     </form>
     <input type="hidden" id="field_address" name="{{campana.campo_direccion}}" value="{{GOOGLE_MAPS_CENTER}}">
 </div>

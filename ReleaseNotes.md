@@ -1,18 +1,22 @@
 # Release Notes
-251118.01
+251215.01
 
 ## Added
 - oml-3205 Possibility for programming custom pause while on call.
 - oml-3232 Summarization and Transcription Campaign configuration.
-
+- oml-3244 Supports answers for button_repply and button Whatsapp messages.
 
 ## Changed
 
 - oml-3105b Visual changes in Contact Disposition form.
+- oml-3245  Omnidialer Max boost factor=20.
 
 ## Fixed
 
-- No fixes this release.
+- oml-3239 Added Survey families regeneration.
+- oml-3233 Only new inbound contacts calls can omit disposition.
+- oml-3245 Error when changing Campaign Contact Database.
+- oml-3088 Fix performance issue with Agent disposition view when phone ratings are allowed.
 
 ## Removed
 

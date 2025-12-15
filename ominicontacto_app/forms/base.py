@@ -954,7 +954,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         bd_contacto = self.cleaned_data.get('bd_contacto')
         bd_contacto_field = 'bd_contacto'
         if self.instance.pk and bd_contacto_field in self.changed_data:
-            error = self.instance.validar_bd_de_reemplazo(bd_contacto)
+            error = bd_contacto.validar_bd_de_reemplazo(bd_contacto)
             if error:
                 raise forms.ValidationError(
                     _("Los nombres de las columnas de la nueva base de datos no coinciden"
@@ -1929,6 +1929,7 @@ class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
     """
+    MAX_BOOST = 5 if wombat_habilitado() else 20
     tipo_destino_failover = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino_failover'}),
         required=False)
@@ -1985,21 +1986,21 @@ class QueueDialerForm(forms.ModelForm):
     def clean(self):
         initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
         if initial_boost_factor and initial_boost_factor < 0.1:
-            raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' menor a 0.1')
-        if initial_boost_factor and initial_boost_factor > 5.0:
-            raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' mayor a 5.0')
+            raise forms.ValidationError(
+                _('El factor boost inicial no debe ser menor a 0.1'))
+        if initial_boost_factor and initial_boost_factor > self.MAX_BOOST:
+            raise forms.ValidationError(
+                _(f'El factor boost inicial no debe ser mayor a {self.MAX_BOOST}'))
 
         initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
         if initial_predictive_model and not initial_boost_factor:
-            raise forms.ValidationError('El factor boost inicial no deber ser'
-                                        ' none si la predicitvidad está activa')
+            raise forms.ValidationError(
+                _('El factor boost inicial no deber ser none si la predicitvidad está activa'))
 
         dial_timeout = self.cleaned_data.get('dial_timeout')
         if dial_timeout < 10 or dial_timeout > 90:
-            raise forms.ValidationError(_('El valor de dial timeout deberá estar comprendido entre'
-                                          ' 10 y 90 segundos'))
+            raise forms.ValidationError(
+                _('El valor de dial timeout deberá estar comprendido entre 10 y 90 segundos'))
 
         return self.cleaned_data
 
@@ -2025,6 +2026,7 @@ class QueueDialerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
+        self.fields["initial_boost_factor"].widget.attrs["max"] = self.MAX_BOOST
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
         tipo_destino_failover_choices = [EMPTY_CHOICE]
         tipo_destino_failover = tuple(
@@ -2714,6 +2716,27 @@ class CalificacionTelefonoForm(forms.ModelForm):
                                              for opcion in self.OPCIONES_CALIFICACION_TELEFONO]
         opciones_personalizadas = kwargs.pop('opciones', None)
         super().__init__(*args, **kwargs)
+
+        # Estos campos solo reciben un valor fijo y no deberían renderizar selects
+        # con todos los objetos de la base. Limitar el queryset evita construir
+        # listas enormes y las entradas ocultas reducen el HTML generado.
+        for field_name in ('campana', 'contacto', 'agente'):
+            self.fields[field_name].widget = forms.HiddenInput()
+            self.fields[field_name].required = False
+
+        contacto_id = self.initial.get('contacto') or getattr(self.instance, 'contacto_id', None)
+        if contacto_id:
+            self.fields['contacto'].queryset = Contacto.objects.filter(pk=contacto_id)
+
+        campana_id = self.initial.get('campana') or getattr(self.instance, 'campana_id', None)
+        if campana_id:
+            self.fields['campana'].queryset = Campana.objects.filter(pk=campana_id)
+
+        agente_id = self.initial.get('agente') or getattr(self.instance, 'agente_id', None)
+        if agente_id:
+            self.fields['agente'].queryset = AgenteProfile.objects.filter(pk=agente_id)
+
+        self.fields['campo_contacto'].widget = forms.HiddenInput()
 
         if opciones_personalizadas:
             self.fields['calificacion'].widget.choices = opciones_default + opciones_personalizadas
