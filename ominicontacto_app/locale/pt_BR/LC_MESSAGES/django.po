@@ -1635,7 +1635,7 @@ msgstr "O fator de boost inicial não deve ser menor a 0.1"
 #: ominicontacto_app/forms/base.py:1998
 msgid ""
 "El factor boost inicial no deber ser none si la predicitvidad está activa"
-msgstr """
+msgstr ""
 "O fator de boost inicial não deve ser None se a preditividade estiver ativa"
 
 #: ominicontacto_app/forms/base.py:2003
