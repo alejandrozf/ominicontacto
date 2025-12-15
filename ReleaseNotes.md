@@ -1,10 +1,10 @@
 # Release Notes
-251203.01
+251215.01
 
 ## Added
 - oml-3205 Possibility for programming custom pause while on call.
 - oml-3232 Summarization and Transcription Campaign configuration.
-
+- oml-3244 Supports answers for button_repply and button Whatsapp messages.
 
 ## Changed
 
