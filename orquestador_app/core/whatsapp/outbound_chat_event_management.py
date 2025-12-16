@@ -24,7 +24,6 @@ from orquestador_app.core.whatsapp.check_expired import check_expired
 logger = logging.getLogger(__name__)
 
 
-
 async def outbound_chat_event(timestamp, message_id, status, expire, destination, error_ex):
     notifications = await s2a_outbound_chat_event(
         timestamp,
@@ -46,7 +45,7 @@ def s2a_outbound_chat_event(timestamp, message_id, status, expire, destination, 
         message = MensajeWhatsapp.objects.get(message_id=message_id)
         message.status = status
         if status == 'failed':
-            message.fail_reason = error_ex['reason']
+            message.fail_reason = error_ex['reason'] if 'reason' in error_ex else None
         if not message.conversation.whatsapp_id:
             message.conversation.whatsapp_id = destination
         message.save()
@@ -70,24 +69,4 @@ def s2a_outbound_chat_event(timestamp, message_id, status, expire, destination, 
             notifications.append(notification)
     except Exception as e:
         logger.exception("Error: %r", e)
-    return notifications
-
-
-def check_expired(expire, timestamp, message):
-    notifications = []
-    try:
-        if expire:
-            if message.conversation.expire:
-                if message.conversation.expire < expire:  # expired conversation
-                    message.conversation.expire = expire
-                    message.conversation.save()
-                    notifications.append(('notify_whatsapp_chat_expired', {
-                        'conversation': message.conversation,
-                    }))
-            else:
-                message.conversation.expire = expire
-                message.conversation.timestamp = timestamp
-                message.conversation.save()
-    except Exception as e:
-        logger.exception("error en check_expired %r", e)
     return notifications

@@ -136,7 +136,7 @@ export default {
         this.initFilters();
     },
     computed: {
-        ...mapState(['supWhatsappMessageTemplates', 'supMessageTemplatesOfGroup'])
+        ...mapState(['supFacebookPageTemplates', 'supMessageTemplatesOfGroup'])
     },
     methods: {
         clearFilter () {
@@ -173,7 +173,7 @@ export default {
                 this.supMessageTemplatesOfGroup &&
         this.supMessageTemplatesOfGroup.length > 0
             ) {
-                this.templates = this.supWhatsappMessageTemplates.filter((t) =>
+                this.templates = this.supFacebookPageTemplates.filter((t) =>
                     this.supMessageTemplatesOfGroup.includes(t.id)
                 );
             } else {
@@ -181,7 +181,7 @@ export default {
             }
             if (
                 JSON.stringify(
-                    this.supWhatsappMessageTemplates
+                    this.supFacebookPageTemplates
                         .map((t) => t.id)
                         .sort((a, b) => a - b)
                 ) ===
@@ -204,7 +204,7 @@ export default {
             deep: true,
             immediate: true
         },
-        supWhatsappMessageTemplates: {
+        supFacebookPageTemplates: {
             handler () {
                 this.setTemplates();
             },

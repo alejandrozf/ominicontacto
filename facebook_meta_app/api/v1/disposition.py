@@ -32,7 +32,7 @@ from ominicontacto_app.models import (
     HistoricalRespuestaFormularioGestion)
 from facebook_meta_app.api.v1.contact import ListSerializer as ContactSerializer
 from facebook_meta_app.api.v1.campaign import ListSerializer as CampaignSerializer
-from facebook_meta_app.models import ConversacionWhatsapp
+from facebook_meta_app.models import ConversationMessengerMetaApp
 
 from orquestador_app.core.whatsapp.send_message import autoresponse_goodbye
 
@@ -319,7 +319,7 @@ class ViewSet(viewsets.ViewSet):
                         serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                         calificacion = serializer_calificacion.save()
                         serializer_respuesta.save(calificacion=calificacion)
-                        conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                        conversation = ConversationMessengerMetaApp.objects.get(id=conversation_id)
                         conversation.is_disposition = True
                         conversation.conversation_disposition = calificacion.history.first()
                         conversation.save()
@@ -339,9 +339,9 @@ class ViewSet(viewsets.ViewSet):
                         status=status.HTTP_201_CREATED)
 
                 else:
-                    serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
+                    serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_FACEBOOK
                     calificacion = serializer_calificacion.save()
-                    conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                    conversation = ConversationMessengerMetaApp.objects.get(id=conversation_id)
                     conversation.is_disposition = True
                     conversation.conversation_disposition = calificacion.history.first()
                     conversation.save()
@@ -403,7 +403,7 @@ class ViewSet(viewsets.ViewSet):
                                     message=_('Error en los datos del formulario'),
                                     errors=serializer_respuesta.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
-                conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+                conversation = ConversationMessengerMetaApp.objects.get(id=conversation_id)
                 if not conversation.is_disposition:
                     conversation.is_disposition = True
                     autoresponse_goodbye(conversation)
@@ -449,7 +449,7 @@ class ViewSet(viewsets.ViewSet):
                     message=_('Calificacion no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(e)
+            print("Error al obtener el historial de calificacion:", e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener el historial de calificacion')),

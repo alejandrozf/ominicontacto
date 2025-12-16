@@ -1,32 +1,36 @@
 /* eslint-disable no-unused-vars */
-import Service from '@/services/supervisor/whatsapp/group_of_message_template_service';
+import Service from '@/services/supervisor/facebook/group_of_message_template_service';
 const service = new Service();
 
 export default {
-    async initWhatsappGroupOfMessageTemplates ({ commit }) {
+    async initFacebookPageGroupOfMessageTemplates ({ commit }) {
+        console.log('initFacebookPageGroupOfMessageTemplates');
         const { status, data } = await service.list();
-        commit('initWhatsappGroupOfMessageTemplates', status === 'SUCCESS' ? data : []);
+        commit('initFacebookPageGroupOfMessageTemplates', status === 'SUCCESS' ? data : []);
     },
-    async initWhatsappGroupOfMessageTemplate ({ commit }, { id = null, obj = null }) {
+    async initFacebookPageGroupOfMessageTemplate ({ commit }, { id = null, obj = null }) {
+        console.log('initFacebookPageGroupOfMessageTemplate', id, obj);
         if (obj) {
-            commit('initWhatsappGroupOfMessageTemplate', obj);
+            commit('initFacebookPageGroupOfMessageTemplate', obj);
             commit('initMessageTemplatesOfGroup', obj.templates.map(p => p.id));
         } else if (id) {
+            console.log('Fetching group of message template with id:', id);
             const { status, data } = await service.detail(id);
-            commit('initWhatsappGroupOfMessageTemplate', status === 'SUCCESS' ? data : null);
+            commit('initFacebookPageGroupOfMessageTemplate', status === 'SUCCESS' ? data : null);
             commit('initMessageTemplatesOfGroup', data.templates.map(p => p.id));
         } else {
-            commit('initWhatsappGroupOfMessageTemplate', null);
+            commit('initFacebookPageGroupOfMessageTemplate', null);
             commit('initMessageTemplatesOfGroup');
         }
     },
-    async createWhatsappGroupOfMessageTemplate ({ commit }, data) {
+    async createFacebookPageGroupOfMessageTemplate ({ commit }, data) {
         return await service.create(data);
     },
-    async updateWhatsappGroupOfMessageTemplate ({ commit }, { id, data }) {
+    async updateFacebookPageGroupOfMessageTemplate ({ commit }, { id, data }) {
+
         return await service.update(id, data);
     },
-    async deleteWhatsappGroupOfMessageTemplate ({ commit }, id) {
+    async deleteFacebookPageGroupOfMessageTemplate ({ commit }, id) {
         return await service.delete(id);
     },
     addMessageTemplateToGroup ({ commit }, data) {

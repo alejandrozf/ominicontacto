@@ -356,5 +356,154 @@ export default {
                 }
             }
         }
+    },
+    facebook: {
+        provider: {
+            types: {
+                twilio: 'Twilio',
+                meta: 'Meta',
+                gupshup: 'GupShup'
+            }
+        },
+        message_template: {
+            types: {
+                text: 'Text',
+                image: 'Image',
+                file: 'File',
+                audio: 'Audio',
+                video: 'Video',
+                sticker: 'Sticker',
+                location: 'Location',
+                contact: 'Contact'
+            },
+            fields: {
+                text: 'Text',
+                url: 'Url',
+                preview_url: 'Preview URL',
+                caption: 'Caption',
+                filename: 'Filename',
+                longitude: 'Longitude',
+                latitude: 'Latitude',
+                name: 'Name',
+                address: 'Address'
+            },
+            help_text: {
+                audio: {
+                    url: 'Public URL of the audio file'
+                },
+                image: {
+                    original_url: 'Public URL of the image hosted',
+                    preview_url: 'Public URL of the thumbnail of the image',
+                    caption: 'Caption of the image'
+                },
+                file: {
+                    url: 'Public URL of the file hosted',
+                    filename: 'Name of the file'
+                },
+                video: {
+                    url: 'Public URL of the video file',
+                    caption: 'Caption of the video'
+                },
+                sticker: {
+                    url: 'Public URL of the sticker file'
+                }
+            }
+        },
+        line: {
+            validations: {
+                field_is_required: '{field} is required',
+                max_len: 'Ensure this field has no more than {max_len} characters.',
+                whatsapp_habilitado: 'This campaign does not have the channel enabled, activation will be forced.',
+                max_len_help: 'This field only supports {max_len} characters.',
+            },
+            destination_types: {
+                campaign: 'Campaign',
+                menu: 'Interactive Menu',
+                closing_menssage: 'Closing Message'
+            },
+            options: {
+                success_create: 'Destination option created successfully',
+                success_update: 'Destination option updated successfully',
+                success_delete: 'Destination option successfully removed',
+                empty_options: 'No destination options configured'
+            },
+            only_whatsapp_habilitado: 'Only campaigns with the channel enabled'
+        },
+        group_of_message_template: {
+            validations: {
+                not_empty_templates: 'There must be at least one template'
+            }
+        },
+        group_of_whatsapp_template: {
+            validations: {
+                not_empty_templates: 'There must be at least one template'
+            }
+        },
+        contact: {
+            validations: {
+                field_is_required: '{field} is required',
+                invalid_field: '{field} has an invalid format'
+            }
+        },
+        disposition_chat: {
+            validations: {
+                field_is_required: '{field} is required'
+            },
+            form_types: {
+                management: 'Gestion',
+                schedule: 'Schedule',
+                no_action: 'No action'
+            },
+            field_types: {
+                text: 'Text',
+                date: 'Date',
+                list: 'List',
+                text_box: 'Text box',
+                numero: 'Number'
+            }
+        },
+        reports: {
+            general: {
+                form_filters: {
+                    start_date: 'Start date',
+                    end_date: 'Ending date'
+                },
+                validations: {
+                    biggest_start_data:
+                        'The start date cannot be greater than the end date',
+                    campaign_required: 'Campaign is required'
+                }
+            },
+            campaign: {
+                conversation: {
+                    form_filters: {
+                        start_date: 'Start date',
+                        end_date: 'Ending date',
+                        phone: 'Phone',
+                        agent: 'Agent',
+                        placeholders: {
+                            start_date: 'Select the date',
+                            end_date: 'Select the date',
+                            phone: 'Enter the phone',
+                            agent: 'Select agents',
+                            without_agent: 'No agent'
+                        }
+                    },
+                    validations: {
+                        biggest_start_data:
+                            'The start date cannot be greater than the end date'
+                    }
+                }
+            }
+        },
+        conversation: {
+            new: {
+                validations: {
+                    search_contact: {
+                        empty_campaign: 'You must select a campaign to search for contacts'
+                    }
+                }
+            }
+        }
     }
 };

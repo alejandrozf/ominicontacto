@@ -39,9 +39,9 @@ class ListSerializer(serializers.Serializer):
     meta_facebook_habilitado = serializers.BooleanField()
 
     def get_page_id(self, obj):
-        configuracionwhatsapp = obj.configuracionwhatsapp.last()
-        if configuracionwhatsapp and configuracionwhatsapp.pagina:
-            return configuracionwhatsapp.pagina.id
+        configuracionfacebook = obj.configuracion_meta_facebook
+        if configuracionfacebook and configuracionfacebook.pagina:
+            return configuracionfacebook.pagina.id
         return ""
 
 

@@ -1,6 +1,6 @@
 export default {
-    supWhatsappGroupOfMessageTemplates: [],
-    supWhatsappGroupOfMessageTemplate: {
+    supFacebookPageGroupOfMessageTemplates: [],
+    supFacebookPageGroupOfMessageTemplate: {
         id: null,
         nombre: '',
         plantillas: []

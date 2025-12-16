@@ -1,14 +1,50 @@
+import uuid
 from django.db import models
 from django.utils.translation import gettext as _
 
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto, HistoricalCalificacionCliente
 from django.utils import timezone
 from django.db.models import JSONField
-from whatsapp_app.models import PlantillaMensaje
+
+
+def upload_to(instance, filename):
+    return "archivos_facebook/{0}-{1}".format(
+        str(uuid.uuid4()), filename)[:95]
+
+
+class PlantillaMessenger(models.Model):
+    TIPO_TEXT = 0
+    MENSAJE_TIPOS = (
+        (TIPO_TEXT, _('Texto')),
+    )
+    nombre = models.CharField(max_length=100)
+    tipo = models.IntegerField(choices=MENSAJE_TIPOS)
+    configuracion = JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+
+
+class GrupoPlantillaMessenger(models.Model):
+    nombre = models.CharField(max_length=100)
+    plantillas = models.ManyToManyField(PlantillaMessenger, related_name="grupos")
+
+    class Meta:
+        verbose_name = "Grupo de Plantillas de Messenger"
+        verbose_name_plural = "Grupos de Plantillas de Messenger"
+
+    def __str__(self):
+        return self.nombre
+
+
+class PaginaMetaFacebookManager(models.Manager):
+
+    def get_queryset(self):
+        return super(PaginaMetaFacebookManager, self).get_queryset().exclude(is_active=False)
 
 
 class PaginaMetaFacebook(models.Model):
     """Modelo que representa una configuración de messenger de Meta a través de una página."""
+    objects = PaginaMetaFacebookManager()
+    objects_default = models.Manager()
     # Basic info
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default="")
@@ -25,13 +61,13 @@ class PaginaMetaFacebook(models.Model):
         'configuracion_telefonia_app.GrupoHorario', on_delete=models.PROTECT,
         related_name="pages", blank=True, null=True)
     welcome_message = models.ForeignKey(
-        PlantillaMensaje, blank=True, null=True,
+        PlantillaMessenger, blank=True, null=True,
         on_delete=models.PROTECT, related_name="pages_welcome_message")
     goodbye_message = models.ForeignKey(
-        PlantillaMensaje, blank=True, null=True,
+        PlantillaMessenger, blank=True, null=True,
         on_delete=models.PROTECT, related_name="pages_goodbye_message")
     out_of_hours_message = models.ForeignKey(
-        PlantillaMensaje, blank=True, null=True,
+        PlantillaMessenger, blank=True, null=True,
         on_delete=models.PROTECT, related_name="pages_out_of_hours_message")
 
     # Settings
@@ -50,28 +86,6 @@ class PaginaMetaFacebook(models.Model):
 
     def __str__(self):
         return f"{self.name} (Page: {self.page_id})"
-
-
-class PlantillaMessenger(models.Model):
-    TIPO_TEXT = 0
-    MENSAJE_TIPOS = (
-        (TIPO_TEXT, _('Texto')),
-    )
-    nombre = models.CharField(max_length=100)
-    tipo = models.IntegerField(choices=MENSAJE_TIPOS)
-    configuracion = JSONField(default=dict)
-
-
-class GrupoPlantillaMessenger(models.Model):
-    nombre = models.CharField(max_length=100)
-    plantillas = models.ManyToManyField(PlantillaMessenger, related_name="grupos")
-
-    class Meta:
-        verbose_name = "Grupo de Plantillas de Messenger"
-        verbose_name_plural = "Grupos de Plantillas de Messenger"
-
-    def __str__(self):
-        return self.nombre
 
 
 class ConfiguracionMetaFacebookCampana(models.Model):
@@ -101,7 +115,6 @@ class ConversationMessengerMetaApp(models.Model):
                              related_name='conversations_messenger')
     campana = models.ForeignKey(Campana, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name="messenger_conversaciones")
-    conversation_id = models.CharField(max_length=255, unique=True)
     client = models.ForeignKey(
         Contacto, null=True, related_name="conversations_messenger", on_delete=models.CASCADE)
     page_client_id = models.CharField(max_length=255, null=True)
@@ -132,6 +145,22 @@ class ConversationMessengerMetaApp(models.Model):
         verbose_name_plural = "Messenger Meta App Conversations"
         ordering = ['-updated_at']   # Order conversations by most recent update first
 
+    def otorgar_conversacion(self, agent):
+        try:
+            self.agent = agent
+            self.save()
+            return True
+        except Exception:
+            return False
+
+
+class MessageMessengerMetaAppManager(models.Manager):
+    def mensajes_enviados(self):
+        return self.filter(origen=models.F("conversation__page_client_id"))
+
+    def mensajes_recibidos(self):
+        return self.exclude(origen=models.F("conversation__page_client_id"))
+
 
 class MessageMessengerMetaApp(models.Model):
     """Modelo que representa un mensaje enviado o recibido a través de Messenger de Meta."""
@@ -143,8 +172,10 @@ class MessageMessengerMetaApp(models.Model):
     sender = JSONField(default=dict)
     content = JSONField(default=dict)
     type = models.CharField(max_length=100)
+    file = models.FileField(upload_to=upload_to, max_length=1000, null=True, blank=True)
     status = models.CharField(max_length=100)
     fail_reason = models.CharField(max_length=100, null=True, blank=True)
+    objects = MessageMessengerMetaAppManager()
 
     def __str__(self):
         direction = "From User" if self.type == "user" else "From Page"

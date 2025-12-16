@@ -68,8 +68,8 @@ import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import PlantillasTable from '@/components/supervisor/whatsapp/group_of_message_templates/forms/Table';
-import PlantillaModal from '@/components/supervisor/whatsapp/group_of_message_templates/forms/ModalToHandleForm';
+import PlantillasTable from '@/components/supervisor/facebook/group_of_message_templates/forms/Table';
+import PlantillaModal from '@/components/supervisor/facebook/group_of_message_templates/forms/ModalToHandleForm';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -111,15 +111,15 @@ export default {
     },
     computed: {
         ...mapState([
-            'supWhatsappGroupOfMessageTemplate',
+            'supFacebookPageGroupOfMessageTemplate',
             'supMessageTemplatesOfGroup'
         ])
     },
     methods: {
         ...mapActions([
-            'createWhatsappGroupOfMessageTemplate',
-            'updateWhatsappGroupOfMessageTemplate',
-            'initWhatsappGroupOfMessageTemplates',
+            'createFacebookPageGroupOfMessageTemplate',
+            'updateFacebookPageGroupOfMessageTemplate',
+            'initFacebookPageGroupOfMessageTemplates',
             'initFacebookPageTemplates'
         ]),
         async handleModal ({ showModal = false, formToCreate = false }) {
@@ -134,9 +134,9 @@ export default {
             this.submitted = false;
         },
         initFormData () {
-            this.form.id = this.supWhatsappGroupOfMessageTemplate.id;
-            this.form.nombre = this.supWhatsappGroupOfMessageTemplate.nombre;
-            this.form.plantillas = this.supWhatsappGroupOfMessageTemplate.plantillas;
+            this.form.id = this.supFacebookPageGroupOfMessageTemplate.id;
+            this.form.nombre = this.supFacebookPageGroupOfMessageTemplate.nombre;
+            this.form.plantillas = this.supFacebookPageGroupOfMessageTemplate.plantillas;
         },
         clearFilter () {
             this.initFilters();
@@ -159,18 +159,18 @@ export default {
                 templates: this.form.plantillas
             };
             if (this.formToCreate) {
-                response = await this.createWhatsappGroupOfMessageTemplate(form);
+                response = await this.createFacebookPageGroupOfMessageTemplate(form);
             } else {
-                response = await this.updateWhatsappGroupOfMessageTemplate({
+                response = await this.updateFacebookPageGroupOfMessageTemplate({
                     id: this.form.id,
                     data: form
                 });
             }
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
-                await this.initWhatsappGroupOfMessageTemplates();
+                await this.initFacebookPageGroupOfMessageTemplates();
                 this.$router.push({
-                    name: 'supervisor_whatsapp_group_of_message_templates'
+                    name: 'supervisor_facebook_group_of_message_templates'
                 });
                 this.$swal(
                     this.$helpers.getToasConfig(
@@ -191,9 +191,9 @@ export default {
         }
     },
     watch: {
-        supWhatsappGroupOfMessageTemplate: {
+        supFacebookPageGroupOfMessageTemplate: {
             handler () {
-                if (this.supWhatsappGroupOfMessageTemplate) {
+                if (this.supFacebookPageGroupOfMessageTemplate) {
                     this.initFormData();
                 }
             },

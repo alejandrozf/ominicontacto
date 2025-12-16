@@ -2203,8 +2203,7 @@ class MetadataBaseDatosContactoDTO(object):
         if self.columna_id_externo is not None:
             return self._metadata['nombres_de_columnas'][self.columna_id_externo]
         return None
-
-    # ----
+    # -----
 
     @property
     def columnas_con_fecha(self):
@@ -2306,9 +2305,13 @@ class MetadataBaseDatosContactoDTO(object):
         if not hasattr(self, '_nombres_de_columnas_de_datos'):
             try:
                 nombres_de_columnas = self._metadata['nombres_de_columnas']
-                self._nombres_de_columnas_de_datos = [x for x in nombres_de_columnas
-                                                      if not x == self.nombre_campo_telefono and
-                                                      not x == self.nombre_campo_id_externo]
+                self._nombres_de_columnas_de_datos = [
+                    columna for columna in nombres_de_columnas
+                    if columna not in (
+                        self.nombre_campo_telefono,
+                        self.nombre_campo_id_externo,
+                    )
+                ]
             except KeyError:
                 return []
 
@@ -2755,6 +2758,7 @@ class Contacto(models.Model):
     objects = ContactoManager()
 
     telefono = models.CharField(max_length=128)
+    facebook = models.CharField(max_length=128, blank=True)
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
@@ -2965,13 +2969,25 @@ class CalificacionClienteManager(models.Manager):
             calificaciones.values('opcion_calificacion__nombre').\
             annotate(total=Count('opcion_calificacion')).order_by('-total')
 
+    def calificaciones_facebook_campanas(self, campana, fecha_desde, fecha_hasta):
+        """Obtiene las calificaciones campaña en un rango de fechas definido"""
+        calificaciones = self.filter(
+            opcion_calificacion__campana__pk=campana.id,
+            canalidad=CalificacionCliente.CANALIDAD_FACEBOOK,
+            modified__date__range=(fecha_desde, fecha_hasta))
+        return\
+            calificaciones.values('opcion_calificacion__nombre').\
+            annotate(total=Count('opcion_calificacion')).order_by('-total')
+
 
 class CalificacionCliente(TimeStampedModel, models.Model):
     CANALIDAD_TELEFONO = 0
     CANALIDAD_WHATSAPP = 1
+    CANALIDAD_FACEBOOK = 2
     TYPE_CANALIDAD_CHOICES = (
         (CANALIDAD_TELEFONO, _('Teléfono')),
-        (CANALIDAD_WHATSAPP, _('Whatsapp'))
+        (CANALIDAD_WHATSAPP, _('Whatsapp')),
+        (CANALIDAD_FACEBOOK, _('Facebook')),
     )
     objects = CalificacionClienteManager()
 

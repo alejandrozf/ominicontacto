@@ -1,4 +1,4 @@
-import Index from '@/views/supervisor/whatsapp/Index';
+import Index from '@/views/supervisor/facebook/Index';
 import PageRoutes from './page_routes';
 import MessageTemplateRoutes from './message_template_routes';
 import GroupOfMessageTemlateRoutes from './group_of_message_template_routes';

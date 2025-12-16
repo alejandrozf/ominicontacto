@@ -19,24 +19,24 @@
 
 <script>
 import { mapActions } from 'vuex';
-import Form from '@/components/supervisor/whatsapp/group_of_message_templates/Form';
+import Form from '@/components/supervisor/facebook/group_of_message_templates/Form';
 
 export default {
     components: {
         Form
     },
     async created () {
-        this.initWhatsappGroupOfMessageTemplate({});
-        await this.initWhatsappMessageTemplates();
+        this.initFacebookPageGroupOfMessageTemplate({});
+        await this.initFacebookPageTemplates();
     },
     methods: {
         ...mapActions([
-            'initWhatsappGroupOfMessageTemplate',
-            'initWhatsappMessageTemplates'
+            'initFacebookPageGroupOfMessageTemplate',
+            'initFacebookPageTemplates'
         ]),
         back () {
             this.$router.push({
-                name: 'supervisor_whatsapp_group_of_message_templates'
+                name: 'supervisor_facebook_group_of_message_templates'
             });
         }
     }

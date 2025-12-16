@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Form from '@/components/supervisor/whatsapp/group_of_message_templates/forms/Form';
+import Form from '@/components/supervisor/facebook/group_of_message_templates/forms/Form';
 
 export default {
     props: {

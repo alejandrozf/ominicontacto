@@ -20,12 +20,20 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 from django.conf.urls import include
 
-from facebook_meta_app.views import MessengerMetaConfigurationView
+from facebook_meta_app.views import (
+    MessengerMetaConfigurationView, FacebookMessageTemplatesConfigurationView,
+    FacebookMessageTemplateGroupView)
 from facebook_meta_app.api.urls import api_urls_v1
 
 urlpatterns = [
     path('connections/facebook/pages/',
          login_required(MessengerMetaConfigurationView.as_view()),
-         name='messenger_meta_configuration',),
+         name='messenger_meta_configuration'),
+    path('resources/facebook_message_templates/',
+         login_required(FacebookMessageTemplatesConfigurationView.as_view()),
+         name='facebook_message_templates_configuration'),
+    path('resources/facebook_message_template_groups/',
+         login_required(FacebookMessageTemplateGroupView.as_view()),
+         name='facebook_message_template_groups'),
     path('api/v1/facebook/', include((api_urls_v1, 'facebook_meta_app'), namespace='v1')),
 ]

@@ -23,7 +23,9 @@ import facebook_meta_app.api.v1.destination
 import facebook_meta_app.api.v1.transfer
 import facebook_meta_app.api.v1.contact
 import facebook_meta_app.api.v1.disposition
-import facebook_meta_app.api.v1.template
+import facebook_meta_app.api.v1.templates_messenger
+import facebook_meta_app.api.v1.templates_group
+import facebook_meta_app.api.v1.templates
 
 from facebook_meta_app.api import ViewSetRouter
 
@@ -35,9 +37,12 @@ routes = (
     (r"campaigns", facebook_meta_app.api.v1.campaign.ViewSet),
     (r"chat", facebook_meta_app.api.v1.conversation.ViewSet),
     (r"contact/(?P<campana_pk>[^/.]+)", facebook_meta_app.api.v1.contact.ViewSet),
-    (r"disposition", facebook_meta_app.api.v1.disposition.ViewSet),
+    (r"disposition_chat", facebook_meta_app.api.v1.disposition.ViewSet),
     (r"transfer", facebook_meta_app.api.v1.transfer.ViewSet),
-    (r"template/(?P<campana_pk>[^/.]+)", facebook_meta_app.api.v1.template.ViewSet),
+    (r"templates_messenger", facebook_meta_app.api.v1.templates_messenger.ViewSet),
+    (r"group_template_messenger", facebook_meta_app.api.v1.templates_group.ViewSet),
+    (r"templates/(?P<campana_pk>[^/.]+)", facebook_meta_app.api.v1.templates.ViewSet),
+
 )
 
 for route in routes:

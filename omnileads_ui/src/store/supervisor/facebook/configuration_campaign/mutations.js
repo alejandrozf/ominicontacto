@@ -1,5 +1,5 @@
 export default {
-    initSupCampaignTemplates (state, templates) {
-        state.supCampaignTemplates = templates;
+    initSupCampaignFacebookTemplates (state, templates) {
+        state.supCampaignFacebookTemplates = templates;
     }
 };

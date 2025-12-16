@@ -14,20 +14,20 @@
 
 <script>
 import { mapActions } from 'vuex';
-import GroupOfMessageTemplateTable from '@/components/supervisor/whatsapp/group_of_message_templates/Table';
+import GroupOfMessageTemplateTable from '@/components/supervisor/facebook/group_of_message_templates/Table';
 
 export default {
     components: {
         GroupOfMessageTemplateTable
     },
     async created () {
-        await this.initWhatsappGroupOfMessageTemplates();
+        await this.initFacebookPageGroupOfMessageTemplates();
     },
     methods: {
-        ...mapActions(['initWhatsappGroupOfMessageTemplates']),
+        ...mapActions(['initFacebookPageGroupOfMessageTemplates']),
         create () {
             this.$router.push({
-                name: 'supervisor_whatsapp_group_of_message_templates_new'
+                name: 'supervisor_facebook_group_of_message_templates_new'
             });
         }
     }

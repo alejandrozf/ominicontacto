@@ -3,7 +3,7 @@
     <div class="grid formgrid">
       <div class="field col-6">
         <label
-          id="whatsapp_message_template_nombre"
+          id="facebook_message_template_nombre"
           :class="{
             'p-error':
               v$.supFacebookPageTemplateForm.nombre.$invalid && submitted,
@@ -15,7 +15,7 @@
             <i class="pi pi-list"></i>
           </span>
           <InputText
-            id="whatsapp_message_template_nombre"
+            id="facebook_message_template_nombre"
             :class="{
               'p-invalid':
                 v$.supFacebookPageTemplateForm.nombre.$invalid && submitted,
@@ -138,14 +138,14 @@ import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
-import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
-import FormText from '@/components/supervisor/whatsapp/message_templates/forms/Text';
-import FormContact from '@/components/supervisor/whatsapp/message_templates/forms/Contact';
-import FormFile from '@/components/supervisor/whatsapp/message_templates/forms/File';
-import FormImage from '@/components/supervisor/whatsapp/message_templates/forms/Image';
-import FormAudio from '@/components/supervisor/whatsapp/message_templates/forms/Audio';
-import FormVideo from '@/components/supervisor/whatsapp/message_templates/forms/Video';
-import FormSticker from '@/components/supervisor/whatsapp/message_templates/forms/Sticker';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/facebook/message_template';
+import FormText from '@/components/supervisor/facebook/message_templates/forms/Text';
+import FormContact from '@/components/supervisor/facebook/message_templates/forms/Contact';
+import FormFile from '@/components/supervisor/facebook/message_templates/forms/File';
+import FormImage from '@/components/supervisor/facebook/message_templates/forms/Image';
+import FormAudio from '@/components/supervisor/facebook/message_templates/forms/Audio';
+import FormVideo from '@/components/supervisor/facebook/message_templates/forms/Video';
+import FormSticker from '@/components/supervisor/facebook/message_templates/forms/Sticker';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -174,7 +174,7 @@ export default {
         },
         return_after_save: {
           type: String,
-          default: 'supervisor_whatsapp_message_templates'
+          default: 'supervisor_facebook_message_templates'
         }
     },
     data () {
@@ -188,7 +188,7 @@ export default {
             templateTypes: [
                 { name: '-----', value: null },
                 {
-                    name: this.$t('forms.whatsapp.message_template.types.text'),
+                    name: this.$t('forms.facebook.message_template.types.text'),
                     value: TEMPLATE_TYPES.TEXT
                 }
                 // { name: this.$t('forms.whatsapp.message_template.types.image'), value: TEMPLATE_TYPES.IMAGE },
@@ -225,8 +225,8 @@ export default {
     },
     methods: {
         ...mapActions([
-            'createWhatsappMessageTemplate',
-            'updateWhatsappMessageTemplate',
+            'createFacebookPageTemplate',
+            'updateFacebookPageTemplate',
             'initFacebookPageTemplates',
             'initFacebookPageTemplateFormFields'
         ]),
@@ -321,7 +321,7 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await this.initFacebookPageTemplates();
-                if(this.return_after_save === 'supervisor_whatsapp_message_templates'){
+                if(this.return_after_save === 'supervisor_facebook_message_templates'){
                   this.$router.push({ name: this.return_after_save });
                 }
                 else{

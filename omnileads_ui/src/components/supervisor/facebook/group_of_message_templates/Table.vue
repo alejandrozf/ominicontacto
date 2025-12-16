@@ -116,7 +116,7 @@ export default {
         this.initFilters();
     },
     computed: {
-        ...mapState(['supWhatsappGroupOfMessageTemplates'])
+        ...mapState(['supFacebookPageGroupOfMessageTemplates'])
     },
     methods: {
         clearFilter () {
@@ -129,7 +129,7 @@ export default {
         },
         edit (id) {
             this.$router.push({
-                name: 'supervisor_whatsapp_group_of_message_templates_edit',
+                name: 'supervisor_facebook_group_of_message_templates_edit',
                 params: { id }
             });
         },
@@ -155,10 +155,10 @@ export default {
                         }
                     });
                     const { status, message } =
-            await this.deleteWhatsappGroupOfMessageTemplate(id);
+            await this.deleteFacebookPageGroupOfMessageTemplate(id);
                     this.$swal.close();
                     if (status === HTTP_STATUS.SUCCESS) {
-                        this.initWhatsappGroupOfMessageTemplates();
+                        this.initFacebookPageGroupOfMessageTemplates();
                         this.$swal(
                             this.$helpers.getToasConfig(
                                 this.$t('globals.success_notification'),
@@ -189,14 +189,14 @@ export default {
             });
         },
         ...mapActions([
-            'deleteWhatsappGroupOfMessageTemplate',
-            'initWhatsappGroupOfMessageTemplates'
+            'deleteFacebookPageGroupOfMessageTemplate',
+            'initFacebookPageGroupOfMessageTemplates'
         ])
     },
     watch: {
-        supWhatsappGroupOfMessageTemplates: {
+        supFacebookPageGroupOfMessageTemplates: {
             handler () {
-                this.groups = this.supWhatsappGroupOfMessageTemplates.map(
+                this.groups = this.supFacebookPageGroupOfMessageTemplates.map(
                     (group) => {
                         return {
                             id: group.id,

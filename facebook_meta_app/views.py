@@ -15,10 +15,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
 from django.views.generic import TemplateView
 
 
 class MessengerMetaConfigurationView(TemplateView):
     """Configuración de pages de messenger"""
     template_name = "page_configuration.html"
+
+
+class FacebookMessageTemplatesConfigurationView(TemplateView):
+    """Configuración plantillas de mensaje"""
+    template_name = "facebook_message_templates_configuration.html"
+
+
+class FacebookMessageTemplateGroupView(TemplateView):
+    """Configuración para grupos de plantillas de mensajes"""
+    template_name = "facebook_message_template_groups.html"

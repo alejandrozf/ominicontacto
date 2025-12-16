@@ -39,6 +39,7 @@ from facebook_meta_app.models import ConversationMessengerMetaApp
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
+    page_client_id = serializers.CharField(source='facebook', required=True)
     data = serializers.SerializerMethodField()
     disposition = serializers.SerializerMethodField()
 
@@ -51,17 +52,22 @@ class ListSerializer(serializers.Serializer):
 
 
 class RetriveSerializer(serializers.ModelSerializer):
+    page_client_id = serializers.CharField(source='facebook', required=True)
+
     class Meta:
         model = Contacto
         fields = [
             'id',
             'telefono',
+            'facebook',
             'datos',
             'bd_contacto',
         ]
 
 
 class CreateSerializer(serializers.ModelSerializer):
+    page_client_id = serializers.CharField(source='facebook', required=True)
+
     def __init__(self, *args, **kwargs):
         self.campana = kwargs.pop('context', {}).get('campana')
         super().__init__(*args, **kwargs)
@@ -73,6 +79,7 @@ class CreateSerializer(serializers.ModelSerializer):
             'telefono',
             'datos',
             'bd_contacto',
+            'page_client_id',
         ]
 
     def es_campo_telefonico(self, field):
@@ -87,6 +94,11 @@ class CreateSerializer(serializers.ModelSerializer):
             TelephoneValidator(value)
         except ValidationError as error:
             raise serializers.ValidationError({field: error.message})
+        return value
+
+    def validar_page_client_id(self, field, value):
+        if not value:
+            raise serializers.ValidationError({field: _('campo requerido')})
         return value
 
     def get_datos_json(self, data):
@@ -112,6 +124,13 @@ class CreateSerializer(serializers.ModelSerializer):
             data['telefono'] = self.validar_telefono(telefono, telefono_val)
         else:
             raise serializers.ValidationError({telefono: _('campo requerido')})
+        if 'page_client_id' in data['datos']:
+            page_client_id_val = data['datos'].pop('page_client_id')
+            data['page_client_id'] =\
+                self.validar_page_client_id('page_client_id', page_client_id_val)
+        else:
+            raise serializers.ValidationError({'page_client_id': _('campo requerido')})
+
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if set(data['datos'].keys()).issuperset(set(mandatory)):
                 data['datos'] = self.get_datos_json(data['datos'])
@@ -123,6 +142,8 @@ class CreateSerializer(serializers.ModelSerializer):
 
 
 class UpdateSerializer(serializers.ModelSerializer):
+    page_client_id = serializers.CharField(source='facebook', required=True)
+
     def __init__(self, *args, **kwargs):
         self.campana = kwargs.pop('context', {}).get('campana')
         super().__init__(*args, **kwargs)
@@ -134,6 +155,7 @@ class UpdateSerializer(serializers.ModelSerializer):
             'telefono',
             'datos',
             'bd_contacto',
+            'page_client_id',
         ]
 
     def es_campo_telefonico(self, field):
@@ -172,6 +194,9 @@ class UpdateSerializer(serializers.ModelSerializer):
         if telefono in data['datos']:
             telefono_val = data['datos'].pop(telefono)
             data['telefono'] = self.validar_telefono(telefono, telefono_val)
+        if 'page_client_id' in data['datos']:
+            page_client_id_val = data['datos'].pop('page_client_id')
+            data['page_client_id'] = self.validar_telefono('page_client_id', page_client_id_val)
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if not set(data['datos'].keys()).intersection(set(campos_no_editables))\
                     and not set(data['datos'].keys()).intersection(set(campos_ocultos)):
@@ -229,6 +254,8 @@ class ViewSet(viewsets.ViewSet):
                         message=_('Se creo el nuevo contacto de forma exitosa'),
                         data=ListSerializer(client).data),
                     status=status.HTTP_201_CREATED)
+            else:
+                print(serializer.errors)
             return response.Response(
                 data=get_response_data(
                     message=_('Error en los datos'), errors=serializer.errors),
@@ -329,6 +356,25 @@ class ViewSet(viewsets.ViewSet):
     @decorators.action(detail=False, methods=["post"])
     def search(self, request, campana_pk):
         try:
+            campana = Campana.objects.get(id=campana_pk)
+            search = request.data.get('search')
+            if search:
+                contactos = Contacto.objects.filter(
+                    Q(telefono__icontains=search) |
+                    Q(facebook__icontains=search) |
+                    Q(id_externo__icontains=search) |
+                    Q(datos__icontains=search),
+                    bd_contacto=campana.bd_contacto
+                )
+                serializer = ListSerializer(contactos, many=True)
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Se obtuvieron los contactos de forma exitosa'),
+                        data=serializer.data
+                    ),
+                    status=status.HTTP_200_OK
+                )
             values = request.data.values()
             q_list = [Q(datos__contains=x) for x in values]
             if 'dial_code' in request.data:
@@ -337,7 +383,6 @@ class ViewSet(viewsets.ViewSet):
                 q_list.append(Q(telefono=request.data['phone']))
             if 'name' in request.data:
                 q_list.append(Q(datos__icontains=request.data['name']))
-            campana = Campana.objects.get(id=campana_pk)
             ids_contactos_en_curso = ConversationMessengerMetaApp.objects\
                 .conversaciones_en_curso()\
                 .filter(campana_id=campana.pk, client_id__isnull=False)\

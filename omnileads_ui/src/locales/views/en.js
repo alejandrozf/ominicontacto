@@ -333,7 +333,8 @@ export default {
             expired_conversation: 'Expired conversation',
             restart_conversation: 'Restart conversation',
             error_conversation_detail: 'Could not start the Conversation correctly',
-            error_conversation: 'Wrong conversation'
+            error_conversation: 'Wrong conversation',
+            anonymous_user: 'Anonymous User'
         },
         contact: {
             new: 'Create contact',

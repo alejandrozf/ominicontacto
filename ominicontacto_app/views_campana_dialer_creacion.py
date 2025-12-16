@@ -74,7 +74,8 @@ class CampanaDialerMixin(CampanaWizardMixin):
     TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  CONFIGURACION_WHATSAPP: "campanas/campana_dialer/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_dialer/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
                  PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html',
@@ -153,12 +154,12 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         campana_form = list(form_list)[int(self.INICIAL)]
         queue_form = list(form_list)[int(self.COLA)]
         campana = self._save_campana(campana_form, estado)
-        offset = 2
-        offset_partial = 1
+        offset = 3
+        offset_partial = 2
         # Agrego este offset por si form_list no contiene el formulario de ConfiguracionWhatsapp
         if campana.whatsapp_habilitado:
-            offset = offset - 1
-            offset_partial = offset_partial - 1
+            offset = offset - 2
+            offset_partial = offset_partial - 2
             opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
             if configuracion_whatsapp_formset.is_valid():
@@ -168,8 +169,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.save()
         # Agrego este offset por si form_list no contiene el formulario de ConfiguracionMetaFacebook
         if campana.meta_facebook_habilitado:
-            offset = offset - 1
-            offset_partial = offset_partial - 1
+            offset = offset - 2
+            offset_partial = offset_partial - 2
             opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
             configuracion_meta_facebook_formset = list(form_list)[
                 int(self.CONFIGURACION_META_FACEBOOK)]
@@ -180,7 +181,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
             list(form_list)[int(self.OPCIONES_CALIFICACION) - offset_partial]
         # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
         if campana.tiene_interaccion_con_sitio_externo:
-            offset = offset - 1
+            offset = offset - 2
             parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM) - offset_partial]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
@@ -206,13 +207,13 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
             with transaction.atomic():
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
                 # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
-                offset = 2
+                offset = 3
                 if campana.tiene_interaccion_con_sitio_externo:
-                    offset = offset - 1
+                    offset = offset - 2
                 if campana.whatsapp_habilitado:
-                    offset = offset - 1
+                    offset = offset - 2
                 if campana.meta_facebook_habilitado:
-                    offset = offset - 1
+                    offset = offset - 2
                 sincronizar_form = list(form_list)[int(self.SINCRONIZAR) - offset]
                 # Intento crear la campaña en wombat como parte de la transaccion
                 if wombat_habilitado():
@@ -270,7 +271,8 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
     TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
                  COLA: 'campanas/campana_dialer/create_update_queue.html',
                  CONFIGURACION_WHATSAPP: "campanas/campana_dialer/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_dialer/configuracion_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_dialer/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
                  PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html', }
@@ -311,8 +313,8 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 campana_form = list(form_list)[int(self.INICIAL)]
                 queue_form = list(form_list)[int(self.COLA)]
                 campana = campana_form.save()
-                offset_total = 2
-                offset_parcial = 1
+                offset_total = 3
+                offset_parcial = 2
                 if campana.whatsapp_habilitado:
                     offset_total = offset_total - 1
                     offset_parcial = offset_parcial - 1
@@ -327,6 +329,8 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                             self.request.user.id
                         configuracion_whatsapp_formset.instance.save()
                 if campana.meta_facebook_habilitado:
+                    offset_total = offset_total - 1
+                    offset_parcial = offset_parcial - 1
                     configuracion_meta_facebook_formset =\
                         list(form_list)[int(self.CONFIGURACION_META_FACEBOOK) - offset_parcial]
                     if configuracion_meta_facebook_formset.is_valid():

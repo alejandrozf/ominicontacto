@@ -51,17 +51,17 @@
       <template #loading> {{ $t("globals.load_info") }} </template>
       <Column
         field="name"
-        :header="$t('models.facebook.pages.name')"
+        :header="$t('models.facebook.page.name')"
         :sortable="true"
       ></Column>
       <Column
         field="page_id"
-        :header="$t('models.facebook.pages.page_id')"
+        :header="$t('models.facebook.page.page_id')"
       ></Column>
   
       <Column
         field="description"
-        :header="$t('models.facebook.pages.description')"
+        :header="$t('models.facebook.page.description')"
       >
       </Column>
       <Column :header="$tc('globals.option', 2)" style="max-width: 20rem">

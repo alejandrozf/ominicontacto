@@ -27,7 +27,7 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 
-from facebook_meta_app.api.v1.template import ListSerializer as TemplateListSerializer
+from facebook_meta_app.api.v1.templates_messenger import ListSerializer as TemplateListSerializer
 from facebook_meta_app.models import GrupoPlantillaMessenger
 from facebook_meta_app.models import PlantillaMessenger
 from ominicontacto_app.models import Campana
@@ -81,7 +81,7 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            queryset = GrupoPlantillaMessenger.objects.filter(is_active=True)
+            queryset = GrupoPlantillaMessenger.objects.all()
             serializer = ListSerializer(queryset, many=True)
             return response.Response(
                 data=get_response_data(
@@ -99,10 +99,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             serializer = CreateSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save(
-                    created_by=request.user,
-                    updated_by=request.user,
-                )
+                serializer.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
@@ -121,7 +118,7 @@ class ViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk):
         try:
-            queryset = GrupoPlantillaMessenger.objects.filter(is_active=True)
+            queryset = GrupoPlantillaMessenger.objects.all()
             instance = queryset.get(pk=pk)
             serializer = RetrieveSerializer(instance)
             return response.Response(
@@ -142,11 +139,11 @@ class ViewSet(viewsets.ViewSet):
 
     def update(self, request, pk):
         try:
-            queryset = GrupoPlantillaMessenger.objects.filter(is_active=True)
+            queryset = GrupoPlantillaMessenger.objects.all()
             instance = queryset.get(pk=pk)
             serializer = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save(updated_by=request.user)
+                serializer.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
@@ -170,7 +167,7 @@ class ViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk):
         try:
-            queryset = GrupoPlantillaMessenger.objects.filter(is_active=True)
+            queryset = GrupoPlantillaMessenger.objects.all()
             instance = queryset.get(pk=pk)
             if not instance.configuracion_facebook.exclude(campana__estado=Campana.ESTADO_BORRADA):
                 instance.delete()

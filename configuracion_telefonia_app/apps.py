@@ -159,6 +159,17 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'url': reverse('whatsapp_message_template_groups')
             })
 
+        if 'facebook_message_templates_configuration' in permissions or True:  # TEMPORAL
+            recursos.append({
+                'label': _('Plantillas de mensajes Facebook'),
+                'url': reverse('facebook_message_templates_configuration')
+            })
+        if 'facebook_message_template_groups' in permissions or True:  # TEMPORAL
+            recursos.append({
+                'label': _('Grupos de plantillas de mensaje Facebook'),
+                'url': reverse('facebook_message_template_groups')
+            })
+
         items = []
         if conexiones:
             items.append(

@@ -2,7 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $t("views.whatsapp.line.edit_title") }}</h1>
+        <h1>{{ $t("views.facebook.page.edit_title") }}</h1>
       </template>
       <template #end>
         <Button
@@ -19,7 +19,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import FormSteps from '@/components/supervisor/whatsapp/lines/FormSteps';
+import FormSteps from '@/components/supervisor/facebook/pages/FormSteps';
 
 export default {
     components: {

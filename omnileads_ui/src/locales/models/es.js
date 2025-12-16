@@ -297,35 +297,25 @@ export default {
     },
     facebook: {
         page: {
-            name: 'Name',
-            description: 'Description',
-            access_token: 'Access Token',
-            verify_token: 'Verify Token',
-            app_id: 'App Secret',
-            page_id: 'Page ID',
-            destination: 'Destiny',
-            horario: 'Group of hour',
-            mensaje_fueradehora: 'After Hours Message',
-            tipo_de_destino: 'Destination type',
-            mensaje_bienvenida: 'Welcome message',
-            mensaje_despedida: 'Goodbye message',
+            name: 'Nombre',
+            page_id: 'Identificador de página',
+            description: 'Descripción',
+            verify_token: 'Token de verificación',
+            access_token: 'Token de acceso',
+            app_id: 'App ID',
+            app_secret: 'App Secret',
+            schedule: 'Grupo horario',
+            destino: 'Destino',
+            tipo_de_destino: 'Tipo de destino',
+            welcome_message: 'Mensaje de bienvenida',
+            goodbye_message: 'Mensaje de despedida',
+            out_of_hours_message: 'Mensaje fuera de horario',
             options: {
-                value: 'Value',
-                description: 'Description',
-                destination_type: 'Destination Type',
-                destination: 'Destination'
+                value: 'Valor',
+                description: 'Descripción',
+                destination_type: 'Tipo de destino',
+                destination: 'Destino'
             },
-            interactive_form: {
-                menu_header: 'Menu Header',
-                menu_body: 'Menu Body',
-                menu_footer: 'Menu Footer',
-                menu_button: 'Menu Button',
-                wrong_answer: 'Wrong answer',
-                success_answer: 'Success response',
-                timeout: 'Wait time',
-                options: 'Options',
-                is_main: 'Main'
-            }
         },
         message_template: {
             nombre: 'Nombre',

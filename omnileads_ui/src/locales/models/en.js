@@ -301,43 +301,33 @@ export default {
     facebook: {
         page: {
             name: 'Name',
-            description: 'Description',
-            access_token: 'Access Token',
-            verify_token: 'Verify Token',
-            app_id: 'App Secret',
             page_id: 'Page ID',
-            destination: 'Destiny',
-            horario: 'Group of hour',
-            mensaje_fueradehora: 'After Hours Message',
+            description: 'Description',
+            verify_token: 'Verification Token',
+            access_token: 'Access Token',
+            app_id: 'App ID',
+            app_secret: 'App Secret',
+            schedule: 'Schedule',
+            destino: 'Destination',
             tipo_de_destino: 'Destination type',
-            mensaje_bienvenida: 'Welcome message',
-            mensaje_despedida: 'Goodbye message',
+            welcome_message: 'Welcome message',
+            goodbye_message: 'Goodbye message',
+            out_of_hours_message: 'Out of hours message',
             options: {
                 value: 'Value',
                 description: 'Description',
-                destination_type: 'Destination Type',
+                destination_type: 'Destination type',
                 destination: 'Destination'
             },
-            interactive_form: {
-                menu_header: 'Menu Header',
-                menu_body: 'Menu Body',
-                menu_footer: 'Menu Footer',
-                menu_button: 'Menu Button',
-                wrong_answer: 'Wrong answer',
-                success_answer: 'Success response',
-                timeout: 'Wait time',
-                options: 'Options',
-                is_main: 'Main'
-            }
         },
         message_template: {
-            nombre: 'Nombre',
-            tipo: 'Type',
-            configuracion: 'Configuration'
+            name: 'Name',
+            type: 'Type',
+            configuration: 'Configuration'
         },
         whatsapp_template: {
-            nombre: 'Name',
-            identificador: 'Identificador',
+            name: 'Name',
+            identificador: 'Identifier',
             texto: 'Text',
             idioma: 'Language',
             status: 'Status',

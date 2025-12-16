@@ -9,8 +9,8 @@
       <h2>
         {{
           formToCreate
-            ? $t("views.whatsapp.message_template.new_title")
-            : $t("views.whatsapp.message_template.edit_title")
+            ? $t("views.page.message_template.new_title")
+            : $t("views.page.message_template.edit_title")
         }}
       </h2>
     </template>
@@ -20,7 +20,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import Form from '@/components/supervisor/whatsapp/message_templates/Form';
+import Form from '@/components/supervisor/facebook/message_templates/Form';
 
 export default {
     props: {
@@ -37,10 +37,10 @@ export default {
         Form
     },
     methods: {
-        ...mapActions(['initWhatsappMessageTemplate']),
+        ...mapActions(['initFacebookPageTemplate']),
         closeModal () {
             this.$emit('handleModalEvent', {});
-            this.initWhatsappMessageTemplate({});
+            this.initFacebookPageTemplate({});
         }
     }
 };

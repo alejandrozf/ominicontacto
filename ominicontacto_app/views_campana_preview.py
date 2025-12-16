@@ -83,7 +83,7 @@ class CampanaPreviewMixin(CampanaWizardMixin):
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_preview/configuracion_whatsapp.html",
                  CONFIGURACION_META_FACEBOOK:
-                 "campanas/campana_preview/configuracion_facebook.html",
+                 "campanas/campana_preview/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
@@ -159,7 +159,8 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
-                 CONFIGURACION_META_FACEBOOK: "campanas/campana_manual/configuracion_facebook.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_manual/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html"}
 

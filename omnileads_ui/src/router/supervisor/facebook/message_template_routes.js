@@ -1,10 +1,10 @@
-import Index from '@/views/supervisor/whatsapp/message_templates/Index';
-import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
+import Index from '@/views/supervisor/facebook/message_templates/Index';
+import { FACEBOOK_URL_NAME } from '@/globals/supervisor/facebook';
 
 export default [
     {
-        path: `/${WHATSAPP_URL_NAME}_message_templates.html`,
-        name: `${WHATSAPP_URL_NAME}_message_templates`,
+        path: `/${FACEBOOK_URL_NAME}_message_templates.html`,
+        name: `${FACEBOOK_URL_NAME}_message_templates`,
         component: Index
     }
 ];

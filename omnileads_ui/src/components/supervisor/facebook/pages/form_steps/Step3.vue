@@ -2,7 +2,6 @@
   <div class="card">
     <div class="grid mt-4">
       <div class="sm:col-12 md:col-8 lg:col-6 xl:col-6">
-        <pre>{{ supFacebookPage }}</pre>
         <Fieldset>
           <template #legend>
             {{ $t("views.facebook.page.step3.time_group")}}
@@ -97,7 +96,7 @@
                   </div>
                   <div class="mt-4">
                     <label>{{
-                      $t("models.whatsapp.line.welcome_message")
+                      $t("models.facebook.page.welcome_message")
                     }}</label>
                     <div class="p-inputgroup mt-2">
                       <Button
@@ -153,7 +152,7 @@
                   </div>
                   <div class="mt-4">
                     <label>{{
-                      $t("models.whatsapp.line.out_of_hours_message")
+                      $t("models.facebook.page.out_of_hours_message")
                     }}</label>
                     <div class="p-inputgroup mt-2">
                       <Button
@@ -209,7 +208,7 @@
                   </div>
                   <div class="mt-4">
                     <label>{{
-                      $t("models.whatsapp.line.goodbye_message")
+                      $t("models.facebook.page.goodbye_message")
                     }}</label>
                     <div class="p-inputgroup mt-2">
                       <Button

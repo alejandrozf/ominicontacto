@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import mimetypes
-
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from orquestador_app.core.whatsapp.gupshup_code_error import GUPSHUP_CODE_ERROR
 from rest_framework import serializers, response, status, viewsets, decorators
 from rest_framework.authentication import SessionAuthentication
 
@@ -12,14 +10,12 @@ from api_app.authentication import ExpiringTokenAuthentication
 
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 from facebook_meta_app.api.v1.message import (
-    MessageMessengerMetaAppSerializer, MenssageAtachmentCreateSerializer
+    MessageMessengerMetaAppSerializer, MessageMessengerMetaAppAttachmentSerializer
 )
 from facebook_meta_app.api.v1.contact import ListSerializer as ContactoSerializer
-from facebook_meta_app.api.v1.disposition import OpcionCalificacionSerializer
 
-# Modelos: ADAPTAR nombres/ubicaciones si difieren
 from facebook_meta_app.models import (
-    ConversationMessengerMetaApp, MessageMessengerMetaApp
+    ConversationMessengerMetaApp, MessageMessengerMetaApp, PlantillaMessenger
 )
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto
 
@@ -27,7 +23,9 @@ from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
 
 # Orquestador para envío via Messenger (ADAPTAR: implementar send_text_message etc)
-from orquestador_app.core.facebook.send_message import send_text_message
+from orquestador_app.core.facebook.send_message import (
+    send_text_message, upload_media_to_meta, send_media_message
+)
 
 redis_2 = create_redis_connection(db=2)
 
@@ -79,7 +77,6 @@ class ConversacionMessengerSerializer(serializers.Serializer):
     client_alias = serializers.CharField(default="")
 
     def get_page(self, obj):
-        # Serializo la página (PaginaMetaFacebook). ADAPTAR si el serializer de página existe.
         page = obj.page
         if not page:
             return None
@@ -90,102 +87,27 @@ class ConversacionMessengerSerializer(serializers.Serializer):
         }
 
     def get_message_number(self, obj):
-        return obj.messagemessengermetaapp_set.count()\
-            if hasattr(obj, 'messagemessengermetaapp_set') else 0
+        return obj.messages.count()\
+            if hasattr(obj, 'messages') else 0
 
     def get_message_unread(self, obj):
-        # Asumimos que MessageMessengerMetaApp tiene manager/filtrado similar
         try:
             return obj.messages.mensajes_recibidos().filter(status='delivered').count()
         except Exception:
             return 0
 
     def get_messages(self, obj):
-        msgs = getattr(obj, 'messages', None)
-        if msgs is None:
-            msgs = MessageMessengerMetaApp.objects.filter(
-                conversation=obj).order_by('timestamp', 'id')
-        return MessageMessengerMetaAppSerializer(msgs, many=True).data
-
-    def get_client(self, obj):
-        if obj.client:
-            serializer = ContactoSerializer(obj.client)
-            return serializer.data
-        return None
-
-
-class ConversacionMessengerFilterSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    campaign = serializers.SerializerMethodField()
-    destination = serializers.CharField(source='page_client_id')
-    was_closed_by_system = serializers.SerializerMethodField()
-    disposition = serializers.SerializerMethodField()
-    client = serializers.SerializerMethodField()
-    agent = serializers.SerializerMethodField()
-    is_active = serializers.BooleanField(default=True)
-    expire = serializers.DateTimeField(allow_null=True)
-    timestamp = serializers.DateTimeField()
-    date_last_interaction = serializers.DateTimeField(allow_null=True)
-    message_number = serializers.SerializerMethodField()
-    photo = serializers.CharField(default="")
-    page = serializers.SerializerMethodField()
-    error = serializers.BooleanField(default=False)
-
-    def get_page(self, obj):
-        page = obj.page
-        if not page:
-            return None
-        return {
-            'id': page.id,
-            'name': getattr(page, 'name', getattr(page, 'page_name', None)),
-            'page_id': getattr(page, 'page_id', None),
-        }
-
-    def get_campaign(self, obj):
-        if obj.campana:
-            campana = obj.campana
-            return {
-                'id': campana.id,
-                'name': campana.nombre,
-                'type': getattr(campana, 'type', None),
-            }
-        return {}
-
-    def get_agent(self, obj):
-        if obj.agent:
-            return {
-                'id': obj.agent.user.id,
-                'name': obj.agent.user.get_full_name(),
-            }
-        return None
-
-    def get_message_number(self, obj):
-        return obj.messagemessengermetaapp_set.count()\
-            if hasattr(obj, 'messagemessengermetaapp_set') else 0
-
-    def get_client(self, obj):
-        if obj.client:
-            serializer = ContactoSerializer(obj.client)
-            # quitamos disposition si existe
-            try:
-                del serializer.fields['disposition']
-            except Exception:
-                pass
-            return serializer.data
-        return None
-
-    def get_disposition(self, obj):
         try:
-            if obj.is_disposition and obj.conversation_disposition:
-                serializer = OpcionCalificacionSerializer(
-                    obj.conversation_disposition.opcion_calificacion)
-                return serializer.data
-            return {}
-        except Exception as e:
-            print(e)
+            msgs = obj.messages.all().order_by('timestamp', 'id')
+            return MessageMessengerMetaAppSerializer(msgs, many=True).data
+        except Exception:
+            return []
 
-    def get_was_closed_by_system(self, obj):
-        return obj.is_disposition and not obj.conversation_disposition
+    def get_client(self, obj):
+        if obj.client:
+            serializer = ContactoSerializer(obj.client)
+            return serializer.data
+        return None
 
 
 class ConversacionMessengerNuevaSerializer(ConversacionMessengerSerializer):
@@ -207,7 +129,7 @@ class ViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return ConversacionMessengerFilterSerializer
+            return ConversacionMessengerSerializer
         return super().get_serializer_class()
 
     def list(self, request):
@@ -215,7 +137,7 @@ class ViewSet(viewsets.ModelViewSet):
             agente = request.user.get_agente_profile()
             agente_campanas = agente.get_campanas_activas_miembro().values_list(
                 'queue_name__campana_id', flat=True)
-
+            print("Agente Campañas:", agente_campanas)
             conversaciones = ConversationMessengerMetaApp.objects.filter(
                 is_disposition=False)
             conversaciones_nuevas = conversaciones.filter(
@@ -245,7 +167,7 @@ class ViewSet(viewsets.ModelViewSet):
         try:
             queryset = ConversationMessengerMetaApp.objects.all()
             instance = queryset.get(pk=pk)
-            instance.mensajes.mensajes_recibidos().update(status='read')
+            instance.messages.mensajes_recibidos().update(status='read')
             serializer = ConversacionMessengerSerializer(instance)
             return response.Response(
                 data=get_response_data(
@@ -257,8 +179,7 @@ class ViewSet(viewsets.ModelViewSet):
             return response.Response(
                 data=get_response_data(message=_('Conversacion no encontrada')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e)
+        except Exception:
             return response.Response(
                 data=get_response_data(
                     message=_('Error al obtener la conversacion')),
@@ -283,9 +204,9 @@ class ViewSet(viewsets.ModelViewSet):
             agente = request.user.get_agente_profile()
             if not conversacion.agent or conversacion.agent == agente:
                 conversation_granted = conversacion.otorgar_conversacion(agente),
-                mensajes = conversacion.mensajes.all()
+                mensajes = conversacion.messages.all()
                 serializer_conversacion = ConversacionMessengerSerializer(conversacion)
-                serializer_mensajes = MessageMessengerMetaApp(mensajes, many=True)
+                serializer_mensajes = MessageMessengerMetaAppSerializer(mensajes, many=True)
                 data = {
                     "conversation_granted": conversation_granted,
                     "conversation_data": serializer_conversacion.data,
@@ -357,9 +278,8 @@ class ViewSet(viewsets.ModelViewSet):
                 data=get_response_data(
                     message=_('No existe el contacto que se quiere asignar')),
                 status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
+        except Exception:
             print("Error al asignar el contacto a la conversación")
-            print(e)
             return response.Response(
                 data=get_response_data(
                     message=_('Error al asignar el contacto a la conversación')),
@@ -389,47 +309,45 @@ class ViewSet(viewsets.ModelViewSet):
     def send_message_text(self, request, pk):
         try:
             conversation = ConversationMessengerMetaApp.objects.get(pk=pk)
-            if not conversation.error or conversation.error_ex['code'] not in GUPSHUP_CODE_ERROR:
+            if not conversation.error:
                 timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                if conversation.expire and conversation.expire >= timestamp:
-                    if conversation.is_active:
-                        destination = conversation.destination
-                        sender = request.user.get_agente_profile()
-                        if not conversation.agent or conversation.agent != sender:
-                            raise Exception(
-                                _('Esta conversación ya está siendo atendida por otro agente'))
-                        data = request.data.copy()
-                        page = conversation.page
-                        message = {"text": data['message'], "type": "text"}
-                        print('>>> send_message_text')
-                        message_id = send_text_message(
-                            page, destination, message)  # orquestador
-                        if message_id:
-                            mensaje = MessageMessengerMetaApp.objects.create(
-                                message_id=message_id,
-                                conversation=conversation,
-                                origen=page.page_id,
-                                timestamp=timestamp,
-                                sender={"name": sender.user.username, "agent_id": sender.user.id},
-                                content=message,
-                                type="text",
-                            )
-                            serializer = MessageMessengerMetaApp(mensaje)
-                            return response.Response(
-                                data=get_response_data(
-                                    status=HttpResponseStatus.SUCCESS,
-                                    data=serializer.data),
-                                status=status.HTTP_200_OK)
-                        else:
-                            raise Exception(
-                                _('Este mensaje no se pudo enviar'))
-                    return response.Response(
-                        data=get_response_data(
-                            message=_(
-                                'La conversacion esta inactiva hasta que el cliente responda')),
-                        status=status.HTTP_401_UNAUTHORIZED)
-                return response.Response(data=get_response_data(
-                    message=_('La conversacion ha expirado. Inicie una nueva conversacion.')),
+                if conversation.is_active:
+                    destination = conversation.page_client_id
+                    sender = request.user.get_agente_profile()
+                    if not conversation.agent or conversation.agent != sender:
+                        raise Exception(
+                            _('Esta conversación ya está siendo atendida por otro agente'))
+                    data = request.data.copy()
+                    page = conversation.page
+                    message = {"text": data['message'], "type": "text"}
+                    print('>>> send_message_text')
+                    message_id = send_text_message(
+                        page, destination, message)  # orquestador
+                    if message_id:
+                        mensaje = MessageMessengerMetaApp.objects.create(
+                            message_id=message_id,
+                            conversation=conversation,
+                            origen=page.page_id,
+                            timestamp=timestamp,
+                            sender={"name": sender.user.username, "agent_id": sender.user.id},
+                            content=message,
+                            type="message",
+                        )
+                        serializer = MessageMessengerMetaAppSerializer(mensaje)
+                        print('>>> send_message_text - mensaje enviado')
+                        print(serializer.data)
+                        return response.Response(
+                            data=get_response_data(
+                                status=HttpResponseStatus.SUCCESS,
+                                data=serializer.data),
+                            status=status.HTTP_200_OK)
+                    else:
+                        raise Exception(
+                            _('Este mensaje no se pudo enviar'))
+                return response.Response(
+                    data=get_response_data(
+                        message=_(
+                            'La conversacion esta inactiva hasta que el cliente responda')),
                     status=status.HTTP_401_UNAUTHORIZED)
             return response.Response(
                 data=get_response_data(
@@ -461,57 +379,132 @@ class ViewSet(viewsets.ModelViewSet):
             )
 
     @decorators.action(detail=True, methods=['post'])
-    def send_message(self, request, pk=None):
-        """Envía un mensaje a través de la conversación específica."""
+    def send_message_template(self, request, pk=None):
         try:
-            conversation = self.get_object()
-            message_text = request.data.get('message', '')
-
-            if not message_text:
+            conversation = ConversationMessengerMetaApp.objects.get(pk=pk)
+            if not conversation.error:
+                timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                if conversation.is_active:
+                    destination = conversation.page_client_id
+                    sender = request.user.get_agente_profile()
+                    if not conversation.agent or conversation.agent != sender:
+                        raise Exception(
+                            _('Esta conversación ya está siendo atendida por otro agente'))
+                    data = request.data.copy()
+                    page = conversation.page
+                    template_data = PlantillaMessenger.objects.get(pk=data['template_id'])
+                    print(">>> template_data", template_data)
+                    message = template_data.configuracion
+                    message_id = send_text_message(
+                        page, destination, message)  # orquestador
+                    if message_id:
+                        mensaje = MessageMessengerMetaApp.objects.create(
+                            message_id=message_id,
+                            conversation=conversation,
+                            origen=page.page_id,
+                            timestamp=timestamp,
+                            sender={"name": sender.user.username, "agent_id": sender.user.id},
+                            content=message,
+                            type="message",
+                        )
+                        serializer = MessageMessengerMetaAppSerializer(mensaje)
+                        print('>>> send_message_template - mensaje enviado')
+                        print(serializer.data)
+                        return response.Response(
+                            data=get_response_data(
+                                status=HttpResponseStatus.SUCCESS,
+                                data=serializer.data),
+                            status=status.HTTP_200_OK)
+                    else:
+                        raise Exception(
+                            _('Este mensaje no se pudo enviar'))
                 return response.Response(
-                    {'error': 'Message text is required'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # Lógica para enviar el mensaje usando el orquestador
-            send_text_message(
-                page_access_token=conversation.page.access_token,
-                recipient_id=conversation.page_client_id,
-                message_text=message_text
-            )
-
+                    data=get_response_data(
+                        message=_(
+                            'La conversacion esta inactiva hasta que el cliente responda')),
+                    status=status.HTTP_401_UNAUTHORIZED)
             return response.Response(
-                {'status': 'message sent'},
-                status=status.HTTP_200_OK
-            )
+                data=get_response_data(
+                    message=_('Conversacion es erronea')),
+                status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return response.Response(
-                {'error': str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={},
+                    errors=str(e), message=_('Error al enviar el mensaje')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=True, methods=['post'])
-    def add_attachment(self, request, pk=None):
-        """Agrega un attachment a la conversación específica."""
+    def send_message_attachment(self, request, pk):
         try:
-            conversation = self.get_object()
-            serializer = MenssageAtachmentCreateSerializer(data=request.data)
-            if serializer.is_valid():
-                attachment = serializer.save(conversation=conversation)
+            conversation = ConversationMessengerMetaApp.objects.get(pk=pk)
+            if not conversation.error:
+                timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                if conversation.is_active:
+                    sender = request.user.get_agente_profile()
+                    if not conversation.agent or conversation.agent != sender:
+                        raise Exception(
+                            _('Esta conversación ya está siendo atendida por otro agente'))
+                    page = conversation.page
+                    data = request.data.copy()
+                    data.update({"conversation": pk,
+                                 "sender": MESSAGE_SENDERS['AGENT']})
+                    serializer = MessageMessengerMetaAppAttachmentSerializer(data=data)
+                    serializer.is_valid(raise_exception=True)
+                    mensaje = serializer.save()
+                    filename = data['file'].name[:100]
+                    file_type = get_type(filename)
+                    media_path = mensaje.file.path
+                    media_url = request.build_absolute_uri(mensaje.file.url)
+                    attachment_id = upload_media_to_meta(page, file_type, media_path)
+                    if not attachment_id:
+                        mensaje.delete()
+                        raise Exception(
+                            _('No se pudo subir el archivo a Meta'))
+                    page_client_id = conversation.page_client_id
+                    message_id = send_media_message(page, page_client_id, file_type, attachment_id)
+
+                    if message_id:
+                        mensaje.message_id = message_id
+                        mensaje.origen = page.page_id
+                        mensaje.timestamp = timestamp
+                        mensaje.sender = {
+                            "name": sender.user.username,
+                            "agent_id": sender.user.id
+                        }
+                        mensaje.content = {
+                            file_type: {
+                                "url": media_url,
+                            }
+                        }
+                        mensaje.type = file_type
+                        mensaje.save()
+                        serializer = MessageMessengerMetaAppSerializer(mensaje)
+                    else:
+                        mensaje.delete()
+                        raise Exception(
+                            _('Este mensaje no se pudo enviar'))
+                    return response.Response(
+                        data=get_response_data(
+                            status=HttpResponseStatus.SUCCESS,
+                            data=serializer.data),
+                        status=status.HTTP_200_OK)
                 return response.Response(
-                    {'status': 'attachment added', 'attachment_id': attachment.id},
-                    status=status.HTTP_201_CREATED
-                )
-            else:
-                return response.Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        except Exception as e:
+                    data=get_response_data(
+                        message=_(
+                            'La conversacion esta inactiva hasta que el cliente responda')),
+                    status=status.HTTP_401_UNAUTHORIZED)
             return response.Response(
-                {'error': str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                data=get_response_data(
+                    message=_('Conversacion es erronea')),
+                status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(">>>>>>>>", e)
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={},
+                    errors=str(e), message=_('Error al enviar el mensaje')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=['get'])
     def active_conversations(self, request):

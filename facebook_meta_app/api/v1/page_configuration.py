@@ -5,13 +5,15 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from configuracion_telefonia_app.models import (DestinoEntrante, OpcionDestino,
-                                                GrupoHorario, PlantillaMensaje)
+                                                GrupoHorario)
 from ominicontacto_app.models import Campana
 
 from facebook_meta_app.models import (PaginaMetaFacebook, MenuInteractivoMessengerMetaApp,
                                       OpcionMenuInteractivoMessengerMetaApp,
-                                      ConfiguracionMetaFacebookCampana)
+                                      ConfiguracionMetaFacebookCampana, PlantillaMessenger)
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
+
+from facebook_meta_app.services.redis.page import StreamDePaginas
 
 
 class JSONSerializerField(serializers.Field):
@@ -146,7 +148,6 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
 
     def create_menu_interactivo(self, validated_data):
         # Si es un menú interactivo debo crearlo:
-        print(validated_data)
         page = None
         if 'page' in self.context:
             page = self.context['page']
@@ -162,15 +163,12 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
             )
             menu.save()
             destino = DestinoEntrante.crear_nodo_ruta_entrante(menu)
-            print("menu data >>>", menu_data)
             opcions = {
                 "id_temp": menu_data['id_tmp'] if 'id_tmp' in menu_data else None,
                 'destino_anterior': destino,
                 "opcions": menu_data['options'] if 'options' in menu_data else []
 
             }
-            print("menu_data >>>", menu_data)
-            print("validated_data >>>", validated_data)
             if 'id_tmp' in menu_data and 'id_tmp' in validated_data and\
                     menu_data['id_tmp'] == validated_data['id_tmp']:
                 self.destino = destino
@@ -194,7 +192,7 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
                     #     raise serializers.ValidationError({
                     #         'data': _('No puede existir dependencias recursiva entre menus')})
                 elif option_data['type_option'] == DestinoEntrante.CLOSING_MESSAGE:
-                    plantilla = PlantillaMensaje.objects.get(id=option_data['destination'])
+                    plantilla = PlantillaMessenger.objects.get(id=option_data['destination'])
                     try:
                         destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(plantilla)
                     except Exception:
@@ -226,11 +224,11 @@ class MessengerMetaAppPageConfigurationCreateSerializer(serializers.ModelSeriali
     horario = serializers.PrimaryKeyRelatedField(
         queryset=GrupoHorario.objects.all(), allow_null=True, required=False)
     welcome_message = serializers.PrimaryKeyRelatedField(
-        queryset=PlantillaMensaje.objects.all(), allow_null=True, required=False)
+        queryset=PlantillaMessenger.objects.all(), allow_null=True, required=False)
     goodbye_message = serializers.PrimaryKeyRelatedField(
-        queryset=PlantillaMensaje.objects.all(), allow_null=True, required=False)
+        queryset=PlantillaMessenger.objects.all(), allow_null=True, required=False)
     out_of_hours_message = serializers.PrimaryKeyRelatedField(
-        queryset=PlantillaMensaje.objects.all(), allow_null=True, required=False)
+        queryset=PlantillaMessenger.objects.all(), allow_null=True, required=False)
     allow_reply_comments = serializers.BooleanField(default=False)
     is_active = serializers.BooleanField(default=True)
 
@@ -361,7 +359,7 @@ class ViewSet(viewsets.ViewSet):
         serializer = MessengerMetaAppPageConfigurationCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            print('serializer valid')
+            StreamDePaginas().notificar_nueva_page(serializer.instance)
             return Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
@@ -386,13 +384,13 @@ class ViewSet(viewsets.ViewSet):
                         'destination': [_('Este campo es requerido.')]}),
                     status=status.HTTP_400_BAD_REQUEST)
             destino_data = request_data.pop('destination')
-            print('destino_data >>>', destino_data)
             serializer = MessengerMetaAppPageConfigurationCreateSerializer(
                 instance, data=request_data, context={'page': instance})
             print('serializer >>>', serializer.is_valid())
             if serializer.is_valid():
                 serializer_destino =\
                     DestinoDePaginaCreateSerializer(data=destino_data, context={'page': instance})
+                print('serializer_destino >>>', serializer_destino.is_valid())
                 if serializer_destino.is_valid():
                     # Primero desconectar destino anterior de la página para poderlo borrar
                     # pues es un campo PROTECT
@@ -403,6 +401,7 @@ class ViewSet(viewsets.ViewSet):
                             destino_old = DestinoEntrante.objects.get(
                                 object_id=menu_old.pk,
                                 tipo=DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP)
+                            print('destino_old >>>', destino_old)
                             opciones_destino =\
                                 OpcionDestino.objects.filter(destino_anterior=destino_old)
                             for option in opciones_destino:
@@ -412,7 +411,8 @@ class ViewSet(viewsets.ViewSet):
                                 option.delete()
                             destino_old.delete()
                             menu_old.delete()
-                        except Exception:
+                        except Exception as e:
+                            print('Exception eliminando menu interactivo antiguo >>>', e)
                             # DestinoEntrante.DoesNotExist no existe pq se elimino anteriormente
                             # como opción de otro menú interactivo')
                             menu_old.delete()
@@ -421,6 +421,7 @@ class ViewSet(viewsets.ViewSet):
                     page = serializer.save(
                         destination=destino
                     )
+                    print('page saved >>>', page)
                     if page.destination.tipo == DestinoEntrante.CAMPANA:
                         if not destino.content_object.whatsapp_habilitado:
                             destino.content_object.whatsapp_habilitado = True
@@ -437,11 +438,11 @@ class ViewSet(viewsets.ViewSet):
 
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
-                    # StreamDeLineas().notificar_nueva_linea(line)
+                    StreamDePaginas().notificar_nueva_page(page)
                     return Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
-                            message=_('Se creo la línea de forma exitosa'),
+                            message=_('Se creo la página de forma exitosa'),
                             data=serialized_data),
                         status=status.HTTP_201_CREATED)
                 else:
@@ -457,6 +458,7 @@ class ViewSet(viewsets.ViewSet):
                                            errors=serializer.errors),
                     status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print('Exception >>>>>>>>>>', e)
             return Response(
                 data=get_response_data(message=_('Error al crear la página >>>') + str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -473,6 +475,7 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         instance.delete()
+        StreamDePaginas().notificar_page_eliminada(instance)
         return Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,

@@ -92,7 +92,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
-import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/facebook/message_template';
 import { HTTP_STATUS, CONFIRM_BTN_COLOR, CANCEL_BTN_COLOR } from '@/globals';
 
 export default {
@@ -156,6 +156,7 @@ export default {
             return this.templateTypes.find((t) => t.value === type).name;
         },
         edit (messageTemplate) {
+            console.log(messageTemplate);
             this.$emit('handleModalEvent', {
                 showModal: true,
                 formToCreate: false,

@@ -16,8 +16,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import MessageTemplatesTable from '@/components/supervisor/whatsapp/message_templates/MessageTemplatesTable';
-import ModalToHandleMessageTemplate from '@/components/supervisor/whatsapp/message_templates/ModalToHandleMessageTemplate';
+import MessageTemplatesTable from '@/components/supervisor/facebook/message_templates/MessageTemplatesTable';
+import ModalToHandleMessageTemplate from '@/components/supervisor/facebook/message_templates/ModalToHandleMessageTemplate';
 
 export default {
     data () {
@@ -31,7 +31,7 @@ export default {
         ModalToHandleMessageTemplate
     },
     async created () {
-        await this.initWhatsappMessageTemplates();
+        await this.initFacebookPageTemplates();
     },
     methods: {
         handleModal ({
@@ -41,17 +41,17 @@ export default {
         }) {
             this.showModal = showModal;
             this.formToCreate = formToCreate;
-            this.initWhatsappMessageTemplate({ messageTemplate });
+            this.initFacebookPageTemplate({ messageTemplate });
             if (messageTemplate) {
-                this.initWhatsappMessageTemplateFormFields({ type: messageTemplate.tipo, config: messageTemplate.configuracion });
+                this.initFacebookPageTemplateFormFields({ type: messageTemplate.tipo, config: messageTemplate.configuracion });
             } else {
-                this.initWhatsappMessageTemplateFormFields({});
+                this.initFacebookPageTemplateFormFields({});
             }
         },
         ...mapActions([
-            'initWhatsappMessageTemplate',
-            'initWhatsappMessageTemplates',
-            'initWhatsappMessageTemplateFormFields'
+            'initFacebookPageTemplate',
+            'initFacebookPageTemplates',
+            'initFacebookPageTemplateFormFields'
         ])
     }
 };

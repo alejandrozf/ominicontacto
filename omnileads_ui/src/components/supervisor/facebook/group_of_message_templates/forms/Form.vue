@@ -67,7 +67,7 @@
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
-import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/facebook/message_template';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -88,7 +88,7 @@ export default {
             templateTypes: [
                 { name: '-----', value: null },
                 {
-                    name: this.$t('forms.whatsapp.message_template.types.text'),
+                    name: this.$t('forms.facebook.message_template.types.text'),
                     value: TEMPLATE_TYPES.TEXT
                 }
             ],
@@ -99,7 +99,7 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['supWhatsappMessageTemplates', 'supMessageTemplatesOfGroup'])
+        ...mapState(['supFacebookPageTemplates', 'supMessageTemplatesOfGroup'])
     },
     methods: {
         ...mapActions(['addMessageTemplateToGroup']),
@@ -134,7 +134,7 @@ export default {
                 this.supMessageTemplatesOfGroup &&
         this.supMessageTemplatesOfGroup.length > 0
             ) {
-                this.templates = this.supWhatsappMessageTemplates.filter(
+                this.templates = this.supFacebookPageTemplates.filter(
                     (t) => !this.supMessageTemplatesOfGroup.includes(t.id)
                 ).map(function (t) {
                     const tipo = $this.templateTypes.find(type => type.value === t.type).name;
@@ -144,7 +144,7 @@ export default {
                     };
                 });
             } else {
-                this.templates = this.supWhatsappMessageTemplates.map(function (t) {
+                this.templates = this.supFacebookPageTemplates.map(function (t) {
                     const tipo = $this.templateTypes.find(type => type.value === t.type).name;
                     return {
                         id: t.id,
@@ -155,7 +155,7 @@ export default {
         }
     },
     watch: {
-        supWhatsappMessageTemplates: {
+        supFacebookPageTemplates: {
             handler () {},
             deep: true,
             immediate: true

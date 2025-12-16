@@ -1,17 +1,17 @@
 import urls from '@/api_urls/supervisor/whatsapp/whatsapp_template_urls';
 import { BaseService } from '@/services/base_service';
 
-export default class WhatsappTemplateService extends BaseService {
+export default class FacebookTemplateService extends BaseService {
     constructor () {
-        super(urls, 'Whatsapp Template');
+        super(urls, 'Facebook Template');
     }
 
-    async sycnUp (lineId) {
+    async syncUp (lineId) {
         try {
             const resp = await fetch(this.urls.SyncUp(lineId), this.payload);
             return await resp.json();
         } catch (error) {
-            console.error(`Error al sincronizar < Whatsapp Templates >`);
+            console.error(`Error al sincronizar < Facebook Templates >`);
             return [];
         } finally {
             this.initPayload();

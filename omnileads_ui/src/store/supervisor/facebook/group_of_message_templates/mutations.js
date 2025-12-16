@@ -1,16 +1,16 @@
 export default {
-    initWhatsappGroupOfMessageTemplates (state, data) {
-        state.supWhatsappGroupOfMessageTemplates = data;
+    initFacebookPageGroupOfMessageTemplates (state, data) {
+        state.supFacebookPageGroupOfMessageTemplates = data;
     },
-    initWhatsappGroupOfMessageTemplate (state, data = null) {
+    initFacebookPageGroupOfMessageTemplate (state, data = null) {
         if (data) {
-            state.supWhatsappGroupOfMessageTemplate = {
+            state.supFacebookPageGroupOfMessageTemplate = {
                 id: data.id,
                 nombre: data.name,
                 plantillas: data.templates
             };
         } else {
-            state.supWhatsappGroupOfMessageTemplate = {
+            state.supFacebookPageGroupOfMessageTemplate = {
                 id: null,
                 nombre: '',
                 plantillas: []

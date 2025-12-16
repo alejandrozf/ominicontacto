@@ -16,7 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-# APIs para visualizar destinos
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -43,7 +42,7 @@ class MessageMessengerMetaAppSerializer(serializers.Serializer):
     type = serializers.CharField()
     status = serializers.CharField()
     fail_reason = serializers.CharField()
-    file = serializers.FileField()
+    file = serializers.FileField(allow_null=True)
 
     def get_contact_data(self, obj):
         if obj.conversation.client:
@@ -52,7 +51,20 @@ class MessageMessengerMetaAppSerializer(serializers.Serializer):
         return {}
 
     def get_content(self, obj):
-        return {}
+        if obj.type == 'message' and 'quick_reply' in obj.content:
+            return obj.content.get('text', '')
+        return obj.content
+
+
+class MessageMessengerMetaAppAttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MessageMessengerMetaApp
+        fields = [
+            'id',
+            'conversation',
+            'sender',
+            'file'
+        ]
 
 
 class MensajeTextCreateSerializer(serializers.Serializer):
@@ -61,7 +73,7 @@ class MensajeTextCreateSerializer(serializers.Serializer):
     sender = serializers.IntegerField()
 
 
-class MensajeAtachmentCreateSerializer(serializers.ModelSerializer):
+class MenssageAtachmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MessageMessengerMetaApp
         fields = [

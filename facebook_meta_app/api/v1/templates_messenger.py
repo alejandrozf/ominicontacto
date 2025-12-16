@@ -19,7 +19,6 @@
 # APIs para visualizar lineas
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.db.models import F, Func, Value, JSONField
 from rest_framework import serializers
 from rest_framework import response
 from rest_framework import status
@@ -129,10 +128,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             serializer = CreateSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save(
-                    created_by=request.user,
-                    updated_by=request.user,
-                )
+                serializer.save(is_active=True)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
@@ -151,26 +147,7 @@ class ViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk):
         try:
-            queryset = PlantillaMessenger.objects.filter(
-                is_active=True
-            ).annotate(
-                created_jsonb=Func(
-                    Value("date"),
-                    Func(F("created_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("created_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-                updated_jsonb=Func(
-                    Value("date"),
-                    Func(F("updated_at"), Value("YYYY-MM-DD"), function="to_char"),
-                    Value("user"),
-                    F("updated_by__username"),
-                    function="jsonb_build_object",
-                    output_field=JSONField(),
-                ),
-            )
+            queryset = PlantillaMessenger.objects.filter(is_active=True)
             instance = queryset.get(pk=pk)
             serializer = RetrieveSerializer(instance)
             return response.Response(
@@ -195,7 +172,7 @@ class ViewSet(viewsets.ViewSet):
             instance = queryset.get(pk=pk)
             serializer = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save(updated_by=request.user)
+                serializer.save()
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
