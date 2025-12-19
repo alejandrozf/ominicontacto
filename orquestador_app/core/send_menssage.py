@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import logging
 import requests
 import json
 from django.utils import timezone
@@ -25,6 +26,7 @@ from orquestador_app.core.apis_urls import (
 )
 from whatsapp_app.models import MensajeWhatsapp, ConfiguracionProveedor
 
+logger = logging.getLogger(__name__)
 
 headers = {
     "accept": "application/json",
@@ -62,7 +64,7 @@ def autoresponse_welcome(line, conversation, timestamp):
                     }
                 )
     except Exception as e:
-        print("autoresponse_welcome >>>>>>>>", e)
+        logger.exception("autoresponse_welcome %r", e)
 
 
 def autoreponse_destino_interactivo(line, destino, conversation):
@@ -120,7 +122,7 @@ def gupshup_autoreponse_destino_interactivo(line, destino, conversation):
                 }
             )
     except Exception as e:
-        print("autoreponse_destino_interactivo >>>>>>>>>>>>", e)
+        logger.exception("autoreponse_destino_interactivo %r", e)
 
 
 def meta_autoreponse_destino_interactivo(line, destino, conversation):
@@ -187,7 +189,7 @@ def meta_autoreponse_destino_interactivo(line, destino, conversation):
                 }
             )
     except Exception as e:
-        print("autoreponse_destino_interactivo >>>>>>>>>>>>", e)
+        logger.exception("autoreponse_destino_interactivo %r", e)
 
 
 def autoresponse_goodbye(conversation):
@@ -209,7 +211,7 @@ def autoresponse_goodbye(conversation):
                     }
                 )
     except Exception as e:
-        print("autoresponse_goobye >>>>>>>>", e)
+        logger.exception("autoresponse_goobye %r", e)
 
 
 def autoresponse_out_of_time(line, conversation, timestamp):
@@ -230,7 +232,7 @@ def autoresponse_out_of_time(line, conversation, timestamp):
                     }
                 )
     except Exception as e:
-        print("autoresponse_out_of_time >>>>>>>>", e)
+        logger.exception("autoresponse_out_of_time %r", e)
 
 
 def send_template_message(line, destination, template, data):
@@ -267,10 +269,10 @@ def gupshup_send_template_message(line, destination, template, data):
             message = json.dumps({'video': {'link': template.link_media}, 'type': 'video'})
             data.update({"message": message})
         response = requests.post(URL_SEND_TEMPLATE, headers=headers, data=data)
-        print(response.json())
+        logger.debug("response=%r", response.json())
         return response
     except Exception as e:
-        print("error en send_template_message >>>>>>>", e)
+        logger.exception("error en send_template_message %r", e)
 
 
 def meta_send_template_message(line, destination, template, data):
@@ -326,7 +328,7 @@ def meta_send_template_message(line, destination, template, data):
             META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=payload)
         return response
     except Exception as e:
-        print("send_text_message >>>>>>", e)
+        logger.exception("send_text_message %r", e)
 
 
 def gupshup_send_text_message(line, destination, message):
@@ -342,11 +344,11 @@ def gupshup_send_text_message(line, destination, message):
             "destination": destination,
             "message": message['text']
         }
-        print("headers>>", headers)
+        logger.debug("headers=%r", headers)
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
         return response
     except Exception as e:
-        print("send_text_message >>>>>>", e)
+        logger.exception("send_text_message %r", e)
 
 
 def meta_send_text_message(line, destination, message):
@@ -369,7 +371,7 @@ def meta_send_text_message(line, destination, message):
             META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=data)
         return response
     except Exception as e:
-        print("meta_send_text_message >>>>>>", e)
+        logger.exception("meta_send_text_message %r", e)
 
 
 def send_multimedia_file(line, destination, message):
@@ -401,7 +403,7 @@ def gupshup_send_multimedia_file_message(line, destination, message):
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
         return response.json()
     except Exception as e:
-        print("send_text_message >>>>>>", e)
+        logger.exception("send_text_message %r", e)
 
 
 def meta_send_multimedia_file_message(line, destination, message):
@@ -428,7 +430,7 @@ def meta_send_multimedia_file_message(line, destination, message):
             META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=data)
         return response
     except Exception as e:
-        print("meta_send_multimedia_file_message >>>>>>", e)
+        logger.exception("meta_send_multimedia_file_message %r", e)
 
 
 def sync_templates(line):
@@ -456,4 +458,4 @@ def sync_templates(line):
             return templates
         return []
     except Exception as e:
-        print(">>>>>", e)
+        logger.exception("%r", e)

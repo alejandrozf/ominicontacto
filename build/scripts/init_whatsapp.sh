@@ -9,4 +9,4 @@ echo "Run django command compilemessages"
 $COMMAND compilemessages
 
 echo "Background Tasks Worker"
-exec $COMMAND listening_whatsapp_events
+exec $COMMAND msgs-orchestrator
