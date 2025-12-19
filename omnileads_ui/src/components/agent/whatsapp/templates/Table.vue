@@ -20,7 +20,7 @@
         })
       "
       :filters="filters"
-      :globalFilterFields="['nombre']"
+      :globalFilterFields="['name']"
     >
       <template #header>
         <div class="flex justify-content-between flex-wrap">

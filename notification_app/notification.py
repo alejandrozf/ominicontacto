@@ -20,6 +20,7 @@ import time
 import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
 from notification_app.consumers import AgentConsole, AgentConsoleWhatsapp, DialerStatsConsumer
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
 MESSAGE_SENDERS = {
@@ -132,7 +133,7 @@ class AgentNotifier:
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
-                'number_messages': conversation.mensajes.count(),
+                'number_messages': sync_to_async(conversation.mensajes.count)(),
                 'from': conversation.client_alias
                 if conversation.client_alias else conversation.destination,
                 'contact_data': conversation.client.obtener_datos()
@@ -153,7 +154,7 @@ class AgentNotifier:
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
-                'number_messages': conversation.mensajes.count(),
+                'number_messages': sync_to_async(conversation.mensajes.count)(),
                 'from': conversation.destination,
                 'contact_data': conversation.client.obtener_datos()
                 if conversation.client else "",
