@@ -17,6 +17,8 @@
 #
 import json
 from django.utils import timezone
+import logging
+from asgiref.sync import sync_to_async
 from django.contrib.contenttypes.models import ContentType
 from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.models import Campana
@@ -31,10 +33,29 @@ from orquestador_app.core.notify_agents import send_notify
 
 redis_2 = create_redis_connection(db=2)
 
+logger = logging.getLogger(__name__)
+
 
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
+    notifications = await s2a_inbound_chat_event(
+        line,
+        timestamp,
+        message_id,
+        origen,
+        content,
+        sender,
+        context,
+        type
+    )
+    for ntype, nargs in notifications:
+        await send_notify(ntype, **nargs)
+
+
+@sync_to_async
+def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
+    notifications = []
     try:
-        print("mensaje entrante por la linea >>>", line.nombre, "content >>>>", content)
+        logger.debug("mensaje entrante por la linea=%r content=%r", line.nombre, content)
         is_out_of_time_chat = is_out_of_time(line, timestamp)
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(
@@ -117,29 +138,36 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
                     'type': 'WHATSAPP:NEW-INBOUND-CONV',
                     'campaign_id': conversation.campana_id,
                 }))
-                await send_notify('notify_whatsapp_new_chat', conversation=conversation)
+                notifications.append(('notify_whatsapp_new_chat', {
+                    'conversation': conversation,
+                }))
             elif created_message and conversation.agent:
-                await send_notify('notify_whatsapp_new_message', conversation=conversation,
-                                  line=line,
-                                  message=message_inbound)
+                notifications.append(('notify_whatsapp_new_message', {
+                    'conversation': conversation,
+                    'line': line,
+                    'message': message_inbound,
+                }))
 
             if not conversation.campana:
                 if type == 'list_reply':
-                    await asignar_campana(line, conversation, content, context)
+                    for notification in asignar_campana(line, conversation, content, context):
+                        notifications.append(notification)
                 else:
-                    print('primer menu')
+
                     autoreponse_destino_interactivo(line, line.destino, conversation)
 
     except Exception as e:
-        print("inbound_chat_event >>>>>>>> Error: ", e)
+        logger.exception("inbound_chat_event %r", e)
+    return notifications
 
 
-async def asignar_campana(line, conversation, content, context):
+def asignar_campana(line, conversation, content, context):
+    notifications = []
     try:
         try:
             mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
         except Exception as e:
-            print(e)
+            logger.exception("%r", e)
             mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
 
         destino_entrante_id = mensaje_origen.sender['destino_entrante']
@@ -155,7 +183,9 @@ async def asignar_campana(line, conversation, content, context):
                 conversation.campana = campana
                 conversation.client = client
                 conversation.save()
-                await send_notify('notify_whatsapp_new_chat', conversation=conversation)
+                notifications.append(('notify_whatsapp_new_chat', {
+                    'conversation': conversation,
+                }))
                 if destination_entrante.content_object.texto_derivacion:
                     auto_response = {"text": destination_entrante.content_object.texto_derivacion}
                     if auto_response:
@@ -202,4 +232,5 @@ async def asignar_campana(line, conversation, content, context):
                 auto_response =\
                     {"text": destination_entrante.content_object.texto_opcion_incorrecta}
     except Exception as e:
-        print("asignar_campana >>>>>>>", e)
+        logger.exception("asignar_campana %r", e)
+    return notifications

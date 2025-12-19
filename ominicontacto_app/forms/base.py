@@ -778,6 +778,9 @@ class AuditoriaBusquedaForm(forms.Form):
     revisadas = forms.BooleanField(
         required=False, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
         label=_('Únicamente revisadas por Agente'))
+    gestion = forms.BooleanField(
+        required=False, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Únicamente calificaciones de gestión'))
 
     def __init__(self, *args, **kwargs):
         supervisor = kwargs.pop('supervisor')

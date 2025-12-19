@@ -26,7 +26,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
 from ominicontacto_app.forms.base import AuditoriaBusquedaForm, AuditoriaCalificacionForm
-from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
@@ -120,6 +120,7 @@ class AuditarCalificacionesFormView(FormView):
         callid = form.cleaned_data.get('callid')
         status_auditoria = form.cleaned_data.get('status_auditoria')
         revisadas = form.cleaned_data.get('revisadas')
+        gestion = form.cleaned_data.get('gestion')
 
         pagina = form.cleaned_data.get('pagina')
         supervisor = self.request.user.get_supervisor_profile()
@@ -132,6 +133,9 @@ class AuditarCalificacionesFormView(FormView):
         if revisadas:
             listado_de_calificaciones = listado_de_calificaciones.filter(
                 auditoriacalificacion__revisada=True)
+        if gestion:
+            listado_de_calificaciones = listado_de_calificaciones.filter(
+                opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
         return self.render_to_response(self.get_context_data(
             listado_de_calificaciones=listado_de_calificaciones, pagina=pagina,
