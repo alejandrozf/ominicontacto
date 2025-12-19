@@ -10,6 +10,7 @@
 
 - oml-3105b Visual changes in Contact Disposition form.
 - oml-3245  Omnidialer Max boost factor=20.
+- oml-3249  Audit list engaged disposition filter.
 
 ## Fixed
 
@@ -17,6 +18,9 @@
 - oml-3233 Only new inbound contacts calls can omit disposition.
 - oml-3245 Error when changing Campaign Contact Database.
 - oml-3088 Fix performance issue with Agent disposition view when phone ratings are allowed.
+- oml-3167 Fix Whatsapp Service problems
+- oml-3246 Fix whatsapp message template input search functionality.
+- oml-3251 Premium Reports: Avoid error 500 when COMPLETE-BT logs have errors.
 
 ## Removed
 
