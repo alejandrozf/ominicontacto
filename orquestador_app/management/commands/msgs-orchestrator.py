@@ -142,42 +142,45 @@ class WhatsappEventsProcessor(object):
             await self.handle_meta_messages(line, payload)
 
     async def handle_gupshup_message(self, line: Line, event: dict):
-        event_timestamp = datetime.fromtimestamp(
-            event["timestamp"] / 1000,
-            timezone.get_current_timezone(),
-        )
-        # salientes
-        if event["type"] == "message-event" and not event["payload"]["type"] == "enqueued":
-            error_ex = None
-            expire = None
-            if event["payload"]["type"] == "failed":
-                logger.error(event["payload"]["payload"]["reason"])
-                error_ex = event["payload"]["payload"]
-            if event["payload"]["type"] == "sent":
-                expire = datetime.fromtimestamp(
-                    event["payload"]["conversation"]["expiresAt"],
-                    timezone.get_current_timezone(),
+        try:
+            event_timestamp = datetime.fromtimestamp(
+                event["timestamp"] / 1000,
+                timezone.get_current_timezone(),
+            )
+            # salientes
+            if event["type"] == "message-event" and not event["payload"]["type"] == "enqueued":
+                error_ex = None
+                expire = None
+                if event["payload"]["type"] == "failed":
+                    logger.error(event["payload"]["payload"]["reason"])
+                    error_ex = event["payload"]["payload"]
+                if event["payload"]["type"] == "sent":
+                    expire = datetime.fromtimestamp(
+                        event["payload"]["conversation"]["expiresAt"],
+                        timezone.get_current_timezone(),
+                    )
+                await outbound_chat_event(
+                    event_timestamp,
+                    event["payload"]["gsId"],
+                    event["payload"]["type"],
+                    expire=expire,
+                    destination=event["payload"]["destination"],
+                    error_ex=error_ex,
                 )
-            await outbound_chat_event(
-                event_timestamp,
-                event["payload"]["gsId"],
-                event["payload"]["type"],
-                expire=expire,
-                destination=event["payload"]["destination"],
-                error_ex=error_ex,
-            )
-        # entrante
-        elif event["type"] == "message":
-            await inbound_chat_event(
-                line,
-                event_timestamp,
-                event["payload"]["id"],
-                event["payload"]["source"],
-                event["payload"]["payload"],
-                event["payload"]["sender"],
-                event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
-                event["payload"]["type"],
-            )
+            # entrante
+            elif event["type"] == "message":
+                await inbound_chat_event(
+                    line,
+                    event_timestamp,
+                    event["payload"]["id"],
+                    event["payload"]["source"],
+                    event["payload"]["payload"],
+                    event["payload"]["sender"],
+                    event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
+                    event["payload"]["type"],
+                )
+        except Exception:
+            logger.exception("handle_gupshup_message event=%r", event)
 
     async def handle_meta_messages(self, line: Line, event: dict):
         value_object = event["entry"][0]["changes"][0]["value"]
