@@ -96,9 +96,11 @@ class PhoneJSView {
         this.dtmfInput = $('#dtmfInput');
         this.dtmfError = $('#dtmfError');
         this.sendDtmfButton = $('#sendDtmf');
+        this.configureNotificationPermissionMenu = $('#notificationPermission');
 
         this.startKeypad();
         this.startTransferMenu();
+        this.configureNotificationPermission();
 
         this.session_data = undefined;
     }
@@ -379,6 +381,65 @@ class PhoneJSView {
     showHideVideo(){
         this.videoJitsi.toggle();
     }
+
+    notifyEvent(title, body) {
+        // Si está en esta pestaña no notificar.
+        if (document.visibilityState === 'visible') {
+            return;
+        }
+
+        // Sin permiso no notifica
+        if (!('Notification' in window)) return;
+        if (Notification.permission !== 'granted') {
+            // Si todavía no configuró consulto:
+            if (Notification.permission === 'default'){
+                this.configureNotificationPermissionMenu.modal('show');
+            }
+            return;
+        }
+
+        const n = new Notification(title, {
+            body,
+            tag: 'incoming-call',             // evita spam duplicado (reemplaza)
+            renotify: true
+        });
+
+        n.onclick = () => {
+            window.focus();
+            n.close();
+        };
+    }
+
+    async requestNotificationPermission() {
+        this.configureNotificationPermissionMenu.modal('hide');
+        if (!('Notification' in window)) return;
+        if (Notification.permission !== 'default') return;
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+    }
+
+    configureNotificationPermission() {
+        let self = this;
+        if (!('Notification' in window)) return;
+        if (Notification.permission !== 'default') return;
+
+        const handler = async () => {
+            try {
+                await Notification.requestPermission();
+            } finally {
+                window.removeEventListener('click', handler);
+                window.removeEventListener('keydown', handler);
+            }
+        };
+        // Try to configure on first interaction:
+        window.addEventListener('click', handler, { once: true });
+        window.addEventListener('keydown', handler, { once: true });
+
+        $('#configure_notificationPermission').on('click', async function () {
+            const ok = await self.requestNotificationPermission();
+        });
+    }
+
 }
 
 var PHONE_STATUS_CONFIGS = {

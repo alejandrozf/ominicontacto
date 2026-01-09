@@ -1164,6 +1164,7 @@ class PhoneJSController {
             // Rechazar llamada por race condition
             this.phone.refuseCall();
         }
+        this.view.notifyEvent(gettext('Atención:'), gettext('Nueva llamada'));
         if (this.forcesAutoAttend(session_data)) {
             clearTimeout(this.ACW_pause_timeout_handler);   // Por las dudas
             this.phone_fsm.acceptCall();

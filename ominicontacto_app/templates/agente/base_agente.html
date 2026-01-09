@@ -90,6 +90,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <!-- Constants -->
     <input type="hidden" value="{{ ASTERISK_TM }}" id="asterisk_tm">
 
+<!-- VENTANAS MODALES -->
 <!-- Modal de Pausa -->
 <div class="modal fade" id="modalPause" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -643,6 +644,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 </div>
+<div id="notificationPermission" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 class="modal-title">{% trans 'Configurar permiso de notificaciones:' %}</h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="configure_notificationPermission" class="btn btn-primary">
+                    {% trans 'Configurar' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN VENTANAS MODALES -->
+
 <!-- Contendio -->
 <div class="wrapper-main">
     <nav id="navBar">
