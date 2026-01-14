@@ -183,7 +183,7 @@ class CalificacionClienteFormView(FormView):
                 self.request, _("No tiene permiso para calificar llamadas de esa campaña."))
             return self._get_redireccion_campana_erronea()
 
-        if self._es_numero_privado(telefono):
+        if self._es_numero_privado(telefono) and 'pk_contacto' not in kwargs:
             self.contacto = None
         elif telefono and self.contacto is None:
             # se dispara desde una llamada desde el webphone
