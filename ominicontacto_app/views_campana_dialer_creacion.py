@@ -135,6 +135,17 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         dialer_service.crear_campana(campana,
                                      evitar_duplicados, evitar_sin_telefono, prefijo_discador)
 
+    def _safe_sincronizar_campana(self, sincronizar_form, campana, campana_creada=False):
+        try:
+            self._sincronizar_campana(sincronizar_form, campana, campana_creada)
+        except Exception as e:
+            logger.error(e)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. '
+                  'Por favor contacte un administrador.'))
+
     def _save_forms(self, form_list, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
         queue_form = list(form_list)[int(self.COLA)]
@@ -203,7 +214,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
 
         # Creo la campaña en OMniDialer una vez que ya existe en base
         if not wombat_habilitado():
-            transaction.on_commit(partial(self._sincronizar_campana, sincronizar_form, campana))
+            transaction.on_commit(partial(self._safe_sincronizar_campana,
+                                          sincronizar_form, campana))
 
         if success:
             messages.add_message(
@@ -263,6 +275,17 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
         dialer_service = get_dialer_service()
         dialer_service.editar_campana(campana)
 
+    def _safe_update_dialer(self, campana):
+        try:
+            self._update_dialer(campana)
+        except Exception as e:
+            logger.error(e)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. '
+                  'Por favor contacte un administrador.'))
+
     def done(self, form_list, **kwargs):
         success = False
         try:
@@ -321,7 +344,7 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
                 # Actualizo en OMniDialer una vez que ya se modifico en la base de datos
                 if not wombat_habilitado():
-                    transaction.on_commit(partial(self._update_dialer, campana))
+                    transaction.on_commit(partial(self._safe_update_dialer, campana))
 
             success = True
 
