@@ -308,16 +308,7 @@ class PhoneJSController {
             $('#modalTransfer').modal('hide');
         });
 
-        this.view.makeTransferToSurveyButton.click(function() {
-            // Log Survey Trasnfer attempt
-            var campaign_id = self.phone.session_data.remote_call.id_campana;
-            var callid = self.phone.session_data.remote_call.call_id;
-            var survey_id = self.phone.session_data.survey;
-            self.oml_api.logSurveyTransfer(campaign_id, survey_id, callid);
-
-            self.phone_fsm.dialTransfer();
-            self.phone.dialTransfer(new SurveyTransferData());
-        });
+        this.view.makeTransferToSurveyButton.click(this.transferToSurvey);
 
         this.view.endTransferButton.click(function() {
             self.phone_fsm.endTransfer();
@@ -1109,7 +1100,12 @@ class PhoneJSController {
     }
 
     hangUp() {
-        this.phone.hangUp();
+        if (this.phone.session_data.survey){
+            this.transferToSurvey();
+        }
+        else {
+            this.phone.hangUp();
+        }
     }
 
     recordCall() {
@@ -1424,6 +1420,17 @@ class PhoneJSController {
         this.phone_fsm.dialTransfer();
         this.phone.dialTransfer(this.transfer);
         $('#numberToTransfer').val('');
+    }
+
+    transferToSurvey() {
+        // Log Survey Transfer attempt
+        var campaign_id = this.phone.session_data.remote_call.id_campana;
+        var callid = this.phone.session_data.remote_call.call_id;
+        var survey_id = this.phone.session_data.survey;
+        this.oml_api.logSurveyTransfer(campaign_id, survey_id, callid);
+
+        this.phone_fsm.dialTransfer();
+        this.phone.dialTransfer(new SurveyTransferData());
     }
 
 }
