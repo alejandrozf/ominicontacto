@@ -321,7 +321,7 @@ class UpdateBaseDatosDialerView(FormView):
 
         # Cambio BD en OMniDialer una vez que ya se cambió en base
         if not wombat_habilitado():
-            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, params))
+            transaction.on_commit(partial(self._safe_cambiar_bd_contactos_en_dialer, params))
 
         message = _('Operación Exitosa!\
                      Se llevó a cabo con éxito el cambio de base de datos.')
@@ -333,6 +333,17 @@ class UpdateBaseDatosDialerView(FormView):
         )
 
         return redirect(self.get_success_url())
+
+    def _safe_cambiar_bd_contactos_en_dialer(self, params):
+        try:
+            self._cambiar_bd_contactos_en_dialer(params)
+        except Exception as e:
+            logger.error(e)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. '
+                  'Por favor contacte un administrador.'))
 
     def _cambiar_bd_contactos_en_dialer(self, params):
         dialer_service = get_dialer_service()
