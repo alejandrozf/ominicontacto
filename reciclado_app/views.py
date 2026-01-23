@@ -178,10 +178,21 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
 
         # Cambio BD en OMniDialer una vez que ya se cambió en base
         if not wombat_habilitado():
-            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, campana=campana))
+            transaction.on_commit(partial(self._safe_cambiar_bd_contactos_en_dialer, campana))
 
         update_campana = "campana_dialer_update"
         return update_campana
+
+    def _safe_cambiar_bd_contactos_en_dialer(self, campana):
+        try:
+            self._cambiar_bd_contactos_en_dialer(campana)
+        except Exception as e:
+            logger.error(e)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. '
+                  'Por favor contacte un administrador.'))
 
     def _cambiar_bd_contactos_en_dialer(self, campana):
         params = {'telefonos': [], 'evitar_duplicados': False,
