@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-14 16:09-0300\n"
+"POT-Creation-Date: 2026-01-26 12:09-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -7571,7 +7571,7 @@ msgstr "<strong>Success!</strong> Campaign activated."
 #: ominicontacto_app/views_campana_dialer.py:136
 #: ominicontacto_app/views_campana_dialer.py:167
 #: ominicontacto_app/views_campana_dialer.py:198
-#: ominicontacto_app/views_campana_dialer.py:428
+#: ominicontacto_app/views_campana_dialer.py:439
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: "
 msgstr "<strong>¡Warning!</strong> There was an error: "
 
@@ -7608,29 +7608,39 @@ msgid ""
 "de base de datos."
 msgstr "Sucess! Database changed."
 
-#: ominicontacto_app/views_campana_dialer.py:343
+#: ominicontacto_app/views_campana_dialer.py:345
+#: ominicontacto_app/views_campana_dialer_creacion.py:146
+#: ominicontacto_app/views_campana_dialer_creacion.py:286
+msgid ""
+"<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. "
+"Por favor contacte un administrador."
+msgstr ""
+"<strong>Warning!</strong> Error synchronizing with Dialer Service. "
+"Please contact Administrator."
+
+#: ominicontacto_app/views_campana_dialer.py:354
 msgid ""
 "<strong>Operación Errónea!</strong>                      La base de datos es "
 "erronea. "
 msgstr "<strong>Error!</strong> Invalid database."
 
-#: ominicontacto_app/views_campana_dialer.py:418
+#: ominicontacto_app/views_campana_dialer.py:429
 msgid ""
 "<strong>Operación Exitosa!</strong>                             Se llevó a "
 "cabo con éxito la finalización de                             la Campaña."
 msgstr "<strong>Success!</strong> Campaign ended."
 
-#: ominicontacto_app/views_campana_dialer.py:453
-#: ominicontacto_app/views_campana_dialer.py:482
-#: ominicontacto_app/views_campana_dialer.py:521
-#: ominicontacto_app/views_campana_dialer.py:565
-#: ominicontacto_app/views_campana_dialer.py:610
-#: ominicontacto_app/views_campana_dialer.py:649
-#: ominicontacto_app/views_campana_dialer.py:692
+#: ominicontacto_app/views_campana_dialer.py:464
+#: ominicontacto_app/views_campana_dialer.py:493
+#: ominicontacto_app/views_campana_dialer.py:532
+#: ominicontacto_app/views_campana_dialer.py:576
+#: ominicontacto_app/views_campana_dialer.py:621
+#: ominicontacto_app/views_campana_dialer.py:660
+#: ominicontacto_app/views_campana_dialer.py:703
 msgid "No tiene permiso para editar esta Campaña."
 msgstr "You don't have permission to edit this campaign."
 
-#: ominicontacto_app/views_campana_dialer.py:495
+#: ominicontacto_app/views_campana_dialer.py:506
 #, python-brace-format
 msgid ""
 "<strong>Operación Errónea!</strong> No se pudo eliminar la Regla de "
@@ -7638,42 +7648,42 @@ msgid ""
 msgstr ""
 "<strong>Error!</strong> Unable to delete Disposition reschedule rule: {0}."
 
-#: ominicontacto_app/views_campana_dialer.py:506
-#: ominicontacto_app/views_campana_dialer.py:634
+#: ominicontacto_app/views_campana_dialer.py:517
+#: ominicontacto_app/views_campana_dialer.py:645
 msgid "Regla de incidencia eliminada."
 msgstr "Reschedule rules deleted"
 
-#: ominicontacto_app/views_campana_dialer.py:543
-#: ominicontacto_app/views_campana_dialer.py:671
+#: ominicontacto_app/views_campana_dialer.py:554
+#: ominicontacto_app/views_campana_dialer.py:682
 msgid "Error al registrar regla de incidencia: "
 msgstr "Error registering reschedule rule: "
 
-#: ominicontacto_app/views_campana_dialer.py:545
-#: ominicontacto_app/views_campana_dialer.py:589
-#: ominicontacto_app/views_campana_dialer.py:594
-#: ominicontacto_app/views_campana_dialer.py:673
-#: ominicontacto_app/views_campana_dialer.py:716
-#: ominicontacto_app/views_campana_dialer.py:721
+#: ominicontacto_app/views_campana_dialer.py:556
+#: ominicontacto_app/views_campana_dialer.py:600
+#: ominicontacto_app/views_campana_dialer.py:605
+#: ominicontacto_app/views_campana_dialer.py:684
+#: ominicontacto_app/views_campana_dialer.py:727
+#: ominicontacto_app/views_campana_dialer.py:732
 msgid "No se pudo guardar la regla de incidencia."
 msgstr "Could not save reschedule rule."
 
-#: ominicontacto_app/views_campana_dialer.py:592
-#: ominicontacto_app/views_campana_dialer.py:719
+#: ominicontacto_app/views_campana_dialer.py:603
+#: ominicontacto_app/views_campana_dialer.py:730
 msgid "Error al editar regla de incidencia: "
 msgstr "Error editing reschedule rule: "
 
-#: ominicontacto_app/views_campana_dialer.py:623
+#: ominicontacto_app/views_campana_dialer.py:634
 #, python-brace-format
 msgid ""
 "<strong>Operación Errónea!</strong> No se pudo eliminar la Regla de "
 "Incidencia: {0}"
 msgstr "<strong>Error!</strong> Unable to delete Reschedule rule: {0}."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:212
+#: ominicontacto_app/views_campana_dialer_creacion.py:224
 msgid "Se ha creado la nueva campaña."
 msgstr "Campaign has been created."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:217
+#: ominicontacto_app/views_campana_dialer_creacion.py:229
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo crear la campaña. Por favor contacte un administrador."
@@ -7681,11 +7691,11 @@ msgstr ""
 "<strong>Warning!</strong> Dialer Service seems to be down, campaign could "
 "not be created. Please contact Administrator."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:336
+#: ominicontacto_app/views_campana_dialer_creacion.py:359
 msgid "Se ha modificado la campaña."
 msgstr "Campagin has been modified."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:341
+#: ominicontacto_app/views_campana_dialer_creacion.py:364
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo modificar la campaña. Por favor contacte un administrador."
