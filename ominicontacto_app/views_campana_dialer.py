@@ -35,6 +35,7 @@ from django.views.generic import ListView, DeleteView, FormView, CreateView, Upd
 from constance import config as config_constance
 
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
+from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.services.dialer.campana_wombat import WombatDialerError
 from ominicontacto_app.services.dialer import wombat_habilitado, get_dialer_service
 from ominicontacto_app.forms.base import (
@@ -109,6 +110,7 @@ class CampanaDialerListView(ListView):
                 context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
                 uptime = now() - config_constance.WOMBAT_DIALER_UPDATE_DATETIME
                 context['wombat_uptime'] = str(uptime).split('.')[0]
+        context['DESTINO_SURVEY'] = DestinoEntrante.SURVEY
 
         return context
 
