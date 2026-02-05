@@ -62,11 +62,15 @@
                     <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                         <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                     </a>
-                    <a
-                        class="dropdown-item {% if campana.queue_campana.destino_dialer.tipo != campana.queue_campana.destino_dialer.SURVEY %}disabled{% endif %}" 
+                    
+                    {% if campana.queue_campana.destino_dialer.tipo == DESTINO_SURVEY and campana.queue_campana.destino_dialer.content_object.id %}
+                    <a class="dropdown-item"
                         href="{% url 'webui' name='survey' path='SurveyReport/' %}{{ campana.queue_campana.destino_dialer.content_object.id }}?campaign={{ campana.pk }}">
                         <span class="icon icon-graph"></span>{% trans 'Reportes CX Survey' %}
                     </a>
+                    {% else %}
+                    <a class="dropdown-item disabled" href="#"><span class="icon icon-graph"></span>{% trans 'Reportes CX Survey' %}</a>
+                    {% endif %}
                     <a id="camp-{{campana.pk}}-add-one" class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
                         <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
                     </a>
