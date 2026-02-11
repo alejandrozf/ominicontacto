@@ -458,7 +458,7 @@ class ViewSet(viewsets.ViewSet):
                        url_path='options/(?P<campaing_id>[^/.]+)')
     def options(self, request, campaing_id):
         try:
-            opciones = OpcionCalificacion.objects.filter(campana__id=campaing_id)
+            opciones = OpcionCalificacion.objects.filter(campana__id=campaing_id, oculta=False)
 
             serializer = OpcionCalificacionSerializer(opciones, many=True)
             return response.Response(
