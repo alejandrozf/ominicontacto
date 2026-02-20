@@ -35,6 +35,7 @@ from django.views.generic import ListView, DeleteView, FormView, CreateView, Upd
 from constance import config as config_constance
 
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion, ReglasIncidencia
+from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.services.dialer.campana_wombat import WombatDialerError
 from ominicontacto_app.services.dialer import wombat_habilitado, get_dialer_service
 from ominicontacto_app.forms.base import (
@@ -109,6 +110,7 @@ class CampanaDialerListView(ListView):
                 context['wombat_state'] = config_constance.WOMBAT_DIALER_STATE
                 uptime = now() - config_constance.WOMBAT_DIALER_UPDATE_DATETIME
                 context['wombat_uptime'] = str(uptime).split('.')[0]
+        context['DESTINO_SURVEY'] = DestinoEntrante.SURVEY
 
         return context
 
@@ -321,7 +323,7 @@ class UpdateBaseDatosDialerView(FormView):
 
         # Cambio BD en OMniDialer una vez que ya se cambió en base
         if not wombat_habilitado():
-            transaction.on_commit(partial(self._cambiar_bd_contactos_en_dialer, params))
+            transaction.on_commit(partial(self._safe_cambiar_bd_contactos_en_dialer, params))
 
         message = _('Operación Exitosa!\
                      Se llevó a cabo con éxito el cambio de base de datos.')
@@ -333,6 +335,17 @@ class UpdateBaseDatosDialerView(FormView):
         )
 
         return redirect(self.get_success_url())
+
+    def _safe_cambiar_bd_contactos_en_dialer(self, params):
+        try:
+            self._cambiar_bd_contactos_en_dialer(params)
+        except Exception as e:
+            logger.error(e)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _('<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. '
+                  'Por favor contacte un administrador.'))
 
     def _cambiar_bd_contactos_en_dialer(self, params):
         dialer_service = get_dialer_service()

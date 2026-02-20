@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-05 12:51-0300\n"
+"POT-Creation-Date: 2026-01-26 12:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,6 +121,12 @@ msgstr ""
 msgid "Esta campaña no se puede reciclar."
 msgstr ""
 
-#: reciclado_app/views.py:225 reciclado_app/views.py:229
+#: reciclado_app/views.py:194
+msgid ""
+"<strong>¡ATENCIÓN!</strong> Error al sincronizar con el servicio Discador. "
+"Por favor contacte un administrador."
+msgstr ""
+
+#: reciclado_app/views.py:236 reciclado_app/views.py:240
 msgid "No calificados"
 msgstr ""

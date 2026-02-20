@@ -395,7 +395,7 @@ urlpatterns = [
             login_required(
                 views_contacto.CampanaBusquedaContactoFormView.as_view()),
             name="campana_busqueda_contacto"),
-    re_path(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)'
+    re_path(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\+?\d+)'
             r'/(?P<call_data_json>.+)$',
             login_required(
                 views_contacto.ContactosTelefonosRepetidosView.as_view()),

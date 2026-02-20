@@ -49,7 +49,7 @@ class CampanaService():
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                 reemplazar_no_alfanumericos_por_guion(campana.bd_contacto.nombre)])
         nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
-        return nombre_lista_ascii[:45]
+        return nombre_lista_ascii[:40]
 
     def obtener_list_id_wombat(self, salida_comando, campana):
         """

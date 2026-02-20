@@ -133,7 +133,7 @@ class AgentNotifier:
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
-                'number_messages': sync_to_async(conversation.mensajes.count)(),
+                'number_messages': await sync_to_async(conversation.mensajes.count)(),
                 'from': conversation.client_alias
                 if conversation.client_alias else conversation.destination,
                 'contact_data': conversation.client.obtener_datos()
@@ -154,7 +154,7 @@ class AgentNotifier:
                 'chat_id': conversation.id,
                 'campaing_id': conversation.campana.id,
                 'campaing_name': conversation.campana.nombre,
-                'number_messages': sync_to_async(conversation.mensajes.count)(),
+                'number_messages': conversation.mensajes.count(),
                 'from': conversation.destination,
                 'contact_data': conversation.client.obtener_datos()
                 if conversation.client else "",

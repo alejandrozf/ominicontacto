@@ -244,12 +244,16 @@ export default {
             handler () {
                 if (this.agtWhatsCoversationInfo) {
                     if (this.agtWhatsCoversationInfo.client.id) {
+                        const data = this.agtWhatsCoversationInfo?.client?.data ?? {};
                         this.clientInfo.name =
-              this.agtWhatsCoversationInfo.client.data.nombre || this.agtWhatsCoversationInfo.client.data.name
-              this.agtWhatsCoversationInfo.client_alias;
-                        this.clientInfo.phone = this.agtWhatsCoversationInfo.client.phone;
+                        ["name", "Name", "nombre", "Nombre"]
+                            .map(k => data[k])
+                            .find(v => v) ??
+                        this.agtWhatsCoversationInfo?.client_alias ??
+                        "";
+                        this.clientInfo.phone = this.agtWhatsCoversationInfo?.client?.phone ?? "";
                     } else {
-                        this.clientInfo.name = this.agtWhatsCoversationInfo.client_alias;
+                        this.clientInfo.name = this.agtWhatsCoversationInfo.client_alias || "";
                         this.clientInfo.phone = this.agtWhatsCoversationInfo.destination;
                     }
                 }

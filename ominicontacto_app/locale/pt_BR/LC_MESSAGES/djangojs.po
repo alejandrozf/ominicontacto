@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-15 12:50-0300\n"
+"POT-Creation-Date: 2026-01-14 16:02-0300\n"
 "PO-Revision-Date: 2020-03-21 17:36-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -141,7 +141,7 @@ msgid "Pausa desprogramada:"
 msgstr "Pausa não programada:"
 
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:290
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1421
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1422
 msgid "Seleccione una opción válida"
 msgstr "Selecione uma opção válida"
 
@@ -152,7 +152,7 @@ msgstr "Em Conferência com: %(from)s y %(member)s"
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:375
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:695
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:852
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1172
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1173
 msgid "Conectado a %(fromUser)s"
 msgstr "Conectado a %(fromUser)s"
 
@@ -166,7 +166,7 @@ msgid "Conectado"
 msgstr "Conectado"
 
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:428
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:451
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:512
 msgid "Desconectado"
 msgstr "Desconectado"
 
@@ -340,49 +340,57 @@ msgstr "Erro WebRTC: O utilizador não permite o acesso aos meios"
 msgid "Error: Llamado fallido"
 msgstr "Erro: Falha na chamada"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1176
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1167
+msgid "Atención:"
+msgstr "Atenção:"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1167
+msgid "Nueva llamada"
+msgstr "Nova Chamada"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1177
 msgid "Agente %(from_agent_name)s"
 msgstr "Agente %(from_agent_name)s"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1386
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1387
 msgid "Unmute Client"
 msgstr "Ativar som do Cliente"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1390
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:278
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1391
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:280
 msgid "Mute Client"
 msgstr "Silenciar Cliente"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1396
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1397
 msgid "Unmute Consultant"
 msgstr "Ativar som do Consultor"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1400
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:280
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1401
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:282
 msgid "Mute Consultant"
 msgstr "Silenciar Consultor"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1407
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1408
 msgid "¡No tiene permiso para efectuar esta acción!"
 msgstr "Você não tem permissão para realizar esta ação!"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1408
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:1409
 msgid "Funcionalidad solo disponible en la versión Enterprise."
 msgstr "Funcionalidade disponível apenas na versão Enterprise."
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:452
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:513
 msgid "Registrado"
 msgstr "Registrado"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:453
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:514
 msgid "No Registrado"
 msgstr "Agente registrado"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:455
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:516
 msgid "El SIP Proxy no responde, contacte a su administrador"
 msgstr "O SIP Proxy não responde, contate o seu administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:459
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:520
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr "Falha no registro, contate o seu administrador"
 

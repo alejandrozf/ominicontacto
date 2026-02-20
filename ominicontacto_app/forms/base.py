@@ -2037,7 +2037,7 @@ class QueueDialerForm(forms.ModelForm):
         tipo_destino_failover_choices.extend(tipo_destino_failover)
         self.fields['tipo_destino_failover'].choices = tipo_destino_failover_choices
         tipo_destino_dialer_choices = [
-            ('', _('Agentes')),
+            ('', DestinoEntrante.AGENTE_STR),
             (DestinoEntrante.SURVEY, DestinoEntrante.SURVEY_STR),
         ]
         self.fields['tipo_destino_dialer'].choices = tipo_destino_dialer_choices

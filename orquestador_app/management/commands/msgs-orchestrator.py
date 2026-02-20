@@ -24,7 +24,7 @@ import signal
 import sys
 import typing
 from datetime import datetime
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.db import models
@@ -132,109 +132,122 @@ class WhatsappEventsProcessor(object):
             logger.info("process-main-stream-message %r", line_id)
 
     async def handle_slave_streams_message(self, line: Line, event: dict):
-        if event.get("action") == "stop":
-            self.shutdown.set()
-            return
-        payload = json.loads(event.get("value"))
-        if line.provider_type == ProviderConfig.TIPO_GUPSHUP:
-            await self.handle_gupshup_message(line, payload)
-        elif line.provider_type == ProviderConfig.TIPO_META:
-            await self.handle_meta_messages(line, payload)
+        try:
+            if event.get("action") == "stop":
+                self.shutdown.set()
+                return
+            payload = json.loads(event.get("value"))
+            if line.provider_type == ProviderConfig.TIPO_GUPSHUP:
+                await self.handle_gupshup_message(line, payload)
+            elif line.provider_type == ProviderConfig.TIPO_META:
+                await self.handle_meta_messages(line, payload)
+        except Exception as exception:
+            logger.error("handle_slave_streams_message %r %r", line.id, exception)
+            logger.error("Event:", event)
 
     async def handle_gupshup_message(self, line: Line, event: dict):
-        event_timestamp = datetime.fromtimestamp(
-            event["timestamp"] / 1000,
-            timezone.get_current_timezone(),
-        )
-        # salientes
-        if event["type"] == "message-event" and not event["payload"]["type"] == "enqueued":
-            error_ex = None
-            expire = None
-            if event["payload"]["type"] == "failed":
-                logger.error(event["payload"]["payload"]["reason"])
-                error_ex = event["payload"]["payload"]
-            if event["payload"]["type"] == "sent":
-                expire = datetime.fromtimestamp(
-                    event["payload"]["conversation"]["expiresAt"],
-                    timezone.get_current_timezone(),
+        try:
+            event_timestamp = datetime.fromtimestamp(
+                event["timestamp"] / 1000,
+                timezone.get_current_timezone(),
+            )
+            # salientes
+            if event["type"] == "message-event" and not event["payload"]["type"] == "enqueued":
+                error_ex = None
+                expire = None
+                if event["payload"]["type"] == "failed":
+                    logger.error(event["payload"]["payload"]["reason"])
+                    error_ex = event["payload"]["payload"]
+                if event["payload"]["type"] == "sent":
+                    expire = datetime.fromtimestamp(
+                        event["payload"]["conversation"]["expiresAt"],
+                        timezone.get_current_timezone(),
+                    )
+                await outbound_chat_event(
+                    event_timestamp,
+                    event["payload"]["gsId"],
+                    event["payload"]["type"],
+                    expire=expire,
+                    destination=event["payload"]["destination"],
+                    error_ex=error_ex,
                 )
-            await outbound_chat_event(
-                event_timestamp,
-                event["payload"]["gsId"],
-                event["payload"]["type"],
-                expire=expire,
-                destination=event["payload"]["destination"],
-                error_ex=error_ex,
-            )
-        # entrante
-        elif event["type"] == "message":
-            await inbound_chat_event(
-                line,
-                event_timestamp,
-                event["payload"]["id"],
-                event["payload"]["source"],
-                event["payload"]["payload"],
-                event["payload"]["sender"],
-                event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
-                event["payload"]["type"],
-            )
+            # entrante
+            elif event["type"] == "message":
+                await inbound_chat_event(
+                    line,
+                    event_timestamp,
+                    event["payload"]["id"],
+                    event["payload"]["source"],
+                    event["payload"]["payload"],
+                    event["payload"]["sender"],
+                    event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
+                    event["payload"]["type"],
+                )
+        except Exception:
+            logger.exception("handle_gupshup_message event=%r", event)
 
     async def handle_meta_messages(self, line: Line, event: dict):
-        value_object = event["entry"][0]["changes"][0]["value"]
-        if "statuses" in value_object:
-            event_timestamp = datetime.fromtimestamp(
-                int(value_object["statuses"][0]["timestamp"]),
-                timezone.get_current_timezone(),
-            )
-            status = value_object["statuses"][0]["status"]
-            expire = None
-            error_ex = {}
-            if "errors" in value_object["statuses"][0]:
-                error_ex = value_object["statuses"][0]["errors"][0]
-            if status == "sent":
-                expire = datetime.fromtimestamp(
-                    int(value_object["statuses"][0]["conversation"]["expiration_timestamp"]),
+        try:
+            if event.get("object") != "whatsapp_business_account":
+                logger.error("Not whatsapp_business_account by line:", line.id)
+                logger.error("Event:", event)
+            value_object = event["entry"][0]["changes"][0]["value"]
+            if "statuses" in value_object:
+                event_timestamp = datetime.fromtimestamp(
+                    int(value_object["statuses"][0]["timestamp"]),
                     timezone.get_current_timezone(),
                 )
-            await outbound_chat_event(
-                event_timestamp,
-                value_object["statuses"][0]["id"],
-                status,
-                expire=expire,
-                destination=value_object["statuses"][0]["recipient_id"],
-                error_ex=error_ex,
-            )
-        if "messages" in value_object:
-            event_timestamp = datetime.fromtimestamp(
-                int(value_object["messages"][0]["timestamp"]),
-                timezone.get_current_timezone(),
-            )
-            type = value_object["messages"][0]["type"]
-            context = None
-            if type == "text":
-                content = {
-                    type: value_object["messages"][0][type]["body"]
-                }
-            if type in ["video", "image", "document"]:
-                content = meta_get_media_content(line, type, value_object["messages"][0])
-            if type == "interactive":
-                context = value_object["messages"][0]["context"]
-                if "list_reply" in value_object["messages"][0]["interactive"]:
-                    type = "list_reply"
-                    content = value_object["messages"][0]["interactive"]["list_reply"]
-            sender = value_object["contacts"][0]
-            await inbound_chat_event(
-                line,
-                event_timestamp,
-                value_object["messages"][0]["id"],
-                value_object["messages"][0]["from"],
-                content,
-                sender,
-                context,
-                type,
-            )
+                status = value_object["statuses"][0]["status"]
+                expire = None
+                error_ex = {}
+                if "errors" in value_object["statuses"][0]:
+                    error_ex = value_object["statuses"][0]["errors"][0]
+                if status == "sent":
+                    expire = datetime.fromtimestamp(
+                        int(value_object["statuses"][0]["conversation"]["expiration_timestamp"]),
+                        timezone.get_current_timezone(),
+                    )
+                await outbound_chat_event(
+                    event_timestamp,
+                    value_object["statuses"][0]["id"],
+                    status,
+                    expire=expire,
+                    destination=value_object["statuses"][0]["recipient_id"],
+                    error_ex=error_ex,
+                )
+            if "messages" in value_object:
+                event_timestamp = datetime.fromtimestamp(
+                    int(value_object["messages"][0]["timestamp"]),
+                    timezone.get_current_timezone(),
+                )
+                type = value_object["messages"][0]["type"]
+                context = None
+                if type == "text":
+                    content = {
+                        type: value_object["messages"][0][type]["body"]
+                    }
+                if type in ["video", "image", "document"]:
+                    content = meta_get_media_content(line, type, value_object["messages"][0])
+                if type == "interactive":
+                    context = value_object["messages"][0]["context"]
+                    if "list_reply" in value_object["messages"][0]["interactive"]:
+                        type = "list_reply"
+                        content = value_object["messages"][0]["interactive"]["list_reply"]
+                sender = value_object["contacts"][0]
+                await inbound_chat_event(
+                    line,
+                    event_timestamp,
+                    value_object["messages"][0]["id"],
+                    value_object["messages"][0]["from"],
+                    content,
+                    sender,
+                    context,
+                    type,
+                )
+        except Exception:
+            logger.exception("handle_meta_messages event=%r", event)
 
-    @sync_to_async
+    @database_sync_to_async
     def _get_line(self, pk):
         queryset = (
             Line.objects_default.only(
