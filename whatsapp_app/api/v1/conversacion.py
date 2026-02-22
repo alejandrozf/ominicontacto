@@ -21,7 +21,7 @@ import json
 import operator
 import mimetypes
 from functools import reduce
-from django.db.models import Q
+from django.db.models import F, Func, OuterRef, Prefetch, Q, Subquery
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -37,9 +37,9 @@ from whatsapp_app.api.v1.mensaje import MensajeListSerializer, MensajeAtachmentC
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 from whatsapp_app.api.v1.calificacion import OpcionCalificacionSerializer
 from whatsapp_app.models import (
-    ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
+    ConversacionWhatsapp, Linea, MensajeWhatsapp, PlantillaMensaje,
     TemplateWhatsapp)
-from ominicontacto_app.models import Campana, AgenteProfile, Contacto
+from ominicontacto_app.models import Campana, AgenteProfile, Contacto, CalificacionCliente
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
 from orquestador_app.core.whatsapp.send_message import (
@@ -72,6 +72,113 @@ def get_type(fileName):
         type_file = mimestart.split('/')[0]
         return type_file if type_file not in ['application', 'text'] else 'file'
     return 'file'
+
+
+class ContactoSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    phone = serializers.CharField(source='telefono')
+    disposition = serializers.IntegerField(source="last_disposition_id")
+
+    data = serializers.SerializerMethodField()
+
+    def get_data(self, obj):
+        return obj.obtener_datos()
+
+
+class MensajesSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    conversation = serializers.IntegerField(source="conversation_id")
+    fail_reason = serializers.CharField()
+    file = serializers.FileField()
+    message_id = serializers.CharField()
+    origin = serializers.CharField(source="origen")
+    sender = serializers.JSONField()
+    status = serializers.CharField()
+    timestamp = serializers.DateTimeField()
+    type = serializers.CharField()
+
+    contact_data = serializers.SerializerMethodField()
+
+    def get_contact_data(self, obj):
+        # is redundant since the same information can be optained from the conversation
+        if obj.conversation.client:
+            serializer = ContactoSerializerEx(obj.conversation.client)
+            return serializer.data
+        return {}
+
+    content = serializers.SerializerMethodField()
+
+    def get_content(self, obj):
+        if obj.content:
+            if obj.type == 'list-gupshup':
+                content = json.loads(obj.content[0]['text'])
+                text = content['title'] + '\n'
+                options = content['items'][0]['options']
+                for option in options:
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
+                return {'text': text}
+            elif obj.type == 'list-meta':
+                content = json.loads(obj.content[0]['text'])
+                text = content['header']['text'] + '\n'
+                text += content['body']['text'] + '\n'
+                options = content['action']['sections'][0]['rows']
+                for option in options:
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
+                return {'text': text}
+            elif obj.type == 'list_reply':
+                text = "Reply-option:\n {}-{}"\
+                    .format(obj.content['title'],
+                            obj.content['description'] if 'description' in obj.content else '')
+                return {'text': text}
+            return obj.content
+        return {}
+
+
+class ConversacionSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    agent = serializers.IntegerField(source="agent_id")
+    campaing_id = serializers.IntegerField(source="campana_id")
+    client_alias = serializers.CharField(default="")
+    date_last_interaction = serializers.DateTimeField()
+    destination = serializers.CharField()
+    error = serializers.BooleanField(default=False)
+    error_ex = serializers.JSONField()
+    expire = serializers.DateTimeField()
+    is_active = serializers.BooleanField(default=True)
+    is_disposition = serializers.BooleanField()
+    photo = serializers.CharField(default="")
+    timestamp = serializers.DateTimeField()
+
+    campaing_name = serializers.CharField(source='campana.nombre')
+
+    client = serializers.SerializerMethodField()
+
+    def get_client(self, obj):
+        if obj.client:
+            serializer = ContactoSerializerEx(obj.client)
+            return serializer.data
+        return None
+
+    line = serializers.SerializerMethodField()
+
+    def get_line(self, obj):
+        return {
+            "id": obj.line.id,
+            "name": obj.line.nombre,
+            "number": obj.line.numero,
+        }
+
+    messages = serializers.SerializerMethodField()
+
+    def get_messages(self, obj):
+        return MensajesSerializerEx(obj.mensajes.all(), many=True).data
+
+    message_number = serializers.IntegerField()
+    message_unread = serializers.IntegerField()
 
 
 class ConversacionSerializer(serializers.Serializer):
@@ -202,25 +309,111 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            agente = request.user.get_agente_profile()
+            conversaciones = ConversacionWhatsapp.objects.filter(is_disposition=False).only(
+                "id",
+                "agent_id",
+                "client_alias",
+                "date_last_interaction",
+                "destination",
+                "error",
+                "error_ex",
+                "expire",
+                "is_active",
+                "is_disposition",
+                "timestamp",
+
+                "campana_id",
+                "client_id",
+                "line_id",
+            ).prefetch_related(
+                Prefetch(lookup="campana", queryset=Campana.objects.only("id", "nombre")),
+                Prefetch(
+                    lookup="client",
+                    queryset=Contacto.objects.only(
+                        "id",
+                        "telefono",
+                        "datos",
+                        "id_externo",
+                        "bd_contacto",
+                    ).annotate(
+                        last_disposition_id=Subquery(
+                            CalificacionCliente.objects.filter(
+                                contacto=OuterRef("id"),
+                            ).values("id")[:1]
+                        ),
+                    ).select_related("bd_contacto"),
+                ),
+                Prefetch(lookup="line", queryset=Linea.objects.only("id", "nombre", "numero")),
+                Prefetch(
+                    lookup="mensajes",
+                    queryset=MensajeWhatsapp.objects.only(
+                        "id",
+                        "conversation_id",
+                        "fail_reason",
+                        "file",
+                        "message_id",
+                        "origen",
+                        "sender",
+                        "status",
+                        "timestamp",
+                        "type",
+
+                        "content",
+                    ).order_by("timestamp", "id")
+                ),
+            ).annotate(
+                message_number=(
+                    MensajeWhatsapp.objects.filter(
+                        conversation_id=OuterRef("id"),
+                    ).annotate(
+                        count=Func(F("id"), function="Count"),
+                    ).values("count")
+                ),
+                message_unread=(
+                    MensajeWhatsapp.objects.filter(
+                        conversation_id=OuterRef("id"),
+                        origen=OuterRef("destination"),
+                        status="delivered",
+                    ).annotate(
+                        count=Func(F("id"), function="Count"),
+                    ).values("count")
+                ),
+                # performs worse than the previous ones
+                # message_number=Count("mensajes"),
+                # message_unread=Count("mensajes", filter=Q(
+                #     mensajes__origen=F("destination"), mensajes__status="delivered"
+                # )),
+            ).order_by("-date_last_interaction")
+
+            agente = AgenteProfile.objects.only("id").get(user_id=request.user.id)
             agente_campanas = agente.get_campanas_activas_miembro().values_list(
-                'queue_name__campana_id', flat=True)
-            conversacines = ConversacionWhatsapp.objects.filter(
-                is_disposition=False)
-            conversaciones_nuevas = conversacines.filter(
-                agent=None, campana__id__in=agente_campanas).order_by('-date_last_interaction')
-            conversaciones_en_curso = conversacines.filter(
-                agent=agente).order_by('-date_last_interaction')
-            conversaciones_nuevas = ConversacionSerializer(conversaciones_nuevas, many=True)
-            conversaciones_en_curso = ConversacionSerializer(conversaciones_en_curso, many=True)
+                "queue_name__campana_id", flat=True
+            )
+            conversaciones_nuevas = conversaciones.filter(
+                agent=None,
+                campana__id__in=agente_campanas,
+            )
+            conversaciones_en_curso = conversaciones.filter(
+                agent=agente,
+            )
+
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
                     message=_('Se obtuvieron las conversaciones de forma exitosa'),
                     data={
-                        "new_conversations": conversaciones_nuevas.data,
-                        "inprogress_conversations": conversaciones_en_curso.data}),
-                status=status.HTTP_200_OK)
+                        "new_conversations": ConversacionSerializerEx(
+                            instance=conversaciones_nuevas,
+                            many=True,
+                        ).data,
+                        "inprogress_conversations": ConversacionSerializerEx(
+                            instance=conversaciones_en_curso,
+                            many=True,
+                        ).data
+                    }
+                ),
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             print(e)
             return response.Response(
