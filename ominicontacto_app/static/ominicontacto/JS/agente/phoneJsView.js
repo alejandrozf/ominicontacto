@@ -128,6 +128,11 @@ class PhoneJSView {
             $('#blindTransf').prop('checked', false);
             $('#consultTransf').prop('checked', false);
 
+            $('#transfToNum').prop('checked', false);
+            $('#transfToAgent').prop('checked', false);
+            $('#transfToCamp').prop('checked', false);
+            $('#transfToQuickNum').prop('checked', false);
+
             $('#transfToNum').prop('disabled', true);
             $('#transfToAgent').prop('disabled', true);
             $('#transfToCamp').prop('disabled', true);
