@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ominicontacto_app', '0119_merge_20260120_1051'),
+        ('ominicontacto_app', '0117_canalidad_facebook'),
         ('configuracion_telefonia_app', '0024_alter_destinoentrante_tipo'),
     ]
 
