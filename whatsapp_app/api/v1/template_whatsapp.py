@@ -30,8 +30,8 @@ from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
-from orquestador_app.core.send_menssage import sync_templates
-from orquestador_app.core.media_management import meta_get_media_template
+from orquestador_app.core.whatsapp.send_message import sync_templates
+from orquestador_app.core.whatsapp.media_management import meta_get_media_template
 
 
 class ListSerializer(serializers.Serializer):

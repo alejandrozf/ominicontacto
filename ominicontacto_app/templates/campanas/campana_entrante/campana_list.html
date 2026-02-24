@@ -88,6 +88,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <span class="icon icon-graph"></span>{% trans 'Reportes Whatsapp' %}
                             </a>
                             {% endif %}
+                            {% if campana.meta_facebook_habilitado %}
+                            <a class="dropdown-item" href="/">
+                                <span class="icon icon-graph"></span>{% trans 'Conversaciones Meta/Facebook' %}
+                            </a>
+                            <a class="dropdown-item" href="/">
+                                <span class="icon icon-graph"></span>{% trans 'Reportes Meta/Facebook' %}
+                            </a>
+                            {% endif %}
                             <a class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
                             </a>

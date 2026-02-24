@@ -20,6 +20,7 @@ from django.urls import path
 
 from orquestador_app.webhook_meta import WebhookMetaView
 from orquestador_app.webhook_gupshup import WebhookGupshupView
+from orquestador_app.webhook_facebook_messenger import WebhookFacebookMessengerView
 
 
 urlpatterns = [
@@ -29,5 +30,7 @@ urlpatterns = [
     path('webhook/<str:identificador>/', WebhookGupshupView.as_view(),
          name='webhook-gupshup',
          ),
-
+    path('webhook/facebook_messenger/<str:app_id>/', WebhookFacebookMessengerView.as_view(),
+         name='webhook-facebook-messenger',
+         ),
 ]

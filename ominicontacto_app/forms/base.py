@@ -56,6 +56,7 @@ from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_ca
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 from whatsapp_app.models import ConfiguracionWhatsappCampana
+from facebook_meta_app.models import ConfiguracionMetaFacebookCampana
 
 from ominicontacto_app.utiles import convert_fecha_datetime
 from reportes_app.models import LlamadaLog
@@ -932,6 +933,27 @@ class CampanaMixinForm(object):
                     is_active=True, campana=instance).update(is_active=False)
         return whatsapp_habilitado
 
+    def clean_meta_facebook_habilitado(self):
+        instance = getattr(self, 'instance', None)
+        meta_facebook_habilitado = self.cleaned_data.get('meta_facebook_habilitado')
+        if instance is not None:
+            if instance.meta_facebook_habilitado and not meta_facebook_habilitado:
+                pages_antecesoras = []
+                try:
+                    nodo = DestinoEntrante.get_nodo_ruta_entrante(instance)
+                    pages_antecesoras = nodo.pages_meta_facebook_antecesoras()
+                except Exception:
+                    pass
+                if pages_antecesoras:
+                    nombres_pages = pages_antecesoras.values_list('nombre', flat=True)
+                    nombres_pages = ', '.join(nombres_pages)
+                    msg = _("Debe mantener la canalidad Meta/Facebook habilitada ya que la "
+                            "campaña es destino de las siguientes páginas de Meta/Facebook: {0}")
+                    raise forms.ValidationError(msg.format(nombres_pages))
+                ConfiguracionMetaFacebookCampana.objects.filter(
+                    is_active=True, campana=instance).update(is_active=False)
+        return meta_facebook_habilitado
+
 
 class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
@@ -970,8 +992,9 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'mostrar_did', 'mostrar_nombre_ruta_entrante', 'outcid', 'outr',
-                  'videocall_habilitada', 'whatsapp_habilitado', 'speech', 'control_de_duplicados',
-                  'mostrar_callid', 'permitir_calificar_telefonos')
+                  'videocall_habilitada', 'whatsapp_habilitado', 'meta_facebook_habilitado',
+                  'speech', 'control_de_duplicados', 'mostrar_callid',
+                  'permitir_calificar_telefonos')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1745,7 +1768,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
                   'bd_contacto', 'campo_direccion', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
                   'outcid', 'outr', 'speech', 'prioridad', 'whatsapp_habilitado',
-                  'mostrar_callid', 'permitir_calificar_telefonos')
+                  'mostrar_callid', 'permitir_calificar_telefonos',
+                  'meta_facebook_habilitado', 'mostrar_callid')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -2153,8 +2177,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'control_de_duplicados', 'campo_direccion',
                   'sistema_externo', 'id_externo', 'tipo_interaccion', 'sitio_externo',
-                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado', 'mostrar_callid',
-                  'permitir_calificar_telefonos')
+                  'objetivo', 'outcid', 'outr', 'speech', 'whatsapp_habilitado',
+                  'meta_facebook_habilitado', 'mostrar_callid', 'permitir_calificar_telefonos')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -2219,7 +2243,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'sistema_externo', 'id_externo', 'control_de_duplicados',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'campo_direccion', 'tiempo_desconexion', 'outr', 'outcid', 'speech',
-                  'whatsapp_habilitado', 'mostrar_callid', 'permitir_calificar_telefonos')
+                  'whatsapp_habilitado', 'meta_facebook_habilitado',
+                  'mostrar_callid', 'permitir_calificar_telefonos')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control', 'id': 'camp_bd_contactos'}),
@@ -2280,7 +2305,7 @@ class GrupoForm(forms.ModelForm):
                   'acceso_agendas_agente', 'acceso_calificaciones_agente',
                   'acceso_campanas_preview_agente', 'conjunto_de_pausa',
                   'acceso_cambiar_contrasena_agente',
-                  'obligar_despausa', 'whatsapp_habilitado',
+                  'obligar_despausa', 'whatsapp_habilitado', 'meta_facebook_habilitado',
                   'restringir_tipo_llamadas_manuales', 'permitir_llamadas_manuales_a_manuales',
                   'permitir_llamadas_manuales_a_dialer', 'permitir_llamadas_manuales_a_entrante',
                   'permitir_llamadas_manuales_a_preview', 'call_another_agent')
@@ -2630,6 +2655,17 @@ class CampanaConfiguracionWhatsappForm(forms.ModelForm):
             'linea': forms.Select(attrs={'class': 'form-control'}),
             'grupo_plantilla_whatsapp': forms.Select(attrs={'class': 'form-control'}),
             'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class CampanaConfiguracionMetaFacebookForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionMetaFacebookCampana
+        fields = ('pagina', 'nivel_servicio', 'grupo_plantilla_facebook')
+        widgets = {
+            'pagina': forms.Select(attrs={'class': 'form-control'}),
+            'nivel_servicio': forms.NumberInput(attrs={'class': 'form-control'}),
+            'grupo_plantilla_facebook': forms.Select(attrs={'class': 'form-control'})
         }
 
 

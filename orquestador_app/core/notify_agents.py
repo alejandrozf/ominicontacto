@@ -29,8 +29,13 @@ def hydrate_kwargs(kwargs):
     if "conversation" in kwargs:
         if kwargs["conversation"].agent:
             kwargs["conversation"].agent.user
-        kwargs["conversation"].mensajes.count()
+        if hasattr(kwargs["conversation"], "mensajes"):
+            kwargs["conversation"].mensajes.count()
+        if hasattr(kwargs["conversation"], "messages"):
+            kwargs["conversation"].messages.count()
     if "line" in kwargs:
+        pass
+    if "page" in kwargs:
         pass
     if "message" in kwargs:
         if kwargs["message"].conversation:

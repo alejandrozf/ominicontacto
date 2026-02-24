@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'api_app.apps.ApiAppConfig',
     'whatsapp_app.apps.WhatsappAppConfig',
     'orquestador_app.apps.OrquestadorAppConfig',
+    'facebook_meta_app.apps.FacebookMetaAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',

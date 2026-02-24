@@ -1,0 +1,236 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+import json
+from django.utils import timezone
+import logging
+from asgiref.sync import sync_to_async
+from django.contrib.contenttypes.models import ContentType
+from configuracion_telefonia_app.models import DestinoEntrante
+from ominicontacto_app.models import Campana
+from ominicontacto_app.services.redis.connection import create_redis_connection
+from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje
+
+from .send_message import (
+    autoresponse_welcome, autoresponse_out_of_time, autoreponse_destino_interactivo,
+    send_text_message)
+from orquestador_app.core.check_out_of_time import is_out_of_time
+from orquestador_app.core.notify_agents import send_notify
+
+redis_2 = create_redis_connection(db=2)
+
+logger = logging.getLogger(__name__)
+
+
+async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
+    notifications = await s2a_inbound_chat_event(
+        line,
+        timestamp,
+        message_id,
+        origen,
+        content,
+        sender,
+        context,
+        type
+    )
+    for ntype, nargs in notifications:
+        await send_notify(ntype, **nargs)
+
+
+@sync_to_async
+def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
+    notifications = []
+    try:
+        logger.debug("mensaje entrante por la linea=%r content=%r", line.nombre, content)
+        is_out_of_time_chat = is_out_of_time(line, timestamp)
+        message_inbound, created_message =\
+            MensajeWhatsapp.objects.get_or_create(
+                message_id=message_id, defaults={
+                    'origen': origen,
+                    'timestamp': timestamp,
+                    'sender': sender,
+                    'content': content,
+                    'type': type,
+                    'status': 'delivered'
+                }
+            )
+        if created_message or not message_inbound.conversation:
+            created_conversation = False
+            destination_entrante = line.destino
+            conversations_from_origen = ConversacionWhatsapp.objects.filter(
+                line=line, whatsapp_id=origen)
+            client = None
+            conversation =\
+                conversations_from_origen.filter(
+                    expire__gte=timestamp, is_disposition=False).last()
+            if not conversation:
+                client_alias = sender['name'] if 'name' in sender else ""
+                campana = None
+                if destination_entrante.content_type == ContentType.objects.get(model='campana'):
+                    campana = destination_entrante.content_object
+                if campana:
+                    client = campana.bd_contacto.contactos.filter(
+                        telefono=origen).last()
+                conversation = ConversacionWhatsapp.objects.create(
+                    line=line,
+                    client=client,
+                    campana=campana,
+                    destination=origen,
+                    whatsapp_id=origen,
+                    is_active=True,
+                    agent=None,
+                    expire=(
+                        timestamp + timezone.timedelta(days=1)) - timezone.timedelta(
+                            seconds=timestamp.second, microseconds=timestamp.microsecond),
+                    timestamp=timestamp,
+                    date_last_interaction=timestamp,
+                    client_alias=client_alias
+                )
+                created_conversation = True
+                if not is_out_of_time_chat:
+                    autoresponse_welcome(line, conversation, timestamp)
+                if client is None:
+                    redis_2.sadd(
+                        f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NOT-IDENTIFIED-CONV',
+                        conversation.destination
+                    )
+                    redis_2.publish('OML:CHANNEL:WHATSAPPEVENTS', json.dumps({
+                        'type': 'WHATSAPP:NOT-IDENTIFIED-CONV',
+                        'campaign_id': conversation.campana_id,
+                    }))
+            else:
+                if not conversation.is_active:
+                    conversation.is_active = True
+                if conversation.saliente and not conversation.atendida:
+                    conversation.atendida = True
+                conversation.date_last_interaction = timestamp
+                if not conversation.client_alias:
+                    conversation.client_alias = sender['name'] if 'name' in sender else ""
+                conversation.save()
+            message_inbound.conversation = conversation
+            message_inbound.save()
+            if is_out_of_time_chat:
+                autoresponse_out_of_time(line, conversation, timestamp)
+                conversation.is_disposition = True
+                conversation.save()
+                return
+            #  ## notificar a agentes
+            if created_conversation and conversation.campana:
+                redis_2.sadd(
+                    f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NEW-INBOUND-CONV',
+                    conversation.id
+                )
+                redis_2.publish('OML:CHANNEL:WHATSAPPEVENTS', json.dumps({
+                    'type': 'WHATSAPP:NEW-INBOUND-CONV',
+                    'campaign_id': conversation.campana_id,
+                }))
+                notifications.append(('notify_whatsapp_new_chat', {
+                    'conversation': conversation,
+                }))
+            elif created_message and conversation.agent:
+                notifications.append(('notify_whatsapp_new_message', {
+                    'conversation': conversation,
+                    'line': line,
+                    'message': message_inbound,
+                }))
+
+            if not conversation.campana:
+                if type == 'list_reply':
+                    for notification in asignar_campana(line, conversation, content, context):
+                        notifications.append(notification)
+                else:
+
+                    autoreponse_destino_interactivo(line, line.destino, conversation)
+
+    except Exception as e:
+        logger.exception("inbound_chat_event %r", e)
+    return notifications
+
+
+def asignar_campana(line, conversation, content, context):
+    notifications = []
+    try:
+        try:
+            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
+        except Exception as e:
+            logger.exception("%r", e)
+            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
+
+        destino_entrante_id = mensaje_origen.sender['destino_entrante']
+        destination_entrante = DestinoEntrante.objects.get(id=destino_entrante_id)
+        destino = destination_entrante.destinos_siguientes.filter(
+            opcion_menu_whatsapp__opcion__valor=content['title']).last()
+        auto_response = {}
+        if destino:
+            if isinstance(destino.destino_siguiente.content_object, Campana):
+                campana = destino.destino_siguiente.content_object
+                client = campana.bd_contacto.contactos.filter(
+                    telefono=conversation.destination).last()
+                conversation.campana = campana
+                conversation.client = client
+                conversation.save()
+                notifications.append(('notify_whatsapp_new_chat', {
+                    'conversation': conversation,
+                }))
+                if destination_entrante.content_object.texto_derivacion:
+                    auto_response = {"text": destination_entrante.content_object.texto_derivacion}
+                    if auto_response:
+                        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                        message_id = send_text_message(
+                            line, conversation.destination, auto_response)
+                        if message_id:
+                            MensajeWhatsapp.objects.get_or_create(
+                                message_id=message_id,
+                                conversation=conversation,
+                                defaults={
+                                    'origen': line.numero,
+                                    'timestamp': timestamp,
+                                    'sender': {},
+                                    'content': auto_response,
+                                    'type': 'text'
+                                }
+                            )
+            elif isinstance(destino.destino_siguiente.content_object, PlantillaMensaje):
+                plantilla = destino.destino_siguiente.content_object
+                conversation.is_disposition = True
+                conversation.save()
+                auto_response = {"text": plantilla.configuracion['text']}
+                if auto_response:
+                    timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+                    orquestador_response = send_text_message(
+                        line, conversation.destination, auto_response)
+                    if orquestador_response["status"] == "submitted":
+                        MensajeWhatsapp.objects.get_or_create(
+                            message_id=orquestador_response['messageId'],
+                            conversation=conversation,
+                            defaults={
+                                'origen': line.numero,
+                                'timestamp': timestamp,
+                                'sender': {},
+                                'content': auto_response,
+                                'type': 'text'
+                            }
+                        )
+            else:
+                autoreponse_destino_interactivo(line, destino.destino_siguiente, conversation)
+        else:
+            if destination_entrante.content_object.texto_opcion_incorrecta:
+                auto_response =\
+                    {"text": destination_entrante.content_object.texto_opcion_incorrecta}
+    except Exception as e:
+        logger.exception("asignar_campana %r", e)
+    return notifications

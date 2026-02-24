@@ -10,6 +10,11 @@ export const COLORS = {
         TealGreen: '#128C7E',
         TealGreenDark: '#075E54',
         LightGreen: '#25D366'
+    },
+    FACEBOOK: {
+        Blue: '#1877F2',
+        DarkBlue: '#0E4DA4',
+        LightBlue: '#4C8BF5'
     }
 };
 

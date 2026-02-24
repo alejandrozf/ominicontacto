@@ -113,6 +113,7 @@ export default {
         { campaignId = null}
     ) {
         try {
+            console.log('agtWhatsContactDBFieldsInit action', campaignId);
             if (!campaignId) {
                 await commit('agtWhatsContactDBFieldsInit', []);
                 return {

@@ -4,19 +4,29 @@ import {
     AgentWhatsappState,
     AgentWhatsappGetters
 } from './whatsapp';
+import {
+    AgentFacebookActions,
+    AgentFacebookMutations,
+    AgentFacebookState,
+    AgentFacebookGetters
+} from './facebook';
 
 export const agentState = {
-    ...AgentWhatsappState
+    ...AgentWhatsappState,
+    ...AgentFacebookState
 };
 
 export const agentMutations = {
-    ...AgentWhatsappMutations
+    ...AgentWhatsappMutations,
+    ...AgentFacebookMutations
 };
 
 export const agentActions = {
-    ...AgentWhatsappActions
+    ...AgentWhatsappActions,
+    ...AgentFacebookActions
 };
 
 export const agentGetters = {
-    ...AgentWhatsappGetters
+    ...AgentWhatsappGetters,
+    ...AgentFacebookGetters
 };

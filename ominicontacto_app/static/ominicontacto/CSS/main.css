@@ -578,7 +578,15 @@ body > h1 {
   background-color: transparent;
 }
 
-.whatsapp_iframe_container {
+.facebook_iframe_container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  border: none;
+}
+
+.facebook_iframe_container {
   margin: 0;
   padding: 0;
   width: 100%;

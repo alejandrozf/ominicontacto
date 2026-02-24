@@ -294,5 +294,103 @@ export default {
                 }
             }
         }
+    },
+    facebook: {
+        page: {
+            name: 'Nombre',
+            page_id: 'Identificador de página',
+            description: 'Descripción',
+            verify_token: 'Token de verificación',
+            access_token: 'Token de acceso',
+            app_id: 'App ID',
+            app_secret: 'App Secret',
+            schedule: 'Grupo horario',
+            destino: 'Destino',
+            tipo_de_destino: 'Tipo de destino',
+            welcome_message: 'Mensaje de bienvenida',
+            goodbye_message: 'Mensaje de despedida',
+            out_of_hours_message: 'Mensaje fuera de horario',
+            options: {
+                value: 'Valor',
+                description: 'Descripción',
+                destination_type: 'Tipo de destino',
+                destination: 'Destino'
+            },
+        },
+        message_template: {
+            nombre: 'Nombre',
+            tipo: 'Type',
+            configuracion: 'Configuration'
+        },
+        whatsapp_template: {
+            nombre: 'Name',
+            identificador: 'Identificador',
+            texto: 'Text',
+            idioma: 'Language',
+            status: 'Status',
+            creado: 'Created at',
+            modificado: 'Updated at',
+            tipo: 'Type',
+            categoria: 'Category',
+            active: 'Active'
+        },
+        group_of_message_template: {
+            nombre: 'Name',
+            plantillas: 'Templates',
+            status: 'Status'
+        },
+        group_of_whatsapp_template: {
+            nombre: 'Name',
+            templates: 'Templates',
+            status: 'Status'
+        },
+        disposition_form: {
+            type: 'Type',
+            option: 'Option',
+            observations: 'Observations',
+            phone: 'Phone',
+            agent: 'Agent',
+            contact_phone: 'Contact Tel',
+            contact_data: 'Contact information',
+            campaign: 'Bell',
+            campaign_type: 'Campaign type',
+            disposition_option: 'Qualification option',
+            subdisposition_option: 'Subqualification option',
+            disposition: 'Qualification',
+            created_at: 'Creation date',
+            updated_at: 'Last update',
+            comments: 'Comments',
+            form_response: 'Form response'
+        },
+        message_transfer: {
+            from: 'From',
+            to: 'To'
+        },
+        templates: {
+            message_template: 'Message template',
+            whatsapp_template: 'Whatsapp template'
+        },
+        conversation: {
+            campaign: 'Campaign',
+            campaign_type: 'Campaign type',
+            destination: 'Destination',
+            client: 'Customer',
+            agent: 'Agent',
+            is_active: 'Is active?',
+            last_interaction: 'Last interaction',
+            expire: 'Expiration date',
+            message: 'Messages number',
+            disposition: 'Disposition',
+            timestamp: 'Start date',
+            line: 'Line',
+            new: {
+                title: 'New conversation',
+                model: {
+                    campaign: 'Campaign',
+                    contact: 'Contact',
+                    template: 'Template'
+                }
+            }
+        }
     }
 };

@@ -27,6 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% if whatsapp_habilitado %}
             <li class="disabled"><a>{% trans 'Configuración de Whatsapp' %}</a></li>
         {% endif %}
+        {% if meta_facebook_habilitado %}
+            <li class="disabled"><a>{% trans 'Configuración de Meta/Facebook' %}</a></li>
+        {% endif %}
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
         {% if custom_basedatoscontacto %}
             <li class="disabled"><a>{% trans 'Base Datos de Contactos' %}</a></li>

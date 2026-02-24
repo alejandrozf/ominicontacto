@@ -31,7 +31,8 @@ from formtools.wizard.views import SessionWizardView
 from ominicontacto_app.forms.base import (CampanaManualForm, OpcionCalificacionFormSet,
                                           ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
                                           CustomBaseDatosContactoForm,
-                                          QueueMemberFormset, CampanaConfiguracionWhatsappForm)
+                                          QueueMemberFormset, CampanaConfiguracionWhatsappForm,
+                                          CampanaConfiguracionMetaFacebookForm)
 from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -57,18 +58,26 @@ def mostrar_form_configuracion_whatsapp_form(wizard):
     return whatasapp_habilitado
 
 
+def mostrar_form_configuracion_meta_facebook_form(wizard):
+    cleaned_data = wizard.get_cleaned_data_for_step(CampanaWizardMixin.INICIAL) or {}
+    meta_facebook_habilitado = cleaned_data.get('meta_facebook_habilitado', '')
+    return meta_facebook_habilitado
+
+
 class CampanaManualMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = None
     CONFIGURACION_WHATSAPP = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
-    ADICION_SUPERVISORES = '4'
-    ADICION_AGENTES = '5'
+    CONFIGURACION_META_FACEBOOK = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
+    ADICION_SUPERVISORES = '5'
+    ADICION_AGENTES = '6'
     CUSTOM_BASEDATOSCONTACTO = 'custom-basedatoscontacto'
 
     FORMS = [(INICIAL, CampanaManualForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
+             (CONFIGURACION_META_FACEBOOK, CampanaConfiguracionMetaFacebookForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (CUSTOM_BASEDATOSCONTACTO, CustomBaseDatosContactoForm),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
@@ -77,6 +86,8 @@ class CampanaManualMixin(CampanaWizardMixin):
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_manual/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  CUSTOM_BASEDATOSCONTACTO: "campanas/campana_manual/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html",
@@ -89,6 +100,7 @@ class CampanaManualMixin(CampanaWizardMixin):
         PARAMETROS_CRM: mostrar_form_parametros_crm_form,
         CUSTOM_BASEDATOSCONTACTO: use_custom_basedatoscontacto_form,
         CONFIGURACION_WHATSAPP: mostrar_form_configuracion_whatsapp_form,
+        CONFIGURACION_META_FACEBOOK: mostrar_form_configuracion_meta_facebook_form,
     }
 
 
@@ -124,6 +136,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         campana = campana_form.instance
         interaccion_crm = campana.tiene_interaccion_con_sitio_externo
         whatsapp_habilitado = campana.whatsapp_habilitado
+        meta_facebook_habilitado = campana.meta_facebook_habilitado
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
@@ -134,7 +147,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             bd_contacto.save()
             campana_form.instance.bd_contacto = bd_contacto
         campana_form.save()
-        offset = 1
+        offset = 2
         if whatsapp_habilitado:
             offset = offset - 1
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
@@ -143,6 +156,13 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.created_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
+        if meta_facebook_habilitado:
+            offset = offset - 1
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
+            if configuracion_meta_facebook_formset.is_valid():
+                configuracion_meta_facebook_formset.instance.campana = campana
+                configuracion_meta_facebook_formset.instance.save()
 
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
@@ -192,16 +212,20 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     INICIAL = '0'
     COLA = None
     CONFIGURACION_WHATSAPP = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
+    CONFIGURACION_META_FACEBOOK = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
 
     FORMS = [(INICIAL, CampanaManualForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
+             (CONFIGURACION_META_FACEBOOK, CampanaConfiguracionMetaFacebookForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_manual/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
 
@@ -228,7 +252,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         queue.summarize_percentage = summarize_percentage
         queue.transcription_percentage = transcription_percentage
         queue.save()
-        offset = 1
+        offset = 2
         if campana.whatsapp_habilitado:
             offset = offset - 1
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
@@ -238,6 +262,16 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
                     configuracion_whatsapp_formset.instance.campana = campana
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
+
+        if campana.meta_facebook_habilitado:
+            offset = offset - 1
+            configuracion_meta_facebook_formset = list(form_list)[
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
+            if configuracion_meta_facebook_formset.is_valid():
+                if not configuracion_meta_facebook_formset.instance.pk:
+                    configuracion_meta_facebook_formset.instance.campana = campana
+                configuracion_meta_facebook_formset.instance.save()
+
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
@@ -276,18 +310,22 @@ class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualC
     INICIAL = '0'
     COLA = None
     CONFIGURACION_WHATSAPP = '1'
-    OPCIONES_CALIFICACION = '2'
-    PARAMETROS_CRM = '3'
+    CONFIGURACION_META_FACEBOOK = '2'
+    OPCIONES_CALIFICACION = '3'
+    PARAMETROS_CRM = '4'
     CUSTOM_BASEDATOSCONTACTO = 'custom-basedatoscontacto'
 
     FORMS = [(INICIAL, CampanaManualForm),
              (CONFIGURACION_WHATSAPP, CampanaConfiguracionWhatsappForm),
+             (CONFIGURACION_META_FACEBOOK, CampanaConfiguracionMetaFacebookForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (CUSTOM_BASEDATOSCONTACTO, CustomBaseDatosContactoForm),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
                  CONFIGURACION_WHATSAPP: "campanas/campana_manual/configuracion_whatsapp.html",
+                 CONFIGURACION_META_FACEBOOK:
+                 "campanas/campana_manual/configuracion_meta_facebook.html",
                  OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  CUSTOM_BASEDATOSCONTACTO: "campanas/campana_manual/custom-basedatoscontacto.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
