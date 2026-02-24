@@ -61,6 +61,7 @@ export default {
         line: 'Linea de Whatsapp | Lineas de Whatsapp',
         message_template: 'Template de mensaje | Templates de mensajes',
         whatsapp_template: 'Template de whatsapp | Templates de whatsapp',
+        destino: 'Destino | Destino',
         group_of_message_template: 'Grupo de plantillas de mensaje | Grupos de plantillas de mensaje',
         group_of_whatsapp_template: 'Grupo de plantillas de whatsapp | Grupos de plantillas de whatsapp',
         template: 'Plantilla | Plantillas',
