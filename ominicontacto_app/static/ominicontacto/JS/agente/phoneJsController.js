@@ -741,8 +741,10 @@ class PhoneJSController {
                 if (args['dispositioned'])
                     if (self.phone_fsm.state == 'Paused')
                         self.leavePause();
-                    else
+                    else {
+                        console.log('Notificacion Llamada calificada');
                         self.llamada_calificada = true;
+                    }
                 else
                     self.llamada_calificada = false;
             }
@@ -901,18 +903,22 @@ class PhoneJSController {
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
         var pause_name = return_to_pause? this.pause_manager.pause_name: undefined;
 
+        // Si se fuerza la calificación, y la llamada está calificada, versi ir a pausa o no
+        if (this.click_2_call_dispatcher.disposition_forced && this.llamada_calificada){
+            if (this.agent_config.force_unpause){
+                // El agente debe quedarse en Ready directamente
+                this.llamada_calificada = null;
+                return;
+            }
+        }
+
         // Al finalizar la llamada se manda el agente a Pausa forzada.
         var self = this;
         this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
 
-        // Si se fuerza la calificación no se sale automaticamente de Pausa forzada
-        if (this.click_2_call_dispatcher.disposition_forced){
-            if (this.llamada_calificada){
-                this.autoLeaveACWPause(return_to_pause, pause_id, pause_name);
-                this.llamada_calificada = null;
-            }  
-            else
-                return;
+        // Si se fuerza la calificación y no se calificó. No salir automaticamente de Pausa forzada
+        if (this.click_2_call_dispatcher.disposition_forced && !this.llamada_calificada){
+            return;
         }
         if (call_auto_unpause != undefined) {
             if (call_auto_unpause > 0) {
@@ -1547,6 +1553,7 @@ class AgentConfig {
         this.call_off_camp = $('#call_off_camp').val() == 'False';
         this.call_another_agent = $('#call_another_agent').val() == 'False';
         this.on_hold = $('#on_hold').val() == 'False';
+        this.force_unpause = $('#force_unpause').val() == 'True';
     }
 }
 

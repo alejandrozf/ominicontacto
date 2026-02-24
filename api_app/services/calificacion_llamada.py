@@ -73,6 +73,8 @@ class CalificacionLLamada(object):
             'IDCALIFICACION': id_calificacion,
         }
 
+        # TODO: Por qué solo notifica si tiene q forzar despausa?
+        #       La notificación de que ya se calificó puede ser útil en otros escenarios
         if agente.forzar_despausa() and not es_agenda and not gestion:
             dispositioned = llamada_calificada == 'TRUE'
             call_id = call_data['call_id']
