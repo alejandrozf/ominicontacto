@@ -102,6 +102,7 @@ COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 COPY omnileads_ui $INSTALL_PREFIX/ominicontacto/omnileads_ui
 COPY orquestador_app $INSTALL_PREFIX/ominicontacto/orquestador_app
 COPY whatsapp_app $INSTALL_PREFIX/ominicontacto/whatsapp_app
+COPY facebook_meta_app $INSTALL_PREFIX/ominicontacto/facebook_meta_app
 COPY build/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY build/scripts/* $INSTALL_PREFIX/bin/
 COPY omnileads_ui/ $INSTALL_PREFIX/ominicontacto/omnileads_ui
