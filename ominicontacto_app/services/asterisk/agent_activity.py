@@ -156,6 +156,8 @@ class AgentActivityAmiManager(object):
 
     def _queue_add_remove(self, agente_profile, action):
         content = self._get_queue_data(agente_profile)
+        if action == 'QueueAdd':
+            content.append(0)  # Valor "paused". Como está haciendo login, no está en pausa
         data_returned, error = self.manager._ami_manager(action, content)
         return error
 

@@ -37,7 +37,8 @@ class TestsInicializarEntorno (OMLBaseTest):
     @patch('redis.Redis.sadd')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.queue_add')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
-    @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
+    @patch('ominicontacto_app.services'
+           '.queue_member_service.obtener_status_agentes_sesiones_activas')
     @patch('ominicontacto_app.management.commands.inicializar_entorno.'
            'escribir_ruta_entrante_config')
     @patch('configuracion_telefonia_app.regeneracion_configuracion_telefonia.'
@@ -48,7 +49,7 @@ class TestsInicializarEntorno (OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk_service.ActivacionAgenteService.activar')
     def test_multiples_agentes(self, activar_agente, activar_queue, regenerar_troncales,
                                regenerar_asterisk, escribir_ruta_entrante_config,
-                               obtener_sip_agentes_sesiones_activas, ami_connect,
+                               obtener_status_agentes_sesiones_activas, ami_connect,
                                queue_add, sadd):
         inicializar_entorno = Command()
         inicializar_entorno._crear_datos_entorno(False, 3, 2)
@@ -57,7 +58,7 @@ class TestsInicializarEntorno (OMLBaseTest):
         regenerar_troncales.assert_called()
         regenerar_asterisk.assert_called()
         escribir_ruta_entrante_config.assert_called()
-        obtener_sip_agentes_sesiones_activas.assert_called()
+        obtener_status_agentes_sesiones_activas.assert_called()
         ami_connect.assert_called()
         sadd.assert_called()
         self.assertEqual(AgenteProfile.objects.count(), 3)

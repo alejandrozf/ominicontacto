@@ -30,15 +30,16 @@ from ominicontacto_app.services.redis.connection import create_redis_connection
 logger = logging.getLogger(__name__)
 
 
-def obtener_sip_agentes_sesiones_activas():
+def obtener_status_agentes_sesiones_activas():
+    """ Diccionario de estado de agentes NO OFFLINE por id de agente """
     # TODO: Controlar cantidad de conexiones a Asterisk con AMIManagerConnector
     agentes_activos_service = SupervisorActivityAmiManager()
     agentes = list(agentes_activos_service.obtener_agentes_activos())
-    sips_agentes = []
+    status_agentes = {}
     for agente in agentes:
         if agente['status'] != 'OFFLINE':
-            sips_agentes.append(int(agente['sip']))
-    return sips_agentes
+            status_agentes[agente['id']] = agente['status']
+    return status_agentes
 
 
 class QueueMemberService(object):
@@ -61,8 +62,8 @@ class QueueMemberService(object):
 
     def eliminar_agente_de_colas_asignadas(self, agente):
         # ahora vamos a remover el agente de la cola de asterisk
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-        if agente.sip_extension in sip_agentes_logueados:
+        status_agentes_logueados = obtener_status_agentes_sesiones_activas()
+        if agente.id in status_agentes_logueados:
             queues_member_agente = agente.campana_member.all()
             for queue_member in queues_member_agente:
                 campana = queue_member.queue_name.campana
@@ -75,9 +76,9 @@ class QueueMemberService(object):
         QueueMember.objects.filter(
             member__in=agentes,
             queue_name=campana.queue_campana).delete()
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
+        status_agentes_logueados = obtener_status_agentes_sesiones_activas()
         for agente in agentes:
-            if agente.sip_extension in sip_agentes_logueados:
+            if agente.id in status_agentes_logueados:
                 self._remover_agente_cola_asterisk(campana, agente)
             self.campanas_de_agente_family.borrar_agente_de_campana(campana.id, agente.id)
             self.campaign_agents_family.borrar_agente_de_campana(campana.id, agente.id)
@@ -86,7 +87,8 @@ class QueueMemberService(object):
         QueueMember.objects.filter(
             member=agente,
             queue_name__campana_id__in=campanas_ids).delete()
-        sesion_agente_activa = self.sesion_agente_esta_activa(agente)
+        estado_agente = self._estado_sesion_agente(agente)
+        sesion_agente_activa = estado_agente and estado_agente != 'OFFLINE'
         for campana in campanas:
             if sesion_agente_activa:
                 self._remover_agente_cola_asterisk(campana, agente)
@@ -112,7 +114,7 @@ class QueueMemberService(object):
             en agentes """
         if penalties is None:
             penalties = self._generar_penalties_default(agentes)
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
+        status_agentes_logueados = obtener_status_agentes_sesiones_activas()
         for agente in agentes:
             penalty = penalties.get(agente.id, 0)
             with transaction.atomic():
@@ -122,18 +124,19 @@ class QueueMemberService(object):
                     defaults=QueueMember.get_defaults(agente, campana))
                 queue_member.penalty = penalty
                 queue_member.save()
-                if agente.sip_extension in sip_agentes_logueados:
+                if agente.id in status_agentes_logueados:
+                    en_pausa = status_agentes_logueados[agente.id].startswith('PAUSE')
                     self._adicionar_agente_cola_asterisk(
-                        agente, queue_member, campana)
+                        agente, queue_member, campana, en_pausa)
         self.campanas_de_agente_family.registrar_agentes_en_campana(campana.id, penalties.keys())
         self.campaign_agents_family.registrar_agentes_en_campana(campana.id, penalties.keys())
 
-    def _adicionar_agente_cola_asterisk(self, agente, queue_member, campana):
+    def _adicionar_agente_cola_asterisk(self, agente, queue_member, campana, en_pausa):
         """Adiciona agente a la cola de su respectiva campaña"""
         queue = campana.get_queue_id_name()
         interface = "PJSIP/{0}".format(agente.sip_extension)
         penalty = queue_member.penalty
-        paused = queue_member.paused
+        paused = en_pausa
         member_name = agente.get_asterisk_caller_id()
         try:
             self.ami_client.queue_add(queue, interface, penalty, paused, member_name)
@@ -145,7 +148,8 @@ class QueueMemberService(object):
         """ Agrega el agente a multiples campañas """
         sesion_agente_activa = False
         if verificar_sesion_activa:
-            sesion_agente_activa = self.sesion_agente_esta_activa(agente)
+            estado_agente = self._estado_sesion_agente(agente)
+            sesion_agente_activa = estado_agente and estado_agente != 'OFFLINE'
         try:
             campanas_ids = []
             for campana in campanas:
@@ -156,16 +160,16 @@ class QueueMemberService(object):
                     queue_name=campana.queue_campana,
                     defaults=QueueMember.get_defaults(agente, campana))
                 if sesion_agente_activa:
-                    self._adicionar_agente_cola_asterisk(agente, queue_member, campana)
+                    en_pausa = estado_agente.startswith('PAUSE')
+                    self._adicionar_agente_cola_asterisk(agente, queue_member, campana, en_pausa)
             self.campanas_de_agente_family.registrar_campanas_a_agente(agente.id, campanas_ids)
             self.campaign_agents_family.registrar_campanas_a_agente(campanas_ids, agente.id)
         except Exception as e:
             logger.exception(f'Error al adicionar agente a la cola de la campaña {e.__str__()}')
 
-    def sesion_agente_esta_activa(self, agente):
+    def _estado_sesion_agente(self, agente):
         self._get_redis_connection()
-        status = self.redis_connection.hget(f'OML:AGENT:{agente.id}', 'STATUS')
-        return status and status != 'OFFLINE'
+        return self.redis_connection.hget(f'OML:AGENT:{agente.id}', 'STATUS')
 
     def _get_redis_connection(self):
         if not self.redis_connection:

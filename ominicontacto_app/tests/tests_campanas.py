@@ -600,11 +600,11 @@ class SupervisorCampanaTests(CampanasTests):
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
     @patch('ominicontacto_app.services.queue_member_service'
-           '.obtener_sip_agentes_sesiones_activas')
+           '.obtener_status_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto_proporcionalmente(
-            self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            self, connect, disconnect, obtener_status_agentes_sesiones_activas,
             registrar_agentes_en_campana,
             activar, sadd):
         url = reverse('campana_preview_create')
@@ -2062,11 +2062,12 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
-    @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
+    @patch('ominicontacto_app.services'
+           '.queue_member_service.obtener_status_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_incluye_etapa_asignacion_agentes(
-            self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            self, connect, disconnect, obtener_status_agentes_sesiones_activas,
             registrar_agentes_en_campana,
             activar, sadd):
         url = reverse('campana_manual_create')
@@ -2090,11 +2091,12 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(ActivacionQueueService, "activar")
     @patch('ominicontacto_app.services.asterisk.redis_database.CampanasDeAgenteFamily'
            '.registrar_agentes_en_campana')
-    @patch('ominicontacto_app.services.queue_member_service.obtener_sip_agentes_sesiones_activas')
+    @patch('ominicontacto_app.services'
+           '.queue_member_service.obtener_status_agentes_sesiones_activas')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.disconnect')
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_agentes(
-            self, connect, disconnect, obtener_sip_agentes_sesiones_activas,
+            self, connect, disconnect, obtener_status_agentes_sesiones_activas,
             registrar_agentes_en_campana,
             activar, sadd):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)

@@ -93,7 +93,7 @@ class AMIManagerConnector(object):
                     'Queue': content[2][i],
                     'Interface': content[4],
                     'Penalty': content[3][i],
-                    'Paused': 0,
+                    'Paused': content[5],
                     'MemberName': content[1]
                 }
                 data_returned = self.manager.send_action(dict)
@@ -185,11 +185,21 @@ class AmiManagerClient(AMIManagerConnector):
         return self.manager.dbdeltree(family, key)
 
     def queue_add(self, queue, interface, penalty, paused, member_name):
+
+        # TODO: Debería pasarse content como dict:
+        # content_dict = {
+        #     'Interface': interface,
+        #     'queues': queue,
+        #     'Penalty': penalty,
+        #     'Paused': paused,
+        #     'MemberName': member_name
+        # }
         content = {}
         content[2] = [queue]
         content[4] = content[0] = interface
         content[3] = [penalty]
         content[1] = member_name
+        content[5] = paused
 
         return self._ami_action('QueueAdd', content)
 
