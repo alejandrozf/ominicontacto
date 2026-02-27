@@ -317,7 +317,7 @@ class IdentificadorCliente(models.Model):
         choices=TIPOS_INTERACCIONES, help_text=_('Tipo de interacción'),
         default=SIN_INTERACCION_EXTERNA, verbose_name=_('Tipo de interacción'))
     url = models.CharField(
-        max_length=128, blank=True, null=True,
+        max_length=512, blank=True, null=True,
         verbose_name=_('Url servicio identificación'))
     audio = models.ForeignKey(
         ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
