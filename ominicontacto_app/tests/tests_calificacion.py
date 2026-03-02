@@ -317,7 +317,13 @@ class CalificacionTests(OMLBaseTest):
         self.assertEqual(agenda_contacto.campana.pk, self.campana.pk)
 
     @patch('notification_app.notification.RedisStreamNotifier.send')
-    def test_llamada_manual_telefono_no_contacto_crea_contacto(self, send):
+    @patch('ominicontacto_app.services.redis.call_contact_cache'
+           '.CallContactCache.get_call_contact_id', return_value=None)
+    @patch('ominicontacto_app.services.redis.call_contact_cache'
+           '.CallContactCache.set_call_contact_id')
+    @patch('notification_app.notification.AgentNotifier.notify_contact_saved')
+    def test_llamada_manual_telefono_no_contacto_crea_contacto(
+            self, notify_contact_saved, set_call_contact_id, get_call_contact_id, send):
         # garantizamos un número distinto al existente en la campaña
         contactos_ids = self.campana.bd_contacto.contactos.values_list('id', flat=True)
         contactos_ids = list(contactos_ids)
@@ -329,9 +335,12 @@ class CalificacionTests(OMLBaseTest):
             f'contacto_form-{nombre_campo_dato}': 'Nuevo Contacto'
         }
 
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': telefono})
+        get_call_contact_id
+        call_data = self.get_call_data()
+        call_data['id_contacto'] = '-1'
+        call_data['telefono'] = telefono
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         nuevo_contacto = self.campana.bd_contacto.contactos.exclude(id__in=contactos_ids)
@@ -343,22 +352,27 @@ class CalificacionTests(OMLBaseTest):
         self.assertFalse(nuevo_contacto.es_originario)
         send.assert_called_with('calification', self.agente_profile.id)
 
-    def test_llamada_manual_telefono_no_contacto_muestra_formulario_calificacion_blanco(self):
+    @patch('ominicontacto_app.services.redis.call_contact_cache'
+           '.CallContactCache.set_call_contact_id')
+    @patch('ominicontacto_app.services.redis.call_contact_cache'
+           '.CallContactCache.get_call_contact_id', return_value=None)
+    def test_llamada_manual_telefono_no_contacto_muestra_formulario_calificacion_blanco(
+            self, get_call_contact_id, set_call_contact_id):
         # garantizamos un número distinto al existente en la campaña
         telefono = str(self.contacto.telefono) + '11'
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': telefono})
+        call_data = self.get_call_data()
+        call_data['id_contacto'] = '-1'
+        call_data['telefono'] = telefono
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+
         response = self.client.get(url, follow=True)
         contacto_form = response.context_data['contacto_form']
         datos_contacto_form = set(contacto_form.initial.values())
         self.assertEqual(datos_contacto_form, set([telefono]))
 
     def test_ocultar_opciones_de_calificacion(self):
-        contacto = self.contacto
-        telefono = contacto.telefono
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk, 'telefono': telefono})
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url, follow=True)
         opciones_form = response.context_data['form']
         choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
@@ -377,10 +391,8 @@ class CalificacionTests(OMLBaseTest):
         self.assertNotIn((opcion.id, opcion.nombre), choices)
 
     def test_no_ocultar_opciones_de_calificacion_oculta_si_corresponde_a_la_calificacion(self):
-        contacto = self.contacto
-        telefono = contacto.telefono
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk, 'telefono': telefono})
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url, follow=True)
         opciones_form = response.context_data['form']
         choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
@@ -398,42 +410,31 @@ class CalificacionTests(OMLBaseTest):
         self.assertEqual(len(choices), self.campana.opciones_calificacion.count() + 1)
         self.assertIn((opcion.id, opcion.nombre), choices)
 
-    def test_llamada_manual_telefono_con_1_contacto_muestra_datos_contacto_formulario(self):
-        contacto = self.contacto
-        telefono = contacto.telefono
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': telefono})
+    @patch('ominicontacto_app.services.redis.call_contact_cache'
+           '.CallContactCache.get_call_contact_id', return_value=None)
+    def test_llamada_manual_telefono_con_1_contacto_muestra_datos_contacto_formulario(
+            self, get_call_contact_id):
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+        telefono = self.contacto.telefono
         response = self.client.get(url, follow=True)
         contacto_form = response.context_data['contacto_form']
         datos_contacto_form = set(contacto_form.initial.values())
-        datos_contacto_model = set(json.loads(contacto.datos) + [str(telefono)])
-        datos_contacto_model.add(contacto.id_externo)
+        datos_contacto_model = set(json.loads(self.contacto.datos) + [str(telefono)])
+        datos_contacto_model.add(self.contacto.id_externo)
         self.assertEqual(datos_contacto_form, datos_contacto_model)
 
-    def test_llamada_manual_telefono_con_n_contactos_redirecciona_vista_escoger_contacto(self):
-        contacto = self.contacto
-        ContactoFactory(bd_contacto=self.campana.bd_contacto, telefono=contacto.telefono)
-        telefono = contacto.telefono
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': telefono})
-        response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
-
     def test_muestra_nombre_campana(self):
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': '351111111111'})
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.campana.nombre)
 
     def test_oculta_nombre_campana(self):
         self.campana.mostrar_nombre = False
         self.campana.save()
-        url = reverse('calificar_por_telefono',
-                      kwargs={'pk_campana': self.campana.pk,
-                              'telefono': '351111111111'})
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana.nombre)
 

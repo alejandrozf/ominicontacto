@@ -555,13 +555,6 @@ urlpatterns = [
          name='espera_llamada_multinum'
          ),
 
-    # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
-    # Mientras, quedará para ser usada únicamente en llamadas manuales
-    re_path(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
-            login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
-            kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
-            name="calificar_por_telefono"),
-
     # Respuesta de Formulario para Calificación de Gestión
     re_path(r'^formulario/venta/(?P<pk>\d+)/detalle/(?P<call_data_json>.+)$',
             login_required(
