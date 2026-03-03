@@ -46,7 +46,8 @@ export default {
                         text: '',
                         type: '',
                         numParams_header: 0,
-                        numParams_text: 0
+                        numParams_text: 0,
+                        numParams_buttons: 0
                     }
                 };
             }

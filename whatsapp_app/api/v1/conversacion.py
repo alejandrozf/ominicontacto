@@ -773,8 +773,15 @@ class ViewSet(viewsets.ViewSet):
                         if message_id:
                             text = template.texto.replace('{{', '{').\
                                 replace('}}', '}').format("", *data['params'])
-                            if template_tipo == 'TEXT':
-                                message_dict = {"text": text, "type": template_tipo}
+                            header = template.texto_header.replace('{{', '{').\
+                                replace('}}', '}').format("", *data['params_header'])
+                            if template_tipo in ['TEXT', 'BUTTONS']:
+                                message_dict = {
+                                    "text": text,
+                                    "header": header,
+                                    "type": template_tipo,
+                                    "buttons": template.botones
+                                }
                             else:
                                 media_url = template.link_media
                                 message_dict = {
@@ -854,8 +861,15 @@ class ViewSet(viewsets.ViewSet):
             if message_id:
                 text = template.texto.replace('{{', '{').\
                     replace('}}', '}').format("", *data['params'])
-                if template_tipo == 'TEXT':
-                    message_dict = {"text": text, "type": template_tipo}
+                header = template.texto_header.replace('{{', '{').\
+                    replace('}}', '}').format("", *data['params_header'])
+                if template_tipo in ['TEXT', 'BUTTONS']:
+                    message_dict = {
+                        "text": text,
+                        "header": header,
+                        "type": template_tipo,
+                        "buttons": template.botones
+                    }
                 else:
                     media_url = template.link_media
                     message_dict = {
@@ -964,8 +978,15 @@ class ViewSet(viewsets.ViewSet):
                             seconds=timestamp.second, microseconds=timestamp.microsecond))
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
-                    if template_tipo == 'TEXT':
-                        message_dict = {"text": text, "type": template_tipo}
+                    header = template.texto_header.replace('{{', '{').\
+                        replace('}}', '}').format("", *data['params_header'])
+                    if template_tipo in ['TEXT', 'BUTTONS']:
+                        message_dict = {
+                            "header": header,
+                            "text": text,
+                            "type": template_tipo,
+                            "buttons": template.botones
+                        }
                     else:
                         media_url = template.link_media
                         message_dict = {

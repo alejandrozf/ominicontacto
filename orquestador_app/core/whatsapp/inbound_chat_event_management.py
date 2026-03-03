@@ -55,8 +55,16 @@ async def inbound_chat_event(line, timestamp, message_id, origen, content, sende
 def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     notifications = []
     try:
-        logger.debug("mensaje entrante por la linea=%r content=%r", line.nombre, content)
+        logger.debug("entrante por la linea=%r content=%r", line.nombre, content, context, type)
         is_out_of_time_chat = is_out_of_time(line, timestamp)
+        if context and type in ['reply_text', 'reply_image', 'reply_video',
+                                'reply_document', 'list_reply', 'button_reply', 'button']:
+            try:
+                mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
+            except Exception as e:
+                logger.debug("%r", e)
+                mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
+            content.update({'context': mensaje_origen.content})
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(
                 message_id=message_id, defaults={
