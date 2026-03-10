@@ -155,8 +155,7 @@ class CalificacionClienteFormView(FormView):
             self.call_data = json.loads(call_data_json)
             self.campana = Campana.objects.get(pk=self.call_data['id_campana'])
             telefono = self.call_data['telefono']
-            if self.call_data['id_contacto']:
-                id_contacto = self.call_data['id_contacto']
+            id_contacto = self.call_data.get('id_contacto', None)
 
             if id_contacto is None or id_contacto == '-1':
                 callid = self.call_data['call_id']
@@ -183,6 +182,7 @@ class CalificacionClienteFormView(FormView):
                 self.request, _("No tiene permiso para calificar llamadas de esa campaña."))
             return self._get_redireccion_campana_erronea()
 
+        # Intento identificar contacto.
         if self._es_numero_privado(telefono) and 'pk_contacto' not in kwargs:
             self.contacto = None
         elif telefono and self.contacto is None:
@@ -192,6 +192,7 @@ class CalificacionClienteFormView(FormView):
             if len_contacto_info == 0:
                 self.contacto = None
             elif len_contacto_info == 1:
+                notificar_contacto_existente = True
                 self.contacto = contacto_info[0]
             else:
                 return HttpResponseRedirect(

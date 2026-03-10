@@ -511,8 +511,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'auditar_calificacion',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'calificar_por_telefono',
-             'roles': ['Agente', ]},
+            # {'nombre': 'calificar_por_telefono',
+            #  'roles': ['Agente', ]},
             {'nombre': 'formulario_detalle',
              'roles': ['Agente', ]},
             {'nombre': 'formulario_venta',
@@ -932,8 +932,8 @@ class OminicontactoAppConfig(AppConfig):
         'auditar_calificacion':
             {'descripcion': _('Editar una calificacion al auditarla (Supervisor)'),
              'version': '1.7.0'},
-        'calificar_por_telefono':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
+        # 'calificar_por_telefono':  # Eliminado en 2.6.4
+        #     {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'formulario_detalle':
             {'descripcion': _('Ver la respuesta de un Formulario de Gestión'), 'version': '1.7.0'},
         'formulario_venta':
