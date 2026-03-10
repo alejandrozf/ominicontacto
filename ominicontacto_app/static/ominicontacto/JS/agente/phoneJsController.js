@@ -710,7 +710,12 @@ class PhoneJSController {
 
             if(self.phone.session_data.is_transfered && self.phone.session_data.is_consultative_transfer){
                 var agent_id = self.phone.session_data.from_agent_name.split('_')[0];
-                self.oml_api.notifyEndTransferredCall(agent_id);
+                if (agent_id) {
+                    self.oml_api.notifyEndTransferredCall(agent_id);
+                }
+                else {
+                    console.log('agent_id not available in from_agent_name (OMLFROMAGENT)');
+                }
             }
             if (self.phone_fsm.state == 'DialingTransfer') {
                 self.phone.cancelDialTransfer();
@@ -1106,12 +1111,15 @@ class PhoneJSController {
     }
 
     hangUp() {
-        if (this.phone.session_data.survey){
-            this.transferToSurvey();
+        // Transferencia directa a Survey salvo que esté en transferencia.
+        if (this.phone.session_data.survey && this.phone_fsm.state == 'OnCall'){
+            if (!this.phone.session_data.is_consultative_transfer){
+                this.transferToSurvey();
+                return;
+            }
         }
-        else {
-            this.phone.hangUp();
-        }
+
+        this.phone.hangUp();
     }
 
     recordCall() {
