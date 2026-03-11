@@ -86,6 +86,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <span class="fas fa-bars"></span>
                             </button>
                             {% include 'cambiar_idioma.html' %}
+                            <button type="button" id="themeToggle" class="btn" title="Toggle Dark/Light Mode" style="margin-left: 10px;">
+                                <span class="fas fa-moon" id="themeToggleIcon"></span>
+                            </button>
                             <div id="nav-user">
                                 <a>{{ user.get_full_name }}</a>
                                 <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
@@ -157,6 +160,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
            // Modal Register Server
             var registered = '{{ registered|safe }}';
             showModalRegisterServer(registered === 'True');
+
+           // Dark/Light Mode Toggle
+           var currentTheme = localStorage.getItem('theme') || 'light';
+           var $html = $('html');
+           var $themeToggleIcon = $('#themeToggleIcon');
+
+           if (currentTheme === 'dark') {
+               $html.addClass('dark-mode');
+               $themeToggleIcon.removeClass('fa-moon').addClass('fa-sun');
+           }
+
+           $('#themeToggle').on('click', function() {
+               if ($html.hasClass('dark-mode')) {
+                   $html.removeClass('dark-mode');
+                   localStorage.setItem('theme', 'light');
+                   $themeToggleIcon.removeClass('fa-sun').addClass('fa-moon');
+               } else {
+                   $html.addClass('dark-mode');
+                   localStorage.setItem('theme', 'dark');
+                   $themeToggleIcon.removeClass('fa-moon').addClass('fa-sun');
+               }
+           });
 
            //Toogle sidebar and keep current state on page reload
            //retrieve current state

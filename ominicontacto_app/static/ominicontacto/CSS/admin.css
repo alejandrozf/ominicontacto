@@ -1071,3 +1071,95 @@ body.wrapper-page-error {
   padding: 2px 5px;
   border-radius: 3px;
 }
+
+/* --- Dark Mode Variables and Overrides --- */
+html.dark-mode {
+  --bg-main: #36393f;
+  --bg-sidebar: #2f3136;
+  --bg-topbar: #202225;
+  --text-main: #dcddde;
+  --text-heading: #ffffff;
+  --bg-card: #2f3136;
+  --border-color: #202225;
+}
+
+html.dark-mode body,
+html.dark-mode .wrapper-main,
+html.dark-mode .wrapper-content,
+html.dark-mode .jumbotron {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, html.dark-mode h4 {
+  color: var(--text-heading) !important;
+}
+
+html.dark-mode #sidebar,
+html.dark-mode #sidebar.active .menu-link,
+html.dark-mode #sidebar.active .menu-header,
+html.dark-mode #sidebar.active ul.submenu,
+html.dark-mode #sidebar.active ul.submenu-two {
+  background-color: var(--bg-sidebar) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark-mode #sidebar ul li a, html.dark-mode #sidebar .icon {
+  color: var(--text-main) !important;
+}
+
+html.dark-mode #sidebar .submenu, html.dark-mode #sidebar .submenu-two, html.dark-mode #sidebar a[aria-expanded="true"] {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark-mode #topbar, html.dark-mode #navBar {
+  background-color: var(--bg-topbar) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark-mode #topbar a, html.dark-mode #topbar button {
+  color: var(--text-heading) !important;
+}
+
+html.dark-mode .table thead th,
+html.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark-mode .table, html.dark-mode .table td {
+  color: var(--text-main) !important;
+}
+
+html.dark-mode #btnCollapse[data-toggle="collapse"],
+html.dark-mode .webphone-header,
+html.dark-mode #wrapperWebphone,
+html.dark-mode .nav-tabs .nav-link.active,
+html.dark-mode .card,
+html.dark-mode .modal-content,
+html.dark-mode .alert {
+  background-color: var(--bg-card) !important;
+  color: var(--text-heading) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark-mode .nav-tabs .nav-link {
+  color: var(--text-heading) !important;
+}
+
+html.dark-mode .btn-light {
+    background-color: var(--bg-card) !important;
+    color: var(--text-heading) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+html.dark-mode .btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark-mode a {
+  color: #5865F2 !important; /* Discord blurpleish */
+}
+
