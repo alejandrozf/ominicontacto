@@ -519,6 +519,10 @@ input[type=file].form-control {
   width: 320px;
 }
 
+.wrapper-content.login .form-group label {
+  margin-bottom: 8px;
+}
+
 /* ///// Admin sidebar menu
 */
 .collapsing {
@@ -1272,6 +1276,96 @@ html.dark-mode textarea {
   color: var(--text-main) !important;
   border: 1px solid var(--border-color-light) !important;
   border-radius: 8px !important;
+}
+
+html.dark-mode .wrapper-info,
+html.dark-mode .wrapper-content.login,
+html.dark-mode .wrapper-table,
+html.dark-mode .table-responsive,
+html.dark-mode .tab-content,
+html.dark-mode .nav-tabs,
+html.dark-mode .nav-tabs .nav-item.show .nav-link,
+html.dark-mode .dropdown-menu,
+html.dark-mode .select2-dropdown,
+html.dark-mode .bootstrap-datetimepicker-widget.dropdown-menu {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color-light) !important;
+}
+
+html.dark-mode .dropdown-item,
+html.dark-mode .dropdown-item-text,
+html.dark-mode .wrapper-info label,
+html.dark-mode .wrapper-info p,
+html.dark-mode .wrapper-info small,
+html.dark-mode .wrapper-info .help-inline,
+html.dark-mode .wrapper-info .text-muted,
+html.dark-mode .wrapper-content.login label,
+html.dark-mode .wrapper-content.login p,
+html.dark-mode .wrapper-content.login small {
+  color: var(--text-main) !important;
+}
+
+html.dark-mode .dropdown-item:hover,
+html.dark-mode .dropdown-item:focus,
+html.dark-mode .select2-results__option--highlighted[aria-selected],
+html.dark-mode .select2-results__option[aria-selected="true"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-heading) !important;
+}
+
+html.dark-mode .nav-tabs {
+  border-bottom-color: var(--border-color-light) !important;
+}
+
+html.dark-mode .nav-tabs .nav-link {
+  color: var(--text-main) !important;
+  border-color: transparent !important;
+}
+
+html.dark-mode .nav-tabs .nav-link:hover,
+html.dark-mode .nav-tabs .nav-link:focus {
+  border-color: transparent !important;
+  color: var(--text-heading) !important;
+}
+
+html.dark-mode .nav-tabs .nav-link.active {
+  background-color: var(--bg-card) !important;
+  color: var(--text-heading) !important;
+  border-color: var(--border-color-light) var(--border-color-light) var(--primary-color, #f71883) !important;
+}
+
+html.dark-mode .page-link,
+html.dark-mode .page-link:hover,
+html.dark-mode .page-link:focus {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-color-light) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark-mode .text-muted,
+html.dark-mode .table small,
+html.dark-mode .form-text {
+  color: rgba(219, 222, 225, 0.8) !important;
+}
+
+html.dark-mode .table thead th,
+html.dark-mode .table td,
+html.dark-mode .table tr,
+html.dark-mode .table-bordered td,
+html.dark-mode .table-bordered th {
+  border-color: var(--border-color-light) !important;
+}
+
+html.dark-mode .wrapper-content.login form,
+html.dark-mode .wrapper-content.login form > div:first-of-type {
+  color: var(--text-main) !important;
+  border-color: var(--border-color-light) !important;
+}
+
+html.dark-mode .wrapper-content.login .btn-light,
+html.dark-mode .wrapper-content.login .btn-light:hover {
+  width: auto;
 }
 
 html.dark-mode .form-control:focus,

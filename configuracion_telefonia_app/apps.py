@@ -68,7 +68,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if telefonia:
             conexiones.append({
                 'label': _('Telefonía'),
-                'icon': 'fas fa-phone-alt',
+                'icon': 'fas fa-phone',
                 'id': 'menuTelefonia',
                 'children': telefonia
             })
@@ -176,7 +176,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 {
                     'order': 700,
                     'label': _('Conexiones'),
-                    'icon': 'fas fa-network-wired',
+                    'icon': 'fas fa-sitemap',
                     'id': 'menuConexiones',
                     'children': conexiones,
                 },
