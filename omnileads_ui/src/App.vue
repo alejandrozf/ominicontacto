@@ -1,6 +1,10 @@
 <template>
   <div id="app" class="h-full">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="route" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -78,14 +82,60 @@ export default {
 </script>
 
 <style>
+/* Global Premium Layout & Typography */
 #app {
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: unset;
 }
 
 .swal2-popup {
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: unset;
+}
+
+/* Global PrimeVue Structural Overrides (Both Light/Dark) */
+.p-card,
+.p-dialog,
+.p-datatable-wrapper,
+.p-button {
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.p-card,
+.p-dialog {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  border: none !important;
+}
+
+/* Micro-interactions */
+.p-card:hover, .p-button:not(.p-disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12) !important;
+}
+
+/* Glassmorphism */
+.p-dialog-mask {
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.p-inputtext, 
+.p-dropdown, 
+.p-multiselect {
+  border-radius: 8px !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Route Transitions */
+.route-enter-active,
+.route-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.route-enter-from,
+.route-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
 .swal2-popup .swal2-styled:focus {
@@ -98,13 +148,13 @@ h1, h2, h3, h4 {
 
 /* --- Dark Mode Variables and Overrides --- */
 html.dark-mode {
-  --bg-main: #36393f;
-  --bg-sidebar: #2f3136;
-  --bg-topbar: #202225;
-  --text-main: #dcddde;
-  --text-heading: #ffffff;
-  --bg-card: #2f3136;
-  --border-color: #202225;
+  --bg-main: #2b2d31; /* Discord Deep */
+  --bg-sidebar: #1e1f22; /* Discord Darkest */
+  --bg-topbar: #1e1f22;
+  --text-main: #dbdee1;
+  --text-heading: #f2f3f5;
+  --bg-card: #313338;
+  --border-color: rgba(255,255,255,0.05);
   background-color: var(--bg-main) !important;
 }
 

@@ -87,7 +87,7 @@ class OminicontactoAppConfig(AppConfig):
             items.append({'order': 100,
                           'label': _('Usuarios y grupos'),
                           'id': 'menuUsersGroups',
-                          'icon': 'icon-user',
+                          'icon': 'fas fa-users',
                           'children': usuarios_y_grupos})
 
         # Campañas
@@ -244,7 +244,7 @@ class OminicontactoAppConfig(AppConfig):
             items.append({'order': 200,
                           'label': _('Campañas'),
                           'id': 'menuCampaign',
-                          'icon': 'icon-campaign',
+                          'icon': 'fas fa-bullhorn',
                           'children': campanas})
 
         # Pausas
@@ -262,7 +262,7 @@ class OminicontactoAppConfig(AppConfig):
         if pausas:
             items.append({'order': 200,
                           'label': _('Pausas'),
-                          'icon': 'icon-pause',
+                          'icon': 'fas fa-pause-circle',
                           'id': 'menuBreaks',
                           'children': pausas})
         # Contactos
@@ -303,7 +303,7 @@ class OminicontactoAppConfig(AppConfig):
         if contactos:
             items.append({'order': 400,
                           'label': _('Contactos'),
-                          'icon': 'icon-contacts',
+                          'icon': 'fas fa-address-book',
                           'id': 'menuContacts',
                           'children': contactos})
 
@@ -311,12 +311,12 @@ class OminicontactoAppConfig(AppConfig):
         if 'grabacion_buscar' in permissions:
             items.append({'order': 500,
                           'label': _('Buscar Grabación'),
-                          'icon': 'icon-search',
+                          'icon': 'fas fa-search',
                           'url': reverse('grabacion_buscar')})
         if 'buscar_auditorias_gestion' in permissions:
             items.append({'order': 600,
                           'label': _('Buscar Auditorías'),
-                          'icon': 'icon-search',
+                          'icon': 'fas fa-search',
                           'url': reverse('buscar_auditorias_gestion', args=(1,))})
 
         # Seguridad
@@ -336,7 +336,7 @@ class OminicontactoAppConfig(AppConfig):
             items.append({
                 'order': 900,
                 'label': _('Seguridad'),
-                'icon': 'icon-contacts',
+                'icon': 'fas fa-shield-alt',
                 'id': 'menuSeguridad',
                 'children': seguridad
             })

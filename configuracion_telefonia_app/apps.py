@@ -68,7 +68,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if telefonia:
             conexiones.append({
                 'label': _('Telefonía'),
-                'icon': 'icon-audio-file',
+                'icon': 'fas fa-phone-alt',
                 'id': 'menuTelefonia',
                 'children': telefonia
             })
@@ -89,7 +89,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
             conexiones.append({
                 'label': _('WhatsApp'),
                 'class': "main-menu-beta",
-                'icon': 'icon-audio-file',
+                'icon': 'fab fa-whatsapp',
                 'id': 'menuWhatsapp',
                 'children': whatsapp
             })
@@ -127,7 +127,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if audios:
             recursos.append({
                 'label': _('Audios'),
-                'icon': 'icon-audio-file',
+                'icon': 'fas fa-file-audio',
                 'id': 'menuAllAudios',
                 'children': audios
             })
@@ -176,7 +176,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 {
                     'order': 700,
                     'label': _('Conexiones'),
-                    'icon': 'icon-phone',
+                    'icon': 'fas fa-network-wired',
                     'id': 'menuConexiones',
                     'children': conexiones,
                 },
@@ -186,7 +186,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 {
                     'order': 750,
                     'label': _('Recursos'),
-                    'icon': 'icon-phone',
+                    'icon': 'fas fa-folder-open',
                     'id': 'menuRecursos',
                     'children': recursos,
                 },

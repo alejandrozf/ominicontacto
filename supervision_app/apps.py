@@ -51,7 +51,7 @@ class SupervisionAppConfig(AppConfig):
             return [{
                 'order': 900,
                 'label': _('Supervisión'),
-                'icon': 'icon-headset',
+                'icon': 'fas fa-headset',
                 'id': 'menuSupervise',
                 'children': items
             }]

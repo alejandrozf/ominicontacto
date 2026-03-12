@@ -18,8 +18,8 @@
             :min="0"
             :max="500"
             :size="150"
-            alueColor="#fffff"
-            rangeColor="#8FC641"
+            :valueColor="activeColor"
+            :rangeColor="trackColor"
           />
         </div>
       </div>
@@ -27,7 +27,7 @@
   </Card>
 </template>
 <script>
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 
 export default {
     props: {
@@ -40,13 +40,34 @@ export default {
         }
     },
     setup (props) {
+        const isDark = ref(false);
+
+        let observer = null;
+        onMounted(() => {
+            isDark.value = document.documentElement.classList.contains('dark-mode');
+            observer = new MutationObserver(() => {
+                isDark.value = document.documentElement.classList.contains('dark-mode');
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        });
+        
+        onUnmounted(() => {
+            if (observer) observer.disconnect();
+        });
+
+        const trackColor = computed(() => isDark.value ? 'rgba(255,255,255,0.1)' : '#ebedef');
+        const activeColor = computed(() => '#8FC641');
+
         const basicData = computed(() => {
             return {
                 value: props.chartData
             };
         });
+        
         return {
-            basicData
+            basicData,
+            trackColor,
+            activeColor
         };
     }
 };

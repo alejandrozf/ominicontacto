@@ -5,10 +5,23 @@
 /* Gris claro */
 /* Gris muy clarito */
 /* naranja clarito */
+/* ///// Root Design Tokens */
+:root {
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.08);
+  --bg-body: #f4f6f8;
+  --bg-surface: #ffffff;
+  --border-color-light: rgba(0, 0, 0, 0.08);
+}
+
 /* General */
 body {
-  font-family: 'Asap', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: #333333;
+  background-color: var(--bg-body);
 }
 
 a {
@@ -57,6 +70,12 @@ h4 {
 
 /* ///// Button styles
 */
+.btn {
+  border-radius: var(--radius-md) !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
 .btn-primary {
   color: #FFFFFF;
   background-color: var(--primary-color, #f71883);
@@ -253,20 +272,23 @@ button.dropdown-toggle {
 }
 
 /* Tables styles */
+/* Tables styles */
 .table thead th {
-  background-color: #F7F7F7;
+  background-color: transparent;
   border-top: 0;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+  border-bottom: 2px solid var(--border-color-light);
+  color: #888;
+  font-weight: 600;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: #F7F7F7;
+  background-color: transparent;
   border-top: 0;
 }
 
 .table-striped td,
 .table-striped th {
-  border-top: none;
+  border-top: 1px solid var(--border-color-light);
 }
 
 /* Form styles */
@@ -457,10 +479,11 @@ ul.errorlist li {
   /* ///// Main menu/navBar
     */
   #navBar {
-    background-color: #FFFFFF;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.15);
-    padding-top: 30px;
-    padding-left: 10px;
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin: 16px;
+    padding: 16px;
   }
 
   #navBar .main-menu-li {
@@ -1010,6 +1033,10 @@ body>h1 {
   -moz-animation-duration: 0.6s;
   -moz-animation-iteration-count: infinite;
   -moz-animation-direction: alternate;
+  animation-name: example;
+  animation-duration: 0.6s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 @-webkit-keyframes example {
@@ -1207,13 +1234,18 @@ body>h1 {
 
 /* --- Dark Mode Variables and Overrides --- */
 html.dark-mode {
-  --bg-main: #36393f;
-  --bg-sidebar: #2f3136;
-  --bg-topbar: #202225;
-  --text-main: #dcddde;
-  --text-heading: #ffffff;
-  --bg-card: #2f3136;
-  --border-color: #202225;
+  --bg-main: #2b2d31;
+  /* Discord Deep */
+  --bg-sidebar: #1e1f22;
+  /* Discord Darkest */
+  --bg-topbar: #1e1f22;
+  --text-main: #dbdee1;
+  --text-heading: #f2f3f5;
+  --bg-card: #313338;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --bg-body: #2b2d31;
+  --bg-surface: #313338;
+  --border-color-light: rgba(255, 255, 255, 0.05);
 }
 
 html.dark-mode body,
@@ -1271,7 +1303,9 @@ html.dark-mode .table-striped tbody tr:nth-of-type(odd) {
 }
 
 html.dark-mode .table,
-html.dark-mode .table td {
+html.dark-mode .table td,
+html.dark-mode td.dataTables_empty {
+  background-color: var(--bg-main) !important;
   color: var(--text-main) !important;
 }
 
@@ -1304,4 +1338,28 @@ html.dark-mode .btn-light:hover {
 html.dark-mode a {
   color: #5865F2 !important;
   /* Discord blurpleish */
+}
+
+html.dark-mode .form-control,
+html.dark-mode .select2-selection,
+html.dark-mode select,
+html.dark-mode input[type="text"],
+html.dark-mode input[type="password"],
+html.dark-mode input[type="email"],
+html.dark-mode input[type="number"],
+html.dark-mode textarea {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color-light) !important;
+  border-radius: 8px !important;
+}
+
+html.dark-mode .form-control:focus,
+html.dark-mode .select2-selection:focus,
+html.dark-mode input:focus,
+html.dark-mode textarea:focus {
+  background-color: var(--bg-main) !important;
+  color: var(--text-heading) !important;
+  border-color: #5865F2 !important;
+  box-shadow: 0 0 0 0.2rem rgba(88, 101, 242, 0.25) !important;
 }
