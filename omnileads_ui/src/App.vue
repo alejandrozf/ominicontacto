@@ -84,12 +84,12 @@ export default {
 <style>
 /* Global Premium Layout & Typography */
 #app {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Asap', sans-serif;
   font-weight: unset;
 }
 
 .swal2-popup {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Asap', sans-serif;
   font-weight: unset;
 }
 
