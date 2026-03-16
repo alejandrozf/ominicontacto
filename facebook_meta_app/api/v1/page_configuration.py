@@ -350,6 +350,7 @@ class ViewSet(viewsets.ViewSet):
                 defaults={
                     'pagina': page,
                     'nivel_servicio': 90,
+                    'is_active': True,
                 })
         if destino.tipo == DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
             destino.content_object.is_main = True
