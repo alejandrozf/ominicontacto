@@ -1,4 +1,5 @@
 import json
+from django.db import transaction
 from django.utils.translation import gettext as _
 from rest_framework import viewsets
 from rest_framework import serializers
@@ -67,7 +68,7 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
             representation['destination_name'] = instance.nombre
         elif instance["type_option"] == DestinoEntrante.CLOSING_MESSAGE:
             representation['destination_name'] = instance.nombre
-        elif instance["type_option"] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+        elif instance["type_option"] == DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
             destination = DestinoDePaginaCreateSerializer(data=instance["destination"])
             destination.is_valid(raise_exception=True)
             representation['destination'] = destination.data
@@ -182,7 +183,7 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
                 if option_data['type_option'] == DestinoEntrante.CAMPANA:
                     campana = Campana.objects.get(id=option_data['destination'])
                     destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
-                elif option_data['type_option'] == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                elif option_data['type_option'] == DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
                     # if destino_siguiente\
@@ -221,8 +222,8 @@ class MessengerMetaAppPageConfigurationCreateSerializer(serializers.ModelSeriali
     verify_token = serializers.CharField(max_length=255)
     app_id = serializers.CharField(max_length=255)
     page_id = serializers.CharField(max_length=255)
-    horario = serializers.PrimaryKeyRelatedField(
-        queryset=GrupoHorario.objects.all(), allow_null=True, required=False)
+    schedule = serializers.PrimaryKeyRelatedField(
+        queryset=GrupoHorario.objects.all(), allow_null=True, required=False, source='horario')
     welcome_message = serializers.PrimaryKeyRelatedField(
         queryset=PlantillaMessenger.objects.all(), allow_null=True, required=False)
     goodbye_message = serializers.PrimaryKeyRelatedField(
@@ -235,7 +236,7 @@ class MessengerMetaAppPageConfigurationCreateSerializer(serializers.ModelSeriali
     class Meta:
         model = PaginaMetaFacebook
         fields = ['name', 'description', 'access_token', 'verify_token', 'app_id', 'page_id',
-                  'horario', 'welcome_message', 'goodbye_message', 'out_of_hours_message',
+                  'schedule', 'welcome_message', 'goodbye_message', 'out_of_hours_message',
                   'allow_reply_comments', 'is_active']
 
 
@@ -325,6 +326,35 @@ class MessengerMetaAppPageConfigurationSerializer(serializers.Serializer):
 
 
 class ViewSet(viewsets.ViewSet):
+    @staticmethod
+    def _ensure_page_destination(page, destino):
+        if page.destination_id != destino.id:
+            page.destination = destino
+            page.save(update_fields=['destination'])
+
+    @staticmethod
+    def _link_page_to_menu_destinations(page, serialized_destination):
+        menu_data = serialized_destination.get('data', [])
+        if isinstance(menu_data, list):
+            menu_ids = [menu.get('id') for menu in menu_data if 'id' in menu]
+            if menu_ids:
+                MenuInteractivoMessengerMetaApp.objects.filter(id__in=menu_ids).update(page=page)
+
+    def _apply_destination_side_effects(self, page, destino, serialized_destination):
+        if destino.tipo == DestinoEntrante.CAMPANA:
+            if not destino.content_object.meta_facebook_habilitado:
+                destino.content_object.meta_facebook_habilitado = True
+                destino.content_object.save(update_fields=['meta_facebook_habilitado'])
+            ConfiguracionMetaFacebookCampana.objects.update_or_create(
+                campana=destino.content_object,
+                defaults={
+                    'pagina': page,
+                    'nivel_servicio': 90,
+                })
+        if destino.tipo == DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
+            destino.content_object.is_main = True
+            destino.content_object.save(update_fields=['is_main'])
+            self._link_page_to_menu_destinations(page, serialized_destination)
 
     def list(self, request):
         queryset = PaginaMetaFacebook.objects.all()
@@ -356,28 +386,63 @@ class ViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = MessengerMetaAppPageConfigurationCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            StreamDePaginas().notificar_nueva_page(serializer.instance)
+        try:
+            request_data = request.data.copy()
+            if 'horario' in request_data and 'schedule' not in request_data:
+                request_data['schedule'] = request_data.pop('horario')
+            if 'destination' not in request_data:
+                return Response(
+                    data=get_response_data(
+                        message=_('Error en los datos'),
+                        errors={'destination': [_('Este campo es requerido.')]}),
+                    status=status.HTTP_400_BAD_REQUEST)
+
+            destino_data = request_data.pop('destination')
+            serializer = MessengerMetaAppPageConfigurationCreateSerializer(data=request_data)
+            if serializer.is_valid():
+                serializer_destino = DestinoDePaginaCreateSerializer(data=destino_data)
+                if serializer_destino.is_valid():
+                    with transaction.atomic():
+                        serializer_destino.save()
+                        destino = serializer_destino.destino
+                        page = serializer.save(destination=destino)
+                        self._ensure_page_destination(page, destino)
+                        self._apply_destination_side_effects(
+                            page, destino, serializer_destino.data)
+
+                    serialized_data = serializer.data
+                    serialized_data['destination'] = serializer_destino.data
+                    StreamDePaginas().notificar_nueva_page(page)
+                    return Response(
+                        data=get_response_data(
+                            status=HttpResponseStatus.SUCCESS,
+                            message=_('Se creó la página de forma exitosa'),
+                            data=serialized_data),
+                        status=status.HTTP_201_CREATED)
+                return Response(
+                    data=get_response_data(
+                        message=_('Error en los datos'),
+                        errors={'destination': serializer_destino.errors}),
+                    status=status.HTTP_400_BAD_REQUEST)
             return Response(
                 data=get_response_data(
-                    status=HttpResponseStatus.SUCCESS,
-                    message=_('Se creó la página de forma exitosa'),
-                    data={}),
-                status=status.HTTP_200_OK)
-        return Response(
-            data=get_response_data(
-                status=HttpResponseStatus.ERROR,
-                message=_('No se pudo crear la página'),
-                data=serializer.errors),
-            status=status.HTTP_400_BAD_REQUEST)
+                    status=HttpResponseStatus.ERROR,
+                    message=_('No se pudo crear la página'),
+                    data=serializer.errors),
+                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print('Exception >>>>>>>>>>', e)
+            return Response(
+                data=get_response_data(message=_('Error al crear la página >>>') + str(e)),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk=None):
         try:
             instance = PaginaMetaFacebook.objects.get(pk=pk)
 
             request_data = request.data.copy()
+            if 'horario' in request_data and 'schedule' not in request_data:
+                request_data['schedule'] = request_data.pop('horario')
             if 'destination' not in request_data:
                 return Response(data=get_response_data(
                     message=_('Error en los datos'), errors={
@@ -392,49 +457,38 @@ class ViewSet(viewsets.ViewSet):
                     DestinoDePaginaCreateSerializer(data=destino_data, context={'page': instance})
                 print('serializer_destino >>>', serializer_destino.is_valid())
                 if serializer_destino.is_valid():
-                    # Primero desconectar destino anterior de la página para poderlo borrar
-                    # pues es un campo PROTECT
-                    instance.destination = None
-                    instance.save()
-                    for menu_old in instance.menuinteractivo.all():
-                        try:
-                            destino_old = DestinoEntrante.objects.get(
-                                object_id=menu_old.pk,
-                                tipo=DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP)
-                            print('destino_old >>>', destino_old)
-                            opciones_destino =\
-                                OpcionDestino.objects.filter(destino_anterior=destino_old)
-                            for option in opciones_destino:
-                                if option.destino_siguiente.tipo ==\
-                                        DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
-                                    option.destino_siguiente.delete()
-                                option.delete()
-                            destino_old.delete()
-                            menu_old.delete()
-                        except Exception as e:
-                            print('Exception eliminando menu interactivo antiguo >>>', e)
-                            # DestinoEntrante.DoesNotExist no existe pq se elimino anteriormente
-                            # como opción de otro menú interactivo')
-                            menu_old.delete()
-                    serializer_destino.save()
-                    destino = serializer_destino.destino
-                    page = serializer.save(
-                        destination=destino
-                    )
+                    with transaction.atomic():
+                        # Primero desconectar destino anterior de la página para poderlo borrar
+                        # pues es un campo PROTECT
+                        instance.destination = None
+                        instance.save(update_fields=['destination'])
+                        for menu_old in instance.menuinteractivo.all():
+                            try:
+                                destino_old = DestinoEntrante.objects.get(
+                                    object_id=menu_old.pk,
+                                    tipo=DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP)
+                                print('destino_old >>>', destino_old)
+                                opciones_destino =\
+                                    OpcionDestino.objects.filter(destino_anterior=destino_old)
+                                for option in opciones_destino:
+                                    if option.destino_siguiente.tipo ==\
+                                            DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
+                                        option.destino_siguiente.delete()
+                                    option.delete()
+                                destino_old.delete()
+                                menu_old.delete()
+                            except Exception as e:
+                                print('Exception eliminando menu interactivo antiguo >>>', e)
+                                # DestinoEntrante.DoesNotExist no existe pq se elimino anteriormente
+                                # como opción de otro menú interactivo')
+                                menu_old.delete()
+                        serializer_destino.save()
+                        destino = serializer_destino.destino
+                        page = serializer.save(destination=destino)
+                        self._ensure_page_destination(page, destino)
+                        self._apply_destination_side_effects(
+                            page, destino, serializer_destino.data)
                     print('page saved >>>', page)
-                    if page.destination.tipo == DestinoEntrante.CAMPANA:
-                        if not destino.content_object.whatsapp_habilitado:
-                            destino.content_object.whatsapp_habilitado = True
-                            destino.content_object.save()
-                            confwhatsappcampana = ConfiguracionMetaFacebookCampana(
-                                campana=destino.content_object,
-                                page=page,
-                                nivel_servicio=90,
-                            )
-                            confwhatsappcampana.save()
-                    if page.destination.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
-                        destino.content_object.is_main = True
-                        destino.content_object.save()
 
                     serialized_data = serializer.data
                     serialized_data['destination'] = serializer_destino.data
