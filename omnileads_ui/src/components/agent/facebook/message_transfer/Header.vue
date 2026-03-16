@@ -23,7 +23,7 @@ export default {
     methods: {
         close () {
             this.$emit('handleCloseEvent');
-            const event = new CustomEvent('onWhatsappTransferChatEvent', {
+            const event = new CustomEvent('onFacebookTransferChatEvent', {
                 detail: {
                     transfer_chat: false
                 }

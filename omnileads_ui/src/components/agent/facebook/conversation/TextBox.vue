@@ -80,7 +80,7 @@ export default {
             deep: true,
             immediate: true
         },
-        agtWhatsCoversationInfo: {
+        agtFacebookConversationInfo: {
             handler () {},
             deep: true,
             immediate: true

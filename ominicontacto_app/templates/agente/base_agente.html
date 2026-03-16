@@ -1125,12 +1125,14 @@ $(document).ready(function () {
    $('#btnCloseWebphone').on('click',function(){
      $('#wrapperWebphone').removeClass('active');
      $('#wrapperWhatsapp').addClass('hidden');
+     $('#wrapperFacebook').addClass('hidden');
    });
 
    /* Toggle webphone from bottom bar and close button */
    $('#webCall').on('click',function(){
      $('#wrapperWebphone').toggleClass('active');
      $('#wrapperWhatsapp').addClass('hidden');
+     $('#wrapperFacebook').addClass('hidden');
    });
 
    // Get current window path

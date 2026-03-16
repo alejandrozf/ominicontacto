@@ -102,13 +102,17 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsCoversationInfo'])
+        ...mapState([
+            'agtFacebookTransferChatAgents',
+            'agtFacebookTransferChatForm',
+            'agtFacebookConversationInfo'
+        ])
     },
     methods: {
-        ...mapActions(['agtWhatsTransferChatSend']),
+        ...mapActions(['agtFacebookTransferChatSend']),
         closeModal () {
             this.clearData();
-            const event = new CustomEvent('onWhatsappTransferChatEvent', {
+            const event = new CustomEvent('onFacebookTransferChatEvent', {
                 detail: {
                     transfer_chat: false
                 }
@@ -121,11 +125,10 @@ export default {
         },
         clearData () {
             this.form.to = null;
-            this.form.conversationId = null;
             this.submitted = false;
         },
         initFormData () {
-            this.form.to = this.agtWhatsTransferChatForm?.to;
+            this.form.to = this.agtFacebookTransferChatForm?.to || null;
         },
         clearFilter () {
             this.initFilters();
@@ -141,13 +144,13 @@ export default {
                 if (!isFormValid) {
                     return null;
                 }
-                const conversationId = JSON.parse(
-                    localStorage.getItem('agtWhatsCoversationInfo')
-                ).id;
+                const conversationId = this.agtFacebookConversationInfo?.id || JSON.parse(
+                    localStorage.getItem('agtFacebookConversationInfo')
+                )?.id;
                 const to = this.form?.to || null;
-                const { status, message } = await this.agtWhatsTransferChatSend({
-                    to: to,
-                    conversationId: conversationId
+                const { status, message } = await this.agtFacebookTransferChatSend({
+                    to,
+                    conversationId
                 });
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
@@ -174,16 +177,16 @@ export default {
                 await notificationEvent(
                     NOTIFICATION.TITLES.ERROR,
                     'Error al transferir chat',
-                    NOTIFICATION.TITLES.ERROR
+                    NOTIFICATION.ICONS.ERROR
                 );
             }
         }
     },
     watch: {
-        agtWhatsTransferChatAgents: {
+        agtFacebookTransferChatAgents: {
             handler () {
-                if (this.agtWhatsTransferChatAgents) {
-                    this.agents = this.agtWhatsTransferChatAgents;
+                if (this.agtFacebookTransferChatAgents) {
+                    this.agents = this.agtFacebookTransferChatAgents;
                     if (this.agents.length > 0) {
                         this.fromLabel =
               this.agents.find((a) => a.agent_id === this.form?.from)

@@ -40,7 +40,7 @@ export default {
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
-            FACEBOOK_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA,
+            FACEBOOK_LOCALSTORAGE_EVENTS.TRANSFER.FORM_INIT_DATA,
             this.updatedLocalStorage
         );
     },

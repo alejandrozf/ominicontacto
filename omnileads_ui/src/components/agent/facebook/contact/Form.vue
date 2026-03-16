@@ -37,6 +37,8 @@
                     submitted,
                 }"
                 v-model="field.value"
+                :disabled="isFieldReadonly(field)"
+                :readonly="isFieldReadonly(field)"
               />
               <InputText
                 v-else
@@ -44,6 +46,8 @@
                   'p-invalid': isEmptyField(field.value) && submitted,
                 }"
                 v-model="field.value"
+                :disabled="isFieldReadonly(field)"
+                :readonly="isFieldReadonly(field)"
               />
             </div>
             <div v-if="isEmptyField(field.value) && submitted">
@@ -88,8 +92,15 @@
                     field.mandatory && !isPhoneValid(field.value) && submitted,
                 }"
                 v-model="field.value"
+                :disabled="isFieldReadonly(field)"
+                :readonly="isFieldReadonly(field)"
               />
-              <InputText v-else v-model="field.value" />
+              <InputText
+                v-else
+                v-model="field.value"
+                :disabled="isFieldReadonly(field)"
+                :readonly="isFieldReadonly(field)"
+              />
             </div>
             <small
               v-if="
@@ -230,7 +241,7 @@ export default {
                 this.form.page_client_id = {
                     name: 'page_client_id',
                     mandatory: true,
-                    block: false,
+                    block: true,
                     hide: false,
                     is_phone_field: false,
                     invalid: false,
@@ -252,6 +263,9 @@ export default {
         },
         isPhoneValid (phone = null) {
             return this.$helpers.isPhoneValid(phone);
+        },
+        isFieldReadonly (field = {}) {
+            return field.block === true || field.name === 'page_client_id';
         },
         getFormData () {
             const formData = {};
@@ -366,11 +380,14 @@ export default {
                 console.log("agtFacebookConversationInfo >>2", this.agtFacebookConversationInfo);
                 if (this.agtFacebookConversationInfo.client.id !== null) {
                     this.contact.id = this.agtFacebookConversationInfo.client.id;
+                    this.contact.phone =
+                        this.agtFacebookConversationInfo.client.phone || '';
                     this.contact.page_client_id = this.agtFacebookConversationInfo.client.page_client_id || this.agtFacebookConversationInfo.page_client_id;
                     this.contact.data = this.agtFacebookConversationInfo.client.data || [];
                 } else {
                     if (this.agtFacebookConversationInfo.page_client_id !== null) {
                         this.contact.id = null;
+                        this.contact.phone = '';
                         this.contact.page_client_id = this.agtFacebookConversationInfo.page_client_id;
                         this.contact.data = [];
                     }
