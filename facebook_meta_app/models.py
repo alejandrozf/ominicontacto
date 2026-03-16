@@ -72,6 +72,7 @@ class PaginaMetaFacebook(models.Model):
 
     # Settings
     allow_reply_comments = models.BooleanField(default=False)
+    validated = models.BooleanField(default=False)
 
     # Metadata
     is_active = models.BooleanField(default=True)
