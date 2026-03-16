@@ -64,6 +64,7 @@ class Migration(migrations.Migration):
                 ('app_id', models.CharField(max_length=255)),
                 ('page_id', models.CharField(max_length=255)),
                 ('allow_reply_comments', models.BooleanField(default=False)),
+                ('validated', models.BooleanField(default=False)),
                 ('is_active', models.BooleanField(default=True)),
                 ('destination', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='pages', to='configuracion_telefonia_app.destinoentrante')),
                 ('goodbye_message', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='pages_goodbye_message', to='facebook_meta_app.plantillamessenger')),
@@ -144,6 +145,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nivel_servicio', models.IntegerField(default=1)),
+                ('is_active', models.BooleanField(default=True)),
                 ('campana', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='configuracion_meta_facebook', to='ominicontacto_app.campana')),
                 ('grupo_plantilla_facebook', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='configuracion_facebook', to='facebook_meta_app.grupoplantillamessenger')),
                 ('pagina', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='campanas', to='facebook_meta_app.paginametafacebook')),
