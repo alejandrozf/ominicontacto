@@ -72,7 +72,7 @@ export default {
                 };
             }
         },
-        onlyWhatsappTemplates: {
+        onlyFacebookTemplates: {
             type: Boolean,
             default: false
         }
@@ -211,7 +211,7 @@ export default {
                     $t: this.$t
                 };
                 console.log("-------------", reqData);
-                if (this.onlyWhatsappTemplates) {
+                if (this.onlyFacebookTemplates) {
                     result = await this.agtFacebookConversationReactiveExpiredConversation(
                         reqData
                     );

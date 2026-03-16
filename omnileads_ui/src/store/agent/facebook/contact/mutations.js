@@ -13,7 +13,7 @@ export default {
                 contactsToAdd.push(contact);
             }
         }
-        state.agtWhatsContactSearchResults = contactsToAdd;
+        state.agtFacebookContactSearchResults = contactsToAdd;
     },
     agtFacebookNewContact (state, contact){
         console.log('agtFacebookNewContact', contact)

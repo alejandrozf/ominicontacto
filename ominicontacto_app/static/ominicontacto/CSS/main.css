@@ -644,6 +644,34 @@ body>h1 {
   border: none;
 }
 
+.channel-action-modal {
+  max-width: calc(100vw - 2rem);
+  max-height: 85vh;
+}
+
+.channel-action-modal--compact {
+  max-width: 560px;
+}
+
+.channel-action-modal--medium {
+  max-width: 720px;
+}
+
+.channel-action-modal--large {
+  max-width: 860px;
+}
+
+.channel-action-modal--xlarge {
+  max-width: 960px;
+}
+
+@media (max-width: 768px) {
+  .channel-action-modal {
+    max-width: calc(100vw - 1rem);
+    margin: 0.5rem auto;
+  }
+}
+
 /* Other */
 .infoAjax {
   font-size: 16px;
@@ -1001,6 +1029,10 @@ body>h1 {
 }
 
 #bottomBar #facebookChat {
+  color: #6A716A;
+}
+
+#bottomBar #emailMessages {
   color: #6A716A;
 }
 

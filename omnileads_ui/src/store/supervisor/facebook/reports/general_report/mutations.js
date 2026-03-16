@@ -1,6 +1,6 @@
 export default {
-    initSupWhatsReportGeneral (state, data = null) {
-        state.supWhatsReportGeneral = {
+    initSupFacebookReportGeneral (state, data = null) {
+        state.supFacebookReportGeneral = {
             sent_messages: data ? data.sent_messages : 0,
             received_messages: data ? data.received_messages : 0,
             interactions_started: data ? data.interactions_started : 0,
@@ -19,8 +19,8 @@ export default {
             outbound_chats_failed: data ? data.outbound_chats_failed : 0
         };
     },
-    initSupWhatsReportGeneralColors (state, colors = null) {
-        state.supWhatsReportGeneralColors = {
+    initSupFacebookReportGeneralColors (state, colors = null) {
+        state.supFacebookReportGeneralColors = {
             rgbColors: colors ? colors.rgbColors : [],
             rgbaColors: colors ? colors.rgbaColors : []
         };

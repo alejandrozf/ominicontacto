@@ -2,10 +2,12 @@
   <div class="card">
     <DataTable
       :value="agtFacebookDispositionChatHistory"
-      class="p-datatable-sm"
+      class="p-datatable-sm disposition-history-table"
       showGridlines
       :scrollable="true"
       scrollHeight="600px"
+      :resizableColumns="true"
+      columnResizeMode="expand"
       responsiveLayout="scroll"
       dataKey="id"
       :rows="10"
@@ -55,6 +57,7 @@
         field="agent"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.agent')"
+        headerStyle="min-width: 12rem"
       >
         <template #body="slotProps">
           {{ getAgent(slotProps.data.agent) }}
@@ -64,6 +67,7 @@
         field="contact.phone"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.contact_phone')"
+        headerStyle="min-width: 12rem"
       >
         <template #body="slotProps">
           {{ getContactPhone(slotProps.data.contact) }}
@@ -72,15 +76,19 @@
       <Column
         field="contact.data"
         :header="$t('models.whatsapp.disposition_form.contact_data')"
+        headerStyle="min-width: 18rem"
       >
         <template #body="slotProps">
-          {{ getContactData(slotProps.data.contact) }}
+          <div class="disposition-history-table__cell disposition-history-table__cell--contact">
+            {{ getContactData(slotProps.data.contact) }}
+          </div>
         </template>
       </Column>
       <Column
         field="disposition_data.type"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.disposition_option')"
+        headerStyle="min-width: 10rem"
       >
         <template #body="slotProps">
           {{ getDispositionOption(slotProps.data.disposition_data.type) }}
@@ -90,6 +98,7 @@
         field="disposition_data.name"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.disposition')"
+        headerStyle="min-width: 10rem"
       >
         <template #body="slotProps">
           {{ slotProps.data.disposition_data.name }}
@@ -98,6 +107,7 @@
       <Column
         field="campaign.type"
         :header="$t('models.whatsapp.disposition_form.campaign_type')"
+        headerStyle="min-width: 9rem"
       >
         <template #body="slotProps">
           {{ getCampaignType(slotProps.data.campaign.type) }}
@@ -107,6 +117,7 @@
         field="campaign.name"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.campaign')"
+        headerStyle="min-width: 10rem"
       >
         <template #body="slotProps">
           {{ slotProps.data.campaign.name }}
@@ -116,6 +127,7 @@
         field="updated_at"
         :sortable="true"
         :header="$t('models.whatsapp.disposition_form.created_at')"
+        headerStyle="min-width: 11rem"
       >
         <template #body="slotProps">
           {{ timeFormat(slotProps.data.updated_at) }}
@@ -242,3 +254,15 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.disposition-history-table__cell {
+  white-space: normal;
+}
+
+.disposition-history-table__cell--contact {
+  min-width: 18rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>

@@ -100,6 +100,10 @@ class ReportesAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campaign_whatsapp_report_general',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'campaign_facebook_report_conversations',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'campaign_facebook_report_general',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
         ]
 
     informacion_de_permisos = {
@@ -167,4 +171,10 @@ class ReportesAppConfig(AppConfig):
         'campaign_whatsapp_report_general':
             {'descripcion': _('Vista de reporte general de Whatsapp para una Campaña'),
              'version': '1.19.0'},
+        'campaign_facebook_report_conversations':
+            {'descripcion': _('Vista de reporte de conversaciones de Meta/Facebook para Campaña'),
+             'version': '1.26.0'},
+        'campaign_facebook_report_general':
+            {'descripcion': _('Vista de reporte general de Meta/Facebook para una Campaña'),
+             'version': '1.26.0'},
     }

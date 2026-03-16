@@ -16,6 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 import json
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -23,8 +24,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
-from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from facebook_meta_app.api.permissions import TienePermisoCanalFacebookAgente
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 from ominicontacto_app.models import Contacto, AgenteProfile
 from ominicontacto_app.models import (
@@ -34,7 +35,7 @@ from facebook_meta_app.api.v1.contact import ListSerializer as ContactSerializer
 from facebook_meta_app.api.v1.campaign import ListSerializer as CampaignSerializer
 from facebook_meta_app.models import ConversationMessengerMetaApp
 
-from orquestador_app.core.whatsapp.send_message import autoresponse_goodbye
+from orquestador_app.core.facebook.send_message import autoresponse_goodbye
 
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
@@ -271,7 +272,7 @@ class RespuestaFormularioGestionUpdateSerilializer(serializers.ModelSerializer):
 
 
 class ViewSet(viewsets.ViewSet):
-    permission_classes = [TienePermisoOML]
+    permission_classes = [TienePermisoCanalFacebookAgente]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
     def retrieve(self, request, pk):
@@ -300,6 +301,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             request_data = request.data.copy()
             conversation_id = request_data.pop('idConversation')
+            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             serializer_calificacion = CreateSerializer(data=request_data)
             if serializer_calificacion.is_valid():
                 opcion_calificacion =\
@@ -329,7 +331,7 @@ class ViewSet(viewsets.ViewSet):
                                 message=_('Error en los datos del formulario'),
                                 errors=serializer_respuesta.errors),
                             status=status.HTTP_400_BAD_REQUEST)
-                    autoresponse_goodbye(conversation)
+                    autoresponse_goodbye(conversation, timestamp)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -345,7 +347,7 @@ class ViewSet(viewsets.ViewSet):
                     conversation.is_disposition = True
                     conversation.conversation_disposition = calificacion.history.first()
                     conversation.save()
-                    autoresponse_goodbye(conversation)
+                    autoresponse_goodbye(conversation, timestamp)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -367,6 +369,7 @@ class ViewSet(viewsets.ViewSet):
         try:
             request_data = request.data.copy()
             conversation_id = request_data.pop('idConversation')
+            timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             instance = CalificacionCliente.objects.get(pk=pk)
             serializer_calificacion = UpdateSerializer(instance, data=request.data, partial=True)
             if serializer_calificacion.is_valid():
@@ -406,7 +409,7 @@ class ViewSet(viewsets.ViewSet):
                 conversation = ConversationMessengerMetaApp.objects.get(id=conversation_id)
                 if not conversation.is_disposition:
                     conversation.is_disposition = True
-                    autoresponse_goodbye(conversation)
+                    autoresponse_goodbye(conversation, timestamp)
                 conversation.conversation_disposition = calificacion.history.first()
                 conversation.save()
                 return response.Response(

@@ -12,9 +12,9 @@ import ConfigurationCampaignActions from './configuration_campaign/actions';
 import ConfigurationCampaignMutations from './configuration_campaign/mutations';
 import ConfigurationCampaignState from './configuration_campaign/state';
 import {
-    SupervisorWhatsappReportActions,
-    SupervisorWhatsappReportMutations,
-    SupervisorWhatsappReportState
+    SupervisorFacebookReportActions,
+    SupervisorFacebookReportMutations,
+    SupervisorFacebookReportState
 } from './reports';
 
 export const SupervisorFacebookState = {
@@ -22,7 +22,7 @@ export const SupervisorFacebookState = {
     ...MessageTemplateState,
     ...GroupOfMessageTemplateState,
     ...ConfigurationCampaignState,
-    ...SupervisorWhatsappReportState
+    ...SupervisorFacebookReportState
 };
 
 export const SupervisorFacebookMutations = {
@@ -30,7 +30,7 @@ export const SupervisorFacebookMutations = {
     ...MessageTemplateMutations,
     ...GroupOfMessageTemplateMutations,
     ...ConfigurationCampaignMutations,
-    ...SupervisorWhatsappReportMutations
+    ...SupervisorFacebookReportMutations
 };
 
 export const SupervisorFacebookActions = {
@@ -38,5 +38,5 @@ export const SupervisorFacebookActions = {
     ...MessageTemplateActions,
     ...GroupOfMessageTemplateActions,
     ...ConfigurationCampaignActions,
-    ...SupervisorWhatsappReportActions
+    ...SupervisorFacebookReportActions
 };

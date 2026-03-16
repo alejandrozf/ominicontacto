@@ -183,7 +183,10 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
                 if option_data['type_option'] == DestinoEntrante.CAMPANA:
                     campana = Campana.objects.get(id=option_data['destination'])
                     destino_siguiente = DestinoEntrante.get_nodo_ruta_entrante(campana)
-                elif option_data['type_option'] == DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP:
+                elif (
+                    option_data['type_option'] ==
+                    DestinoEntrante.MENU_INTERACTIVO_MESSENGER_META_APP
+                ):
                     destino_siguiente = self.find_destination(
                         destino_whith_options, option_data['destination'])
                     # if destino_siguiente\

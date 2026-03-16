@@ -2,7 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $t("views.whatsapp.reports.campaign.conversation.title") }}</h1>
+        <h1>Conversaciones Meta/Facebook</h1>
       </template>
     </Toolbar>
     <div class="mx-4">
@@ -18,9 +18,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import ReportTable from '@/components/supervisor/whatsapp/reports/campaign/conversation_report/Table';
-import FilterForm from '@/components/supervisor/whatsapp/reports/campaign/conversation_report/FilterForm';
-import ModalConversationDetail from '@/components/supervisor/whatsapp/reports/campaign/conversation_report/ModalConversationDetail';
+import ReportTable from '@/components/supervisor/facebook/reports/campaign/conversation_report/Table';
+import FilterForm from '@/components/supervisor/facebook/reports/campaign/conversation_report/FilterForm';
+import ModalConversationDetail from '@/components/supervisor/facebook/reports/campaign/conversation_report/ModalConversationDetail';
 
 export default {
     data () {
@@ -36,13 +36,13 @@ export default {
     },
     async created () {
         const element = window.parent.document.getElementById('campaignId');
-        this.campaignId = element ? element.value : 2;
-        await this.initSupWhatsReportCampaignAgents({
+        this.campaignId = element ? parseInt(element.value) : null;
+        await this.initSupFacebookReportCampaignAgents({
             campaignId: this.campaignId
         });
     },
     methods: {
-        ...mapActions(['initSupWhatsReportCampaignAgents']),
+        ...mapActions(['initSupFacebookReportCampaignAgents']),
         cleanFilters () {
             this.$refs.formFilters.cleanFilters();
         },

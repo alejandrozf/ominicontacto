@@ -27,8 +27,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
-from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from facebook_meta_app.api.permissions import TienePermisoCanalFacebookAgente
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 
 from ominicontacto_app.models import Campana, Contacto
@@ -211,7 +211,7 @@ class UpdateSerializer(serializers.ModelSerializer):
 
 
 class ViewSet(viewsets.ViewSet):
-    permission_classes = [TienePermisoOML]
+    permission_classes = [TienePermisoCanalFacebookAgente]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
     def list(self, request, campana_pk):

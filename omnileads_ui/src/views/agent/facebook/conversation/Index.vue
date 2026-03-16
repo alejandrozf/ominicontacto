@@ -174,28 +174,26 @@ export default {
             this.isDisposition = this.agtFacebookConversationInfo?.isDisposition;
         },
         openModalToRestart () {
-            if (this.$helpers.isSocketConnected(this.$t)) {
-                localStorage.setItem(
-                    'agtFacebookConversationMessages',
-                    JSON.stringify(this.agtFacebookConversationMessages)
-                );
-                localStorage.setItem(
-                    'agtFacebookConversationInfo',
-                    JSON.stringify(this.agtFacebookConversationInfo)
-                );
-                localStorage.setItem('onlyFacebookTemplates', true);
-                const event = new Event(
-                    FACEBOOK_LOCALSTORAGE_EVENTS.CONVERSATION.RESTART_EXPIRED_CHAT
-                );
-                window.parent.document.dispatchEvent(event);
-                const modalEvent = new CustomEvent('onFacebookTemplatesEvent', {
-                    detail: {
-                        templates: true,
-                        conversationId: parseInt(this.$route.params.id)
-                    }
-                });
-                window.parent.document.dispatchEvent(modalEvent);
-            }
+            localStorage.setItem(
+                'agtFacebookConversationMessages',
+                JSON.stringify(this.agtFacebookConversationMessages)
+            );
+            localStorage.setItem(
+                'agtFacebookConversationInfo',
+                JSON.stringify(this.agtFacebookConversationInfo)
+            );
+            localStorage.setItem('onlyFacebookTemplates', true);
+            const event = new Event(
+                FACEBOOK_LOCALSTORAGE_EVENTS.CONVERSATION.RESTART_EXPIRED_CHAT
+            );
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onFacebookTemplatesEvent', {
+                detail: {
+                    templates: true,
+                    conversationId: parseInt(this.$route.params.id)
+                }
+            });
+            window.parent.document.dispatchEvent(modalEvent);
         }
     },
     watch: {

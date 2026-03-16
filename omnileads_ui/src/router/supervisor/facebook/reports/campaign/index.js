@@ -1,5 +1,5 @@
-import SupWhatsReportCampaignConversationRoutes from './conversation_report_routes';
+import SupFacebookReportCampaignConversationRoutes from './conversation_report_routes';
 
 export default [
-    ...SupWhatsReportCampaignConversationRoutes
+    ...SupFacebookReportCampaignConversationRoutes
 ];

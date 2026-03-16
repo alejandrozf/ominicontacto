@@ -2,7 +2,7 @@
   <div class="card">
     <Toolbar class="mb-4">
       <template #start>
-        <h1>{{ $t("views.whatsapp.reports.general.title") }}</h1>
+        <h1>Reportes Meta/Facebook</h1>
       </template>
     </Toolbar>
     <div class="mx-4">
@@ -14,8 +14,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import Dashboard from '@/components/supervisor/whatsapp/reports/general/Dashboard';
-import FilterForm from '@/components/supervisor/whatsapp/reports/general/FilterForm';
+import Dashboard from '@/components/supervisor/facebook/reports/general/Dashboard';
+import FilterForm from '@/components/supervisor/facebook/reports/general/FilterForm';
 
 export default {
     inject: ['$helpers'],
@@ -31,12 +31,12 @@ export default {
     },
     async created () {
         const element = window.parent.document.getElementById('campaignId');
-        this.campaignId = element ? element.value : null;
+        this.campaignId = element ? parseInt(element.value) : null;
         const { rgbColors, rgbaColors } = this.$helpers.getRandomColors(12);
-        await this.initSupWhatsReportGeneralColors({ rgbColors, rgbaColors });
+        await this.initSupFacebookReportGeneralColors({ rgbColors, rgbaColors });
     },
     methods: {
-        ...mapActions(['initSupWhatsReportGeneralColors']),
+        ...mapActions(['initSupFacebookReportGeneralColors']),
         cleanFilters () {
             this.$refs.formFilters.cleanFilters();
         }

@@ -16,16 +16,11 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% extends "base.html" %}
 {% load static %}
 {% load i18n %}
 
-<div class="modal" id="facebook-modal-templates">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg channel-action-modal channel-action-modal--xlarge">
-        <div class="modal-content">
-            <div class="modal-body">
-                <iframe class="facebook_iframe_container" style="height: 880px;"
-                    src="{% static 'omnileads-frontend/agent_facebook_templates.html' %}"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
+{% block content %}
+    <input type="hidden" id="campaignId" value="{{ campaign.pk }}">
+    <iframe src="{% static 'omnileads-frontend/supervisor_facebook_report_campaign_conversations.html' %}" style="width: 100%; height: 750px; background-color: transparent;"></iframe>
+{% endblock %}

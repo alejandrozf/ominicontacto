@@ -1,7 +1,7 @@
 export default {
-    supWhatsReportCampaignConversations: [],
-    supWhatsReportCampaignAgents: [],
-    supWhatsReportCampaignConversation: {
+    supFacebookReportCampaignConversations: [],
+    supFacebookReportCampaignAgents: [],
+    supFacebookReportCampaignConversation: {
         id: null,
         nombre: '',
         tipo_proveedor: null,

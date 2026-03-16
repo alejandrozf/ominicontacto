@@ -1,5 +1,5 @@
 export default {
-    supWhatsReportGeneral: {
+    supFacebookReportGeneral: {
         sent_messages: 0,
         received_messages: 0,
         interactions_started: 0,
@@ -13,7 +13,7 @@ export default {
         outbound_chats_expired: 0,
         outbound_chats_failed: 0
     },
-    supWhatsReportGeneralColors: {
+    supFacebookReportGeneralColors: {
         rgbColors: [],
         rgbaColors: []
     }

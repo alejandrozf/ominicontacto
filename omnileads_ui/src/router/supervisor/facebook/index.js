@@ -3,6 +3,7 @@ import PageRoutes from './page_routes';
 import MessageTemplateRoutes from './message_template_routes';
 import GroupOfMessageTemlateRoutes from './group_of_message_template_routes';
 import { FACEBOOK_URL_NAME } from '@/globals/supervisor/facebook';
+import FacebookReportRoutes from './reports';
 
 export default [
     {
@@ -12,5 +13,6 @@ export default [
     },
     ...PageRoutes,
     ...MessageTemplateRoutes,
-    ...GroupOfMessageTemlateRoutes
+    ...GroupOfMessageTemlateRoutes,
+    ...FacebookReportRoutes
 ];

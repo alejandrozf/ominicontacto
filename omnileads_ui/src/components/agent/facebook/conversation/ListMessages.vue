@@ -19,17 +19,16 @@ export default {
         };
     },
     computed: {
-        ...mapState(['agtFacebookConversationMessages']),
-        ...mapActions([])
+        ...mapState(['agtFacebookConversationMessages'])
     },
     components: {
         Message
     },
     methods: {
-      ...mapActions(['markMessageAsRead']),
+      ...mapActions(['agtFacebookMarkMessageAsRead']),
       onScroll () {},
       async markItAsRead (notReadMessageIds) {
-        return await this.markMessageAsRead(notReadMessageIds);
+        return await this.agtFacebookMarkMessageAsRead(notReadMessageIds);
       },
       scrollToBottom () {
         if (!this.$refs.scrollContainer) {
