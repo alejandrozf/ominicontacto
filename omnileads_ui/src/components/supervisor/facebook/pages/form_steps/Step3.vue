@@ -801,7 +801,7 @@ export default {
         ckeckingCampaign () {
           if (this.form.destination){
             const campaign_selected =this.supFacebookPageCampaigns.find((c) => c.id === this.form.destination)
-            if(campaign_selected.whatsapp_habilitado === false){
+            if(campaign_selected && campaign_selected.meta_facebook_habilitado === false){
               this.$swal(
                     this.$helpers.getToasConfig(
                         this.$t('globals.warning_notification'),

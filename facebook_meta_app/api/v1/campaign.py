@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar destinos
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework import response
@@ -39,7 +40,10 @@ class ListSerializer(serializers.Serializer):
     meta_facebook_habilitado = serializers.BooleanField()
 
     def get_page_id(self, obj):
-        configuracionfacebook = obj.configuracion_meta_facebook
+        try:
+            configuracionfacebook = obj.configuracion_meta_facebook
+        except ObjectDoesNotExist:
+            return ""
         if configuracionfacebook and configuracionfacebook.pagina:
             return configuracionfacebook.pagina.id
         return ""
@@ -51,7 +55,7 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            estados = [Campana.ESTADO_ACTIVA]
+            estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA, Campana.ESTADO_INACTIVA]
             if request.user.get_is_administrador():
                 queryset = Campana.objects.filter(estado__in=estados)
             elif request.user.get_is_agente():
