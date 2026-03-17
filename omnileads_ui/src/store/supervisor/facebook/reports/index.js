@@ -1,24 +1,24 @@
 import {
-    SupervisorWhatsappCampaignReportActions,
-    SupervisorWhatsappCampaignReportMutations,
-    SupervisorWhatsappCampaignReportState
+    SupervisorFacebookCampaignReportActions,
+    SupervisorFacebookCampaignReportMutations,
+    SupervisorFacebookCampaignReportState
 } from './campaign';
 
-import SupervisorWhatsappGeneralReportState from './general_report/state';
-import SupervisorWhatsappGeneralReportMutations from './general_report/mutations';
-import SupervisorWhatsappGeneralReportActions from './general_report/actions';
+import SupervisorFacebookGeneralReportState from './general_report/state';
+import SupervisorFacebookGeneralReportMutations from './general_report/mutations';
+import SupervisorFacebookGeneralReportActions from './general_report/actions';
 
-export const SupervisorWhatsappReportState = {
-    ...SupervisorWhatsappCampaignReportState,
-    ...SupervisorWhatsappGeneralReportState
+export const SupervisorFacebookReportState = {
+    ...SupervisorFacebookCampaignReportState,
+    ...SupervisorFacebookGeneralReportState
 };
 
-export const SupervisorWhatsappReportMutations = {
-    ...SupervisorWhatsappCampaignReportMutations,
-    ...SupervisorWhatsappGeneralReportMutations
+export const SupervisorFacebookReportMutations = {
+    ...SupervisorFacebookCampaignReportMutations,
+    ...SupervisorFacebookGeneralReportMutations
 };
 
-export const SupervisorWhatsappReportActions = {
-    ...SupervisorWhatsappCampaignReportActions,
-    ...SupervisorWhatsappGeneralReportActions
+export const SupervisorFacebookReportActions = {
+    ...SupervisorFacebookCampaignReportActions,
+    ...SupervisorFacebookGeneralReportActions
 };

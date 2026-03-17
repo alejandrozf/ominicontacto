@@ -5,7 +5,7 @@ const modalMediaImageFormFacebook = $('#facebook-modal-media-image-form');
 const modalMediaFileFormFacebook = $('#facebook-modal-media-file-form');
 const modalContactFormFacebook = $('#facebook-modal-contact-form');
 const modalConversationNewFacebook = $('#facebook-modal-conversation-new');
-const whatsappWrapperFacebook = $('#wrapperFacebook');
+const facebookWrapper = $('#wrapperFacebook');
 
 const onFacebookTransferChatEvent = ($event) => {
     const { transfer_chat } = $event.detail;
@@ -50,7 +50,7 @@ const onFacebookConversationNewEvent = ($event) => {
 };
 
 const onFacebookCloseContainerEvent = ($event) => {
-    whatsappWrapperFacebook.addClass('hidden');
+    facebookWrapper.addClass('hidden');
 };
 
 const setEventListenersFacebook = () => {
@@ -63,6 +63,7 @@ const setEventListenersFacebook = () => {
     window.document.addEventListener('onFacebookConversationNewEvent', onFacebookConversationNewEvent, false);
     $('#facebookChat').on('click', function () {
         $('#wrapperFacebook').toggleClass('hidden');
+        $('#wrapperWhatsapp').addClass('hidden');
         $('#wrapperWebphone').removeClass('active');
         $('#newChat').addClass('invisible');
     });

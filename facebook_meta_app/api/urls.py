@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
-
+from django.urls import path
 # This file is part of OMniLeads
 
 # This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ import facebook_meta_app.api.v1.destination
 import facebook_meta_app.api.v1.transfer
 import facebook_meta_app.api.v1.contact
 import facebook_meta_app.api.v1.disposition
+import facebook_meta_app.api.v1.reporte
 import facebook_meta_app.api.v1.templates_messenger
 import facebook_meta_app.api.v1.templates_group
 import facebook_meta_app.api.v1.templates
@@ -51,5 +52,14 @@ for route in routes:
 api_urls_v1 = router.urls
 
 urlpatterns = [
-    # Aquí se pueden agregar otras rutas si es necesario
+    path(
+        'reports/',
+        facebook_meta_app.api.v1.reporte.ReportAPIView.as_view(),
+        name='api_facebook_reports',
+    ),
+    path(
+        'chat/<int:campaing_id>/filter_chats',
+        facebook_meta_app.api.v1.conversation.ReportConversationAPIView.as_view(),
+        name='api_campaign_facebook_report_conversations',
+    ),
 ] + api_urls_v1

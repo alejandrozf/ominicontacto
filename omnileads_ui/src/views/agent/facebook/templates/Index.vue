@@ -4,13 +4,13 @@
     <Table
       ref="tableRef"
       @handleModalEvent="handleModal"
-      :onlyWhatsappTemplates="onlyWhatsappTemplates"
+      :onlyFacebookTemplates="onlyFacebookTemplates"
     />
     <ModalTemplateParams
       :showModal="showModal"
       :template="template"
       :conversationId="conversationId"
-      :onlyWhatsappTemplates="onlyWhatsappTemplates"
+      :onlyFacebookTemplates="onlyFacebookTemplates"
       @handleModalEvent="handleModal"
     />
   </div>
@@ -37,7 +37,7 @@ export default {
             conversationId: null,
             campaignId: null,
             conversationInfo: null,
-            onlyWhatsappTemplates: false
+            onlyFacebookTemplates: false
         };
     },
     async created () {

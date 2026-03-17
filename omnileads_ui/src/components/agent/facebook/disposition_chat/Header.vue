@@ -21,7 +21,7 @@ export default {
     methods: {
         close () {
             this.$emit('handleCloseEvent');
-            const event = new CustomEvent('onFacebookappDispositionFormEvent', {
+            const event = new CustomEvent('onFacebookDispositionFormEvent', {
                 detail: {
                     disposition_form: false
                 }

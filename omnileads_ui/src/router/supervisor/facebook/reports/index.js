@@ -1,7 +1,7 @@
-import SupWhatsReportCampaignRoutes from './campaign';
-import SupWhatsReportGeneralRoutes from './general_report_routes';
+import SupFacebookReportCampaignRoutes from './campaign';
+import SupFacebookReportGeneralRoutes from './general_report_routes';
 
 export default [
-    ...SupWhatsReportCampaignRoutes,
-    ...SupWhatsReportGeneralRoutes
+    ...SupFacebookReportCampaignRoutes,
+    ...SupFacebookReportGeneralRoutes
 ];

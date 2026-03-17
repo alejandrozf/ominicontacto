@@ -98,7 +98,7 @@ import { notificationEvent, NOTIFICATION } from '@/globals/agent/facebook';
 export default {
     inject: ['$helpers'],
     props: {
-        onlyWhatsappTemplates: {
+        onlyFacebookTemplates: {
             type: Boolean,
             default: false
         }
@@ -213,7 +213,7 @@ export default {
             deep: true,
             immediate: true
         },
-        onlyWhatsappTemplates: {
+        onlyFacebookTemplates: {
             handler () {},
             deep: true,
             immediate: true

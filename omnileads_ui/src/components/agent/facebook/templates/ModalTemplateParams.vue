@@ -16,7 +16,7 @@
     <ParamsForm
       @closeModalEvent="closeModal"
       :template="template"
-      :onlyWhatsappTemplates="onlyWhatsappTemplates"
+      :onlyFacebookTemplates="onlyFacebookTemplates"
     />
   </Dialog>
 </template>
@@ -58,7 +58,7 @@ export default {
     methods: {
         closeModal () {
             this.$emit('handleModalEvent', {});
-            const event = new CustomEvent('onWhatsappTemplatesEvent', {
+            const event = new CustomEvent('onFacebookTemplatesEvent', {
                 detail: {
                     templates: false,
                     conversationId: null

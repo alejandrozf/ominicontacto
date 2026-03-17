@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 import mimetypes
+import operator
+from dataclasses import dataclass
+from functools import reduce
 from django.utils import timezone
+from django.db.models import Count, OuterRef, Prefetch, Q, Subquery
 from django.utils.translation import ugettext as _
 from rest_framework import serializers, response, status, viewsets, decorators
+from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 
-from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.views.permissions import TienePermisoOML
+from facebook_meta_app.api.permissions import TienePermisoCanalFacebookAgente
 
 from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 from facebook_meta_app.api.v1.message import (
@@ -17,7 +23,8 @@ from facebook_meta_app.api.v1.contact import ListSerializer as ContactoSerialize
 from facebook_meta_app.models import (
     ConversationMessengerMetaApp, MessageMessengerMetaApp, PlantillaMessenger
 )
-from ominicontacto_app.models import Campana, AgenteProfile, Contacto
+from ominicontacto_app.models import Campana, AgenteProfile, CalificacionCliente, Contacto
+from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
@@ -45,6 +52,76 @@ MESSAGE_STATUS = {
 MESSAGE_LIMIT = 2
 
 
+@dataclass
+class ConversationFilterParams:
+    start_date: object = None
+    end_date: object = None
+    phone: str = None
+    agents: list = None
+
+
+class ConversationFilterParamsSerializer(serializers.Serializer):
+    start_date = serializers.DateField(required=False, allow_null=True)
+    end_date = serializers.DateField(required=False, allow_null=True)
+    phone = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    agents = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False,
+        allow_null=True,
+    )
+
+    def validate(self, attrs):
+        start_date = attrs.get('start_date')
+        end_date = attrs.get('end_date')
+        if bool(start_date) != bool(end_date):
+            raise serializers.ValidationError(
+                _('Debe indicar fecha desde y fecha hasta para aplicar el filtro.')
+            )
+        return attrs
+
+    def create(self, validated_data):
+        start_date = validated_data.get('start_date')
+        end_date = validated_data.get('end_date')
+        if start_date and end_date:
+            validated_data['start_date'] = datetime_hora_minima_dia(start_date)
+            validated_data['end_date'] = datetime_hora_maxima_dia(end_date)
+        return ConversationFilterParams(**validated_data)
+
+
+def get_report_conversations_queryset(campaing, params):
+    chats_of_campaing = ConversationMessengerMetaApp.objects.filter(
+        campana=campaing
+    ).select_related(
+        "conversation_disposition__opcion_calificacion",
+        "client__bd_contacto",
+        "agent__user",
+        "page",
+        "campana",
+    ).annotate(
+        message_number=Count('messages', distinct=True)
+    ).order_by('-date_last_interaction', '-timestamp')
+    list_of_Q = []
+    if params.agents:
+        agents = list(params.agents)
+        if -1 in agents:
+            list_of_Q.append(Q(agent__isnull=True))
+            agents.remove(-1)
+        if agents:
+            list_of_Q.append(Q(agent__in=agents))
+    if list_of_Q:
+        chats_of_campaing = chats_of_campaing.filter(reduce(operator.or_, list_of_Q))
+    list_of_Q = []
+    if params.start_date and params.end_date:
+        list_of_Q.append(
+            Q(date_last_interaction__range=[params.start_date, params.end_date])
+        )
+    if params.phone:
+        list_of_Q.append(Q(page_client_id__contains=params.phone))
+    if list_of_Q:
+        chats_of_campaing = chats_of_campaing.filter(reduce(operator.and_, list_of_Q))
+    return chats_of_campaing
+
+
 def get_type(fileName):
     mimestart = mimetypes.guess_type(fileName)[0]
     if mimestart is not None:
@@ -65,6 +142,7 @@ class ConversacionMessengerSerializer(serializers.Serializer):
         queryset=AgenteProfile.objects.all(), allow_null=True)
     is_active = serializers.BooleanField(default=True)
     is_disposition = serializers.BooleanField()
+    expire = serializers.DateTimeField(allow_null=True)
     timestamp = serializers.DateTimeField()
     date_last_interaction = serializers.DateTimeField(allow_null=True)
     message_number = serializers.SerializerMethodField()
@@ -110,6 +188,120 @@ class ConversacionMessengerSerializer(serializers.Serializer):
         return None
 
 
+class ConversacionMessengerFilterSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    campaign = serializers.SerializerMethodField()
+    destination = serializers.CharField(source='page_client_id', allow_null=True)
+    was_closed_by_system = serializers.SerializerMethodField()
+    disposition = serializers.SerializerMethodField()
+    client = serializers.SerializerMethodField()
+    agent = serializers.SerializerMethodField()
+    is_active = serializers.BooleanField(default=True)
+    expire = serializers.DateTimeField(allow_null=True)
+    timestamp = serializers.DateTimeField()
+    date_last_interaction = serializers.DateTimeField(allow_null=True)
+    message_number = serializers.IntegerField()
+    photo = serializers.CharField(default="")
+    line = serializers.SerializerMethodField()
+    error = serializers.BooleanField(default=False)
+
+    def get_line(self, obj):
+        page = obj.page
+        if not page:
+            return {}
+        return {
+            'id': page.id,
+            'name': page.name,
+            'number': page.page_id,
+        }
+
+    def get_campaign(self, obj):
+        if obj.campana:
+            return {
+                'id': obj.campana.id,
+                'name': obj.campana.nombre,
+                'type': obj.campana.type,
+            }
+        return {}
+
+    def get_agent(self, obj):
+        if obj.agent:
+            return {
+                'id': obj.agent.user.id,
+                'name': obj.agent.user.get_full_name() or obj.agent.user.username,
+            }
+        return None
+
+    def get_client(self, obj):
+        if obj.client:
+            serializer = ContactoSerializer(obj.client)
+            if 'disposition' in serializer.fields:
+                del serializer.fields['disposition']
+            return serializer.data
+        return None
+
+    def get_disposition(self, obj):
+        try:
+            if obj.is_disposition and obj.conversation_disposition:
+                return {
+                    'id': obj.conversation_disposition.opcion_calificacion.id,
+                    'name': obj.conversation_disposition.opcion_calificacion.nombre,
+                }
+            return {}
+        except Exception:
+            return {}
+
+    def get_was_closed_by_system(self, obj):
+        return obj.is_disposition and not obj.conversation_disposition
+
+
+class ContactoSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    phone = serializers.CharField(source='telefono')
+    page_client_id = serializers.CharField(source='facebook', allow_blank=True)
+    disposition = serializers.IntegerField(source='last_disposition_id', allow_null=True)
+    data = serializers.SerializerMethodField()
+
+    def get_data(self, obj):
+        return obj.obtener_datos()
+
+
+class ConversacionMessengerSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    campaing_id = serializers.IntegerField(source='campana_id', allow_null=True)
+    campaing_name = serializers.CharField(source='campana.nombre', default=None)
+    destination = serializers.CharField(source='page_client_id', allow_null=True)
+    client = serializers.SerializerMethodField()
+    agent = serializers.IntegerField(source='agent_id', allow_null=True)
+    is_active = serializers.BooleanField(default=True)
+    is_disposition = serializers.BooleanField()
+    expire = serializers.DateTimeField(allow_null=True)
+    timestamp = serializers.DateTimeField()
+    date_last_interaction = serializers.DateTimeField(allow_null=True)
+    message_number = serializers.IntegerField(allow_null=True)
+    message_unread = serializers.IntegerField(allow_null=True)
+    photo = serializers.CharField(default="")
+    page = serializers.SerializerMethodField()
+    error = serializers.BooleanField(default=False)
+    error_ex = serializers.JSONField()
+    client_alias = serializers.CharField(default="")
+
+    def get_page(self, obj):
+        page = obj.page
+        if not page:
+            return None
+        return {
+            'id': page.id,
+            'page_id': getattr(page, 'page_id', None),
+            'name': getattr(page, 'name', getattr(page, 'page_name', None))
+        }
+
+    def get_client(self, obj):
+        if obj.client:
+            return ContactoSerializerEx(obj.client).data
+        return None
+
+
 class ConversacionMessengerNuevaSerializer(ConversacionMessengerSerializer):
     is_transfer_campaing = serializers.BooleanField()
     number_messages = serializers.IntegerField()
@@ -120,34 +312,136 @@ class ConversacionMessengerEnCursoSerializer(ConversacionMessengerSerializer):
     number_messages = serializers.IntegerField()
 
 
+class ReportConversationAPIView(APIView):
+    permission_classes = [TienePermisoOML]
+    authentication_classes = (ExpiringTokenAuthentication, SessionAuthentication)
+
+    def post(self, request, campaing_id):
+        try:
+            campaing = Campana.objects.get(id=campaing_id)
+            params_serializer = ConversationFilterParamsSerializer(
+                data={
+                    'start_date': request.data.get('start_date'),
+                    'end_date': request.data.get('end_date'),
+                    'phone': request.data.get('phone'),
+                    'agents': request.data.get('agents'),
+                }
+            )
+            params_serializer.is_valid(raise_exception=True)
+            params = params_serializer.save()
+            chats_of_campaing = get_report_conversations_queryset(campaing, params)
+            serializer = ConversacionMessengerFilterSerializer(chats_of_campaing, many=True)
+            return response.Response(
+                data=get_response_data(status=HttpResponseStatus.SUCCESS, data=serializer.data),
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.ERROR, data={}, message=_(str(e))
+                ),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
 class ViewSet(viewsets.ModelViewSet):
     """ViewSet para manejar las conversaciones de Messenger Meta App."""
     queryset = ConversationMessengerMetaApp.objects.all()
     serializer_class = ConversacionMessengerSerializer
     authentication_classes = (ExpiringTokenAuthentication, SessionAuthentication)
-    permission_classes = (TienePermisoOML,)
+    permission_classes = (TienePermisoCanalFacebookAgente,)
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return ConversacionMessengerSerializer
+            return ConversacionMessengerSerializerEx
         return super().get_serializer_class()
+
+    def get_list_queryset(self):
+        return ConversationMessengerMetaApp.objects.filter(
+            is_disposition=False
+        ).only(
+            'id',
+            'agent_id',
+            'campana_id',
+            'client_id',
+            'page_id',
+            'page_client_id',
+            'client_alias',
+            'date_last_interaction',
+            'error',
+            'error_ex',
+            'expire',
+            'is_active',
+            'is_disposition',
+            'timestamp',
+        ).select_related(
+            'campana',
+            'page',
+        ).prefetch_related(
+            Prefetch(
+                lookup='client',
+                queryset=Contacto.objects.only(
+                    'id',
+                    'telefono',
+                    'facebook',
+                    'datos',
+                    'id_externo',
+                    'bd_contacto',
+                ).annotate(
+                    last_disposition_id=Subquery(
+                        CalificacionCliente.objects.filter(
+                            contacto=OuterRef('id'),
+                        ).order_by('-id').values('id')[:1]
+                    ),
+                ).select_related('bd_contacto'),
+            ),
+        ).annotate(
+            message_number=Subquery(
+                MessageMessengerMetaApp.objects.filter(
+                    conversation_id=OuterRef('id'),
+                ).values('conversation_id').annotate(
+                    count=Count('id')
+                ).values('count')[:1]
+            ),
+            message_unread=Subquery(
+                MessageMessengerMetaApp.objects.filter(
+                    conversation_id=OuterRef('id'),
+                    status='delivered',
+                ).exclude(
+                    origen=OuterRef('page_client_id'),
+                ).values('conversation_id').annotate(
+                    count=Count('id')
+                ).values('count')[:1]
+            ),
+        ).order_by('-date_last_interaction')
+
+    def get_detail_queryset(self):
+        return ConversationMessengerMetaApp.objects.select_related(
+            'campana',
+            'client__bd_contacto',
+            'page',
+            'agent',
+        ).prefetch_related(
+            Prefetch(
+                'messages',
+                queryset=MessageMessengerMetaApp.objects.order_by('timestamp', 'id')
+            ),
+        )
 
     def list(self, request):
         try:
             agente = request.user.get_agente_profile()
             agente_campanas = agente.get_campanas_activas_miembro().values_list(
                 'queue_name__campana_id', flat=True)
-            print("Agente Campañas:", agente_campanas)
-            conversaciones = ConversationMessengerMetaApp.objects.filter(
-                is_disposition=False)
+            conversaciones = self.get_list_queryset()
             conversaciones_nuevas = conversaciones.filter(
                 agent=None, campana__id__in=agente_campanas).order_by('-date_last_interaction')
             conversaciones_en_curso = conversaciones.filter(
                 agent=agente).order_by('-date_last_interaction')
             conversaciones_nuevas =\
-                ConversacionMessengerSerializer(conversaciones_nuevas, many=True)
+                ConversacionMessengerSerializerEx(conversaciones_nuevas, many=True)
             conversaciones_en_curso =\
-                ConversacionMessengerSerializer(conversaciones_en_curso, many=True)
+                ConversacionMessengerSerializerEx(conversaciones_en_curso, many=True)
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
@@ -165,7 +459,7 @@ class ViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk):
         try:
-            queryset = ConversationMessengerMetaApp.objects.all()
+            queryset = self.get_detail_queryset()
             instance = queryset.get(pk=pk)
             instance.messages.mensajes_recibidos().update(status='read')
             serializer = ConversacionMessengerSerializer(instance)
@@ -188,9 +482,9 @@ class ViewSet(viewsets.ModelViewSet):
     @decorators.action(detail=False, methods=["get"])
     def agent_chats_lists(self, request):
         agente = request.user.get_agente_profile()
-        conversaciones_asignadas = agente.conversaciones.all()
+        conversaciones_asignadas = self.get_list_queryset().filter(agent=agente)
         conversaciones_en_curso =\
-            ConversacionMessengerSerializer(conversaciones_asignadas, many=True)
+            ConversacionMessengerSerializerEx(conversaciones_asignadas, many=True)
         return response.Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,

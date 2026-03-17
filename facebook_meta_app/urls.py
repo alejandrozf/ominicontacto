@@ -23,7 +23,7 @@ from django.conf.urls import include
 from facebook_meta_app.views import (
     MessengerMetaConfigurationView, FacebookMessageTemplatesConfigurationView,
     FacebookMessageTemplateGroupView)
-from facebook_meta_app.api.urls import api_urls_v1
+from facebook_meta_app.api.urls import urlpatterns as api_urlpatterns
 
 urlpatterns = [
     path('connections/facebook/pages/',
@@ -35,5 +35,6 @@ urlpatterns = [
     path('resources/facebook_message_template_groups/',
          login_required(FacebookMessageTemplateGroupView.as_view()),
          name='facebook_message_template_groups'),
-    path('api/v1/facebook/', include((api_urls_v1, 'facebook_meta_app'), namespace='v1')),
+
+    path('api/v1/facebook/', include((api_urlpatterns, 'facebook_meta_app'), namespace='facebook')),
 ]

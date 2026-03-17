@@ -45,31 +45,27 @@ export default {
     methods: {
         ...mapActions(['agtFacebookConversationSendTextMessage']),
         async sendMessage () {
-            console.log('Sending message:', this.message);
-            if (this.$helpers.isSocketConnected(this.$t) || true) {
-                if (this.message !== '') {
-                    const data = {
-                        message: {
-                            message: this.message
-                        },
-                        conversationId: this.conversationId,
-                        pageId: this.agtFacebookConversationInfo.page.page_id,
-                        $t: this.$t
-                    };
-                    this.message = '';
-                    console.log('Prepared data for sending:', data);
-                    const { status, message } = await this.agtFacebookConversationSendTextMessage(data);
-                    if (status === HTTP_STATUS.SUCCESS) {
-                        this.$emit('scrollDownEvent');
-                    } else {
-                        this.$swal(
-                            this.$helpers.getToasConfig(
-                                this.$t('globals.error_notification'),
-                                message,
-                                this.$t('globals.icon_error')
-                            )
-                        );
-                    }
+            if (this.message !== '') {
+                const data = {
+                    message: {
+                        message: this.message
+                    },
+                    conversationId: this.conversationId,
+                    pageId: this.agtFacebookConversationInfo.page.page_id,
+                    $t: this.$t
+                };
+                this.message = '';
+                const { status, message } = await this.agtFacebookConversationSendTextMessage(data);
+                if (status === HTTP_STATUS.SUCCESS) {
+                    this.$emit('scrollDownEvent');
+                } else {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.error_notification'),
+                            message,
+                            this.$t('globals.icon_error')
+                        )
+                    );
                 }
             }
         }
@@ -80,7 +76,7 @@ export default {
             deep: true,
             immediate: true
         },
-        agtWhatsCoversationInfo: {
+        agtFacebookConversationInfo: {
             handler () {},
             deep: true,
             immediate: true

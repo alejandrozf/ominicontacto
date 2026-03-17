@@ -37,7 +37,7 @@ export class FacebookConsumer {
     async consumerCloseNotification () {
         await fireNotification({
             title: 'Error',
-            text: 'Whatsapp Socket: Connection could not be established, please reload the page',
+            text: 'Facebook Socket: Connection could not be established, please reload the page',
             icon: 'error',
             footer: 'If the problem persists, contact the administrator'
         });
@@ -48,17 +48,17 @@ export class FacebookConsumer {
             try {
                 if (this.consumer) {
                     this.consumer.onopen = () => {
-                        console.log('Whatsapp Consumer OPEN: Connection established OK');
+                        console.log('Facebook Consumer OPEN: Connection established OK');
                     };
                     this.consumer.onclose = (event) => {
                         this.close();
                         if (event?.wasClean) {
                             console.log(
-                                'Whatsapp Consumer CLOSE: Conection closed cleanly'
+                                'Facebook Consumer CLOSE: Conection closed cleanly'
                             );
                         } else {
                             console.error(
-                                `Whatsapp Consumer CLOSE: Conection closed uncleanly (code: ${event?.code}), trying connect again...`
+                                `Facebook Consumer CLOSE: Conection closed uncleanly (code: ${event?.code}), trying connect again...`
                             );
                             console.error(event?.reason);
                             this.handleReconnect();
@@ -69,13 +69,13 @@ export class FacebookConsumer {
                         this.handleEventByType(type, args);
                     };
                     this.consumer.onerror = (error) => {
-                        console.error('Whatsapp Consumer ERROR:');
+                        console.error('Facebook Consumer ERROR:');
                         console.error(error);
                     };
                     resolve(true);
                 }
             } catch (error) {
-                console.error('Whatsapp Consumer Error on set base socket events');
+                console.error('Facebook Consumer Error on set base socket events');
                 console.error(error?.message);
                 resolve(false);
             }
@@ -86,34 +86,34 @@ export class FacebookConsumer {
         try {
             if (!this.consumer || this.consumer.readyState === WebSocket.CLOSED) {
                 this.consumer = new WebSocket(this.url);
-                console.log('Whatsapp Consumer: Waiting connection...');
+                console.log('Facebook Consumer: Waiting connection...');
                 setTimeout(async () => {
                     if (this.consumer && this.consumer.readyState === WebSocket.OPEN) {
-                        console.log('Whatsapp Consumer: Connection established OK');
+                        console.log('Facebook Consumer: Connection established OK');
                         await this.setBaseSocketEvents();
                     } else {
                         console.error(
-                            'Whatsapp Consumer: Connection could not be established, trying again...'
+                            'Facebook Consumer: Connection could not be established, trying again...'
                         );
                         this.handleReconnect();
                     }
                 }, TIME_WAITING_CONNECTION * 1000);
             } else {
-                console.log('Whatsapp Consumer: Already exists a connection, using it...');
+                console.log('Facebook Consumer: Already exists a connection, using it...');
                 setTimeout(async () => {
                     if (this.consumer && this.consumer.readyState === WebSocket.OPEN) {
-                        console.log('Whatsapp Consumer: Connection established OK');
+                        console.log('Facebook Consumer: Connection established OK');
                         await this.setBaseSocketEvents();
                     } else {
                         console.error(
-                            'Whatsapp Consumer: Connection could not be established, trying again...'
+                            'Facebook Consumer: Connection could not be established, trying again...'
                         );
                         this.handleReconnect();
                     }
                 }, TIME_WAITING_CONNECTION * 1000);
             }
         } catch (error) {
-            console.error('Whatsapp Consumer OPEN ERROR');
+            console.error('Facebook Consumer OPEN ERROR');
             console.error(error?.message);
             this.handleReconnect();
         }
@@ -124,11 +124,11 @@ export class FacebookConsumer {
             this.consumer.close();
             this.consumer = null;
             if (this.reconnectIntent >= MAX_RECONNECT_ATTEMPTS) {
-                console.warn('Whatsapp Consumer MAX_RECONNECT_ATTEMPTS');
+                console.warn('Facebook Consumer MAX_RECONNECT_ATTEMPTS');
             }
-            console.log('Whatsapp Consumer CLOSE: Connection closed');
+            console.log('Facebook Consumer CLOSE: Connection closed');
         } else {
-            console.log('Whatsapp Consumer CLOSE: Not exists a connection to close');
+            console.log('Facebook Consumer CLOSE: Not exists a connection to close');
         }
     }
 
@@ -206,7 +206,7 @@ export class FacebookConsumer {
     }
 
     async handleChatExpiredEvent (data = null) {
-        await STORE.dispatch('agtWhatsRestartExpiredCoversation', {
+        await STORE.dispatch('agtFacebookRestartExpiredCoversation', {
             conversationId:
                 data && data.conversation_id ? data.conversation_id : null,
             expire: data && data.expire ? data.expire : null

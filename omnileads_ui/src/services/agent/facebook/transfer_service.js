@@ -1,9 +1,9 @@
-import URLS from '@/api_urls/agent/whatsapp/transfer_urls';
+import URLS from '@/api_urls/agent/facebook/transfer_urls';
 import { BaseService, HTTP } from '@/services/base_service';
 
-export default class WhatsappTransferChatService extends BaseService {
+export default class FacebookTransferChatService extends BaseService {
     constructor () {
-        super(URLS, 'Whatsapp < Transfer Chat >');
+        super(URLS, 'Facebook < Transfer Chat >');
     }
 
     async getActiveAgents ({ campaingId }) {

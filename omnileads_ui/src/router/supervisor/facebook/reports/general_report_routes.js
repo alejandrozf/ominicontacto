@@ -1,10 +1,10 @@
-import Index from '@/views/supervisor/whatsapp/reports/general/Index';
-import { WHATSAPP_REPORTS_URL_NAME } from '@/globals/supervisor/whatsapp';
+import Index from '@/views/supervisor/facebook/reports/general/Index';
+import { FACEBOOK_REPORTS_URL_NAME } from '@/globals/supervisor/facebook';
 
 export default [
     {
-        path: `/${WHATSAPP_REPORTS_URL_NAME}_general.html`,
-        name: `${WHATSAPP_REPORTS_URL_NAME}_general`,
+        path: `/${FACEBOOK_REPORTS_URL_NAME}_general.html`,
+        name: `${FACEBOOK_REPORTS_URL_NAME}_general`,
         component: Index
     }
 ];

@@ -72,6 +72,7 @@ class PaginaMetaFacebook(models.Model):
 
     # Settings
     allow_reply_comments = models.BooleanField(default=False)
+    validated = models.BooleanField(default=False)
 
     # Metadata
     is_active = models.BooleanField(default=True)
@@ -99,6 +100,7 @@ class ConfiguracionMetaFacebookCampana(models.Model):
         GrupoPlantillaMessenger, related_name="configuracion_facebook",
         blank=True, null=True, on_delete=models.PROTECT)
     nivel_servicio = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Configuración Meta Facebook Campaña"

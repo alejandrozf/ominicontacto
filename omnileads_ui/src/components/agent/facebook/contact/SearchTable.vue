@@ -108,7 +108,7 @@ export default {
     },
     created () {},
     computed: {
-        ...mapState(['agtWhatsContactSearchResults'])
+        ...mapState(['agtFacebookContactSearchResults'])
     },
     methods: {
         async filterChanged (event) {
@@ -127,7 +127,7 @@ export default {
                 return;
             }
             this.loading = true;
-            const { status, message } = await this.agtWhatsContactSearch({
+            const { status, message } = await this.agtFacebookContactSearch({
                 campaignId: this.conversationInfo?.campaignId || null,
                 conversationId: this.conversationInfo?.id || 'tes',
                 filterData: {
@@ -146,12 +146,12 @@ export default {
                 );
             }
         },
-        ...mapActions(['agtWhatsContactSearch'])
+        ...mapActions(['agtFacebookContactSearch'])
     },
     watch: {
-        agtWhatsContactSearchResults: {
+        agtFacebookContactSearchResults: {
             handler () {
-                this.contacts = this.agtWhatsContactSearchResults.map((contact) => {
+                this.contacts = this.agtFacebookContactSearchResults.map((contact) => {
                     return {
                         id: contact?.id || null,
                         data: contact?.data ? JSON.parse(contact?.data) : [],
