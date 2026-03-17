@@ -302,11 +302,14 @@ def meta_send_template_message(line, destination, template, data):
         # =====================================================
         header_params = data.get("params_header")
         if template.tipo in ('IMAGE', 'VIDEO', 'DOCUMENT'):  # header multimedia tiene prioridad
+            media_type = template.tipo.lower()
             components.append({
                 "type": "header",
                 "parameters": [{
-                    "type": template.tipo.lower(),
-                    template.tipo.lower(): json.dumps({'link': template.link_media})
+                    "type": media_type,
+                    media_type: {
+                        'link': template.link_media
+                    }
                 }]
             })
         # ---- Header texto
@@ -338,28 +341,29 @@ def meta_send_template_message(line, destination, template, data):
         # =====================================================
 
         buttons_params = data.get("params_buttons", [])
-
         if template.tipo == "BUTTONS" and buttons_params:
-            url_param_index = 0  # índice para recorrer el array buttons
 
+            param_index = 0
+            button_component = None
             for index, button in enumerate(template.botones):
-
-                button_type = button["type"]  # "URL" o "QUICK_REPLY"
-
-                button_component = {
-                    "type": "button",
-                    "sub_type": button_type.lower(),
-                    "index": str(index)
-                }
-
-                # Solo asignamos parámetros si es URL dinámico
-                if button_type == "URL" and url_param_index < len(buttons_params):
-                    button_component["parameters"] = [{
-                        "type": "text",
-                        "text": buttons_params[url_param_index]
-                    }]
-                    url_param_index += 1
-                components.append(button_component)
+                button_type = button["type"]
+                # -------------------------------------------------
+                # URL BUTTON CON PARAMETRO
+                # -------------------------------------------------
+                if button_type == "URL" and param_index < len(buttons_params):
+                    url = button.get("url", "")
+                    if "{{" in url:
+                        button_component = {
+                            "type": "button",
+                            "sub_type": button_type.lower(),
+                            "index": str(index),
+                            "parameters": [{
+                                "type": "text",
+                                "text": buttons_params[param_index]
+                            }]
+                        }
+                        components.append(button_component)
+                        param_index += 1
 
         # =====================================================
         # PAYLOAD FINAL

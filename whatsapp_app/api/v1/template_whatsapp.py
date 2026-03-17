@@ -125,15 +125,28 @@ class ViewSet(viewsets.ViewSet):
                         buttons = containerMeta['buttons']
                     else:
                         tipo = attrs['templateType']
+                    # TODO: Validar cual es la lógica correcta para esta parte:
+                    # Valor original:
+                    # texto = containerMeta['data']
+                    #         if 'data' in containerMeta
+                    #         else '' + ' ' + containerMeta['footer'] if 'footer' in containerMeta
+                    #         else containerMeta['data']
+                    # Valor sugerido (resultado parecido sin error si falta data y footer):
+                    texto = ''
+                    if 'data' in containerMeta:
+                        texto = containerMeta['data']
+                    elif 'footer' in containerMeta:
+                        texto = containerMeta['footer']
+                    # Alternativa en lugar de elif:
+                    # if 'footer' in containerMeta:
+                    #     texto = texto + ' ' + containerMeta['footer']
+
                     linea.templates_whatsapp.update_or_create(
                         identificador=attrs['id'], defaults={
                             'nombre': attrs['elementName'],
                             'texto_header': containerMeta['header']
                             if 'header' in containerMeta else '',
-                            'texto': containerMeta['data']
-                            if 'data' in containerMeta
-                            else '' + ' ' + containerMeta['footer'] if 'footer' in containerMeta
-                            else containerMeta['data'],
+                            'texto': texto,
                             'idioma': attrs['languageCode'],
                             'status': attrs['status'],
                             'creado': attrs['createdOn'],
