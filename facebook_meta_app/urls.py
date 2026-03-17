@@ -35,5 +35,6 @@ urlpatterns = [
     path('resources/facebook_message_template_groups/',
          login_required(FacebookMessageTemplateGroupView.as_view()),
          name='facebook_message_template_groups'),
-    path('api/v1/facebook/', include((api_urlpatterns, 'facebook_meta_app'), namespace='v1')),
+
+    path('api/v1/facebook/', include((api_urlpatterns, 'facebook_meta_app'), namespace='facebook')),
 ]

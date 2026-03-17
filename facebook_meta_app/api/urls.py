@@ -53,13 +53,13 @@ api_urls_v1 = router.urls
 
 urlpatterns = [
     path(
-        "reports/",
+        'reports/',
         facebook_meta_app.api.v1.reporte.ReportAPIView.as_view(),
-        name="facebook_reports",
+        name='api_facebook_reports',
     ),
     path(
-        "chat/<int:campaing_id>/filter_chats",
+        'chat/<int:campaing_id>/filter_chats',
         facebook_meta_app.api.v1.conversation.ReportConversationAPIView.as_view(),
-        name="campaign_facebook_report_conversations",
+        name='api_campaign_facebook_report_conversations',
     ),
 ] + api_urls_v1
