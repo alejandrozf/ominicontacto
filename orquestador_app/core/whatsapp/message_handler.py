@@ -36,7 +36,20 @@ async def handle_gupshup_message(line: Line, event: dict):
                 error_ex=error_ex,
             )
         # entrante
+
         elif event["type"] == "message":
+            print("event['payload']:", event["payload"])
+            type = event["payload"]["type"]
+            print("type:", type)
+            if type in ["video", "image", "document"]:
+                if 'context' in event["payload"]:
+                    type = "reply_" + type
+            if type == "text":
+                if 'context' in event["payload"]:
+                    type = "reply_text"
+            if type == "quick_reply":
+                type = event["payload"]["payload"]["type"]
+
             await inbound_chat_event(
                 line,
                 event_timestamp,
@@ -44,8 +57,8 @@ async def handle_gupshup_message(line: Line, event: dict):
                 event["payload"]["source"],
                 event["payload"]["payload"],
                 event["payload"]["sender"],
-                event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
-                event["payload"]["type"],
+                event["payload"]["context"] if 'context' in event["payload"] else {},
+                type,
             )
     except Exception:
         logger.exception("handle_gupshup_message event=%r", event)
@@ -91,13 +104,25 @@ async def handle_meta_messages(line: Line, event: dict):
                 content = {
                     type: value_object["messages"][0][type]["body"]
                 }
+                if 'context' in value_object["messages"][0]:
+                    context = value_object["messages"][0]["context"]
+                    type = "reply_text"
+
             if type in ["video", "image", "document"]:
                 content = meta_get_media_content(line, type, value_object["messages"][0])
+                if 'context' in value_object["messages"][0]:
+                    context = value_object["messages"][0]["context"]
+                    type = "reply_" + type
+
             if type == "interactive":
                 context = value_object["messages"][0]["context"]
                 if "list_reply" in value_object["messages"][0]["interactive"]:
                     type = "list_reply"
                     content = value_object["messages"][0]["interactive"]["list_reply"]
+            if type == "button":
+                context = value_object["messages"][0]["context"]
+                type = "button"
+                content = value_object["messages"][0]["button"]
             sender = value_object["contacts"][0]
             await inbound_chat_event(
                 line,

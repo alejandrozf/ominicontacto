@@ -26,13 +26,70 @@
         }}</small>
       </div>
     </div>
-    <Panel header="Vista previa" class="field col-12 bg-green-200">
-        <p class="m-0">
-            {{ getPreviewMessageHeader }}
-          </p>
-          <p class="m-0">
-            {{ getPreviewMessage }}
-          </p>
+    <Panel header="Vista previa" class="field col-12">
+    <div class="bg-gray-100 p-4 border-round-lg flex justify-content-center">
+        <div class="bg-white border-round-2xl p-3 shadow-3 w-18rem">
+            <!-- HEADER -->
+            <!-- HEADER MEDIA -->
+            <div v-if="template.configuration.type==='IMAGE'">
+                <a :href="template.configuration.link_media" style="text-decoration: none; color: inherit;" target="_blank" download>
+                <Image :src="template.configuration.link_media" width="250" />
+                </a>
+            </div>
+            <div v-if="template.configuration.type==='DOCUMENT'">
+                <embed
+                    :src="template.configuration.link_media"
+                    frameBorder="0"
+                    scrolling="auto"
+                    height="100%"
+                    width="100%"
+                >
+            </div>
+            <div v-if="template.configuration.type==='VIDEO'">
+                <video width="320" height="240" controls>
+                <source :src="template.configuration.link_media" type="video/mp4">
+                </video>
+            </div>
+            <!-- HEADER TEXTO -->
+            <p class="m-0 font-bold mb-2">
+               {{ getPreviewMessageHeader }}
+            </p>
+            <!-- BODY -->
+            <p class="m-0 mb-3 text-sm line-height-3">
+                {{ getPreviewMessage }}
+            </p>
+            <!-- BUTTONS -->
+            <div
+            v-if="template.configuration.type === 'BUTTONS' && getPreviewButtons.length"
+            class="flex flex-column gap-2 mt-3"
+            >
+                <button
+                    v-for="(btn, index) in getPreviewButtons"
+                    :key="index"
+                    class="w-full text-center py-3 px-3
+                        bg-white
+                        border-round-2xl
+                        shadow-1
+                        text-blue-600
+                        border-1 border-200"
+                    disabled
+                >
+                    <div class="font-medium">
+                    {{ btn.text }}
+                    </div>
+
+                    <div
+                    v-if="btn.type === 'URL' && btn.previewUrl"
+                    class="text-xs text-500 mt-1"
+                    style="overflow-wrap: anywhere;"
+                    >
+                    {{ btn.previewUrl }}
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
     </Panel>
     <div class="flex justify-content-end flex-wrap mt-2">
       <div class="flex align-items-center">
@@ -65,9 +122,11 @@ export default {
                     configuration: {
                         text_header: '',
                         text: '',
+                        buttons: [],
                         type: '',
                         numParams_header: 0,
-                        numParams_text: 0
+                        numParams_text: 0,
+                        numParams_buttons: 0
                     }
                 };
             }
@@ -93,7 +152,7 @@ export default {
     computed: {
         ...mapState(['agtWhatsCoversationInfo']),
         getPreviewMessage () {
-            if (!this.template.configuration || this.form === {}) {
+            if (!this.template.configuration || Object.keys(this.form).length === 0) {
                 return this.template.configuration.text;
             }
             const self = this;
@@ -101,12 +160,12 @@ export default {
                 /{{(\d+)}}/g,
                 function (match, numero) {
                     const field = self.form[`param_${numero}`];
-                    return field.value || `${match}`;
+                    return field?.value || `${match}`;
                 }
             );
         },
         getPreviewMessageHeader () {
-            if (!this.template.configuration || this.form === {}) {
+            if (!this.template.configuration ||  Object.keys(this.form).length === 0) {
                 return this.template.configuration.text_header
             }
             const self = this;
@@ -114,9 +173,34 @@ export default {
                 /{{(\d+)}}/g,
                 function (match, numero) {
                     const field = self.form[`param_header_${numero}`];
-                    return field.value || `${match}`;
+                    return field?.value || `${match}`;
                 }
             );
+        },
+        getPreviewButtons () {
+            if (
+            !this.template.configuration ||
+            !this.template.configuration.buttons
+            ) {
+            return [];
+            }
+            return this.template.configuration.buttons.map((btn) => {
+            console.log("btn", btn);
+            if (btn.type === 'URL' && btn.url) {
+                const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
+                const field = this.form[`param_buttons_${numero}`];
+                console.log("field", field);
+                return field?.value || `${match}`;
+                });
+
+                return {
+                ...btn,
+                previewUrl: parsedUrl
+                };
+            }
+
+            return btn;
+            });
         }
     },
     methods: {
@@ -150,6 +234,10 @@ export default {
                 const name = `param_header_${i + 1}`;
                 this.form[name] = { name, empty: false, value: null };
             }
+            for (let i = 0; i < this.template.configuration.numParams_buttons; i++) {
+                const name = `param_buttons_${i + 1}`;
+                this.form[name] = { name, empty: false, value: null };
+            }
         },
         clearFilter () {
             this.initFilters();
@@ -157,7 +245,7 @@ export default {
         initFilters () {
             this.filters = {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            };
+            };template.configuration.text.replace
         },
         isEmptyField (field = null) {
             return field === null || field === undefined || field === '';
@@ -165,7 +253,7 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                if (!clave.startsWith("param_header")){
+                if (!clave.startsWith("param_header") && !clave.startsWith("param_buttons")) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -176,6 +264,16 @@ export default {
             const formData = [];
             for (const clave in this.form) {
                 if (clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
+            }
+            return formData;
+        },
+        getFormDataButtons () {
+            const formData = [];
+            for (const clave in this.form) {
+                if (clave.startsWith("param_buttons")){
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -200,17 +298,16 @@ export default {
                     localStorage.getItem('agtWhatsappConversationMessages')
                 );
                 let result = null;
-                console.log("-------------");
                 const reqData = {
                     conversationId: this.agtWhatsCoversationInfo.id,
                     templateId: this.template.id,
                     phoneLine: this.agtWhatsCoversationInfo.line.number,
                     params_header: this.getFormDataHeader(),
                     params: this.getFormData(),
+                    params_buttons: this.getFormDataButtons(),
                     messages,
                     $t: this.$t
                 };
-                console.log("-------------", reqData);
                 if (this.onlyWhatsappTemplates) {
                     result = await this.agtWhatsCoversationReactiveExpiredConversation(
                         reqData
@@ -231,7 +328,7 @@ export default {
                 } else {
                     await notificationEvent(
                         NOTIFICATION.TITLES.ERROR,
-                        message,
+                        message,template.configuration.text.replace,
                         NOTIFICATION.ICONS.ERROR
                     );
                 }

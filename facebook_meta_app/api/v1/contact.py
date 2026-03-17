@@ -39,7 +39,7 @@ from facebook_meta_app.models import ConversationMessengerMetaApp
 class ListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
-    page_client_id = serializers.CharField(source='facebook', required=True)
+    page_client_id = serializers.CharField(source='facebook', required=False)
     data = serializers.SerializerMethodField()
     disposition = serializers.SerializerMethodField()
 
@@ -52,7 +52,7 @@ class ListSerializer(serializers.Serializer):
 
 
 class RetriveSerializer(serializers.ModelSerializer):
-    page_client_id = serializers.CharField(source='facebook', required=True)
+    page_client_id = serializers.CharField(source='facebook', required=False)
 
     class Meta:
         model = Contacto
@@ -66,7 +66,7 @@ class RetriveSerializer(serializers.ModelSerializer):
 
 
 class CreateSerializer(serializers.ModelSerializer):
-    page_client_id = serializers.CharField(source='facebook', required=True)
+    page_client_id = serializers.CharField(source='facebook', required=False)
 
     def __init__(self, *args, **kwargs):
         self.campana = kwargs.pop('context', {}).get('campana')
@@ -98,6 +98,7 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def validar_page_client_id(self, field, value):
         if not value:
+            return "-"
             raise serializers.ValidationError({field: _('campo requerido')})
         return value
 
@@ -128,8 +129,8 @@ class CreateSerializer(serializers.ModelSerializer):
             page_client_id_val = data['datos'].pop('page_client_id')
             data['page_client_id'] =\
                 self.validar_page_client_id('page_client_id', page_client_id_val)
-        else:
-            raise serializers.ValidationError({'page_client_id': _('campo requerido')})
+        # else:
+        #     raise serializers.ValidationError({'page_client_id': _('campo requerido')})
 
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if set(data['datos'].keys()).issuperset(set(mandatory)):

@@ -31,9 +31,6 @@ from django.db.models import F
 from django.db.models.functions import Concat
 
 from redis.asyncio import Redis
-# from orquestador_app.core.inbound_chat_event_management import inbound_chat_event
-# from orquestador_app.core.media_management import meta_get_media_content
-# from orquestador_app.core.outbound_chat_event_management import outbound_chat_event
 from orquestador_app.core.facebook.message_handler import (
     facebook_messenger_handler_messages)
 from orquestador_app.core.whatsapp.message_handler import (

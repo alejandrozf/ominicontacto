@@ -46,12 +46,41 @@
           <source :src="template.configuration.link_media" type="video/mp4">
         </video>
       </div>
-      <p class="m-0">
-        {{ getPreviewMessageHeader }}
-      </p>
-      <p class="m-0">
-        {{ getPreviewMessage }}
-      </p>
+        <p class="m-0 font-bold mb-2">
+            {{ getPreviewMessageHeader }}
+        </p>
+        <p class="m-0 mb-3 text-sm line-height-3">
+            {{ getPreviewMessage }}
+        </p>
+        <!-- BUTTONS -->
+        <div
+        v-if="template.configuration.type === 'BUTTONS' && getPreviewButtons.length"
+        class="flex flex-column gap-2 mt-3"
+        >
+        <button
+            v-for="(btn, index) in getPreviewButtons"
+            :key="index"
+            class="w-full text-center py-3 px-3
+                bg-white
+                border-round-2xl
+                shadow-1
+                text-blue-600
+                border-1 border-200"
+            disabled
+        >
+            <div class="font-medium">
+            {{ btn.text }}
+            </div>
+
+            <div
+            v-if="btn.type === 'URL' && btn.previewUrl"
+            class="text-xs text-500 mt-1"
+            style="overflow-wrap: anywhere;"
+            >
+            {{ btn.previewUrl }}
+            </div>
+        </button>
+        </div>
     </Panel>
     <div class="flex justify-content-end flex-wrap mt-2">
       <div class="flex align-items-center">
@@ -98,7 +127,8 @@ export default {
                         text: '',
                         type: '',
                         numParams_header: 0,
-                        numParams_text: 0
+                        numParams_text: 0,
+                        numParams_buttons: 0
                     }
                 };
             }
@@ -144,6 +174,29 @@ export default {
                     return field.value || `${match}`;
                 }
             );
+        },
+        getPreviewButtons () {
+            if (
+            !this.template.configuration ||
+            !this.template.configuration.buttons
+            ) {
+            return [];
+            }
+            return this.template.configuration.buttons.map((btn) => {
+            if (btn.type === 'URL' && btn.url) {
+                const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
+                const field = this.form[`param_buttons_${numero}`];
+                return field?.value || match;
+                });
+
+                return {
+                ...btn,
+                previewUrl: parsedUrl
+                };
+            }
+
+            return btn;
+            });
         }
     },
     methods: {
@@ -174,6 +227,10 @@ export default {
                 const name = `param_${i + 1}`;
                 this.form[name] = { name, empty: false, value: null };
             }
+            for (let i = 0; i < this.template.configuration.numParams_buttons; i++) {
+                const name = `param_buttons_${i + 1}`;
+                this.form[name] = { name, empty: false, value: null };
+            }
             console.log("this.form", this.form)
         },
         clearFilter () {
@@ -190,7 +247,7 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                if (!clave.startsWith("param_header")){
+                if (!clave.startsWith("param_header") && !clave.startsWith("param_buttons")){
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -201,6 +258,16 @@ export default {
             const formData = [];
             for (const clave in this.form) {
                 if (clave.startsWith("param_header")){
+                    const field = this.form[clave];
+                    formData.push(field.value);
+                }
+            }
+            return formData;
+        },
+        getFormDataButtons () {
+            const formData = [];
+            for (const clave in this.form) {
+                if (clave.startsWith("param_buttons")){
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -226,6 +293,7 @@ export default {
                     template_id: this.template.id,
                     params_header: this.getFormDataHeader(),
                     params: this.getFormData(),
+                    params_buttons: this.getFormDataButtons(),
                     campaign: this.campaignId,
                     contact: this.contactId
                 };

@@ -254,10 +254,16 @@ def gupshup_send_template_message(line, destination, template, data):
             # "Content-Type": "application/x-www-form-urlencoded",
             "apikey": line.proveedor.configuracion['api_key']
         }
+        params = []
+
+        for key in ["params", "params_header", "params_button"]:
+            value = data.get(key, [])
+            if isinstance(value, list):
+                params.extend(value)
         data = {
             'source': line.numero,
             'destination': destination,
-            'template': json.dumps({"id": template.identificador, "params": data["params"]})
+            'template': json.dumps({"id": template.identificador, "params": params})
         }
         if template.tipo == 'IMAGE':
             message = json.dumps({'image': {'link': template.link_media}, 'type': 'IMAGE'})
@@ -276,59 +282,124 @@ def gupshup_send_template_message(line, destination, template, data):
 
 
 def meta_send_template_message(line, destination, template, data):
-    try:
-        headers = {
-            "accept": "application/json",
-            "Authorization": 'Bearer ' + line.proveedor.configuracion['access_token']
-        }
-        header_parameters = []
-        if template.tipo == 'TEXT':
-            for param in data["params_header"]:
-                header_parameters.append({
-                    "type": template.tipo.lower(),
-                    "text": param
-                })
-        elif template.tipo in ('IMAGE', 'VIDEO', 'DOCUMENT'):
-            header_parameters.append({
-                "type": template.tipo.lower(),
-                template.tipo.lower(): json.dumps({'link': template.link_media})
-            })
-        else:
-            raise NotImplementedError()
+    """
+    data esperado:
+    {
+        "params_header": ["param1"],             # opcional
+        "params": ["param1", "param2"],          # opcional
+        "params_buttons": ["param_btn1"]         # opcional
+    }
+    """
 
-        body_parameters = []
-        for param in data["params"]:
-            body_parameters.append({
-                "type": "text",
-                "text": param
+    try:
+        access_token = line.proveedor.configuracion["access_token"]
+        phone_id = line.numero
+
+        components = []
+
+        # =====================================================
+        # HEADER (texto o multimedia)
+        # =====================================================
+        header_params = data.get("params_header")
+        if template.tipo in ('IMAGE', 'VIDEO', 'DOCUMENT'):  # header multimedia tiene prioridad
+            media_type = template.tipo.lower()
+            components.append({
+                "type": "header",
+                "parameters": [{
+                    "type": media_type,
+                    media_type: {
+                        'link': template.link_media
+                    }
+                }]
             })
+        # ---- Header texto
+        elif header_params:
+            components.append({
+                "type": "header",
+                "parameters": [{
+                    "type": "text",
+                    "text": param
+                } for param in header_params]
+            })
+
+        # =====================================================
+        # BODY
+        # =====================================================
+
+        body_params = data.get("params", [])
+        if body_params:
+            components.append({
+                "type": "body",
+                "parameters": [
+                    {"type": "text", "text": param}
+                    for param in body_params
+                ]
+            })
+
+        # =====================================================
+        # BUTTONS
+        # =====================================================
+
+        buttons_params = data.get("params_buttons", [])
+        if template.tipo == "BUTTONS" and buttons_params:
+
+            param_index = 0
+            button_component = None
+            for index, button in enumerate(template.botones):
+                button_type = button["type"]
+                # -------------------------------------------------
+                # URL BUTTON CON PARAMETRO
+                # -------------------------------------------------
+                if button_type == "URL" and param_index < len(buttons_params):
+                    url = button.get("url", "")
+                    if "{{" in url:
+                        button_component = {
+                            "type": "button",
+                            "sub_type": button_type.lower(),
+                            "index": str(index),
+                            "parameters": [{
+                                "type": "text",
+                                "text": buttons_params[param_index]
+                            }]
+                        }
+                        components.append(button_component)
+                        param_index += 1
+
+        # =====================================================
+        # PAYLOAD FINAL
+        # =====================================================
+
         payload = {
             "messaging_product": "whatsapp",
-            "recipient_type": "individual",
             "to": destination,
             "type": "template",
-            "template": json.dumps({
+            "template": {
                 "name": template.nombre,
                 "language": {
                     "code": template.idioma
                 },
-                "components": [
-                    {
-                        "type": "header",
-                        "parameters": header_parameters
-                    },
-                    {
-                        "type": "body",
-                        "parameters": body_parameters
-                    },
-                ]
-            })
+                "components": components
+            }
         }
+
         response = requests.post(
-            META_URL_SEND_MESSAGE.format(line.numero), headers=headers, data=payload)
+            META_URL_SEND_MESSAGE.format(phone_id),
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            },
+            json=payload
+        )
+
+        print("PAYLOAD SENT:")
+        print(json.dumps(payload, indent=4))
+        print("META RESPONSE:", response.text)
+
         return response
+
     except Exception as e:
-        logger.exception("send_text_message %r", e)
+        logger.exception("send_template_message %r", e)
+        raise
 
 
 def gupshup_send_text_message(line, destination, message):
@@ -401,6 +472,7 @@ def gupshup_send_multimedia_file_message(line, destination, message):
             "message": json.dumps(message)
         }
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data)
+        print("-------", response.json())
         return response.json()
     except Exception as e:
         logger.exception("send_text_message %r", e)
