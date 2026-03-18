@@ -29,17 +29,20 @@ export default {
         async updatedLocalStorage (event) {
             const conversationInfo =
         JSON.parse(localStorage.getItem('agtFacebookConversationInfo')) || null;
+            const dispositionId = conversationInfo?.isDisposition
+                ? conversationInfo?.client?.dispositionId || null
+                : null;
             await this.agtFacebookSetConversationInfo(conversationInfo);
             await this.agtFacebookDispositionChatDetailInit({
-                id: conversationInfo?.client?.dispositionId || null
+                id: dispositionId
             });
             await this.agtFacebookDispositionChatOptionsInit({
                 campaignId: conversationInfo?.campaignId || null
             });
             await this.agtFacebookDispositionChatHistoryInit({
-                id: conversationInfo?.client?.dispositionId || null
+                id: dispositionId
             });
-            await this.agtFacebookDispositionChatSetFormFlag(conversationInfo?.client?.dispositionId === null);
+            await this.agtFacebookDispositionChatSetFormFlag(!conversationInfo?.isDisposition);
         },
         async updateFlag () {
             const formToCreate =

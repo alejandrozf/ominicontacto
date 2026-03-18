@@ -186,7 +186,11 @@ export default {
         ...mapState(['agtFacebookContactDBFields', 'agtFacebookConversationInfo'])
     },
     methods: {
-        ...mapActions(['agtContactCreateFromConversation', 'agtContactCreate', 'agtFacebookContactUpdate']),
+        ...mapActions([
+            'agtFacebookContactCreateFromConversation',
+            'agtFacebookContactCreate',
+            'agtFacebookContactUpdate'
+        ]),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -315,14 +319,14 @@ export default {
                     contactId: null
                 };
                 if (this.formToCreate && this.formToCreate != null) {
-                    response = await this.agtContactCreateFromConversation(formData);
+                    response = await this.agtFacebookContactCreateFromConversation(formData);
                 }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
                   const formData = {
                     campaignId: localStorage.getItem('agtFacebookCampaingId'),
                     fdata: this.getFormData(),
                   };
                   console.log("formData >>", formData)
-                  response = await this.agtContactCreate(formData);
+                  response = await this.agtFacebookContactCreate(formData);
                 }
                 else {
                     formData.contactId = this.form.id.value;

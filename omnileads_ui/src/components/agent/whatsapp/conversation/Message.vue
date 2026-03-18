@@ -6,10 +6,10 @@
           >{{ message?.from }}</span
         > -->
         <div v-if="message.type==='text' || message.type==='buttons'">
-          <h5 v-if="message?.message.header" class="mb-1" :style="{ 'white-space': 'pre-wrap', 'font-weight': 'bold' }">
+          <h5 v-if="message?.message.header" class="mb-1 message-text" :style="{ 'font-weight': 'bold' }">
             {{ message?.message.header }}
           </h5>
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
           <div
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div v-if="message.type==='template'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
         </div>
@@ -70,17 +70,17 @@
           <pre>{{message?.message.contacts}}</pre>
         </div>
         <div v-if="message.type==='list-gupshup' || message.type==='list-meta'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre' }">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
         </div>
         <div v-if="message.type==='list_reply'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
         </div>
         <div v-if="message.type==='button_reply'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.title }}
           </p>
         </div>
@@ -442,6 +442,11 @@ export default {
 .message-l {
   float: left;
 }
+.message-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .wa-message {
   display: flex;
   flex-direction: column;
@@ -469,6 +474,8 @@ export default {
   border-radius: 12px;
   font-size: 14px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .wa-reply-bar {

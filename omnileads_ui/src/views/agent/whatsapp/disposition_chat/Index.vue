@@ -29,17 +29,20 @@ export default {
         async updatedLocalStorage (event) {
             const conversationInfo =
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
+            const dispositionId = conversationInfo?.isDisposition
+                ? conversationInfo?.client?.dispositionId || null
+                : null;
             await this.agtWhatsSetCoversationInfo(conversationInfo);
             await this.agtWhatsDispositionChatDetailInit({
-                id: conversationInfo?.client?.dispositionId || null
+                id: dispositionId
             });
             await this.agtWhatsDispositionChatOptionsInit({
                 campaignId: conversationInfo?.campaignId || null
             });
             await this.agtWhatsDispositionChatHistoryInit({
-                id: conversationInfo?.client?.dispositionId || null
+                id: dispositionId
             });
-            await this.agtWhatsDispositionChatSetFormFlag(conversationInfo?.client?.dispositionId === null);
+            await this.agtWhatsDispositionChatSetFormFlag(!conversationInfo?.isDisposition);
         },
         async updateFlag () {
             const formToCreate =

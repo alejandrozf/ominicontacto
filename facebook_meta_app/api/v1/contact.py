@@ -98,7 +98,6 @@ class CreateSerializer(serializers.ModelSerializer):
 
     def validar_page_client_id(self, field, value):
         if not value:
-            return "-"
             raise serializers.ValidationError({field: _('campo requerido')})
         return value
 
@@ -116,7 +115,7 @@ class CreateSerializer(serializers.ModelSerializer):
         return json.dumps(datos)
 
     def to_internal_value(self, data):
-        mandatory = self.campana.get_campos_obligatorios()
+        mandatory = list(self.campana.get_campos_obligatorios())
         metadata = self.campana.bd_contacto.get_metadata()
         campos_bd = metadata.nombres_de_columnas
         telefono = metadata.nombre_campo_telefono
@@ -124,7 +123,8 @@ class CreateSerializer(serializers.ModelSerializer):
             telefono_val = data['datos'].pop(telefono)
             data['telefono'] = self.validar_telefono(telefono, telefono_val)
         else:
-            raise serializers.ValidationError({telefono: _('campo requerido')})
+            data['telefono'] = ''
+            mandatory = [field for field in mandatory if field != telefono]
         if 'page_client_id' in data['datos']:
             page_client_id_val = data['datos'].pop('page_client_id')
             data['page_client_id'] =\
@@ -173,6 +173,11 @@ class UpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({field: error.message})
         return value
 
+    def validar_page_client_id(self, field, value):
+        if not value:
+            raise serializers.ValidationError({field: _('campo requerido')})
+        return value
+
     def get_datos_json(self, data):
         datos = []
         metadata = self.campana.bd_contacto.get_metadata()
@@ -195,9 +200,12 @@ class UpdateSerializer(serializers.ModelSerializer):
         if telefono in data['datos']:
             telefono_val = data['datos'].pop(telefono)
             data['telefono'] = self.validar_telefono(telefono, telefono_val)
+        else:
+            data['telefono'] = self.instance.telefono
         if 'page_client_id' in data['datos']:
             page_client_id_val = data['datos'].pop('page_client_id')
-            data['page_client_id'] = self.validar_telefono('page_client_id', page_client_id_val)
+            data['page_client_id'] = self.validar_page_client_id(
+                'page_client_id', page_client_id_val)
         if set(data['datos'].keys()).issubset(set(campos_bd)):
             if not set(data['datos'].keys()).intersection(set(campos_no_editables))\
                     and not set(data['datos'].keys()).intersection(set(campos_ocultos)):
@@ -239,11 +247,15 @@ class ViewSet(viewsets.ViewSet):
         try:
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
+            conversation = ConversationMessengerMetaApp.objects.get(id=conversacion_pk)
+            metadata = campana.bd_contacto.get_metadata()
+            telefono_field = metadata.nombre_campo_telefono
+            if 'page_client_id' not in request_data and conversation.page_client_id:
+                request_data['page_client_id'] = conversation.page_client_id
             data = {
                 "bd_contacto": campana.bd_contacto.id,
                 "datos": request_data
             }
-            conversation = ConversationMessengerMetaApp.objects.get(id=conversacion_pk)
             serializer = CreateSerializer(data=data, context={'campana': campana})
             if serializer.is_valid():
                 client = serializer.save()

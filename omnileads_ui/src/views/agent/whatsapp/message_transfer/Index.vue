@@ -28,7 +28,8 @@ export default {
         JSON.parse(localStorage.getItem('agtWhatsCoversationInfo')) || null;
             await this.agtWhatsSetCoversationInfo(conversationInfo);
             await this.agtWhatsTransferChatInitData({
-                campaingId: conversationInfo?.campaignId || null
+                campaingId: conversationInfo?.campaignId || null,
+                conversationId: conversationInfo?.id || null
             });
         }
     },

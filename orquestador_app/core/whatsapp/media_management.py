@@ -43,6 +43,7 @@ def meta_get_media_content(line, type, payload):
             response_archivo = requests.get(url, headers=headers, stream=True, timeout=30)
             response_archivo.raise_for_status()
             ruta_archivo = os.path.join(settings.MEDIA_ROOT, 'archivos_whatsapp', nombre_archivo)
+            os.makedirs(os.path.dirname(ruta_archivo), mode=0o755, exist_ok=True)
             with default_storage.open(ruta_archivo, 'wb') as destino:
                 for chunk in response_archivo.iter_content(chunk_size=8192):
                     destino.write(chunk)
@@ -73,6 +74,7 @@ def meta_get_media_template(line, link):
     else:
         nombre_archivo = link.split("/")[-1].split('?')[0]
     ruta_archivo = os.path.join(settings.MEDIA_ROOT, 'archivos_whatsapp', nombre_archivo)
+    os.makedirs(os.path.dirname(ruta_archivo), mode=0o755, exist_ok=True)
     with default_storage.open(ruta_archivo, 'wb') as destino:
         for chunk in response_archivo.iter_content(chunk_size=8192):
             destino.write(chunk)

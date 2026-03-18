@@ -4,12 +4,12 @@
       <div class="py-0 my-0">
         {{ message?.content }}
         <div v-if="message.type==='message' || message.type==='quick_reply'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
         </div>
         <div v-if="message.type==='template'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre-wrap' }">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message }}
           </p>
         </div>
@@ -40,7 +40,7 @@
           </video>
         </div>
         <div v-if="message.type==='list'">
-          <p class="mt-2 mb-3" :style="{ 'white-space': 'pre'}">
+          <p class="mt-2 mb-3 message-text">
             {{ message?.message.text }}
           </p>
           <button class="btn btn-primary"
@@ -121,5 +121,10 @@ export default {
 }
 .message-l {
   float: left;
+}
+.message-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 </style>

@@ -31,7 +31,7 @@ export default {
             };
         }
     },
-    async agtContactCreateFromConversation (
+    async agtFacebookContactCreateFromConversation (
         { commit },
         { campaignId = null, conversationId = null, data }
     ) {
@@ -56,7 +56,7 @@ export default {
             };
         }
     },
-    async agtContactCreate(
+    async agtFacebookContactCreate(
         { commit },
         { campaignId = null, fdata }
     ) {

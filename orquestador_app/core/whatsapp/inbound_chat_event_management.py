@@ -36,6 +36,13 @@ redis_2 = create_redis_connection(db=2)
 logger = logging.getLogger(__name__)
 
 
+def _next_whatsapp_expire(timestamp):
+    return (timestamp + timezone.timedelta(days=1)) - timezone.timedelta(
+        seconds=timestamp.second,
+        microseconds=timestamp.microsecond,
+    )
+
+
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     notifications = await s2a_inbound_chat_event(
         line,
@@ -78,6 +85,7 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
             )
         if created_message or not message_inbound.conversation:
             created_conversation = False
+            reactivated_conversation = False
             destination_entrante = line.destino
             conversations_from_origen = ConversacionWhatsapp.objects.filter(
                 line=line, whatsapp_id=origen)
@@ -85,6 +93,9 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
             conversation =\
                 conversations_from_origen.filter(
                     expire__gte=timestamp, is_disposition=False).last()
+            if not conversation:
+                conversation = conversations_from_origen.filter(is_disposition=False).last()
+                reactivated_conversation = conversation is not None
             if not conversation:
                 client_alias = sender['name'] if 'name' in sender else ""
                 campana = None
@@ -101,9 +112,7 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                     whatsapp_id=origen,
                     is_active=True,
                     agent=None,
-                    expire=(
-                        timestamp + timezone.timedelta(days=1)) - timezone.timedelta(
-                            seconds=timestamp.second, microseconds=timestamp.microsecond),
+                    expire=_next_whatsapp_expire(timestamp),
                     timestamp=timestamp,
                     date_last_interaction=timestamp,
                     client_alias=client_alias
@@ -125,6 +134,7 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                     conversation.is_active = True
                 if conversation.saliente and not conversation.atendida:
                     conversation.atendida = True
+                conversation.expire = _next_whatsapp_expire(timestamp)
                 conversation.date_last_interaction = timestamp
                 if not conversation.client_alias:
                     conversation.client_alias = sender['name'] if 'name' in sender else ""
@@ -133,11 +143,16 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
             message_inbound.save()
             if is_out_of_time_chat:
                 autoresponse_out_of_time(line, conversation, timestamp)
-                conversation.is_disposition = True
-                conversation.save()
-                return
+                if conversation.agent:
+                    notifications.append(('notify_whatsapp_new_message', {
+                        'conversation': conversation,
+                        'line': line,
+                        'message': message_inbound,
+                    }))
+                return notifications
             #  ## notificar a agentes
-            if created_conversation and conversation.campana:
+            if (created_conversation or reactivated_conversation) and conversation.campana \
+                    and not conversation.agent:
                 redis_2.sadd(
                     f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NEW-INBOUND-CONV',
                     conversation.id

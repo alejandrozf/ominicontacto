@@ -19,7 +19,18 @@
         />
       </div>
     </div>
-    <div class="flex justify-content-end flex-wrap my-2">
+    <div class="flex justify-content-between flex-wrap my-2">
+      <div
+        v-if="conversationInfo.transferAgent"
+        class="flex align-items-center justify-content-center"
+      >
+        <Tag
+          icon="pi pi-user-plus"
+          :value="`Transferido por ${conversationInfo.transferAgent}`"
+          severity="secondary"
+          rounded
+        ></Tag>
+      </div>
       <div class="flex align-items-center justify-content-center">
         <small class="font-italic">
           <b>{{ conversationInfo.date }}</b>
@@ -91,6 +102,7 @@ export default {
                     isMine: false,
                     isNew: false,
                     expire: null,
+                    transferAgent: null,
                     errorEx: {},
                     error: false
                 };
@@ -104,6 +116,14 @@ export default {
                 this.conversationInfo.id
             );
             if (status === HTTP_STATUS.SUCCESS) {
+                localStorage.setItem(
+                    'agtFacebookConversationInfo',
+                    JSON.stringify(this.conversationInfo)
+                );
+                localStorage.setItem(
+                    'agtFacebookConversationAttending',
+                    this.conversationInfo.id
+                );
                 this.$router.push({
                     name: 'agent_facebook_conversation_detail',
                     params: { id: this.conversationInfo.id }

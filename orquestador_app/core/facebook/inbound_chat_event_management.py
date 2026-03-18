@@ -126,9 +126,13 @@ def s2a_inbound_chat_event(page, timestamp, message_id, origen, content,
             message_inbound.save()
             if is_out_of_time_chat:
                 autoresponse_out_of_time(conversation, timestamp)
-                conversation.is_disposition = True
-                conversation.save()
-                return
+                if conversation.agent:
+                    notifications.append(('notify_facebook_new_message', {
+                        'conversation': conversation,
+                        'page': page,
+                        'message': message_inbound,
+                    }))
+                return notifications
             #  ## notificar a agentes
             if created_conversation and conversation.campana:
                 # redis_2.sadd(

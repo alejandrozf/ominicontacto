@@ -37,6 +37,7 @@ export default {
                 date: data && data.date ? data.date.toLocaleString() : null,
                 campaignId: data && data.campaignId ? data.campaignId : null,
                 campaignName: data && data.campaignName ? data.campaignName : null,
+                transferAgent: data && data.transferAgent ? data.transferAgent : null,
                 numMessages: data && data.numMessages ? data.numMessages : null,
                 numMessagesUnread: data && data.numMessagesUnread ? data.numMessagesUnread : null,
                 isMine: data && data.isMine ? data.isMine : null,
@@ -46,8 +47,10 @@ export default {
                 error: data && data.error ? data.error : false
             };
         },
-        conversationDetail ({ id, isNew, isMine }) {
+        conversationDetail (conversation) {
+            const { id, isNew, isMine } = conversation;
             if (!isNew && isMine) {
+                localStorage.setItem('agtFacebookConversationInfo', JSON.stringify(this.getConversationInfo(conversation)));
                 localStorage.setItem('agtFacebookConversationAttending', id);
                 this.$router.push({
                     name: 'agent_facebook_conversation_detail',

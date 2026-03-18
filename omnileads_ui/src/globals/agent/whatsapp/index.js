@@ -55,7 +55,8 @@ export const WHATSAPP_LOCALSTORAGE_EVENTS = {
         FORM_INIT_DATA: 'whatsapp-localstorage-contact-form-init-data-event'
     },
     DISPOSITION: {
-        FORM_INIT_DATA: 'whatsapp-localstorage-disposition-form-init-data-event'
+        FORM_INIT_DATA: 'whatsapp-localstorage-disposition-form-init-data-event',
+        DONE: 'whatsapp-localstorage-disposition-done-event'
     },
     TRANSFER: {
         DONE: 'whatsapp-localstorage--transfer--done',
