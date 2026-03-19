@@ -37,6 +37,22 @@ export default class FacebookContactService extends BaseService {
         }
     }
 
+    async suggestMatch ({ campaignId, conversationId }) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify({ conversation_id: conversationId }));
+            const resp = await fetch(
+                this.urls.ContactSuggestMatch(campaignId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`Error al sugerir coincidencia de contacto`);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
     async getContactDBFields ({ campaignId }) {
         try {
             const resp = await fetch(
@@ -96,6 +112,23 @@ export default class FacebookContactService extends BaseService {
             return await resp.json();
         } catch (error) {
             console.error(`===> ERROR al Actualizar Contacto`);
+            console.error(error);
+            return null;
+        } finally {
+            this.initPayload();
+        }
+    }
+
+    async assignContactToConversation ({ conversationId, contactId }) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify({ contact_pk: contactId }));
+            const resp = await fetch(
+                this.urls.ContactAssignToConversation(conversationId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error(`===> ERROR al asignar Contacto a Conversacion`);
             console.error(error);
             return null;
         } finally {

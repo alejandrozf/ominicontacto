@@ -16,8 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 import json
-from functools import reduce
-from operator import or_
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.utils.translation import ugettext as _
@@ -34,6 +32,9 @@ from facebook_meta_app.api.utils import HttpResponseStatus, get_response_data
 from ominicontacto_app.models import Campana, Contacto
 from ominicontacto_app.models import TelephoneValidator
 from facebook_meta_app.models import ConversationMessengerMetaApp
+
+
+MAX_SEARCH_RESULTS = 20
 
 
 class ListSerializer(serializers.Serializer):
@@ -222,6 +223,21 @@ class ViewSet(viewsets.ViewSet):
     permission_classes = [TienePermisoCanalFacebookAgente]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
 
+    def _contact_queryset(self, campana):
+        return Contacto.objects.filter(
+            bd_contacto=campana.bd_contacto
+        ).select_related('bd_contacto')
+
+    def _active_contact_ids(self, campana, exclude_conversation_id=None):
+        conversations = ConversationMessengerMetaApp.objects.filter(
+            is_disposition=False,
+            campana_id=campana.pk,
+            client_id__isnull=False,
+        )
+        if exclude_conversation_id:
+            conversations = conversations.exclude(pk=exclude_conversation_id)
+        return conversations.values_list('client_id', flat=True)
+
     def list(self, request, campana_pk):
         try:
             filtro = request.GET.get('search')
@@ -248,8 +264,6 @@ class ViewSet(viewsets.ViewSet):
             campana = Campana.objects.get(id=campana_pk)
             request_data = request.data.copy()
             conversation = ConversationMessengerMetaApp.objects.get(id=conversacion_pk)
-            metadata = campana.bd_contacto.get_metadata()
-            telefono_field = metadata.nombre_campo_telefono
             if 'page_client_id' not in request_data and conversation.page_client_id:
                 request_data['page_client_id'] = conversation.page_client_id
             data = {
@@ -367,43 +381,95 @@ class ViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @decorators.action(detail=False, methods=["post"])
+    def suggest_match(self, request, campana_pk):
+        try:
+            campana = Campana.objects.get(id=campana_pk)
+            conversation_id = request.data.get('conversation_id')
+            if not conversation_id:
+                return response.Response(
+                    data=get_response_data(
+                        message=_('Conversación requerida')),
+                    status=status.HTTP_400_BAD_REQUEST)
+            conversation = ConversationMessengerMetaApp.objects.only(
+                'id', 'page_client_id'
+            ).get(id=conversation_id)
+            if not conversation.page_client_id:
+                return response.Response(
+                    data=get_response_data(
+                        status=HttpResponseStatus.SUCCESS,
+                        message=_('Sin coincidencia sugerida'),
+                        data=None),
+                    status=status.HTTP_200_OK)
+            active_contact_ids = self._active_contact_ids(
+                campana, exclude_conversation_id=conversation.pk)
+            queryset = self._contact_queryset(campana).filter(
+                facebook=conversation.page_client_id
+            ).exclude(id__in=list(active_contact_ids))
+            contact = queryset.only(
+                'id', 'telefono', 'facebook', 'datos', 'bd_contacto_id',
+                'bd_contacto__metadata'
+            ).first()
+            serializer = ListSerializer(contact) if contact else None
+            return response.Response(
+                data=get_response_data(
+                    status=HttpResponseStatus.SUCCESS,
+                    message=_('Se obtuvo la coincidencia sugerida'),
+                    data=serializer.data if serializer else None),
+                status=status.HTTP_200_OK)
+        except ConversationMessengerMetaApp.DoesNotExist:
+            return response.Response(
+                data=get_response_data(
+                    message=_('Conversación no encontrada')),
+                status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return response.Response(
+                data=get_response_data(
+                    message=_('Error al obtener coincidencia sugerida')),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @decorators.action(detail=False, methods=["post"])
     def search(self, request, campana_pk):
         try:
             campana = Campana.objects.get(id=campana_pk)
-            search = request.data.get('search')
-            if search:
-                contactos = Contacto.objects.filter(
-                    Q(telefono__icontains=search) |
-                    Q(facebook__icontains=search) |
-                    Q(id_externo__icontains=search) |
-                    Q(datos__icontains=search),
-                    bd_contacto=campana.bd_contacto
-                )
-                serializer = ListSerializer(contactos, many=True)
+            search = (request.data.get('search') or '').strip()
+            phone = (request.data.get('phone') or '').strip()
+            name = (request.data.get('name') or '').strip()
+            conversation_id = request.data.get('conversation_id')
+            try:
+                limit = int(request.data.get('limit', MAX_SEARCH_RESULTS))
+            except (TypeError, ValueError):
+                limit = MAX_SEARCH_RESULTS
+            limit = max(1, min(limit, 50))
+
+            active_contact_ids = list(
+                self._active_contact_ids(
+                    campana, exclude_conversation_id=conversation_id))
+            base_queryset = self._contact_queryset(campana)
+            if active_contact_ids:
+                base_queryset = base_queryset.exclude(id__in=active_contact_ids)
+
+            candidate_terms = [term for term in [search, phone, name] if term]
+            if not candidate_terms:
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
                         message=_('Se obtuvieron los contactos de forma exitosa'),
-                        data=serializer.data
-                    ),
-                    status=status.HTTP_200_OK
+                        data=[]),
+                    status=status.HTTP_200_OK)
+            filters = Q()
+            for term in candidate_terms:
+                filters |= (
+                    Q(telefono__icontains=term) |
+                    Q(facebook__icontains=term) |
+                    Q(id_externo__icontains=term) |
+                    Q(datos__icontains=term)
                 )
-            values = request.data.values()
-            q_list = [Q(datos__contains=x) for x in values]
-            if 'dial_code' in request.data:
-                q_list.append(Q(telefono__contains=request.data['dial_code']))
-            if 'phone' in request.data:
-                q_list.append(Q(telefono=request.data['phone']))
-            if 'name' in request.data:
-                q_list.append(Q(datos__icontains=request.data['name']))
-            ids_contactos_en_curso = ConversationMessengerMetaApp.objects\
-                .conversaciones_en_curso()\
-                .filter(campana_id=campana.pk, client_id__isnull=False)\
-                .values_list('client_id', flat=True)
-            contactos = Contacto.objects.filter(
-                reduce(or_, q_list), bd_contacto=campana.bd_contacto)
-            if ids_contactos_en_curso.exists():
-                contactos = contactos.exclude(id__in=list(ids_contactos_en_curso))
+
+            contactos = base_queryset.filter(filters).only(
+                'id', 'telefono', 'facebook', 'datos', 'bd_contacto_id',
+                'bd_contacto__metadata'
+            ).distinct()[:limit]
             serializer = ListSerializer(contactos, many=True)
             return response.Response(
                 data=get_response_data(

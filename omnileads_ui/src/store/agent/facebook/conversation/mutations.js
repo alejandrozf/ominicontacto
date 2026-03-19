@@ -203,9 +203,12 @@ export default {
         state.agtFacebookChatsList = chats;
     },
     agtFacebookReceiveNewChat (state, chat = null) {
+        if (!chat || !chat.chat_id) return;
         const from = chat && chat.from ? chat.from : null;
-        const contactData = chat && chat.contact_data && chat.contact_data.nombre ? chat.contact_data.nombre : null;
-        state.agtFacebookChatsList.push({
+        const contactData = chat && chat.contact_data && chat.contact_data.nombre
+            ? chat.contact_data.nombre
+            : null;
+        const chatData = {
             id: chat && chat.chat_id ? chat.chat_id : null,
             from: contactData || from,
             campaignId: chat && chat.campaing_id ? chat.campaing_id : null,
@@ -223,7 +226,18 @@ export default {
             expire: chat && chat.expire ? new Date(chat.expire) : null,
             errorEx: chat && chat.error_ex ? chat.error_ex : null,
             error: chat && chat.error ? chat.error : false
-        });
+        };
+        const chatIndex = state.agtFacebookChatsList.findIndex(
+            (item) => item.id === chatData.id
+        );
+        if (chatIndex >= 0) {
+            state.agtFacebookChatsList.splice(chatIndex, 1, {
+                ...state.agtFacebookChatsList[chatIndex],
+                ...chatData
+            });
+            return;
+        }
+        state.agtFacebookChatsList.push(chatData);
     },
     agtFacebookSetConversationInfo (state, conversation = null) {
         state.agtFacebookConversationInfo = {

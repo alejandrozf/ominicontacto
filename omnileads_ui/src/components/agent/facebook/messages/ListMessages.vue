@@ -11,7 +11,6 @@
     <template #option="data">
       <ConversationInfo
         :conversationInfo="getConversationInfo(data.option)"
-        @click="conversationDetail(data.option)"
       />
     </template>
   </Listbox>
@@ -46,17 +45,6 @@ export default {
                 errorEx: data && data.errorEx ? data.errorEx : null,
                 error: data && data.error ? data.error : false
             };
-        },
-        conversationDetail (conversation) {
-            const { id, isNew, isMine } = conversation;
-            if (!isNew && isMine) {
-                localStorage.setItem('agtFacebookConversationInfo', JSON.stringify(this.getConversationInfo(conversation)));
-                localStorage.setItem('agtFacebookConversationAttending', id);
-                this.$router.push({
-                    name: 'agent_facebook_conversation_detail',
-                    params: { id }
-                });
-            }
         }
     }
 };
