@@ -74,6 +74,16 @@ def get_type(fileName):
     return 'file'
 
 
+def _merge_forward_flags(original_content, content):
+    if not isinstance(original_content, dict) or not isinstance(content, dict):
+        return content
+    if original_content.get('forwarded') is True:
+        content['forwarded'] = True
+    if original_content.get('frequently_forwarded') is True:
+        content['frequently_forwarded'] = True
+    return content
+
+
 class ContactoSerializerEx(serializers.Serializer):
     id = serializers.IntegerField()
     phone = serializers.CharField(source='telefono')
@@ -118,7 +128,7 @@ class MensajesSerializerEx(serializers.Serializer):
                     text += "{}-{} \n"\
                             .format(option['title'],
                                     option['description'] if 'description' in option else '')
-                return {'text': text}
+                return _merge_forward_flags(obj.content, {'text': text})
             elif obj.type == 'list-meta':
                 content = json.loads(obj.content[0]['text'])
                 text = content['header']['text'] + '\n'
@@ -128,13 +138,13 @@ class MensajesSerializerEx(serializers.Serializer):
                     text += "{}-{} \n"\
                             .format(option['title'],
                                     option['description'] if 'description' in option else '')
-                return {'text': text}
+                return _merge_forward_flags(obj.content, {'text': text})
             elif obj.type == 'list_reply':
                 text = "Reply-option:\n {}-{}"\
                     .format(obj.content['title'],
                             obj.content['description'] if 'description' in obj.content else '')
-                return {'text': text}
-            return obj.content
+                return _merge_forward_flags(obj.content, {'text': text})
+            return _merge_forward_flags(obj.content, obj.content)
         return {}
 
 

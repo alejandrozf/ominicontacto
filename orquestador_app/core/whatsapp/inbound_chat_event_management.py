@@ -43,6 +43,24 @@ def _next_whatsapp_expire(timestamp):
     )
 
 
+def _get_origin_message_id(context):
+    if not isinstance(context, dict):
+        return None
+    return context.get('gsId') or context.get('id')
+
+
+def _add_origin_context(content, context):
+    origin_message_id = _get_origin_message_id(context)
+    if not origin_message_id:
+        return
+    try:
+        mensaje_origen = MensajeWhatsapp.objects.get(message_id=origin_message_id)
+    except MensajeWhatsapp.DoesNotExist:
+        logger.debug("No se encontro mensaje origen para context=%r", context)
+        return
+    content.update({'context': mensaje_origen.content})
+
+
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     notifications = await s2a_inbound_chat_event(
         line,
@@ -66,12 +84,7 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
         is_out_of_time_chat = is_out_of_time(line, timestamp)
         if context and type in ['reply_text', 'reply_image', 'reply_video',
                                 'reply_document', 'list_reply', 'button_reply', 'button']:
-            try:
-                mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
-            except Exception as e:
-                logger.debug("%r", e)
-                mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
-            content.update({'context': mensaje_origen.content})
+            _add_origin_context(content, context)
         message_inbound, created_message =\
             MensajeWhatsapp.objects.get_or_create(
                 message_id=message_id, defaults={
@@ -187,11 +200,10 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
 def asignar_campana(line, conversation, content, context):
     notifications = []
     try:
-        try:
-            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['gsId'])  # gupshup
-        except Exception as e:
-            logger.exception("%r", e)
-            mensaje_origen = MensajeWhatsapp.objects.get(message_id=context['id'])  # meta
+        origin_message_id = _get_origin_message_id(context)
+        if not origin_message_id:
+            return notifications
+        mensaje_origen = MensajeWhatsapp.objects.get(message_id=origin_message_id)
 
         destino_entrante_id = mensaje_origen.sender['destino_entrante']
         destination_entrante = DestinoEntrante.objects.get(id=destino_entrante_id)
