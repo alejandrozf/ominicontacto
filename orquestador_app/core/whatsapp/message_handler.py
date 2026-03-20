@@ -9,6 +9,21 @@ import logging as _logging
 logger = _logging.getLogger(__name__)
 
 
+def _extract_forward_flags(*candidates):
+    flags = {}
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        if candidate.get("forwarded") is True or candidate.get("isForwarded") is True:
+            flags["forwarded"] = True
+        if (
+            candidate.get("frequently_forwarded") is True
+            or candidate.get("frequentlyForwarded") is True
+        ):
+            flags["frequently_forwarded"] = True
+    return flags
+
+
 async def handle_gupshup_message(line: Line, event: dict):
     try:
         event_timestamp = datetime.fromtimestamp(
@@ -41,23 +56,33 @@ async def handle_gupshup_message(line: Line, event: dict):
             print("event['payload']:", event["payload"])
             type = event["payload"]["type"]
             print("type:", type)
+            context = event["payload"]["context"] if 'context' in event["payload"] else {}
             if type in ["video", "image", "document"]:
-                if 'context' in event["payload"]:
+                if context:
                     type = "reply_" + type
             if type == "text":
-                if 'context' in event["payload"]:
+                if context:
                     type = "reply_text"
             if type == "quick_reply":
                 type = event["payload"]["payload"]["type"]
+
+            content = event["payload"]["payload"]
+            forward_flags = _extract_forward_flags(
+                event["payload"],
+                event["payload"].get("payload"),
+                context,
+            )
+            if isinstance(content, dict):
+                content.update(forward_flags)
 
             await inbound_chat_event(
                 line,
                 event_timestamp,
                 event["payload"]["id"],
                 event["payload"]["source"],
-                event["payload"]["payload"],
+                content,
                 event["payload"]["sender"],
-                event["payload"]["context"] if 'context' in event["payload"] else {},
+                context,
                 type,
             )
     except Exception:
@@ -94,41 +119,47 @@ async def handle_meta_messages(line: Line, event: dict):
                 error_ex=error_ex,
             )
         if "messages" in value_object:
+            message = value_object["messages"][0]
             event_timestamp = datetime.fromtimestamp(
-                int(value_object["messages"][0]["timestamp"]),
+                int(message["timestamp"]),
                 timezone.get_current_timezone(),
             )
-            type = value_object["messages"][0]["type"]
+            type = message["type"]
             context = None
+            forward_flags = _extract_forward_flags(message, message.get(type))
             if type == "text":
                 content = {
-                    type: value_object["messages"][0][type]["body"]
+                    type: message[type]["body"]
                 }
-                if 'context' in value_object["messages"][0]:
-                    context = value_object["messages"][0]["context"]
+                content.update(forward_flags)
+                if 'context' in message:
+                    context = message["context"]
                     type = "reply_text"
 
             if type in ["video", "image", "document"]:
-                content = meta_get_media_content(line, type, value_object["messages"][0])
-                if 'context' in value_object["messages"][0]:
-                    context = value_object["messages"][0]["context"]
+                content = meta_get_media_content(line, type, message)
+                content.update(forward_flags)
+                if 'context' in message:
+                    context = message["context"]
                     type = "reply_" + type
 
             if type == "interactive":
-                context = value_object["messages"][0]["context"]
-                if "list_reply" in value_object["messages"][0]["interactive"]:
+                context = message.get("context")
+                if "list_reply" in message["interactive"]:
                     type = "list_reply"
-                    content = value_object["messages"][0]["interactive"]["list_reply"]
+                    content = message["interactive"]["list_reply"]
+                    content.update(forward_flags)
             if type == "button":
-                context = value_object["messages"][0]["context"]
+                context = message.get("context")
                 type = "button"
-                content = value_object["messages"][0]["button"]
+                content = message["button"]
+                content.update(forward_flags)
             sender = value_object["contacts"][0]
             await inbound_chat_event(
                 line,
                 event_timestamp,
-                value_object["messages"][0]["id"],
-                value_object["messages"][0]["from"],
+                message["id"],
+                message["from"],
                 content,
                 sender,
                 context,

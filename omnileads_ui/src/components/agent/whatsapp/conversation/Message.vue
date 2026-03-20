@@ -2,6 +2,9 @@
   <Card class="border-round-xl" :class="getClasses(message?.itsMine)" style="max-width:65%">
     <template #content>
       <div class="py-0 my-0">
+        <div v-if="isForwarded(message?.message)" class="mb-2">
+          <Tag severity="info" :value="getForwardedLabel(message?.message)"></Tag>
+        </div>
         <!-- <span
           >{{ message?.from }}</span
         > -->
@@ -430,6 +433,14 @@ export default {
             } else if (status === WHATSAPP_MESSAGE.STATUS.ERROR) {
                 return 'pi pi-times-circle';
             }
+        },
+        isForwarded (content) {
+            return content?.forwarded === true || content?.frequently_forwarded === true;
+        },
+        getForwardedLabel (content) {
+            return content?.frequently_forwarded === true
+                ? 'Reenviado muchas veces'
+                : 'Reenviado';
         }
     }
 };
