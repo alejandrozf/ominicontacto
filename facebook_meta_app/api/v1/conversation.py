@@ -516,7 +516,7 @@ class ViewSet(viewsets.ModelViewSet):
                         'campaign_name': conversacion.campana.nombre,
                         'agent': agente.user.pk
                     }
-                    agent_notifier.notify_whatsapp_chat_attended(agente.user_id, message)
+                    agent_notifier.notify_facebook_chat_attended(agente.user_id, message)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS, data=data,
@@ -549,12 +549,23 @@ class ViewSet(viewsets.ModelViewSet):
                     data=get_response_data(
                         message=_('El contacto no pertenece a la base de datos de la campaña')),
                     status=status.HTTP_400_BAD_REQUEST)
-            if ConversationMessengerMetaApp.objects.conversaciones_en_curso()\
-                    .filter(client_id=contact.pk, line_id=conversacion.line.pk).exists():
+            if contact.facebook and contact.facebook != conversacion.page_client_id:
+                return response.Response(
+                    data=get_response_data(
+                        message=_(
+                            'El contacto ya está asociado a otro identificador de Facebook'
+                        )),
+                    status=status.HTTP_400_BAD_REQUEST)
+            if ConversationMessengerMetaApp.objects.filter(is_disposition=False)\
+                    .filter(client_id=contact.pk, page_id=conversacion.page_id)\
+                    .exclude(pk=conversacion.pk).exists():
                 return response.Response(
                     data=get_response_data(
                         message=_('El contacto ya tiene una conversación activa')),
                     status=status.HTTP_400_BAD_REQUEST)
+            if not contact.facebook:
+                contact.facebook = conversacion.page_client_id
+                contact.save(update_fields=['facebook'])
             conversacion.client = contact
             conversacion.save()
             return response.Response(

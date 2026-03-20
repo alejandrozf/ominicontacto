@@ -7,7 +7,7 @@
         class="field sm:col-12 md:col-6 lg:col-6 xl:col-6"
       >
         <div v-if="field.name !== 'id'">
-          <div v-if="field.mandatory">
+          <div v-if="isFieldMandatory(field)">
             <label
               v-if="field.is_phone_field"
               :class="{
@@ -104,7 +104,7 @@
             </div>
             <small
               v-if="
-                field.mandatory &&
+                isFieldMandatory(field) &&
                 field.is_phone_field &&
                 !isPhoneValid(field.value) &&
                 submitted
@@ -186,7 +186,11 @@ export default {
         ...mapState(['agtFacebookContactDBFields', 'agtFacebookConversationInfo'])
     },
     methods: {
-        ...mapActions(['agtContactCreateFromConversation', 'agtContactCreate', 'agtFacebookContactUpdate']),
+        ...mapActions([
+            'agtFacebookContactCreateFromConversation',
+            'agtFacebookContactCreate',
+            'agtFacebookContactUpdate'
+        ]),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -264,6 +268,12 @@ export default {
         isPhoneValid (phone = null) {
             return this.$helpers.isPhoneValid(phone);
         },
+        isFieldMandatory (field = {}) {
+            if (field.is_phone_field) {
+                return false;
+            }
+            return field.mandatory === true;
+        },
         isFieldReadonly (field = {}) {
             return field.block === true || field.name === 'page_client_id';
         },
@@ -286,19 +296,20 @@ export default {
                     this.form[`${field?.name}`].empty = false;
                     this.form[`${field?.name}`].invalid = false;
                     if (field?.name !== 'id') {
-                        if (field?.mandatory) {
+                        if (this.isFieldMandatory(field)) {
                             if (this.isEmptyField(field?.value)) {
                                 this.invalidForm = true;
                                 this.form[`${field?.name}`].empty = true;
                             } else if (
                 field?.is_phone_field &&
-                !this.isPhoneValid(field?.value)
+                                !this.isPhoneValid(field?.value)
                             ) {
                                 this.invalidForm = true;
                                 this.form[`${field?.name}`].invalid = true;
                             }
                         } else if (
               field?.is_phone_field &&
+              !this.isEmptyField(field?.value) &&
               !this.isPhoneValid(field?.value)
                         ) {
                             this.form[`${field?.name}`].invalid = true;
@@ -315,14 +326,14 @@ export default {
                     contactId: null
                 };
                 if (this.formToCreate && this.formToCreate != null) {
-                    response = await this.agtContactCreateFromConversation(formData);
+                    response = await this.agtFacebookContactCreateFromConversation(formData);
                 }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
                   const formData = {
                     campaignId: localStorage.getItem('agtFacebookCampaingId'),
                     fdata: this.getFormData(),
                   };
                   console.log("formData >>", formData)
-                  response = await this.agtContactCreate(formData);
+                  response = await this.agtFacebookContactCreate(formData);
                 }
                 else {
                     formData.contactId = this.form.id.value;

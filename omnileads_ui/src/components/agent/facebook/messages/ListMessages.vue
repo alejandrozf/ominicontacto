@@ -11,7 +11,6 @@
     <template #option="data">
       <ConversationInfo
         :conversationInfo="getConversationInfo(data.option)"
-        @click="conversationDetail(data.option)"
       />
     </template>
   </Listbox>
@@ -37,6 +36,7 @@ export default {
                 date: data && data.date ? data.date.toLocaleString() : null,
                 campaignId: data && data.campaignId ? data.campaignId : null,
                 campaignName: data && data.campaignName ? data.campaignName : null,
+                transferAgent: data && data.transferAgent ? data.transferAgent : null,
                 numMessages: data && data.numMessages ? data.numMessages : null,
                 numMessagesUnread: data && data.numMessagesUnread ? data.numMessagesUnread : null,
                 isMine: data && data.isMine ? data.isMine : null,
@@ -45,15 +45,6 @@ export default {
                 errorEx: data && data.errorEx ? data.errorEx : null,
                 error: data && data.error ? data.error : false
             };
-        },
-        conversationDetail ({ id, isNew, isMine }) {
-            if (!isNew && isMine) {
-                localStorage.setItem('agtFacebookConversationAttending', id);
-                this.$router.push({
-                    name: 'agent_facebook_conversation_detail',
-                    params: { id }
-                });
-            }
         }
     }
 };

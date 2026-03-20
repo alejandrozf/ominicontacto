@@ -65,7 +65,7 @@ const setEventListenersFacebook = () => {
         $('#wrapperFacebook').toggleClass('hidden');
         $('#wrapperWhatsapp').addClass('hidden');
         $('#wrapperWebphone').removeClass('active');
-        $('#newChat').addClass('invisible');
+        $('#newFacebookChat').addClass('invisible');
     });
 };
 

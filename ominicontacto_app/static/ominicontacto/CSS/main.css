@@ -665,9 +665,17 @@ body>h1 {
   max-width: 960px;
 }
 
+.channel-action-modal--dock-left {
+  margin: 1.75rem auto 1.75rem 8rem;
+}
+
 @media (max-width: 768px) {
   .channel-action-modal {
     max-width: calc(100vw - 1rem);
+    margin: 0.5rem auto;
+  }
+
+  .channel-action-modal--dock-left {
     margin: 0.5rem auto;
   }
 }

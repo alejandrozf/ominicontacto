@@ -500,6 +500,17 @@ export default {
                         message,
                         NOTIFICATION.ICONS.SUCCESS
                     );
+                    setTimeout(() => {
+                        const dispositionDoneEvent = new CustomEvent(
+                            WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.DONE,
+                            {
+                                detail: {
+                                    conversationId: this.agtWhatsCoversationInfo.id
+                                }
+                            }
+                        );
+                        window.parent.document.dispatchEvent(dispositionDoneEvent);
+                    }, 2500);
                 } else {
                     await notificationEvent(
                         NOTIFICATION.TITLES.ERROR,

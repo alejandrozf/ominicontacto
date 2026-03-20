@@ -74,7 +74,6 @@ def s2a_inbound_chat_event(page, timestamp, message_id, origen, content,
             destination_entrante = page.destination
             conversations_from_origen = ConversationMessengerMetaApp.objects.filter(
                 page=page, page_client_id=origen)
-            client = None
             print("conversations_from_origen >>>>", conversations_from_origen.count())
             conversation =\
                 conversations_from_origen.filter(is_disposition=False).last()
@@ -83,12 +82,9 @@ def s2a_inbound_chat_event(page, timestamp, message_id, origen, content,
                 campana = None
                 if destination_entrante.content_type == ContentType.objects.get(model='campana'):
                     campana = destination_entrante.content_object
-                if campana:
-                    client = campana.bd_contacto.contactos.filter(
-                        telefono=origen).last()
                 conversation = ConversationMessengerMetaApp.objects.create(
                     page=page,
-                    client=client,
+                    client=None,
                     campana=campana,
                     page_client_id=origen,
                     is_active=True,
@@ -126,11 +122,16 @@ def s2a_inbound_chat_event(page, timestamp, message_id, origen, content,
             message_inbound.save()
             if is_out_of_time_chat:
                 autoresponse_out_of_time(conversation, timestamp)
-                conversation.is_disposition = True
-                conversation.save()
-                return
+                if conversation.agent:
+                    notifications.append(('notify_facebook_new_message', {
+                        'conversation': conversation,
+                        'page': page,
+                        'message': message_inbound,
+                    }))
+                return notifications
             #  ## notificar a agentes
-            if created_conversation and conversation.campana:
+            if (created_conversation or created_message) and conversation.campana \
+                    and not conversation.agent:
                 # redis_2.sadd(
                 #     f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NEW-INBOUND-CONV',
                 #     conversation.id
@@ -176,10 +177,7 @@ def asignar_campana(page, timestamp, conversation, content, context):
         if destino:
             if isinstance(destino.destino_siguiente.content_object, Campana):
                 campana = destino.destino_siguiente.content_object
-                client = campana.bd_contacto.contactos.filter(
-                    facebook=conversation.page_client_id).last()
                 conversation.campana = campana
-                conversation.client = client
                 conversation.save()
                 notifications.append(('notify_facebook_new_chat', {
                     'conversation': conversation,

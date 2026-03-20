@@ -102,6 +102,10 @@ export default {
                     : null,
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transfer_agent
+                    ? conversation.transfer_agent
+                    : null,
             isActive:
                 conversation && conversation.is_active
                     ? conversation.is_active
@@ -157,6 +161,7 @@ export default {
                     isNew: true,
                     isMine: false,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -177,6 +182,7 @@ export default {
                     isNew: false,
                     isMine: true,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -202,6 +208,7 @@ export default {
             isNew: true,
             isMine: false,
             answered: false,
+            transferAgent: chat && chat.transfer_agent ? chat.transfer_agent : null,
             date: chat && chat.timestamp ? new Date(chat.timestamp) : new Date(),
             expire: chat && chat.expire ? new Date(chat.expire) : null,
             errorEx: chat && chat.error_ex ? chat.error_ex : null,
@@ -228,6 +235,10 @@ export default {
             ),
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transferAgent
+                    ? conversation.transferAgent
+                    : null,
             isActive:
                 conversation && conversation.isActive
                     ? conversation.isActive

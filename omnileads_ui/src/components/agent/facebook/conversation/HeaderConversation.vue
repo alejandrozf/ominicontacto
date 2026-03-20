@@ -1,31 +1,44 @@
 <template>
   <Toolbar>
     <template #start>
-      <Button
-        v-if="!viewAsReport"
-        @click="back"
-        v-tooltip.top="$t('globals.back')"
-        icon="pi pi-arrow-left"
-        class="p-button-rounded p-button-secondary p-button-text"
-      />
-      <Chip
-        :label="clientInfo?.name  + ' (' + clientInfo?.page_client_id + ')'"
-        icon="pi pi-user"
-      />
+      <div class="flex flex-column gap-2">
+        <div class="flex align-items-center">
+          <Button
+            v-if="!viewAsReport"
+            @click="back"
+            v-tooltip.top="$t('globals.back')"
+            icon="pi pi-arrow-left"
+            class="p-button-rounded p-button-secondary p-button-text"
+          />
+          <Chip
+            :label="clientInfo?.name  + ' (' + clientInfo?.page_client_id + ')'"
+            icon="pi pi-user"
+          />
+        </div>
+        <Tag
+          v-if="agtFacebookConversationInfo.transferAgent"
+          icon="pi pi-user-plus"
+          :value="`Transferido por ${agtFacebookConversationInfo.transferAgent}`"
+          severity="secondary"
+          rounded
+        />
+      </div>
     </template>
     <template #end>
       <div v-if="!viewAsReport">
         <SplitButton
-        v-if="!isExpired"
-        icon="pi pi-paperclip"
-        :model="attachOptions"
-        v-tooltip.top="$t('globals.attach')"
-        class="p-button-warning"
-      />
+          v-if="!isExpired"
+          icon="pi pi-paperclip"
+          :model="attachOptions"
+          :disabled="areConversationActionsDisabled"
+          v-tooltip.top="$t('globals.attach')"
+          class="p-button-warning"
+        />
         <Button
           v-if="!isExpired"
           icon="pi pi-arrows-h"
           class="p-button-secondary ml-2"
+          :disabled="areConversationActionsDisabled"
           @click="transfer"
           v-tooltip.top="$t('globals.transfer')"
         />
@@ -33,6 +46,7 @@
           v-if="agtFacebookConversationInfo.client.id"
           icon="pi pi-save"
           class="ml-2"
+          :disabled="areConversationActionsDisabled"
           @click="qualify"
           v-tooltip.top="$t('globals.save')"
         />
@@ -40,6 +54,7 @@
           v-if="!isExpired"
           icon="pi pi-copy"
           class="p-button-info ml-2"
+          :disabled="areConversationActionsDisabled"
           @click="templates"
           v-tooltip.top="$tc('globals.whatsapp.template', 2)"
         />
@@ -122,7 +137,10 @@ export default {
         };
     },
     computed: {
-        ...mapState(['agtFacebookConversationInfo', 'agtFacebookConversationMessages'])
+        ...mapState(['agtFacebookConversationInfo', 'agtFacebookConversationMessages']),
+        areConversationActionsDisabled () {
+            return Boolean(this.agtFacebookConversationInfo?.isDisposition);
+        }
     },
     methods: {
         ...mapActions(['agtFacebookSetConversationMessages']),
@@ -200,7 +218,7 @@ export default {
             );
             localStorage.setItem(
                 'agtFacebookDispositionChatFormToCreate',
-                this.agtFacebookConversationInfo.client.dispositionId === null
+                !this.agtFacebookConversationInfo.isDisposition
             );
             const event = new Event(
                 FACEBOOK_LOCALSTORAGE_EVENTS.DISPOSITION.FORM_INIT_DATA

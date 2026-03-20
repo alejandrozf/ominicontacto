@@ -72,6 +72,7 @@ class NotificationSocketWhatsapp
         /* eventsCallbacks */
         this.eventsCallbacks = {
             onNotificationNewChat: $.Callbacks(),
+            onNotificationNewFacebookChat: $.Callbacks(),
         };
     }
 
@@ -87,6 +88,8 @@ class NotificationSocketWhatsapp
             const data = JSON.parse(e.data);
             if (data.type == 'whatsapp_new_chat' || data.type == 'whatsapp_new_message')
                 self.eventsCallbacks.onNotificationNewChat.fire(data.args);
+            if (data.type == 'facebook_new_chat' || data.type == 'facebook_new_message')
+                self.eventsCallbacks.onNotificationNewFacebookChat.fire(data.args);
         });
     }
 }

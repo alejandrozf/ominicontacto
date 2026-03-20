@@ -8,6 +8,19 @@
           : $t('views.whatsapp.contact.edit')
       "
     />
+    <SearchTable
+      v-if="formToCreate && conversationInfo?.id"
+      class="mb-4"
+      :conversationInfo="conversationInfo"
+      @selectPreviewContactEvent="selectPreviewContact"
+    />
+    <div
+      v-if="formToCreate && conversationInfo?.id"
+      class="mb-3 p-2 border-round surface-100 text-sm"
+    >
+      Si no encontrás una coincidencia en la búsqueda superior, el bloque de abajo
+      crea un nuevo contacto.
+    </div>
     <Form
       ref="formRef"
       @cleanFilterSearchEvent="cleanFilterSearch"
@@ -44,13 +57,45 @@ export default {
     methods: {
         ...mapActions([
             'agtFacebookContactDBFieldsInit',
-            'agtFacebookSetConversationInfo'
+            'agtFacebookSetConversationInfo',
+            'agtFacebookContactAssignToConversation'
         ]),
         cleanFilterSearch () {
             this.previewContact = null;
         },
-        selectPreviewContact (contact) {
-            this.previewContact = contact;
+        async selectPreviewContact (contact) {
+            if (!this.conversationInfo?.id || !contact?.id) {
+                this.previewContact = contact;
+                return;
+            }
+            this.$helpers.openLoader(this.$t);
+            const { status, message } =
+                await this.agtFacebookContactAssignToConversation({
+                    conversationId: this.conversationInfo.id,
+                    contactId: contact.id
+                });
+            this.$helpers.closeLoader();
+            if (status !== HTTP_STATUS.SUCCESS) {
+                this.$swal(
+                    this.$helpers.getToasConfig(
+                        this.$t('globals.error_notification'),
+                        message,
+                        this.$t('globals.icon_error')
+                    )
+                );
+                return;
+            }
+            localStorage.setItem('agtFacebookConversationInfo', JSON.stringify(null));
+            const event = new Event(
+                FACEBOOK_LOCALSTORAGE_EVENTS.CONVERSATION.DETAIL_INIT_DATA
+            );
+            window.parent.document.dispatchEvent(event);
+            const modalEvent = new CustomEvent('onFacebookContactFormEvent', {
+                detail: {
+                    contact_form: false
+                }
+            });
+            window.parent.document.dispatchEvent(modalEvent);
         },
         closeEvent () {
             this.$refs.formRef.clearForm();

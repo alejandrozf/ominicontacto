@@ -111,6 +111,10 @@ export default {
                     : null,
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transfer_agent
+                    ? conversation.transfer_agent
+                    : null,
             isActive:
                 conversation && conversation.is_active
                     ? conversation.is_active
@@ -167,6 +171,7 @@ export default {
                     isNew: true,
                     isMine: false,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -187,6 +192,7 @@ export default {
                     isNew: false,
                     isMine: true,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -197,9 +203,12 @@ export default {
         state.agtFacebookChatsList = chats;
     },
     agtFacebookReceiveNewChat (state, chat = null) {
+        if (!chat || !chat.chat_id) return;
         const from = chat && chat.from ? chat.from : null;
-        const contactData = chat && chat.contact_data && chat.contact_data.nombre ? chat.contact_data.nombre : null;
-        state.agtFacebookChatsList.push({
+        const contactData = chat && chat.contact_data && chat.contact_data.nombre
+            ? chat.contact_data.nombre
+            : null;
+        const chatData = {
             id: chat && chat.chat_id ? chat.chat_id : null,
             from: contactData || from,
             campaignId: chat && chat.campaing_id ? chat.campaing_id : null,
@@ -212,11 +221,23 @@ export default {
             isNew: true,
             isMine: false,
             answered: false,
+            transferAgent: chat && chat.transfer_agent ? chat.transfer_agent : null,
             date: chat && chat.timestamp ? new Date(chat.timestamp) : new Date(),
             expire: chat && chat.expire ? new Date(chat.expire) : null,
             errorEx: chat && chat.error_ex ? chat.error_ex : null,
             error: chat && chat.error ? chat.error : false
-        });
+        };
+        const chatIndex = state.agtFacebookChatsList.findIndex(
+            (item) => item.id === chatData.id
+        );
+        if (chatIndex >= 0) {
+            state.agtFacebookChatsList.splice(chatIndex, 1, {
+                ...state.agtFacebookChatsList[chatIndex],
+                ...chatData
+            });
+            return;
+        }
+        state.agtFacebookChatsList.push(chatData);
     },
     agtFacebookSetConversationInfo (state, conversation = null) {
         state.agtFacebookConversationInfo = {
@@ -238,6 +259,10 @@ export default {
             ),
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transferAgent
+                    ? conversation.transferAgent
+                    : null,
             isActive:
                 conversation && conversation.isActive
                     ? conversation.isActive

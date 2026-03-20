@@ -603,7 +603,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.save()
 
         campana = campana_form.instance
-        offset = 1
+        offset = 2
         if campana.whatsapp_habilitado:
             offset = offset - 1
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
@@ -615,6 +615,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
                 configuracion_whatsapp_formset.instance.save()
 
         if campana.meta_facebook_habilitado:
+            offset = offset - 1
             configuracion_meta_facebook_formset = list(form_list)[
                 int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():

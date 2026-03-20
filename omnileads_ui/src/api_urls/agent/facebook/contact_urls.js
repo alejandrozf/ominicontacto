@@ -4,5 +4,7 @@ export default {
     ContactCreate: (campaignId) => `/api/v1/facebook/contact/${campaignId}`,
     ContactUpdate: (campaignId, contactId) => `/api/v1/facebook/contact/${campaignId}/${contactId}`,
     ContactCampaignDBFields: (campaignId) => `/api/v1/facebook/contact/${campaignId}/db_fields`,
-    ContactSearch: (campaignId) => `/api/v1/facebook/contact/${campaignId}/search`
+    ContactSearch: (campaignId) => `/api/v1/facebook/contact/${campaignId}/search`,
+    ContactSuggestMatch: (campaignId) => `/api/v1/facebook/contact/${campaignId}/suggest_match`,
+    ContactAssignToConversation: (conversationId) => `/api/v1/facebook/chat/${conversationId}/assign_contact`
 };

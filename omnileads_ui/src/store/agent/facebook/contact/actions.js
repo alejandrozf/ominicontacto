@@ -31,7 +31,7 @@ export default {
             };
         }
     },
-    async agtContactCreateFromConversation (
+    async agtFacebookContactCreateFromConversation (
         { commit },
         { campaignId = null, conversationId = null, data }
     ) {
@@ -56,7 +56,7 @@ export default {
             };
         }
     },
-    async agtContactCreate(
+    async agtFacebookContactCreate(
         { commit },
         { campaignId = null, fdata }
     ) {
@@ -162,6 +162,54 @@ export default {
             return {
                 status: HTTP_STATUS.ERROR,
                 message: 'Error al buscar contactos'
+            };
+        }
+    },
+    async agtFacebookContactSuggestMatch (
+        { commit },
+        { campaignId = null, conversationId = null }
+    ) {
+        try {
+            if (!campaignId || !conversationId) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al sugerir coincidencia de contacto'
+                };
+            }
+            return await service.suggestMatch({
+                campaignId,
+                conversationId
+            });
+        } catch (error) {
+            console.error('===> ERROR al sugerir coincidencia de contacto');
+            console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al sugerir coincidencia de contacto'
+            };
+        }
+    },
+    async agtFacebookContactAssignToConversation (
+        { commit },
+        { conversationId = null, contactId = null }
+    ) {
+        try {
+            if (!conversationId || !contactId) {
+                return {
+                    status: HTTP_STATUS.ERROR,
+                    message: 'Error al asignar el contacto'
+                };
+            }
+            return await service.assignContactToConversation({
+                conversationId,
+                contactId
+            });
+        } catch (error) {
+            console.error('===> ERROR al asignar contacto a la conversación');
+            console.error(error);
+            return {
+                status: HTTP_STATUS.ERROR,
+                message: 'Error al asignar el contacto'
             };
         }
     },

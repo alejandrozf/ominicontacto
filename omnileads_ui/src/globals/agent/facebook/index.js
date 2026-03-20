@@ -55,7 +55,8 @@ export const FACEBOOK_LOCALSTORAGE_EVENTS = {
         FORM_INIT_DATA: 'facebook-localstorage-contact-form-init-data-event'
     },
     DISPOSITION: {
-        FORM_INIT_DATA: 'facebook-localstorage-disposition-form-init-data-event'
+        FORM_INIT_DATA: 'facebook-localstorage-disposition-form-init-data-event',
+        DONE: 'facebook-localstorage-disposition-done-event'
     },
     TRANSFER: {
         DONE: 'facebook-localstorage--transfer--done',

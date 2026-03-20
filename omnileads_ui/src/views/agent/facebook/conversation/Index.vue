@@ -101,6 +101,10 @@ export default {
             FACEBOOK_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
             this.transferDone
         );
+        window.parent.document.addEventListener(
+            FACEBOOK_LOCALSTORAGE_EVENTS.DISPOSITION.DONE,
+            this.dispositionDone
+        );
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
@@ -110,6 +114,10 @@ export default {
         window.parent.document.removeEventListener(
             FACEBOOK_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
             this.transferDone
+        );
+        window.parent.document.removeEventListener(
+            FACEBOOK_LOCALSTORAGE_EVENTS.DISPOSITION.DONE,
+            this.dispositionDone
         );
     },
     methods: {
@@ -122,12 +130,45 @@ export default {
             const scroll = document.getElementById('listMessages');
             scroll.scrollTop = scroll.scrollHeight;
         },
+        resetConversationState () {
+            this.isDisposition = false;
+            this.isTransferred = false;
+            this.isExpired = false;
+        },
+        clearConversationStorage () {
+            localStorage.setItem('agtFacebookConversationAttending', null);
+            localStorage.setItem('agtFacebookConversationMessages', null);
+            localStorage.setItem('agtFacebookConversationInfo', JSON.stringify(null));
+        },
         async initData () {
+            this.resetConversationState();
             await this.agtFacebookConversationDetail({
                 conversationId: this.id,
                 $t: this.$t
             });
+            const savedConversationInfo = JSON.parse(
+                localStorage.getItem('agtFacebookConversationInfo')
+            );
+            if (
+                savedConversationInfo?.id === this.id &&
+                savedConversationInfo?.transferAgent
+            ) {
+                await this.agtFacebookSetConversationInfo({
+                    ...this.agtFacebookConversationInfo,
+                    transferAgent: savedConversationInfo.transferAgent
+                });
+            }
             localStorage.setItem('agtFacebookConversationAttending', this.id);
+            localStorage.setItem(
+                'agtFacebookConversationInfo',
+                JSON.stringify({
+                    ...this.agtFacebookConversationInfo,
+                    transferAgent:
+                        savedConversationInfo?.id === this.id
+                            ? savedConversationInfo?.transferAgent || null
+                            : null
+                })
+            );
             console.log('SCROLL DOWN ON INIT DATA');
             this.scrollDown();
         },
@@ -144,6 +185,18 @@ export default {
         transferDone (event) {
             if (event.detail.conversationId === this.id) {
                 this.isTransferred = true;
+                setTimeout(() => {
+                    this.clearConversationStorage();
+                    this.resetConversationState();
+                    this.$router.push({ name: 'agent_facebook' });
+                }, 2500);
+            }
+        },
+        dispositionDone (event) {
+            if (event.detail.conversationId === this.id) {
+                this.clearConversationStorage();
+                this.resetConversationState();
+                this.$router.push({ name: 'agent_facebook' });
             }
         },
         createContact () {
@@ -197,6 +250,15 @@ export default {
         }
     },
     watch: {
+        '$route.params.id': {
+            async handler (value) {
+                const nextId = parseInt(value);
+                if (!Number.isNaN(nextId) && nextId !== this.id) {
+                    this.id = nextId;
+                    await this.initData();
+                }
+            }
+        },
         agtFacebookConversationInfo: {
             handler () {
                 this.checkExpirationDate();

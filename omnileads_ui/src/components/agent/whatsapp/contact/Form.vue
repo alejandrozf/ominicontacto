@@ -173,7 +173,11 @@ export default {
         ...mapState(['agtWhatsContactDBFields', 'agtWhatsCoversationInfo'])
     },
     methods: {
-        ...mapActions(['agtContactCreateFromConversation', 'agtContactCreate', 'agtWhatsContactUpdate']),
+        ...mapActions([
+            'agtWhatsContactCreateFromConversation',
+            'agtWhatsContactCreate',
+            'agtWhatsContactUpdate'
+        ]),
         initializeData () {
             this.initFormData();
             this.submitted = false;
@@ -289,14 +293,14 @@ export default {
                     contactId: null
                 };
                 if (this.formToCreate && this.formToCreate != null) {
-                    response = await this.agtContactCreateFromConversation(formData);
+                    response = await this.agtWhatsContactCreateFromConversation(formData);
                 }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
                   const formData = {
                     campaignId: localStorage.getItem('agtWhatsCampaingId'),
                     fdata: this.getFormData(),
                   };
                   console.log("formData >>", formData)
-                  response = await this.agtContactCreate(formData);
+                  response = await this.agtWhatsContactCreate(formData);
                 }
                 else {
                     formData.contactId = this.form.id.value;
