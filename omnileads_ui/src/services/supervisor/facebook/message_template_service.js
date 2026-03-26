@@ -3,7 +3,6 @@ import { BaseService } from '@/services/base_service';
 
 export default class MessageTemplateService extends BaseService {
     constructor () {
-        console.log('MessageTemplateService URLs >>>', urls);
         super(urls, 'Plantillas de Mensaje');
     }
 }

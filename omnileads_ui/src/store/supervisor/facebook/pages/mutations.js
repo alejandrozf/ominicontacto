@@ -1,6 +1,5 @@
 export default {
     initFacebookPages (state, pages) {
-        console.log('initFacebookPages >>>', pages)
         state.supFacebookPages = pages;
     },
     initFacebookPage (state, page = null) {
@@ -24,7 +23,6 @@ export default {
                 out_of_hours_message: page.out_of_hours_message
             };
             state.supFacebookPageDestinationMenuOptions = page.destination ? page.destination.data : []
-            console.log('state.supFacebookPage >>>>>>>`>', state.supFacebookPage)
         } else {
             state.supFacebookPage = {
                 id: null,
@@ -52,7 +50,6 @@ export default {
         state.isFormToCreate = flag;
     },
     initFacebookPageCampaigns (state, campaigns) {
-        console.log('initFacebookPageCampaigns >>>', campaigns)
         state.supFacebookPageCampaigns = campaigns;
     },
     initFacebookPageOptionForm (state, option = null) {
@@ -64,7 +61,6 @@ export default {
             type_option: option ? option.type_option : 0,
             destination: option ? option.destination : null,
         };
-        console.log('initFacebookPageOptionForm >>>', state.supFacebookPageOptionForm)
     },
     createFacebookPageOption (state, { data, menuId }) {
         const ultimoElemento = state.supFacebookPageOptions[state.supFacebookPageOptions.length - 1];
@@ -78,7 +74,6 @@ export default {
             destination: data.destination,
             menuId: menuId,
         });
-        console.log('createFacebookPageOption >>>', state.supFacebookPageOptions)
     },
     updateFacebookPageOption (state, { id, data, menuId }) {
         const destinationOptions = state.supFacebookPage.destination.data.filter(item => item.id_tmp === menuId);

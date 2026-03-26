@@ -405,7 +405,6 @@ export default {
             this.findDuplicated();
         },
         closeModal () {
-            console.log('closeModal >>>1')
             this.$emit('closeModalEvent');
         },
         initializeData () {
@@ -413,7 +412,6 @@ export default {
             this.submitted = false;
         },
         initFormData () {
-            console.log('initFormData() >>>', this.supFacebookPageOptionForm);
             this.form.id = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.id : null;
             this.form.index = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.index : null;
             this.form.value = this.supFacebookPageOptionForm ? this.supFacebookPageOptionForm.value : null;
@@ -549,7 +547,6 @@ export default {
         },
         supFacebookPageTemplates: {
             handler () {
-                console.log('Updating message templates...', this.supFacebookPageTemplates);
                 if (this.supFacebookPageTemplates.length > 0) {
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT

@@ -4,17 +4,14 @@ const service = new Service();
 
 export default {
     async initFacebookPageGroupOfMessageTemplates ({ commit }) {
-        console.log('initFacebookPageGroupOfMessageTemplates');
         const { status, data } = await service.list();
         commit('initFacebookPageGroupOfMessageTemplates', status === 'SUCCESS' ? data : []);
     },
     async initFacebookPageGroupOfMessageTemplate ({ commit }, { id = null, obj = null }) {
-        console.log('initFacebookPageGroupOfMessageTemplate', id, obj);
         if (obj) {
             commit('initFacebookPageGroupOfMessageTemplate', obj);
             commit('initMessageTemplatesOfGroup', obj.templates.map(p => p.id));
         } else if (id) {
-            console.log('Fetching group of message template with id:', id);
             const { status, data } = await service.detail(id);
             commit('initFacebookPageGroupOfMessageTemplate', status === 'SUCCESS' ? data : null);
             commit('initMessageTemplatesOfGroup', data.templates.map(p => p.id));

@@ -156,7 +156,6 @@ export default {
             return this.templateTypes.find((t) => t.value === type).name;
         },
         edit (messageTemplate) {
-            console.log(messageTemplate);
             this.$emit('handleModalEvent', {
                 showModal: true,
                 formToCreate: false,

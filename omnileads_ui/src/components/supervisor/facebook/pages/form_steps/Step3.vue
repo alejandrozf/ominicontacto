@@ -631,7 +631,6 @@ export default {
                     data: this.form.destination
                 };
             }else if (this.form.destination_type === this.destinationType.INTERACTIVE) {
-                console.log('this.supFacebookPage.destination.data >>>', this.supFacebookPage.destination.data)
                 return {
                     type: DESTINATION_TYPES_BACK.INTERACTIVE,
                     data: this.supFacebookPage.destination.data,
@@ -640,7 +639,6 @@ export default {
             }
         },
         async save (isFormValid) {
-            console.log('save >>>', { isFormValid })
             this.submitted = true;
             this.validateFormData();
             if (this.formErrors.length > 0) {
@@ -818,7 +816,6 @@ export default {
     watch: {
         supFacebookPageTemplates: {
             handler () {
-              console.log('supFacebookPageTemplates >>>', this.supFacebookPageTemplates)
               if (this.supFacebookPageTemplates.length > 0) {
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT

@@ -106,7 +106,7 @@ export default {
         this.initializeData();
     },
     computed: {
-        ...mapState(['supWhatsappMessageTemplateFormFields'])
+        ...mapState(['supFacebookPageTemplateFormFields'])
     },
     methods: {
         initializeData () {
@@ -114,11 +114,11 @@ export default {
             this.submitted = false;
         },
         initFormData () {
-            if (this.supWhatsappMessageTemplateFormFields) {
+            if (this.supFacebookPageTemplateFormFields) {
                 this.form = {
                     type: 'image',
-                    url: this.supWhatsappMessageTemplateFormFields.url,
-                    caption: this.supWhatsappMessageTemplateFormFields.caption
+                    url: this.supFacebookPageTemplateFormFields.url,
+                    caption: this.supFacebookPageTemplateFormFields.caption
                 };
             }
         },
@@ -132,7 +132,7 @@ export default {
         }
     },
     watch: {
-        supWhatsappMessageTemplateFormFields: {
+        supFacebookPageTemplateFormFields: {
             handler () {
                 this.initFormData();
             },

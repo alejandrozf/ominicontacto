@@ -20,7 +20,7 @@
 
 <script>
 import Form from '@/components/supervisor/group_of_hours/Form';
-import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
+import { FACEBOOK_URL_NAME } from '@/globals/supervisor/facebook';
 export default {
     props: {
         showModal: {
@@ -30,24 +30,17 @@ export default {
     },
     components: {
         Form,
-        WHATSAPP_URL_NAME
+        FACEBOOK_URL_NAME
     },
     computed: {
       return_after_save() {
-        return `${WHATSAPP_URL_NAME}_lines_new_step3`
+        return `${FACEBOOK_URL_NAME}_pages_new_step3`
       }
     },
     methods: {
         closeModal (response) {
             this.$emit('handleModalEvent', {showModal:false});
         },
-    },
-    watch: {
-        showModal: {
-            handler () {console.log('showModal')},
-            deep: true,
-            immediate: true
-        }
     },
 };
 </script>
