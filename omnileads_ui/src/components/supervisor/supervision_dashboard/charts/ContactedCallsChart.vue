@@ -1,14 +1,7 @@
 <template>
-  <Card>
-    <template #title>
-      <h5 class="text-center">
-        {{ $t("views.dashboard_home_page.call_sumary") }}
-      </h5>
-    </template>
-    <template #content>
-      <Chart type="pie" :data="basicData" :options="chartOptions"  :height="50" />
-    </template>
-  </Card>
+  <div class="dashboard-donut-chart">
+    <Chart type="doughnut" :data="basicData" :options="chartOptions" :height="120" />
+  </div>
 </template>
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
@@ -30,7 +23,7 @@ export default {
             });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         });
-        
+
         onUnmounted(() => {
             if (observer) observer.disconnect();
         });
@@ -39,24 +32,30 @@ export default {
 
         const chartOptions = computed(() => {
             return {
+                maintainAspectRatio: false,
                 animation: {
                     duration: 0
                 },
+                cutout: '68%',
                 plugins: {
                     tooltips: {
                         mode: 'index',
                         intersect: false
                     },
                     legend: {
+                        position: 'bottom',
                         labels: {
-                            color: textColor.value
+                            color: textColor.value,
+                            usePointStyle: true,
+                            boxWidth: 10,
+                            boxHeight: 10
                         }
                     }
                 }
             };
         });
         const basicData = computed(() => {
-            const colors = ['#8FC641', '#196F3D'];
+            const colors = ['#8FC641', '#FF7B72'];
             return Object.entries(props.chartData).reduce(
                 function (prev, [key, val], currIdx) {
                     prev.labels.push(t(`views.dashboard_home_page.call_sumary_${key}`));
@@ -82,3 +81,9 @@ export default {
     }
 };
 </script>
+<style>
+.dashboard-donut-chart,
+.dashboard-donut-chart canvas {
+  height: 100%;
+}
+</style>

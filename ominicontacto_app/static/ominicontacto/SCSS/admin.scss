@@ -471,17 +471,20 @@ input[type=file].form-control {
 #sidebar {
 	ul li a {
     display: block;
-    padding: 8px 12px 8px 34px;
+    padding: 10px 14px 10px 38px;
     color: $grey;
+    font-size: 1rem;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
 	}
 
     .icon {
     width: 14px;
-    font-size: 14px;
+    font-size: 15px;
     color: $grey;
     position: absolute;
     left: 10px;
-    top: 12px;
+    top: 14px;
 	}
 
 	.icon.active {
@@ -494,10 +497,12 @@ input[type=file].form-control {
 	
 	.submenu a {
     padding-left: 34px;
+    font-size: 1rem;
 	}
 	
 	.submenu-two a {
     padding-left: 50px;
+    font-size: 1rem;
 	}
 	
 	ul a.active {
@@ -584,7 +589,7 @@ input[type=file].form-control {
     	}
     	ul.submenu a {
         display: block;
-        padding: 6px 10px;
+        padding: 8px 12px;
     	}
     	.icon {
         width: 100%;
@@ -608,7 +613,7 @@ input[type=file].form-control {
     }
     #sidebar.active > ul > li > a {
         min-width: 250px;
-        padding: 10px 14px;
+        padding: 11px 16px;
         position: absolute;
         left: 60px;
         top: 0;
@@ -991,4 +996,71 @@ body.wrapper-page-error {
     background-color: #15ff00;
     padding: 2px 5px;
     border-radius: 3px;
+}
+
+/* --- Dark Mode Variables and Overrides --- */
+html.dark-mode {
+    --bg-main: #111722;
+    --bg-sidebar: rgba(18, 22, 33, 0.96);
+    --bg-topbar: rgba(18, 22, 33, 0.92);
+    --text-main: #d7e0ef;
+    --text-heading: #f5f7fb;
+    --bg-card: #1a2130;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --bg-body:
+        radial-gradient(circle at top left, rgba(93, 163, 255, 0.16), transparent 26%),
+        radial-gradient(circle at top right, rgba(255, 181, 77, 0.14), transparent 30%),
+        linear-gradient(180deg, #0d1118 0%, #121723 100%);
+    --bg-surface: rgba(18, 22, 33, 0.92);
+    --border-color-light: rgba(255, 255, 255, 0.08);
+}
+
+html.dark-mode body,
+html.dark-mode .wrapper-main,
+html.dark-mode .wrapper-content,
+html.dark-mode .jumbotron {
+    background: var(--bg-body) !important;
+    color: var(--text-main) !important;
+}
+
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4 {
+    color: var(--text-heading) !important;
+}
+
+html.dark-mode #sidebar,
+html.dark-mode #sidebar.active .menu-link,
+html.dark-mode #sidebar.active .menu-header,
+html.dark-mode #sidebar.active ul.submenu,
+html.dark-mode #sidebar.active ul.submenu-two {
+    background: linear-gradient(180deg, rgba(21, 27, 39, 0.98) 0%, rgba(17, 22, 31, 0.98) 100%) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+html.dark-mode #sidebar ul li a,
+html.dark-mode #sidebar .icon {
+    color: var(--text-main) !important;
+}
+
+html.dark-mode #sidebar .submenu,
+html.dark-mode #sidebar .submenu-two,
+html.dark-mode #sidebar a[aria-expanded="true"] {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+html.dark-mode #topbar,
+html.dark-mode #navBar {
+    background: rgba(18, 22, 33, 0.88) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(14px);
+}
+
+html.dark-mode #topbar a,
+html.dark-mode #topbar button {
+    color: var(--text-heading) !important;
 }

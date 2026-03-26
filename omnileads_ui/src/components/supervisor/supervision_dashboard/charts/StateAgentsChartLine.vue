@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <Chart type="line" :data="basicData" :options="basicOptions" :height="50" />
+    <div class="dashboard-line-chart">
+        <Chart type="line" :data="basicData" :options="basicOptions" />
     </div>
  </template>
 
@@ -28,7 +28,7 @@ export default {
             });
             observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         });
-        
+
         onUnmounted(() => {
             if (observer) observer.disconnect();
         });
@@ -43,14 +43,25 @@ export default {
                     {
                         label: t('views.dashboard_home_page.today'),
                         data: props.chartLineEventTodayData,
-                        fill: false,
-                        borderColor: '#42A5F5'
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBorderWidth: 2,
+                        borderColor: '#5DA3FF',
+                        backgroundColor: 'rgba(93, 163, 255, 0.16)'
                     },
                     {
                         label: t('views.dashboard_home_page.yesterday'),
                         data: props.chartLineEventYesterdayData,
                         fill: false,
-                        borderColor: '#FFA726'
+                        tension: 0.35,
+                        borderDash: [6, 6],
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        borderColor: '#FFB54D'
                     }
                 ]
             };
@@ -58,32 +69,45 @@ export default {
 
         const basicOptions = computed(() => {
             return {
+                maintainAspectRatio: false,
                 animation: {
                     duration: 0
                 },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
                     legend: {
+                        position: 'top',
                         labels: {
-                            color: textColor.value
+                            color: textColor.value,
+                            usePointStyle: true,
+                            boxWidth: 10,
+                            boxHeight: 10
                         }
                     }
                 },
                 scales: {
                     x: {
                         ticks: {
-                            color: textColor.value
+                            color: textColor.value,
+                            maxTicksLimit: 12
                         },
                         grid: {
-                            color: gridColor.value
+                            color: gridColor.value,
+                            drawTicks: false
                         }
                     },
                     y: {
+                        beginAtZero: true,
                         ticks: {
                             color: textColor.value,
                             stepSize: 1
                         },
                         grid: {
-                            color: gridColor.value
+                            color: gridColor.value,
+                            drawTicks: false
                         }
                     }
                 }
@@ -94,3 +118,14 @@ export default {
     }
 };
 </script>
+<style>
+.dashboard-line-chart,
+.dashboard-line-chart .p-chart,
+.dashboard-line-chart canvas {
+  height: 100% !important;
+}
+
+.dashboard-line-chart .p-chart {
+  width: 100%;
+}
+</style>
