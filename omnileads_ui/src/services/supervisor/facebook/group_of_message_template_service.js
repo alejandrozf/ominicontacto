@@ -3,7 +3,6 @@ import { BaseService } from '@/services/base_service';
 
 export default class GroupOfMessageTemplateService extends BaseService {
     constructor () {
-        console.log('GroupOfMessageTemplateService URLs >>>', urls);
         super(urls, 'Grupo de plantillas de mensaje');
     }
 }

@@ -375,7 +375,6 @@ export default {
             this.formToCreate = true;
         },
         edit (option) {
-            console.log("option >>>>", option);
             this.showModal = true;
             this.formToCreate = false;
             this.initFacebookPageOptionForm(option);

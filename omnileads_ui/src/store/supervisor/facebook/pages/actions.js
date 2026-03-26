@@ -19,7 +19,6 @@ export default {
         }
     },
     async createFacebookPage ({ commit }, data) {
-        console.log('data >>>', data)
         return await service.create(data);
     },
     async updateFacebookPage ({ commit }, { id, data }) {

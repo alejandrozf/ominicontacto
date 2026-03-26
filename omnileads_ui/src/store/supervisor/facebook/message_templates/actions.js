@@ -4,9 +4,7 @@ const service = new MessageTemplateService();
 
 export default {
     async initFacebookPageTemplates ({ commit }) {
-        console.log('initFacebookPageTemplates111 >>>') 
         const { status, data } = await service.list();
-        console.log('initFacebookPageTemplates data >>>', data)
         commit('initFacebookPageTemplates', status === 'SUCCESS' ? data : []);
     },
     async initFacebookPageTemplate ({ commit }, { id = null, messageTemplate = null }) {
