@@ -75,7 +75,8 @@ RUN apk add --no-cache bash \
         espeak-ng \
         ffmpeg \
         picotts \
-    && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
+    # && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
+    && wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz \
     &&  tar xzvf libffi-3.3.tar.gz \
     && cd libffi-3.3/ \
     && ./configure \
