@@ -19,7 +19,7 @@
       {% if main_item.url %}
       <a class="menu-link {{ main_item.class }}" href="{{ main_item.url }}">{{ main_item.label }}</a>
       {% else %}
-      <a class="menu-header" href="#{{ main_item.id }}" role="button" data-toggle="collapse" aria-expanded="false">{{ main_item.label }}</a>
+      <a class="menu-header {{ main_item.class }}" href="#{{ main_item.id }}" role="button" data-toggle="collapse" aria-expanded="false">{{ main_item.label }}</a>
       <ul class="collapse list-unstyled submenu" id="{{ main_item.id }}" data-parent="#nav-main-menu">
         {% for child_item in main_item.children %}
         {% if child_item.line %}

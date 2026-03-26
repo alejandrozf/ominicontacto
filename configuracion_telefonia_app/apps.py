@@ -88,7 +88,6 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if whatsapp:
             conexiones.append({
                 'label': _('WhatsApp'),
-                'class': "main-menu-beta",
                 'icon': 'fab fa-whatsapp',
                 'id': 'menuWhatsapp',
                 'children': whatsapp
@@ -176,6 +175,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 {
                     'order': 700,
                     'label': _('Conexiones'),
+                    'class': "main-menu-beta",
                     'icon': 'fas fa-sitemap',
                     'id': 'menuConexiones',
                     'children': conexiones,
