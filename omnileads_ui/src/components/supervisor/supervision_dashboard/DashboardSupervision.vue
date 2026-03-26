@@ -1,7 +1,20 @@
 <template>
+  <div
+    v-if="reportData.data === null"
+    class="dashboard-loading-shell"
+  >
+    <div class="dashboard-loading-card">
+      <span class="dashboard-loading-spinner"></span>
+      <strong class="dashboard-loading-title">Cargando dashboard</strong>
+      <span class="dashboard-loading-text">
+        Preparando indicadores, campañas y actividad reciente.
+      </span>
+    </div>
+  </div>
   <DashboardSupervisionDetail
-    v-if="reportData.data !== null"
+    v-else
     :reportData="reportData.data"
+    :resourceCounts="resourceCounts"
     :chartLineIntervalAuth="chartLineIntervalAuth"
     :chartLineAuthEventYesterdayData="chartLineAuthEventYesterdayData"
     :chartLineAuthEventTodayData="chartLineAuthEventTodayData"
@@ -12,18 +25,48 @@
   </DashboardSupervisionDetail>
 </template>
 <script>
-import { watch, ref } from 'vue';
+import { watch, ref, onMounted } from 'vue';
 import { useWebSocket } from '@vueuse/core';
 import apiUrls from '@/api_urls/supervisor';
 
 import { apiCall } from '@/hooks/apiCall';
 import DashboardSupervisionDetail from '@/components/supervisor/supervision_dashboard/DashboardSupervisionDetail.vue';
+import LineService from '@/services/supervisor/whatsapp/line_service';
+import PageService from '@/services/supervisor/facebook/page_service';
 
 export default {
     components: {
         DashboardSupervisionDetail
     },
     setup () {
+        const lineService = new LineService();
+        const pageService = new PageService();
+
+        function getCollectionSize (response) {
+            const items = response?.data;
+            return Array.isArray(items) ? items.length : 0;
+        }
+
+        async function fetchResourceCounts () {
+            try {
+                const [linesResponse, pagesResponse] = await Promise.all([
+                    lineService.list(),
+                    pageService.list()
+                ]);
+                resourceCounts.value = {
+                    whatsappLines: getCollectionSize(linesResponse),
+                    metaLandingPages: getCollectionSize(pagesResponse)
+                };
+            } catch (error) {
+                console.error('Error al obtener los contadores del dashboard');
+                console.error(error);
+                resourceCounts.value = {
+                    whatsappLines: 0,
+                    metaLandingPages: 0
+                };
+            }
+        }
+
         function getAuthEventData (interval, eventList, caseType, language = window.navigator.language) {
             const data = [];
             const ranges = [];
@@ -117,10 +160,17 @@ export default {
 
         const loadingData = ref(false);
         const reportData = ref({ data: null });
+        const resourceCounts = ref({
+            whatsappLines: 0,
+            metaLandingPages: 0
+        });
         const { loading, response } = apiCall(apiUrls.DashboardSupervision);
         watch(loading, () => {
             loadingData.value = loading.value;
             reportData.value = response.value;
+        });
+        onMounted(() => {
+            fetchResourceCounts();
         });
         useWebSocket(urlYesterdayAuth, {
             autoReconnect: true,
@@ -191,6 +241,7 @@ export default {
                 loadingData.value = loading.value;
                 reportData.value = response.value;
             });
+            fetchResourceCounts();
             const getEventDataResponse = getCalificationEventData(60, calificationTodayList, 'today');
             if (chartLineIntervalCalification.value.length === 0) {
                 chartLineIntervalCalification.value = getEventDataResponse.ranges;
@@ -207,9 +258,86 @@ export default {
             chartLineCalificationEventTodayData,
 
             loadingData,
-            reportData
+            reportData,
+            resourceCounts
         };
     }
 
 };
 </script>
+<style>
+.dashboard-loading-shell {
+  min-height: 34rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(93, 163, 255, 0.16), transparent 30%),
+    radial-gradient(circle at top right, rgba(143, 198, 65, 0.16), transparent 35%),
+    linear-gradient(180deg, #f5f7fb 0%, #edf2f8 100%);
+}
+
+html.dark-mode .dashboard-loading-shell {
+  background:
+    radial-gradient(circle at top left, rgba(93, 163, 255, 0.18), transparent 30%),
+    radial-gradient(circle at top right, rgba(255, 181, 77, 0.16), transparent 32%),
+    linear-gradient(180deg, #0d1118 0%, #121723 100%);
+}
+
+.dashboard-loading-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  min-width: min(100%, 20rem);
+  padding: 2.2rem 2rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  text-align: center;
+}
+
+html.dark-mode .dashboard-loading-card {
+  background: rgba(18, 22, 33, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.dashboard-loading-spinner {
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 999px;
+  border: 3px solid rgba(93, 163, 255, 0.14);
+  border-top-color: #5da3ff;
+  border-right-color: #8fc641;
+  animation: dashboard-spin 0.85s linear infinite;
+}
+
+.dashboard-loading-title {
+  color: #162033;
+  font-size: 1.15rem;
+}
+
+html.dark-mode .dashboard-loading-title {
+  color: #f5f7fb;
+}
+
+.dashboard-loading-text {
+  max-width: 18rem;
+  color: #6a778b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+html.dark-mode .dashboard-loading-text {
+  color: #9aa8bf;
+}
+
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
