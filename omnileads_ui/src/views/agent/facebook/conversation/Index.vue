@@ -1,11 +1,18 @@
 <template>
   <div class="h-full flex flex-column">
     <HeaderConversation :isExpired="isExpired" />
-    <div v-if="agtFacebookConversationInfo.error">
+    <div v-if="showConversationError">
       <Message severity="error" :closable="true" class="mt-0 mb-3"
         >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
         <br>
         {{ agtFacebookConversationInfo.errorEx.reason }} [{{ agtFacebookConversationInfo.errorEx.code }}]
+      </Message>
+    </div>
+    <div v-else-if="showAttachmentErrorBanner">
+      <Message severity="warn" :closable="true" class="mt-0 mb-3">
+        {{ $t('views.whatsapp.conversations.attachment_error_detail', {
+          code: agtFacebookConversationInfo.errorEx.code
+        }) }}
       </Message>
     </div>
     <div>
@@ -69,6 +76,7 @@ import ListMessages from '@/components/agent/facebook/conversation/ListMessages'
 import { listenerStoreDataByAction } from '@/utils';
 import { COLORS } from '@/globals';
 import { FACEBOOK_LOCALSTORAGE_EVENTS } from '@/globals/agent/facebook';
+import { isAttachmentDeliveryError } from '@/utils/conversationErrors';
 export default {
     inject: ['$helpers'],
     components: {
@@ -90,7 +98,16 @@ export default {
         await this.initData();
     },
     computed: {
-        ...mapState(['agtFacebookConversationInfo', 'agtFacebookConversationMessages'])
+        ...mapState(['agtFacebookConversationInfo', 'agtFacebookConversationMessages']),
+        isAttachmentError () {
+            return isAttachmentDeliveryError(this.agtFacebookConversationInfo.errorEx);
+        },
+        showAttachmentErrorBanner () {
+            return this.agtFacebookConversationInfo.error && this.isAttachmentError;
+        },
+        showConversationError () {
+            return this.agtFacebookConversationInfo.error && !this.isAttachmentError;
+        }
     },
     mounted () {
         window.parent.document.addEventListener(

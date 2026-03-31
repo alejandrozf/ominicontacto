@@ -436,9 +436,11 @@ class ViewSet(viewsets.ModelViewSet):
                 'queue_name__campana_id', flat=True)
             conversaciones = self.get_list_queryset()
             conversaciones_nuevas = conversaciones.filter(
-                agent=None, campana__id__in=agente_campanas).order_by('-date_last_interaction')
+                Q(agent=None, campana__id__in=agente_campanas) |
+                Q(agent=agente, atendida=False)
+            ).order_by('-date_last_interaction')
             conversaciones_en_curso = conversaciones.filter(
-                agent=agente).order_by('-date_last_interaction')
+                agent=agente, atendida=True).order_by('-date_last_interaction')
             conversaciones_nuevas =\
                 ConversacionMessengerSerializerEx(conversaciones_nuevas, many=True)
             conversaciones_en_curso =\

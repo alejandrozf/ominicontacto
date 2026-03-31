@@ -1,11 +1,18 @@
 <template>
   <div class="h-full flex flex-column">
     <HeaderConversation :isExpired="isExpired" />
-    <div v-if="agtWhatsCoversationInfo.error">
+    <div v-if="showConversationError">
       <Message severity="error" :closable="true" class="mt-0 mb-3"
         >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
         <br>
         {{ agtWhatsCoversationInfo.errorEx.reason }} [{{ agtWhatsCoversationInfo.errorEx.code }}]
+      </Message>
+    </div>
+    <div v-else-if="showAttachmentErrorBanner">
+      <Message severity="warn" :closable="true" class="mt-0 mb-3">
+        {{ $t('views.whatsapp.conversations.attachment_error_detail', {
+          code: agtWhatsCoversationInfo.errorEx.code
+        }) }}
       </Message>
     </div>
     <div>
@@ -69,6 +76,7 @@ import ListMessages from '@/components/agent/whatsapp/conversation/ListMessages'
 import { listenerStoreDataByAction } from '@/utils';
 import { COLORS } from '@/globals';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
+import { isAttachmentDeliveryError } from '@/utils/conversationErrors';
 export default {
     inject: ['$helpers'],
     components: {
@@ -90,7 +98,16 @@ export default {
         await this.initData();
     },
     computed: {
-        ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
+        ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages']),
+        isAttachmentError () {
+            return isAttachmentDeliveryError(this.agtWhatsCoversationInfo.errorEx);
+        },
+        showAttachmentErrorBanner () {
+            return this.agtWhatsCoversationInfo.error && this.isAttachmentError;
+        },
+        showConversationError () {
+            return this.agtWhatsCoversationInfo.error && !this.isAttachmentError;
+        }
     },
     mounted () {
         window.parent.document.addEventListener(

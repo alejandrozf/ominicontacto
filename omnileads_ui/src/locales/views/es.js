@@ -227,7 +227,8 @@ export default {
             expired_conversation: 'Conversacion expirada',
             restart_conversation: 'Reiniciar conversacion',
             error_conversation_detail: 'No se pudo iniciar la Conversacion de froma correcta',
-
+            error_conversation: 'Conversacion errónea',
+            attachment_error_detail: 'Hay adjuntos enviados con error. Código {code}. Contacte al administrador.'
         },
         contact: {
             new: 'Crear contacto',

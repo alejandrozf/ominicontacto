@@ -401,11 +401,12 @@ class ViewSet(viewsets.ViewSet):
                 "queue_name__campana_id", flat=True
             )
             conversaciones_nuevas = conversaciones.filter(
-                agent=None,
-                campana__id__in=agente_campanas,
+                Q(agent=None, campana__id__in=agente_campanas) |
+                Q(agent=agente, atendida=False)
             )
             conversaciones_en_curso = conversaciones.filter(
                 agent=agente,
+                atendida=True,
             )
 
             return response.Response(

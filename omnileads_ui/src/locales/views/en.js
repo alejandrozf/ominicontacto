@@ -229,7 +229,8 @@ export default {
             expired_conversation: 'Expired conversation',
             restart_conversation: 'Restart conversation',
             error_conversation_detail: 'Could not start the Conversation correctly',
-            error_conversation: 'Wrong conversation'
+            error_conversation: 'Wrong conversation',
+            attachment_error_detail: 'Some attachments were sent with errors. Code {code}. Contact your administrator.'
         },
         contact: {
             new: 'Create contact',
