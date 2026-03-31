@@ -39,6 +39,7 @@ if 'TOKEN_EXPIRED_AFTER_SECONDS' in os.environ:
 OML_BRANCH = os.getenv('OML_BRANCH')
 OML_COMMIT = os.getenv('OML_COMMIT')
 OML_BUILD_DATE = os.getenv('OML_BUILD_DATE')
+OML_PUBLIC_MEDIA_BASE_URL = os.getenv('OML_PUBLIC_MEDIA_BASE_URL')
 LOG_LEVEL = os.getenv('DJANGO_LOG_LEVEL', 'INFO')
 
 # Credenciales para wombat API

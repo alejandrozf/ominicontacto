@@ -32,6 +32,7 @@ from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import build_public_media_url
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer, MensajeAtachmentCreateSerializer
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
@@ -652,9 +653,7 @@ class ViewSet(viewsets.ViewSet):
                         mensaje = serializer.save()
                         filename = data['file'].name[:100]
                         file_type = get_type(filename)
-                        domain = request.build_absolute_uri('/')[:-1]
-                        # domain = "https://nominally-hopeful-condor.ngrok-free.app"
-                        media_url = domain + mensaje.file.url
+                        media_url = build_public_media_url(request, mensaje.file.url)
                         message_dict = {
                             "type": file_type,
                             "previewUrl": media_url,
