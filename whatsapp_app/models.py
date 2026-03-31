@@ -268,10 +268,11 @@ class ConversacionWhatsapp(models.Model):
     client_alias = models.CharField(max_length=100, null=True)
     objects = ConversacionWhatsappQuerySet.as_manager()
 
-    def otorgar_conversacion(self, agent):
+    def otorgar_conversacion(self, agent, attended=True):
         try:
             self.agent = agent
-            self.save()
+            self.atendida = attended
+            self.save(update_fields=["agent", "atendida"])
             return True
         except Exception:
             return False

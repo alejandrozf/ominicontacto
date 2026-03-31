@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import build_public_media_url
 from api_app.views.permissions import TienePermisoOML
 from facebook_meta_app.api.permissions import TienePermisoCanalFacebookAgente
 
@@ -435,9 +436,11 @@ class ViewSet(viewsets.ModelViewSet):
                 'queue_name__campana_id', flat=True)
             conversaciones = self.get_list_queryset()
             conversaciones_nuevas = conversaciones.filter(
-                agent=None, campana__id__in=agente_campanas).order_by('-date_last_interaction')
+                Q(agent=None, campana__id__in=agente_campanas) |
+                Q(agent=agente, atendida=False)
+            ).order_by('-date_last_interaction')
             conversaciones_en_curso = conversaciones.filter(
-                agent=agente).order_by('-date_last_interaction')
+                agent=agente, atendida=True).order_by('-date_last_interaction')
             conversaciones_nuevas =\
                 ConversacionMessengerSerializerEx(conversaciones_nuevas, many=True)
             conversaciones_en_curso =\
@@ -760,7 +763,7 @@ class ViewSet(viewsets.ModelViewSet):
                     filename = data['file'].name[:100]
                     file_type = get_type(filename)
                     media_path = mensaje.file.path
-                    media_url = request.build_absolute_uri(mensaje.file.url)
+                    media_url = build_public_media_url(request, mensaje.file.url)
                     attachment_id = upload_media_to_meta(page, file_type, media_path)
                     if not attachment_id:
                         mensaje.delete()

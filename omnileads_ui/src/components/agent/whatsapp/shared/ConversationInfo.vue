@@ -49,7 +49,7 @@
               rounded
             ></Tag>
           </div>
-          <div class="col-12" v-if="conversationInfo.error">
+          <div class="col-12" v-if="conversationInfo.error && !isAttachmentError">
             <Tag
               icon="pi pi-times"
               :value="`${$t('views.whatsapp.conversations.error_conversation')}`"
@@ -79,6 +79,7 @@
 import { mapActions } from 'vuex';
 import { HTTP_STATUS, COLORS } from '@/globals';
 import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
+import { isAttachmentDeliveryError } from '@/utils/conversationErrors';
 
 export default {
     data () {
@@ -107,6 +108,11 @@ export default {
                     error: false
                 };
             }
+        }
+    },
+    computed: {
+        isAttachmentError () {
+            return isAttachmentDeliveryError(this.conversationInfo.errorEx);
         }
     },
     methods: {

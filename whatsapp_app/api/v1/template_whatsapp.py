@@ -28,6 +28,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import build_public_media_url
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
 from orquestador_app.core.whatsapp.send_message import sync_templates
@@ -176,10 +177,10 @@ class ViewSet(viewsets.ViewSet):
                                 nombre_archivo = meta_get_media_template(
                                     linea, example['header_handle'][0]
                                 )
-                                domain = request.build_absolute_uri('/')[:-1]
-                                # domain = "https://nominally-hopeful-condor.ngrok-free.app"
-                                url_media = domain + settings.MEDIA_URL + 'archivos_whatsapp/'
-                                link_template_media = url_media + nombre_archivo
+                                link_template_media = build_public_media_url(
+                                    request,
+                                    settings.MEDIA_URL + 'archivos_whatsapp/' + nombre_archivo
+                                )
                             if 'text' in comp:
                                 texto_header = comp.get('text')
                         if comp_type == 'BUTTONS':

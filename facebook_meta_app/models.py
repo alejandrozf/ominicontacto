@@ -147,10 +147,11 @@ class ConversationMessengerMetaApp(models.Model):
         verbose_name_plural = "Messenger Meta App Conversations"
         ordering = ['-updated_at']   # Order conversations by most recent update first
 
-    def otorgar_conversacion(self, agent):
+    def otorgar_conversacion(self, agent, attended=True):
         try:
             self.agent = agent
-            self.save()
+            self.atendida = attended
+            self.save(update_fields=["agent", "atendida"])
             return True
         except Exception:
             return False

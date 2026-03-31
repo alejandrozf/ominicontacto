@@ -76,7 +76,7 @@ class ViewSet(viewsets.ViewSet):
             agent_id = request.data.get('to')
             conversacion = ConversationMessengerMetaApp.objects.get(id=chat_id)
             agent = AgenteProfile.objects.get(user__id=agent_id)
-            success = conversacion.otorgar_conversacion(agent)
+            success = conversacion.otorgar_conversacion(agent, attended=False)
             if success:
                 AgentNotifier().notify_facebook_chat_transfered(
                     request.user.username, agent_id, conversacion)
