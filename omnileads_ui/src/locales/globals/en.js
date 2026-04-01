@@ -22,6 +22,7 @@ export default {
     help: 'Help',
     audio: 'Audio | Audio',
     inbound: 'Inbound | Inbound',
+    outbound: 'Outbound | Outbound',
     dialer: 'Dialer',
     manual: 'Manual | Manuals',
     preview: 'Preview | Previews',

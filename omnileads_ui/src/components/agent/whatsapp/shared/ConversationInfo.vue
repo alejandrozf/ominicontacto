@@ -20,11 +20,16 @@
       </div>
     </div>
     <div class="flex justify-content-between flex-wrap my-2">
-      <div
-        v-if="conversationInfo.transferAgent"
-        class="flex align-items-center justify-content-center"
-      >
+      <div class="flex align-items-center justify-content-center flex-wrap gap-2">
         <Tag
+          :icon="directionTag.icon"
+          :value="directionTag.label"
+          :style="directionTag.style"
+          rounded
+          v-tooltip.top="directionTag.tooltip"
+        ></Tag>
+        <Tag
+          v-if="conversationInfo.transferAgent"
           icon="pi pi-user-plus"
           :value="`Transferido por ${conversationInfo.transferAgent}`"
           severity="secondary"
@@ -102,6 +107,7 @@ export default {
                     numMessagesUnread: 0,
                     isMine: false,
                     isNew: false,
+                    isOutbound: false,
                     expire: null,
                     transferAgent: null,
                     errorEx: {},
@@ -111,6 +117,28 @@ export default {
         }
     },
     computed: {
+        directionTag () {
+            if (this.conversationInfo.isOutbound) {
+                return {
+                    icon: 'pi pi-arrow-up-right',
+                    label: 'OUT',
+                    tooltip: this.$tc('globals.outbound', 1),
+                    style: {
+                        background: '#eef2ff',
+                        color: '#4338ca'
+                    }
+                };
+            }
+            return {
+                icon: 'pi pi-arrow-down-left',
+                label: 'IN',
+                tooltip: this.$tc('globals.inbound', 1),
+                style: {
+                    background: '#ecfdf5',
+                    color: '#047857'
+                }
+            };
+        },
         isAttachmentError () {
             return isAttachmentDeliveryError(this.conversationInfo.errorEx);
         }

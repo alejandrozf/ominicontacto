@@ -136,6 +136,7 @@ class ConversacionMessengerSerializer(serializers.Serializer):
     campaing_id = serializers.PrimaryKeyRelatedField(
         source='campana', queryset=Campana.objects.all())
     campaing_name = serializers.CharField(source='campana.nombre', default=None)
+    saliente = serializers.BooleanField(default=False)
     # En Messenger usamos page_client_id en lugar de destination (id del usuario en la página)
     destination = serializers.CharField(source='page_client_id', allow_null=True)
     client = serializers.SerializerMethodField()
@@ -271,6 +272,7 @@ class ConversacionMessengerSerializerEx(serializers.Serializer):
     id = serializers.IntegerField()
     campaing_id = serializers.IntegerField(source='campana_id', allow_null=True)
     campaing_name = serializers.CharField(source='campana.nombre', default=None)
+    saliente = serializers.BooleanField(default=False)
     destination = serializers.CharField(source='page_client_id', allow_null=True)
     client = serializers.SerializerMethodField()
     agent = serializers.IntegerField(source='agent_id', allow_null=True)
@@ -374,6 +376,7 @@ class ViewSet(viewsets.ModelViewSet):
             'expire',
             'is_active',
             'is_disposition',
+            'saliente',
             'timestamp',
         ).select_related(
             'campana',
@@ -437,10 +440,13 @@ class ViewSet(viewsets.ModelViewSet):
             conversaciones = self.get_list_queryset()
             conversaciones_nuevas = conversaciones.filter(
                 Q(agent=None, campana__id__in=agente_campanas) |
-                Q(agent=agente, atendida=False)
+                Q(agent=agente, atendida=False, saliente=False)
             ).order_by('-date_last_interaction')
             conversaciones_en_curso = conversaciones.filter(
-                agent=agente, atendida=True).order_by('-date_last_interaction')
+                agent=agente
+            ).filter(
+                Q(atendida=True) | Q(saliente=True)
+            ).order_by('-date_last_interaction')
             conversaciones_nuevas =\
                 ConversacionMessengerSerializerEx(conversaciones_nuevas, many=True)
             conversaciones_en_curso =\
