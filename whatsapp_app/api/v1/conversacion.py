@@ -153,6 +153,7 @@ class ConversacionSerializerEx(serializers.Serializer):
     id = serializers.IntegerField()
     agent = serializers.IntegerField(source="agent_id")
     campaing_id = serializers.IntegerField(source="campana_id")
+    saliente = serializers.BooleanField(default=False)
     client_alias = serializers.CharField(default="")
     date_last_interaction = serializers.DateTimeField()
     destination = serializers.CharField()
@@ -197,6 +198,7 @@ class ConversacionSerializer(serializers.Serializer):
     campaing_id = serializers.PrimaryKeyRelatedField(
         source='campana', queryset=Campana.objects.all())
     campaing_name = serializers.CharField(source='campana.nombre')
+    saliente = serializers.BooleanField(default=False)
     destination = serializers.CharField()
     client = serializers.SerializerMethodField()
     agent = serializers.PrimaryKeyRelatedField(queryset=AgenteProfile.objects.all())
@@ -331,6 +333,7 @@ class ViewSet(viewsets.ViewSet):
                 "expire",
                 "is_active",
                 "is_disposition",
+                "saliente",
                 "timestamp",
 
                 "campana_id",
@@ -402,11 +405,12 @@ class ViewSet(viewsets.ViewSet):
             )
             conversaciones_nuevas = conversaciones.filter(
                 Q(agent=None, campana__id__in=agente_campanas) |
-                Q(agent=agente, atendida=False)
+                Q(agent=agente, atendida=False, saliente=False)
             )
             conversaciones_en_curso = conversaciones.filter(
                 agent=agente,
-                atendida=True,
+            ).filter(
+                Q(atendida=True) | Q(saliente=True)
             )
 
             return response.Response(
