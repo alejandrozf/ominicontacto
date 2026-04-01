@@ -57,10 +57,6 @@ def s2a_outbound_chat_event(timestamp, message_id, status, expire, destination, 
             message.conversation.error = True
             message.conversation.error_ex = error_ex
             message.conversation.save()
-        if status == 'delivered':
-            if not message.conversation.saliente and not message.conversation.atendida:
-                message.conversation.atendida = True
-                message.conversation.save()
         notifications.append(('notify_whatsapp_message_status', {
             'conversation': message.conversation,
             'message': message,
