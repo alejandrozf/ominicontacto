@@ -1,0 +1,42 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License version 3, as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "campanas/wizard_base.html" %}
+{% load i18n %}
+
+{% block form_render %}
+<div class="form-row">
+    <div class="col-md-3">
+        <label for="{{ form.pagina.id_for_label }}">{% trans 'Seleccione Página:' %}</label>
+        {{ form.pagina }}
+        {{ form.pagina.errors }}
+    </div>
+</div>
+<div class="form-row">
+    <div class="col-md-3">
+        <label for="{{ form.grupo_plantilla_facebook.id_for_label }}">{% trans 'Auto Respuesta:' %}</label>
+        {{ form.grupo_plantilla_facebook }}
+        {{ form.grupo_plantilla_facebook.errors }}
+    </div>
+    <div class="col-md-2">
+        <label for="{{ form.nivel_servicio.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
+        {{ form.nivel_servicio }}
+        {{ form.nivel_servicio.errors }}
+    </div>
+</div>
+{% endblock %}

@@ -19,7 +19,23 @@
         />
       </div>
     </div>
-    <div class="flex justify-content-end flex-wrap my-2">
+    <div class="flex justify-content-between flex-wrap my-2">
+      <div class="flex align-items-center justify-content-center flex-wrap gap-2">
+        <Tag
+          :icon="directionTag.icon"
+          :value="directionTag.label"
+          :style="directionTag.style"
+          rounded
+          v-tooltip.top="directionTag.tooltip"
+        ></Tag>
+        <Tag
+          v-if="conversationInfo.transferAgent"
+          icon="pi pi-user-plus"
+          :value="`Transferido por ${conversationInfo.transferAgent}`"
+          severity="secondary"
+          rounded
+        ></Tag>
+      </div>
       <div class="flex align-items-center justify-content-center">
         <small class="font-italic">
           <b>{{ conversationInfo.date }}</b>
@@ -38,7 +54,7 @@
               rounded
             ></Tag>
           </div>
-          <div class="col-12" v-if="conversationInfo.error">
+          <div class="col-12" v-if="conversationInfo.error && !isAttachmentError">
             <Tag
               icon="pi pi-times"
               :value="`${$t('views.whatsapp.conversations.error_conversation')}`"
@@ -68,6 +84,7 @@
 import { mapActions } from 'vuex';
 import { HTTP_STATUS, COLORS } from '@/globals';
 import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
+import { isAttachmentDeliveryError } from '@/utils/conversationErrors';
 
 export default {
     data () {
@@ -90,11 +107,40 @@ export default {
                     numMessagesUnread: 0,
                     isMine: false,
                     isNew: false,
+                    isOutbound: false,
                     expire: null,
+                    transferAgent: null,
                     errorEx: {},
                     error: false
                 };
             }
+        }
+    },
+    computed: {
+        directionTag () {
+            if (this.conversationInfo.isOutbound) {
+                return {
+                    icon: 'pi pi-arrow-up-right',
+                    label: 'OUT',
+                    tooltip: this.$tc('globals.outbound', 1),
+                    style: {
+                        background: '#eef2ff',
+                        color: '#4338ca'
+                    }
+                };
+            }
+            return {
+                icon: 'pi pi-arrow-down-left',
+                label: 'IN',
+                tooltip: this.$tc('globals.inbound', 1),
+                style: {
+                    background: '#ecfdf5',
+                    color: '#047857'
+                }
+            };
+        },
+        isAttachmentError () {
+            return isAttachmentDeliveryError(this.conversationInfo.errorEx);
         }
     },
     methods: {
@@ -104,6 +150,14 @@ export default {
                 this.conversationInfo.id
             );
             if (status === HTTP_STATUS.SUCCESS) {
+                localStorage.setItem(
+                    'agtWhatsCoversationInfo',
+                    JSON.stringify(this.conversationInfo)
+                );
+                localStorage.setItem(
+                    'agtWhatsappConversationAttending',
+                    this.conversationInfo.id
+                );
                 this.$router.push({
                     name: 'agent_whatsapp_conversation_detail',
                     params: { id: this.conversationInfo.id }

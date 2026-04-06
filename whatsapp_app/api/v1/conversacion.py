@@ -21,7 +21,7 @@ import json
 import operator
 import mimetypes
 from functools import reduce
-from django.db.models import Q
+from django.db.models import F, Func, OuterRef, Prefetch, Q, Subquery
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
@@ -32,19 +32,20 @@ from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import build_public_media_url
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer, MensajeAtachmentCreateSerializer
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
 from whatsapp_app.api.v1.calificacion import OpcionCalificacionSerializer
 from whatsapp_app.models import (
-    ConversacionWhatsapp, MensajeWhatsapp, PlantillaMensaje,
+    ConversacionWhatsapp, Linea, MensajeWhatsapp, PlantillaMensaje,
     TemplateWhatsapp)
-from ominicontacto_app.models import Campana, AgenteProfile, Contacto
+from ominicontacto_app.models import Campana, AgenteProfile, Contacto, CalificacionCliente
 from ominicontacto_app.services.redis.connection import create_redis_connection
 from notification_app.notification import AgentNotifier
-from orquestador_app.core.send_menssage import (
+from orquestador_app.core.whatsapp.send_message import (
     send_template_message, send_text_message, send_multimedia_file)
-from orquestador_app.core.gupshup_code_error import GUPSHUP_CODE_ERROR
+from orquestador_app.core.whatsapp.gupshup_code_error import GUPSHUP_CODE_ERROR
 from whatsapp_app.api.v1.linea import ListSerializer as LineSerializer
 
 redis_2 = create_redis_connection(db=2)
@@ -74,11 +75,130 @@ def get_type(fileName):
     return 'file'
 
 
+def _merge_forward_flags(original_content, content):
+    if not isinstance(original_content, dict) or not isinstance(content, dict):
+        return content
+    if original_content.get('forwarded') is True:
+        content['forwarded'] = True
+    if original_content.get('frequently_forwarded') is True:
+        content['frequently_forwarded'] = True
+    return content
+
+
+class ContactoSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    phone = serializers.CharField(source='telefono')
+    disposition = serializers.IntegerField(source="last_disposition_id")
+
+    data = serializers.SerializerMethodField()
+
+    def get_data(self, obj):
+        return obj.obtener_datos()
+
+
+class MensajesSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    conversation = serializers.IntegerField(source="conversation_id")
+    fail_reason = serializers.CharField()
+    file = serializers.FileField()
+    message_id = serializers.CharField()
+    origin = serializers.CharField(source="origen")
+    sender = serializers.JSONField()
+    status = serializers.CharField()
+    timestamp = serializers.DateTimeField()
+    type = serializers.CharField()
+
+    contact_data = serializers.SerializerMethodField()
+
+    def get_contact_data(self, obj):
+        # is redundant since the same information can be optained from the conversation
+        if obj.conversation.client:
+            serializer = ContactoSerializerEx(obj.conversation.client)
+            return serializer.data
+        return {}
+
+    content = serializers.SerializerMethodField()
+
+    def get_content(self, obj):
+        if obj.content:
+            if obj.type == 'list-gupshup':
+                content = json.loads(obj.content[0]['text'])
+                text = content['title'] + '\n'
+                options = content['items'][0]['options']
+                for option in options:
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
+                return _merge_forward_flags(obj.content, {'text': text})
+            elif obj.type == 'list-meta':
+                content = json.loads(obj.content[0]['text'])
+                text = content['header']['text'] + '\n'
+                text += content['body']['text'] + '\n'
+                options = content['action']['sections'][0]['rows']
+                for option in options:
+                    text += "{}-{} \n"\
+                            .format(option['title'],
+                                    option['description'] if 'description' in option else '')
+                return _merge_forward_flags(obj.content, {'text': text})
+            elif obj.type == 'list_reply':
+                text = "Reply-option:\n {}-{}"\
+                    .format(obj.content['title'],
+                            obj.content['description'] if 'description' in obj.content else '')
+                return _merge_forward_flags(obj.content, {'text': text})
+            return _merge_forward_flags(obj.content, obj.content)
+        return {}
+
+
+class ConversacionSerializerEx(serializers.Serializer):
+    id = serializers.IntegerField()
+    agent = serializers.IntegerField(source="agent_id")
+    campaing_id = serializers.IntegerField(source="campana_id")
+    saliente = serializers.BooleanField(default=False)
+    client_alias = serializers.CharField(default="")
+    date_last_interaction = serializers.DateTimeField()
+    destination = serializers.CharField()
+    error = serializers.BooleanField(default=False)
+    error_ex = serializers.JSONField()
+    expire = serializers.DateTimeField()
+    is_active = serializers.BooleanField(default=True)
+    is_disposition = serializers.BooleanField()
+    photo = serializers.CharField(default="")
+    timestamp = serializers.DateTimeField()
+
+    campaing_name = serializers.CharField(source='campana.nombre')
+
+    client = serializers.SerializerMethodField()
+
+    def get_client(self, obj):
+        if obj.client:
+            serializer = ContactoSerializerEx(obj.client)
+            return serializer.data
+        return None
+
+    line = serializers.SerializerMethodField()
+
+    def get_line(self, obj):
+        return {
+            "id": obj.line.id,
+            "name": obj.line.nombre,
+            "number": obj.line.numero,
+        }
+
+    messages = serializers.SerializerMethodField()
+
+    def get_messages(self, obj):
+        return MensajesSerializerEx(obj.mensajes.all(), many=True).data
+
+    message_number = serializers.IntegerField()
+    message_unread = serializers.IntegerField()
+
+
 class ConversacionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     campaing_id = serializers.PrimaryKeyRelatedField(
         source='campana', queryset=Campana.objects.all())
     campaing_name = serializers.CharField(source='campana.nombre')
+    saliente = serializers.BooleanField(default=False)
     destination = serializers.CharField()
     client = serializers.SerializerMethodField()
     agent = serializers.PrimaryKeyRelatedField(queryset=AgenteProfile.objects.all())
@@ -202,25 +322,114 @@ class ViewSet(viewsets.ViewSet):
 
     def list(self, request):
         try:
-            agente = request.user.get_agente_profile()
+            conversaciones = ConversacionWhatsapp.objects.filter(is_disposition=False).only(
+                "id",
+                "agent_id",
+                "client_alias",
+                "date_last_interaction",
+                "destination",
+                "error",
+                "error_ex",
+                "expire",
+                "is_active",
+                "is_disposition",
+                "saliente",
+                "timestamp",
+
+                "campana_id",
+                "client_id",
+                "line_id",
+            ).prefetch_related(
+                Prefetch(lookup="campana", queryset=Campana.objects.only("id", "nombre")),
+                Prefetch(
+                    lookup="client",
+                    queryset=Contacto.objects.only(
+                        "id",
+                        "telefono",
+                        "datos",
+                        "id_externo",
+                        "bd_contacto",
+                    ).annotate(
+                        last_disposition_id=Subquery(
+                            CalificacionCliente.objects.filter(
+                                contacto=OuterRef("id"),
+                            ).values("id")[:1]
+                        ),
+                    ).select_related("bd_contacto"),
+                ),
+                Prefetch(lookup="line", queryset=Linea.objects.only("id", "nombre", "numero")),
+                Prefetch(
+                    lookup="mensajes",
+                    queryset=MensajeWhatsapp.objects.only(
+                        "id",
+                        "conversation_id",
+                        "fail_reason",
+                        "file",
+                        "message_id",
+                        "origen",
+                        "sender",
+                        "status",
+                        "timestamp",
+                        "type",
+
+                        "content",
+                    ).order_by("timestamp", "id")
+                ),
+            ).annotate(
+                message_number=(
+                    MensajeWhatsapp.objects.filter(
+                        conversation_id=OuterRef("id"),
+                    ).annotate(
+                        count=Func(F("id"), function="Count"),
+                    ).values("count")
+                ),
+                message_unread=(
+                    MensajeWhatsapp.objects.filter(
+                        conversation_id=OuterRef("id"),
+                        origen=OuterRef("destination"),
+                        status="delivered",
+                    ).annotate(
+                        count=Func(F("id"), function="Count"),
+                    ).values("count")
+                ),
+                # performs worse than the previous ones
+                # message_number=Count("mensajes"),
+                # message_unread=Count("mensajes", filter=Q(
+                #     mensajes__origen=F("destination"), mensajes__status="delivered"
+                # )),
+            ).order_by("-date_last_interaction")
+
+            agente = AgenteProfile.objects.only("id").get(user_id=request.user.id)
             agente_campanas = agente.get_campanas_activas_miembro().values_list(
-                'queue_name__campana_id', flat=True)
-            conversacines = ConversacionWhatsapp.objects.filter(
-                is_disposition=False)
-            conversaciones_nuevas = conversacines.filter(
-                agent=None, campana__id__in=agente_campanas).order_by('-date_last_interaction')
-            conversaciones_en_curso = conversacines.filter(
-                agent=agente).order_by('-date_last_interaction')
-            conversaciones_nuevas = ConversacionSerializer(conversaciones_nuevas, many=True)
-            conversaciones_en_curso = ConversacionSerializer(conversaciones_en_curso, many=True)
+                "queue_name__campana_id", flat=True
+            )
+            conversaciones_nuevas = conversaciones.filter(
+                Q(agent=None, campana__id__in=agente_campanas) |
+                Q(agent=agente, atendida=False, saliente=False)
+            )
+            conversaciones_en_curso = conversaciones.filter(
+                agent=agente,
+            ).filter(
+                Q(atendida=True) | Q(saliente=True)
+            )
+
             return response.Response(
                 data=get_response_data(
                     status=HttpResponseStatus.SUCCESS,
                     message=_('Se obtuvieron las conversaciones de forma exitosa'),
                     data={
-                        "new_conversations": conversaciones_nuevas.data,
-                        "inprogress_conversations": conversaciones_en_curso.data}),
-                status=status.HTTP_200_OK)
+                        "new_conversations": ConversacionSerializerEx(
+                            instance=conversaciones_nuevas,
+                            many=True,
+                        ).data,
+                        "inprogress_conversations": ConversacionSerializerEx(
+                            instance=conversaciones_en_curso,
+                            many=True,
+                        ).data
+                    }
+                ),
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             print(e)
             return response.Response(
@@ -449,9 +658,7 @@ class ViewSet(viewsets.ViewSet):
                         mensaje = serializer.save()
                         filename = data['file'].name[:100]
                         file_type = get_type(filename)
-                        domain = request.build_absolute_uri('/')[:-1]
-                        # domain = "https://nominally-hopeful-condor.ngrok-free.app"
-                        media_url = domain + mensaje.file.url
+                        media_url = build_public_media_url(request, mensaje.file.url)
                         message_dict = {
                             "type": file_type,
                             "previewUrl": media_url,
@@ -580,8 +787,15 @@ class ViewSet(viewsets.ViewSet):
                         if message_id:
                             text = template.texto.replace('{{', '{').\
                                 replace('}}', '}').format("", *data['params'])
-                            if template_tipo == 'TEXT':
-                                message_dict = {"text": text, "type": template_tipo}
+                            header = template.texto_header.replace('{{', '{').\
+                                replace('}}', '}').format("", *data['params_header'])
+                            if template_tipo in ['TEXT', 'BUTTONS']:
+                                message_dict = {
+                                    "text": text,
+                                    "header": header,
+                                    "type": template_tipo,
+                                    "buttons": template.botones
+                                }
                             else:
                                 media_url = template.link_media
                                 message_dict = {
@@ -661,8 +875,15 @@ class ViewSet(viewsets.ViewSet):
             if message_id:
                 text = template.texto.replace('{{', '{').\
                     replace('}}', '}').format("", *data['params'])
-                if template_tipo == 'TEXT':
-                    message_dict = {"text": text, "type": template_tipo}
+                header = template.texto_header.replace('{{', '{').\
+                    replace('}}', '}').format("", *data['params_header'])
+                if template_tipo in ['TEXT', 'BUTTONS']:
+                    message_dict = {
+                        "text": text,
+                        "header": header,
+                        "type": template_tipo,
+                        "buttons": template.botones
+                    }
                 else:
                     media_url = template.link_media
                     message_dict = {
@@ -771,8 +992,15 @@ class ViewSet(viewsets.ViewSet):
                             seconds=timestamp.second, microseconds=timestamp.microsecond))
                     text = template.texto.replace('{{', '{').\
                         replace('}}', '}').format("", *data['params'])
-                    if template_tipo == 'TEXT':
-                        message_dict = {"text": text, "type": template_tipo}
+                    header = template.texto_header.replace('{{', '{').\
+                        replace('}}', '}').format("", *data['params_header'])
+                    if template_tipo in ['TEXT', 'BUTTONS']:
+                        message_dict = {
+                            "header": header,
+                            "text": text,
+                            "type": template_tipo,
+                            "buttons": template.botones
+                        }
                     else:
                         media_url = template.link_media
                         message_dict = {

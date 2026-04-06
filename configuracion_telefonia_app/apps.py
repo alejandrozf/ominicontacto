@@ -68,7 +68,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if telefonia:
             conexiones.append({
                 'label': _('Telefonía'),
-                'icon': 'icon-audio-file',
+                'icon': 'fas fa-phone',
                 'id': 'menuTelefonia',
                 'children': telefonia
             })
@@ -88,12 +88,24 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if whatsapp:
             conexiones.append({
                 'label': _('WhatsApp'),
-                'class': "main-menu-beta",
-                'icon': 'icon-audio-file',
+                'icon': 'fab fa-whatsapp',
                 'id': 'menuWhatsapp',
                 'children': whatsapp
             })
-
+        messenger = []
+        if 'messager_pages_configuration' in permissions or True:  # TEMPORAL
+            messenger.append({
+                'label': _('Páginas'),
+                'url': reverse('messenger_meta_configuration')
+            })
+        if messenger:
+            conexiones.append({
+                'label': _('Meta/Facebook'),
+                'class': "main-menu-beta",
+                'icon': 'icon-audio-file',
+                'id': 'menuMessenger',
+                'children': messenger
+            })
         recursos = []
         audios = []
         if 'adicionar_audios_asterisk' in permissions:
@@ -114,7 +126,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if audios:
             recursos.append({
                 'label': _('Audios'),
-                'icon': 'icon-audio-file',
+                'icon': 'fas fa-file-audio',
                 'id': 'menuAllAudios',
                 'children': audios
             })
@@ -146,13 +158,25 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'url': reverse('whatsapp_message_template_groups')
             })
 
+        if 'facebook_message_templates_configuration' in permissions or True:  # TEMPORAL
+            recursos.append({
+                'label': _('Plantillas de mensajes Facebook'),
+                'url': reverse('facebook_message_templates_configuration')
+            })
+        if 'facebook_message_template_groups' in permissions or True:  # TEMPORAL
+            recursos.append({
+                'label': _('Grupos de plantillas de mensaje Facebook'),
+                'url': reverse('facebook_message_template_groups')
+            })
+
         items = []
         if conexiones:
             items.append(
                 {
                     'order': 700,
                     'label': _('Conexiones'),
-                    'icon': 'icon-phone',
+                    'class': "main-menu-beta",
+                    'icon': 'fas fa-sitemap',
                     'id': 'menuConexiones',
                     'children': conexiones,
                 },
@@ -162,7 +186,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 {
                     'order': 750,
                     'label': _('Recursos'),
-                    'icon': 'icon-phone',
+                    'icon': 'fas fa-folder-open',
                     'id': 'menuRecursos',
                     'children': recursos,
                 },

@@ -33,7 +33,7 @@ from ominicontacto_app.models import (
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactSerializer
 from whatsapp_app.api.v1.campana import ListSerializer as CampaignSerializer
 from whatsapp_app.models import ConversacionWhatsapp
-from orquestador_app.core.send_menssage import autoresponse_goodbye
+from orquestador_app.core.whatsapp.send_message import autoresponse_goodbye
 
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
@@ -222,6 +222,12 @@ class RespuestaFormularioGestionCreateSerilializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         formulario = data['formulario']
+        if formulario is None:
+            data = {
+                'metadata': json.dumps(data['metadata'] or {})
+            }
+            return super(RespuestaFormularioGestionCreateSerilializer, self).to_internal_value(
+                data)
         campos = formulario.campos.all()
         if not data['metadata'] and campos:
             raise serializers.ValidationError(
@@ -254,6 +260,10 @@ class RespuestaFormularioGestionUpdateSerilializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         formulario = self.instance.calificacion.opcion_calificacion.formulario
+        if formulario is None:
+            data["metadata"] = json.dumps(data.get('metadata') or {})
+            return super(RespuestaFormularioGestionUpdateSerilializer, self).to_internal_value(
+                data)
         nombres_campos = []
         campos_requeridos = []
         for campo in formulario.campos.all().values_list("nombre_campo", "is_required"):
@@ -272,6 +282,37 @@ class RespuestaFormularioGestionUpdateSerilializer(serializers.ModelSerializer):
 class ViewSet(viewsets.ViewSet):
     permission_classes = [TienePermisoOML]
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+
+    def _finalize_conversation(self, conversation_id, calificacion, send_goodbye=True):
+        conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
+        if not conversation.is_disposition:
+            conversation.is_disposition = True
+            if send_goodbye:
+                autoresponse_goodbye(conversation)
+        conversation.conversation_disposition = calificacion.history.first()
+        conversation.save()
+        return conversation
+
+    def _save_form_response(self, calificacion, respuesta_formulario_gestion):
+        formulario = calificacion.opcion_calificacion.formulario
+        instance = RespuestaFormularioGestion.objects.filter(
+            calificacion=calificacion).last()
+        if instance:
+            data = {
+                'metadata': respuesta_formulario_gestion
+            }
+            serializer_respuesta = RespuestaFormularioGestionUpdateSerilializer(
+                instance, data, partial=True)
+        else:
+            respuesta = {
+                'metadata': respuesta_formulario_gestion,
+                'formulario': formulario
+            }
+            serializer_respuesta = RespuestaFormularioGestionCreateSerilializer(data=respuesta)
+        if serializer_respuesta.is_valid():
+            serializer_respuesta.save(calificacion=calificacion)
+            return serializer_respuesta
+        return serializer_respuesta
 
     def retrieve(self, request, pk):
         try:
@@ -303,6 +344,55 @@ class ViewSet(viewsets.ViewSet):
             if serializer_calificacion.is_valid():
                 opcion_calificacion =\
                     serializer_calificacion.validated_data.get('opcion_calificacion')
+                contacto = serializer_calificacion.validated_data.get('contacto')
+                existing_calificacion = CalificacionCliente.objects.filter(
+                    contacto=contacto,
+                    opcion_calificacion__campana=opcion_calificacion.campana).first()
+                if existing_calificacion:
+                    update_data = {
+                        'idAgente': serializer_calificacion.validated_data.get('agente').pk,
+                        'idDispositionOption': opcion_calificacion.pk,
+                        'subdispositionOption':
+                            serializer_calificacion.validated_data.get('subcalificacion'),
+                        'comments': serializer_calificacion.validated_data.get('observaciones')
+                    }
+                    serializer_existing = UpdateSerializer(
+                        existing_calificacion, data=update_data, partial=True)
+                    if not serializer_existing.is_valid():
+                        return response.Response(
+                            data=get_response_data(
+                                message=_('Error en los datos'),
+                                errors=serializer_existing.errors),
+                            status=status.HTTP_400_BAD_REQUEST)
+                    calificacion = serializer_existing.save()
+                    if calificacion.opcion_calificacion.tipo != OpcionCalificacion.GESTION \
+                            and calificacion.get_venta():
+                        calificacion.get_venta().delete()
+                        serializer_respuesta = None
+                    else:
+                        respuesta_formulario_gestion = request_data.pop(
+                            'respuestaFormularioGestion', {})
+                        serializer_respuesta = self._save_form_response(
+                            calificacion, respuesta_formulario_gestion)
+                        if not serializer_respuesta.is_valid():
+                            return response.Response(
+                                data=get_response_data(
+                                    message=_('Error en los datos del formulario'),
+                                    errors=serializer_respuesta.errors),
+                                status=status.HTTP_400_BAD_REQUEST)
+                    self._finalize_conversation(conversation_id, calificacion)
+                    response_data = serializer_existing.data
+                    if serializer_respuesta:
+                        response_data = {
+                            **response_data,
+                            **{"respuestaFormularioGestion": serializer_respuesta.data}
+                        }
+                    return response.Response(
+                        data=get_response_data(
+                            status=HttpResponseStatus.SUCCESS,
+                            message=_('Se actualizo la calificacion de forma exitosa'),
+                            data=response_data),
+                        status=status.HTTP_200_OK)
                 if opcion_calificacion.tipo == OpcionCalificacion.GESTION:
                     if 'respuestaFormularioGestion' in request_data:
                         respuestaFormularioGestion = request_data.pop('respuestaFormularioGestion')
@@ -318,17 +408,16 @@ class ViewSet(viewsets.ViewSet):
                         serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                         calificacion = serializer_calificacion.save()
                         serializer_respuesta.save(calificacion=calificacion)
-                        conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
-                        conversation.is_disposition = True
-                        conversation.conversation_disposition = calificacion.history.first()
-                        conversation.save()
+                        self._finalize_conversation(
+                            conversation_id, calificacion, send_goodbye=False)
                     else:
                         return response.Response(
                             data=get_response_data(
                                 message=_('Error en los datos del formulario'),
                                 errors=serializer_respuesta.errors),
                             status=status.HTTP_400_BAD_REQUEST)
-                    autoresponse_goodbye(conversation)
+                    autoresponse_goodbye(
+                        ConversacionWhatsapp.objects.get(id=conversation_id))
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -340,11 +429,7 @@ class ViewSet(viewsets.ViewSet):
                 else:
                     serializer_calificacion.canalidad = CalificacionCliente.CANALIDAD_WHATSAPP
                     calificacion = serializer_calificacion.save()
-                    conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
-                    conversation.is_disposition = True
-                    conversation.conversation_disposition = calificacion.history.first()
-                    conversation.save()
-                    autoresponse_goodbye(conversation)
+                    self._finalize_conversation(conversation_id, calificacion)
                     return response.Response(
                         data=get_response_data(
                             status=HttpResponseStatus.SUCCESS,
@@ -359,7 +444,7 @@ class ViewSet(viewsets.ViewSet):
         except Exception as e:
             print(e)
             return response.Response(
-                data=get_response_data(message=e),
+                data=get_response_data(message=str(e)),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk):
@@ -380,34 +465,15 @@ class ViewSet(viewsets.ViewSet):
                         instance =\
                             RespuestaFormularioGestion.objects.filter(
                                 calificacion=calificacion).last()
-                        if instance:
-                            data = {
-                                'metadata': respuestaFormularioGestion
-                            }
-                            serializer_respuesta = \
-                                RespuestaFormularioGestionUpdateSerilializer(
-                                    instance, data, partial=True)
-                        else:
-                            respuesta = {
-                                'metadata': respuestaFormularioGestion,
-                                'formulario': calificacion.opcion_calificacion.formulario
-                            }
-                            serializer_respuesta =\
-                                RespuestaFormularioGestionCreateSerilializer(data=respuesta)
-                        if serializer_respuesta.is_valid():
-                            serializer_respuesta.save(calificacion=calificacion)
-                        else:
+                        serializer_respuesta = self._save_form_response(
+                            calificacion, respuestaFormularioGestion)
+                        if not serializer_respuesta.is_valid():
                             return response.Response(
                                 data=get_response_data(
                                     message=_('Error en los datos del formulario'),
                                     errors=serializer_respuesta.errors),
                                 status=status.HTTP_400_BAD_REQUEST)
-                conversation = ConversacionWhatsapp.objects.get(id=conversation_id)
-                if not conversation.is_disposition:
-                    conversation.is_disposition = True
-                    autoresponse_goodbye(conversation)
-                conversation.conversation_disposition = calificacion.history.first()
-                conversation.save()
+                self._finalize_conversation(conversation_id, calificacion)
                 return response.Response(
                     data=get_response_data(
                         status=HttpResponseStatus.SUCCESS,
@@ -458,7 +524,7 @@ class ViewSet(viewsets.ViewSet):
                        url_path='options/(?P<campaing_id>[^/.]+)')
     def options(self, request, campaing_id):
         try:
-            opciones = OpcionCalificacion.objects.filter(campana__id=campaing_id)
+            opciones = OpcionCalificacion.objects.filter(campana__id=campaing_id, oculta=False)
 
             serializer = OpcionCalificacionSerializer(opciones, many=True)
             return response.Response(

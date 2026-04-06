@@ -14,6 +14,7 @@ export default {
             dispositionId: null
         },
         agent: null,
+        transferAgent: null,
         isActive: null,
         expire: null,
         timestamp: null,

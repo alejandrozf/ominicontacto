@@ -21,6 +21,21 @@ export default class WhatsappTransferChatService extends BaseService {
         }
     }
 
+    async getActiveCampaigns ({ conversationId }) {
+        try {
+            const resp = await fetch(
+                this.urls.campaignList(conversationId),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error('Error al obtener Campañas');
+            return [];
+        } finally {
+            this.initPayload();
+        }
+    }
+
     async transferToagent (data) {
         try {
             this.setPayload(HTTP.POST, JSON.stringify(data));
@@ -31,6 +46,22 @@ export default class WhatsappTransferChatService extends BaseService {
             return await resp.json();
         } catch (error) {
             console.error(`Error al obtener Agentes`);
+            return [];
+        } finally {
+            this.initPayload();
+        }
+    }
+
+    async transferToCampaign (data) {
+        try {
+            this.setPayload(HTTP.POST, JSON.stringify(data));
+            const resp = await fetch(
+                this.urls.transferToCampaign(),
+                this.payload
+            );
+            return await resp.json();
+        } catch (error) {
+            console.error('Error al obtener Campañas');
             return [];
         } finally {
             this.initPayload();

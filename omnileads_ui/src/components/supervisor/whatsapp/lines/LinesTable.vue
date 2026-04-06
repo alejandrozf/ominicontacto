@@ -96,6 +96,12 @@
             @click="whatsappTemplates(slotProps.data)"
             v-tooltip.top="$tc('globals.whatsapp.whatsapp_template', 2)"
           />
+          <Button
+            label="🤖"
+            class="p-button-secondary ml-2"
+            @click="editMenu(slotProps.data)"
+            v-tooltip.top="$tc('globals.whatsapp.destino')"
+          />
         </template>
       </Column>
     </DataTable>
@@ -152,6 +158,12 @@ export default {
         edit (line) {
             this.$router.push({
                 name: 'supervisor_whatsapp_lines_edit_step1',
+                params: { id: line.id }
+            });
+        },
+        editMenu (line) {
+            this.$router.push({
+                name: 'supervisor_whatsapp_lines_edit_menu_step3',
                 params: { id: line.id }
             });
         },

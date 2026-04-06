@@ -22,6 +22,7 @@ export default {
     help: 'Help',
     audio: 'Audio | Audio',
     inbound: 'Inbound | Inbound',
+    outbound: 'Outbound | Outbound',
     dialer: 'Dialer',
     manual: 'Manual | Manuals',
     preview: 'Preview | Previews',
@@ -61,12 +62,27 @@ export default {
         line: 'Whatsapp line | Whatsapp lines',
         message_template: 'Message template | Message templates',
         whatsapp_template: 'WhatsApp template | Whatsapp template',
+        destino: 'Destination | Destination',
         group_of_message_template: 'Group of message templates | Message template groups',
         group_of_whatsapp_template: 'Whatsapp template group | Whatsapp template groups',
         template: 'Template | Templates',
         automatic_agent: 'Automatic | Automatic',
         validations: {
             socket_disconnect: 'Whatsapp Socket: Connection could not be established, please reload the page',
+            contact_admin: 'If the problem persists, contact the administrator'
+        }
+    },
+    facebook: {
+        title: 'Facebook',
+        page: 'Facebook page | Facebook pages',
+        message_template: 'Message template | Message templates',
+        facebook_template: 'Facebook template | Facebook templates',
+        group_of_message_template: 'Group of message templates | Message template groups',
+        group_of_facebook_template: 'Facebook template group | Facebook template groups',
+        template: 'Template | Templates',
+        automatic_agent: 'Automatic | Automatic',
+        validations: {
+            socket_disconnect: 'Facebook Socket: Connection could not be established, please reload the page',
             contact_admin: 'If the problem persists, contact the administrator'
         }
     },

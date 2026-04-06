@@ -251,6 +251,7 @@ class DisableMigrations(object):
         return None
 
 # MIGRATION_MODULES = DisableMigrations()
+# DESHABILITAR_MIGRACIONES_EN_TESTS = True
 
 
 INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')

@@ -102,6 +102,10 @@ export default {
                     : null,
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transfer_agent
+                    ? conversation.transfer_agent
+                    : null,
             isActive:
                 conversation && conversation.is_active
                     ? conversation.is_active
@@ -139,7 +143,9 @@ export default {
             errorEx:
                 conversation && conversation.error_ex ? conversation.error_ex : null,
             client_alias:
-                conversation && conversation.client_alias ? conversation.client_alias : null
+                conversation && conversation.client_alias ? conversation.client_alias : null,
+            isOutbound:
+                conversation && conversation.saliente ? conversation.saliente : false
         };
     },
     agtWhatsChatsListInit (state, { isNew, inProgress }) {
@@ -156,7 +162,9 @@ export default {
                     photo: e.photo ? e.photo : '',
                     isNew: true,
                     isMine: false,
+                    isOutbound: e.saliente ? e.saliente : false,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -176,7 +184,9 @@ export default {
                     photo: e.photo,
                     isNew: false,
                     isMine: true,
+                    isOutbound: e.saliente ? e.saliente : false,
                     answered: false,
+                    transferAgent: e.transfer_agent ? e.transfer_agent : null,
                     date: e.timestamp ? new Date(e.timestamp) : null,
                     expire: e.expire ? new Date(e.expire) : null,
                     errorEx: e.error_ex ? e.error_ex : null,
@@ -201,7 +211,9 @@ export default {
             photo: chat && chat.photo ? chat.photo : '',
             isNew: true,
             isMine: false,
+            isOutbound: false,
             answered: false,
+            transferAgent: chat && chat.transfer_agent ? chat.transfer_agent : null,
             date: chat && chat.timestamp ? new Date(chat.timestamp) : new Date(),
             expire: chat && chat.expire ? new Date(chat.expire) : null,
             errorEx: chat && chat.error_ex ? chat.error_ex : null,
@@ -228,6 +240,10 @@ export default {
             ),
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            transferAgent:
+                conversation && conversation.transferAgent
+                    ? conversation.transferAgent
+                    : null,
             isActive:
                 conversation && conversation.isActive
                     ? conversation.isActive
@@ -260,7 +276,9 @@ export default {
             errorEx:
                 conversation && conversation.errorEx ? conversation.errorEx : null,
             error:
-                conversation && conversation.error ? conversation.error : false
+                conversation && conversation.error ? conversation.error : false,
+            isOutbound:
+                conversation && conversation.isOutbound ? conversation.isOutbound : false
         };
     },
     agtWhatsRestartExpiredCoversation (state, info = null) {

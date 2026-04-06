@@ -160,6 +160,8 @@ export default {
                 );
                 let result = null;
                 if (template.type === TEMPLATE_TYPES.WHATSAPP) {
+                    this.setParamsToTemplate(template);
+                    return;
                     if (template.configuration.numParams_text > 0 || template.configuration.numParams_header > 0) {
                         this.setParamsToTemplate(template);
                         return;

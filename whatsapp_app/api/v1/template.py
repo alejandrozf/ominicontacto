@@ -48,7 +48,7 @@ class ViewSet(viewsets.ViewSet):
             if 'line_id' in self.request.GET:
                 line = Linea.objects.get(id=self.request.GET['line_id'])
                 templates_whatsapp =\
-                    line.templates_whatsapp.filter(is_active=True).exclude(tipo='BUTTON')
+                    line.templates_whatsapp.filter(is_active=True)
                 serializer = TemplateSerializer(templates_whatsapp, many=True)
                 data['whatsapp_templates'] = serializer.data
 

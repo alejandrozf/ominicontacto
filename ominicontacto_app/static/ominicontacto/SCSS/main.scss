@@ -500,6 +500,13 @@ body > h1 {
   margin-bottom: 100px;
 }
 
+.crm-dashboard {
+  border: none;
+  display: block;
+  height: calc(100vh - 111px - 59px - 34px - 30px);
+  min-height: 860px;
+}
+
 .agent-console-iframe {
     border: none;
     display: block;
@@ -515,6 +522,12 @@ body > h1 {
   background-color: transparent;
 }
 
+.facebook_panel_view {
+  width: 600px;
+  height: 850px;
+  background-color: transparent;
+}
+
 .whatsapp_iframe_container {
   margin: 0;
   padding: 0;
@@ -523,6 +536,13 @@ body > h1 {
   border: none;
 }
 
+.facebook_iframe_container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: block;
+  border: none;
+}
 /* Other */
 
 .infoAjax {

@@ -41,6 +41,7 @@ export default {
             });
         }
         await this.agtWhatsChatsListInit();
+        console.log('RESET LOCALSTORAGE ON WHATSAPP INDEX');
         localStorage.setItem('agtWhatsConversationCreatedId', null);
         localStorage.setItem('agtWhatsappConversationAttending', null);
         localStorage.setItem('agtWhatsappConversationId', null);

@@ -22,98 +22,110 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load custom_messages %}
 
 <!DOCTYPE html>
-<html lang="en" style="--primary-color: {{ PRIMARY_COLOR }}; --primary-light-color: {{ PRIMARY_LIGHT_COLOR }}; --secondary-color: {{ SECONDARY_COLOR }};">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %} {{ OMNILEADS_TM }} {% endblock %}</title>
-        <link rel="shortcut icon" href="{{ FAVICON }}">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" /    >
-        <!-- Bootstrap -->
-        <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/bootstrap-datetimepicker.min.css' %}"></link>
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/daterangepicker.css' %}"></link>
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
-        <!-- Sweetalert2 -->
-        <link rel="stylesheet" href="{% static 'CSS/ext/sweetalert2.min.css' %}">
-        {% block extra_css %}{% endblock %}
-        <!-- Fonts -->
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-solid.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-regular.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fontawesome.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
-        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.growl.css' %}">
-        <!-- jquery UI -->
-        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-        <script src="{% static 'ominicontacto/JS/l18n_constantes.js' %}"></script>
-        {% if ALLOW_FEEDBACK  %}
-            <script type="text/javascript" src="https://freetechsolutions.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-wkh05n/b/48/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=55b63c95"></script>
-        {% endif %}
-        {% compress js %}
-        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-        <!-- Bootstrap -->
-        <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
-        <!-- External libs -->
-        <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/moment.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/moment-with-locales.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/bootstrap-datetimepicker.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/daterangepicker.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/djangoStyle.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
+<html lang="en"
+    style="--primary-color: {{ PRIMARY_COLOR }}; --primary-light-color: {{ PRIMARY_LIGHT_COLOR }}; --secondary-color: {{ SECONDARY_COLOR }};">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {{ OMNILEADS_TM }} {% endblock %}</title>
+    <link rel="shortcut icon" href="{{ FAVICON }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/bootstrap-datetimepicker.min.css' %}">
+    </link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/daterangepicker.css' %}">
+    </link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
+    <!-- Sweetalert2 -->
+    <link rel="stylesheet" href="{% static 'CSS/ext/sweetalert2.min.css' %}">
+    {% block extra_css %}{% endblock %}
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/google-font.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-solid.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fa-regular.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ext/jquery.growl.css' %}">
+    <!-- jquery UI -->
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    <script src="{% static 'ominicontacto/JS/l18n_constantes.js' %}"></script>
+    {% if ALLOW_FEEDBACK %}
+    <script type="text/javascript"
+        src="https://freetechsolutions.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-wkh05n/b/48/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=55b63c95"></script>
+    {% endif %}
+    {% compress js %}
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- External libs -->
+    <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/moment-with-locales.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/daterangepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/djangoStyle.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/ext/jquery.growl.js' %}"></script>
     {% endcompress %}
     {% block head_js %}
     {% endblock %}
 
-    </head>
-    <body>
-        <!-- Constants -->
-        <input type="hidden" value="{{ OMNILEADS_TM }}" id="omnileads_tm">
+</head>
 
-        <div class="wrapper-main">
-            {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
-                {% include "gestor/sidebar_gestion.html" %}
+<body>
+    <!-- Constants -->
+    <input type="hidden" value="{{ OMNILEADS_TM }}" id="omnileads_tm">
+
+    <div class="wrapper-main">
+        {% if user.is_authenticated and user.get_tiene_permiso_administracion %}
+        {% include "gestor/sidebar_gestion.html" %}
+        {% endif %}
+
+        <div class="wrapper-content">
+            {% if user.is_authenticated %}
+            <div id="topbar">
+                <div class="nav">
+                    <button type="button" id="sidebarCollapse" class="btn">
+                        <span class="fas fa-bars"></span>
+                    </button>
+                    {% include 'cambiar_idioma.html' %}
+                    <button type="button" id="themeToggle" class="btn" title="Toggle Dark/Light Mode"
+                        style="margin-left: 10px;">
+                        <span class="fas fa-moon" id="themeToggleIcon"></span>
+                    </button>
+                    <div id="nav-user">
+                        <a>{{ user.get_full_name }}</a>
+                        <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                    </div>
+                </div>
+            </div>
             {% endif %}
 
-            <div class="wrapper-content">
+            <div class="wrapper-info">
+                {% include 'messages.html' %}
                 {% if user.is_authenticated %}
-                    <div id="topbar">
-                        <div class="nav">
-                            <button type="button" id="sidebarCollapse" class="btn">
-                                <span class="fas fa-bars"></span>
-                            </button>
-                            {% include 'cambiar_idioma.html' %}
-                            <div id="nav-user">
-                                <a>{{ user.get_full_name }}</a>
-                                <a class="btn" href="{% url 'logout' %}" title="{% trans 'Deslogueo' %}">{% trans 'Salir' %}</a>
+                {% if user.get_tiene_permiso_administracion %}
+                {% block content %}
+                {% if user.get_es_administrador_o_supervisor_normal %}
+                <input class="hidden" value="{{ isAdmin }}" id="registerPopUpIsAdmin">
+                {% if showRegisterPopUp %}
+                <div class="modal" id="registerServerPopUp">
+                    <div class="modal-dialog modal-dialog-scrollable" id="sizeModalRegisterServer">
+                        <div class="modal-content">
+                            <div class="modal-body" style="padding: 5px">
+                                <iframe class="popup_container" id="iframeRegisterServer"
+                                    src="{% static 'omnileads-frontend/supervisor_register_server.html' %}"></iframe>
                             </div>
                         </div>
                     </div>
+                </div>
                 {% endif %}
-
-                <div class="wrapper-info">
-                    {% include 'messages.html' %}
-                    {% if user.is_authenticated  %}
-                        {% if user.get_tiene_permiso_administracion  %}
-                            {% block content %}
-                                {% if user.get_es_administrador_o_supervisor_normal %}
-                                    <input class="hidden" value="{{ isAdmin }}" id="registerPopUpIsAdmin">
-                                    {% if showRegisterPopUp %}
-                                    <div class="modal" id="registerServerPopUp">
-                                        <div class="modal-dialog modal-dialog-scrollable" id="sizeModalRegisterServer">
-                                            <div class="modal-content">
-                                                <div class="modal-body" style="padding: 5px">
-                                                    <iframe class="popup_container" id="iframeRegisterServer" src="{% static 'omnileads-frontend/supervisor_register_server.html' %}"></iframe>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                    <iframe src="{% static 'omnileads-frontend/supervisor_supervision_dashboard.html' %}" class="crm" name="crm"></iframe>
-                                    <!-- <div class="row">
+                <iframe src="{% static 'omnileads-frontend/supervisor_supervision_dashboard.html' %}" class="crm crm-dashboard"
+                    name="crm"></iframe>
+                <!-- <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
                                             <div id="mostrarInfoRelease">
                                                 {% advertencia_release_desactualizado as messages %}
@@ -123,81 +135,104 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                             </div>
                                         </div>
                                     </div> -->
-                                {% endif %}
-                            {% endblock %}
-                        {% else %}
-                            <div class="alert alert-warning">
-                                <h1>{% trans 'Permiso denegado' %}</h1>
-                                <p>{% trans 'Ud. no posee los permisos requeridos para acceder a esta pagina.' %}</p>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        {% block logueo %}
-                        {% endblock %}
-                    {% endif %}
+                {% endif %}
+                {% endblock %}
+                {% else %}
+                <div class="alert alert-warning">
+                    <h1>{% trans 'Permiso denegado' %}</h1>
+                    <p>{% trans 'Ud. no posee los permisos requeridos para acceder a esta pagina.' %}</p>
                 </div>
+                {% endif %}
+                {% else %}
+                {% block logueo %}
+                {% endblock %}
+                {% endif %}
             </div>
         </div>
-        {% block extra_js %}{% endblock %}
-        <script type="text/javascript" src="{% static 'JS/ext/sweetalert2.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/whatsapp_notifications.js' %}"></script>
-        <!-- Cambiar idioma -->
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
-        <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/register_server.js' %}"></script>
+    </div>
+    {% block extra_js %}{% endblock %}
+    <script type="text/javascript" src="{% static 'JS/ext/sweetalert2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/whatsapp_notifications.js' %}"></script>
+    <!-- Cambiar idioma -->
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/idioma.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/register_server.js' %}"></script>
 
-        <script type="text/javascript">
-         $(document).ready(function () {
+    <script type="text/javascript">
+        $(document).ready(function () {
 
-           /* Toggle */
-           $('#sidebarCollapse').on('click',function(){
-             $('#sidebar').toggleClass('active');
+            /* Toggle */
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
 
-           });
+            });
 
-           // Modal Register Server
+            // Modal Register Server
             var registered = '{{ registered|safe }}';
             showModalRegisterServer(registered === 'True');
 
-           //Toogle sidebar and keep current state on page reload
-           //retrieve current state
-           // $('#sidebar').toggleClass(window.sessionStorage.toggled);
+            // Dark/Light Mode Toggle
+            var currentTheme = localStorage.getItem('theme') || 'light';
+            var $html = $('html');
+            var $themeToggleIcon = $('#themeToggleIcon');
 
-           // /* Toggle */
-           // $('#sidebarCollapse').on('click',function(){
+            if (currentTheme === 'dark') {
+                $html.addClass('dark-mode');
+                $themeToggleIcon.removeClass('fa-moon').addClass('fa-sun');
+            }
 
-           //    if (window.sessionStorage.toggled != "active" ) {
-           //       $('#sidebar').toggleClass("active", true );
-           //       window.sessionStorage.toggled = "active";
+            $('#themeToggle').on('click', function () {
+                if ($html.hasClass('dark-mode')) {
+                    $html.removeClass('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    $themeToggleIcon.removeClass('fa-sun').addClass('fa-moon');
+                } else {
+                    $html.addClass('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    $themeToggleIcon.removeClass('fa-moon').addClass('fa-sun');
+                }
+            });
 
-           //    } else {
-           //       $('#sidebar').toggleClass("active", false );
-           //       window.sessionStorage.toggled = "";
-           //    }
+            //Toogle sidebar and keep current state on page reload
+            //retrieve current state
+            // $('#sidebar').toggleClass(window.sessionStorage.toggled);
 
-           // });
+            // /* Toggle */
+            // $('#sidebarCollapse').on('click',function(){
 
-           // Get current window path
-           currentPath = window.location.pathname;
+            //    if (window.sessionStorage.toggled != "active" ) {
+            //       $('#sidebar').toggleClass("active", true );
+            //       window.sessionStorage.toggled = "active";
 
-           // Add active class to current selected anchor
-           $("a[href='" + currentPath + "']").addClass("active");
+            //    } else {
+            //       $('#sidebar').toggleClass("active", false );
+            //       window.sessionStorage.toggled = "";
+            //    }
 
-           // Expand sidebar first level submenus for current selected anchor
-           $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
+            // });
 
-           // Expand sidebar second level submenus for current selected anchor
-           $("ul.submenu-two a[href='" + currentPath + "']").closest('ul').collapse('show');
+            // Get current window path
+            currentPath = window.location.pathname;
 
-           // Add active class to sidebar icon
-           $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
+            // Add active class to current selected anchor
+            $("a[href='" + currentPath + "']").addClass("active");
 
-           // Add * to required fields
-           $('input,textarea,select').filter('[required]').each(function (){
-             $('label[for=' + this.id + ']').append("<b style=\"color:red\"> *</b>");
-           });
+            // Expand sidebar first level submenus for current selected anchor
+            $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
 
-         });
-        </script>
+            // Expand sidebar second level submenus for current selected anchor
+            $("ul.submenu-two a[href='" + currentPath + "']").closest('ul').collapse('show');
 
-    </body>
+            // Add active class to sidebar icon
+            $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
+
+            // Add * to required fields
+            $('input,textarea,select').filter('[required]').each(function () {
+                $('label[for=' + this.id + ']').append("<b style=\"color:red\"> *</b>");
+            });
+
+        });
+    </script>
+
+</body>
+
 </html>

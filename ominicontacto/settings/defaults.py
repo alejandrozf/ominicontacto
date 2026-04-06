@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'api_app.apps.ApiAppConfig',
     'whatsapp_app.apps.WhatsappAppConfig',
     'orquestador_app.apps.OrquestadorAppConfig',
+    'facebook_meta_app.apps.FacebookMetaAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',
@@ -201,6 +202,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
+OML_PUBLIC_MEDIA_BASE_URL = None
 
 STATICFILES_DIRS = [
     ("omnileads-frontend", os.path.join(BASE_DIR, "omnileads_ui/dist")),

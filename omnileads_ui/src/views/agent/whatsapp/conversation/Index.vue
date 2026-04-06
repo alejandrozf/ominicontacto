@@ -1,11 +1,18 @@
 <template>
   <div class="h-full flex flex-column">
     <HeaderConversation :isExpired="isExpired" />
-    <div v-if="agtWhatsCoversationInfo.error">
+    <div v-if="showConversationError">
       <Message severity="error" :closable="true" class="mt-0 mb-3"
         >{{ $t("views.whatsapp.conversations.error_conversation_detail") }}
         <br>
         {{ agtWhatsCoversationInfo.errorEx.reason }} [{{ agtWhatsCoversationInfo.errorEx.code }}]
+      </Message>
+    </div>
+    <div v-else-if="showAttachmentErrorBanner">
+      <Message severity="warn" :closable="true" class="mt-0 mb-3">
+        {{ $t('views.whatsapp.conversations.attachment_error_detail', {
+          code: agtWhatsCoversationInfo.errorEx.code
+        }) }}
       </Message>
     </div>
     <div>
@@ -69,6 +76,7 @@ import ListMessages from '@/components/agent/whatsapp/conversation/ListMessages'
 import { listenerStoreDataByAction } from '@/utils';
 import { COLORS } from '@/globals';
 import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
+import { isAttachmentDeliveryError } from '@/utils/conversationErrors';
 export default {
     inject: ['$helpers'],
     components: {
@@ -90,7 +98,16 @@ export default {
         await this.initData();
     },
     computed: {
-        ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages'])
+        ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages']),
+        isAttachmentError () {
+            return isAttachmentDeliveryError(this.agtWhatsCoversationInfo.errorEx);
+        },
+        showAttachmentErrorBanner () {
+            return this.agtWhatsCoversationInfo.error && this.isAttachmentError;
+        },
+        showConversationError () {
+            return this.agtWhatsCoversationInfo.error && !this.isAttachmentError;
+        }
     },
     mounted () {
         window.parent.document.addEventListener(
@@ -101,6 +118,10 @@ export default {
             WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
             this.transferDone
         );
+        window.parent.document.addEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.DONE,
+            this.dispositionDone
+        );
     },
     beforeUnmount () {
         window.parent.document.removeEventListener(
@@ -110,6 +131,10 @@ export default {
         window.parent.document.removeEventListener(
             WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
             this.transferDone
+        );
+        window.parent.document.removeEventListener(
+            WHATSAPP_LOCALSTORAGE_EVENTS.DISPOSITION.DONE,
+            this.dispositionDone
         );
     },
     methods: {
@@ -122,12 +147,45 @@ export default {
             const scroll = document.getElementById('listMessages');
             scroll.scrollTop = scroll.scrollHeight;
         },
+        resetConversationState () {
+            this.isDisposition = false;
+            this.isTransferred = false;
+            this.isExpired = false;
+        },
+        clearConversationStorage () {
+            localStorage.setItem('agtWhatsappConversationAttending', null);
+            localStorage.setItem('agtWhatsappConversationMessages', null);
+            localStorage.setItem('agtWhatsCoversationInfo', JSON.stringify(null));
+        },
         async initData () {
+            this.resetConversationState();
             await this.agtWhatsConversationDetail({
                 conversationId: this.id,
                 $t: this.$t
             });
+            const savedConversationInfo = JSON.parse(
+                localStorage.getItem('agtWhatsCoversationInfo')
+            );
+            if (
+                savedConversationInfo?.id === this.id &&
+                savedConversationInfo?.transferAgent
+            ) {
+                await this.agtWhatsSetCoversationInfo({
+                    ...this.agtWhatsCoversationInfo,
+                    transferAgent: savedConversationInfo.transferAgent
+                });
+            }
             localStorage.setItem('agtWhatsappConversationAttending', this.id);
+            localStorage.setItem(
+                'agtWhatsCoversationInfo',
+                JSON.stringify({
+                    ...this.agtWhatsCoversationInfo,
+                    transferAgent:
+                        savedConversationInfo?.id === this.id
+                            ? savedConversationInfo?.transferAgent || null
+                            : null
+                })
+            );
             this.scrollDown();
         },
         listenerEvents () {
@@ -143,6 +201,18 @@ export default {
         transferDone (event) {
             if (event.detail.conversationId === this.id) {
                 this.isTransferred = true;
+                setTimeout(() => {
+                    this.clearConversationStorage();
+                    this.resetConversationState();
+                    this.$router.push({ name: 'agent_whatsapp' });
+                }, 2500);
+            }
+        },
+        dispositionDone (event) {
+            if (event.detail.conversationId === this.id) {
+                this.clearConversationStorage();
+                this.resetConversationState();
+                this.$router.push({ name: 'agent_whatsapp' });
             }
         },
         createContact () {
@@ -198,6 +268,15 @@ export default {
         }
     },
     watch: {
+        '$route.params.id': {
+            async handler (value) {
+                const nextId = parseInt(value);
+                if (!Number.isNaN(nextId) && nextId !== this.id) {
+                    this.id = nextId;
+                    await this.initData();
+                }
+            }
+        },
         agtWhatsCoversationInfo: {
             handler () {
                 this.checkExpirationDate();

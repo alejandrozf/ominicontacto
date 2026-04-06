@@ -28,10 +28,11 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import build_public_media_url
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import Linea, ConfiguracionProveedor, TemplateWhatsapp
-from orquestador_app.core.send_menssage import sync_templates
-from orquestador_app.core.media_management import meta_get_media_template
+from orquestador_app.core.whatsapp.send_message import sync_templates
+from orquestador_app.core.whatsapp.media_management import meta_get_media_template
 
 
 class ListSerializer(serializers.Serializer):
@@ -43,6 +44,7 @@ class ListSerializer(serializers.Serializer):
     link_media = serializers.CharField()
     text_header = serializers.CharField(source='texto_header')
     text = serializers.CharField(source='texto')
+    buttons = serializers.JSONField(source='botones')
     language = serializers.CharField(source='idioma')
     status = serializers.CharField()
     created = serializers.CharField(source='creado')
@@ -59,6 +61,7 @@ class RetrieveSerializer(serializers.Serializer):
     identifier = serializers.CharField(source='identificador')
     text_header = serializers.CharField(source='texto_header')
     text = serializers.CharField(source='texto')
+    buttons = serializers.JSONField(source='botones')
     language = serializers.CharField(source='idioma')
     status = serializers.CharField()
     created = serializers.CharField(source='creado')
@@ -119,19 +122,39 @@ class ViewSet(viewsets.ViewSet):
                 for attrs in templates:
                     containerMeta = json.loads(attrs['containerMeta'])
                     if 'buttons' in containerMeta:
-                        tipo = 'BUTTON'
+                        tipo = 'BUTTONS'
+                        buttons = containerMeta['buttons']
                     else:
                         tipo = attrs['templateType']
+                    # TODO: Validar cual es la lógica correcta para esta parte:
+                    # Valor original:
+                    # texto = containerMeta['data']
+                    #         if 'data' in containerMeta
+                    #         else '' + ' ' + containerMeta['footer'] if 'footer' in containerMeta
+                    #         else containerMeta['data']
+                    # Valor sugerido (resultado parecido sin error si falta data y footer):
+                    texto = ''
+                    if 'data' in containerMeta:
+                        texto = containerMeta['data']
+                    elif 'footer' in containerMeta:
+                        texto = containerMeta['footer']
+                    # Alternativa en lugar de elif:
+                    # if 'footer' in containerMeta:
+                    #     texto = texto + ' ' + containerMeta['footer']
+
                     linea.templates_whatsapp.update_or_create(
                         identificador=attrs['id'], defaults={
                             'nombre': attrs['elementName'],
-                            'texto': attrs['data'],
+                            'texto_header': containerMeta['header']
+                            if 'header' in containerMeta else '',
+                            'texto': texto,
                             'idioma': attrs['languageCode'],
                             'status': attrs['status'],
                             'creado': attrs['createdOn'],
                             'modificado': attrs['modifiedOn'],
                             'tipo': tipo,
                             'categoria': attrs['category'],
+                            'botones': buttons if tipo == 'BUTTONS' else [],
                             'is_active': attrs['status'] == 'APPROVED',
                             'identificador_media':
                                 containerMeta['mediaId'] if 'mediaId' in containerMeta else '',
@@ -154,10 +177,10 @@ class ViewSet(viewsets.ViewSet):
                                 nombre_archivo = meta_get_media_template(
                                     linea, example['header_handle'][0]
                                 )
-                                domain = request.build_absolute_uri('/')[:-1]
-                                # domain = "https://nominally-hopeful-condor.ngrok-free.app"
-                                url_media = domain + settings.MEDIA_URL + 'archivos_whatsapp/'
-                                link_template_media = url_media + nombre_archivo
+                                link_template_media = build_public_media_url(
+                                    request,
+                                    settings.MEDIA_URL + 'archivos_whatsapp/' + nombre_archivo
+                                )
                             if 'text' in comp:
                                 texto_header = comp.get('text')
                         if comp_type == 'BUTTONS':
@@ -217,46 +240,3 @@ class ViewSet(viewsets.ViewSet):
             return response.Response(
                 data=get_response_data(message=_(str(e))),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # @action(detail=False, methods=["get"], url_path='available_templates/(?P<linea_pk>[^/.]+)/')
-    # def conversation_templates(self, request, linea_pk):
-    #     try:
-    #         linea = Linea.objects.get(pk=linea_pk)
-    #         templates = linea.templates_whatsapp.filter(is_active=True)
-    #         serializer = ListSerializer(templates, many=True)
-    #         return response.Response(
-    #             data=get_response_data(
-    #                 status=HttpResponseStatus.SUCCESS,
-    #                 message=_('Se obtuvieron las plantillas de forma exitosa'),
-    #                 data=serializer.data),
-    #             status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         print("********************************", e)
-    #         return response.Response(
-    #             data=get_response_data(message=_(str(e))),
-    #             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # @action(detail=False, methods=["get"], url_path='campaing_templates/(?P<campaing_pk>[^/.]+)/')
-    # def campaing_templates(self, request, campaing_pk):
-    #     try:
-    #         campana = Campana.objects.get(pk=campaing_pk)
-    #         if campana.linea:
-    #             templates = campana.linea.templates_whatsapp.filter(is_active=True)
-    #             serializer = ListSerializer(templates, many=True)
-    #             return response.Response(
-    #                 data=get_response_data(
-    #                     status=HttpResponseStatus.SUCCESS,
-    #                     message=_('Se obtuvieron los templates de forma exitosa'),
-    #                     data=serializer.data),
-    #                 status=status.HTTP_200_OK)
-    #         return response.Response(
-    #             data=get_response_data(
-    #                 status=HttpResponseStatus.SUCCESS,
-    #                 message=_('No tiene templates disponibles'),
-    #                 data={}),
-    #             status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         print("********************************", e)
-    #         return response.Response(
-    #             data=get_response_data(message=_(str(e))),
-    #             status=status.HTTP_500_INTERNAL_SERVER_ERROR)

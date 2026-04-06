@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-05 12:51-0300\n"
+"POT-Creation-Date: 2026-04-06 15:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -749,6 +749,8 @@ msgstr "Call disposition fetched successfully"
 
 #: api_app/tests/tests_api_call_dispositions.py:76
 #: api_app/views/call_disposition.py:112
+#: facebook_meta_app/api/v1/disposition.py:427
+#: facebook_meta_app/api/v1/disposition.py:439
 msgid "Se creo la calificacion de forma exitosa"
 msgstr "Call disposition created successfully"
 
@@ -759,6 +761,8 @@ msgstr "Error making request"
 
 #: api_app/tests/tests_api_call_dispositions.py:112
 #: api_app/views/call_disposition.py:155
+#: facebook_meta_app/api/v1/disposition.py:396
+#: facebook_meta_app/api/v1/disposition.py:481
 msgid "Se actualizo la calificacion de forma exitosa"
 msgstr "Call disposition updated successfully"
 
@@ -1288,6 +1292,21 @@ msgstr "Contact DB created successfully"
 
 #: api_app/views/base_de_contactos.py:391
 #: api_app/views/base_de_contactos.py:494
+#: facebook_meta_app/api/v1/contact.py:288
+#: facebook_meta_app/api/v1/contact.py:315
+#: facebook_meta_app/api/v1/contact.py:344
+#: facebook_meta_app/api/v1/disposition.py:367
+#: facebook_meta_app/api/v1/disposition.py:445
+#: facebook_meta_app/api/v1/disposition.py:487
+#: facebook_meta_app/api/v1/page_configuration.py:400
+#: facebook_meta_app/api/v1/page_configuration.py:428
+#: facebook_meta_app/api/v1/page_configuration.py:452
+#: facebook_meta_app/api/v1/page_configuration.py:509
+#: facebook_meta_app/api/v1/page_configuration.py:515
+#: facebook_meta_app/api/v1/templates_group.py:112
+#: facebook_meta_app/api/v1/templates_group.py:156
+#: facebook_meta_app/api/v1/templates_messenger.py:141
+#: facebook_meta_app/api/v1/templates_messenger.py:185
 msgid "Error en los datos"
 msgstr "There were errors on the data"
 
@@ -1296,6 +1315,8 @@ msgid "El id externo debe ser único en la base de datos - {}"
 msgstr "The external id must be onique in the database- {}"
 
 #: api_app/views/base_de_contactos.py:441
+#: facebook_meta_app/api/v1/contact.py:102
+#: facebook_meta_app/api/v1/contact.py:179
 msgid "campo requerido"
 msgstr "required field"
 
@@ -1313,10 +1334,14 @@ msgid "Se crearon los contactos de forma exitosa"
 msgstr "Contacts created successfully"
 
 #: api_app/views/base_de_contactos.py:505
+#: facebook_meta_app/api/v1/contact.py:254
+#: facebook_meta_app/api/v1/contact.py:457
+#: facebook_meta_app/api/v1/contact.py:477
 msgid "Se obtuvieron los contactos de forma exitosa"
 msgstr "Contacts fetched successfully"
 
 #: api_app/views/call_disposition.py:54
+#: facebook_meta_app/api/v1/disposition.py:338
 msgid "Error al obtener las calificaciones"
 msgstr "Error fetching call dispositions"
 
@@ -1506,7 +1531,7 @@ msgstr "External system does not exist"
 msgid "Error al obtener el detalle del sistema externo"
 msgstr "Error fetching external system detail"
 
-#: api_app/views/external_system.py:183
+#: api_app/views/external_system.py:183 facebook_meta_app/api/v1/transfer.py:67
 msgid "Error al obtener los agentes"
 msgstr "Error fetching agents"
 
@@ -1592,6 +1617,7 @@ msgid "Grupo Horario"
 msgstr "Group of hours"
 
 #: api_app/views/group_of_hour.py:206
+#: facebook_meta_app/api/v1/templates_messenger.py:215
 #, python-brace-format
 msgid ""
 "No está permitido eliminar el '{modelo}' porque está siendo usado por "
@@ -1716,11 +1742,12 @@ msgstr "Audio files fetched successfully"
 msgid "Error al obtener los archivos de audio"
 msgstr "Error fetching audio files"
 
-#: api_app/views/ivr.py:284
+#: api_app/views/ivr.py:284 facebook_meta_app/api/v1/destination.py:51
 msgid "Se obtuvieron los destinos de forma exitosa"
 msgstr "Destinations fetched successfully"
 
-#: api_app/views/ivr.py:290
+#: api_app/views/ivr.py:290 facebook_meta_app/api/v1/destination.py:57
+#: facebook_meta_app/api/v1/templates_group.py:95
 msgid "Error al obtener los destinos"
 msgstr "Error fetching destinations"
 
@@ -2036,6 +2063,501 @@ msgstr "Exportation of Disposition Forms to a .csv file in process"
 msgid "Refrescando. Espere al menos 15 segundos mientras finaliza el proceso."
 msgstr "Refreshing. Wait at least 15 seconds while the process ends."
 
+#: facebook_meta_app/api/permissions.py:7
+msgid "No tiene permiso para usar la canalidad Meta Facebook."
+msgstr "You don't have permission to use Meta Facebook"
+
+#: facebook_meta_app/api/v1/campaign.py:75
+msgid "Se obtuvieron las campanas de forma exitosa"
+msgstr "Campaigns fetched successfully"
+
+#: facebook_meta_app/api/v1/campaign.py:81
+msgid "Error al obtener campanas"
+msgstr "Error fetching campaigns"
+
+#: facebook_meta_app/api/v1/contact.py:140
+msgid "Faltan campos requeridos"
+msgstr "Missing required fields"
+
+#: facebook_meta_app/api/v1/contact.py:142
+#: facebook_meta_app/api/v1/contact.py:218
+msgid "Error en los campos de contacto"
+msgstr "There were errors on contact fields"
+
+#: facebook_meta_app/api/v1/contact.py:216
+msgid "No puede editar campos ocultos o bloqueados"
+msgstr "Can't edit hidden or blocked fields"
+
+#: facebook_meta_app/api/v1/contact.py:281
+#: facebook_meta_app/api/v1/contact.py:310
+msgid "Se creo el nuevo contacto de forma exitosa"
+msgstr "Contact created successfully"
+
+#: facebook_meta_app/api/v1/contact.py:293
+#: facebook_meta_app/api/v1/contact.py:320
+msgid "Error al crear el contacto"
+msgstr "Error creating contact"
+
+#: facebook_meta_app/api/v1/contact.py:338
+msgid "Se actualizo el nuevo contacto de forma exitosa"
+msgstr "Contact updated successfully"
+
+#: facebook_meta_app/api/v1/contact.py:348
+msgid "Contacto no encontrado"
+msgstr "Contact not found"
+
+#: facebook_meta_app/api/v1/contact.py:354
+msgid "Error al actualizar el contacto"
+msgstr "Error updating contact"
+
+#: facebook_meta_app/api/v1/contact.py:380
+msgid "Error al obtener los campos de contacto"
+msgstr "Error fetching contact fields"
+
+#: facebook_meta_app/api/v1/contact.py:391
+msgid "Conversación requerida"
+msgstr "Required conversation"
+
+#: facebook_meta_app/api/v1/contact.py:400
+msgid "Sin coincidencia sugerida"
+msgstr "No match suggested"
+
+#: facebook_meta_app/api/v1/contact.py:416
+msgid "Se obtuvo la coincidencia sugerida"
+msgstr "Suggested match fetched"
+
+#: facebook_meta_app/api/v1/contact.py:422
+msgid "Conversación no encontrada"
+msgstr "Conversation not found"
+
+#: facebook_meta_app/api/v1/contact.py:428
+msgid "Error al obtener coincidencia sugerida"
+msgstr "Error fetching suggested match"
+
+#: facebook_meta_app/api/v1/contact.py:484
+msgid "Error al obtener contactos"
+msgstr "Error fetching contacts"
+
+#: facebook_meta_app/api/v1/conversation.py:79
+msgid "Debe indicar fecha desde y fecha hasta para aplicar el filtro."
+msgstr "You must provide from and to dates to apply the filter."
+
+#: facebook_meta_app/api/v1/conversation.py:457
+msgid "Se obtuvieron las conversaciones de forma exitosa"
+msgstr "Conversations fetched successfully"
+
+#: facebook_meta_app/api/v1/conversation.py:466
+msgid "Error al obtener las conversaciones"
+msgstr "Error fetching conversations"
+
+#: facebook_meta_app/api/v1/conversation.py:479
+msgid "Se obtuvo la conversacion de forma exitosa"
+msgstr "Conversation fetched successfully"
+
+#: facebook_meta_app/api/v1/conversation.py:483
+msgid "Conversacion no encontrada"
+msgstr "Conversation not found"
+
+#: facebook_meta_app/api/v1/conversation.py:488
+msgid "Error al obtener la conversacion"
+msgstr "Error fetching conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:532
+msgid "Se asignó la conversación de forma exitosa"
+msgstr "Conversation deleted successfully"
+
+#: facebook_meta_app/api/v1/conversation.py:537
+#: facebook_meta_app/api/v1/conversation.py:633
+#: facebook_meta_app/api/v1/conversation.py:706
+#: facebook_meta_app/api/v1/conversation.py:761
+msgid "Esta conversación ya está siendo atendida por otro agente"
+msgstr "This conversation is already attended by another agent"
+
+#: facebook_meta_app/api/v1/conversation.py:542
+#: facebook_meta_app/api/v1/conversation.py:588
+msgid "No se puede asignar una conversación que no existe"
+msgstr "Can't assign an inexistent conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:547
+msgid "Error al asignar la conversación"
+msgstr "Error assigning conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:559
+msgid "El contacto no pertenece a la base de datos de la campaña"
+msgstr "Contact does not belong to campaign's database"
+
+#: facebook_meta_app/api/v1/conversation.py:565
+msgid "El contacto ya está asociado a otro identificador de Facebook"
+msgstr "The contact is already associated to another Facebook id"
+
+#: facebook_meta_app/api/v1/conversation.py:573
+msgid "El contacto ya tiene una conversación activa"
+msgstr "Contact already has an active conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:583
+msgid "Se asigno el contacto a la conversacion de forma satisfactoria"
+msgstr "Contact successfully assigned to conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:593
+msgid "No existe el contacto que se quiere asignar"
+msgstr "Contact to assign does not exist"
+
+#: facebook_meta_app/api/v1/conversation.py:599
+msgid "Error al asignar el contacto a la conversación"
+msgstr "Error assigning contact to conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:660
+#: facebook_meta_app/api/v1/conversation.py:734
+#: facebook_meta_app/api/v1/conversation.py:800
+msgid "Este mensaje no se pudo enviar"
+msgstr "This message could not be sent"
+
+#: facebook_meta_app/api/v1/conversation.py:664
+#: facebook_meta_app/api/v1/conversation.py:738
+#: facebook_meta_app/api/v1/conversation.py:809
+msgid "La conversacion esta inactiva hasta que el cliente responda"
+msgstr "Conversation remains inactive until client response"
+
+#: facebook_meta_app/api/v1/conversation.py:668
+#: facebook_meta_app/api/v1/conversation.py:742
+#: facebook_meta_app/api/v1/conversation.py:813
+msgid "Conversacion es erronea"
+msgstr "Wrong conversation"
+
+#: facebook_meta_app/api/v1/conversation.py:675
+#: facebook_meta_app/api/v1/conversation.py:748
+#: facebook_meta_app/api/v1/conversation.py:820
+msgid "Error al enviar el mensaje"
+msgstr "Error sending message"
+
+#: facebook_meta_app/api/v1/conversation.py:777
+msgid "No se pudo subir el archivo a Meta"
+msgstr "Could not upload file to Meta"
+
+#: facebook_meta_app/api/v1/disposition.py:236
+msgid "respuestaFormularioGestion es obligatorio"
+msgstr "respuestaFormularioGestion is mandatory"
+
+#: facebook_meta_app/api/v1/disposition.py:249
+#: facebook_meta_app/api/v1/disposition.py:280
+msgid "error en los campos del formulario"
+msgstr "Error in form fields"
+
+#: facebook_meta_app/api/v1/disposition.py:326
+msgid "Se obtuvo la calificacion de forma exitosa"
+msgstr "Call disposition fetched successfully"
+
+#: facebook_meta_app/api/v1/disposition.py:332
+#: facebook_meta_app/api/v1/disposition.py:515
+msgid "Calificacion no encontrada"
+msgstr "Call Disposition not found"
+
+#: facebook_meta_app/api/v1/disposition.py:383
+#: facebook_meta_app/api/v1/disposition.py:419
+#: facebook_meta_app/api/v1/disposition.py:474
+msgid "Error en los datos del formulario"
+msgstr "Error in form data"
+
+#: facebook_meta_app/api/v1/disposition.py:492
+msgid "CalificacionCliente no encontrada"
+msgstr "Call Disposition not found"
+
+#: facebook_meta_app/api/v1/disposition.py:498
+msgid "Error al actualizar la CalificacionCliente"
+msgstr "Error updating call disposition"
+
+#: facebook_meta_app/api/v1/disposition.py:521
+msgid "Error al obtener el historial de calificacion"
+msgstr "Error fetching call disposition history"
+
+#: facebook_meta_app/api/v1/disposition.py:534
+msgid "Se obtuvieron las opciones de calificacion de forma exitosa"
+msgstr "Call disposition options fetched successfully"
+
+#: facebook_meta_app/api/v1/disposition.py:541
+msgid "Error al obtener opciones de calificacion"
+msgstr "Error fetching call disposition options"
+
+#: facebook_meta_app/api/v1/message.py:110
+msgid "Se obtuvieron los mensajes de forma exitosa"
+msgstr "Messages fetched successfully"
+
+#: facebook_meta_app/api/v1/message.py:116
+msgid "Error al obtener los mensajes"
+msgstr "Error fetching messages"
+
+#: facebook_meta_app/api/v1/page_configuration.py:92
+msgid "El valor de las opciones no puede repetirse"
+msgstr "Option values can not be repeated"
+
+#: facebook_meta_app/api/v1/page_configuration.py:95
+msgid "No pueden definirse más de 10 opciones"
+msgstr "Cannot define more than 10 options"
+
+#: facebook_meta_app/api/v1/page_configuration.py:101
+msgid "Campana"
+msgstr "Campaign"
+
+#: facebook_meta_app/api/v1/page_configuration.py:102
+msgid "Menu Interactivo"
+msgstr "Interactive Menu"
+
+#: facebook_meta_app/api/v1/page_configuration.py:119
+msgid "Valor incorrecto. Debe ser un id"
+msgstr "Wrong value. Must be a valid id"
+
+#: facebook_meta_app/api/v1/page_configuration.py:129
+msgid "Valor incorrecto. Esta campaña esta siendo usada por otra página"
+msgstr "Wrong value. This campaign is being used by another page"
+
+#: facebook_meta_app/api/v1/page_configuration.py:134
+msgid "No existe destino con ese id de Campaña"
+msgstr "A destination does not exist for this Campaign id"
+
+#: facebook_meta_app/api/v1/page_configuration.py:141
+msgid "Valor incorrecto."
+msgstr "Wrong value"
+
+#: facebook_meta_app/api/v1/page_configuration.py:369
+#: facebook_meta_app/api/v1/page_configuration.py:388
+msgid "Se obtuvieron las páginas de forma exitosa"
+msgstr "Pages fetched successfully"
+
+#: facebook_meta_app/api/v1/page_configuration.py:380
+msgid "No se pudo obtener la página"
+msgstr "Could not fetch page"
+
+#: facebook_meta_app/api/v1/page_configuration.py:381
+#: facebook_meta_app/api/v1/page_configuration.py:532
+msgid "No existe una página con este id"
+msgstr "A page with that id already exists"
+
+#: facebook_meta_app/api/v1/page_configuration.py:401
+#: facebook_meta_app/api/v1/page_configuration.py:453
+msgid "Este campo es requerido."
+msgstr "Required field."
+
+#: facebook_meta_app/api/v1/page_configuration.py:423
+msgid "Se creó la página de forma exitosa"
+msgstr "Page created successfully"
+
+#: facebook_meta_app/api/v1/page_configuration.py:434
+msgid "No se pudo crear la página"
+msgstr "Could create page"
+
+#: facebook_meta_app/api/v1/page_configuration.py:440
+#: facebook_meta_app/api/v1/page_configuration.py:521
+msgid "Error al crear la página >>>"
+msgstr "Error creating page >>>"
+
+#: facebook_meta_app/api/v1/page_configuration.py:503
+msgid "Se creo la página de forma exitosa"
+msgstr "Page created successfully"
+
+#: facebook_meta_app/api/v1/page_configuration.py:531
+msgid "No se pudo eliminar la página"
+msgstr "Could not delete page"
+
+#: facebook_meta_app/api/v1/page_configuration.py:540
+msgid "Se elimino la página de forma exitosa"
+msgstr "Page deleted successfully"
+
+#: facebook_meta_app/api/v1/reporte.py:141
+msgid "Error al obtener el reporte"
+msgstr "Error fetching report"
+
+#: facebook_meta_app/api/v1/reporte.py:148
+msgid "Reporte obtenido exitosamente"
+msgstr "Report fetched successfully"
+
+#: facebook_meta_app/api/v1/templates.py:51
+msgid "Se obtuvieron los templates de forma exitosa"
+msgstr "Templates fetched successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:89
+msgid "Se obtuvieron los grupo plantilla mensaje de forma exitosa"
+msgstr "Group of message templates fetched successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:106
+msgid "Se creo grupo plantilla mensaje de forma exitosa"
+msgstr "Message template created successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:116
+msgid "Error al crear el grupo plantilla mensaje"
+msgstr "Error creating Group of message templates"
+
+#: facebook_meta_app/api/v1/templates_group.py:128
+msgid "Se obtuvo grupo plantilla mensaje de forma exitosa"
+msgstr "Group of message templates fetched successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:132
+#: facebook_meta_app/api/v1/templates_group.py:160
+msgid "Grupo plantilla mensaje no encontrada"
+msgstr "Group of message templates not found"
+
+#: facebook_meta_app/api/v1/templates_group.py:137
+msgid "Error al obtener grupo plantilla mensaje"
+msgstr "Error fetching Group of message templates"
+
+#: facebook_meta_app/api/v1/templates_group.py:151
+msgid "Se actualizó grupo plantilla mensaje de forma exitosa"
+msgstr "Group of message templates updated successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:165
+msgid "Error al actualizar grupo plantilla mensaje"
+msgstr "Error updating Group of message templates"
+
+#: facebook_meta_app/api/v1/templates_group.py:177
+msgid "Se elimino grupo plantilla mensaje de forma exitosa"
+msgstr "Group of message templates deleted successfully"
+
+#: facebook_meta_app/api/v1/templates_group.py:182
+msgid "Grupo plantilla está siendo usado por alguna campaña activa"
+msgstr "Group of message templates is being used by an active campaign"
+
+#: facebook_meta_app/api/v1/templates_group.py:186
+msgid "Grupo plantilla mensaje no encontrado"
+msgstr "Group of message templates not found"
+
+#: facebook_meta_app/api/v1/templates_group.py:191
+msgid "Error al eliminar Grupo plantilla mensaje"
+msgstr "Error deleting Group of message templates"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:58
+#: facebook_meta_app/api/v1/templates_messenger.py:96
+msgid "No soportado por el momento"
+msgstr "Not supported at the moment"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:65
+#: facebook_meta_app/api/v1/templates_messenger.py:103
+msgid "Configuración incorrecta para el tipo de mensaje"
+msgstr "Wrong config for this message type"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:118
+msgid "Se obtuvieron las plantillas de forma exitosa"
+msgstr "Templates fetched successfully"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:124
+msgid "Error al obtener las plantillas"
+msgstr "Error fetching templates"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:135
+msgid "Se creo la platilla de forma exitosa"
+msgstr "Template created successfully"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:145
+msgid "Error al crear la plantilla"
+msgstr "Error creating template"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:157
+msgid "Se obtuvo la plantilla de forma exitosa"
+msgstr "Template fetched successfully"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:161
+#: facebook_meta_app/api/v1/templates_messenger.py:189
+msgid "Plantilla no encontrada"
+msgstr "Template not found"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:166
+msgid "Error al obtener la plantilla"
+msgstr "Error fetching template"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:180
+msgid "Se actualizó la plantilla de forma exitosa"
+msgstr "Template updated successfully"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:194
+msgid "Error al actualizar la plantilla"
+msgstr "Error updating template"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:205
+msgid "Se elimino la plantilla de forma exitosa"
+msgstr "Template deleted successfully"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:209
+msgid "Plantilla no encontrado"
+msgstr "Template not found"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:217
+msgid "Mensaje Plantilla"
+msgstr "MEssage Template"
+
+#: facebook_meta_app/api/v1/templates_messenger.py:227
+msgid "Error al eliminar la Plantilla"
+msgstr "Error deleting template"
+
+#: facebook_meta_app/api/v1/transfer.py:89
+#: facebook_meta_app/api/v1/transfer.py:95
+msgid "Error al tranferir conversacion"
+msgstr "Error transferring conversation"
+
+#: facebook_meta_app/apps.py:69
+msgid "Configuración general de Messenger"
+msgstr "Messanger general configuration"
+
+#: facebook_meta_app/apps.py:73
+msgid "Configuración de plantillas de mensajes"
+msgstr "Message templates configuration"
+
+#: facebook_meta_app/apps.py:77
+msgid "Grupos de plantillas de mensajes"
+msgstr "Message templates groups"
+
+#: facebook_meta_app/apps.py:80
+msgid "Configuración de página"
+msgstr "Page configuration"
+
+#: facebook_meta_app/apps.py:81
+msgid "Destinos"
+msgstr "Destinations"
+
+#: facebook_meta_app/apps.py:82
+msgid "Campañas"
+msgstr "Campaigns"
+
+#: facebook_meta_app/apps.py:83
+msgid "Reportes Meta/Facebook"
+msgstr "Meta/Facebook reports"
+
+#: facebook_meta_app/apps.py:85
+msgid "Reportes Conversaciones Meta/Facebook"
+msgstr "Meta/facebook Conversations Reports"
+
+#: facebook_meta_app/apps.py:87
+msgid "Conversaciones / Chat"
+msgstr "Conversations / Chat"
+
+#: facebook_meta_app/apps.py:88
+msgid "Contactos"
+msgstr "Contacts"
+
+#: facebook_meta_app/apps.py:89
+msgid "Disposición de chat"
+msgstr "Chat disposition"
+
+#: facebook_meta_app/apps.py:90
+msgid "Transferencia de agentes"
+msgstr "Agent's transfer"
+
+#: facebook_meta_app/apps.py:91
+msgid "Plantillas Messenger"
+msgstr "Messenger templates"
+
+#: facebook_meta_app/apps.py:93
+msgid "Grupos de plantillas Messenger"
+msgstr "Messenger templates groups"
+
+#: facebook_meta_app/apps.py:94
+msgid "Templates por campaña"
+msgstr "Templates by Campaigns"
+
+#: facebook_meta_app/models.py:18
+msgid "Texto"
+msgstr "Text"
+
 #: utiles_globales.py:35
 msgid "Archivos permitidos: .wav"
 msgstr "Allowed files: .wav"
+
+#~ msgid "Error al obtener las calificacio"
+#~ msgstr "Error fetching call dispositions"

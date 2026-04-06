@@ -15,4 +15,5 @@ exclude =
     oml_settings_local.py
     supervision_app/services/redisgears_action_scripts
     whatsapp_app/migrations/*
+    facebook_meta_app/migrations/*
     omnileads_ui/*

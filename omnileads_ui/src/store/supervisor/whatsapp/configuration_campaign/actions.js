@@ -30,6 +30,8 @@ export default {
                         console.log(">>>> regexResults_header", regexResults_header);
                         var regexResults_text = t.text.match(PARAMS_REGEX);
                         console.log(">>>> regexResults_text", regexResults_text);
+                        var regexResults_buttons = t.buttons ? JSON.stringify(t.buttons).match(PARAMS_REGEX) : [];
+                        console.log(">>>> regexResults_buttons", regexResults_buttons);
                         return {
                             id: t.id,
                             name: t.name,
@@ -37,6 +39,7 @@ export default {
                             configuration: {
                                 text_header: t.text_header ? t.text_header : "",
                                 text: t.text,
+                                buttons: t.buttons,
                                 type: t.type,
                                 status: t.status,
                                 created: t.created,
@@ -44,7 +47,8 @@ export default {
                                 identifier_media: t.identifier_media,
                                 link_media: t.link_media,
                                 numParams_header: regexResults_header ? regexResults_header.length : 0,
-                                numParams_text: regexResults_text ? regexResults_text.length : 0
+                                numParams_text: regexResults_text ? regexResults_text.length : 0,
+                                numParams_buttons: regexResults_buttons ? regexResults_buttons.length : 0
                             }
                         };
                     }));

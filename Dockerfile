@@ -75,7 +75,8 @@ RUN apk add --no-cache bash \
         espeak-ng \
         ffmpeg \
         picotts \
-    && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
+    # && wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz \
+    && wget https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz \
     &&  tar xzvf libffi-3.3.tar.gz \
     && cd libffi-3.3/ \
     && ./configure \
@@ -102,6 +103,7 @@ COPY utiles_globales.py manage.py $INSTALL_PREFIX/ominicontacto/
 COPY omnileads_ui $INSTALL_PREFIX/ominicontacto/omnileads_ui
 COPY orquestador_app $INSTALL_PREFIX/ominicontacto/orquestador_app
 COPY whatsapp_app $INSTALL_PREFIX/ominicontacto/whatsapp_app
+COPY facebook_meta_app $INSTALL_PREFIX/ominicontacto/facebook_meta_app
 COPY build/oml_uwsgi.ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
 COPY build/scripts/* $INSTALL_PREFIX/bin/
 COPY omnileads_ui/ $INSTALL_PREFIX/ominicontacto/omnileads_ui

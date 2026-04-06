@@ -15,21 +15,38 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import os
 import uuid
 from django.db import models
 from .mixins import AuditableModelMixin
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import slugify
 from django.db.models import JSONField
 from ominicontacto_app.models import (
     AgenteProfile, Campana, Contacto, HistoricalCalificacionCliente)
-
-from django.utils import timezone
 from .services.gupshup import linea_gupshup
+
+MAX_LENGTH = 100
+PREFIX = "archivos_whatsapp/"
 
 
 def upload_to(instance, filename):
-    return "archivos_whatsapp/{0}-{1}".format(
-        str(uuid.uuid4()), filename)[:95]
+    base, ext = os.path.splitext(filename)
+    base = slugify(base)
+
+    # identifier = str(int(timezone.now().timestamp() * 1000))
+    identifier = str(uuid.uuid4())
+
+    max_base_length = MAX_LENGTH - len(PREFIX) - len(identifier) - len(ext) - 1
+    base = base[:max(0, max_base_length)]
+
+    if base:
+        new_name = f"{identifier}_{base}{ext}"
+    else:
+        new_name = f"{identifier}{ext}"
+
+    return f"{PREFIX}{new_name}"
 
 
 class ConfiguracionProveedor(AuditableModelMixin, models.Model):
@@ -81,6 +98,13 @@ class Linea(AuditableModelMixin):
     @property
     def status(self):
         return linea_gupshup.get_line_status(self)
+
+    @property
+    def get_stream_name(self):
+        if self.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_GUPSHUP:
+            return 'whatsapp_webhook_gupshup_{}'.format(self.configuracion["app_id"])
+        elif self.proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
+            return 'whatsapp_webhook_meta_{}'.format(self.configuracion["app_id"])
 
     def __str__(self) -> str:
         return f"Linea: {self.nombre}"
@@ -261,10 +285,11 @@ class ConversacionWhatsapp(models.Model):
     client_alias = models.CharField(max_length=100, null=True)
     objects = ConversacionWhatsappQuerySet.as_manager()
 
-    def otorgar_conversacion(self, agent):
+    def otorgar_conversacion(self, agent, attended=True):
         try:
             self.agent = agent
-            self.save()
+            self.atendida = attended
+            self.save(update_fields=["agent", "atendida"])
             return True
         except Exception:
             return False

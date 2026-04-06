@@ -23,23 +23,28 @@ import logging.config
 import signal
 import sys
 import typing
-from datetime import datetime
 from channels.db import database_sync_to_async
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.db import models
-from django.utils import timezone
+from django.db.models import F
+from django.db.models.functions import Concat
+
 from redis.asyncio import Redis
-from orquestador_app.core.inbound_chat_event_management import inbound_chat_event
-from orquestador_app.core.media_management import meta_get_media_content
-from orquestador_app.core.outbound_chat_event_management import outbound_chat_event
+from orquestador_app.core.facebook.message_handler import (
+    facebook_messenger_handler_messages)
+from orquestador_app.core.whatsapp.message_handler import (
+    handle_gupshup_message,
+    handle_meta_messages,
+)
 from whatsapp_app.models import ConfiguracionProveedor as ProviderConfig
 from whatsapp_app.models import Linea as Line
+from facebook_meta_app.models import PaginaMetaFacebook as Page
 
 logger = logging.getLogger(__name__)
 
 
-class WhatsappEventsProcessor(object):
+class EventsProcessor(object):
 
     def __init__(self):
         self.master_job = None
@@ -61,8 +66,12 @@ class WhatsappEventsProcessor(object):
         for sig in (signal.SIGINT, signal.SIGTERM):
             loop.add_signal_handler(sig, functools.partial(self.loop_signal_handler, sig))
         self.master_job = asyncio.create_task(
-            self.read_stream("whatsapp_enabled_lines", self.handle_master_stream_message),
+            self.read_stream("whatsapp_enabled_lines", self.handle_master_stream_message_whatsapp),
             name="whatsapp_enabled_lines (suscriber)",
+        )
+        self.master_job = asyncio.create_task(
+            self.read_stream("facebook_enabled_pages", self.handle_master_stream_message_page),
+            name="facebook_enabled_pages (suscriber)",
         )
         return self
 
@@ -107,7 +116,7 @@ class WhatsappEventsProcessor(object):
                 logger.exception("redis-stream-reader %r %r", name, exception)
                 await asyncio.sleep(1)
 
-    async def handle_master_stream_message(self, message: dict):
+    async def handle_master_stream_message_whatsapp(self, message: dict):
         line_id = message.get("value")
         try:
             line = await self._get_line(line_id)
@@ -122,7 +131,7 @@ class WhatsappEventsProcessor(object):
                 self.slave_tasks[line.pk] = asyncio.create_task(
                     self.read_stream(
                         line.stream_name,
-                        functools.partial(self.handle_slave_streams_message, line)
+                        functools.partial(self.handle_slave_streams_message_whatsapp, line)
                     ),
                     name=f"{line.stream_name} (suscriber)",
                 )
@@ -131,121 +140,57 @@ class WhatsappEventsProcessor(object):
         else:
             logger.info("process-main-stream-message %r", line_id)
 
-    async def handle_slave_streams_message(self, line: Line, event: dict):
+    async def handle_master_stream_message_page(self, message: dict):
+        page_id = message.get("value")
+        try:
+            page = await self._get_page(page_id)
+            if page.pk in self.slave_tasks:
+                task = self.slave_tasks.pop(page.pk)
+                task.cancel()
+                logger.info("task -> cancel")
+                for info in task._repr_info()[1:]:
+                    logger.info("task    %s", info)
+                await asyncio.gather(task, return_exceptions=True)
+            if page.is_active:
+                self.slave_tasks[page.pk] = asyncio.create_task(
+                    self.read_stream(
+                        page.stream_name,
+                        functools.partial(self.handle_slave_streams_message_page, page)
+                    ),
+                    name=f"{page.stream_name} (suscriber)",
+                )
+        except (Page.DoesNotExist, Page.MultipleObjectsReturned) as exception:
+            logger.error("process-main-stream-message %r %r", page_id, exception)
+        else:
+            logger.info("process-main-stream-message %r", page_id)
+
+    async def handle_slave_streams_message_whatsapp(self, line: Line, event: dict):
         try:
             if event.get("action") == "stop":
                 self.shutdown.set()
                 return
             payload = json.loads(event.get("value"))
             if line.provider_type == ProviderConfig.TIPO_GUPSHUP:
-                await self.handle_gupshup_message(line, payload)
+                await handle_gupshup_message(line, payload)
             elif line.provider_type == ProviderConfig.TIPO_META:
-                await self.handle_meta_messages(line, payload)
+                await handle_meta_messages(line, payload)
         except Exception as exception:
             logger.error("handle_slave_streams_message %r %r", line.id, exception)
             logger.error("Event:", event)
 
-    async def handle_gupshup_message(self, line: Line, event: dict):
+    async def handle_slave_streams_message_page(self, page: Page, event: dict):
         try:
-            event_timestamp = datetime.fromtimestamp(
-                event["timestamp"] / 1000,
-                timezone.get_current_timezone(),
-            )
-            # salientes
-            if event["type"] == "message-event" and not event["payload"]["type"] == "enqueued":
-                error_ex = None
-                expire = None
-                if event["payload"]["type"] == "failed":
-                    logger.error(event["payload"]["payload"]["reason"])
-                    error_ex = event["payload"]["payload"]
-                if event["payload"]["type"] == "sent":
-                    expire = datetime.fromtimestamp(
-                        event["payload"]["conversation"]["expiresAt"],
-                        timezone.get_current_timezone(),
-                    )
-                await outbound_chat_event(
-                    event_timestamp,
-                    event["payload"]["gsId"],
-                    event["payload"]["type"],
-                    expire=expire,
-                    destination=event["payload"]["destination"],
-                    error_ex=error_ex,
-                )
-            # entrante
-            elif event["type"] == "message":
-                await inbound_chat_event(
-                    line,
-                    event_timestamp,
-                    event["payload"]["id"],
-                    event["payload"]["source"],
-                    event["payload"]["payload"],
-                    event["payload"]["sender"],
-                    event["payload"]["context"] if event["payload"]["type"] == "list_reply" else {},
-                    event["payload"]["type"],
-                )
-        except Exception:
-            logger.exception("handle_gupshup_message event=%r", event)
-
-    async def handle_meta_messages(self, line: Line, event: dict):
-        try:
-            if event.get("object") != "whatsapp_business_account":
-                logger.error("Not whatsapp_business_account by line:", line.id)
-                logger.error("Event:", event)
-            value_object = event["entry"][0]["changes"][0]["value"]
-            if "statuses" in value_object:
-                event_timestamp = datetime.fromtimestamp(
-                    int(value_object["statuses"][0]["timestamp"]),
-                    timezone.get_current_timezone(),
-                )
-                status = value_object["statuses"][0]["status"]
-                expire = None
-                error_ex = {}
-                if "errors" in value_object["statuses"][0]:
-                    error_ex = value_object["statuses"][0]["errors"][0]
-                if status == "sent":
-                    expire = datetime.fromtimestamp(
-                        int(value_object["statuses"][0]["conversation"]["expiration_timestamp"]),
-                        timezone.get_current_timezone(),
-                    )
-                await outbound_chat_event(
-                    event_timestamp,
-                    value_object["statuses"][0]["id"],
-                    status,
-                    expire=expire,
-                    destination=value_object["statuses"][0]["recipient_id"],
-                    error_ex=error_ex,
-                )
-            if "messages" in value_object:
-                event_timestamp = datetime.fromtimestamp(
-                    int(value_object["messages"][0]["timestamp"]),
-                    timezone.get_current_timezone(),
-                )
-                type = value_object["messages"][0]["type"]
-                context = None
-                if type == "text":
-                    content = {
-                        type: value_object["messages"][0][type]["body"]
-                    }
-                if type in ["video", "image", "document"]:
-                    content = meta_get_media_content(line, type, value_object["messages"][0])
-                if type == "interactive":
-                    context = value_object["messages"][0]["context"]
-                    if "list_reply" in value_object["messages"][0]["interactive"]:
-                        type = "list_reply"
-                        content = value_object["messages"][0]["interactive"]["list_reply"]
-                sender = value_object["contacts"][0]
-                await inbound_chat_event(
-                    line,
-                    event_timestamp,
-                    value_object["messages"][0]["id"],
-                    value_object["messages"][0]["from"],
-                    content,
-                    sender,
-                    context,
-                    type,
-                )
-        except Exception:
-            logger.exception("handle_meta_messages event=%r", event)
+            if event.get("action") == "stop":
+                self.shutdown.set()
+                return
+            print("Received event for page:", page.id)
+            print("Event data:", event)
+            payload = json.loads(event.get("value"))
+            print("Payload data:", payload)
+            await facebook_messenger_handler_messages(page, payload)
+        except Exception as exception:
+            logger.error("handle_slave_streams_message_page %r %r", page.id, exception)
+            logger.error("Event:", event)
 
     @database_sync_to_async
     def _get_line(self, pk):
@@ -270,6 +215,26 @@ class WhatsappEventsProcessor(object):
                         ),
                     ),
                     models.fields.json.KeyTextTransform("app_id", "configuracion"),
+                    output_field=models.CharField(),
+                ),
+            ).prefetch_related(
+                "horario__validaciones_tiempo",
+            )
+        )
+        return queryset.get(pk=pk)
+
+    @database_sync_to_async
+    def _get_page(self, pk):
+        queryset = (
+            Page.objects_default.only(
+                "pk",
+                "is_active",
+                "page_id",
+                "name",
+            ).annotate(
+                stream_name=Concat(
+                    models.Value("facebook_meta_webhook_page_"),
+                    F("app_id"),
                     output_field=models.CharField(),
                 ),
             ).prefetch_related(
@@ -307,5 +272,5 @@ class Command(BaseCommand):
         asyncio.run(self.ahandle(), debug=False)
 
     async def ahandle(self):
-        async with WhatsappEventsProcessor() as processor:
+        async with EventsProcessor() as processor:
             await processor.shutdown.wait()

@@ -2,16 +2,27 @@
   <div class="card mt-2">
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
+        <label>{{ $t("globals.transfer") }}</label>
+        <SelectButton
+          v-model="form.targetType"
+          class="mt-2"
+          :options="targetTypes"
+          optionLabel="label"
+          optionValue="value"
+          :allowEmpty="false"
+        />
+      </div>
+      <div class="field sm:col-12 md:col-12 lg:col-12 xl:col-12">
         <label
           id="message_transfer_to"
           :class="{
             'p-error': v$.form.to.$invalid && submitted,
           }"
-          >{{ $t("models.whatsapp.message_transfer.to") }}*</label
+          >{{ targetLabel }}*</label
         >
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
-            <i class="pi pi-users"></i>
+            <i :class="targetIcon"></i>
           </span>
           <Dropdown
             id="message_transfer_to"
@@ -20,10 +31,10 @@
             :class="{
               'p-invalid': v$.form.to.$invalid && submitted,
             }"
-            :options="agents"
+            :options="targetOptions"
             placeholder="-----"
-            optionLabel="agent_full_name"
-            optionValue="agent_id"
+            :optionLabel="targetOptionLabel"
+            :optionValue="targetOptionValue"
             :emptyFilterMessage="$t('globals.without_data')"
             :filter="true"
             v-bind:filterPlaceholder="
@@ -40,7 +51,7 @@
           {{
             v$.form.to.required.$message.replace(
               "Value",
-              $t("models.whatsapp.message_transfer.to")
+              targetLabel
             )
           }}
         </small>
@@ -90,19 +101,48 @@ export default {
     data () {
         return {
             form: {
+                targetType: 'agent',
                 to: null
             },
             agents: [],
+            campaigns: [],
             submitted: false,
             filters: null,
-            fromLabel: ''
+            fromLabel: '',
+            targetTypes: [
+                { label: 'Agente', value: 'agent' },
+                { label: 'Campaña', value: 'campaign' }
+            ]
         };
     },
     created () {
         this.initializeData();
     },
     computed: {
-        ...mapState(['agtWhatsTransferChatAgents', 'agtWhatsCoversationInfo'])
+        ...mapState([
+            'agtWhatsTransferChatAgents',
+            'agtWhatsTransferChatCampaigns',
+            'agtWhatsCoversationInfo'
+        ]),
+        targetOptions () {
+            return this.form.targetType === 'campaign' ? this.campaigns : this.agents;
+        },
+        targetOptionLabel () {
+            return this.form.targetType === 'campaign'
+                ? 'campaign_name'
+                : 'agent_full_name';
+        },
+        targetOptionValue () {
+            return this.form.targetType === 'campaign'
+                ? 'campaign_id'
+                : 'agent_id';
+        },
+        targetLabel () {
+            return this.form.targetType === 'campaign' ? 'Campaña' : this.$t("models.whatsapp.message_transfer.to");
+        },
+        targetIcon () {
+            return this.form.targetType === 'campaign' ? 'pi pi-sitemap' : 'pi pi-users';
+        }
     },
     methods: {
         ...mapActions(['agtWhatsTransferChatSend']),
@@ -120,11 +160,13 @@ export default {
             this.submitted = false;
         },
         clearData () {
+            this.form.targetType = 'agent';
             this.form.to = null;
             this.form.conversationId = null;
             this.submitted = false;
         },
         initFormData () {
+            this.form.targetType = this.agtWhatsTransferChatForm?.targetType || 'agent';
             this.form.to = this.agtWhatsTransferChatForm?.to;
         },
         clearFilter () {
@@ -146,6 +188,7 @@ export default {
                 ).id;
                 const to = this.form?.to || null;
                 const { status, message } = await this.agtWhatsTransferChatSend({
+                    targetType: this.form.targetType,
                     to: to,
                     conversationId: conversationId
                 });
@@ -184,17 +227,22 @@ export default {
             handler () {
                 if (this.agtWhatsTransferChatAgents) {
                     this.agents = this.agtWhatsTransferChatAgents;
-                    if (this.agents.length > 0) {
-                        this.fromLabel =
-              this.agents.find((a) => a.agent_id === this.form?.from)
-                  ?.agent_full_name || '';
-                    } else {
-                        this.fromLabel = '';
-                    }
                 }
             },
             deep: true,
             immediate: true
+        },
+        agtWhatsTransferChatCampaigns: {
+            handler () {
+                if (this.agtWhatsTransferChatCampaigns) {
+                    this.campaigns = this.agtWhatsTransferChatCampaigns;
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        'form.targetType' () {
+            this.form.to = null;
         }
     }
 };

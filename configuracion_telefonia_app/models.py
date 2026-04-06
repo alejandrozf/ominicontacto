@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 from whatsapp_app.models import MenuInteractivoWhatsapp, Linea, PlantillaMensaje
+from facebook_meta_app.models import MenuInteractivoMessengerMetaApp, PaginaMetaFacebook
 
 import os
 import re
@@ -316,7 +317,7 @@ class IdentificadorCliente(models.Model):
         choices=TIPOS_INTERACCIONES, help_text=_('Tipo de interacción'),
         default=SIN_INTERACCION_EXTERNA, verbose_name=_('Tipo de interacción'))
     url = models.CharField(
-        max_length=128, blank=True, null=True,
+        max_length=512, blank=True, null=True,
         verbose_name=_('Url servicio identificación'))
     audio = models.ForeignKey(
         ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
@@ -349,6 +350,7 @@ class DestinoEntrante(models.Model):
     MENU_INTERACTIVO_WHATSAPP = 10
     AGENTE = 11
     CLOSING_MESSAGE = 12
+    MENU_INTERACTIVO_MESSENGER_META_APP = 13
 
     CAMPANA_STR = _('Campaña entrante')
     VALIDACION_FECHA_HORA_STR = _('Validación de fecha/hora')
@@ -362,6 +364,7 @@ class DestinoEntrante(models.Model):
     MENU_INTERACTIVO_WHATSAPP_STR = _('Menú Interactivo de Whatsapp')
     AGENTE_STR = _('Agente')
     CLOSING_MESSAGE_STR = _('Mensaje de Cierre')
+    MENU_INTERACTIVO_MESSENGER_META_APP_STR = _('Menú Interactivo de Messenger Meta App')
 
     TIPOS_DESTINOS = (
         (CAMPANA, CAMPANA_STR),
@@ -374,6 +377,7 @@ class DestinoEntrante(models.Model):
         (AGENTE, AGENTE_STR),
         (SURVEY, SURVEY_STR),
         (CLOSING_MESSAGE, CLOSING_MESSAGE_STR),
+        (MENU_INTERACTIVO_MESSENGER_META_APP, MENU_INTERACTIVO_MESSENGER_META_APP_STR),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -411,6 +415,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.SURVEY
         elif isinstance(info_nodo_entrante, PlantillaMensaje):
             tipo = cls.CLOSING_MESSAGE
+        elif isinstance(info_nodo_entrante, MenuInteractivoMessengerMetaApp):
+            tipo = cls.MENU_INTERACTIVO_MESSENGER_META_APP
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -462,6 +468,22 @@ class DestinoEntrante(models.Model):
         # Y las lineas que tengan este destino directamente
         q_lineas_directo = Q(destino_id=self.id)
         return Linea.objects.filter(q_lineas_menu | q_lineas_directo)
+
+    def paginas_meta_facebook_antecesoras(self):
+        """ Devuelve las páginas de Facebook de las que es destino directo, o a traves de un
+            Menu Interactivo de WhatsApp.
+        """
+        # Busco las paginas de los menues que tengan este destino
+        # nodos_anteriores = self.destinos_anteriores.filter(
+        #     destino_anterior__tipo=(DestinoEntrante.MENU_INTERACTIVO_WHATSAPP))
+        # ids_menues_anteriores = nodos_anteriores.values_list('destino_anterior__object_id')
+        # ids_paginas_menues_anteriores = MenuInteractivoWhatsapp.objects.filter(
+        #     id__in=ids_menues_anteriores).values_list('pagina_meta_id', flat=True)
+        # q_paginas_menu = Q(id__in=ids_paginas_menues_anteriores)
+        # Y las paginas que tengan este destino directamente
+        q_paginas_directo = Q(destino_id=self.id)
+
+        return PaginaMetaFacebook.objects.filter(q_paginas_directo)
 
 
 class OpcionDestino(models.Model):

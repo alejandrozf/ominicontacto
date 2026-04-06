@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License version 3, as published by
+# the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+
+from django.urls import path
+from django.contrib.auth.decorators import login_required
+from django.conf.urls import include
+
+from facebook_meta_app.views import (
+    MessengerMetaConfigurationView, FacebookMessageTemplatesConfigurationView,
+    FacebookMessageTemplateGroupView)
+from facebook_meta_app.api.urls import urlpatterns as api_urlpatterns
+
+urlpatterns = [
+    path('connections/facebook/pages/',
+         login_required(MessengerMetaConfigurationView.as_view()),
+         name='messenger_meta_configuration'),
+    path('resources/facebook_message_templates/',
+         login_required(FacebookMessageTemplatesConfigurationView.as_view()),
+         name='facebook_message_templates_configuration'),
+    path('resources/facebook_message_template_groups/',
+         login_required(FacebookMessageTemplateGroupView.as_view()),
+         name='facebook_message_template_groups'),
+
+    path('api/v1/facebook/', include((api_urlpatterns, 'facebook_meta_app'), namespace='facebook')),
+]

@@ -43,5 +43,5 @@ urlpatterns = [
          login_required(MessageTemplateGroupView.as_view()),
          name='whatsapp_message_template_groups',
          ),
-    path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='v1')),
+    path('api/v1/whatsapp/', include((api_urls_v1, 'whatsapp_app'), namespace='whatsapp')),
 ]

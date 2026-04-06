@@ -1,10 +1,12 @@
 import Index from '@/views/supervisor/whatsapp/lines/Index';
 import New from '@/views/supervisor/whatsapp/lines/New';
 import Edit from '@/views/supervisor/whatsapp/lines/Edit';
+import Editmenu from '@/views/supervisor/whatsapp/lines/Editmenu.vue';
 import WhatsappTemplateIndex from '@/views/supervisor/whatsapp/whatsapp_templates/Index';
 import Step1 from '@/components/supervisor/whatsapp/lines/form_steps/Step1';
 import Step2 from '@/components/supervisor/whatsapp/lines/form_steps/Step2';
 import Step3 from '@/components/supervisor/whatsapp/lines/form_steps/Step3';
+import Destination from '@/components/supervisor/whatsapp/lines/form_steps/Destination.vue';
 import { WHATSAPP_URL_NAME } from '@/globals/supervisor/whatsapp';
 
 export default [
@@ -54,6 +56,18 @@ export default [
                 path: 'step3',
                 name: `${WHATSAPP_URL_NAME}_lines_edit_step3`,
                 component: Step3
+            }
+        ]
+    },
+    {
+        path: `/${WHATSAPP_URL_NAME}_lines/:id/edit_menu`,
+        name: `${WHATSAPP_URL_NAME}_lines_edit_menu`,
+        component: Editmenu,
+        children: [
+            {
+                path: 'edit_menu',
+                name: `${WHATSAPP_URL_NAME}_lines_edit_menu_step3`,
+                component: Destination
             }
         ]
     },
