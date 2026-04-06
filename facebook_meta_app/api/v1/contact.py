@@ -251,7 +251,7 @@ class ViewSet(viewsets.ViewSet):
         return response.Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,
-                message=_('Se obtuvieron las contactos de forma exitosa'),
+                message=_('Se obtuvieron los contactos de forma exitosa'),
                 data=serializer.data),
             status=status.HTTP_200_OK)
 

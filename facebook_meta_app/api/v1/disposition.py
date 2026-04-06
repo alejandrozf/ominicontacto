@@ -335,7 +335,7 @@ class ViewSet(viewsets.ViewSet):
             print(e)
             return response.Response(
                 data=get_response_data(
-                    message=_('Error al obtener las calificacio')),
+                    message=_('Error al obtener las calificaciones')),
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request):
