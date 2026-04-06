@@ -16,6 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from django.http import HttpResponse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -53,5 +54,9 @@ class WebhookMetaView(APIView):
 
     def post(self, request, app_id):
         stream_name = 'whatsapp_webhook_meta_{}'.format(app_id)
-        self.redis_stream.write_stream(stream_name, request.body, max_stream_length=100000)
+        self.redis_stream.write_stream(
+            stream_name,
+            request.body,
+            max_stream_length=settings.WHATSAPP_WEBHOOK_STREAM_MAXLEN,
+        )
         return HttpResponse(status=status.HTTP_200_OK)

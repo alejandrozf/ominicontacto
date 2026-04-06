@@ -203,6 +203,8 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 OML_PUBLIC_MEDIA_BASE_URL = None
+WHATSAPP_WEBHOOK_STREAM_MAXLEN = 10000
+ORCHESTRATOR_SLAVE_STREAM_FROMID = '$'
 
 STATICFILES_DIRS = [
     ("omnileads-frontend", os.path.join(BASE_DIR, "omnileads_ui/dist")),

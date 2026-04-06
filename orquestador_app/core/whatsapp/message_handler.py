@@ -96,26 +96,30 @@ async def handle_meta_messages(line: Line, event: dict):
             logger.error("Event:", event)
         value_object = event["entry"][0]["changes"][0]["value"]
         if "statuses" in value_object:
+            status_object = value_object["statuses"][0]
             event_timestamp = datetime.fromtimestamp(
-                int(value_object["statuses"][0]["timestamp"]),
+                int(status_object["timestamp"]),
                 timezone.get_current_timezone(),
             )
-            status = value_object["statuses"][0]["status"]
+            status = status_object["status"]
             expire = None
             error_ex = {}
-            if "errors" in value_object["statuses"][0]:
-                error_ex = value_object["statuses"][0]["errors"][0]
-            if status == "sent":
+            if "errors" in status_object:
+                error_ex = status_object["errors"][0]
+            expiration_timestamp = status_object.get(
+                "conversation", {}
+            ).get("expiration_timestamp")
+            if status == "sent" and expiration_timestamp:
                 expire = datetime.fromtimestamp(
-                    int(value_object["statuses"][0]["conversation"]["expiration_timestamp"]),
+                    int(expiration_timestamp),
                     timezone.get_current_timezone(),
                 )
             await outbound_chat_event(
                 event_timestamp,
-                value_object["statuses"][0]["id"],
+                status_object["id"],
                 status,
                 expire=expire,
-                destination=value_object["statuses"][0]["recipient_id"],
+                destination=status_object["recipient_id"],
                 error_ex=error_ex,
             )
         if "messages" in value_object:

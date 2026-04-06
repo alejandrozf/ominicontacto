@@ -131,7 +131,8 @@ class EventsProcessor(object):
                 self.slave_tasks[line.pk] = asyncio.create_task(
                     self.read_stream(
                         line.stream_name,
-                        functools.partial(self.handle_slave_streams_message_whatsapp, line)
+                        functools.partial(self.handle_slave_streams_message_whatsapp, line),
+                        fromid=settings.ORCHESTRATOR_SLAVE_STREAM_FROMID,
                     ),
                     name=f"{line.stream_name} (suscriber)",
                 )
@@ -155,7 +156,8 @@ class EventsProcessor(object):
                 self.slave_tasks[page.pk] = asyncio.create_task(
                     self.read_stream(
                         page.stream_name,
-                        functools.partial(self.handle_slave_streams_message_page, page)
+                        functools.partial(self.handle_slave_streams_message_page, page),
+                        fromid=settings.ORCHESTRATOR_SLAVE_STREAM_FROMID,
                     ),
                     name=f"{page.stream_name} (suscriber)",
                 )
