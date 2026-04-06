@@ -217,6 +217,7 @@ def asignar_campana(line, conversation, content, context):
                     telefono=conversation.destination).last()
                 conversation.campana = campana
                 conversation.client = client
+                conversation.atendida = True
                 conversation.save()
                 notifications.append(('notify_whatsapp_new_chat', {
                     'conversation': conversation,
