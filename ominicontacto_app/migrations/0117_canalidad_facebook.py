@@ -10,14 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(
-            model_name='historicalcalificacioncliente',
-            name='histcalifcli_hist_modified_idx',
-        ),
-        migrations.RemoveIndex(
-            model_name='historicalrespuestaformulariogestion',
-            name='histresp_hist_chg_reason_idx',
-        ),
         migrations.AddField(
             model_name='campana',
             name='meta_facebook_habilitado',
