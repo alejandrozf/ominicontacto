@@ -154,37 +154,34 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         campana_form = list(form_list)[int(self.INICIAL)]
         queue_form = list(form_list)[int(self.COLA)]
         campana = self._save_campana(campana_form, estado)
-        offset = 3
-        offset_partial = 2
-        # Agrego este offset por si form_list no contiene el formulario de ConfiguracionWhatsapp
+        # Agrego este offset por si form_list no contiene alguno de los formularios opcionales
+        offset = 0  # Por cada Form q no se usa decrementar el indice de los forms siguientes
         if campana.whatsapp_habilitado:
-            offset = offset - 2
-            offset_partial = offset_partial - 2
-            opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
             if configuracion_whatsapp_formset.is_valid():
                 configuracion_whatsapp_formset.instance.campana = campana
                 configuracion_whatsapp_formset.instance.created_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
+        else:
+            offset += 1
         # Agrego este offset por si form_list no contiene el formulario de ConfiguracionMetaFacebook
         if campana.meta_facebook_habilitado:
-            offset = offset - 2
-            offset_partial = offset_partial - 2
-            opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
             configuracion_meta_facebook_formset = list(form_list)[
-                int(self.CONFIGURACION_META_FACEBOOK)]
+                int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
                 configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()
-        opciones_calificacion_formset =\
-            list(form_list)[int(self.OPCIONES_CALIFICACION) - offset_partial]
+        else:
+            offset += 1
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
         if campana.tiene_interaccion_con_sitio_externo:
-            offset = offset - 2
-            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM) - offset_partial]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM) - offset]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
+        else:
+            offset += 1
 
         actuacion_vigente_form = list(form_list)[int(self.ACTUACION_VIGENTE) - offset]
         reglas_incidencia_form = list(form_list)[int(self.REGLAS_INCIDENCIA) - offset]
@@ -206,14 +203,14 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         try:
             with transaction.atomic():
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
-                # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
-                offset = 3
-                if campana.tiene_interaccion_con_sitio_externo:
-                    offset = offset - 2
-                if campana.whatsapp_habilitado:
-                    offset = offset - 2
-                if campana.meta_facebook_habilitado:
-                    offset = offset - 2
+                # Agrego este offset por si form_list no contiene los formularios opcionales
+                offset = 0  # Por cada Form q falta decrementar el indice de los forms siguientes
+                if not campana.tiene_interaccion_con_sitio_externo:
+                    offset += 1
+                if not campana.whatsapp_habilitado:
+                    offset += 1
+                if not campana.meta_facebook_habilitado:
+                    offset += 1
                 sincronizar_form = list(form_list)[int(self.SINCRONIZAR) - offset]
                 # Intento crear la campaña en wombat como parte de la transaccion
                 if wombat_habilitado():
@@ -244,7 +241,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 messages.ERROR,
                 _('<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. '
                   'No se pudo crear la campaña. Por favor contacte un administrador.'))
-        self.alertas_por_sistema_externo(campana)
+        if campana:
+            self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
