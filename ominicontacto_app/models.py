@@ -2980,6 +2980,23 @@ class CalificacionClienteManager(models.Manager):
             annotate(total=Count('opcion_calificacion')).order_by('-total')
 
 
+class IndexedHistoricalRecords(HistoricalRecords):
+    def __init__(self, *args, extra_indexes=(), **kwargs):
+        self.extra_indexes = tuple(extra_indexes)
+        super().__init__(*args, **kwargs)
+
+    def get_meta_options(self, model):
+        meta = super().get_meta_options(model)
+        meta["indexes"] = list(meta.get("indexes", [])) + list(self.extra_indexes)
+        return meta
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        if self.extra_indexes:
+            kwargs["extra_indexes"] = self.extra_indexes
+        return name, path, args, kwargs
+
+
 class CalificacionCliente(TimeStampedModel, models.Model):
     CANALIDAD_TELEFONO = 0
     CANALIDAD_WHATSAPP = 1
@@ -3007,7 +3024,14 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         choices=TYPE_CANALIDAD_CHOICES, default=CANALIDAD_TELEFONO)
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
     es_calificacion_manual = models.BooleanField(default=False)
-    history = HistoricalRecords()
+    history = IndexedHistoricalRecords(
+        extra_indexes=(
+            models.Index(
+                fields=["modified"],
+                name="histcalifcli_hist_modified_idx",
+            ),
+        )
+    )
 
     class Meta:
         indexes = [
@@ -3132,7 +3156,14 @@ class RespuestaFormularioGestion(models.Model):
                                      on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
-    history = HistoricalRecords()
+    history = IndexedHistoricalRecords(
+        extra_indexes=(
+            models.Index(
+                fields=["history_change_reason"],
+                name="histresp_hist_chg_reason_idx",
+            ),
+        )
+    )
 
     def __str__(self):
         return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
