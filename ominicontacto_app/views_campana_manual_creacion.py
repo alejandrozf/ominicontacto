@@ -147,22 +147,27 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
             bd_contacto.save()
             campana_form.instance.bd_contacto = bd_contacto
         campana_form.save()
-        offset = 2
+        # Agrego este offset por si form_list no contiene alguno de los formularios opcionales
+        offset = 0  # Por cada Form q no se usa decrementar el indice de los forms siguientes
+
         if whatsapp_habilitado:
-            offset = offset - 1
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
             if configuracion_whatsapp_formset.is_valid():
                 configuracion_whatsapp_formset.instance.campana = campana
                 configuracion_whatsapp_formset.instance.created_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
+        else:
+            offset += 1
+
         if meta_facebook_habilitado:
-            offset = offset - 1
             configuracion_meta_facebook_formset = list(form_list)[
                 int(self.CONFIGURACION_META_FACEBOOK) - offset]
             if configuracion_meta_facebook_formset.is_valid():
                 configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()
+        else:
+            offset += 1
 
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
@@ -252,9 +257,10 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         queue.summarize_percentage = summarize_percentage
         queue.transcription_percentage = transcription_percentage
         queue.save()
-        offset = 2
+        # Agrego este offset por si form_list no contiene alguno de los formularios opcionales
+        offset = 0  # Por cada Form q no se usa decrementar el indice de los forms siguientes
+
         if campana.whatsapp_habilitado:
-            offset = offset - 1
             configuracion_whatsapp_formset = list(form_list)[int(self.CONFIGURACION_WHATSAPP)]
             if configuracion_whatsapp_formset.is_valid():
                 if not configuracion_whatsapp_formset.instance.pk:
@@ -262,6 +268,8 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
                     configuracion_whatsapp_formset.instance.campana = campana
                 configuracion_whatsapp_formset.instance.updated_by_id = self.request.user.id
                 configuracion_whatsapp_formset.instance.save()
+        else:
+            offset += 1
 
         if campana.meta_facebook_habilitado:
             offset = offset - 1
@@ -271,6 +279,8 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
                 if not configuracion_meta_facebook_formset.instance.pk:
                     configuracion_meta_facebook_formset.instance.campana = campana
                 configuracion_meta_facebook_formset.instance.save()
+        else:
+            offset += 1
 
         opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION) - offset]
         opciones_calificacion_formset.instance = campana
