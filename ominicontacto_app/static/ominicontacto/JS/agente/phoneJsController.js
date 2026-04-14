@@ -28,6 +28,7 @@
 /* global click2call gettext interpolate JsSIP OMLAPI PhoneJSView PhoneJS KamailioHost */
 /* global WebSocketPort WebSocketHost PhoneFSM USER_STATUS_PAUSE USER_STATUS_ONLINE Urls*/
 /* global JitsiMeetExternalAPI PHONE_STATUS_CONFIGS */
+/* global AgentAlert */
 
 var ACW_PAUSE_ID = '0';
 var ACW_PAUSE_NAME = 'ACW';
@@ -836,10 +837,14 @@ class PhoneJSController {
         });
 
         this.notification_agent.eventsCallbacks.onNotificationSupervisorSendMessageCall.add(function(args){
-            $.growl.notice({
+            AgentAlert.show({
                 title: gettext('Mensaje de supervisor ') + args.supervisor,
-                message: gettext(args.msg),
-                fixed:true
+                message: args.msg,
+                type: 'info',
+                closeText: gettext('Cerrar'),
+                closeOnOverlay: false,
+                closeOnEscape: true,
+                draggable: true
             });
         });
 
