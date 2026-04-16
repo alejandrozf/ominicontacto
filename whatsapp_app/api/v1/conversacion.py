@@ -17,6 +17,7 @@
 #
 
 # APIs para visualizar destinos
+from datetime import datetime
 import json
 import operator
 import mimetypes
@@ -83,6 +84,143 @@ def _merge_forward_flags(original_content, content):
     if original_content.get('frequently_forwarded') is True:
         content['frequently_forwarded'] = True
     return content
+
+
+def _normalize_agent_snapshot(agent):
+    if not isinstance(agent, dict):
+        return None
+    username = agent.get('username') or agent.get('name')
+    if not username:
+        return None
+    return {
+        'id': agent.get('id') or agent.get('agent_id'),
+        'username': username,
+        'name': agent.get('name') or username,
+    }
+
+
+def _normalize_campaign_snapshot(campaign):
+    if not isinstance(campaign, dict):
+        return None
+    name = campaign.get('name')
+    if not name:
+        return None
+    return {
+        'id': campaign.get('id'),
+        'name': name,
+    }
+
+
+def _build_conversation_agent_snapshot(conversation):
+    if not conversation.agent:
+        return None
+    username = conversation.agent.user.username
+    full_name = conversation.agent.user.get_full_name()
+    return {
+        'id': conversation.agent.user_id,
+        'username': username,
+        'name': full_name or username,
+    }
+
+
+def _build_message_agent_snapshot(message):
+    sender = message.sender if isinstance(message.sender, dict) else {}
+    if not sender.get('agent_id'):
+        return None
+    username = sender.get('name')
+    if not username:
+        return None
+    return {
+        'id': sender.get('agent_id'),
+        'username': username,
+        'name': username,
+    }
+
+
+def _extract_transfer_summary(conversation):
+    cached_summary = getattr(conversation, '_transfer_summary_cache', None)
+    if cached_summary is not None:
+        return cached_summary
+    initial_agent = None
+    transferred_agent = None
+    transferred_campaign = None
+    for message in conversation.mensajes.all().order_by('timestamp', 'id'):
+        if message.type == 'transfer_event':
+            content = message.content if isinstance(message.content, dict) else {}
+            if not initial_agent:
+                initial_agent = _normalize_agent_snapshot(content.get('from_agent'))
+            if content.get('event_type') == 'agent_transfer':
+                transferred_agent = _normalize_agent_snapshot(content.get('to_agent'))
+            if content.get('event_type') == 'campaign_transfer':
+                transferred_campaign = _normalize_campaign_snapshot(content.get('to_campaign'))
+        elif not initial_agent:
+            initial_agent = _build_message_agent_snapshot(message)
+    if not initial_agent:
+        initial_agent = _build_conversation_agent_snapshot(conversation)
+    summary = {
+        'initial_agent': initial_agent,
+        'transferred_agent': transferred_agent,
+        'transferred_campaign': transferred_campaign,
+    }
+    conversation._transfer_summary_cache = summary
+    return summary
+
+
+def _parse_serialized_timestamp(timestamp):
+    if isinstance(timestamp, datetime):
+        return timestamp
+    if isinstance(timestamp, str):
+        return datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+    return timezone.now()
+
+
+def _serialize_transfer_event_messages(conversation, messages=None):
+    transfer_messages = []
+    message_collection = messages if messages is not None else (
+        conversation.mensajes.all().order_by('timestamp', 'id')
+    )
+    for message in message_collection:
+        if message.type != 'transfer_event':
+            continue
+        transfer_messages.append({
+            'id': message.id,
+            'message_id': message.message_id,
+            'conversation': conversation.id,
+            'contact_data': {},
+            'timestamp': message.timestamp.isoformat(),
+            'content': message.content if isinstance(message.content, dict) else {},
+            'origin': message.origen,
+            'sender': message.sender,
+            'type': message.type,
+            'status': message.status,
+            'fail_reason': message.fail_reason,
+            'file': message.file.url if message.file else None,
+        })
+    return transfer_messages
+
+
+def _serialize_messages_with_transfer_events(conversation, messages=None):
+    message_collection = messages if messages is not None else (
+        conversation.mensajes.all().order_by('timestamp', 'id')
+    )
+    real_messages = [
+        message for message in message_collection
+        if message.type != 'transfer_event'
+    ]
+    serialized_messages = list(MensajeListSerializer(real_messages, many=True).data)
+    serialized_messages.extend(
+        _serialize_transfer_event_messages(
+            conversation,
+            messages=message_collection,
+        )
+    )
+    serialized_messages.sort(
+        key=lambda message: (
+            _parse_serialized_timestamp(message.get('timestamp')),
+            message.get('id'),
+        )
+    )
+    return serialized_messages
 
 
 class ContactoSerializerEx(serializers.Serializer):
@@ -176,6 +314,9 @@ class ConversacionSerializerEx(serializers.Serializer):
         return None
 
     line = serializers.SerializerMethodField()
+    initial_agent = serializers.SerializerMethodField()
+    transferred_agent = serializers.SerializerMethodField()
+    transferred_campaign = serializers.SerializerMethodField()
 
     def get_line(self, obj):
         return {
@@ -187,7 +328,16 @@ class ConversacionSerializerEx(serializers.Serializer):
     messages = serializers.SerializerMethodField()
 
     def get_messages(self, obj):
-        return MensajesSerializerEx(obj.mensajes.all(), many=True).data
+        return _serialize_messages_with_transfer_events(obj)
+
+    def get_initial_agent(self, obj):
+        return _extract_transfer_summary(obj)['initial_agent']
+
+    def get_transferred_agent(self, obj):
+        return _extract_transfer_summary(obj)['transferred_agent']
+
+    def get_transferred_campaign(self, obj):
+        return _extract_transfer_summary(obj)['transferred_campaign']
 
     message_number = serializers.IntegerField()
     message_unread = serializers.IntegerField()
@@ -212,6 +362,9 @@ class ConversacionSerializer(serializers.Serializer):
     messages = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
     line = serializers.SerializerMethodField()
+    initial_agent = serializers.SerializerMethodField()
+    transferred_agent = serializers.SerializerMethodField()
+    transferred_campaign = serializers.SerializerMethodField()
     error = serializers.BooleanField(default=False)
     error_ex = serializers.JSONField()
     client_alias = serializers.CharField(default="")
@@ -231,13 +384,22 @@ class ConversacionSerializer(serializers.Serializer):
         return obj.mensajes.mensajes_recibidos().filter(status='delivered').count()
 
     def get_messages(self, obj):
-        return MensajeListSerializer(obj.mensajes.all().order_by('timestamp', 'id'), many=True).data
+        return _serialize_messages_with_transfer_events(obj)
 
     def get_client(self, obj):
         if obj.client:
             serializer = ContactoSerializer(obj.client)
             return serializer.data
         return None
+
+    def get_initial_agent(self, obj):
+        return _extract_transfer_summary(obj)['initial_agent']
+
+    def get_transferred_agent(self, obj):
+        return _extract_transfer_summary(obj)['transferred_agent']
+
+    def get_transferred_campaign(self, obj):
+        return _extract_transfer_summary(obj)['transferred_campaign']
 
 
 class ConversacionFilterSerializer(serializers.Serializer):
@@ -255,6 +417,9 @@ class ConversacionFilterSerializer(serializers.Serializer):
     message_number = serializers.SerializerMethodField()
     photo = serializers.CharField(default="")
     line = serializers.SerializerMethodField()
+    initial_agent = serializers.SerializerMethodField()
+    transferred_agent = serializers.SerializerMethodField()
+    transferred_campaign = serializers.SerializerMethodField()
     error = serializers.BooleanField(default=False)
 
     def get_line(self, obj):
@@ -304,6 +469,15 @@ class ConversacionFilterSerializer(serializers.Serializer):
 
     def get_was_closed_by_system(self, obj):
         return obj.is_disposition and not obj.conversation_disposition
+
+    def get_initial_agent(self, obj):
+        return _extract_transfer_summary(obj)['initial_agent']
+
+    def get_transferred_agent(self, obj):
+        return _extract_transfer_summary(obj)['transferred_agent']
+
+    def get_transferred_campaign(self, obj):
+        return _extract_transfer_summary(obj)['transferred_campaign']
 
 
 class ConversacionNuevaSerializer(ConversacionSerializer):
@@ -569,9 +743,9 @@ class ViewSet(viewsets.ViewSet):
                 conversation=pk, timestamp__gte=last_message.timestamp).order_by('timestamp')
         else:
             mensajes = MensajeWhatsapp.objects.filter(conversation=pk).order_by('timestamp')
-        serializer_mensajes = MensajeListSerializer(mensajes, many=True)
+        mensajes = list(mensajes)
         data = {
-            "messages": serializer_mensajes.data,
+            "messages": _serialize_messages_with_transfer_events(conversation, messages=mensajes),
             "conversation_info": ConversacionSerializer(conversation).data
         }
         return response.Response(

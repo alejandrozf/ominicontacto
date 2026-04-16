@@ -76,6 +76,7 @@
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
+import SelectButton from 'primevue/selectbutton';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
@@ -83,6 +84,9 @@ import { HTTP_STATUS } from '@/globals';
 import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 
 export default {
+    components: {
+        SelectButton
+    },
     setup: () => ({ v$: useVuelidate() }),
     validations () {
         return {
@@ -138,7 +142,9 @@ export default {
                 : 'agent_id';
         },
         targetLabel () {
-            return this.form.targetType === 'campaign' ? 'Campaña' : this.$t('models.whatsapp.message_transfer.to');
+            return this.form.targetType === 'campaign'
+                ? 'Campaña'
+                : this.$t('models.whatsapp.message_transfer.to');
         },
         targetIcon () {
             return this.form.targetType === 'campaign' ? 'pi pi-sitemap' : 'pi pi-users';
@@ -194,12 +200,15 @@ export default {
                 });
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
-                    const event = new CustomEvent(WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE, {
-                        detail: {
-                            to,
-                            conversationId
+                    const event = new CustomEvent(
+                        WHATSAPP_LOCALSTORAGE_EVENTS.TRANSFER.DONE,
+                        {
+                            detail: {
+                                to,
+                                conversationId
+                            }
                         }
-                    });
+                    );
                     window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,

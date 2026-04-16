@@ -61,6 +61,24 @@
             <i v-else class="pi pi-times-circle" style="color: red"></i>
           </span>
         </div>
+        <div class="sm:col-12 md:col-12 lg:col-4 xl:col-4">
+          <span>
+            <b> {{ $t("models.whatsapp.conversation.initial_agent") }}: </b>
+            {{ getAgentLabel(agtWhatsCoversationInfo.initialAgent) }}
+          </span>
+        </div>
+        <div class="sm:col-12 md:col-12 lg:col-4 xl:col-4">
+          <span>
+            <b> {{ $t("models.whatsapp.conversation.transferred_agent") }}: </b>
+            {{ getAgentLabel(agtWhatsCoversationInfo.transferredAgent) }}
+          </span>
+        </div>
+        <div class="sm:col-12 md:col-12 lg:col-4 xl:col-4">
+          <span>
+            <b> {{ $t("models.whatsapp.conversation.transferred_campaign") }}: </b>
+            {{ getCampaignLabel(agtWhatsCoversationInfo.transferredCampaign) }}
+          </span>
+        </div>
       </div>
     </Fieldset>
     <HeaderConversation
@@ -155,6 +173,18 @@ export default {
             } else if (expiredDate.getTime() > currentDate.getTime()) {
                 return 'pi pi-check-circle';
             }
+        },
+        getAgentLabel (agent) {
+            if (!agent || (!agent.username && !agent.name)) {
+                return ' - ';
+            }
+            return agent.username || agent.name || ' - ';
+        },
+        getCampaignLabel (campaign) {
+            if (!campaign || !campaign.name) {
+                return ' - ';
+            }
+            return campaign.name || ' - ';
         }
     },
     watch: {

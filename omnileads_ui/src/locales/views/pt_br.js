@@ -250,7 +250,10 @@ export default {
                 conversation: {
                     title: 'Relatório de conversa',
                     table_title: 'Lista de conversas',
-                    detail_title: 'Detalhe da conversa'
+                    detail_title: 'Detalhe da conversa',
+                    transfer_event: 'Evento de transferência',
+                    transfer_to_agent: 'Transferência para o agente: {agent}',
+                    transfer_to_campaign: 'Transferência para a campanha: {campaign}'
                 }
             }
         }

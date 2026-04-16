@@ -20,6 +20,21 @@ const setLineInfo = (info = null) => {
     };
 };
 
+const setAgentSnapshot = (info = null) => {
+    return {
+        id: info && info.id ? info.id : null,
+        username: info && info.username ? info.username : null,
+        name: info && info.name ? info.name : null
+    };
+};
+
+const setCampaignSnapshot = (info = null) => {
+    return {
+        id: info && info.id ? info.id : null,
+        name: info && info.name ? info.name : null
+    };
+};
+
 const setFromInfo = (info = null) => {
     if (info && info.client) {
         if (info.client.data.nombre) {
@@ -47,9 +62,13 @@ export default {
             const itsMine = data && data.origin ? data.origin === data.line_phone : false;
             const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
             const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : '------';
-            var clientName = '-';
+            let clientName = '-';
             if (data && data.contact_data) {
-                if (data.contact_data.nombre) { clientName = data.contact_data.nombre; } else if (data.contact_data.name) { clientName = data.contact_data.name; }
+                if (data.contact_data.nombre) {
+                    clientName = data.contact_data.nombre;
+                } else if (data.contact_data.name) {
+                    clientName = data.contact_data.name;
+                }
             }
             const message = {
                 id: newMessageId,
@@ -58,6 +77,7 @@ export default {
                     : clientName || senderPhone,
                 conversationId: data && data.chat_id ? data.chat_id : null,
                 itsMine,
+                senderName: itsMine ? senderName || senderPhone : null,
                 message: data && data.content ? data.content : '',
                 status: data && data.status ? data.status : null,
                 date: data && data.timestamp ? new Date(data.timestamp) : new Date(),
@@ -69,9 +89,11 @@ export default {
                     `Mensaje Nuevo de ${clientName || senderName || senderPhone}`,
                     NOTIFICATION.ICONS.INFO
                 );
-                var a = state.agtWhatsChatsList.find(m => m.id === data.chat_id);
-                a.numMessagesUnread = a.numMessagesUnread + 1;
-                console.log('*******', a.numMessagesUnread);
+                const chat = state.agtWhatsChatsList.find((m) => m.id === data.chat_id);
+                if (chat) {
+                    chat.numMessagesUnread += 1;
+                }
+                console.log('*******', chat ? chat.numMessagesUnread : 0);
             } else {
                 state.agtWhatsCoversationMessages.push(message);
             }
@@ -97,6 +119,17 @@ export default {
                     : null,
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            initialAgent: setAgentSnapshot(
+                conversation && conversation.initial_agent ? conversation.initial_agent : null
+            ),
+            transferredAgent: setAgentSnapshot(
+                conversation && conversation.transferred_agent ? conversation.transferred_agent : null
+            ),
+            transferredCampaign: setCampaignSnapshot(
+                conversation && conversation.transferred_campaign
+                    ? conversation.transferred_campaign
+                    : null
+            ),
             transferAgent:
                 conversation && conversation.transfer_agent
                     ? conversation.transfer_agent
@@ -235,6 +268,17 @@ export default {
             ),
             agent:
                 conversation && conversation.agent ? conversation.agent : null,
+            initialAgent: setAgentSnapshot(
+                conversation && conversation.initialAgent ? conversation.initialAgent : null
+            ),
+            transferredAgent: setAgentSnapshot(
+                conversation && conversation.transferredAgent ? conversation.transferredAgent : null
+            ),
+            transferredCampaign: setCampaignSnapshot(
+                conversation && conversation.transferredCampaign
+                    ? conversation.transferredCampaign
+                    : null
+            ),
             transferAgent:
                 conversation && conversation.transferAgent
                     ? conversation.transferAgent

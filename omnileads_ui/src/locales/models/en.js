@@ -1,5 +1,3 @@
-import facebook from '../../router/supervisor/facebook';
-
 export default {
     agent_campaign: {
         name: 'Name',
@@ -281,6 +279,9 @@ export default {
             destination: 'Destination',
             client: 'Customer',
             agent: 'Agent',
+            initial_agent: 'Initial agent',
+            transferred_agent: 'Transferred agent',
+            transferred_campaign: 'Transferred campaign',
             is_active: 'Is active?',
             last_interaction: 'Last interaction',
             expire: 'Expiration date',
