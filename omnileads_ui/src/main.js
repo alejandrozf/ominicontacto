@@ -1,4 +1,3 @@
-import Cookies from 'universal-cookie';
 import { createApp } from 'vue';
 import VueSweetalert2 from 'vue-sweetalert2';
 import store from '@/store';
@@ -59,20 +58,6 @@ import Panel from 'primevue/panel';
 import SpeedDial from 'primevue/speeddial';
 import ToggleButton from 'primevue/togglebutton';
 
-// Idiomas
-import { createI18n } from 'vue-i18n';
-import messages from '@/locales';
-import { resolveUiLocale } from '@/utils/locale';
-
-// Configuramos los idiomas
-const cookies = new Cookies();
-const locale = resolveUiLocale(cookies);
-const i18n = createI18n({
-    locale,
-    allowComposition: true,
-    fallbackLocale: 'en',
-    messages
-});
 
 const app = createApp(App);
 
@@ -108,6 +93,7 @@ app.component('RadioButton', RadioButton);
 app.component('Fieldset', Fieldset);
 app.component('Tag', Tag);
 app.component('ProgressSpinner', ProgressSpinner);
+import i18n from '@/i18n';
 app.component('Avatar', Avatar);
 app.component('Image', Image);
 app.component('InputMask', InputMask);

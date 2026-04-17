@@ -11,8 +11,8 @@
             class="p-button-rounded p-button-secondary p-button-text"
           />
           <Chip
-            :label="clientInfo?.name + ' (' + clientInfo?.phone + ')'"
-            icon="pi pi-user"
+            :label="contactLabel"
+            :icon="isLoadingContact ? 'pi pi-spinner pi-spin' : 'pi pi-user'"
           />
         </div>
         <Tag
@@ -139,6 +139,15 @@ export default {
         ...mapState(['agtWhatsCoversationInfo', 'agtWhatsCoversationMessages']),
         areConversationActionsDisabled () {
             return Boolean(this.agtWhatsCoversationInfo?.isDisposition);
+        },
+        isLoadingContact () {
+            return !this.clientInfo?.name && !this.clientInfo?.phone;
+        },
+        contactLabel () {
+            if (this.isLoadingContact) return '...';
+            const name = this.clientInfo.name || '';
+            const phone = this.clientInfo.phone ? `(${this.clientInfo.phone})` : '';
+            return `${name} ${phone}`.trim();
         }
     },
     methods: {
