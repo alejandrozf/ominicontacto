@@ -21,6 +21,7 @@ from django.urls import include, re_path, path
 from django.views.static import serve
 from django.contrib.auth.decorators import login_required
 
+from api_app.views.media import SignedWhatsappMediaView
 from ominicontacto_app import (
     views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
@@ -991,6 +992,13 @@ urlpatterns = [
 
 ]
 
+urlpatterns += [
+    path(
+        'media/archivos_whatsapp/<path:path>',
+        SignedWhatsappMediaView.as_view(),
+        name='signed_whatsapp_media',
+    ),
+]
 urlpatterns += [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), ]
 
 if settings.DEBUG:
