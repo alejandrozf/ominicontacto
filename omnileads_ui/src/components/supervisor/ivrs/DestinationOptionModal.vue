@@ -252,15 +252,15 @@ export default {
                     value: AGENT,
                     disabled: !this.isDirect
                 }
-            ]
+            ];
         },
         destinations_filter () {
             return this.destinationOptionForm.destination_type !== null ? this.ivrDestinations[`${this.destinationOptionForm.destination_type}`] : [];
         },
         isDirect () {
-            console.log("----", this.destinationOptionForm.destination_type === AGENT)
+            console.log('----', this.destinationOptionForm.destination_type === AGENT);
             return this.destinationOptionForm.destination_type === AGENT;
-        },
+        }
     },
     created () {
         this.initializeData();

@@ -280,7 +280,7 @@ export default {
                 email_partner: { },
                 password_partner: { },
                 business_id: { },
-                access_token: { },
+                access_token: { }
             }
         };
     },
@@ -307,8 +307,7 @@ export default {
             submitted: false,
             filters: null,
             providers: [
-                {
-                  name: '-------', value: null },
+                { name: '-------', value: null },
                 {
                     name: this.$t('forms.whatsapp.provider.types.meta'),
                     value: PROVIDER_TYPES.META
@@ -347,14 +346,14 @@ export default {
             this.supWhatsappProviderForm.id = this.supWhatsappProvider.id;
             this.supWhatsappProviderForm.nombre = this.supWhatsappProvider.nombre;
             this.supWhatsappProviderForm.tipo_proveedor = this.supWhatsappProvider.tipo_proveedor;
-            if (this.supWhatsappProvider.configuracion){
-              if (this.supWhatsappProvider.tipo_proveedor === PROVIDER_TYPES.GUPSHUP) {
-                this.supWhatsappProviderForm.api_key = this.supWhatsappProvider.configuracion.api_key;
-                this.supWhatsappProviderForm.email_partner = this.supWhatsappProvider.configuracion.email_partner;
-                this.supWhatsappProviderForm.password_partner = this.supWhatsappProvider.configuracion.password_partner;
-              } else if (this.supWhatsappProvider.tipo_proveedor === PROVIDER_TYPES.META){
-                  this.supWhatsappProviderForm.business_id = this.supWhatsappProvider.configuracion.business_id;
-                  this.supWhatsappProviderForm.access_token = this.supWhatsappProvider.configuracion.access_token;
+            if (this.supWhatsappProvider.configuracion) {
+                if (this.supWhatsappProvider.tipo_proveedor === PROVIDER_TYPES.GUPSHUP) {
+                    this.supWhatsappProviderForm.api_key = this.supWhatsappProvider.configuracion.api_key;
+                    this.supWhatsappProviderForm.email_partner = this.supWhatsappProvider.configuracion.email_partner;
+                    this.supWhatsappProviderForm.password_partner = this.supWhatsappProvider.configuracion.password_partner;
+                } else if (this.supWhatsappProvider.tipo_proveedor === PROVIDER_TYPES.META) {
+                    this.supWhatsappProviderForm.business_id = this.supWhatsappProvider.configuracion.business_id;
+                    this.supWhatsappProviderForm.access_token = this.supWhatsappProvider.configuracion.access_token;
                 }
             }
         },
@@ -372,15 +371,14 @@ export default {
                 return null;
             }
             var response = null;
-            var configuracion = {}
-            if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.GUPSHUP){
+            var configuracion = {};
+            if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.GUPSHUP) {
                 configuracion = {
                     api_key: this.supWhatsappProviderForm.api_key,
                     email_partner: this.supWhatsappProviderForm.email_partner,
                     password_partner: this.supWhatsappProviderForm.password_partner
                 };
-            }
-            else if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.META){
+            } else if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.META) {
                 configuracion = {
                     business_id: this.supWhatsappProviderForm.business_id,
                     access_token: this.supWhatsappProviderForm.access_token
@@ -423,22 +421,22 @@ export default {
             }
             this.closeModal();
         },
-        validateForm() {
-          this.errors = {};
-          if(this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.META){
-            if (!this.supWhatsappProviderForm.business_id){
-              this.errors.business_id = true;
+        validateForm () {
+            this.errors = {};
+            if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.META) {
+                if (!this.supWhatsappProviderForm.business_id) {
+                    this.errors.business_id = true;
+                }
+                if (!this.supWhatsappProviderForm.access_token) {
+                    this.errors.access_token = true;
+                }
+            } else if (this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.GUPSHUP) {
+                if (!this.supWhatsappProviderForm.api_key) {
+                    this.errors.api_key = true;
+                }
             }
-            if (!this.supWhatsappProviderForm.access_token){
-              this.errors.access_token = true;
-            }
-          }else if(this.supWhatsappProviderForm.tipo_proveedor === PROVIDER_TYPES.GUPSHUP){
-            if (!this.supWhatsappProviderForm.api_key){
-              this.errors.api_key = true;
-            }
-          }
-          return Object.keys(this.errors).length === 0;
-        },
+            return Object.keys(this.errors).length === 0;
+        }
     },
     watch: {
         supWhatsappProvider: {

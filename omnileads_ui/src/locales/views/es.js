@@ -176,7 +176,41 @@ export default {
             edit_title: 'Edita linea de whatsapp',
             tipos_de_destino: {
                 campana: 'Campana',
-                interactivo: 'Interactivo'
+                interactivo: 'Interactivo',
+                flow: 'Flow'
+            },
+            flow: {
+                title: 'Vista Flow del menú interactivo',
+                subtitle: 'Este editor gráfico trabaja sobre los mismos bloques y opciones del modo interactivo.',
+                open_builder: 'Abrir Flow',
+                launch: 'Lanzar',
+                add_block: 'Agregar bloque',
+                edit_block: 'Editar bloque',
+                main: 'Principal',
+                untitled_block: 'Bloque sin título',
+                empty_body: 'Sin cuerpo configurado',
+                blocks: 'bloques',
+                options_count: 'opciones',
+                editor_help: 'Edita el bloque seleccionado y sus destinos.',
+                empty_selection: 'Selecciona un bloque para editarlo.',
+                option_label: 'Opción',
+                incoming_message: 'Mensaje entrante',
+                incoming_help: 'Inicio de la conversación. Desde aquí se deriva al bloque principal del árbol.',
+                no_options: 'Sin opciones configuradas',
+                no_option_description: 'Sin descripción',
+                more_options: 'opciones más',
+                drag_help: 'Arrastra los bloques para ordenar el árbol y usa Lanzar para editar cada nodo.',
+                cancel_link: 'Cancelar enlace',
+                connect: 'Conectar',
+                connections: 'Conexiones',
+                click_target: 'Haz clic en el bloque destino para unir la flecha.',
+                connected_to: 'Conectado a',
+                unlinked: 'Sin destino',
+                no_links: 'Sin enlaces configurados',
+                open_emoji_picker: 'Abrir selector de emojis',
+                meta_rows_warning: 'Meta no documenta de forma explícita si el valor y la descripción de cada opción admiten emojis. Se habilitan para prueba, pero conviene validarlo con tu proveedor Meta.',
+                preview_time: '09:27',
+                default_list_button: 'Elige una opción'
             },
             step1: {
                 title: 'Datos basicos'

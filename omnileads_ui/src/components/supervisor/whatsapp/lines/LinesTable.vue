@@ -164,7 +164,14 @@ export default {
         editMenu (line) {
             this.$router.push({
                 name: 'supervisor_whatsapp_lines_edit_menu_step3',
-                params: { id: line.id }
+                params: { id: line.id },
+                query: {
+                    openFlow:
+                        line.configuracion &&
+                        line.configuracion.destination_editor_mode === 'flow'
+                            ? '1'
+                            : '0'
+                }
             });
         },
         whatsappTemplates (line) {
@@ -173,12 +180,12 @@ export default {
                 params: { id: line.id }
             });
         },
-        getSeverity(line) {
+        getSeverity (line) {
             switch (line.status) {
-                case 'LIVE':
-                    return 'success';
-                default:
-                    return null;
+            case 'LIVE':
+                return 'success';
+            default:
+                return null;
             }
         },
         async remove (id) {

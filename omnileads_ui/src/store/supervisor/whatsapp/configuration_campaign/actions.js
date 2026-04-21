@@ -23,21 +23,21 @@ export default {
                 templates = data.message_templates || [];
                 if (lineId) {
                     templates = templates.concat(data.whatsapp_templates.map((t) => {
-                        var regexResults_header = []
-                        if(t.text_header){
+                        var regexResults_header = [];
+                        if (t.text_header) {
                             regexResults_header = t.text_header.match(PARAMS_REGEX);
                         }
-                        console.log(">>>> regexResults_header", regexResults_header);
+                        console.log('>>>> regexResults_header', regexResults_header);
                         var regexResults_text = t.text.match(PARAMS_REGEX);
-                        console.log(">>>> regexResults_text", regexResults_text);
+                        console.log('>>>> regexResults_text', regexResults_text);
                         var regexResults_buttons = t.buttons ? JSON.stringify(t.buttons).match(PARAMS_REGEX) : [];
-                        console.log(">>>> regexResults_buttons", regexResults_buttons);
+                        console.log('>>>> regexResults_buttons', regexResults_buttons);
                         return {
                             id: t.id,
                             name: t.name,
                             type: TEMPLATE_TYPES.WHATSAPP,
                             configuration: {
-                                text_header: t.text_header ? t.text_header : "",
+                                text_header: t.text_header ? t.text_header : '',
                                 text: t.text,
                                 buttons: t.buttons,
                                 type: t.type,

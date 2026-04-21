@@ -107,7 +107,7 @@ export default {
         },
         getPreviewMessageHeader () {
             if (!this.template.configuration || this.form === {}) {
-                return this.template.configuration.text_header
+                return this.template.configuration.text_header;
             }
             const self = this;
             return this.template.configuration.text_header.replace(
@@ -165,7 +165,7 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                if (!clave.startsWith("param_header")){
+                if (!clave.startsWith('param_header')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -175,7 +175,7 @@ export default {
         getFormDataHeader () {
             const formData = [];
             for (const clave in this.form) {
-                if (clave.startsWith("param_header")){
+                if (clave.startsWith('param_header')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -200,7 +200,7 @@ export default {
                     localStorage.getItem('agtFacebookConversationMessages')
                 );
                 let result = null;
-                console.log("-------------");
+                console.log('-------------');
                 const reqData = {
                     conversationId: this.agtFacebookConversationInfo.id,
                     templateId: this.template.id,
@@ -210,7 +210,7 @@ export default {
                     messages,
                     $t: this.$t
                 };
-                console.log("-------------", reqData);
+                console.log('-------------', reqData);
                 if (this.onlyFacebookTemplates) {
                     result = await this.agtFacebookConversationReactiveExpiredConversation(
                         reqData

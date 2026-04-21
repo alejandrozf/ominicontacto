@@ -127,13 +127,13 @@ export default {
             });
         },
         addSubcategoria (callDisposition) {
-          console.log(callDisposition)
-          this.$emit('handleModalEvent', {
+            console.log(callDisposition);
+            this.$emit('handleModalEvent', {
                 showModal: true,
                 formToCreate: false,
                 toAddSubcategory: true,
                 callDisposition
-          });
+            });
         },
         async remove (id) {
             this.$swal({

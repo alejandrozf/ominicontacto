@@ -36,7 +36,7 @@ export default {
         return {
             formToCreate: true,
             showModal: false,
-            callDisposition: { nombre: '' , subcalificaciones: []}
+            callDisposition: { nombre: '', subcalificaciones: [] }
         };
     },
     components: {
@@ -56,7 +56,7 @@ export default {
         newCallDisposition () {
             this.showModal = true;
             this.formToCreate = true;
-            this.callDisposition = { nombre: '', subcalificaciones: []};
+            this.callDisposition = { nombre: '', subcalificaciones: [] };
         },
         async initData () {
             await this.initCallDispositions();

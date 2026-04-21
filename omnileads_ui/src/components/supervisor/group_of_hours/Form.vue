@@ -108,8 +108,8 @@ export default {
             default: true
         },
         return_after_save: {
-          type: String,
-          default: 'supervisor_group_of_hours'
+            type: String,
+            default: 'supervisor_group_of_hours'
         }
     },
     data () {
@@ -177,11 +177,10 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await this.initGroupOfHours();
-                if(this.return_after_save === 'supervisor_group_of_hours'){
-                  this.$router.push({ name: this.return_after_save });
-                }
-                else{
-                  this.$emit('closeModalEvent');
+                if (this.return_after_save === 'supervisor_group_of_hours') {
+                    this.$router.push({ name: this.return_after_save });
+                } else {
+                    this.$emit('closeModalEvent');
                 }
                 this.$swal(
                     this.$helpers.getToasConfig(
@@ -202,7 +201,7 @@ export default {
         },
         closeModal () {
             this.$emit('closeModalEvent');
-        },
+        }
     },
     watch: {
         formToCreate: {

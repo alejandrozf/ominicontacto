@@ -410,7 +410,6 @@ import ModalNewGroupOfHour from '@/components/supervisor/facebook/pages/options_
 import ModalNewMessageTemplate from '@/components/supervisor/facebook/pages/options_form/ModalNewMessageTemplate';
 import FormMenuInteractivo from '@/components/supervisor/facebook/pages/options_form/FormMenuInteractivo';
 
-
 export default {
     inject: ['$helpers'],
     setup: () => ({ v$: useVuelidate() }),
@@ -498,11 +497,11 @@ export default {
             showModalNewMessage: false,
             cratedNewmsgBienvenida: false,
             cratedNewmsgFueraHora: false,
-            cratedNewmsgDespedida: false,
+            cratedNewmsgDespedida: false
         };
     },
-    mounted() {
-      this.initFormBase()
+    mounted () {
+        this.initFormBase();
     },
     computed: {
         ...mapState([
@@ -537,8 +536,8 @@ export default {
             this.msgDespedidaChange();
             this.msgFueraHoraChange();
         },
-        addInteractiveMenuItem() {
-          this.supFacebookPage.destination.data.push({ options: [], id_tmp: +new Date(), is_main: false})
+        addInteractiveMenuItem () {
+            this.supFacebookPage.destination.data.push({ options: [], id_tmp: +new Date(), is_main: false });
         },
         handleModal ({ showModal = false, formToCreate = false, option = null }) {
             this.showModal = showModal;
@@ -616,13 +615,13 @@ export default {
             }
         },
         interactiveOption () {
-         this.supFacebookPage.destination.type = this.destinationType.INTERACTIVE
-         if (this.supFacebookPage.destination.data === null || typeof(this.supFacebookPage.destination.data) === 'number'){
-          this.supFacebookPage.destination.data = [this.supFacebookPageIteractiveForm]
-         }
+            this.supFacebookPage.destination.type = this.destinationType.INTERACTIVE;
+            if (this.supFacebookPage.destination.data === null || typeof (this.supFacebookPage.destination.data) === 'number') {
+                this.supFacebookPage.destination.data = [this.supFacebookPageIteractiveForm];
+            }
         },
         campaignOption () {
-            this.supFacebookPage.destination.type = this.destinationType.CAMPAIGN
+            this.supFacebookPage.destination.type = this.destinationType.CAMPAIGN;
         },
         getDestinationData () {
             if (this.form.destination_type === this.destinationType.CAMPAIGN) {
@@ -630,7 +629,7 @@ export default {
                     type: DESTINATION_TYPES_BACK.CAMPAIGN,
                     data: this.form.destination
                 };
-            }else if (this.form.destination_type === this.destinationType.INTERACTIVE) {
+            } else if (this.form.destination_type === this.destinationType.INTERACTIVE) {
                 return {
                     type: DESTINATION_TYPES_BACK.INTERACTIVE,
                     data: this.supFacebookPage.destination.data,
@@ -658,23 +657,23 @@ export default {
                 return null;
             }
             let response = null;
-            var form = null
+            var form = null;
             form = {
-              name: this.supFacebookPage.name,
-              description: this.supFacebookPage.description,
-              access_token: this.supFacebookPage.access_token,
-              verify_token: this.supFacebookPage.verify_token,
-              app_id: this.supFacebookPage.app_id,
-              page_id: this.supFacebookPage.page_id,
-              destination: this.getDestinationData(),
-              schedule: this.form.schedule,
-              welcome_message: this.form.welcome_message,
-              goodbye_message: this.form.goodbye_message,
-              out_of_hours_message: this.form.out_of_hours_message
+                name: this.supFacebookPage.name,
+                description: this.supFacebookPage.description,
+                access_token: this.supFacebookPage.access_token,
+                verify_token: this.supFacebookPage.verify_token,
+                app_id: this.supFacebookPage.app_id,
+                page_id: this.supFacebookPage.page_id,
+                destination: this.getDestinationData(),
+                schedule: this.form.schedule,
+                welcome_message: this.form.welcome_message,
+                goodbye_message: this.form.goodbye_message,
+                out_of_hours_message: this.form.out_of_hours_message
             };
-            
+
             if (this.isFormToCreate) {
-              response = await this.createFacebookPage(form);
+                response = await this.createFacebookPage(form);
             } else {
                 response = await this.updateFacebookPage({
                     id: this.supFacebookPage.id,
@@ -697,7 +696,7 @@ export default {
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
                         message,
-                        this.$t('globals.icon_error'),
+                        this.$t('globals.icon_error')
                     )
                 );
             }
@@ -736,54 +735,53 @@ export default {
             });
         },
         onlyFacebookPageHabilitadoChange () {
-          if (this.supFacebookPageCampaigns.length > 0) {
-            if (this.only_facebook_habilitado) {
-                  const manualCampaigns =
+            if (this.supFacebookPageCampaigns.length > 0) {
+                if (this.only_facebook_habilitado) {
+                    const manualCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.MANUAL && c.meta_facebook_habilitado
                   ) || [];
-                  const inboundCampaigns =
+                    const inboundCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.INBOUND && c.meta_facebook_habilitado
                   ) || [];
-                  const previewCampaigns =
+                    const previewCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.PREVIEW && c.meta_facebook_habilitado
                   ) || [];
-                  const dialerCampaigns =
+                    const dialerCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.DIALER && c.meta_facebook_habilitado
                   ) || [];
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
-            }
-            else {
-                  const manualCampaigns =
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
+                } else {
+                    const manualCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.MANUAL
                   ) || [];
-                  const inboundCampaigns =
+                    const inboundCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.INBOUND
                   ) || [];
-                  const previewCampaigns =
+                    const previewCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.PREVIEW
                   ) || [];
-                  const dialerCampaigns =
+                    const dialerCampaigns =
                   this.supFacebookPageCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.DIALER
                   ) || [];
-                  if (inboundCampaigns.length > 0) {
+                    if (inboundCampaigns.length > 0) {
                         this.campaings.find(
                             (c) => c.type === CAMPAIGN_TYPES.INBOUND
                         ).items = inboundCampaigns;
                     }
                     if (manualCampaigns.length > 0) {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL
-                      ).items = manualCampaigns;
+                        ).items = manualCampaigns;
                     }
                     if (previewCampaigns.length > 0) {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW
@@ -793,30 +791,30 @@ export default {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER
                         ).items = dialerCampaigns;
                     }
+                }
             }
-          }
         },
         ckeckingCampaign () {
-          if (this.form.destination){
-            const campaign_selected =this.supFacebookPageCampaigns.find((c) => c.id === this.form.destination)
-            if(campaign_selected && campaign_selected.meta_facebook_habilitado === false){
-              this.$swal(
-                    this.$helpers.getToasConfig(
-                        this.$t('globals.warning_notification'),
-                        this.$t(
-                            'forms.whatsapp.line.validations.whatsapp_habilitado'
-                        ),
-                        this.$t('globals.icon_warning'),
-                    )
-                );
+            if (this.form.destination) {
+                const campaign_selected = this.supFacebookPageCampaigns.find((c) => c.id === this.form.destination);
+                if (campaign_selected && campaign_selected.meta_facebook_habilitado === false) {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.warning_notification'),
+                            this.$t(
+                                'forms.whatsapp.line.validations.whatsapp_habilitado'
+                            ),
+                            this.$t('globals.icon_warning')
+                        )
+                    );
+                }
             }
-          }
         }
     },
     watch: {
         supFacebookPageTemplates: {
             handler () {
-              if (this.supFacebookPageTemplates.length > 0) {
+                if (this.supFacebookPageTemplates.length > 0) {
                     this.messageTemplates.find(
                         (mt) => mt.type === TEMPLATE_TYPES.TEXT
                     ).items = this.supFacebookPageTemplates.filter(
@@ -848,19 +846,17 @@ export default {
             handler () {
                 if (this.messageTemplates[0].items.length > 0) {
                     if (this.cratedNewmsgBienvenida) {
-                      this.form.welcome_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
-                      this.cratedNewmsgBienvenida = false;
-                      this.msgBienvenidaChange();
-                    }
-                    else if (this.cratedNewmsgFueraHora) {
-                      this.form.out_of_hours_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
-                      this.cratedNewmsgFueraHora = false;
-                      this.msgFueraHoraChange();
-                    }
-                    else if (this.cratedNewmsgDespedida){
-                      this.form.goodbye_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
-                      this.cratedNewmsgDespedida = false;
-                      this.msgDespedidaChange();
+                        this.form.welcome_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                        this.cratedNewmsgBienvenida = false;
+                        this.msgBienvenidaChange();
+                    } else if (this.cratedNewmsgFueraHora) {
+                        this.form.out_of_hours_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                        this.cratedNewmsgFueraHora = false;
+                        this.msgFueraHoraChange();
+                    } else if (this.cratedNewmsgDespedida) {
+                        this.form.goodbye_message = this.messageTemplates[0].items[this.messageTemplates[0].items.length - 1].id;
+                        this.cratedNewmsgDespedida = false;
+                        this.msgDespedidaChange();
                     }
                 }
             },

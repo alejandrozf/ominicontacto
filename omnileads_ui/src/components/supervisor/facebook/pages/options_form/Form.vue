@@ -310,7 +310,7 @@ export default {
             default: false
         },
         menuId: {
-          type: Number
+            type: Number
         }
     },
     data () {
@@ -321,7 +321,7 @@ export default {
                 value: '',
                 description: '',
                 type_option: null,
-                destination: null,
+                destination: null
             },
             alreadyExists: false,
             submitted: false,
@@ -369,14 +369,14 @@ export default {
                     items: []
                 }
             ],
-            destinationmenuoptions : [],
+            destinationmenuoptions: [],
             messageTemplates: [
                 {
                     type: TEMPLATE_TYPES.TEXT,
                     label: this.$t('forms.whatsapp.message_template.types.text'),
                     items: []
                 }
-            ],
+            ]
         };
     },
     created () {
@@ -436,8 +436,8 @@ export default {
                 this.alreadyExists = false;
             }
         },
-        findDestinationOptions() {
-          this.destinationmenuoptions = this.supFacebookPage.destination.data.filter(item => item.id_tmp !== this.menuId)
+        findDestinationOptions () {
+            this.destinationmenuoptions = this.supFacebookPage.destination.data.filter(item => item.id_tmp !== this.menuId);
         },
         save (isFormValid) {
             this.submitted = true;
@@ -447,10 +447,10 @@ export default {
             if (this.formToCreate) {
                 this.createFacebookPageOption({
                     data: this.form,
-                    menuId: this.menuId,
+                    menuId: this.menuId
                 });
             } else {
-                const id = this.form.id ? this.form.id : this.form.index
+                const id = this.form.id ? this.form.id : this.form.index;
                 this.updateFacebookPageOption({
                     id: id,
                     data: this.form,
@@ -557,7 +557,7 @@ export default {
             },
             deep: true,
             immediate: true
-        },
+        }
     }
 };
 </script>

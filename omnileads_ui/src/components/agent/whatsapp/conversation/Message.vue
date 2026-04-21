@@ -22,11 +22,11 @@
             <button
               v-for="(btn, index) in message?.message.buttons"
               :key="index"
-              class="w-full text-center py-2 px-3 
-                    bg-white 
-                    border-1 border-300 
-                    border-round-xl 
-                    text-blue-600 
+              class="w-full text-center py-2 px-3
+                    bg-white
+                    border-1 border-300
+                    border-round-xl
+                    text-blue-600
                     cursor-default"
               disabled
             >

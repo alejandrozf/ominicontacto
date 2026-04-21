@@ -50,13 +50,13 @@ export default {
         commit('initWhatsappLineOptionForm', option);
     },
     createWhatsappLineOption ({ commit }, { data, menuId }) {
-        commit('createWhatsappLineOption', {data, menuId});
+        commit('createWhatsappLineOption', { data, menuId });
     },
     updateWhatsappLineOption ({ commit }, { id, data, menuId }) {
-        commit('updateWhatsappLineOption', { id, data, menuId});
+        commit('updateWhatsappLineOption', { id, data, menuId });
     },
     deleteWhatsappLineOption ({ commit }, { id, menuId }) {
-        console.log(2, { id, menuId } )
+        console.log(2, { id, menuId });
         commit('deleteWhatsappLineOption', { id, menuId });
     }
 };

@@ -10,8 +10,8 @@ function getCsfrToken (cookie) {
 
 const historyApiFallback = {
     rewrites: [],
-    verbose: true,
-}
+    verbose: true
+};
 
 const publicPath = process.env.VUE_APP_PUBLIC_PATH || '/static/omnileads-frontend/';
 
@@ -19,7 +19,7 @@ function getPageConfig (pageName) {
     historyApiFallback.rewrites.push({
         from: new RegExp(`${publicPath}${pageName}/.+`),
         to: `${publicPath}${pageName}.html`
-    })
+    });
     return {
         entry: 'src/main.js',
         template: `public/${pageName}.html`,

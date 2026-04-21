@@ -64,7 +64,7 @@ export default {
                 this.agtWhatsSetCoversationInfo(this.conversationInfo);
                 this.$helpers.openLoader(this.$t);
                 const { status, message } = await this.agtWhatsContactDBFieldsInit({
-                    campaignId: this.conversationInfo.campaignId,
+                    campaignId: this.conversationInfo.campaignId
                 });
                 this.$helpers.closeLoader();
                 if (status !== HTTP_STATUS.SUCCESS) {
@@ -77,9 +77,9 @@ export default {
                     );
                 }
             } else {
-                this.formToCreateFromNewConversation = true
+                this.formToCreateFromNewConversation = true;
                 const { status, message } = await this.agtWhatsContactDBFieldsInit({
-                    campaignId: localStorage.getItem('agtWhatsCampaingId'),
+                    campaignId: localStorage.getItem('agtWhatsCampaingId')
                 });
                 this.$helpers.closeLoader();
                 if (status !== HTTP_STATUS.SUCCESS) {

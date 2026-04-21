@@ -11,7 +11,7 @@
               :class="{
                 'p-error': v$.supFacebookPage.verify_token.$invalid && submitted,
               }"
-              > 
+              >
               {{ $t("models.facebook.page.verify_token") }}*</label>
             <div class="p-inputgroup mt-2">
               <span class="p-inputgroup-addon">

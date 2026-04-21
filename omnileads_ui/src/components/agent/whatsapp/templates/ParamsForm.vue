@@ -165,8 +165,8 @@ export default {
             );
         },
         getPreviewMessageHeader () {
-            if (!this.template.configuration ||  Object.keys(this.form).length === 0) {
-                return this.template.configuration.text_header
+            if (!this.template.configuration || Object.keys(this.form).length === 0) {
+                return this.template.configuration.text_header;
             }
             const self = this;
             return this.template.configuration.text_header.replace(
@@ -179,27 +179,27 @@ export default {
         },
         getPreviewButtons () {
             if (
-            !this.template.configuration ||
+                !this.template.configuration ||
             !this.template.configuration.buttons
             ) {
-            return [];
+                return [];
             }
             return this.template.configuration.buttons.map((btn) => {
-            console.log("btn", btn);
-            if (btn.type === 'URL' && btn.url) {
-                const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
-                const field = this.form[`param_buttons_${numero}`];
-                console.log("field", field);
-                return field?.value || `${match}`;
-                });
+                console.log('btn', btn);
+                if (btn.type === 'URL' && btn.url) {
+                    const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
+                        const field = this.form[`param_buttons_${numero}`];
+                        console.log('field', field);
+                        return field?.value || `${match}`;
+                    });
 
-                return {
-                ...btn,
-                previewUrl: parsedUrl
-                };
-            }
+                    return {
+                        ...btn,
+                        previewUrl: parsedUrl
+                    };
+                }
 
-            return btn;
+                return btn;
             });
         }
     },
@@ -245,7 +245,7 @@ export default {
         initFilters () {
             this.filters = {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            };template.configuration.text.replace
+            }; template.configuration.text.replace;
         },
         isEmptyField (field = null) {
             return field === null || field === undefined || field === '';
@@ -253,7 +253,7 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                if (!clave.startsWith("param_header") && !clave.startsWith("param_buttons")) {
+                if (!clave.startsWith('param_header') && !clave.startsWith('param_buttons')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -263,7 +263,7 @@ export default {
         getFormDataHeader () {
             const formData = [];
             for (const clave in this.form) {
-                if (clave.startsWith("param_header")){
+                if (clave.startsWith('param_header')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -273,7 +273,7 @@ export default {
         getFormDataButtons () {
             const formData = [];
             for (const clave in this.form) {
-                if (clave.startsWith("param_buttons")){
+                if (clave.startsWith('param_buttons')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -328,7 +328,7 @@ export default {
                 } else {
                     await notificationEvent(
                         NOTIFICATION.TITLES.ERROR,
-                        message,template.configuration.text.replace,
+                        message, template.configuration.text.replace,
                         NOTIFICATION.ICONS.ERROR
                     );
                 }

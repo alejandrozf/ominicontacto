@@ -43,9 +43,9 @@ export default {
         WHATSAPP_URL_NAME
     },
     computed: {
-      return_after_save() {
-        return `${WHATSAPP_URL_NAME}_lines_new_step3`
-      }
+        return_after_save () {
+            return `${WHATSAPP_URL_NAME}_lines_new_step3`;
+        }
     },
     methods: {
         ...mapActions(['initWhatsappMessageTemplate']),

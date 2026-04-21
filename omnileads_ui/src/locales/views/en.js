@@ -1,5 +1,3 @@
-import facebook from "../../router/supervisor/facebook";
-
 export default {
     dashboard_home_page: {
         active_campaign_by_type: 'Active {type} Campaigns',
@@ -178,7 +176,41 @@ export default {
             edit_title: 'edit whatsapp line',
             tipos_de_destino: {
                 campana: 'Campaign',
-                interactivo: 'Interactive'
+                interactivo: 'Interactive',
+                flow: 'Flow'
+            },
+            flow: {
+                title: 'Interactive menu Flow view',
+                subtitle: 'This graphical editor works on the same blocks and options used by interactive mode.',
+                open_builder: 'Open Flow',
+                launch: 'Launch',
+                add_block: 'Add block',
+                edit_block: 'Edit block',
+                main: 'Main',
+                untitled_block: 'Untitled block',
+                empty_body: 'No body configured',
+                blocks: 'blocks',
+                options_count: 'options',
+                editor_help: 'Edit the selected block and its destinations.',
+                empty_selection: 'Select a block to edit it.',
+                option_label: 'Option',
+                incoming_message: 'Incoming message',
+                incoming_help: 'Conversation entry point. From here the flow goes to the main block.',
+                no_options: 'No configured options',
+                no_option_description: 'No description',
+                more_options: 'more options',
+                drag_help: 'Drag blocks to organize the tree and use Launch to edit each node.',
+                cancel_link: 'Cancel link',
+                connect: 'Connect',
+                connections: 'Connections',
+                click_target: 'Click the target block to connect the arrow.',
+                connected_to: 'Connected to',
+                unlinked: 'No destination',
+                no_links: 'No configured links',
+                open_emoji_picker: 'Open emoji picker',
+                meta_rows_warning: 'Meta does not explicitly document whether row value and description support emojis. They are enabled for testing, but should be validated with your Meta provider.',
+                preview_time: '09:27',
+                default_list_button: 'Choose an option'
             },
             step1: {
                 title: 'Basic data'

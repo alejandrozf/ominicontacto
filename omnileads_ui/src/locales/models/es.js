@@ -315,7 +315,7 @@ export default {
                 description: 'Descripción',
                 destination_type: 'Tipo de destino',
                 destination: 'Destino'
-            },
+            }
         },
         message_template: {
             nombre: 'Nombre',

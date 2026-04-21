@@ -28,9 +28,9 @@ export default {
         return await service.delete(id);
     },
     async initInboundRoutesLanguages ({ commit }) {
-        console.log('initInboundRoutesLanguages')
+        console.log('initInboundRoutesLanguages');
         const { status, languages } = await service.languages();
-        console.log('initInboundRoutesLanguages', languages)
+        console.log('initInboundRoutesLanguages', languages);
         commit('initInboundRoutesLanguages', status === 'SUCCESS' ? languages : []);
-    },
+    }
 };

@@ -20,42 +20,42 @@ export default {
     components: {
         Message
     },
-    data() {
-      return {
-        autoScroll: true,
-      }
+    data () {
+        return {
+            autoScroll: true
+        };
     },
     methods: {
-      ...mapActions(['markMessageAsRead']),
-      onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
-        if (scrollTop + clientHeight >= scrollHeight - 200) {
-          this.autoScroll = true
-        } else {
-          this.autoScroll = false
+        ...mapActions(['markMessageAsRead']),
+        onScroll ({ target: { scrollTop, clientHeight, scrollHeight } }) {
+            if (scrollTop + clientHeight >= scrollHeight - 200) {
+                this.autoScroll = true;
+            } else {
+                this.autoScroll = false;
+            }
+        },
+        async markItAsRead (notReadMessageIds) {
+            return await this.markMessageAsRead(notReadMessageIds);
         }
-      },
-      async markItAsRead(notReadMessageIds){
-        return await this.markMessageAsRead(notReadMessageIds);
-      }
     },
     watch: {
         agtWhatsCoversationMessages: {
             handler (newMsgs, oldMsgs) {
-              var notReadMessageIds = newMsgs.filter((msg)=> msg.status !== "read")
-              notReadMessageIds = notReadMessageIds.map((msg) => msg.id)
-              if (this.autoScroll && this.$refs.scrollContainer) {
-                setTimeout(() => {
-                  this.$refs.scrollContainer.scroll({
-                    top: this.$refs.scrollContainer.scrollHeight,
-                    behavior: 'smooth',
-                  });
-                }, 0);
-                if (notReadMessageIds){
-                  this.markItAsRead(notReadMessageIds);
+                var notReadMessageIds = newMsgs.filter((msg) => msg.status !== 'read');
+                notReadMessageIds = notReadMessageIds.map((msg) => msg.id);
+                if (this.autoScroll && this.$refs.scrollContainer) {
+                    setTimeout(() => {
+                        this.$refs.scrollContainer.scroll({
+                            top: this.$refs.scrollContainer.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                    }, 0);
+                    if (notReadMessageIds) {
+                        this.markItAsRead(notReadMessageIds);
+                    }
                 }
-              }
             },
-            deep: true,
+            deep: true
             // immediate: true
         }
     }

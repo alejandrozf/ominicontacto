@@ -1,4 +1,4 @@
-import facebook from "../../router/supervisor/facebook";
+import facebook from '../../router/supervisor/facebook';
 
 export default {
     agent_campaign: {
@@ -318,7 +318,7 @@ export default {
                 description: 'Description',
                 destination_type: 'Destination type',
                 destination: 'Destination'
-            },
+            }
         },
         message_template: {
             name: 'Name',

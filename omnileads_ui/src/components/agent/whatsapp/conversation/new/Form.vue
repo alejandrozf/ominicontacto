@@ -186,10 +186,9 @@ import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
 import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp';
-import { notificationEvent, NOTIFICATION } from '@/globals/agent/whatsapp';
+import { notificationEvent, NOTIFICATION, WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 import ModalTemplateParams from '@/components/agent/whatsapp/conversation/new/ModalTemplateParams';
 import ModalNewContact from '@/components/agent/whatsapp/contact/ModalNewContact';
-import { WHATSAPP_LOCALSTORAGE_EVENTS } from '@/globals/agent/whatsapp';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -265,7 +264,7 @@ export default {
         window.parent.document.addEventListener(
             WHATSAPP_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA,
             this.updatedLocalStorage
-        )
+        );
     },
 
     methods: {
@@ -369,7 +368,7 @@ export default {
             });
         },
         getContactInfo (contact) {
-            const data = Object.values(contact.data)
+            const data = Object.values(contact.data);
             const firstname = data[1] || '-----';
             const lastname = data[2] || '-----';
             const phone = contact?.phone || '-----';
@@ -414,10 +413,10 @@ export default {
             });
         },
         async createContact () {
-            const agtWhatsCampaingId = this.form.campaign
-            localStorage.setItem("agtWhatsCampaingId", agtWhatsCampaingId);
+            const agtWhatsCampaingId = this.form.campaign;
+            localStorage.setItem('agtWhatsCampaingId', agtWhatsCampaingId);
             const { status, message } = await this.agtWhatsContactDBFieldsInit({
-                campaignId: agtWhatsCampaingId || null,
+                campaignId: agtWhatsCampaingId || null
             });
             if (status !== HTTP_STATUS.SUCCESS) {
                 this.$swal(
@@ -427,13 +426,12 @@ export default {
                         this.$t('globals.icon_error')
                     )
                 );
+            } else {
+                this.handleModalNewContact({
+                    showModal: true
+                });
             }
-            else{
-              this.handleModalNewContact({
-                showModal: true
-            });
-            }
-        },
+        }
     },
     watch: {
         agtWhatsContactSearchResults: {
@@ -523,20 +521,20 @@ export default {
             immediate: true
         },
         newContact: {
-          handler () {
-            if (this.newContact.length > 0){
-              this.contacts = this.newContact.map(
-                  (contact) => {
-                      return {
-                          id: contact?.id || null,
-                          data: contact?.data ? contact.data : {},
-                          phone: contact?.phone || ''
-                      };
-                  }
-                );
-              this.form.contact = this.newContact[0].id
-            }
-          },
+            handler () {
+                if (this.newContact.length > 0) {
+                    this.contacts = this.newContact.map(
+                        (contact) => {
+                            return {
+                                id: contact?.id || null,
+                                data: contact?.data ? contact.data : {},
+                                phone: contact?.phone || ''
+                            };
+                        }
+                    );
+                    this.form.contact = this.newContact[0].id;
+                }
+            },
             deep: true,
             immediate: true
         }

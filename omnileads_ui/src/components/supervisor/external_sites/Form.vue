@@ -257,7 +257,7 @@ export default {
                 { name: this.$t('forms.external_site.triggers.opt2'), value: 2 },
                 { name: this.$t('forms.external_site.triggers.opt3'), value: 3 },
                 { name: this.$t('forms.external_site.triggers.opt4'), value: 4 },
-                { name: this.$t('forms.external_site.triggers.opt5'), value: 5 },
+                { name: this.$t('forms.external_site.triggers.opt5'), value: 5 }
             ]
         };
     },

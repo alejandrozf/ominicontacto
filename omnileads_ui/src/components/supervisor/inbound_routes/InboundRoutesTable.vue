@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapActions, mapState} from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { FilterMatchMode } from 'primevue/api';
 import { CONFIRM_BTN_COLOR, CANCEL_BTN_COLOR, HTTP_STATUS } from '@/globals';
 
@@ -115,7 +115,7 @@ export default {
         };
     },
     computed: {
-      ...mapState(['languages'])
+        ...mapState(['languages'])
     },
     created () {
         this.initInboundRoutesLanguages();
@@ -126,7 +126,7 @@ export default {
             this.initFilters();
         },
         getIdioma (type) {
-            return this.languages.find(obj => obj.id === type).language
+            return this.languages.find(obj => obj.id === type).language;
         },
         initFilters () {
             this.filters = {

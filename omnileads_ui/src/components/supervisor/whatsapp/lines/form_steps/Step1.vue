@@ -150,8 +150,8 @@ export default {
         undefined;
         },
         updateTypeProveedor () {
-          const proveedor = this.supWhatsappProviders.find(item => item.id === this.supWhatsappLine.proveedor) || null;
-          this.supWhatsappLine.provider_type = proveedor.provider_type
+            const proveedor = this.supWhatsappProviders.find(item => item.id === this.supWhatsappLine.proveedor) || null;
+            this.supWhatsappLine.provider_type = proveedor.provider_type;
         },
         nextPage (isFormValid) {
             this.submitted = true;

@@ -43,9 +43,9 @@ export default {
         FACEBOOK_URL_NAME
     },
     computed: {
-      return_after_save() {
-        return `${FACEBOOK_URL_NAME}_pages_new_step3`
-      }
+        return_after_save() {
+            return `${FACEBOOK_URL_NAME}_pages_new_step3`;
+        }
     },
     methods: {
         ...mapActions(['initFacebookPageTemplate']),

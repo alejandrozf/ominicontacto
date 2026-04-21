@@ -13,7 +13,7 @@
             {{ message?.message }}
           </p>
         </div>
-        
+
         <div v-if="message.type==='image'">
           <a :href="message.message.image.url" style="text-decoration: none; color: inherit;" target="_blank" download>
             <Image :src="message.message.image.url" width="250" />

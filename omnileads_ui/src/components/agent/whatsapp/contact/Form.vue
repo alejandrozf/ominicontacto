@@ -294,15 +294,14 @@ export default {
                 };
                 if (this.formToCreate && this.formToCreate != null) {
                     response = await this.agtWhatsContactCreateFromConversation(formData);
-                }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
-                  const formData = {
-                    campaignId: localStorage.getItem('agtWhatsCampaingId'),
-                    fdata: this.getFormData(),
-                  };
-                  console.log("formData >>", formData)
-                  response = await this.agtWhatsContactCreate(formData);
-                }
-                else {
+                } else if (this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
+                    const formData = {
+                        campaignId: localStorage.getItem('agtWhatsCampaingId'),
+                        fdata: this.getFormData()
+                    };
+                    console.log('formData >>', formData);
+                    response = await this.agtWhatsContactCreate(formData);
+                } else {
                     formData.contactId = this.form.id.value;
                     response = await this.agtWhatsContactUpdate(formData);
                 }
@@ -310,8 +309,8 @@ export default {
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
-                    let contacts = []
-                    contacts.push(JSON.stringify(response.data))
+                    const contacts = [];
+                    contacts.push(JSON.stringify(response.data));
                     localStorage.setItem(
                         'newContant',
                         contacts
