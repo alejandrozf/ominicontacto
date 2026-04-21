@@ -3,11 +3,11 @@ import MessageTemplateService from '@/services/supervisor/facebook/message_templ
 const service = new MessageTemplateService();
 
 export default {
-    async initFacebookPageTemplates ({ commit }) {
+    async initFacebookPageTemplates({ commit }) {
         const { status, data } = await service.list();
         commit('initFacebookPageTemplates', status === 'SUCCESS' ? data : []);
     },
-    async initFacebookPageTemplate ({ commit }, { id = null, messageTemplate = null }) {
+    async initFacebookPageTemplate({ commit }, { id = null, messageTemplate = null }) {
         if (messageTemplate) {
             commit('initFacebookPageTemplate', messageTemplate);
         } else if (id) {
@@ -17,16 +17,16 @@ export default {
             commit('initFacebookPageTemplate', null);
         }
     },
-    initFacebookPageTemplateFormFields ({ commit }, { type = null, config = null }) {
+    initFacebookPageTemplateFormFields({ commit }, { type = null, config = null }) {
         commit('initFacebookPageTemplateFormFields', { type, config });
     },
-    async createFacebookPageTemplate ({ commit }, data) {
+    async createFacebookPageTemplate({ commit }, data) {
         return await service.create(data);
     },
-    async updateFacebookPageTemplate ({ commit }, { id, data }) {
+    async updateFacebookPageTemplate({ commit }, { id, data }) {
         return await service.update(id, data);
     },
-    async deleteFacebookPageTemplate ({ commit }, id) {
+    async deleteFacebookPageTemplate({ commit }, id) {
         return await service.delete(id);
     }
 };

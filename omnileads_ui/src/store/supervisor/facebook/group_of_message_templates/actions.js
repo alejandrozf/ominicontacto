@@ -24,7 +24,6 @@ export default {
         return await service.create(data);
     },
     async updateFacebookPageGroupOfMessageTemplate ({ commit }, { id, data }) {
-
         return await service.update(id, data);
     },
     async deleteFacebookPageGroupOfMessageTemplate ({ commit }, id) {

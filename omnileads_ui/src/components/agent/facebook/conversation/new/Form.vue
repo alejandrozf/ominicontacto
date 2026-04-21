@@ -186,10 +186,9 @@ import { mapActions, mapState } from 'vuex';
 import { HTTP_STATUS } from '@/globals';
 import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp';
-import { notificationEvent, NOTIFICATION } from '@/globals/agent/facebook';
+import { notificationEvent, NOTIFICATION, FACEBOOK_LOCALSTORAGE_EVENTS } from '@/globals/agent/facebook';
 import ModalTemplateParams from '@/components/agent/facebook/conversation/new/ModalTemplateParams';
 import ModalNewContact from '@/components/agent/facebook/contact/ModalNewContact';
-import { FACEBOOK_LOCALSTORAGE_EVENTS } from '@/globals/agent/facebook';
 
 export default {
     setup: () => ({ v$: useVuelidate() }),
@@ -265,7 +264,7 @@ export default {
         window.parent.document.addEventListener(
             FACEBOOK_LOCALSTORAGE_EVENTS.CONTACT.FORM_INIT_DATA,
             this.updatedLocalStorage
-        )
+        );
     },
 
     methods: {
@@ -371,7 +370,7 @@ export default {
             });
         },
         getContactInfo (contact) {
-            const data = Object.values(contact.data)
+            const data = Object.values(contact.data);
             const firstname = data[1] || '-----';
             const lastname = data[2] || '-----';
             const phone = contact?.phone || '-----';
@@ -419,10 +418,10 @@ export default {
         },
         async createContact () {
             console.log('createContact>>>>>>>>>>>', this.form);
-            const agtFacebookCampaignId = this.form.campaign
-            localStorage.setItem("agtFacebookCampaignId", agtFacebookCampaignId);
+            const agtFacebookCampaignId = this.form.campaign;
+            localStorage.setItem('agtFacebookCampaignId', agtFacebookCampaignId);
             const { status, message } = await this.agtFacebookContactDBFieldsInit({
-                campaignId: agtFacebookCampaignId || null,
+                campaignId: agtFacebookCampaignId || null
             });
             if (status !== HTTP_STATUS.SUCCESS) {
                 this.$swal(
@@ -432,13 +431,12 @@ export default {
                         this.$t('globals.icon_error')
                     )
                 );
+            } else {
+                this.handleModalNewContact({
+                    showModal: true
+                });
             }
-            else{
-              this.handleModalNewContact({
-                showModal: true
-            });
-            }
-        },
+        }
     },
     watch: {
         agtFacebookContactSearchResults: {
@@ -529,21 +527,21 @@ export default {
             immediate: true
         },
         newContact: {
-          handler () {
-            if (this.newContact.length > 0){
-              this.contacts = this.newContact.map(
-                  (contact) => {
-                      return {
-                          id: contact?.id || null,
-                          data: contact?.data ? contact.data : {},
-                          phone: contact?.phone || '',
-                          page_client_id: contact?.page_client_id || ''
-                      };
-                  }
-                );
-              this.form.contact = this.newContact[0].id
-            }
-          },
+            handler () {
+                if (this.newContact.length > 0) {
+                    this.contacts = this.newContact.map(
+                        (contact) => {
+                            return {
+                                id: contact?.id || null,
+                                data: contact?.data ? contact.data : {},
+                                phone: contact?.phone || '',
+                                page_client_id: contact?.page_client_id || ''
+                            };
+                        }
+                    );
+                    this.form.contact = this.newContact[0].id;
+                }
+            },
             deep: true,
             immediate: true
         }

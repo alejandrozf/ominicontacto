@@ -1,12 +1,28 @@
-// import { shallowMount } from '@vue/test-utils'
-// import HelloWorld from '@/components/HelloWorld.vue'
+describe('frontend smoke test', () => {
+    it('runs the unit test suite', () => {
+        expect(true).toBe(true);
+    });
+});
 
-// describe('HelloWorld.vue', () => {
-//   it('renders props.msg when passed', () => {
-//     const msg = 'new message'
-//     const wrapper = shallowMount(HelloWorld, {
-//       props: { msg }
-//     })
-//     expect(wrapper.text()).toMatch(msg)
-//   })
-// })
+describe('locale helpers', () => {
+    beforeEach(() => {
+        document.documentElement.lang = '';
+        delete window.navigator.language;
+        Object.defineProperty(window.navigator, 'language', {
+            configurable: true,
+            value: 'en-US'
+        });
+    });
+
+    it('normalizes Spanish variants to es', async () => {
+        const { normalizeLocale } = await import('@/utils/locale');
+        expect(normalizeLocale('es_AR')).toBe('es');
+        expect(normalizeLocale('es-es')).toBe('es');
+    });
+
+    it('resolves the language from the cookie before falling back', async () => {
+        const { resolveUiLocale } = await import('@/utils/locale');
+        const cookies = { get: jest.fn(() => 'pt_BR') };
+        expect(resolveUiLocale(cookies)).toBe('pt-br');
+    });
+});

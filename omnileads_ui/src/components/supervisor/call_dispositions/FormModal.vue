@@ -190,17 +190,17 @@ export default {
                 callDisposition: { nombre: '', subcalificaciones: [] }
             });
         },
-        addSubcalificacion() {
-          this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.concat(this.subcalificacion_new)
-          this.subcalificacion_new = "";
+        addSubcalificacion () {
+            this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.concat(this.subcalificacion_new);
+            this.subcalificacion_new = '';
         },
-        deleteSubcalificacion() {
-          const subcalificacion_selected = this.subcalificacion_selected
-          if (subcalificacion_selected) {
-            this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.filter(function(subcalificacion) {
-              return subcalificacion !== subcalificacion_selected
-            })
-          }
+        deleteSubcalificacion () {
+            const subcalificacion_selected = this.subcalificacion_selected;
+            if (subcalificacion_selected) {
+                this.callDispositionForm.subcalificaciones = this.callDispositionForm.subcalificaciones.filter(function (subcalificacion) {
+                    return subcalificacion !== subcalificacion_selected;
+                });
+            }
         },
         async save (isFormValid) {
             this.submitted = true;
@@ -218,19 +218,18 @@ export default {
                 errorMsg = this.$tc('globals.error_to_created_type', {
                     type: this.$tc('globals.call_disposition')
                 });
-            } else if(this.formToAddSubdisposition){
+            } else if (this.formToAddSubdisposition) {
                 response = await this.updateCallDisposition({
-                      id: this.callDisposition.id,
-                      data: this.callDispositionForm
-                  });
-                  successMsg = this.$tc('globals.success_added', {
-                      type: this.$tc('globals.call_disposition')
-                  });
-                  errorMsg = this.$tc('globals.error_to_updated_type', {
-                      type: this.$tc('globals.success_added')
-                  });
-            }
-            else {
+                    id: this.callDisposition.id,
+                    data: this.callDispositionForm
+                });
+                successMsg = this.$tc('globals.success_added', {
+                    type: this.$tc('globals.call_disposition')
+                });
+                errorMsg = this.$tc('globals.error_to_updated_type', {
+                    type: this.$tc('globals.success_added')
+                });
+            } else {
                 response = await this.updateCallDisposition({
                     id: this.callDisposition.id,
                     data: this.callDispositionForm

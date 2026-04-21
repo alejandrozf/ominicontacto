@@ -56,12 +56,12 @@ export default {
             };
         }
     },
-    async agtFacebookContactCreate(
+    async agtFacebookContactCreate (
         { commit },
         { campaignId = null, fdata }
     ) {
         try {
-            if (!campaignId ) {
+            if (!campaignId) {
                 return {
                     status: HTTP_STATUS.ERROR,
                     message: 'Error al crear contacto'
@@ -73,7 +73,7 @@ export default {
             });
             const { status, data } = response;
             await commit('agtFacebookNewContact', status === HTTP_STATUS.SUCCESS ? data : []);
-            return response
+            return response;
         } catch (error) {
             console.error('===> ERROR to create contact');
             console.error(error);
@@ -110,7 +110,7 @@ export default {
     },
     async agtFacebookContactDBFieldsInit (
         { commit },
-        { campaignId = null}
+        { campaignId = null }
     ) {
         console.log('agtFacebookContactDBFieldsInit action', campaignId);
         try {
@@ -212,5 +212,5 @@ export default {
                 message: 'Error al asignar el contacto'
             };
         }
-    },
+    }
 };

@@ -327,15 +327,14 @@ export default {
                 };
                 if (this.formToCreate && this.formToCreate != null) {
                     response = await this.agtFacebookContactCreateFromConversation(formData);
-                }else if(this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
-                  const formData = {
-                    campaignId: localStorage.getItem('agtFacebookCampaingId'),
-                    fdata: this.getFormData(),
-                  };
-                  console.log("formData >>", formData)
-                  response = await this.agtFacebookContactCreate(formData);
-                }
-                else {
+                } else if (this.formToCreateFromNewConversation != null && this.formToCreateFromNewConversation) {
+                    const formData = {
+                        campaignId: localStorage.getItem('agtFacebookCampaingId'),
+                        fdata: this.getFormData()
+                    };
+                    console.log('formData >>', formData);
+                    response = await this.agtFacebookContactCreate(formData);
+                } else {
                     formData.contactId = this.form.id.value;
                     response = await this.agtFacebookContactUpdate(formData);
                 }
@@ -343,8 +342,8 @@ export default {
                 this.closeModal();
                 const { status, message } = response;
                 if (status === HTTP_STATUS.SUCCESS) {
-                    let contacts = []
-                    contacts.push(JSON.stringify(response.data))
+                    const contacts = [];
+                    contacts.push(JSON.stringify(response.data));
                     localStorage.setItem(
                         'newContant',
                         contacts
@@ -388,7 +387,7 @@ export default {
         },
         agtFacebookConversationInfo: {
             handler () {
-                console.log("agtFacebookConversationInfo >>2", this.agtFacebookConversationInfo);
+                console.log('agtFacebookConversationInfo >>2', this.agtFacebookConversationInfo);
                 if (this.agtFacebookConversationInfo.client.id !== null) {
                     this.contact.id = this.agtFacebookConversationInfo.client.id;
                     this.contact.phone =

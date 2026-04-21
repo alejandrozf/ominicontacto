@@ -164,7 +164,7 @@ export default {
         },
         getPreviewMessageHeader () {
             if (!this.template.configuration || this.form === {}) {
-                return this.template.configuration.text_header
+                return this.template.configuration.text_header;
             }
             const self = this;
             return this.template.configuration.text_header.replace(
@@ -177,25 +177,25 @@ export default {
         },
         getPreviewButtons () {
             if (
-            !this.template.configuration ||
+                !this.template.configuration ||
             !this.template.configuration.buttons
             ) {
-            return [];
+                return [];
             }
             return this.template.configuration.buttons.map((btn) => {
-            if (btn.type === 'URL' && btn.url) {
-                const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
-                const field = this.form[`param_buttons_${numero}`];
-                return field?.value || match;
-                });
+                if (btn.type === 'URL' && btn.url) {
+                    const parsedUrl = btn.url.replace(/{{(\d+)}}/g, (match, numero) => {
+                        const field = this.form[`param_buttons_${numero}`];
+                        return field?.value || match;
+                    });
 
-                return {
-                ...btn,
-                previewUrl: parsedUrl
-                };
-            }
+                    return {
+                        ...btn,
+                        previewUrl: parsedUrl
+                    };
+                }
 
-            return btn;
+                return btn;
             });
         }
     },
@@ -231,7 +231,7 @@ export default {
                 const name = `param_buttons_${i + 1}`;
                 this.form[name] = { name, empty: false, value: null };
             }
-            console.log("this.form", this.form)
+            console.log('this.form', this.form);
         },
         clearFilter () {
             this.initFilters();
@@ -247,7 +247,7 @@ export default {
         getFormData () {
             const formData = [];
             for (const clave in this.form) {
-                if (!clave.startsWith("param_header") && !clave.startsWith("param_buttons")){
+                if (!clave.startsWith('param_header') && !clave.startsWith('param_buttons')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -257,7 +257,7 @@ export default {
         getFormDataHeader () {
             const formData = [];
             for (const clave in this.form) {
-                if (clave.startsWith("param_header")){
+                if (clave.startsWith('param_header')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -267,7 +267,7 @@ export default {
         getFormDataButtons () {
             const formData = [];
             for (const clave in this.form) {
-                if (clave.startsWith("param_buttons")){
+                if (clave.startsWith('param_buttons')) {
                     const field = this.form[clave];
                     formData.push(field.value);
                 }
@@ -297,7 +297,7 @@ export default {
                     campaign: this.campaignId,
                     contact: this.contactId
                 };
-                console.log(">>>>", reqData)
+                console.log('>>>>', reqData);
                 const result = await this.agtWhatsInitNewConversation(reqData);
                 const { status, data } = result;
                 localStorage.setItem(

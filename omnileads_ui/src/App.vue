@@ -10,6 +10,7 @@
 
 <script>
 import Cookies from 'universal-cookie';
+import { resolveUiLocale, setI18nLocale } from '@/utils/locale';
 
 export default {
     name: 'app',
@@ -19,6 +20,9 @@ export default {
         };
     },
     methods: {
+        syncLocale () {
+            setI18nLocale(this.$i18n, resolveUiLocale(this.cookies));
+        },
         listenCookieChange (callback, interval = 1000) {
             let lastCookie = this.cookies.get('django_language');
             setInterval(() => {
@@ -34,20 +38,20 @@ export default {
             }, interval);
         }
     },
-    created() {
+    created () {
         document.documentElement.style.setProperty(
             '--primary-color',
             window.parent.document.documentElement.style.getPropertyValue('--primary-color')
-        )
+        );
         document.documentElement.style.setProperty(
             '--primary-light-color',
             window.parent.document.documentElement.style.getPropertyValue('--primary-light-color')
-        )
+        );
         document.documentElement.style.setProperty(
             '--secondary-color',
             window.parent.document.documentElement.style.getPropertyValue('--secondary-color')
-        )
-        
+        );
+
         // Sync dark mode class from parent
         const syncDarkMode = () => {
             if (window.parent.document.documentElement.classList.contains('dark-mode')) {
@@ -74,8 +78,9 @@ export default {
         }
     },
     mounted () {
-        this.listenCookieChange(({ newValue }) => {
-            this.$i18n.locale = newValue;
+        this.syncLocale();
+        this.listenCookieChange(() => {
+            this.syncLocale();
         }, 1000);
     }
 };
@@ -120,8 +125,8 @@ export default {
   background-color: rgba(0, 0, 0, 0.4) !important;
 }
 
-.p-inputtext, 
-.p-dropdown, 
+.p-inputtext,
+.p-dropdown,
 .p-multiselect {
   border-radius: 8px !important;
   transition: border-color 0.2s, box-shadow 0.2s;

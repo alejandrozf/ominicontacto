@@ -198,12 +198,12 @@ export default {
                     NOTIFICATION.ICONS.ERROR
                 );
             }
-        },
+        }
     },
     watch: {
         supCampaignFacebookTemplates: {
             handler () {
-              this.templates = this.supCampaignFacebookTemplates;
+                this.templates = this.supCampaignFacebookTemplates;
             },
             deep: true,
             immediate: true

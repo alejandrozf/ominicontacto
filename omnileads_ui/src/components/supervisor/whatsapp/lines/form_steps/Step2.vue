@@ -11,13 +11,13 @@
               :class="{
                 'p-error': v$.supWhatsappLine.numero.$invalid && submitted,
               }"
-              > 
+              >
               {{ $t("models.whatsapp.line.numero") }}*</label>
             <label v-if="supWhatsappLine.provider_type===providersType.META"
               :class="{
                 'p-error': v$.supWhatsappLine.numero.$invalid && submitted,
               }"
-              > 
+              >
               {{ $t("models.whatsapp.line.phone_id") }}*</label>
 
             <div class="p-inputgroup mt-2">

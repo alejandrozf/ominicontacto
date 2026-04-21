@@ -317,3 +317,7 @@ class OpcionMenuInteractivoWhatsapp(models.Model):
         'configuracion_telefonia_app.OpcionDestino', on_delete=models.CASCADE,
         related_name="opcion_menu_whatsapp")
     descripcion = models.CharField(max_length=72)
+    send_message_before_campaign = models.BooleanField(default=False)
+    message_before_campaign = models.ForeignKey(
+        "PlantillaMensaje", blank=True, null=True, on_delete=models.PROTECT,
+        related_name="opciones_menu_pre_campana")

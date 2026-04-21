@@ -55,8 +55,7 @@ export default {
             if (data && data.contact_data) {
                 if (data.contact_data.nombre) {
                     clientName = data.contact_data.nombre;
-                }
-                else if (data.contact_data.name) {
+                } else if (data.contact_data.name) {
                     clientName = data.contact_data.name;
                 }
             }
@@ -70,7 +69,7 @@ export default {
                 message: data && data.content ? data.content : '',
                 status: data && data.status ? data.status : null,
                 date: data && data.timestamp ? new Date(data.timestamp) : new Date(),
-                type: data && data.type ? data.type : null,
+                type: data && data.type ? data.type : null
             };
             if (Number(localStorage.getItem('agtFacebookConversationAttending')) !== data.chat_id) {
                 notificationEvent(
@@ -78,23 +77,21 @@ export default {
                     `Mensaje Nuevo de ${clientName || senderName || senderPhone}`,
                     NOTIFICATION.ICONS.INFO
                 );
-                var a =state.agtFacebookChatsList.find(m => m.id === data.chat_id);
-                a.numMessagesUnread = a.numMessagesUnread + 1
-                console.log("*******", a.numMessagesUnread)
-
-            }
-            else{
+                var a = state.agtFacebookChatsList.find(m => m.id === data.chat_id);
+                a.numMessagesUnread = a.numMessagesUnread + 1;
+                console.log('*******', a.numMessagesUnread);
+            } else {
                 state.agtFacebookConversationMessages.push(message);
             }
         }
     },
-    agtFacebookConversationInitMessages(state, messages) {
+    agtFacebookConversationInitMessages (state, messages) {
         console.log('agtFacebookConversationInitMessages >>', messages);
         // Reemplazamos el array completo para que Vue detecte cambios
         state.agtFacebookConversationMessages = [...messages];
     },
     agtFacebookConversationInfoInit (state, conversation = null) {
-        console.log("agtFacebookConversationInfoInit >>", conversation);
+        console.log('agtFacebookConversationInfoInit >>', conversation);
         state.agtFacebookConversationInfo = {
             id: conversation && conversation.id ? conversation.id : null,
             campaignId:

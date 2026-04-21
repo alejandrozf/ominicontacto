@@ -74,7 +74,7 @@
       </div>
     </template>
   </Toolbar>
- 
+
 </template>
 
 <script>
@@ -261,10 +261,10 @@ export default {
             handler () {
                 if (this.agtFacebookConversationInfo) {
                     if (this.agtFacebookConversationInfo.client.id) {
-                        this.clientInfo.name = this.agtFacebookConversationInfo.client.data.nombre || this.agtFacebookConversationInfo.client.data.name ||"";
+                        this.clientInfo.name = this.agtFacebookConversationInfo.client.data.nombre || this.agtFacebookConversationInfo.client.data.name || '';
                         this.clientInfo.page_client_id = this.agtFacebookConversationInfo.client.page_client_id;
                     } else {
-                        this.clientInfo.name = this.agtFacebookConversationInfo.client_alias || "";
+                        this.clientInfo.name = this.agtFacebookConversationInfo.client_alias || '';
                         this.clientInfo.page_client_id = this.agtFacebookConversationInfo.page_client_id;
                     }
                 }

@@ -62,10 +62,11 @@ import ToggleButton from 'primevue/togglebutton';
 // Idiomas
 import { createI18n } from 'vue-i18n';
 import messages from '@/locales';
+import { resolveUiLocale } from '@/utils/locale';
 
 // Configuramos los idiomas
 const cookies = new Cookies();
-const locale = cookies.get('django_language');
+const locale = resolveUiLocale(cookies);
 const i18n = createI18n({
     locale,
     allowComposition: true,

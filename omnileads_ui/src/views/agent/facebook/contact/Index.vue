@@ -109,7 +109,7 @@ export default {
                 this.agtFacebookSetConversationInfo(this.conversationInfo);
                 this.$helpers.openLoader(this.$t);
                 const { status, message } = await this.agtFacebookContactDBFieldsInit({
-                    campaignId: this.conversationInfo.campaignId,
+                    campaignId: this.conversationInfo.campaignId
                 });
                 this.$helpers.closeLoader();
                 if (status !== HTTP_STATUS.SUCCESS) {
@@ -122,9 +122,9 @@ export default {
                     );
                 }
             } else {
-                this.formToCreateFromNewConversation = true
+                this.formToCreateFromNewConversation = true;
                 const { status, message } = await this.agtFacebookContactDBFieldsInit({
-                    campaignId: localStorage.getItem('agtFacebookCampaingId'),
+                    campaignId: localStorage.getItem('agtFacebookCampaingId')
                 });
                 this.$helpers.closeLoader();
                 if (status !== HTTP_STATUS.SUCCESS) {

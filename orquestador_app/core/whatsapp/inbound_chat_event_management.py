@@ -61,6 +61,25 @@ def _add_origin_context(content, context):
     content.update({'context': mensaje_origen.content})
 
 
+def _store_outbound_text_message(line, conversation, message):
+    if not message:
+        return
+    timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+    message_id = send_text_message(line, conversation.destination, message)
+    if message_id:
+        MensajeWhatsapp.objects.get_or_create(
+            message_id=message_id,
+            conversation=conversation,
+            defaults={
+                'origen': line.numero,
+                'timestamp': timestamp,
+                'sender': {},
+                'content': message,
+                'type': 'text'
+            }
+        )
+
+
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     notifications = await s2a_inbound_chat_event(
         line,
@@ -222,45 +241,22 @@ def asignar_campana(line, conversation, content, context):
                 notifications.append(('notify_whatsapp_new_chat', {
                     'conversation': conversation,
                 }))
-                if destination_entrante.content_object.texto_derivacion:
+                opcion_whatsapp = getattr(destino, 'opcion_menu_whatsapp', None)
+                if (
+                    opcion_whatsapp and
+                    opcion_whatsapp.send_message_before_campaign and
+                    opcion_whatsapp.message_before_campaign
+                ):
+                    auto_response = opcion_whatsapp.message_before_campaign.configuracion
+                elif destination_entrante.content_object.texto_derivacion:
                     auto_response = {"text": destination_entrante.content_object.texto_derivacion}
-                    if auto_response:
-                        timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                        message_id = send_text_message(
-                            line, conversation.destination, auto_response)
-                        if message_id:
-                            MensajeWhatsapp.objects.get_or_create(
-                                message_id=message_id,
-                                conversation=conversation,
-                                defaults={
-                                    'origen': line.numero,
-                                    'timestamp': timestamp,
-                                    'sender': {},
-                                    'content': auto_response,
-                                    'type': 'text'
-                                }
-                            )
+                _store_outbound_text_message(line, conversation, auto_response)
             elif isinstance(destino.destino_siguiente.content_object, PlantillaMensaje):
                 plantilla = destino.destino_siguiente.content_object
                 conversation.is_disposition = True
                 conversation.save()
-                auto_response = {"text": plantilla.configuracion['text']}
-                if auto_response:
-                    timestamp = timezone.now().astimezone(timezone.get_current_timezone())
-                    orquestador_response = send_text_message(
-                        line, conversation.destination, auto_response)
-                    if orquestador_response["status"] == "submitted":
-                        MensajeWhatsapp.objects.get_or_create(
-                            message_id=orquestador_response['messageId'],
-                            conversation=conversation,
-                            defaults={
-                                'origen': line.numero,
-                                'timestamp': timestamp,
-                                'sender': {},
-                                'content': auto_response,
-                                'type': 'text'
-                            }
-                        )
+                auto_response = plantilla.configuracion
+                _store_outbound_text_message(line, conversation, auto_response)
             else:
                 autoreponse_destino_interactivo(line, destino.destino_siguiente, conversation)
         else:

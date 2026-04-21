@@ -27,4 +27,3 @@ export function getRestFacebookRoutesByModule (module) {
         Update: (id) => `/api/v1/facebook/${module}/${id}`
     };
 }
-

@@ -79,9 +79,9 @@ class OpcionMenuSerializer(serializers.BaseSerializer):
 class MenuInteractivoSerializer(serializers.Serializer):
     id_tmp = serializers.IntegerField(required=False)
     is_main = serializers.BooleanField(required=False, default=True)
-    menu_header = serializers.CharField(max_length=60)
-    wrong_answer = serializers.CharField()
-    success = serializers.CharField()
+    menu_header = serializers.CharField(required=False, allow_blank=True, max_length=60)
+    wrong_answer = serializers.CharField(required=False, allow_blank=True)
+    success = serializers.CharField(required=False, allow_blank=True)
     timeout = serializers.IntegerField(min_value=0, required=False)
     options = OpcionMenuSerializer(many=True)
 
@@ -152,29 +152,38 @@ class DestinoDePaginaCreateSerializer(serializers.Serializer):
         page = None
         if 'page' in self.context:
             page = self.context['page']
-        list_menu_data = validated_data['data']
+        list_menu_data = validated_data.get('data', [])
         destino_whith_options = []
+        first_destino = None
         for menu_data in list_menu_data:
             menu = MenuInteractivoMessengerMetaApp(
-                menu_header=menu_data['menu_header'],
-                texto_opcion_incorrecta=menu_data['wrong_answer'],
-                texto_derivacion=menu_data['success'],
+                menu_header=menu_data.get('menu_header', ''),
+                texto_opcion_incorrecta=menu_data.get('wrong_answer', ''),
+                texto_derivacion=menu_data.get('success', ''),
                 timeout=0,
                 page=page
             )
             menu.save()
             destino = DestinoEntrante.crear_nodo_ruta_entrante(menu)
+            if first_destino is None:
+                first_destino = destino
             opcions = {
-                "id_temp": menu_data['id_tmp'] if 'id_tmp' in menu_data else None,
+                "id_temp": menu_data.get('id_tmp'),
                 'destino_anterior': destino,
-                "opcions": menu_data['options'] if 'options' in menu_data else []
+                "opcions": menu_data.get('options', [])
 
             }
-            if 'id_tmp' in menu_data and 'id_tmp' in validated_data and\
-                    menu_data['id_tmp'] == validated_data['id_tmp']:
+            is_main = menu_data.get('is_main', False)
+            if is_main or (
+                'id_tmp' in menu_data and 'id_tmp' in validated_data and
+                menu_data['id_tmp'] == validated_data['id_tmp']
+            ):
                 self.destino = destino
             destino_whith_options.append(opcions)
             menu_data['id'] = menu.id
+
+        if not hasattr(self, 'destino') and first_destino:
+            self.destino = first_destino
         self.crear_opcions(destino_whith_options)
 
     def crear_opcions(self, destino_whith_options):

@@ -284,7 +284,7 @@ export default {
             ],
             formFields: [],
             dropdownOptions: [{ name: '-------', value: null }],
-            subdispositionOptions: null,
+            subdispositionOptions: null
         };
     },
     created () {
@@ -379,9 +379,9 @@ export default {
                 return null;
             }
             const options = JSON.parse(data);
-            const dropdownOptions = [{ name: '-------', value: null }]
-            for (let option of options){
-              dropdownOptions.push({ name: option, value: option});
+            const dropdownOptions = [{ name: '-------', value: null }];
+            for (const option of options) {
+                dropdownOptions.push({ name: option, value: option });
             }
             return dropdownOptions;
         },
@@ -393,9 +393,8 @@ export default {
             );
             if (option) {
                 this.formFields = option?.form_fields || [];
-                console.log(option.subcalificaciones)
-                if(option.subcalificaciones !== "[]")
-                  this.subdispositionOptions = this.getDropdownOptions(option.subcalificaciones.replace(/'/g, '"'));
+                console.log(option.subcalificaciones);
+                if (option.subcalificaciones !== '[]') { this.subdispositionOptions = this.getDropdownOptions(option.subcalificaciones.replace(/'/g, '"')); }
             }
             this.initFormByTypeData();
         },

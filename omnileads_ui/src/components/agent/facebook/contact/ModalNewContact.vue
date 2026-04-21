@@ -30,13 +30,13 @@ export default {
     components: {
         Form
     },
-    computed:{
+    computed: {
 
     },
     methods: {
         closeModal (response) {
-            this.$emit('handleModalEvent', {showModal:false});
-        },
+            this.$emit('handleModalEvent', { showModal: false });
+        }
     },
     watch: {
         showModal: {
@@ -44,6 +44,6 @@ export default {
             deep: true,
             immediate: true
         }
-    },
+    }
 };
 </script>

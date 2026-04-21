@@ -30,9 +30,9 @@ export default {
         const dateStart = ref(new Date());
         const applyFilter = () => {
             if (dateStart.value) {
-              emit('filterChange', {
-                date_start: new Date(Date.UTC(dateStart.value.getFullYear(), dateStart.value.getMonth(), dateStart.value.getDate())).toISOString().slice(0, 10)
-              });
+                emit('filterChange', {
+                    date_start: new Date(Date.UTC(dateStart.value.getFullYear(), dateStart.value.getMonth(), dateStart.value.getDate())).toISOString().slice(0, 10)
+                });
             }
         };
         return {

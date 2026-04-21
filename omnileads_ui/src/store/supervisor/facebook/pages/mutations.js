@@ -1,8 +1,8 @@
 export default {
-    initFacebookPages (state, pages) {
+    initFacebookPages(state, pages) {
         state.supFacebookPages = pages;
     },
-    initFacebookPage (state, page = null) {
+    initFacebookPage(state, page = null) {
         if (page) {
             state.supFacebookPage = {
                 id: page.id,
@@ -22,7 +22,7 @@ export default {
                 goodbye_message: page.goodbye_message,
                 out_of_hours_message: page.out_of_hours_message
             };
-            state.supFacebookPageDestinationMenuOptions = page.destination ? page.destination.data : []
+            state.supFacebookPageDestinationMenuOptions = page.destination ? page.destination.data : [];
         } else {
             state.supFacebookPage = {
                 id: null,
@@ -46,23 +46,23 @@ export default {
             // state.supWhatsappLineOptions = [];
         }
     },
-    initFormFlag (state, flag) {
+    initFormFlag(state, flag) {
         state.isFormToCreate = flag;
     },
-    initFacebookPageCampaigns (state, campaigns) {
+    initFacebookPageCampaigns(state, campaigns) {
         state.supFacebookPageCampaigns = campaigns;
     },
-    initFacebookPageOptionForm (state, option = null) {
+    initFacebookPageOptionForm(state, option = null) {
         state.supFacebookPageOptionForm = {
             id: option ? option.id : null,
             index: option ? option.index : 0,
             value: option ? option.value : '',
             description: option ? option.description : '',
             type_option: option ? option.type_option : 0,
-            destination: option ? option.destination : null,
+            destination: option ? option.destination : null
         };
     },
-    createFacebookPageOption (state, { data, menuId }) {
+    createFacebookPageOption(state, { data, menuId }) {
         const ultimoElemento = state.supFacebookPageOptions[state.supFacebookPageOptions.length - 1];
         const index = ultimoElemento ? ultimoElemento.index + 1 : 0;
         state.supFacebookPageOptions.push({
@@ -72,10 +72,10 @@ export default {
             description: data.description,
             type_option: data.type_option,
             destination: data.destination,
-            menuId: menuId,
+            menuId: menuId
         });
     },
-    updateFacebookPageOption (state, { id, data, menuId }) {
+    updateFacebookPageOption(state, { id, data, menuId }) {
         const destinationOptions = state.supFacebookPage.destination.data.filter(item => item.id_tmp === menuId);
         const element = destinationOptions[0].options.find(item => item.id === id);
         if (element) {
@@ -85,7 +85,7 @@ export default {
             element.destination = data.destination;
         }
     },
-    deleteFacebookPageOption (state, { id, menuId }) {
+    deleteFacebookPageOption(state, { id, menuId }) {
         const destinationOptions = state.supFacebookPage.destination.data.filter(item => item.id_tmp === menuId);
         destinationOptions[0].options = destinationOptions[0].options.filter(item => item.id !== id);
     }

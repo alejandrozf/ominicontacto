@@ -4,11 +4,11 @@ import PageService from '@/services/supervisor/facebook/page_service';
 const service = new PageService();
 
 export default {
-    async initFacebookPages ({ commit }) {
+    async initFacebookPages({ commit }) {
         const { status, data } = await service.list();
         commit('initFacebookPages', status === HTTP_STATUS.SUCCESS ? data : []);
     },
-    async initFacebookPage ({ commit }, { id = null, page = null }) {
+    async initFacebookPage({ commit }, { id = null, page = null }) {
         if (page) {
             commit('initFacebookPage', page);
         } else if (id) {
@@ -18,19 +18,19 @@ export default {
             commit('initFacebookPage', null);
         }
     },
-    async createFacebookPage ({ commit }, data) {
+    async createFacebookPage({ commit }, data) {
         return await service.create(data);
     },
-    async updateFacebookPage ({ commit }, { id, data }) {
+    async updateFacebookPage({ commit }, { id, data }) {
         return await service.update(id, data);
     },
-    async deleteFacebookPage ({ commit }, id) {
+    async deleteFacebookPage({ commit }, id) {
         return await service.delete(id);
     },
-    initFormFlag ({ commit }, flag = false) {
+    initFormFlag({ commit }, flag = false) {
         commit('initFormFlag', flag);
     },
-    async initFacebookPageCampaigns ({ commit }) {
+    async initFacebookPageCampaigns({ commit }) {
         try {
             const response = await service.getCampaigns();
             const { status, data } = response;
@@ -46,16 +46,16 @@ export default {
             };
         }
     },
-    initFacebookPageOptionForm ({ commit }, option = null) {
+    initFacebookPageOptionForm({ commit }, option = null) {
         commit('initFacebookPageOptionForm', option);
     },
-    createFacebookPageOption ({ commit }, { data, menuId }) {
-        commit('createFacebookPageOption', {data, menuId});
+    createFacebookPageOption({ commit }, { data, menuId }) {
+        commit('createFacebookPageOption', { data, menuId });
     },
-    updateFacebookPageOption ({ commit }, { id, data, menuId }) {
-        commit('updateFacebookPageOption', { id, data, menuId});
+    updateFacebookPageOption({ commit }, { id, data, menuId }) {
+        commit('updateFacebookPageOption', { id, data, menuId });
     },
-    deleteFacebookPageOption ({ commit }, { id, menuId }) {
+    deleteFacebookPageOption({ commit }, { id, menuId }) {
         commit('deleteFacebookPageOption', { id, menuId });
     }
 };

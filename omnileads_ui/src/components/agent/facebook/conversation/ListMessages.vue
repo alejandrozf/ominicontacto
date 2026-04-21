@@ -25,23 +25,23 @@ export default {
         Message
     },
     methods: {
-      ...mapActions(['agtFacebookMarkMessageAsRead']),
-      onScroll () {},
-      async markItAsRead (notReadMessageIds) {
-        return await this.agtFacebookMarkMessageAsRead(notReadMessageIds);
-      },
-      scrollToBottom () {
-        if (!this.$refs.scrollContainer) {
-            return;
+        ...mapActions(['agtFacebookMarkMessageAsRead']),
+        onScroll () {},
+        async markItAsRead (notReadMessageIds) {
+            return await this.agtFacebookMarkMessageAsRead(notReadMessageIds);
+        },
+        scrollToBottom () {
+            if (!this.$refs.scrollContainer) {
+                return;
+            }
+            this.$refs.scrollContainer.scroll({
+                top: this.$refs.scrollContainer.scrollHeight,
+                behavior: 'smooth'
+            });
         }
-        this.$refs.scrollContainer.scroll({
-            top: this.$refs.scrollContainer.scrollHeight,
-            behavior: 'smooth'
-        });
-      }
     },
     watch: {
-      agtFacebookConversationMessages: {
+        agtFacebookConversationMessages: {
             handler (newMsgs = []) {
                 const notReadMessageIds = newMsgs
                     .filter((msg) => msg.status !== 'read')
@@ -61,7 +61,7 @@ export default {
             },
             deep: true,
             immediate: true
-          }
+        }
     }
 
 };

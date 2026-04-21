@@ -33,14 +33,14 @@ export default {
         FACEBOOK_URL_NAME
     },
     computed: {
-      return_after_save() {
-        return `${FACEBOOK_URL_NAME}_pages_new_step3`
-      }
+        return_after_save() {
+            return `${FACEBOOK_URL_NAME}_pages_new_step3`;
+        }
     },
     methods: {
         closeModal (response) {
-            this.$emit('handleModalEvent', {showModal:false});
-        },
-    },
+            this.$emit('handleModalEvent', { showModal: false });
+        }
+    }
 };
 </script>

@@ -99,8 +99,8 @@ export default {
                     localStorage.getItem('agtFacebookConversationInfo')
                 );
                 const file = this.files[0];
-                let formData = new FormData();
-                formData.append('file', file)
+                const formData = new FormData();
+                formData.append('file', file);
                 console.log('>>>>>> agtFacebookConversationInfo:', agtFacebookConversationInfo);
                 var data = {
                     conversationId: agtFacebookConversationInfo.id,
@@ -108,7 +108,7 @@ export default {
                     pageId: agtFacebookConversationInfo.page.page_id,
                     messages: messages,
                     $t: this.$t
-                }
+                };
                 const { status, message } = await this.agtFacebookConversationSendAttachmentMessage(data);
                 if (status === HTTP_STATUS.SUCCESS) {
                     this.clearData();

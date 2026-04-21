@@ -33,11 +33,11 @@ export default {
             default: false
         },
         option: {
-          type: Array,
-          default:[]
+            type: Array,
+            default: []
         },
         menuId: {
-          type: Number
+            type: Number
         }
     },
     components: {
@@ -49,10 +49,10 @@ export default {
     methods: {
         ...mapActions([]),
         closeModal () {
-          this.$emit('handleModalEvent',{
+            this.$emit('handleModalEvent', {
                 showModal: false,
                 formToCreate: false
-          });
+            });
         }
     },
     watch: {
@@ -62,9 +62,9 @@ export default {
             immediate: true
         },
         showModal: {
-          handler () {},
-          deep: true,
-          immediate: true
+            handler () {},
+            deep: true,
+            immediate: true
         }
     }
 };

@@ -58,7 +58,7 @@
         field="page_id"
         :header="$t('models.facebook.page.page_id')"
       ></Column>
-  
+
       <Column
         field="description"
         :header="$t('models.facebook.page.description')"
@@ -101,7 +101,7 @@ export default {
         this.initFilters();
     },
     computed: {
-        ...mapState(['supFacebookPages']),
+        ...mapState(['supFacebookPages'])
     },
     methods: {
         clearFilter () {
@@ -118,12 +118,12 @@ export default {
                 params: { id: page.id }
             });
         },
-        getSeverity(page) {
+        getSeverity (page) {
             switch (page.status) {
-                case 'LIVE':
-                    return 'success';
-                default:
-                    return null;
+            case 'LIVE':
+                return 'success';
+            default:
+                return null;
             }
         },
         async remove (id) {
@@ -173,7 +173,7 @@ export default {
         ...mapActions([
             'deleteFacebookPage',
             'initFacebookPages',
-            'initFacebookPage',
+            'initFacebookPage'
         ])
     },
     watch: {

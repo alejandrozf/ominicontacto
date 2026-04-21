@@ -10,8 +10,7 @@ export function listenerStoreDataByAction (action, callback) {
     });
 }
 
-
-export function removeInPlace(array, item) {
+export function removeInPlace (array, item) {
     var foundIndex, fromIndex;
 
     // Look for the item (the item can have multiple indices)

@@ -300,7 +300,7 @@ export default {
                 return this.$t('forms.whatsapp.provider.types.twilio');
             }
         },
-        exportCSV() {
+        exportCSV () {
             this.$refs.dt.exportCSV();
         },
         ...mapActions(['initWhatsappProviders', 'agtWhatsConversationDetail'])

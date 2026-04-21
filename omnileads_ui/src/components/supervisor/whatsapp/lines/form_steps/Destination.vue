@@ -110,8 +110,14 @@
                 form.destination_type === destinationType.INTERACTIVE
               "
             >
-            <div class="flex justify-content-between flex-wrap mt-4">
+            <div class="flex justify-content-between flex-wrap mt-4 mb-4">
               <div class="flex align-items-center justify-content-center">
+                <Button
+                  :label="$t('views.whatsapp.line.flow.open_builder')"
+                  icon="pi pi-sitemap"
+                  class="p-button-outlined"
+                  @click="openFlowBuilder"
+                />
               </div>
               <div class="flex align-items-center justify-content-center">
               <Button
@@ -121,7 +127,9 @@
               />
               </div>
             </div>
+            <div class="mt-4 pt-2">
               <FormMenuInteractivo :data="menu" :submitted="submitted" v-for="menu in supWhatsappLine.destination.data" :key="menu.id"></FormMenuInteractivo>
+            </div>
             </div>
           </div>
         </Fieldset>
@@ -138,6 +146,14 @@
         />
       </div>
     </div>
+    <FlowBuilderModal
+      :showModal="showFlowBuilderModal"
+      :nodes="supWhatsappLine.destination.data || []"
+      :campaigns="campaings"
+      :messageTemplates="messageTemplates"
+      @handleModalEvent="handleFlowBuilderModal"
+      @saveFlow="save(!v$.$invalid)"
+    />
   </div>
 </template>
 
@@ -153,7 +169,9 @@ import { CAMPAIGN_TYPES } from '@/globals/supervisor/campaign';
 import { HTTP_STATUS } from '@/globals';
 import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
 import FormMenuInteractivo from '@/components/supervisor/whatsapp/lines/options_form/FormMenuInteractivo';
+import FlowBuilderModal from '@/components/supervisor/whatsapp/lines/options_form/FlowBuilderModal';
 import { PROVIDER_TYPES } from '@/globals/supervisor/whatsapp/provider';
+import { TEMPLATE_TYPES } from '@/globals/supervisor/whatsapp/message_template';
 
 export default {
     inject: ['$helpers'],
@@ -172,10 +190,11 @@ export default {
     },
     components: {
         FormMenuInteractivo,
-        ModalToHandleOption,
+        FlowBuilderModal,
+        ModalToHandleOption
     },
     data () {
-        console.log('asdfadasdsa')
+        console.log('asdfadasdsa');
         return {
             invalidInteractiveForm: false,
             interactiveForm: {
@@ -225,10 +244,48 @@ export default {
             formErrors: [],
             submitted: false,
             isEmptyOptions: false,
+            showFlowBuilderModal: false,
+            messageTemplates: [
+                {
+                    type: TEMPLATE_TYPES.TEXT,
+                    label: this.$t('forms.whatsapp.message_template.types.text'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.IMAGE,
+                    label: this.$t('forms.whatsapp.message_template.types.image'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.VIDEO,
+                    label: this.$t('forms.whatsapp.message_template.types.video'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.FILE,
+                    label: this.$t('forms.whatsapp.message_template.types.file'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.STICKER,
+                    label: this.$t('forms.whatsapp.message_template.types.sticker'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.LOCATION,
+                    label: this.$t('forms.whatsapp.message_template.types.location'),
+                    items: []
+                },
+                {
+                    type: TEMPLATE_TYPES.CONTACT,
+                    label: this.$t('forms.whatsapp.message_template.types.contact'),
+                    items: []
+                }
+            ]
         };
     },
-    mounted() {
-      this.initFormBase()
+    mounted () {
+        this.initFormBase();
     },
     computed: {
         ...mapState([
@@ -236,7 +293,8 @@ export default {
             'isFormToCreate',
             'supWhatsappLineCampaigns',
             'supWhatsappLineOptions',
-            'supWhatsappLineIteractiveForm'
+            'supWhatsappLineIteractiveForm',
+            'supWhatsappMessageTemplates'
         ])
     },
     methods: {
@@ -257,8 +315,73 @@ export default {
             this.form.destination_type = this.supWhatsappLine.destination.type;
             this.form.destination = this.supWhatsappLine.destination.data;
         },
-        addInteractiveMenuItem() {
-          this.supWhatsappLine.destination.data.push({ options: [], id_tmp: +new Date(), is_main: false})
+        addInteractiveMenuItem () {
+            this.ensureInteractiveDestinationData();
+            this.supWhatsappLine.destination.data.push({
+                id_tmp: +new Date() + Math.floor(Math.random() * 1000),
+                is_main: false,
+                menu_header: '',
+                menu_body: '',
+                menu_footer: '',
+                menu_button: '',
+                wrong_answer: '',
+                success: '',
+                timeout: 0,
+                options: []
+            });
+        },
+        openFlowBuilder () {
+            this.ensureInteractiveDestinationData();
+            this.showFlowBuilderModal = true;
+        },
+        handleFlowBuilderModal ({ showModal = false }) {
+            this.showFlowBuilderModal = showModal;
+        },
+        ensureInteractiveDestinationData () {
+            if (
+                this.supWhatsappLine.destination.data === null ||
+                typeof (this.supWhatsappLine.destination.data) === 'number'
+            ) {
+                this.supWhatsappLine.destination.data = [{
+                    id_tmp: +new Date() + Math.floor(Math.random() * 1000),
+                    is_main: true,
+                    menu_header: '',
+                    menu_body: '',
+                    menu_footer: '',
+                    menu_button: '',
+                    wrong_answer: '',
+                    success: '',
+                    timeout: 0,
+                    options: []
+                }];
+            }
+            if (!Array.isArray(this.supWhatsappLine.destination.data)) {
+                this.supWhatsappLine.destination.data = [{
+                    id_tmp: +new Date() + Math.floor(Math.random() * 1000),
+                    is_main: true,
+                    menu_header: '',
+                    menu_body: '',
+                    menu_footer: '',
+                    menu_button: '',
+                    wrong_answer: '',
+                    success: '',
+                    timeout: 0,
+                    options: []
+                }];
+            }
+            this.supWhatsappLine.destination.data.forEach((menu) => {
+                if (menu.menu_header === undefined) menu.menu_header = '';
+                if (menu.menu_body === undefined) menu.menu_body = '';
+                if (menu.menu_footer === undefined) menu.menu_footer = '';
+                if (menu.menu_button === undefined) menu.menu_button = '';
+                if (menu.wrong_answer === undefined) menu.wrong_answer = menu.wrongAnswer || '';
+                if (menu.success === undefined) menu.success = menu.successAnswer || '';
+                if (menu.timeout === undefined) menu.timeout = 0;
+                if (!Array.isArray(menu.options)) menu.options = [];
+            });
+            if (!this.supWhatsappLine.destination.data.some((menu) => menu.is_main)) {
+                this.supWhatsappLine.destination.data[0].is_main = true;
+            }
         },
         handleModal ({ showModal = false, formToCreate = false, option = null }) {
             this.showModal = showModal;
@@ -304,13 +427,13 @@ export default {
             }
         },
         interactiveOption () {
-         this.supWhatsappLine.destination.type = this.destinationType.INTERACTIVE
-         if (this.supWhatsappLine.destination.data === null || typeof(this.supWhatsappLine.destination.data) === 'number'){
-          this.supWhatsappLine.destination.data = [this.supWhatsappLineIteractiveForm]
-         }
+            this.supWhatsappLine.destination.type = this.destinationType.INTERACTIVE;
+            if (this.supWhatsappLine.destination.data === null || typeof (this.supWhatsappLine.destination.data) === 'number') {
+                this.supWhatsappLine.destination.data = [this.supWhatsappLineIteractiveForm];
+            }
         },
         campaignOption () {
-            this.supWhatsappLine.destination.type = this.destinationType.CAMPAIGN
+            this.supWhatsappLine.destination.type = this.destinationType.CAMPAIGN;
         },
         getDestinationData () {
             if (
@@ -330,14 +453,13 @@ export default {
                     data: this.supWhatsappLine.destination.data,
                     id_tmp: this.supWhatsappLine.destination.id_tmp
                 };
-            }
-          else if (
-            this.form.destination_type ===
+            } else if (
+                this.form.destination_type ===
         this.destinationType.CLOSING_MESSAGE
             ) {
                 return {
                     type: DESTINATION_TYPES_BACK.CLOSING_MESSAGE,
-                    data: this.form.destination,
+                    data: this.form.destination
                 };
             }
         },
@@ -361,38 +483,38 @@ export default {
                 return null;
             }
             let response = null;
-            var form = null
-            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.GUPSHUP){
+            var form = null;
+            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.GUPSHUP) {
                 form = {
-                  name: this.supWhatsappLine.nombre,
-                  number: this.supWhatsappLine.numero,
-                  provider: this.supWhatsappLine.proveedor,
-                  configuration: {
-                      app_name: this.supWhatsappLine.configuracion.app_name,
-                      app_id: this.supWhatsappLine.configuracion.app_id,
-                  },
-                  destination: this.getDestinationData(),
-                  schedule: this.form.horario,
-                  welcome_message: this.form.mensaje_bienvenida,
-                  farewell_message: this.form.mensaje_despedida,
-                  afterhours_message: this.form.mensaje_fueradehora
+                    name: this.supWhatsappLine.nombre,
+                    number: this.supWhatsappLine.numero,
+                    provider: this.supWhatsappLine.proveedor,
+                    configuration: {
+                        app_name: this.supWhatsappLine.configuracion.app_name,
+                        app_id: this.supWhatsappLine.configuracion.app_id
+                    },
+                    destination: this.getDestinationData(),
+                    schedule: this.form.horario,
+                    welcome_message: this.form.mensaje_bienvenida,
+                    farewell_message: this.form.mensaje_despedida,
+                    afterhours_message: this.form.mensaje_fueradehora
                 };
             }
-            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.META){
-               form = {
-                  name: this.supWhatsappLine.nombre,
-                  number: this.supWhatsappLine.numero,
-                  provider: this.supWhatsappLine.proveedor,
-                  configuration: {
-                      waba_id: this.supWhatsappLine.configuracion.app_name,
-                      app_id: this.supWhatsappLine.configuracion.app_id,
-                      verification_token: this.supWhatsappLine.configuracion.verification_token,
-                  },
-                  destination: this.getDestinationData(),
-                  schedule: this.form.horario,
-                  welcome_message: this.form.mensaje_bienvenida,
-                  farewell_message: this.form.mensaje_despedida,
-                  afterhours_message: this.form.mensaje_fueradehora
+            if (this.supWhatsappLine.provider_type == PROVIDER_TYPES.META) {
+                form = {
+                    name: this.supWhatsappLine.nombre,
+                    number: this.supWhatsappLine.numero,
+                    provider: this.supWhatsappLine.proveedor,
+                    configuration: {
+                        waba_id: this.supWhatsappLine.configuracion.app_name,
+                        app_id: this.supWhatsappLine.configuracion.app_id,
+                        verification_token: this.supWhatsappLine.configuracion.verification_token
+                    },
+                    destination: this.getDestinationData(),
+                    schedule: this.form.horario,
+                    welcome_message: this.form.mensaje_bienvenida,
+                    farewell_message: this.form.mensaje_despedida,
+                    afterhours_message: this.form.mensaje_fueradehora
                 };
             }
             response = await this.updateWhatsappLine({
@@ -415,60 +537,59 @@ export default {
                     this.$helpers.getToasConfig(
                         this.$t('globals.error_notification'),
                         message,
-                        this.$t('globals.icon_error'),
+                        this.$t('globals.icon_error')
                     )
                 );
             }
         },
         onlyWhatsappHabilitadoChange () {
-          if (this.supWhatsappLineCampaigns.length > 0) {
-            if (this.only_whatsapp_habilitado) {
-                  const manualCampaigns =
+            if (this.supWhatsappLineCampaigns.length > 0) {
+                if (this.only_whatsapp_habilitado) {
+                    const manualCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.MANUAL && c.whatsapp_habilitado
                   ) || [];
-                  const inboundCampaigns =
+                    const inboundCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.INBOUND && c.whatsapp_habilitado
                   ) || [];
-                  const previewCampaigns =
+                    const previewCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.PREVIEW && c.whatsapp_habilitado
                   ) || [];
-                  const dialerCampaigns =
+                    const dialerCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.DIALER && c.whatsapp_habilitado
                   ) || [];
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
-                  this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
-            }
-            else {
-                  const manualCampaigns =
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.INBOUND).items = inboundCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL).items = manualCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW).items = previewCampaigns;
+                    this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER).items = dialerCampaigns;
+                } else {
+                    const manualCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.MANUAL
                   ) || [];
-                  const inboundCampaigns =
+                    const inboundCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.INBOUND
                   ) || [];
-                  const previewCampaigns =
+                    const previewCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.PREVIEW
                   ) || [];
-                  const dialerCampaigns =
+                    const dialerCampaigns =
                   this.supWhatsappLineCampaigns.filter(
                       (c) => c.type === CAMPAIGN_TYPES.DIALER
                   ) || [];
-                  if (inboundCampaigns.length > 0) {
+                    if (inboundCampaigns.length > 0) {
                         this.campaings.find(
                             (c) => c.type === CAMPAIGN_TYPES.INBOUND
                         ).items = inboundCampaigns;
                     }
                     if (manualCampaigns.length > 0) {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.MANUAL
-                      ).items = manualCampaigns;
+                        ).items = manualCampaigns;
                     }
                     if (previewCampaigns.length > 0) {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.PREVIEW
@@ -478,24 +599,24 @@ export default {
                         this.campaings.find((c) => c.type === CAMPAIGN_TYPES.DIALER
                         ).items = dialerCampaigns;
                     }
+                }
             }
-          }
         },
         ckeckingCampaign () {
-          if (this.form.destination){
-            const campaign_selected =this.supWhatsappLineCampaigns.find((c) => c.id === this.form.destination)
-            if(campaign_selected.whatsapp_habilitado === false){
-              this.$swal(
-                    this.$helpers.getToasConfig(
-                        this.$t('globals.warning_notification'),
-                        this.$t(
-                            'forms.whatsapp.line.validations.whatsapp_habilitado'
-                        ),
-                        this.$t('globals.icon_warning'),
-                    )
-                );
+            if (this.form.destination) {
+                const campaign_selected = this.supWhatsappLineCampaigns.find((c) => c.id === this.form.destination);
+                if (campaign_selected.whatsapp_habilitado === false) {
+                    this.$swal(
+                        this.$helpers.getToasConfig(
+                            this.$t('globals.warning_notification'),
+                            this.$t(
+                                'forms.whatsapp.line.validations.whatsapp_habilitado'
+                            ),
+                            this.$t('globals.icon_warning')
+                        )
+                    );
+                }
             }
-          }
         }
     },
     watch: {
@@ -577,11 +698,22 @@ export default {
             deep: true,
             immediate: true
         },
+        supWhatsappMessageTemplates: {
+            handler () {
+                this.messageTemplates.forEach((group) => {
+                    group.items = this.supWhatsappMessageTemplates.filter(
+                        (template) => template.type === group.type
+                    );
+                });
+            },
+            deep: true,
+            immediate: true
+        },
         supWhatsappLine: {
             handler (val) {
-              if (val && val.destination) {
-                this.initFormBase()
-              }
+                if (val && val.destination) {
+                    this.initFormBase();
+                }
             },
             deep: true,
             immediate: true

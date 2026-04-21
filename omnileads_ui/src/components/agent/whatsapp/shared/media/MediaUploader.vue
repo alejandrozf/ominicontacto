@@ -99,15 +99,15 @@ export default {
                     localStorage.getItem('agtWhatsCoversationInfo')
                 );
                 const file = this.files[0];
-                let formData = new FormData();
-                formData.append('file', file)
+                const formData = new FormData();
+                formData.append('file', file);
                 var data = {
                     conversationId: agtWhatsCoversationInfo.id,
                     formData: formData,
                     phoneLine: agtWhatsCoversationInfo.line.number,
                     messages: messages,
                     $t: this.$t
-                }
+                };
                 const { status, message } = await this.agtWhatsCoversationSendAttachmentMessage(data);
                 if (status === HTTP_STATUS.SUCCESS) {
                     this.clearData();

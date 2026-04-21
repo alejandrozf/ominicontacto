@@ -173,8 +173,8 @@ export default {
             default: true
         },
         return_after_save: {
-          type: String,
-          default: 'supervisor_facebook_message_templates'
+            type: String,
+            default: 'supervisor_facebook_message_templates'
         }
     },
     data () {
@@ -321,11 +321,10 @@ export default {
             const { status, message } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 await this.initFacebookPageTemplates();
-                if(this.return_after_save === 'supervisor_facebook_message_templates'){
-                  this.$router.push({ name: this.return_after_save });
-                }
-                else{
-                  this.$emit('closeModalEvent');
+                if (this.return_after_save === 'supervisor_facebook_message_templates') {
+                    this.$router.push({ name: this.return_after_save });
+                } else {
+                    this.$emit('closeModalEvent');
                 }
                 this.$swal(
                     this.$helpers.getToasConfig(

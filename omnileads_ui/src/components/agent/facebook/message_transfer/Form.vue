@@ -154,10 +154,12 @@ export default {
                 });
                 this.closeModal();
                 if (status === HTTP_STATUS.SUCCESS) {
-                    const event = new CustomEvent(FACEBOOK_LOCALSTORAGE_EVENTS.TRANSFER.DONE, { detail: {
-                        to,
-                        conversationId,
-                    }});
+                    const event = new CustomEvent(FACEBOOK_LOCALSTORAGE_EVENTS.TRANSFER.DONE, {
+                        detail: {
+                            to,
+                            conversationId
+                        }
+                    });
                     window.parent.document.dispatchEvent(event);
                     await notificationEvent(
                         NOTIFICATION.TITLES.SUCCESS,

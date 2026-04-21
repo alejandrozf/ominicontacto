@@ -244,7 +244,7 @@ export default {
     },
     data () {
         return {
-            submitted: false,
+            submitted: false
         };
     },
     computed: {
@@ -335,7 +335,7 @@ export default {
             handler () {},
             deep: true,
             immediate: true
-        },
+        }
     }
 };
 </script>

@@ -26,7 +26,8 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import User
 from ominicontacto_app.tests.utiles import PASSWORD
 from whatsapp_app.tests.factories import (
-    LineaFactory, ConfiguracionProveedorFactory, MenuInteractivoFactory, )
+    LineaFactory, ConfiguracionProveedorFactory, MenuInteractivoFactory,
+    PlantillaAgenteFactory, )
 from whatsapp_app.models import (Linea, ConfiguracionProveedor, MenuInteractivoWhatsapp,
                                  OpcionMenuInteractivoWhatsapp, )
 from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino
@@ -148,6 +149,18 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(response_data['provider'], self.linea_a_campana.proveedor.id)
         self.assertEqual(response_data['configuration'], self.linea_a_campana.configuracion)
         self.assertEqual(response_data['destination']['type'], DestinoEntrante.CAMPANA)
+
+    def test_configuracion_linea_a_menu_detail_backward_compatible(self):
+        self.crear_linea_a_menu()
+        url = reverse('whatsapp_app:linea-detail', args=[self.linea_a_menu.id])
+        response_linea_detail = self.client.get(url)
+        self.assertEqual(response_linea_detail.status_code, status.HTTP_200_OK)
+        response_data = response_linea_detail.json()['data']
+        self.assertEqual(response_data['destination']['type'],
+                         DestinoEntrante.MENU_INTERACTIVO_WHATSAPP)
+        option_data = response_data['destination']['data'][0]['options'][0]
+        self.assertFalse(option_data['send_message_before_campaign'])
+        self.assertIsNone(option_data['message_before_campaign'])
 
     @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
     def test_creacion_linea_gupshup_con_destino_campana(self, notificar_nueva_linea):
@@ -323,6 +336,26 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(opcion_2.destino_siguiente, self.destino_2)
         opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres')
         self.assertEqual(opcion_3.destino_siguiente, self.destino_3)
+        notificar_nueva_linea.assert_called()
+
+    @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')
+    def test_creacion_linea_gupshup_con_mensaje_previo_a_campana(self, notificar_nueva_linea):
+        plantilla = PlantillaAgenteFactory(configuracion={'text': 'Mensaje previo'})
+        url = reverse('whatsapp_app:linea-list')
+        data = self.get_menu_options_campana_post_data()
+        data['destination']['data'][0]['options'][0]['send_message_before_campaign'] = True
+        data['destination']['data'][0]['options'][0]['message_before_campaign'] = plantilla.id
+        response = self.client.post(url, data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        linea = Linea.objects.get(id=response.json()['data']['id'])
+        opcion_2 = linea.destino.get_opcion_destino_por_valor('Dos').opcion_menu_whatsapp
+        opcion_3 = linea.destino.get_opcion_destino_por_valor('Tres').opcion_menu_whatsapp
+
+        self.assertTrue(opcion_2.send_message_before_campaign)
+        self.assertEqual(opcion_2.message_before_campaign, plantilla)
+        self.assertFalse(opcion_3.send_message_before_campaign)
+        self.assertIsNone(opcion_3.message_before_campaign)
         notificar_nueva_linea.assert_called()
 
     def test_update_linea_gupshup_provider_errors(self):

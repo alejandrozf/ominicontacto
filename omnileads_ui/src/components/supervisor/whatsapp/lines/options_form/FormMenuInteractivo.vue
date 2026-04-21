@@ -1,6 +1,11 @@
 <template>
-<div>
-<Fieldset :toggleable="true" :collapsed="false">
+<div class="mb-3">
+<Fieldset :toggleable="true" :collapsed="true">
+  <template #legend>
+    <div class="flex align-items-center text-primary">
+      <span class="font-semibold">{{ interactiveForm.menu_header || (interactiveForm.is_main ? 'Main Block' : 'Interactive Block') }}</span>
+    </div>
+  </template>
   <div class="field col-12">
   <div class="card mt-2">
       <div v-if="data.is_main" class="flex flex-wrap mt-2">
@@ -14,14 +19,9 @@
   <div class="card mt-2">
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error': isNoValidLen(interactiveForm.menu_header, 60) && submitted,
-          }"
-          >{{
-            $t("models.whatsapp.line.interactive_form.menu_header")
-          }}</label
-        >
+        <label>
+          {{ $t("models.whatsapp.line.interactive_form.menu_header") }}
+        </label>
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-comment"></i>
@@ -34,23 +34,8 @@
             v-model="interactiveForm.menu_header"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 60
-            }
-          )
-        }}</small><br />
-        <small v-if="isNoValidLen(interactiveForm.menu_header, 60) && submitted" class="p-error">
-          {{
-            $t(
-              "forms.whatsapp.line.validations.max_len",
-              {
-                max_len: 60
-              }
-            )
-          }}
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.menu_header ? interactiveForm.menu_header.length : 0 }} / 60
         </small>
       </div>
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
@@ -75,14 +60,9 @@
             v-model="interactiveForm.menu_body"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 1024
-            }
-          )
-        }}</small>
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.menu_body ? interactiveForm.menu_body.length : 0 }} / 1024
+        </small>
         <div
           v-if="isEmptyField(interactiveForm.menu_body) && submitted"
         >
@@ -138,14 +118,9 @@
             v-model="interactiveForm.menu_footer"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 60
-            }
-          )
-        }}</small>
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.menu_footer ? interactiveForm.menu_footer.length : 0 }} / 60
+        </small>
         <div
           v-if="isNoValidLen(interactiveForm.menu_footer, 60) && submitted"
         >
@@ -183,14 +158,9 @@
             v-model="interactiveForm.menu_button"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 20
-            }
-          )
-        }}</small>
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.menu_button ? interactiveForm.menu_button.length : 0 }} / 20
+        </small>
         <div
           v-if="isEmptyField(interactiveForm.menu_button) && submitted"
         >
@@ -227,109 +197,35 @@
     </div>
     <div class="grid formgrid">
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error':
-              isEmptyField(interactiveForm.wrong_answer) &&
-              submitted,
-          }"
-          >{{
-            $t(
-              "models.whatsapp.line.interactive_form.wrong_answer"
-            )
-          }}*</label
-        >
+        <label>
+          {{ $t("models.whatsapp.line.interactive_form.wrong_answer") }}
+        </label>
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-times-circle"></i>
           </span>
           <InputText
-            :class="{
-              'p-invalid':
-                isEmptyField(interactiveForm.wrong_answer) &&
-                submitted,
-            }"
             v-model="interactiveForm.wrong_answer"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 100
-            }
-          )
-          }}
-        </small>
-        <small
-          v-if="
-            isEmptyField(interactiveForm.wrong_answer) && submitted
-          "
-          class="p-error"
-        >
-          {{
-            $t(
-              "forms.whatsapp.line.validations.field_is_required",
-              {
-                field: $t(
-                  "models.whatsapp.line.interactive_form.wrong_answer"
-                ),
-              }
-            )
-          }}
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.wrong_answer ? interactiveForm.wrong_answer.length : 0 }} / 100
         </small>
       </div>
       <div class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
-        <label
-          :class="{
-            'p-error':
-              isEmptyField(interactiveForm.success) &&
-              submitted,
-          }"
-          >{{
-            $t(
-              "models.whatsapp.line.interactive_form.success_answer"
-            )
-          }}*</label
-        >
+        <label>
+          {{ $t("models.whatsapp.line.interactive_form.success_answer") }}
+        </label>
         <div class="p-inputgroup mt-2">
           <span class="p-inputgroup-addon">
             <i class="pi pi-check-circle"></i>
           </span>
           <InputText
-            :class="{
-              'p-invalid':
-                isEmptyField(interactiveForm.success) &&
-                submitted,
-            }"
             v-model="interactiveForm.success"
           />
         </div>
-        <small> {{
-          $t(
-            "forms.whatsapp.line.validations.max_len_help",
-            {
-              max_len: 100
-            }
-          )
-          }}
-        </small>
-        <small
-          v-if="
-            isEmptyField(interactiveForm.success) && submitted
-          "
-          class="p-error"
-        >
-          {{
-            $t(
-              "forms.whatsapp.line.validations.field_is_required",
-              {
-                field: $t(
-                  "models.whatsapp.line.interactive_form.success_answer"
-                ),
-              }
-            )
-          }}
+        <small class="text-color-secondary mt-1 block">
+          {{ interactiveForm.success ? interactiveForm.success.length : 0 }} / 100
         </small>
       </div>
     </div>
@@ -437,37 +333,37 @@ export default {
     validations () {
         return {
             form: {
-              menuHeader: { required },
-              menuBody: { required },
-              menuFooter: { },
-              menuButton: {required },
-              wrongAnswer: { required },
-              successAnswer: { required },
-              timeout: { required },
-              options: { required }
+                menuHeader: { },
+                menuBody: { required },
+                menuFooter: { },
+                menuButton: { required },
+                wrongAnswer: { },
+                successAnswer: { },
+                timeout: { required },
+                options: { required }
             }
         };
     },
     inject: ['$helpers'],
     props: {
         data: {
-          type: Object,
-          default: {}
+            type: Object,
+            default: {}
         },
         submitted: {
-          type: Boolean,
-          default: false
+            type: Boolean,
+            default: false
         }
     },
     components: {
-      ModalToHandleOption,
-      DESTINATION_OPTION_TYPES
+        ModalToHandleOption,
+        DESTINATION_OPTION_TYPES
     },
     data () {
         return {
-          invalidInteractiveForm: false,
-          interactiveForm: Object.assign(this.data),
-          destinationTypes: [
+            invalidInteractiveForm: false,
+            interactiveForm: Object.assign(this.data),
+            destinationTypes: [
                 { name: '-------', value: null },
                 {
                     name: this.$t('forms.whatsapp.line.destination_types.campaign'),
@@ -482,7 +378,7 @@ export default {
                     value: DESTINATION_OPTION_TYPES.CLOSING_MESSAGE
                 }
             ],
-          showModal: false
+            showModal: false
         };
     },
     computed: {
@@ -499,15 +395,15 @@ export default {
             'createWhatsappLineOption',
             'updateWhatsappLineOption',
             'initWhatsappLineOptionForm',
-            'deleteWhatsappLineOption',
+            'deleteWhatsappLineOption'
         ]),
         isEmptyField (field = null) {
             return field === null || field === undefined || field === '';
         },
-        isNoValidLen (field = null, max_length=0) {
-            if (typeof field === 'string' || field instanceof String)
-                return field.length > max_length
-            return true
+        isNoValidLen (field = null, max_length = 0) {
+            if (field === null || field === undefined || field === '') { return false; }
+            if (typeof field === 'string' || field instanceof String) { return field.length > max_length; }
+            return false;
         },
         getDestinationType (type) {
             const destinationType = this.destinationTypes.find((dt) => dt.value === type);
@@ -518,25 +414,25 @@ export default {
             }
         },
         getDestination (data) {
-            if (data.type_option === DESTINATION_OPTION_TYPES.CAMPAIGN){
-              const campaign = this.supWhatsappLineCampaigns.find((c) => c.id === data.destination);
-              if (campaign) {
-                  return `${campaign.name}`;
-              } else {
-                  return '----------';
-              }
+            if (data.type_option === DESTINATION_OPTION_TYPES.CAMPAIGN) {
+                const campaign = this.supWhatsappLineCampaigns.find((c) => c.id === data.destination);
+                if (campaign) {
+                    return `${campaign.name}`;
+                } else {
+                    return '----------';
+                }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.INTERACTIVE) {
-              const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
-              if (menu.menu_header){
-                return `${menu.menu_header}`;
-              }
+                const menu = this.supWhatsappLine.destination.data.find((c) => c.id_tmp === data.destination);
+                if (menu.menu_header) {
+                    return `${menu.menu_header}`;
+                }
             } else if (data.type_option === DESTINATION_OPTION_TYPES.CLOSING_MESSAGE) {
-              const template = this.supWhatsappMessageTemplates.find((c) => c.id === data.destination);
-              if (template) {
-                  return `${template.name}`;
-              } else {
-                  return '----------';
-              }
+                const template = this.supWhatsappMessageTemplates.find((c) => c.id === data.destination);
+                if (template) {
+                    return `${template.name}`;
+                } else {
+                    return '----------';
+                }
             }
         },
         handleModalEvent ({ showModal = false, formToCreate = false }) {
@@ -554,9 +450,9 @@ export default {
             this.initWhatsappLineOptionForm(option);
         },
         remove (option) {
-            const id = option.id ? option.id : option.index
+            const id = option.id ? option.id : option.index;
             this.deleteWhatsappLineOption({
-              id: id, menuId: this.interactiveForm.id_tmp
+                id: id, menuId: this.interactiveForm.id_tmp
             });
             this.$swal(
                 this.$helpers.getToasConfig(
@@ -567,30 +463,28 @@ export default {
             );
         },
         delete_menu (menuId) {
-          if (menuId !=0){
-            this.supWhatsappLine.destination.data = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== menuId);
-          }
+            if (menuId != 0) {
+                this.supWhatsappLine.destination.data = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== menuId);
+            }
         }
     },
     watch: {
-      supWhatsappLineOptions: {
+        supWhatsappLineOptions: {
             handler () {
-              this.supWhatsappLineOptions.forEach(({menuId, ...option})=>{
-                if (option.index !== undefined && menuId === this.interactiveForm.id_tmp) {
-                  if (this.interactiveForm.options){
-                    const idx = this.interactiveForm.options.findIndex(({index}) => index === option.index)
-                    if (idx === -1) {
-                      this.interactiveForm.options.push(option)
+                this.supWhatsappLineOptions.forEach(({ menuId, ...option }) => {
+                    if (option.index !== undefined && menuId === this.interactiveForm.id_tmp) {
+                        if (this.interactiveForm.options) {
+                            const idx = this.interactiveForm.options.findIndex(({ index }) => index === option.index);
+                            if (idx === -1) {
+                                this.interactiveForm.options.push(option);
+                            }
+                        } else { this.interactiveForm.options.push(option); }
                     }
-                  }
-                  else
-                    this.interactiveForm.options.push(option)
-                }
-              })
+                });
             },
             deep: true,
             immediate: true
-      }
+        }
     }
 };
 </script>

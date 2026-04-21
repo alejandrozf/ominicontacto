@@ -1,4 +1,4 @@
-import { provide } from "vue";
+import { provide } from 'vue';
 
 export default {
     supWhatsappLines: [],
@@ -29,6 +29,8 @@ export default {
         description: '',
         type_option: 0,
         destination: null,
+        send_message_before_campaign: false,
+        message_before_campaign: null,
         destination_name: '',
         menuId: null
     },

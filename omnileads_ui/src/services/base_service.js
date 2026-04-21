@@ -31,12 +31,11 @@ export class BaseService {
         }
         if (hMultipart) {
             this.payload.headers = {
-                'X-CSRFToken': this.cookies.get('csrftoken'),
+                'X-CSRFToken': this.cookies.get('csrftoken')
                 // 'Content-Type': "multipart/form-data",
             };
         }
         this.payload.method = method;
-
     }
 
     initPayload () {

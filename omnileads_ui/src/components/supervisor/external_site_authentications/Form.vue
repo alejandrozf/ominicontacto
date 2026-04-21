@@ -451,7 +451,7 @@ export default {
                     this.disable_campo_duracion = false;
                     this.invalid_campo_duracion = true;
                     if (this.externalSiteAuthentication.campo_duracion) {
-                      this.invalid_campo_duracion = false;
+                        this.invalid_campo_duracion = false;
                     }
                 } else {
                     this.disable_campo_duracion = true;

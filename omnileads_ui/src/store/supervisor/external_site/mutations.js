@@ -5,8 +5,8 @@ export default {
     initExternalSiteDetail (state, site) {
         state.externalSiteDetail = site;
     },
-    initExternalSitesDynamicList(state, sites) {
-        console.log('----', sites)
+    initExternalSitesDynamicList (state, sites) {
+        console.log('----', sites);
         state.externalSitesDynamicList = sites.filter(item => item.disparador === 5);
     }
 

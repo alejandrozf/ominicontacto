@@ -15,11 +15,11 @@ export default {
         }
         state.agtFacebookContactSearchResults = contactsToAdd;
     },
-    agtFacebookNewContact (state, contact){
-        console.log('agtFacebookNewContact', contact)
+    agtFacebookNewContact (state, contact) {
+        console.log('agtFacebookNewContact', contact);
         if (contact) {
-            state.newContact = []
+            state.newContact = [];
             state.newContact.push(contact);
         }
-    },
+    }
 };

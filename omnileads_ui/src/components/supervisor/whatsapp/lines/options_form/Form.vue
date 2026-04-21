@@ -265,6 +265,55 @@
         >
       </div>
     </div>
+    <div
+      v-if="v$.form.type_option.$model==destinationTypesValues.CAMPAIGN"
+      class="grid formgrid mt-2"
+    >
+      <div class="field col-12">
+        <div class="p-inputgroup">
+          <Checkbox
+            v-model="form.send_message_before_campaign"
+            binary
+            @change="handlePreCampaignMessageToggle"
+          />
+          <label class="ml-2">Mensaje previo a derivacion</label>
+        </div>
+      </div>
+      <div v-if="form.send_message_before_campaign" class="field sm:col-12 md:col-12 lg:col-6 xl:col-6">
+        <label
+          :class="{
+            'p-error': submitted && !form.message_before_campaign,
+          }"
+        >Plantilla*</label>
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-file"></i>
+          </span>
+          <Dropdown
+            v-model="form.message_before_campaign"
+            class="w-full"
+            :class="{
+              'p-invalid': submitted && !form.message_before_campaign,
+            }"
+            :options="messageTemplates"
+            placeholder="-----"
+            optionLabel="name"
+            optionValue="id"
+            optionGroupLabel="label"
+            optionGroupChildren="items"
+            :emptyFilterMessage="$t('globals.without_data')"
+            :filter="true"
+            v-bind:filterPlaceholder="
+              $t('globals.find_by', { field: $tc('globals.name') }, 1)
+            "
+          />
+        </div>
+        <small
+          v-if="submitted && !form.message_before_campaign"
+          class="p-error"
+        >Debe seleccionar una plantilla.</small>
+      </div>
+    </div>
     <div class="flex justify-content-end flex-wrap mt-4">
       <div class="flex align-items-center">
         <Button
@@ -310,7 +359,7 @@ export default {
             default: false
         },
         menuId: {
-          type: Number
+            type: Number
         }
     },
     data () {
@@ -322,6 +371,8 @@ export default {
                 description: '',
                 type_option: null,
                 destination: null,
+                send_message_before_campaign: false,
+                message_before_campaign: null
             },
             alreadyExists: false,
             submitted: false,
@@ -369,14 +420,14 @@ export default {
                     items: []
                 }
             ],
-            destinationmenuoptions : [],
+            destinationmenuoptions: [],
             messageTemplates: [
                 {
                     type: TEMPLATE_TYPES.TEXT,
                     label: this.$t('forms.whatsapp.message_template.types.text'),
                     items: []
                 }
-            ],
+            ]
         };
     },
     created () {
@@ -404,7 +455,7 @@ export default {
             this.findDuplicated();
         },
         closeModal () {
-            console.log('closeModal >>>1')
+            console.log('closeModal >>>1');
             this.$emit('closeModalEvent');
         },
         initializeData () {
@@ -418,17 +469,29 @@ export default {
             this.form.description = this.supWhatsappLineOptionForm.description;
             this.form.type_option = this.supWhatsappLineOptionForm.type_option;
             this.form.destination = this.supWhatsappLineOptionForm.destination;
+            this.form.send_message_before_campaign =
+                Boolean(this.supWhatsappLineOptionForm.send_message_before_campaign);
+            this.form.message_before_campaign =
+                this.supWhatsappLineOptionForm.message_before_campaign;
             this.form.destination_name = this.supWhatsappLineOptionForm.destination_name;
             this.findDestinationOptions();
             this.findDuplicated();
             // this.findMsgTemplateOptions();
+        },
+        handlePreCampaignMessageToggle () {
+            if (!this.form.send_message_before_campaign) {
+                this.form.message_before_campaign = null;
+            }
         },
         findDuplicated () {
             const duplicated = this.supWhatsappLineOptions.find(
                 (option) =>
                     option.value === this.form.value &&
           option.description === this.form.description &&
-          option.destination === this.form.destination
+          option.destination === this.form.destination &&
+          Boolean(option.send_message_before_campaign) ===
+            Boolean(this.form.send_message_before_campaign) &&
+          option.message_before_campaign === this.form.message_before_campaign
             );
             if (duplicated) {
                 this.alreadyExists = true;
@@ -436,21 +499,32 @@ export default {
                 this.alreadyExists = false;
             }
         },
-        findDestinationOptions() {
-          this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId)
+        findDestinationOptions () {
+            this.destinationmenuoptions = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== this.menuId);
         },
         save (isFormValid) {
             this.submitted = true;
             if (!isFormValid) {
                 return null;
             }
+            if (
+                this.form.type_option === this.destinationTypesValues.CAMPAIGN &&
+                this.form.send_message_before_campaign &&
+                !this.form.message_before_campaign
+            ) {
+                return null;
+            }
+            if (this.form.type_option !== this.destinationTypesValues.CAMPAIGN) {
+                this.form.send_message_before_campaign = false;
+                this.form.message_before_campaign = null;
+            }
             if (this.formToCreate) {
                 this.createWhatsappLineOption({
                     data: this.form,
-                    menuId: this.menuId,
+                    menuId: this.menuId
                 });
             } else {
-                const id = this.form.id ? this.form.id : this.form.index
+                const id = this.form.id ? this.form.id : this.form.index;
                 this.updateWhatsappLineOption({
                     id: id,
                     data: this.form,
@@ -557,7 +631,7 @@ export default {
             },
             deep: true,
             immediate: true
-        },
+        }
     }
 };
 </script>
