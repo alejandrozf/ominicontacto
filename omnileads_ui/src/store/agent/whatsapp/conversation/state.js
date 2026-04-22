@@ -14,6 +14,20 @@ export default {
             dispositionId: null
         },
         agent: null,
+        initialAgent: {
+            id: null,
+            username: null,
+            name: null
+        },
+        transferredAgent: {
+            id: null,
+            username: null,
+            name: null
+        },
+        transferredCampaign: {
+            id: null,
+            name: null
+        },
         transferAgent: null,
         isActive: null,
         expire: null,

@@ -250,7 +250,10 @@ export default {
                 conversation: {
                     title: 'گزارش گفتگو',
                     table_title: 'لیست گفتگو',
-                    detail_title: 'جزئیات گفتگو'
+                    detail_title: 'جزئیات گفتگو',
+                    transfer_event: 'رویداد انتقال',
+                    transfer_to_agent: 'انتقال به عامل: {agent}',
+                    transfer_to_campaign: 'انتقال به کمپین: {campaign}'
                 }
             }
         }

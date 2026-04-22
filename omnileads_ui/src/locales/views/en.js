@@ -296,7 +296,10 @@ export default {
                     title: 'Conversation report',
                     table_title: 'Conversation list',
                     detail_title: 'Detail of the conversation',
-                    system_closed: 'System Closed?'
+                    system_closed: 'System Closed?',
+                    transfer_event: 'Transfer event',
+                    transfer_to_agent: 'Transfer to agent: {agent}',
+                    transfer_to_campaign: 'Transfer to campaign: {campaign}'
                 }
             }
         }

@@ -19,6 +19,7 @@ const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
         from: itsMine ? `${$t('globals.agent')} (${senderName || senderPhone})` : clientName || senderName || senderPhone,
         conversationId: data && data.conversation ? data.conversation : null,
         itsMine,
+        senderName: itsMine ? senderName || senderPhone : null,
         message: data && data.content && data.content ? data.content : '',
         status: data && data.status ? data.status : null,
         fail_reason: data && data.fail_reason ? data.fail_reason : null,

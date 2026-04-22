@@ -1,13 +1,20 @@
 <template>
-  <Card class="border-round-xl" :class="getClasses(message?.itsMine)" style="max-width:65%">
+  <div v-if="message?.type === 'transfer_event'" class="transfer-event">
+    <span class="transfer-event-line"></span>
+    <span class="transfer-event-label">
+      {{ getTransferEventLabel(message?.message) }}
+    </span>
+    <span class="transfer-event-line"></span>
+  </div>
+  <Card v-else class="border-round-xl" :class="getClasses(message?.itsMine)" style="max-width:65%">
     <template #content>
       <div class="py-0 my-0">
         <div v-if="isForwarded(message?.message)" class="mb-2">
           <Tag severity="info" :value="getForwardedLabel(message?.message)"></Tag>
         </div>
-        <!-- <span
-          >{{ message?.from }}</span
-        > -->
+        <small v-if="showAgentSender(message)" class="message-sender">
+          {{ message?.senderName }}
+        </small>
         <div v-if="message.type==='text' || message.type==='buttons'">
           <h5 v-if="message?.message.header" class="mb-1 message-text" :style="{ 'font-weight': 'bold' }">
             {{ message?.message.header }}
@@ -441,6 +448,30 @@ export default {
             return content?.frequently_forwarded === true
                 ? 'Reenviado muchas veces'
                 : 'Reenviado';
+        },
+        showAgentSender (message) {
+            return Boolean(message?.itsMine && message?.senderName);
+        },
+        getTransferEventLabel (content) {
+            if (content?.event_type === 'agent_transfer') {
+                const agent = content?.to_agent?.username || content?.to_agent?.name;
+                if (agent) {
+                    return this.$t(
+                        'views.whatsapp.reports.campaign.conversation.transfer_to_agent',
+                        { agent }
+                    );
+                }
+            }
+            if (content?.event_type === 'campaign_transfer') {
+                const campaign = content?.to_campaign?.name;
+                if (campaign) {
+                    return this.$t(
+                        'views.whatsapp.reports.campaign.conversation.transfer_to_campaign',
+                        { campaign }
+                    );
+                }
+            }
+            return this.$t('views.whatsapp.reports.campaign.conversation.transfer_event');
         }
     }
 };
@@ -457,6 +488,26 @@ export default {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+.message-sender {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+.transfer-event {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.transfer-event-line {
+  flex: 1;
+  border-top: 1px solid #9ca3af;
+}
+.transfer-event-label {
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
 }
 .wa-message {
   display: flex;

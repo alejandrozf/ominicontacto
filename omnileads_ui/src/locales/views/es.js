@@ -296,7 +296,10 @@ export default {
                     title: 'Reporte de conversaciones',
                     table_title: 'Lista de conversaciones',
                     detail_title: 'Detalle de la conversación',
-                    system_closed: 'Cerrada por sistema?'
+                    system_closed: 'Cerrada por sistema?',
+                    transfer_event: 'Evento de transferencia',
+                    transfer_to_agent: 'Transferencia a agente: {agent}',
+                    transfer_to_campaign: 'Transferencia a campaña: {campaign}'
                 }
             }
         }
