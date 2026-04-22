@@ -17,7 +17,7 @@
     </div>
     <div>
       <Message
-        v-if="!agtWhatsCoversationInfo.client.id"
+        v-if="!isLoading && !agtWhatsCoversationInfo.client.id"
         severity="warn"
         :closable="false"
         class="mt-0 mb-3"
@@ -29,7 +29,11 @@
         >
       </Message>
     </div>
-    <div class="flex justify-content-between flex-wrap my-2">
+    <div v-if="isLoading" class="flex flex-grow-1 justify-content-center align-items-center">
+      <ProgressSpinner />
+    </div>
+    <template v-else>
+      <div class="flex justify-content-between flex-wrap my-2">
       <div class="flex align-items-center justify-content-center">
         <Tag
           v-if="isExpired"
@@ -41,6 +45,7 @@
       </div>
       <div class="flex align-items-center justify-content-center">
         <Tag
+          v-if="agtWhatsCoversationInfo && agtWhatsCoversationInfo.campaignName"
           :style="{ background: whatsapp_color }"
           icon="pi pi-sitemap"
           :value="`${$t('globals.campaign')} (${
@@ -65,6 +70,7 @@
         class="w-full btn-border mt-2 p-button-warning"
         @click="openModalToRestart()"
       />
+    </template>
   </div>
 </template>
 
@@ -90,7 +96,8 @@ export default {
             whatsapp_color: COLORS.WHATSAPP.TealGreen,
             isDisposition: false,
             isTransferred: false,
-            isExpired: false
+            isExpired: false,
+            isLoading: false
         };
     },
     async created () {
@@ -145,7 +152,9 @@ export default {
         ]),
         scrollDown () {
             const scroll = document.getElementById('listMessages');
-            scroll.scrollTop = scroll.scrollHeight;
+            if (scroll) {
+                scroll.scrollTop = scroll.scrollHeight;
+            }
         },
         resetConversationState () {
             this.isDisposition = false;
@@ -158,11 +167,17 @@ export default {
             localStorage.setItem('agtWhatsCoversationInfo', JSON.stringify(null));
         },
         async initData () {
+            this.isLoading = true;
             this.resetConversationState();
+            
+            // Fix race condition glitch by clearing current state during load
+            this.agtWhatsSetCoversationInfo(null);
+            this.agtWhatsSetCoversationMessages([]);
+
             await this.agtWhatsConversationDetail({
-                conversationId: this.id,
-                $t: this.$t
+                conversationId: this.id
             });
+            this.isLoading = false;
             const savedConversationInfo = JSON.parse(
                 localStorage.getItem('agtWhatsCoversationInfo')
             );
@@ -186,7 +201,9 @@ export default {
                             : null
                 })
             );
-            this.scrollDown();
+            this.$nextTick(() => {
+                this.scrollDown();
+            });
         },
         listenerEvents () {
             listenerStoreDataByAction(

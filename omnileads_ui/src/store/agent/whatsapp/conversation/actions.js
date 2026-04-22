@@ -2,9 +2,12 @@
 import Service from '@/services/agent/whatsapp/conversation_service';
 import { HTTP_STATUS } from '@/globals';
 import { resetStoreDataByAction } from '@/utils';
+import i18n from '@/i18n';
 const service = new Service();
+let currentDetailRequestId = null;
+const $t = i18n.global.t.bind(i18n.global);
 
-const getMessageInfo = ({ $t, data = null, itsMine = true }) => {
+const getMessageInfo = ({ data = null, itsMine = true }) => {
     const senderName = data && data.sender && data.sender.name ? data.sender.name : null;
     const senderPhone = data && data.sender && data.sender.phone ? data.sender.phone : $t('globals.whatsapp.automatic_agent');
     var clientName = "-"
@@ -47,7 +50,7 @@ export default {
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origin === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });
+                const message = getMessageInfo({ data, itsMine });
                 messages.push(message);
                 await commit('agtWhatsCoversationSendMessage', message);
             }
@@ -84,7 +87,7 @@ export default {
             const { status, data } = response;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origin === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });
+                const message = getMessageInfo({ data, itsMine });
                 await commit('agtWhatsCoversationSendMessage', message);
             }
             return response;
@@ -114,7 +117,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origin === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });
+                const message = getMessageInfo({ data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -150,7 +153,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origin === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });
+                const message = getMessageInfo({ data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -185,7 +188,7 @@ export default {
             const { status, data } = result;
             if (status === HTTP_STATUS.SUCCESS) {
                 const itsMine = data.origin === phoneLine;
-                const message = getMessageInfo({ $t, data, itsMine });
+                const message = getMessageInfo({ data, itsMine });
                 messages.push(message);
             }
             await resetStoreDataByAction({
@@ -216,6 +219,7 @@ export default {
     },
     async agtWhatsConversationDetail ({ commit }, { conversationId = null, $t }) {
         try {
+            currentDetailRequestId = conversationId;
             if (!conversationId) {
                 commit('agtWhatsConversationInitMessages', []);
                 commit('agtWhatsConversationInfoInit', {});
@@ -227,12 +231,16 @@ export default {
             const { status, data } = await service.getConversationDetail(
                 conversationId
             );
+            
+            // Drop response if a new conversation was requested while fetching
+            if (currentDetailRequestId !== conversationId) return;
+
             if (status === HTTP_STATUS.SUCCESS) {
                 commit(
                     'agtWhatsConversationInitMessages',
                     data.messages.map((msg) => {
                         const itsMine = msg.origin === data.line.number;
-                        return getMessageInfo({ $t, data: msg, itsMine });
+                        return getMessageInfo({ data: msg, itsMine });
                     })
                 );
                 commit('agtWhatsConversationInfoInit', data);
