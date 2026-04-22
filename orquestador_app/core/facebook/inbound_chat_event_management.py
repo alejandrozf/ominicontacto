@@ -120,8 +120,11 @@ def s2a_inbound_chat_event(page, timestamp, message_id, origen, content,
                 conversation.save()
             message_inbound.conversation = conversation
             message_inbound.save()
-            if is_out_of_time_chat:
+            if created_conversation and is_out_of_time_chat:
                 autoresponse_out_of_time(conversation, timestamp)
+                conversation.is_active = False
+                conversation.is_disposition = True
+                conversation.save(update_fields=['is_active', 'is_disposition'])
                 if conversation.agent:
                     notifications.append(('notify_facebook_new_message', {
                         'conversation': conversation,

@@ -152,7 +152,7 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                 created_conversation = True
                 if not is_out_of_time_chat:
                     autoresponse_welcome(line, conversation, timestamp)
-                if client is None:
+                if client is None and not is_out_of_time_chat:
                     redis_2.sadd(
                         f'OML:WHATSAPP:CAMP:{conversation.campana_id}:NOT-IDENTIFIED-CONV',
                         conversation.destination
@@ -173,8 +173,11 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                 conversation.save()
             message_inbound.conversation = conversation
             message_inbound.save()
-            if is_out_of_time_chat:
+            if created_conversation and is_out_of_time_chat:
                 autoresponse_out_of_time(line, conversation, timestamp)
+                conversation.is_active = False
+                conversation.is_disposition = True
+                conversation.save(update_fields=['is_active', 'is_disposition'])
                 if conversation.agent:
                     notifications.append(('notify_whatsapp_new_message', {
                         'conversation': conversation,

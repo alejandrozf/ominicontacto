@@ -89,6 +89,14 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
             opcion_calificacion=opcion_calificacion31_gestion)
 
         self.client.login(username=self.supervisor2.user, password=self.DEFAULT_PASSWORD)
+        self._asegurarse_telefonos_unicos()
+
+    def _asegurarse_telefonos_unicos(self):
+        telefonos = ['1234567' + str(i) for i in range(10, 22)]
+        for nombre, calificacion in vars(self).items():
+            if nombre.startswith('calificacion'):
+                calificacion.contacto.telefono = telefonos.pop()
+                calificacion.contacto.save()
 
     def test_supervisor_simple_no_tiene_accesso_vista_gestion(self):
         self.actualizar_permisos()
