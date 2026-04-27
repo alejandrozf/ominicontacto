@@ -33,6 +33,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.utils.translation import gettext as _
+from django.core.exceptions import ObjectDoesNotExist
 
 from api_app.services.storage_service import StorageService
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist
@@ -229,6 +230,38 @@ class QueuesCreator(object):
         self._queues_config_file = QueuesConfigFile()
         self._generador_factory = GeneradorDePedazoDeQueueFactory()
 
+    def _marcar_campana_inconsistente(self, campana):
+        try:
+            campana.estado = Campana.ESTADO_BORRADA
+            campana.save(update_fields=['estado'])
+        except Exception:
+            logger.error(
+                _(
+                    "No se pudo marcar como borrada la campaña inconsistente "
+                    "id=%(id)s"
+                ),
+                {'id': getattr(campana, 'id', None)}
+            )
+
+    def _obtener_queue_campana(self, campana):
+        try:
+            return campana.queue_campana
+        except ObjectDoesNotExist:
+            logger.error(
+                _(
+                    "Campaña inconsistente al generar dialplan: id=%(id)s "
+                    "nombre=%(nombre)s type=%(type)s. "
+                    "La campaña no tiene queue_campana asociada."
+                ),
+                {
+                    'id': getattr(campana, 'id', None),
+                    'nombre': getattr(campana, 'nombre', None),
+                    'type': getattr(campana, 'type', None),
+                }
+            )
+            self._marcar_campana_inconsistente(campana)
+            return None
+
     def _generar_dialplan(self, campana):
         """Genera el dialplan para una queue.
 
@@ -237,12 +270,11 @@ class QueuesCreator(object):
         :returns: str -- dialplan para la queue
         """
 
-        assert campana.queue_campana is not None, "campana.queue_campana == None"
+        queue_campana = self._obtener_queue_campana(campana)
+        if queue_campana is None:
+            return ''
 
-        retry = 1
-        if campana.queue_campana.retry:
-            retry = campana.queue_campana.retry
-
+        retry = queue_campana.retry or 1
         audio_entrada = campana.queue_campana.audio_previo_conexion_llamada
         if audio_entrada:
             announce = os.path.join(
@@ -278,12 +310,11 @@ class QueuesCreator(object):
         :type campana: ominicontacto_app.models.Campana
         :returns: str -- dialplan para la queue
         """
-        assert campana.queue_campana is not None, "campana.queue_campana == None"
+        queue_campana = self._obtener_queue_campana(campana)
+        if queue_campana is None:
+            return ''
 
-        retry = 1
-        if campana.queue_campana.retry:
-            retry = campana.queue_campana.retry
-
+        retry = queue_campana.retry or 1
         # TODO: OML-496
         audio_asterisk = campana.queue_campana.announce
         if audio_asterisk:
