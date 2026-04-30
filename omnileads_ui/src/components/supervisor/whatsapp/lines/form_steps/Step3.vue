@@ -842,6 +842,7 @@ export default {
                     configuration: {
                         app_name: this.supWhatsappLine.configuracion.app_name,
                         app_id: this.supWhatsappLine.configuracion.app_id,
+                        app_secret: this.supWhatsappLine.configuracion.app_secret,
                         flow_builder_layout: this.getFlowBuilderLayout(),
                         destination_editor_mode: Object.keys(this.getFlowBuilderLayout()).length > 0 ? 'flow' : 'interactive'
                     },
@@ -861,6 +862,7 @@ export default {
                         waba_id: this.supWhatsappLine.configuracion.app_name,
                         app_id: this.supWhatsappLine.configuracion.app_id,
                         verification_token: this.supWhatsappLine.configuracion.verification_token,
+                        app_secret: this.supWhatsappLine.configuracion.app_secret,
                         flow_builder_layout: this.getFlowBuilderLayout(),
                         destination_editor_mode: Object.keys(this.getFlowBuilderLayout()).length > 0 ? 'flow' : 'interactive'
                     },

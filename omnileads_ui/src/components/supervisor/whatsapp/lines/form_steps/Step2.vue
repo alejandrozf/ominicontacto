@@ -57,7 +57,7 @@
             {{ $t("views.whatsapp.line.step2.app_info") }}
           </template>
           <div v-if="supWhatsappLine.provider_type===providersType.GUPSHUP" class="grid formgrid">
-            <div class="field col-6">
+            <div class="field col-4">
               <label
                 :class="{
                   'p-error':
@@ -95,7 +95,7 @@
                 }}</small
               >
             </div>
-            <div class="field col-6">
+            <div class="field col-4">
               <label
                 :class="{
                   'p-error':
@@ -134,6 +134,20 @@
                   )
                 }}</small
               >
+            </div>
+            <div class="field col-4">
+              <label>{{ $t("models.whatsapp.line.configuracion.app_secret") }}</label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-lock"></i>
+                </span>
+                <Password
+                  toggleMask
+                  :feedback="false"
+                  :placeholder="$t('forms.form.enter_value')"
+                  v-model="v$.supWhatsappLine.configuracion.app_secret.$model"
+                />
+              </div>
             </div>
           </div>
           <div v-if="supWhatsappLine.provider_type===providersType.META" class="grid formgrid">
@@ -255,6 +269,46 @@
                 }}</small
               >
             </div>
+            <div class="field col-6">
+              <label
+                :class="{
+                  'p-error':
+                    v$.supWhatsappLine.configuracion.app_secret.$invalid &&
+                    submitted,
+                }"
+                >{{ $t("models.whatsapp.line.configuracion.app_secret") }}*</label
+              >
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-lock"></i>
+                </span>
+                <Password
+                  toggleMask
+                  :feedback="false"
+                  :class="{
+                    'p-invalid':
+                      v$.supWhatsappLine.configuracion.app_secret.$invalid &&
+                      submitted,
+                  }"
+                  :placeholder="$t('forms.form.enter_value')"
+                  v-model="v$.supWhatsappLine.configuracion.app_secret.$model"
+                />
+              </div>
+              <small
+                v-if="
+                  (v$.supWhatsappLine.configuracion.app_secret.$invalid &&
+                    submitted) ||
+                  v$.supWhatsappLine.configuracion.app_secret.$pending.$response
+                "
+                class="p-error"
+                >{{
+                  v$.supWhatsappLine.configuracion.app_secret.required.$message.replace(
+                    "Value",
+                    $t("models.whatsapp.line.configuracion.app_secret")
+                  )
+                }}</small
+              >
+            </div>
 
           </div>
         </Fieldset>
@@ -300,7 +354,8 @@ export default {
                 configuracion: {
                     app_name: { required },
                     app_id: { required },
-                    verification_token: { }
+                    verification_token: { },
+                    app_secret: { }
                 }
             }
         };
