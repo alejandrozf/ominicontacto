@@ -9,6 +9,7 @@ export default {
                 configuracion = {
                     app_name: line.configuration.app_name,
                     app_id: line.configuration.app_id,
+                    app_secret: line.configuration.app_secret || '',
                     destination_editor_mode: line.configuration.destination_editor_mode,
                     flow_builder_layout: line.configuration.flow_builder_layout || {}
                 };
@@ -17,6 +18,7 @@ export default {
                     app_name: line.configuration.waba_id,
                     app_id: line.configuration.app_id,
                     verification_token: line.configuration.verification_token,
+                    app_secret: line.configuration.app_secret || '',
                     destination_editor_mode: line.configuration.destination_editor_mode,
                     flow_builder_layout: line.configuration.flow_builder_layout || {}
                 };
@@ -48,6 +50,7 @@ export default {
                 provider_type: null,
                 numero: '',
                 configuracion: {
+                    app_secret: '',
                     flow_builder_layout: {}
                 },
                 destination: {

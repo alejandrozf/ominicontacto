@@ -90,9 +90,12 @@ class LineaCreateSerializer(serializers.ModelSerializer):
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
             if 'app_id' not in configuracion\
                     or 'waba_id' not in configuracion\
-                    or 'verification_token' not in configuracion:
+                    or 'verification_token' not in configuracion\
+                    or 'app_secret' not in configuracion:
                 raise serializers.ValidationError({
-                    'configuration': _('Configuración incorrecta para el tipo de proveedor')})
+                    'configuration': _('Configuración incorrecta para el tipo de proveedor. '
+                                       'Se requiere app_id, waba_id, verification_token '
+                                       'y app_secret')})
             if Linea.objects.filter(configuracion__app_id=configuracion['app_id']).exists():
                 raise serializers.ValidationError({
                     'app_id': _('Ya existe una Linea con ese App ID')})
@@ -493,9 +496,12 @@ class UpdateSerializer(serializers.ModelSerializer):
         if proveedor.tipo_proveedor == ConfiguracionProveedor.TIPO_META:
             if 'app_id' not in configuracion\
                     or 'waba_id' not in configuracion\
-                    or 'verification_token' not in configuracion:
+                    or 'verification_token' not in configuracion\
+                    or 'app_secret' not in configuracion:
                 raise serializers.ValidationError({
-                    'configuration': _('Configuración incorrecta para el tipo de proveedor')})
+                    'configuration': _('Configuración incorrecta para el tipo de proveedor. '
+                                       'Se requiere app_id, waba_id, verification_token '
+                                       'y app_secret')})
             otras_lineas = Linea.objects.exclude(id=self.instance.id)
             if otras_lineas.filter(configuracion__app_id=configuracion['app_id']).exists():
                 raise serializers.ValidationError({

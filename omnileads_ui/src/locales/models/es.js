@@ -194,7 +194,8 @@ export default {
                 app_id: 'App ID',
                 business_id: 'Business Id',
                 verification_token: 'Verification Token',
-                waba_id: 'WABA ID'
+                waba_id: 'WABA ID',
+                app_secret: 'App Secret'
             },
             horario: 'Grupo horario',
             destino: 'Destino',
