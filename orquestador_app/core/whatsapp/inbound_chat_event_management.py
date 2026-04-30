@@ -80,6 +80,42 @@ def _store_outbound_text_message(line, conversation, message):
         )
 
 
+def _is_unattended_menu_conversation(conversation):
+    if conversation is None:
+        return False
+    return all((
+        not conversation.saliente,
+        not conversation.atendida,
+        conversation.campana_id is None,
+        not conversation.is_disposition,
+    ))
+
+
+def _is_expired_unattended_menu_conversation(conversation, timestamp):
+    if not _is_unattended_menu_conversation(conversation):
+        return False
+    return all((
+        conversation.expire is not None,
+        conversation.expire <= timestamp,
+    ))
+
+
+def _close_expired_unattended_menu_conversation(conversation):
+    conversation.is_active = False
+    conversation.is_disposition = True
+    conversation.save(update_fields=['is_active', 'is_disposition'])
+
+
+def _is_reply_to_current_conversation_menu(conversation, context):
+    origin_message_id = _get_origin_message_id(context)
+    if not origin_message_id:
+        return False
+    return MensajeWhatsapp.objects.filter(
+        message_id=origin_message_id,
+        conversation=conversation,
+    ).exists()
+
+
 async def inbound_chat_event(line, timestamp, message_id, origen, content, sender, context, type):
     notifications = await s2a_inbound_chat_event(
         line,
@@ -128,6 +164,10 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
             if not conversation:
                 conversation = conversations_from_origen.filter(is_disposition=False).last()
                 reactivated_conversation = conversation is not None
+                if _is_expired_unattended_menu_conversation(conversation, timestamp):
+                    _close_expired_unattended_menu_conversation(conversation)
+                    conversation = None
+                    reactivated_conversation = False
             if not conversation:
                 client_alias = sender['name'] if 'name' in sender else ""
                 campana = None
@@ -166,7 +206,8 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                     conversation.is_active = True
                 if conversation.saliente and not conversation.atendida:
                     conversation.atendida = True
-                conversation.expire = _next_whatsapp_expire(timestamp)
+                if not _is_unattended_menu_conversation(conversation):
+                    conversation.expire = _next_whatsapp_expire(timestamp)
                 conversation.date_last_interaction = timestamp
                 if not conversation.client_alias:
                     conversation.client_alias = sender['name'] if 'name' in sender else ""
@@ -207,7 +248,8 @@ def s2a_inbound_chat_event(line, timestamp, message_id, origen, content, sender,
                 }))
 
             if not conversation.campana:
-                if type == 'list_reply':
+                if type == 'list_reply' and _is_reply_to_current_conversation_menu(
+                        conversation, context):
                     for notification in asignar_campana(line, conversation, content, context):
                         notifications.append(notification)
                 else:
@@ -240,6 +282,9 @@ def asignar_campana(line, conversation, content, context):
                 conversation.campana = campana
                 conversation.client = client
                 conversation.atendida = True
+                conversation.expire = _next_whatsapp_expire(
+                    conversation.date_last_interaction or timezone.now()
+                )
                 conversation.save()
                 notifications.append(('notify_whatsapp_new_chat', {
                     'conversation': conversation,

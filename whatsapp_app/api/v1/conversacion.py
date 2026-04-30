@@ -103,6 +103,36 @@ def _normalize_agent_snapshot(agent):
     }
 
 
+def _agent_name(agent):
+    if not agent:
+        return None
+    user = getattr(agent, 'user', None)
+    if not user:
+        return None
+    full_name = user.get_full_name()
+    return full_name or user.username
+
+
+def _active_conversation_context_message(conversation, sender):
+    if not conversation:
+        return _('Ya existe una conversacion iniciada')
+    if not conversation.campana_id and not conversation.atendida and not conversation.saliente:
+        return _('Ya existe una conversación activa en menú interactivo para este destino')
+    if conversation.agent_id:
+        if conversation.agent_id == sender.id:
+            return _('Ya existe una conversación activa iniciada por este agente')
+        agent_name = _agent_name(conversation.agent)
+        if agent_name:
+            return _('Ya existe una conversación activa iniciada por el agente {0}').format(
+                agent_name)
+        return _('Ya existe una conversación activa iniciada por otro agente')
+    if conversation.saliente:
+        return _('Ya existe una conversación saliente activa para este destino')
+    if conversation.campana_id:
+        return _('Ya existe una conversación entrante activa en campaña')
+    return _('Ya existe una conversacion iniciada')
+
+
 def _normalize_campaign_snapshot(campaign):
     if not isinstance(campaign, dict):
         return None
@@ -1192,7 +1222,8 @@ class ViewSet(viewsets.ViewSet):
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
             or_filter = Q(destination=destination) | Q(client_id=contact.pk)
             conversation_started = ConversacionWhatsapp.objects\
-                .conversaciones_en_curso().filter(line_id=line.pk).filter(or_filter)
+                .conversaciones_en_curso().filter(line_id=line.pk).filter(or_filter)\
+                .select_related('agent__user')
             if not conversation_started:
                 message_id = send_template_message(
                     line, destination, template, data)
@@ -1253,8 +1284,10 @@ class ViewSet(viewsets.ViewSet):
                         message=_('Conversacion creada correctamente'),
                         status=HttpResponseStatus.SUCCESS, data=serializer.data),
                     status=status.HTTP_200_OK)
+            active_conversation = conversation_started.last()
             return response.Response(
-                data=get_response_data(message=_('Ya existe una conversacion iniciada')),
+                data=get_response_data(
+                    message=_active_conversation_context_message(active_conversation, sender)),
                 status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             print(e)
