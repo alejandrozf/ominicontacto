@@ -429,25 +429,26 @@ def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
 
 
 def dividir_lista(lst, n):
-    """Divide una lista en n partes de tamaño similar
-    Si n es menor que la longitud de la lista devuelve
-    un generador de una lista de listas con un iterador
-    donde cada elemento es una lista con un unico elemento
-    de la lista inicial
+    """
+    Divide una lista en n partes de tamaño similar.
+    Cada sublista tendrá como máximo 1 elemento más que cualquier otra.
+    Si n >= len(lst), devuelve cada elemento en una lista individual.
     """
     len_lst = len(lst)
     if n >= len_lst:
         for val in lst:
             yield [val]
     else:
-        len_partes = len_lst // n
-        for i, val in enumerate(range(0, len_lst, len_partes)):
-            if i == n:
-                return
-            if i == n - 1:
-                yield lst[val:]
-            else:
-                yield lst[val:val + len_partes]
+        # Tamaño base de cada parte
+        base_size = len_lst // n
+        # Número de partes que necesitan tener un elemento extra
+        num_larger_parts = len_lst % n
+        start = 0
+        for i in range(n):
+            # Las primeras `num_larger_parts` sublistas tienen un elemento extra
+            end = start + base_size + (1 if i < num_larger_parts else 0)
+            yield lst[start:end]
+            start = end
 
 
 def get_oml_last_release():

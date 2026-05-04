@@ -163,9 +163,11 @@ class UtilesTest(OMLBaseTest):
         self.assertEqual(cadena, "asdfg32432 (899)-781")
 
     def test_dividir_lista(self):
-        self.assertEqual(list(dividir_lista(range(13), 2)), [range(0, 6), range(6, 13)])
+        self.assertEqual(list(dividir_lista(range(13), 2)), [range(0, 7), range(7, 13)])
         self.assertEqual(
-            list(dividir_lista(range(13), 3)), [range(0, 4), range(4, 8), range(8, 13)])
+            list(dividir_lista(range(13), 3)), [range(0, 5), range(5, 9), range(9, 13)])
         self.assertEqual(list(dividir_lista(range(4), 2)), [range(0, 2), range(2, 4)])
         self.assertEqual(list(dividir_lista(range(11), 1)), [range(0, 11)])
         self.assertEqual(list(dividir_lista(range(5), 6)), [[0], [1], [2], [3], [4]])
+        self.assertEqual(
+            list(dividir_lista(range(14), 3)), [range(0, 5), range(5, 10), range(10, 14)])
