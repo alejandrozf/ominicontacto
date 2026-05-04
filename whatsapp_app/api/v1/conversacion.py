@@ -33,7 +33,11 @@ from rest_framework import decorators
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
-from api_app.services.media_url import build_public_media_url
+from api_app.services.media_url import (
+    build_signed_whatsapp_attachment_url,
+    get_canonical_media_reference,
+    sign_outbound_whatsapp_attachment_content,
+)
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.api.v1.mensaje import MensajeListSerializer, MensajeAtachmentCreateSerializer
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
@@ -199,7 +203,7 @@ def _serialize_transfer_event_messages(conversation, messages=None):
     return transfer_messages
 
 
-def _serialize_messages_with_transfer_events(conversation, messages=None):
+def _serialize_messages_with_transfer_events(conversation, messages=None, context=None):
     message_collection = messages if messages is not None else (
         conversation.mensajes.all().order_by('timestamp', 'id')
     )
@@ -207,7 +211,9 @@ def _serialize_messages_with_transfer_events(conversation, messages=None):
         message for message in message_collection
         if message.type != 'transfer_event'
     ]
-    serialized_messages = list(MensajeListSerializer(real_messages, many=True).data)
+    serialized_messages = list(
+        MensajeListSerializer(real_messages, many=True, context=context or {}).data
+    )
     serialized_messages.extend(
         _serialize_transfer_event_messages(
             conversation,
@@ -283,6 +289,11 @@ class MensajesSerializerEx(serializers.Serializer):
                     .format(obj.content['title'],
                             obj.content['description'] if 'description' in obj.content else '')
                 return _merge_forward_flags(obj.content, {'text': text})
+            if obj.file:
+                signed_content = sign_outbound_whatsapp_attachment_content(
+                    obj.content, obj.file.url, request=self.context.get('request')
+                )
+                return _merge_forward_flags(obj.content, signed_content)
             return _merge_forward_flags(obj.content, obj.content)
         return {}
 
@@ -328,7 +339,7 @@ class ConversacionSerializerEx(serializers.Serializer):
     messages = serializers.SerializerMethodField()
 
     def get_messages(self, obj):
-        return _serialize_messages_with_transfer_events(obj)
+        return _serialize_messages_with_transfer_events(obj, context=self.context)
 
     def get_initial_agent(self, obj):
         return _extract_transfer_summary(obj)['initial_agent']
@@ -384,7 +395,7 @@ class ConversacionSerializer(serializers.Serializer):
         return obj.mensajes.mensajes_recibidos().filter(status='delivered').count()
 
     def get_messages(self, obj):
-        return _serialize_messages_with_transfer_events(obj)
+        return _serialize_messages_with_transfer_events(obj, context=self.context)
 
     def get_client(self, obj):
         if obj.client:
@@ -638,7 +649,9 @@ class ViewSet(viewsets.ViewSet):
     def agent_chats_lists(self, request):
         agente = request.user.get_agente_profile()
         conversaciones_asignadas = agente.conversaciones.all()
-        conversaciones_en_curso = ConversacionSerializer(conversaciones_asignadas, many=True)
+        conversaciones_en_curso = ConversacionSerializer(
+            conversaciones_asignadas, many=True, context={'request': request}
+        )
         return response.Response(
             data=get_response_data(
                 status=HttpResponseStatus.SUCCESS,
@@ -653,8 +666,12 @@ class ViewSet(viewsets.ViewSet):
             if not conversacion.agent or conversacion.agent == agente:
                 conversation_granted = conversacion.otorgar_conversacion(agente),
                 mensajes = conversacion.mensajes.all()
-                serializer_conversacion = ConversacionSerializer(conversacion)
-                serializer_mensajes = MensajeListSerializer(mensajes, many=True)
+                serializer_conversacion = ConversacionSerializer(
+                    conversacion, context={'request': request}
+                )
+                serializer_mensajes = MensajeListSerializer(
+                    mensajes, many=True, context={'request': request}
+                )
                 data = {
                     "conversation_granted": conversation_granted,
                     "conversation_data": serializer_conversacion.data,
@@ -744,9 +761,17 @@ class ViewSet(viewsets.ViewSet):
         else:
             mensajes = MensajeWhatsapp.objects.filter(conversation=pk).order_by('timestamp')
         mensajes = list(mensajes)
+        serializer_context = {'request': request}
         data = {
-            "messages": _serialize_messages_with_transfer_events(conversation, messages=mensajes),
-            "conversation_info": ConversacionSerializer(conversation).data
+            "messages": _serialize_messages_with_transfer_events(
+                conversation,
+                messages=mensajes,
+                context=serializer_context,
+            ),
+            "conversation_info": ConversacionSerializer(
+                conversation,
+                context=serializer_context,
+            ).data
         }
         return response.Response(
             data=get_response_data(status=HttpResponseStatus.SUCCESS, data=data),
@@ -781,7 +806,9 @@ class ViewSet(viewsets.ViewSet):
                                 content=message,
                                 type="text",
                             )
-                            serializer = MensajeListSerializer(mensaje)
+                            serializer = MensajeListSerializer(
+                                mensaje, context={'request': request}
+                            )
                             return response.Response(
                                 data=get_response_data(
                                     status=HttpResponseStatus.SUCCESS,
@@ -832,17 +859,28 @@ class ViewSet(viewsets.ViewSet):
                         mensaje = serializer.save()
                         filename = data['file'].name[:100]
                         file_type = get_type(filename)
-                        media_url = build_public_media_url(request, mensaje.file.url)
-                        message_dict = {
+                        stored_media_url = get_canonical_media_reference(mensaje.file.url)
+                        signed_media_url = build_signed_whatsapp_attachment_url(
+                            request, stored_media_url
+                        )
+                        public_message_dict = {
                             "type": file_type,
-                            "previewUrl": media_url,
-                            "originalUrl": media_url,
-                            "url": media_url,
+                            "previewUrl": signed_media_url,
+                            "originalUrl": signed_media_url,
+                            "url": signed_media_url,
+                            "name": filename,
+                            "filename": filename
+                        }
+                        stored_message_dict = {
+                            "type": file_type,
+                            "previewUrl": stored_media_url,
+                            "originalUrl": stored_media_url,
+                            "url": stored_media_url,
                             "name": filename,
                             "filename": filename
                         }
                         message_id = send_multimedia_file(
-                            line, destination, message_dict)
+                            line, destination, public_message_dict)
                         if message_id:
                             mensaje.message_id = message_id
                             mensaje.origen = line.numero
@@ -851,10 +889,12 @@ class ViewSet(viewsets.ViewSet):
                                 "name": sender.user.username,
                                 "agent_id": sender.user.id
                             }
-                            mensaje.content = message_dict
+                            mensaje.content = stored_message_dict
                             mensaje.type = file_type
                             mensaje.save()
-                            serializer = MensajeListSerializer(mensaje)
+                            serializer = MensajeListSerializer(
+                                mensaje, context={'request': request}
+                            )
                         else:
                             mensaje.delete()
                             raise Exception(
@@ -912,7 +952,9 @@ class ViewSet(viewsets.ViewSet):
                                 content=message,
                                 type="template",
                             )
-                            serializer = MensajeListSerializer(mensaje)
+                            serializer = MensajeListSerializer(
+                                mensaje, context={'request': request}
+                            )
                         return response.Response(
                             data=get_response_data(
                                 status=HttpResponseStatus.SUCCESS, data=serializer.data,
@@ -990,7 +1032,9 @@ class ViewSet(viewsets.ViewSet):
                                 content=message_dict,
                                 type=template_tipo.lower(),
                             )
-                            serializer = MensajeListSerializer(mensaje)
+                            serializer = MensajeListSerializer(
+                                mensaje, context={'request': request}
+                            )
                             return response.Response(
                                 data=get_response_data(
                                     status=HttpResponseStatus.SUCCESS, data=serializer.data,
@@ -1083,7 +1127,7 @@ class ViewSet(viewsets.ViewSet):
                         seconds=timestamp.second, microseconds=timestamp.microsecond)
                 conversation.is_active = False
                 conversation.save()
-                serializer = MensajeListSerializer(mensaje)
+                serializer = MensajeListSerializer(mensaje, context={'request': request})
             return response.Response(
                 data=get_response_data(
                     message=_('Se envio el mensaje de forma exitosa'),
@@ -1195,7 +1239,7 @@ class ViewSet(viewsets.ViewSet):
                         content=message_dict,
                         type=template.tipo.lower(),
                     )
-                    serializer = MensajeListSerializer(mensaje)
+                    serializer = MensajeListSerializer(mensaje, context={'request': request})
                     redis_2.sadd(
                         f"OML:WHATSAPP:CAMP:{conversation_started.campana_id}:NEW-OUTBOUND-CONV",
                         conversation_started.id

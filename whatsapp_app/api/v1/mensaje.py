@@ -26,6 +26,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
+from api_app.services.media_url import sign_outbound_whatsapp_attachment_content
 from whatsapp_app.api.utils import HttpResponseStatus, get_response_data
 from whatsapp_app.models import ConversacionWhatsapp, MensajeWhatsapp
 from whatsapp_app.api.v1.contacto import ListSerializer as ContactoSerializer
@@ -88,6 +89,11 @@ class MensajeListSerializer(serializers.Serializer):
                     .format(obj.content['title'],
                             obj.content['description'] if 'description' in obj.content else '')
                 return _merge_forward_flags(obj.content, {'text': text})
+            if obj.file:
+                signed_content = sign_outbound_whatsapp_attachment_content(
+                    obj.content, obj.file.url, request=self.context.get('request')
+                )
+                return _merge_forward_flags(obj.content, signed_content)
             return _merge_forward_flags(obj.content, obj.content)
         return {}
 
