@@ -65,9 +65,11 @@ class Command(BaseCommand):
         OpcionCalificacionFactory(
             nombre=self.success.nombre, campana=campana, tipo=OpcionCalificacion.GESTION)
         OpcionCalificacionFactory(
-            nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
+            nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION,
+            formulario=None)
         OpcionCalificacionFactory(
-            nombre=settings.CALIFICACION_REAGENDA, campana=campana, tipo=OpcionCalificacion.AGENDA)
+            nombre=settings.CALIFICACION_REAGENDA, campana=campana, tipo=OpcionCalificacion.AGENDA,
+            formulario=None)
 
     def _crear_campana_manual(self, nombre_campana):
         # crear campaña manual
@@ -203,7 +205,7 @@ class Command(BaseCommand):
         cantidad = max(2, cantidad)
         agentes_creados = []
         for i in range(0, cantidad):
-            username = f'ag{i+1}'
+            username = f'ag{i + 1}'
             agente = self._crear_agente(grupo, username, PASSWORD)
             agentes_creados.append(agente)
         asterisk_sip_service = ActivacionAgenteService()
@@ -243,7 +245,7 @@ class Command(BaseCommand):
 
     def _crear_supervisores(self, cantidad):
         for i in range(0, cantidad):
-            username = f'ftsup{i+1}'
+            username = f'ftsup{i + 1}'
             self._crear_supervisor(username)
 
     def _crear_supervisor(self, username):

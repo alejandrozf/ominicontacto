@@ -79,8 +79,12 @@ function setAssociatedFormDisabledStatus(type_input){
     var form_input_name = $(type_input).prop('name').slice(0,-4) + 'formulario';
     // Si el campo tipo está deshabilitado asumo que no se puede modificar el formulario
     var type_input_disabled = $(type_input).prop('disabled');
-    if (type == '1' && !type_input_disabled){
-        $('#id_' + form_input_name).prop('disabled', false);
+    if (type == '1') {
+        if (type_input_disabled){
+            $('#id_' + form_input_name).prop('disabled', true);
+        } else{
+            $('#id_' + form_input_name).prop('disabled', false);
+        }
     }
     else {
         $('#id_' + form_input_name).prop('disabled', true);
