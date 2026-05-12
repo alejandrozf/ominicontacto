@@ -29,6 +29,11 @@ from django.views.generic import FormView, View
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse
 
+from ominicontacto_app.bgtasks.mixins import (
+    SearchRecordingTaskRegister,
+    SEARCH_RECORDINGS_STATUS_DONE,
+    SEARCH_RECORDINGS_STATUS_FAILED,
+)
 from ominicontacto_app.forms.base import GrabacionBusquedaFormEx
 from ominicontacto_app.models import (
     GrabacionMarca, Campana)
@@ -80,6 +85,43 @@ class BusquedaGrabacionSupervisorFormViewEx(FormView):
             "campana_choices": [(c.id, c.nombre) for c in campanas],
         })
         return kwargs
+
+
+class ResultadoTareaBusquedaGrabacionView(View):
+    """Devuelve los fragmentos generados para una búsqueda de grabaciones terminada."""
+
+    def get(self, request):
+        task_id = request.GET.get('task_id')
+        if not task_id:
+            return JsonResponse(
+                {'error_message': _('No se indicó la tarea de búsqueda de grabaciones.')},
+                status=400,
+            )
+
+        task = SearchRecordingTaskRegister.get(task_id)
+        if not task or task.get('user_id') != str(request.user.id):
+            return JsonResponse(
+                {'error_message': _('No se encontró la tarea de búsqueda de grabaciones.')},
+                status=404,
+            )
+
+        status = task.get('status')
+        if status == SEARCH_RECORDINGS_STATUS_DONE:
+            result = task.get('result')
+            if not result or 'fragments' not in result:
+                return JsonResponse(
+                    {'error_message': _('No se encontró el resultado de la búsqueda.')},
+                    status=404,
+                )
+            return JsonResponse(result)
+
+        if status == SEARCH_RECORDINGS_STATUS_FAILED:
+            return JsonResponse(
+                {'error_message': task.get('error_message') or _('No se pudo generar el reporte.')},
+                status=409,
+            )
+
+        return JsonResponse({'status': status}, status=202)
 
 
 class MarcarGrabacionView(View):

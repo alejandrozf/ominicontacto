@@ -210,6 +210,10 @@ urlpatterns = [
          login_required(views_grabacion.BusquedaGrabacionAgenteFormViewEx.as_view()),
          name='grabacion_agente_buscar',
          ),
+    path('api/v1/grabacion/task_result/',
+         login_required(views_grabacion.ResultadoTareaBusquedaGrabacionView.as_view()),
+         name='api_recording_search_task_result',
+         ),
 
 
     # ==========================================================================

@@ -37,6 +37,7 @@ from simple_history.utils import update_change_reason
 
 from ominicontacto_app.models import GrabacionMarca, OpcionCalificacion, Campana, User
 
+from ominicontacto_app.bgtasks.mixins import SearchRecordingTaskRegister
 from ominicontacto_app.tests.factories import CalificacionClienteFactory, CampanaFactory, \
     ContactoFactory, GrabacionMarcaFactory, LlamadaLogFactory, \
     OpcionCalificacionFactory, QueueFactory, QueueMemberFactory
@@ -141,10 +142,14 @@ class BaseGrabacionesTests(TransactionTestCase, OMLTestUtilsMixin):
                 "data": urlencode(formdata)
             }
             await ws_communicator.send_json_to(request_message)
-            self.assertTrue(await ws_communicator.receive_nothing(timeout=1))
+            queued_message = await ws_communicator.receive_json_from(timeout=1)
+            self.assertEqual(queued_message["type"], "search_recordings.status")
+            self.assertEqual(queued_message["status"], "queued")
+            self.assertIn("task_id", queued_message)
             enqueue_message_channel, enqueue_message = channel_layer_send.call_args[0]
             self.assertEqual(enqueue_message_channel, "background-tasks")
             self.assertEqual(enqueue_message["type"], "search_recordings.enqueue")
+            self.assertEqual(enqueue_message["task_id"], queued_message["task_id"])
 
             worker_communicator = ApplicationCommunicator(
                 application=application,
@@ -155,14 +160,29 @@ class BaseGrabacionesTests(TransactionTestCase, OMLTestUtilsMixin):
             )
             await worker_communicator.send_input(enqueue_message)
             await worker_communicator.wait(timeout=2)
-            dequeue_message_channel, dequeue_message = channel_layer_group_send.call_args[0]
-            self.assertIn("background-tasks.user-", dequeue_message_channel)
-            self.assertEqual(dequeue_message["type"], "search_recordings.dequeue")
-            await ws_communicator.send_json_to(dequeue_message)
-            respond_message = await ws_communicator.receive_json_from(timeout=1)
-            self.assertEqual(respond_message["type"], "search_recordings.respond")
+            status_message_channel, status_message = channel_layer_group_send.call_args_list[0][0]
+            self.assertIn("background-tasks.user-", status_message_channel)
+            self.assertEqual(status_message["type"], "search_recordings.status")
+            self.assertEqual(status_message["status"], "running")
+            await ws_communicator.send_json_to(status_message)
+            running_message = await ws_communicator.receive_json_from(timeout=1)
+            self.assertEqual(running_message["type"], "search_recordings.status")
+            self.assertEqual(running_message["status"], "running")
+
+            done_message_channel, done_message = channel_layer_group_send.call_args_list[1][0]
+            self.assertIn("background-tasks.user-", done_message_channel)
+            self.assertEqual(done_message["type"], "search_recordings.status")
+            self.assertEqual(done_message["status"], "done")
+            await ws_communicator.send_json_to(done_message)
+            done_response = await ws_communicator.receive_json_from(timeout=1)
+            self.assertEqual(done_response["type"], "search_recordings.status")
+            self.assertEqual(done_response["status"], "done")
+
+            task = await database_sync_to_async(SearchRecordingTaskRegister.get)(
+                queued_message["task_id"]
+            )
             await ws_communicator.disconnect()
-            return respond_message["result"]
+            return task["result"]
 
     @staticmethod
     @database_sync_to_async

@@ -52,6 +52,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% trans 'Buscar' %}
                 <span></span>
             </button>
+            <div
+                id="recordings_search_loading_status"
+                class="recordings-search-loading-status hidden"
+                role="status"
+                aria-live="polite"
+                data-loading-text="{% trans 'Generando Reporte..' %}"
+                data-queued-text="{% trans 'Generando Reporte.. Encolado' %}"
+                data-running-text="{% trans 'Generando Reporte.. Corriendo' %}"
+                data-fetching-result-text="{% trans 'Generando Reporte.. Cargando resultados' %}"
+                data-reconnecting-text="{% trans 'Reconectando con el servidor. Esperando resultado...' %}"
+                data-connection-error-text="{% trans 'Se perdió la conexión con el servidor. Intente nuevamente.' %}"
+                data-result-url="{% url 'api_recording_search_task_result' %}">
+                <span
+                    id="recordings_search_loading_spinner"
+                    class="recordings-search-loading-spinner"
+                    aria-hidden="true"></span>
+                <span id="recordings_search_loading_message">
+                    {% trans 'Generando Reporte..' %}
+                </span>
+                <span class="recordings-search-loading-elapsed">
+                    {% trans 'Tiempo transcurrido' %}:
+                    <span id="recordings_search_loading_elapsed">00:00</span>
+                </span>
+            </div>
         </form>
     </div>
 </div>
