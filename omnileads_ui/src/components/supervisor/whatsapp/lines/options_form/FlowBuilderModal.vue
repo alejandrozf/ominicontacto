@@ -111,6 +111,11 @@
               severity="success"
               :value="$t('views.whatsapp.line.flow.main')"
             />
+            <Tag
+              v-if="isGlobalTimeoutOwner(node)"
+              severity="info"
+              :value="formatTimeout(globalTimeout)"
+            />
             <div class="flow-node__actions">
               <Button
                 icon="pi pi-pencil"
@@ -288,6 +293,19 @@
                 <small class="text-color-secondary">{{ editingNode.menu_button ? editingNode.menu_button.length : 0 }} / 20</small>
               </label>
               <InputText v-model="editingNode.menu_button" class="w-full" @input="refreshArrows" />
+            </div>
+            <div v-if="isGlobalTimeoutOwner(editingNode)" class="field mt-3">
+              <label class="flex justify-content-between w-full mb-1">
+                <span>{{ $t('models.whatsapp.line.interactive_form.timeout') }} global (seg.)</span>
+                <small class="text-color-secondary">0 = vencimiento estándar de WhatsApp</small>
+              </label>
+              <InputText
+                v-model.number="globalTimeout"
+                type="number"
+                min="0"
+                step="1"
+                class="w-full"
+              />
             </div>
           </TabPanel>
 
@@ -529,6 +547,22 @@ export default {
         editingNode () {
             return this.nodes.find((node) => node.id_tmp === this.editingNodeId) || null;
         },
+        globalTimeout: {
+            get () {
+                const mainNode = this.nodes.find((node) => node.is_main) || this.nodes[0];
+                if (mainNode && Number(mainNode.timeout || 0) > 0) {
+                    return Number(mainNode.timeout);
+                }
+                const configuredNode = this.nodes.find((node) => Number(node.timeout || 0) > 0);
+                return configuredNode ? Number(configuredNode.timeout) : 0;
+            },
+            set (value) {
+                const timeout = Number(value || 0);
+                this.nodes.forEach((node) => {
+                    node.timeout = timeout;
+                });
+            }
+        },
         stageStyle () {
             return {
                 width: `${this.canvasSize.width}px`,
@@ -595,7 +629,11 @@ export default {
             if (node.success === undefined) {
                 node.success = node.successAnswer || '';
             }
-            if (node.timeout === undefined) node.timeout = 0;
+            if (node.timeout === undefined || node.timeout === null || node.timeout === '') {
+                node.timeout = 0;
+            } else {
+                node.timeout = Number(node.timeout);
+            }
             if (!Array.isArray(node.options)) node.options = [];
             if (node.flow_builder_x === undefined) node.flow_builder_x = null;
             if (node.flow_builder_y === undefined) node.flow_builder_y = null;
@@ -674,6 +712,20 @@ export default {
                 option.send_message_before_campaign &&
                 !option.message_before_campaign
             ));
+        },
+        isGlobalTimeoutOwner (node) {
+            if (!node) {
+                return false;
+            }
+            const mainNode = this.nodes.find((item) => item.is_main) || this.nodes[0];
+            return Boolean(mainNode && node.id_tmp === mainNode.id_tmp);
+        },
+        formatTimeout (timeout) {
+            const value = Number(timeout || 0);
+            if (value <= 0) {
+                return `${this.$t('models.whatsapp.line.interactive_form.timeout')}: estándar`;
+            }
+            return `${this.$t('models.whatsapp.line.interactive_form.timeout')}: ${value}s`;
         },
         getInteractiveOptions (node) {
             return node.options || [];

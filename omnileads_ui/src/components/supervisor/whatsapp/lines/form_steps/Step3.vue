@@ -653,13 +653,30 @@ export default {
                 return acc;
             }, {});
         },
+        getGlobalInteractiveTimeout () {
+            if (!Array.isArray(this.supWhatsappLine.destination.data)) {
+                return 0;
+            }
+            const mainMenu = this.supWhatsappLine.destination.data.find(
+                (menu) => menu.is_main
+            ) || this.supWhatsappLine.destination.data[0];
+            if (mainMenu && Number(mainMenu.timeout || 0) > 0) {
+                return Number(mainMenu.timeout);
+            }
+            const configuredMenu = this.supWhatsappLine.destination.data.find(
+                (menu) => Number(menu.timeout || 0) > 0
+            );
+            return configuredMenu ? Number(configuredMenu.timeout) : 0;
+        },
         getSanitizedInteractiveDestinationData () {
             if (!Array.isArray(this.supWhatsappLine.destination.data)) {
                 return [];
             }
+            const globalTimeout = this.getGlobalInteractiveTimeout();
             return this.supWhatsappLine.destination.data.map((menu) => {
                 const cleanMenu = {
                     ...menu,
+                    timeout: globalTimeout,
                     options: Array.isArray(menu.options)
                         ? menu.options.map((option) => ({ ...option }))
                         : []

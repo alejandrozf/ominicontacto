@@ -74,6 +74,30 @@ def autoreponse_destino_interactivo(line, destino, conversation):
         gupshup_autoreponse_destino_interactivo(line, destino, conversation)
 
 
+INTERACTIVE_MENU_MESSAGE_TYPES = ('list-gupshup', 'list-meta')
+
+
+def _get_global_interactive_menu_timeout(line):
+    if not line.destino:
+        return 0
+    return getattr(line.destino.content_object, 'timeout', None) or 0
+
+
+def _apply_interactive_menu_timeout(line, conversation, timestamp):
+    if MensajeWhatsapp.objects.filter(
+        conversation=conversation,
+        type__in=INTERACTIVE_MENU_MESSAGE_TYPES,
+    ).exists():
+        return
+    timeout = _get_global_interactive_menu_timeout(line)
+    if not timeout:
+        return
+    conversation.expire = (
+        timestamp + timezone.timedelta(seconds=timeout)
+    ).replace(microsecond=0)
+    conversation.save(update_fields=['expire'])
+
+
 def gupshup_autoreponse_destino_interactivo(line, destino, conversation):
     try:
         destination_entrante = destino
@@ -109,6 +133,7 @@ def gupshup_autoreponse_destino_interactivo(line, destino, conversation):
         response = requests.post(URL_SEND_MESSAGE, headers=headers, data=data).json()
         if response['status'] == 'submitted':
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            _apply_interactive_menu_timeout(line, conversation, timestamp)
             content = {"text": json.dumps(message, default=str), 'type': 'list'},
             MensajeWhatsapp.objects.get_or_create(
                 message_id=response['messageId'],
@@ -176,6 +201,7 @@ def meta_autoreponse_destino_interactivo(line, destino, conversation):
         if response.status_code == 200:
             message_id = response.json()['messages'][0]['id']
             timestamp = timezone.now().astimezone(timezone.get_current_timezone())
+            _apply_interactive_menu_timeout(line, conversation, timestamp)
             content = {"text": json.dumps(message, default=str), 'type': 'list'},
             MensajeWhatsapp.objects.get_or_create(
                 message_id=message_id,

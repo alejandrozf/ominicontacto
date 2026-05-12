@@ -228,6 +228,28 @@
           {{ interactiveForm.success ? interactiveForm.success.length : 0 }} / 100
         </small>
       </div>
+      <div
+        v-if="interactiveForm.is_main"
+        class="field sm:col-12 md:col-12 lg:col-6 xl:col-6"
+      >
+        <label>
+          {{ $t("models.whatsapp.line.interactive_form.timeout") }} global (seg.)
+        </label>
+        <div class="p-inputgroup mt-2">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-clock"></i>
+          </span>
+          <InputText
+            v-model.number="interactiveForm.timeout"
+            type="number"
+            min="0"
+            step="1"
+          />
+        </div>
+        <small class="text-color-secondary mt-1 block">
+          0 = vencimiento estándar de WhatsApp
+        </small>
+      </div>
     </div>
   </div>
   <div class="card  mt-2">
@@ -322,7 +344,7 @@
 </template>
 
 <script>
-import { integer, required } from '@vuelidate/validators';
+import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { mapActions, mapState } from 'vuex';
 import ModalToHandleOption from '@/components/supervisor/whatsapp/lines/options_form/ModalToHandleOption';
@@ -348,7 +370,7 @@ export default {
     props: {
         data: {
             type: Object,
-            default: {}
+            default: () => ({})
         },
         submitted: {
             type: Boolean,
@@ -356,8 +378,7 @@ export default {
         }
     },
     components: {
-        ModalToHandleOption,
-        DESTINATION_OPTION_TYPES
+        ModalToHandleOption
     },
     data () {
         return {
@@ -400,9 +421,9 @@ export default {
         isEmptyField (field = null) {
             return field === null || field === undefined || field === '';
         },
-        isNoValidLen (field = null, max_length = 0) {
+        isNoValidLen (field = null, maxLength = 0) {
             if (field === null || field === undefined || field === '') { return false; }
-            if (typeof field === 'string' || field instanceof String) { return field.length > max_length; }
+            if (typeof field === 'string' || field instanceof String) { return field.length > maxLength; }
             return false;
         },
         getDestinationType (type) {
@@ -463,7 +484,7 @@ export default {
             );
         },
         delete_menu (menuId) {
-            if (menuId != 0) {
+            if (menuId !== 0) {
                 this.supWhatsappLine.destination.data = this.supWhatsappLine.destination.data.filter(item => item.id_tmp !== menuId);
             }
         }

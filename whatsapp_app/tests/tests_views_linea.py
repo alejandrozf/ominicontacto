@@ -240,7 +240,7 @@ class LineaTest(OMLBaseTest):
                         'menu_button': 'Button',
                         'wrong_answer': 'Wrong answer',
                         'success': 'Success response',
-                        'timeout': 0,
+                        'timeout': 300,
                         'options': [
                             {
                                 'type_option': 1,
@@ -331,6 +331,8 @@ class LineaTest(OMLBaseTest):
         menu_id = response_data['data']['destination']['data'][0]['id']
         menu = MenuInteractivoWhatsapp.objects.get(id=menu_id)
         self.assertEqual(linea.destino, DestinoEntrante.get_nodo_ruta_entrante(menu))
+        self.assertEqual(menu.timeout, 300)
+        self.assertEqual(response_data['data']['destination']['data'][0]['timeout'], 300)
         self.assertEqual(2, linea.destino.destinos_siguientes.count())
         opcion_2 = linea.destino.get_opcion_destino_por_valor('Dos')
         self.assertEqual(opcion_2.destino_siguiente, self.destino_2)
@@ -555,6 +557,7 @@ class LineaTest(OMLBaseTest):
         self.assertEqual(MenuInteractivoWhatsapp.objects.count(), num_menu + 3)
         self.assertEqual(OpcionMenuInteractivoWhatsapp.objects.count(), num_opcion + 5)
         self.assertEqual(OpcionDestino.objects.count(), num_opcion_destino + 5)
+        self.assertEqual(set(linea.menuinteractivo.values_list('timeout', flat=True)), {300})
         notificar_nueva_linea.assert_called()
 
     @patch('whatsapp_app.services.redis.linea.StreamDeLineas.notificar_nueva_linea')

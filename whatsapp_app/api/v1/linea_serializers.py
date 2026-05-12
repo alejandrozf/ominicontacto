@@ -167,12 +167,34 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
             self.create_menu_interactivo(validated_data)
         return validated_data
 
+    def _get_global_menu_timeout(self, list_menu_data, validated_data):
+        selected_id = validated_data.get('id_tmp')
+        main_timeout = None
+        for menu_data in list_menu_data:
+            is_selected_main = (
+                menu_data.get('is_main', False) or
+                (
+                    selected_id is not None and
+                    menu_data.get('id_tmp') == selected_id
+                )
+            )
+            if is_selected_main:
+                main_timeout = menu_data.get('timeout') or 0
+                if main_timeout:
+                    return main_timeout
+        for menu_data in list_menu_data:
+            timeout = menu_data.get('timeout') or 0
+            if timeout:
+                return timeout
+        return main_timeout or 0
+
     def create_menu_interactivo(self, validated_data):
         # Si es un menú interactivo debo crearlo:
         line = None
         if 'line' in self.context:
             line = self.context['line']
         list_menu_data = validated_data.get('data', [])
+        global_timeout = self._get_global_menu_timeout(list_menu_data, validated_data)
         destino_whith_options = []
         first_destino = None
         for menu_data in list_menu_data:
@@ -183,7 +205,7 @@ class DestinoDeLineaCreateSerializer(serializers.Serializer):
                                            texto_opcion_incorrecta=menu_data.get(
                                                'wrong_answer', ''),
                                            texto_derivacion=menu_data.get('success', ''),
-                                           timeout=0,
+                                           timeout=global_timeout,
                                            line=line
                                            )
             menu.save()
@@ -331,7 +353,7 @@ class MenuInteractivoSerializer(serializers.Serializer):
     menu_button = serializers.CharField(max_length=20)
     wrong_answer = serializers.CharField(required=False, allow_blank=True)
     success = serializers.CharField(required=False, allow_blank=True)
-    timeout = serializers.IntegerField(min_value=0, required=False)
+    timeout = serializers.IntegerField(min_value=0, required=False, allow_null=True)
     options = OpcionMenuSerializer(many=True)
 
     def validate_options(self, options):
@@ -361,7 +383,26 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
                 option.opcion_menu_whatsapp.message_before_campaign_id
         }
 
-    def _menu_representation(self, value, data_list):
+    def _get_represented_global_menu_timeout(self, value, visited=None):
+        if visited is None:
+            visited = set()
+        if value is None or value.id in visited:
+            return 0
+        visited.add(value.id)
+        timeout = value.content_object.timeout or 0
+        if timeout:
+            return timeout
+        for opcion in value.destinos_siguientes.all():
+            if opcion.destino_siguiente.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
+                timeout = self._get_represented_global_menu_timeout(
+                    opcion.destino_siguiente, visited)
+                if timeout:
+                    return timeout
+        return 0
+
+    def _menu_representation(self, value, data_list, global_timeout=None):
+        if global_timeout is None:
+            global_timeout = self._get_represented_global_menu_timeout(value)
         menu = value.content_object
         menu_representation = {
             'id': menu.id,
@@ -373,7 +414,7 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             'menu_button': menu.menu_button,
             'wrong_answer': menu.texto_opcion_incorrecta,
             'success': menu.texto_derivacion,
-            'timeout': 0,
+            'timeout': global_timeout,
             'options': []
         }
         data_list.append(menu_representation)
@@ -382,7 +423,8 @@ class DestinoEntranteRelatedField(serializers.RelatedField):
             if opcion.destino_siguiente.tipo == DestinoEntrante.MENU_INTERACTIVO_WHATSAPP:
                 if not any(item['id'] ==
                            opcion.destino_siguiente.content_object.id for item in data_list):
-                    self._menu_representation(opcion.destino_siguiente, data_list)
+                    self._menu_representation(
+                        opcion.destino_siguiente, data_list, global_timeout)
         return data_list
 
     def to_representation(self, line):
